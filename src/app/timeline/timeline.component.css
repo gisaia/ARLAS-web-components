@@ -1,0 +1,44 @@
+/*svg {
+  font: 10px sans-serif;
+}
+
+
+
+.line {
+  fill: none;
+  stroke-width: 1px;
+  clip-path: url(#clip);
+  stroke: red;
+}
+.line:nth-of-type(2) {
+  stroke: blue;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.brush .extent {
+  stroke: #fff;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}*/
+
+
+.area {
+  fill: steelblue;
+  clip-path: url(#clip);
+}
+
+.zoom {
+  cursor: move;
+  fill: none;
+  pointer-events: all;
+}
+
+#csvdata {
+  display: none;
+}
