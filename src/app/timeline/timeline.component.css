@@ -1,44 +1,32 @@
-/*svg {
-  font: 10px sans-serif;
+.timeline_div{
+    background: rgba(0,0,255,0);
+}
+.timeline_title{
+    font-size: 1.0em;
+    width: 100%;
+    color: dodgerblue;
+    opacity: 1;
+    text-align: center;
+    position: absolute;
+    bottom:0;
+    z-index: 8000 !important;
+}
+.on-map {
+    position: absolute;
+    z-index: 1000;
+}
+
+.map-button {
+    width: 35px;
+    height: 35px;
+    text-align: center;
 }
 
 
-
-.line {
-  fill: none;
-  stroke-width: 1px;
-  clip-path: url(#clip);
-  stroke: red;
-}
-.line:nth-of-type(2) {
-  stroke: blue;
+.leaflet-clickable {
+  cursor: crosshair !important;
 }
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.brush .extent {
-  stroke: #fff;
-  fill-opacity: .125;
-  shape-rendering: crispEdges;
-}*/
-
-
-.area {
-  fill: steelblue;
-  clip-path: url(#clip);
-}
-
-.zoom {
-  cursor: move;
-  fill: none;
-  pointer-events: all;
-}
-
-#csvdata {
-  display: none;
+.leaflet-container {
+  cursor: help !important;
 }

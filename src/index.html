@@ -3,12 +3,139 @@
 <head>
   <meta charset="utf-8">
   <title>ArlasWebComponents</title>
+  <style>
+        .domain {
+            stroke: grey;
+            stroke-width: 1px;
+            stroke-opacity: 0.5;
+            font-size: 0.9;
+            fill-opacity: 0;
+            color: darkslategrey;
+        }
+
+        text {
+            font-size: 0.8em;
+            fill-opacity: 1;
+            fill: darkslategrey;
+        }
+
+        .area {
+            fill: dimgrey;
+            fill-opacity: 1;
+            stroke: darkslategrey;
+            stroke-width: 2px;
+            stroke-opacity: 1;
+        }
+
+        /*rect.extent {
+            stroke-width: 1px;
+            fill: deeppink;
+            fill-opacity: 0.05;
+            stroke: deeppink;
+            stroke-opacity: 1;
+        }*/
+
+        #tooltip {
+            margin-left: 60px;
+            margin-right: 20px;
+        }
+
+        #tooltip span {
+            font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+            font-size: 0.9em;
+            line-height: 1.3;
+            color: deeppink;
+            opacity: 1;
+            z-index: 10000 !important;
+            background: rgba(220, 220, 220, 0.8);
+        }
+
+        #start.small {
+            font-size: 0.9em;
+        }
+
+        #end.small {
+            font-size: 0.9em;
+        }
+
+        #end {
+            font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+            float: right;
+            font-size: 0.9em;
+        }
+
+        td {
+            padding: 3px !important;
+        }
+
+        span.ng2-tag-input-remove {
+            background: none !important;
+            width: 9px !important;
+            margin-left: 0px !important;
+            margin-right: 0px !important;
+        }
+
+
+
+        .label {
+            font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+            font-size: 0.9em !important;
+            font-weight: normal !important;
+        }
+
+        .leaflet-popup-content-wrapper {
+            z-index: 1500 !important;
+            border-radius: 2px !important;
+        }
+
+        .is-selected {
+            background: mediumseagreen !important;
+            color: white !important;
+        }
+
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        app {
+            width: 100%;
+            height: 100%;
+        }
+
+        .splash {
+            position: absolute;
+            top: 0px;
+            bottom: 0;
+            width: 100%;
+            width: 100%;
+            height: 100%;
+            background: snow;
+            color: black;
+            font-size: 20px;
+            text-align: center;
+            font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+        }
+
+        .leaflet-popup-content {
+            z-index: 1500 !important;
+        }
+
+        .leaflet-popup-content {
+            z-index: 1500 !important;
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            margin-right: 0px !important;
+            margin-left: 0px !important;
+        }
+    </style>
+
   <base href="/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <gisaia-root></gisaia-root>
+  <gisaia-root ></gisaia-root>
 </body>
 </html>

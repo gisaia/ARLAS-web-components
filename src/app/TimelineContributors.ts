@@ -10,12 +10,12 @@ export class TimelineContributor {
 
     observeDataChangement(obs: Observable<any>) {
       return obs.subscribe(value => {
-        console.log('BRUSHED ' + value);
-        // this.plotData(null, null, null);
+        console.log('BRUSHED ' + value.startdate + ' ' + value.enddate);
+        // set period of collaborative seach service
       });
     }
 
     plotData(data: Array<any>, startDate: any, endDate: any) {
-      this.timeline.plot(data, startDate, endDate);
+      this.timeline.plotFake(data, startDate, endDate);
     }
 }
