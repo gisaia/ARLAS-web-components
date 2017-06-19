@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, ViewEncapsulation, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef } from '@angular/core';
 
 import { MarginModel } from '../models/margin.model';
+import { TypeHistogram } from '../enumerations/type.histogram';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -17,75 +18,52 @@ export class TimelineComponent implements OnInit {
 
   @Input() margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 } ;
   @Input() dateFormat = '%Y %m';
-  @Input() xTicks: number;
-  @Input() yTicks: number;
+  @Input() xTicks = 5;
+  @Input() yTicks = 5;
 
-  timeLineEvents: Subject<any> = new BehaviorSubject<any>(undefined);
-  dateChangedEvent: Subject<any> = new Subject<any>();
-  counter = 0;
-  timelineNode = 'body';
-  context: any;
-  area: any;
-  dateInterval: { startdate: any, enddate: any} = null;
-  startdate: Date = null;
-  enddate: Date = null;
+  @Output() timeLineEvents: Subject<any> = new BehaviorSubject<any>(undefined);
+  @Output() dateChangedEvent: Subject<any> = new Subject<any>();
+  private timelineNode;
+  private context: any;
+  private area: any;
+  private histogram: any;
+  private dateInterval: { startdate: any, enddate: any} = null;
+  private startdate: Date = null;
+  private enddate: Date = null;
 
   constructor(private viewContainerRef: ViewContainerRef) { }
 
   ngOnInit() {
-    this.timelineNode = this.viewContainerRef.element.nativeElement;
-    const parseDate = d3.timeParse('%b %Y');
-    function type(d) {
-
-
-      d.date = parseDate(d.date);
-      d.price = +d.price;
-
-      return d;
-    }
-    const _this = this;
-    let data;
-    d3.csv('sp500.csv', type, function(error, datas) {
-      if (error) { throw error };
-        data = datas
-        _this.plot(data, null, null)
+      this.timelineNode = this.viewContainerRef.element.nativeElement;
+      const parseDate = d3.timeParse('%b %Y');
+      function type(d) {
+          d.date = parseDate(d.date);
+          d.price = +d.price;
+          return d;
+      }
+      const _this = this;
+      let data;
+      d3.csv('sp500.csv', type, function(error, datas) {
+          if (error) { throw error };
+          data = datas
+          _this.plotTimelineAsCurve(data, TypeHistogram.area)
       });
-
   }
 
   setMargin(top: number, right: number, bottom: number, left: number) {
-    this.margin = {top, right, bottom, left};
-    this.timeLineEvents.next(this.margin);
+      this.margin = {top, right, bottom, left};
+      this.timeLineEvents.next(this.margin);
   }
 
   setDateFormat(dateFormat: string) {
-    this.dateFormat = dateFormat;
-    this.timeLineEvents.next(this.margin);
+      this.dateFormat = dateFormat;
+      this.timeLineEvents.next(this.margin);
   }
 
-  public plotFake(data: Array<any>, startDate: any, endDate: any) {
-    const parseDate = d3.timeParse('%b %Y');
-    function type(d) {
-
-
-      d.date = parseDate(d.date);
-      d.price = +d.price;
-
-      return d;
-    }
-    const _this = this;
-    d3.csv('sp500.csv', type, function(error, datas) {
-      if (error) { throw error };
-        _this.plot(datas, null, null)
-      });
-  }
-
-  public plot(data: Array<any>, startDate: any, endDate: any) {
+  public plotTimelineAsCurve(data: Array<any>, typeHistogram: TypeHistogram) {
       if (this.context) {
           this.context.remove();
       }
-
-      // this.timelineNode = 'body'
       const dateChangedEvent = this.dateChangedEvent;
       const svg = d3.select(this.timelineNode).select('svg');
       const margin = this.margin;
@@ -96,52 +74,60 @@ export class TimelineComponent implements OnInit {
       x.domain(d3.extent(data, (d: any) =>  d.date));
       y.domain([0, d3.max(data, (d: any) => d.price)]);
       const parseDate = d3.timeParse(this.dateFormat);
-      const xAxis = d3.axisBottom(x).ticks(5);
-      const yAxis = d3.axisLeft(y).ticks(2);
 
-      this.area = d3.area()
-          .curve(d3.curveMonotoneX)
-          .x((d: any) =>  x(d.date))
-          .y0(height)
-          .y1((d: any) => y(d.price));
+      let xAxis = null;
+      if (typeHistogram === TypeHistogram.bars) {
+          xAxis = d3.axisBottom(x);
+          this.histogram = d3.histogram()
+              .value(function(d) { return d.date; })
+              .domain(x.domain())
+              .thresholds(x.ticks(data.length));
+      } else if (typeHistogram === TypeHistogram.area) {
+          xAxis = d3.axisBottom(x).ticks(this.xTicks);
+          this.area = d3.area()
+              .curve(d3.curveMonotoneX)
+              .x((d: any) =>  x(d.date))
+              .y0(height)
+              .y1((d: any) => y(d.price));
+      }
 
+      const yAxis = d3.axisLeft(y).ticks(this.yTicks);
       this.context = svg.append('g')
           .attr('class', 'context')
           .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
       this.context.append('g')
           .attr('class', 'axis')
           .attr('transform', 'translate(0,' + height + ')')
           .call(xAxis);
-
       this.context.append('g')
           .attr('class', 'axis')
           .attr('transform', 'translate(0,2)')
           .call(yAxis);
 
-      this.context.append('path')
-          .datum(data)
-          .attr('class', 'area')
-          .attr('d', this.area);
-
-      const selectionbrush = d3.brushX().extent([[0, height], [width, 0]]);
-          // .x(d3.scaleIdentity().domain([0, width]))
-          // .y(d3.scaleIdentity().domain([height, 0]));
+      if (typeHistogram === TypeHistogram.bars) {
+          const bins = this.histogram(data);
+          this.context.selectAll('rect')
+              .data(bins)
+              .enter().append('rect')
+              .attr('class', 'bar')
+              .attr('x', 1)
+              .attr('transform', function(d) {return 'translate(' + x(d.x0) + ',' + y(d[0].price) + ')'; })
+              .attr('width', function(d) { return x(d.x1) - x(d.x0) - 0.1 ; })
+              .attr('height', function(d) { return height - y(d[0].price); });
+      } else if (typeHistogram === TypeHistogram.area) {
+          this.context.append('path')
+              .datum(data)
+              .attr('class', 'area')
+              .attr('d', this.area);
+      }
 
       this.dateInterval = { startdate: null, enddate: null}
-      if (startDate !== null) {
-          this.startdate = startDate;
-          this.dateInterval.startdate = this.startdate;
-      } else {
-          this.startdate = data[0].date;
-          this.dateInterval.startdate = this.startdate;
-      }
-      if (endDate != null) {
-          this.enddate = endDate;
-      } else {
-          this.enddate = data[data.length - 1].date;
-          this.dateInterval.enddate = this.enddate;
-      }
+      this.startdate = data[0].date;
+      this.dateInterval.startdate = this.startdate;
+      this.enddate = data[data.length - 1].date;
+      this.dateInterval.enddate = this.enddate;
+
+      const selectionbrush = d3.brushX().extent([[0, height], [width, 0]]);
       d3.select(this.timelineNode).select('#start').classed('small', true);
       d3.select(this.timelineNode).select('#end').classed('small', true);
       d3.select(this.timelineNode).select('#tooltip').select('#start')
@@ -181,14 +167,5 @@ export class TimelineComponent implements OnInit {
       this.context.append('g')
           .attr('class', 'brush')
           .call(selectionbrush);
-
-      function type(d) {
-        // d.date = parseDate(d.date);
-        d.price = +d.price;
-        return d;
-      }
-
   }
-
-
 }

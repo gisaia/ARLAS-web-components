@@ -16,6 +16,6 @@ export class TimelineContributor {
     }
 
     plotData(data: Array<any>, startDate: any, endDate: any) {
-      this.timeline.plotFake(data, startDate, endDate);
+      // this.timeline.plotTimelineAsCurve(data, null, endDate);
     }
 }
