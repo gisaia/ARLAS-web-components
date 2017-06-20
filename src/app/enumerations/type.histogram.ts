@@ -1,1 +1,1 @@
-export enum TypeHistogram {area, bars}
+export enum HistogramType {histogram, timeline}

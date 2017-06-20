@@ -15,6 +15,6 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.timelineContributor = new TimelineContributor(this.timelineComponent);
-    this.timelineContributor.observeDataChangement(this.timelineComponent.dateChangedEvent);
+    this.timelineContributor.observeDataChangement(this.timelineComponent.valueChangedEvent);
   }
 }

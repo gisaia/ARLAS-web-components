@@ -10,7 +10,7 @@ export class TimelineContributor {
 
     observeDataChangement(obs: Observable<any>) {
       return obs.subscribe(value => {
-        console.log('BRUSHED ' + value.startdate + ' ' + value.enddate);
+        console.log('BRUSHED ' + value.startvalue + ' ' + value.endvalue);
         // set period of collaborative seach service
       });
     }

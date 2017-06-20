@@ -10,7 +10,8 @@
       "assets": [
         "assets",
         "favicon.ico",
-        "sp500.csv"
+        "sp500.csv",
+        "sp501.csv"
       ],
       "index": "index.html",
       "main": "main.ts",
