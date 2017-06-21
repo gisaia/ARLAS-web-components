@@ -11,12 +11,12 @@ import * as d3 from 'd3';
 
 @Injectable()
 @Component({
-  selector: 'gisaia-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.css'],
+  selector: 'gisaia-histogram',
+  templateUrl: './histogram.component.html',
+  styleUrls: ['./histogram.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class TimelineComponent implements OnInit {
+export class HistogramComponent implements OnInit {
 
 
   @Input() margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 } ;
@@ -66,7 +66,7 @@ export class TimelineComponent implements OnInit {
           this.context.remove();
       }
       const valueChangedEvent = this.valueChangedEvent;
-      const svg = d3.select(this.histogramNode).select('svg');
+      const svg = d3.select(this.histogramNode).select('#svgix');
       const margin = this.margin;
       const width = +svg.attr('width') - margin.left - margin.right;
       const height = +svg.attr('height') - margin.top - margin.bottom;
@@ -82,7 +82,6 @@ export class TimelineComponent implements OnInit {
       x.domain(d3.extent(data, (d: any) =>  d.key));
       y.domain([0, d3.max(data, (d: any) => d.value)]);
       const parseDate = d3.timeParse(this.dateFormat);
-
       const xAxis = d3.axisBottom(x).ticks(this.xTicks);
       const yAxis = d3.axisLeft(y).ticks(this.yTicks);
 
@@ -150,7 +149,6 @@ export class TimelineComponent implements OnInit {
           this.endvalue = selection.map(x.invert, x)[1];
           this.valueInterval.startvalue = this.startvalue;
           this.valueInterval.endvalue = this.endvalue;
-
           valueChangedEvent.next(this.valueInterval);
           d3.select(this.histogramNode).select('#tooltip').select('#start')
               .text(this.toString(selection.map(x.invert, x)[0]));
