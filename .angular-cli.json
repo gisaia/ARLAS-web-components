@@ -11,7 +11,9 @@
         "assets",
         "favicon.ico",
         "sp500.csv",
-        "sp501.csv"
+        "sp501.csv",
+        "sp502.csv",
+        "sp503.csv"
       ],
       "index": "index.html",
       "main": "main.ts",
@@ -19,7 +21,7 @@
       "test": "test.ts",
       "tsconfig": "tsconfig.app.json",
       "testTsconfig": "tsconfig.spec.json",
-      "prefix": "gisaia",
+      "prefix": "arlas",
       "styles": [
         "styles.css"
       ],
