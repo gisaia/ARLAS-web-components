@@ -4,13 +4,13 @@
 .timeline_title{
     font-family: "Roboto", "Helvetica Neue", sans-serif !important;
     font-size: 1.0em;
-    width: 100%;
+    width: 30%;
     color: dodgerblue;
     opacity: 1;
     text-align: center;
     position: absolute;
-    bottom:0;
-    left:15px;
+    top:84%;
+    left:39%;
     z-index: 8000 !important;
 }
 
@@ -63,5 +63,19 @@ text {
     stroke: darkslategrey;
     stroke-width: 0.5px;
     stroke-opacity: 1;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: left;
+  width: 120px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 4px;
+  pointer-events: none;
+  color: darkslategrey;
 }
 

@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'gisaia-root',
+  selector: 'arlas-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

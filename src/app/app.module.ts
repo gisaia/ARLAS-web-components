@@ -7,7 +7,7 @@ import { HistogramComponent } from './histogram/histogram.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HistogramComponent
+    HistogramComponent,
   ],
   imports: [
     BrowserModule
