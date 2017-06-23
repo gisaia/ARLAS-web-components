@@ -1,8 +1,12 @@
-<div class="timeline_div">
+<div class="timeline_div" [ngClass]="startEndValuesColor">
     <div id="timeline_title_id" class="timeline_title"><span>{{chartTitle}}</span></div>
     <svg id="svgix" class="svg_area" width="500" height="100"></svg>
     <div id="tooltip" width="500">
-        <span id="start">{{startValueString}}</span>
-        <span id="end">{{endValueString}}</span>
+        <span id="start" >{{startValue}}</span>
+        <span id="end" [style.color]="startEndValuesColor">{{endValue}}</span>
+    </div>
+    <div *ngIf="showTooltip" class="histogram__tooltip" [style.left]="tooltipVerticalPosition" [style.top]="tooltipHorizontalPosition">
+      <p>{{tooltipXContent}}</p>
+      <p>{{tooltipYContent}}</p>
     </div>
 </div>
