@@ -1,15 +1,11 @@
-import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, Injectable } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, EventEmitter } from '@angular/core';
 
-import { MarginModel } from '../models/margin.model';
-import { ChartType } from '../enumerations/type.chart';
-import { HistogramType } from '../enumerations/type.histogram';
-
+import { areaChart, barsChart, timelineType, histogramType, MarginModel } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as d3 from 'd3';
 
-@Injectable()
 @Component({
   selector: 'arlas-histogram',
   templateUrl: './histogram.component.html',
@@ -21,34 +17,35 @@ export class HistogramComponent implements OnInit {
   private histogramNode: any;
   private histogramTitle: string;
   private context: any;
-  private margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 };
+  margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 };
   private interval = { startvalue: null, endvalue: null};
   startValue: string = null;
   endValue: string = null;
   showTooltip = false;
+  showTitle = true;
   tooltipHorizontalPosition = '0';
   tooltipVerticalPosition = '0';
   tooltipXContent: string;
   tooltipYContent: string;
 
-
-
   @Input() xTicks = 5;
   @Input() yTicks = 5;
-  @Input() chartType = ChartType.bars;
+  @Input() chartType = areaChart;
   @Input() chartTitle = '';
-  @Input() histogramType = HistogramType.timeline;
-  @Input() startEndValuesColor = 'deeppink';
-  @Input() startEndValuesBackgroundColor = 'rgba(220, 220, 220, 0)';
+  @Input() chartWidth = 500;
+  @Input() chartHeight = 100;
+  @Input() histogramType = timelineType;
+  @Input() customizedCssClass = '';
   @Input() dataUnit = '';
+  @Input() chartData: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output() valueChangedEvent: Subject<any> = new Subject<any>();
+  @Output() valueChangedEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private viewContainerRef: ViewContainerRef) {}
 
 
   showTimelineData() {
-      this.histogramType = HistogramType.timeline;
+      this.histogramType = timelineType;
       const parseDate = d3.timeParse('%b %Y');
       function type(d) {
           d.key = parseDate(d.key);
@@ -65,8 +62,7 @@ export class HistogramComponent implements OnInit {
   }
 
   showHistogramData() {
-      this.histogramType = HistogramType.histogram;
-
+      this.histogramType = histogramType;
       const parseDate = d3.timeParse('%b %Y');
       function type(d) {
           d.value = +d.value;
@@ -83,13 +79,16 @@ export class HistogramComponent implements OnInit {
 
   ngOnInit() {
       this.histogramNode = this.viewContainerRef.element.nativeElement;
-      this.applyCssStyle();
 
-      if (this.histogramType === HistogramType.timeline) {
+      if (this.histogramType === timelineType) {
         this.showTimelineData();
-      } else if (this.histogramType === HistogramType.histogram) {
+      } else if (this.histogramType === histogramType) {
         this.showHistogramData();
       }
+  }
+
+  public updateChartData() {
+    this.chartData.subscribe(value => this.plotHistogram(value));
   }
 
   public plotHistogram(data: Array<any>): void {
@@ -98,7 +97,7 @@ export class HistogramComponent implements OnInit {
           this.context.remove();
       }
 
-      if (this.histogramType === HistogramType.timeline) {
+      if (this.histogramType === timelineType) {
         // this.parseDataKeyToDate(data);
       }
       this.startValue = this.toString(data[0].key);
@@ -125,16 +124,16 @@ export class HistogramComponent implements OnInit {
   private initializeChartDimensions(): any {
       const svg = d3.select(this.histogramNode).select('svg');
       const margin = this.margin;
-      const width = +svg.attr('width') - this.margin.left - this.margin.right;
-      const height = +svg.attr('height') - this.margin.top - this.margin.bottom;
+      const width = +this.chartWidth - this.margin.left - this.margin.right;
+      const height = +this.chartHeight - this.margin.top - this.margin.bottom;
       return {svg, margin, width, height}
   }
 
   private createChartAxes(chartDimensions: any, data: any): any {
       let xDomain;
-      if (this.histogramType === HistogramType.timeline) {
+      if (this.histogramType === timelineType) {
           xDomain = d3.scaleTime().range([0, chartDimensions.width]);
-      } else if (this.histogramType === HistogramType.histogram) {
+      } else if (this.histogramType === histogramType) {
           xDomain = d3.scaleLinear().range([0, chartDimensions.width]);
       }
       const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
@@ -160,9 +159,9 @@ export class HistogramComponent implements OnInit {
   }
 
   private plotHistogramData(chartDimensions: any, chartAxes: any, data: any): void {
-      if (this.chartType === ChartType.bars) {
+      if (this.chartType === barsChart) {
           this.plotHistogramAsBars(chartDimensions, chartAxes, data);
-      } else if (this.chartType === ChartType.area) {
+      } else if (this.chartType === areaChart) {
           this.plotHistogramAsArea(chartDimensions, chartAxes, data);
       }
   }
@@ -176,7 +175,7 @@ export class HistogramComponent implements OnInit {
       this.context.selectAll('rect')
           .data(bins)
           .enter().append('rect')
-          .attr('class', 'bar')
+          .attr('class', 'histogram__chart--bar')
           .attr('x', 1)
           .attr('transform', function(d) {return 'translate(' + chartAxes.xDomain(d.x0) + ',' + chartAxes.yDomain(d[0].value) + ')'; })
           .attr('width', function(d) { return chartAxes.xDomain(d.x1) - chartAxes.xDomain(d.x0) - 0.1 ; })
@@ -191,7 +190,7 @@ export class HistogramComponent implements OnInit {
           .y1((d: any) => chartAxes.yDomain(d.value));
       this.context.append('path')
           .datum(data)
-          .attr('class', 'area')
+          .attr('class', 'histogram__chart--area')
           .attr('d', area);
   }
 
@@ -204,7 +203,7 @@ export class HistogramComponent implements OnInit {
           .attr('r', 2)
           .attr('cx', function(d) { return chartDimensions.margin.left + chartAxes.xDomain(d.key); })
           .attr('cy', function(d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
-          .style('opacity', 0)
+          .attr('class', 'histogram__tooltip__circle')
           .on('mouseover', function(d) {
               _thisComponent.showTooltip = true;
               _thisComponent.tooltipXContent = 'x: ' + _thisComponent.toString(d.key);
@@ -222,8 +221,7 @@ export class HistogramComponent implements OnInit {
           const selection = d3.event.selection;
           this.startValue = 'From ' + this.toString(selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0]);
           this.endValue = ' to ' + this.toString(selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1]);
-          d3.select(this.histogramNode).select('#timeline_title_id')
-              .style('display', 'none');
+          this.showTitle = false;
       });
   }
 
@@ -235,9 +233,9 @@ export class HistogramComponent implements OnInit {
           this.interval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.startValue = this.toString(this.interval.startvalue);
           this.endValue = this.toString(this.interval.endvalue);
-          valueChangedEvent.next(this.interval);
-          d3.select(this.histogramNode).select('#timeline_title_id')
-              .style('display', 'inline');
+          valueChangedEvent.emit(this.interval);
+          this.showTitle = true;
+
       });
   }
 
@@ -249,19 +247,6 @@ export class HistogramComponent implements OnInit {
     } else {
       return value;
     }
-  }
-
-  private applyCssStyle(): void {
-      // #start #end color
-      /*d3.select(this.histogramNode).select('#tooltip').select('#start')
-          .style('color', this.startEndValuesColor);
-      d3.select(this.histogramNode).select('#tooltip').select('#end')
-          .style('color', this.startEndValuesColor);*/
-      // #start #end background color
-      d3.select(this.histogramNode).select('#tooltip').select('#start')
-          .style('background', this.startEndValuesBackgroundColor);
-      d3.select(this.histogramNode).select('#tooltip').select('#end')
-          .style('background', this.startEndValuesBackgroundColor);
   }
 
   private parseDataKeyToDate(data): void {
@@ -280,9 +265,5 @@ export class HistogramComponent implements OnInit {
            multiplier = Math.pow(10, precision * 10 || 0);
         }
         return Math.round(value * multiplier) / multiplier;
-  }
-
-  setMargin(top: number, right: number, bottom: number, left: number): void {
-      this.margin = {top, right, bottom, left};
   }
 }

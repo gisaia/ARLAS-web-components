@@ -1,11 +1,15 @@
-<div class="histogram" [ngClass]="startEndValuesColor">
-    <div id="timeline_title_id" class="histogram__title"><span>{{chartTitle}}</span></div>
-    <svg id="svgix" class="histogram__chart" width="300" height="100"></svg>
-    <div class="histogram__brushvalues" width="500">
-        <span class="histogram__brushvalues__start" >{{startValue}}</span>
-        <span [ngClass]="'histogram__brushvalues__end'">{{endValue}}</span>
+<div class="histogram" [ngClass]="customizedCssClass">
+    <svg id="svgix" class="histogram__chart" [style.width.px]="chartWidth" [style.height.px]="chartHeight"></svg>
+    <div class="histogram__description" [style.width.px]="chartWidth-margin.left-margin.right">
+        <div class="histogram__description--display">
+          <div class="histogram__description__startvalue"><span class="histogram__description__startvalue--background">{{startValue}}</span></div>
+          <div class="histogram__description__title"><span *ngIf="showTitle">{{chartTitle}}</span></div>
+          <div class="histogram__description__endvalue" ><span class="histogram__description__endvalue--background">{{endValue}}</span></div>
+        </div>
     </div>
-    <div *ngIf="showTooltip" class="histogram__tooltip" [style.left]="tooltipVerticalPosition" [style.top]="tooltipHorizontalPosition">
-          {{tooltipXContent}}<br/>{{tooltipYContent}}
+    <div class="histogram__tooltip" *ngIf="showTooltip" [style.left]="tooltipVerticalPosition" [style.top]="tooltipHorizontalPosition">
+        {{tooltipXContent}}<br/>{{tooltipYContent}}
+    </div>
+    <div>
     </div>
 </div>

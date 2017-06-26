@@ -1,55 +1,56 @@
 .histogram{
     background: rgba(0,0,255,0);
-}
-.histogram__title{
-    font-family: "Roboto", "Helvetica Neue", sans-serif !important;
-    font-size: 1.0em;
-    width: 30%;
-    color: dodgerblue;
-    opacity: 1;
-    text-align: center;
-    position: absolute;
-    top:84%;
-    left:39%;
-    z-index: 8000 !important;
+
 }
 
-.histogram__brushvalues {
-    margin-left: 60px;
-    margin-right: 20px;
-}
-
-text {
+.histogram text {
     font-size: 0.8em;
     fill-opacity: 1;
-    fill: darkslategrey;
+    fill: black;
 }
 
-.histogram__brushvalues span {
-    font-family: "Roboto", "Helvetica Neue", sans-serif !important;
+.histogram__description {
+    margin-left: 60px;
+    margin-right: 20px;
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 0.9em;
     line-height: 1.3;
     color: deeppink;
     opacity: 1;
-    z-index: 10000 !important;
+    z-index: 10000;
+}
+
+.histogram__description--display{
+    display: flex;
+}
+
+.histogram__description__title{
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 1.0em;
+    flex: 1 1 100%;
+    max-width: 40%;
+    color: dodgerblue;
+    opacity: 1;
+    text-align: center;
+    z-index: 8000;
+}
+
+.histogram__description__startvalue {
+    flex: 1 1 100%;
+    max-width: 30%;
+}
+
+.histogram__description__endvalue {
+    flex: 1 1 100%;
+    max-width: 30%;
+    text-align: right;
+}
+
+.histogram__description__startvalue--background, .histogram__description__endvalue--background {
     background: rgba(220, 220, 220, 0.8);
 }
 
-#start.small {
-    font-size: 0.9em;
-}
-
-#end.small {
-    font-size: 0.9em;
-}
-
-.histogram__brushvalues__end {
-    font-family: "Roboto", "Helvetica Neue", sans-serif !important;
-    float: right;
-    font-size: 0.9em;
-}
-
-.area {
+.histogram__chart--area{
     fill: dimgrey;
     fill-opacity: 1;
     stroke: darkslategrey;
@@ -57,7 +58,7 @@ text {
     stroke-opacity: 1;
 }
 
-.bar {
+.histogram__chart--bar {
     fill: dimgrey;
     fill-opacity: 1;
     stroke: darkslategrey;
@@ -80,8 +81,10 @@ text {
   z-index: 20000;
 }
 
-.histogram__tooltip p {
-  margin: 0
+.histogram__tooltip__circle{
+  fill: darkslategrey;
+  opacity: 0;
+  border-radius: 5px;
 }
 
 
