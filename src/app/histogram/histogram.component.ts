@@ -22,7 +22,7 @@ export class HistogramComponent implements OnInit {
   private histogramTitle: string;
   private context: any;
   private margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 };
-  private valueInterval = { startvalue: null, endvalue: null};
+  private interval = { startvalue: null, endvalue: null};
   startValue: string = null;
   endValue: string = null;
   showTooltip = false;
@@ -102,9 +102,9 @@ export class HistogramComponent implements OnInit {
         // this.parseDataKeyToDate(data);
       }
       this.startValue = this.toString(data[0].key);
-      this.valueInterval.startvalue = data[0].key;
+      this.interval.startvalue = data[0].key;
       this.endValue = this.toString(data[data.length - 1].key);
-      this.valueInterval.endvalue = data[data.length - 1].key;
+      this.interval.endvalue = data[data.length - 1].key;
 
       const chartDimensions = this.initializeChartDimensions();
       const chartAxes = this.createChartAxes(chartDimensions, data);
@@ -112,14 +112,14 @@ export class HistogramComponent implements OnInit {
       this.plotHistogramData(chartDimensions, chartAxes, data);
       this.showTooltips(chartDimensions, chartAxes, data);
 
-      const selectionbrush = d3.brushX().extent([[0, chartDimensions.height], [chartDimensions.width, 0]]);
-      this.handleOnBrushingEvent(selectionbrush, chartAxes);
-      this.handleEndOfBrushingEvent(selectionbrush, chartAxes);
-      selectionbrush.extent([[Math.max(0, chartAxes.xDomain(this.valueInterval.startvalue)), 0],
-                             [Math.min(chartAxes.xDomain(this.valueInterval.endvalue), chartDimensions.width), chartDimensions.height]]);
+      const selectionBrush = d3.brushX().extent([[0, chartDimensions.height], [chartDimensions.width, 0]]);
+      this.handleOnBrushingEvent(selectionBrush, chartAxes);
+      this.handleEndOfBrushingEvent(selectionBrush, chartAxes);
+      selectionBrush.extent([[Math.max(0, chartAxes.xDomain(this.interval.startvalue)), 0],
+                             [Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width), chartDimensions.height]]);
       this.context.append('g')
           .attr('class', 'brush')
-          .call(selectionbrush);
+          .call(selectionBrush);
   }
 
   private initializeChartDimensions(): any {
@@ -134,7 +134,6 @@ export class HistogramComponent implements OnInit {
       let xDomain;
       if (this.histogramType === HistogramType.timeline) {
           xDomain = d3.scaleTime().range([0, chartDimensions.width]);
-        // this.parseDataKeyToDate(data);
       } else if (this.histogramType === HistogramType.histogram) {
           xDomain = d3.scaleLinear().range([0, chartDimensions.width]);
       }
@@ -232,11 +231,11 @@ export class HistogramComponent implements OnInit {
       const valueChangedEvent = this.valueChangedEvent;
       selectionbrush.on('end', (datum: any, index: number) => {
           const selection = d3.event.selection;
-          this.valueInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-          this.valueInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-          this.startValue = this.toString(this.valueInterval.startvalue);
-          this.endValue = this.toString(this.valueInterval.endvalue);
-          valueChangedEvent.next(this.valueInterval);
+          this.interval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+          this.interval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
+          this.startValue = this.toString(this.interval.startvalue);
+          this.endValue = this.toString(this.interval.endvalue);
+          valueChangedEvent.next(this.interval);
           d3.select(this.histogramNode).select('#timeline_title_id')
               .style('display', 'inline');
       });
