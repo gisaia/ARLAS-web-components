@@ -9,11 +9,7 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "favicon.ico",
-        "sp500.csv",
-        "sp501.csv",
-        "sp502.csv",
-        "sp503.csv"
+        "favicon.ico"
       ],
       "index": "index.html",
       "main": "main.ts",

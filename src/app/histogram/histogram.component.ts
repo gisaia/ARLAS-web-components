@@ -54,7 +54,7 @@ export class HistogramComponent implements OnInit {
       }
       const _this = this;
       let data;
-      d3.csv('sp502.csv', type, function(error, datas) {
+      d3.csv('assets/sp502.csv', type, function(error, datas) {
           if (error) { throw error };
           data = datas
           _this.plotHistogram(data)
@@ -70,7 +70,7 @@ export class HistogramComponent implements OnInit {
       }
       const _this = this;
       let data;
-      d3.csv('sp503.csv', type, function(error, datas) {
+      d3.csv('assets/sp503.csv', type, function(error, datas) {
           if (error) { throw error };
           data = datas
           _this.plotHistogram(data)
