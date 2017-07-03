@@ -1,7 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/histogram",
+    "outDir": "./dist/",
     "baseUrl": "src",
     "sourceMap": true,
     "declaration": true,
@@ -27,10 +27,10 @@
     ]
   },
   "files": [
-    "src/components/histogram/index.ts"
+    "src/components/index.ts"
   ],
   "include": [
-    "src/components/histogram/**/*"
+    "src/components/**/*"
   ],
   "exclude": [
     "node_modules",
@@ -40,6 +40,7 @@
     "e2e/"
   ],
   "angularCompilerOptions": {
+    "genDir": "dist",
     "strictMetadataEmit": true
   }
 }

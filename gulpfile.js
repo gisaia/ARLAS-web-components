@@ -7,21 +7,21 @@ const inlineResources = require('./tools/inline-resources');
 const PROJECT_ROOT = process.cwd();
 
 function copyHtml() {
-    gulp.src('src/components/histogram/*.html')
-        .pipe(gulp.dest('./dist/histogram')).on('end', copyAssets);
+    gulp.src('src/components/**/*.html')
+        .pipe(gulp.dest('./dist')).on('end', copyScss);
 }
 
 function copyAssets () {
     gulp.src('./src/assets/**/*')
-        .pipe(gulp.dest('./dist/histogram/assets')).on('end', copyScss);
+        .pipe(gulp.dest('./dist')).on('end', copyScss);
 }
 function copyScss () {
-    gulp.src('./src/components/histogram/*.{scss,css}')
-        .pipe(gulp.dest('./dist/histogram')).on('end', inlineResource);
+    gulp.src('./src/components/**/*.{scss,css}')
+        .pipe(gulp.dest('./dist')).on('end', inlineResource);
 }
 
 function inlineResource() {
-    inlineResources('./dist/histogram');
+    inlineResources('./dist/**');
 }
 
 function cleanDistNodeModules(){
