@@ -1,0 +1,15 @@
+<div class="histogram" [ngClass]="customizedCssClass">
+    <svg id="svgix" class="histogram__chart" [style.width.px]="chartWidth" [style.height.px]="chartHeight"></svg>
+    <div class="histogram__description" [style.width.px]="chartWidth-margin.left-margin.right">
+        <div class="histogram__description--display">
+          <div class="histogram__description__startvalue"><span class="histogram__description__startvalue--background">{{startValue}}</span></div>
+          <div class="histogram__description__title"><span *ngIf="showTitle">{{chartTitle}}</span></div>
+          <div class="histogram__description__endvalue" ><span class="histogram__description__endvalue--background">{{endValue}}</span></div>
+        </div>
+    </div>
+    <div class="histogram__tooltip" *ngIf="showTooltip" [style.left]="tooltipVerticalPosition" [style.top]="tooltipHorizontalPosition">
+        {{tooltipXContent}}<br/>{{tooltipYContent}}
+    </div>
+    <div>
+    </div>
+</div>
