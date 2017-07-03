@@ -1,4 +1,11 @@
-#demo-histogram{
+#area_timeline{
+    position:absolute;
+    top:50px;
+    right:50px;
+    z-index: 1000;
+}
+
+#bars_timeline{
     position:absolute;
     top:10px;
     left:50px;

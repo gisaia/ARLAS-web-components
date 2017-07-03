@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+.histogramright .histogram__description__startvalue {
+  font-size: 0.8em;
+}
+
+.histogramright .histogram__description__endvalue {
+  font-size: 0.8em;
+}
+
+.histogramright .histogram__description__title {
+  font-size: 0.8em;
+}
+
+.histogramleft .histogram__description__startvalue {
+  font-size: 0.6em;
+}
+
+.histogramleft .histogram__description__endvalue {
+  font-size: 0.6em;
+}
+
+.histogramleft .histogram__description__title {
+  font-size: 0.6em;
+}
