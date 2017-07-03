@@ -27,6 +27,7 @@ export class HistogramComponent implements OnInit {
   tooltipVerticalPosition = '0';
   tooltipXContent: string;
   tooltipYContent: string;
+  isDataAvailable = false;
 
   @Input() xTicks = 5;
   @Input() yTicks = 5;
@@ -43,48 +44,9 @@ export class HistogramComponent implements OnInit {
 
   constructor(private viewContainerRef: ViewContainerRef) {}
 
-
-  showTimelineData() {
-      this.histogramType = timelineType;
-      const parseDate = d3.timeParse('%b %Y');
-      function type(d) {
-          d.key = parseDate(d.key);
-          d.value = +d.value;
-          return d;
-      }
-      const _this = this;
-      let data;
-      d3.csv('assets/sp502.csv', type, function(error, datas) {
-          if (error) { throw error };
-          data = datas
-          _this.plotHistogram(data)
-      });
-  }
-
-  showHistogramData() {
-      this.histogramType = histogramType;
-      const parseDate = d3.timeParse('%b %Y');
-      function type(d) {
-          d.value = +d.value;
-          return d;
-      }
-      const _this = this;
-      let data;
-      d3.csv('assets/sp503.csv', type, function(error, datas) {
-          if (error) { throw error };
-          data = datas
-          _this.plotHistogram(data)
-      });
-  }
-
   ngOnInit() {
       this.histogramNode = this.viewContainerRef.element.nativeElement;
-
-      if (this.histogramType === timelineType) {
-        this.showTimelineData();
-      } else if (this.histogramType === histogramType) {
-        this.showHistogramData();
-      }
+      this.plotHistogram(null);
   }
 
   public updateChartData() {
@@ -96,29 +58,34 @@ export class HistogramComponent implements OnInit {
       if (this.context) {
           this.context.remove();
       }
+      if (data !== null && Array.isArray(data) && data.length > 0) {
+          if (this.histogramType === timelineType) {
+            this.parseDataKeyToDate(data);
+          }
+          this.startValue = this.toString(data[0].key);
+          this.interval.startvalue = data[0].key;
+          this.endValue = this.toString(data[data.length - 1].key);
+          this.interval.endvalue = data[data.length - 1].key;
 
-      if (this.histogramType === timelineType) {
-        // this.parseDataKeyToDate(data);
+          const chartDimensions = this.initializeChartDimensions();
+          const chartAxes = this.createChartAxes(chartDimensions, data);
+          this.drawChartAxes(chartDimensions, chartAxes);
+          this.plotHistogramData(chartDimensions, chartAxes, data);
+          this.showTooltips(chartDimensions, chartAxes, data);
+
+          const selectionBrush = d3.brushX().extent([[0, chartDimensions.height], [chartDimensions.width, 0]]);
+          this.handleOnBrushingEvent(selectionBrush, chartAxes);
+          this.handleEndOfBrushingEvent(selectionBrush, chartAxes);
+          selectionBrush.extent([[Math.max(0, chartAxes.xDomain(this.interval.startvalue)), 0],
+                                [Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width), chartDimensions.height]]);
+          this.context.append('g')
+              .attr('class', 'brush')
+              .call(selectionBrush);
+      } else {
+          const chartDimensions = this.initializeChartDimensions();
+          const chartAxes = this.createChartAxes(chartDimensions, data);
+          this.drawChartAxes(chartDimensions, chartAxes);
       }
-      this.startValue = this.toString(data[0].key);
-      this.interval.startvalue = data[0].key;
-      this.endValue = this.toString(data[data.length - 1].key);
-      this.interval.endvalue = data[data.length - 1].key;
-
-      const chartDimensions = this.initializeChartDimensions();
-      const chartAxes = this.createChartAxes(chartDimensions, data);
-      this.drawChartAxes(chartDimensions, chartAxes);
-      this.plotHistogramData(chartDimensions, chartAxes, data);
-      this.showTooltips(chartDimensions, chartAxes, data);
-
-      const selectionBrush = d3.brushX().extent([[0, chartDimensions.height], [chartDimensions.width, 0]]);
-      this.handleOnBrushingEvent(selectionBrush, chartAxes);
-      this.handleEndOfBrushingEvent(selectionBrush, chartAxes);
-      selectionBrush.extent([[Math.max(0, chartAxes.xDomain(this.interval.startvalue)), 0],
-                             [Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width), chartDimensions.height]]);
-      this.context.append('g')
-          .attr('class', 'brush')
-          .call(selectionBrush);
   }
 
   private initializeChartDimensions(): any {
@@ -137,6 +104,10 @@ export class HistogramComponent implements OnInit {
           xDomain = d3.scaleLinear().range([0, chartDimensions.width]);
       }
       const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
+      if (data == null || !Array.isArray(data) || data.length <= 0) {
+        // if no data is available, we plot an empty histogram. So to give extent to x and y axes, 'data' takes histogram witdh and height
+        data = [{key: 0 , value: 0}, {key: chartDimensions.width, value: chartDimensions.height }]
+      }
       xDomain.domain(d3.extent(data, (d: any) =>  d.key));
       yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
       const xAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
@@ -250,11 +221,9 @@ export class HistogramComponent implements OnInit {
   }
 
   private parseDataKeyToDate(data): void {
-    if (data !== null && Array.isArray(data) && data.length > 0) {
-        data.forEach(d => {
-            d.key = new Date(d.key);
-        });
-    }
+      data.forEach(d => {
+          d.key = new Date(d.key);
+      });
   }
 
   private round(value, precision): number {
