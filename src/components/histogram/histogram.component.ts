@@ -40,17 +40,14 @@ export class HistogramComponent implements OnInit {
   @Input() dataUnit = '';
   @Input() chartData: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output() valueChangedEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() valuesChangedEvent: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(private viewContainerRef: ViewContainerRef) {}
 
   ngOnInit() {
       this.histogramNode = this.viewContainerRef.element.nativeElement;
       this.plotHistogram(null);
-  }
-
-  public updateChartData() {
-    this.chartData.subscribe(value => this.plotHistogram(value));
+      this.chartData.subscribe(value => this.plotHistogram(value));
   }
 
   public plotHistogram(data: Array<any>): void {
@@ -197,7 +194,7 @@ export class HistogramComponent implements OnInit {
   }
 
   private handleEndOfBrushingEvent(selectionbrush: any, chartAxes: any): void {
-      const valueChangedEvent = this.valueChangedEvent;
+      const valueChangedEvent = this.valuesChangedEvent;
       selectionbrush.on('end', (datum: any, index: number) => {
           const selection = d3.event.selection;
           this.interval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
