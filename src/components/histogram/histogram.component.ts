@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef } from '@angular/core';
 
 import { areaChart, barsChart, timelineType, histogramType, MarginModel } from './histogram.utils';
 
@@ -38,9 +38,9 @@ export class HistogramComponent implements OnInit {
   @Input() histogramType = timelineType;
   @Input() customizedCssClass = '';
   @Input() dataUnit = '';
-  @Input() chartData: EventEmitter<any> = new EventEmitter<any>();
+  @Input() chartData: Subject<any> = new Subject<any>();
 
-  @Output() valuesChangedEvent: EventEmitter<any> = new EventEmitter<any>();
+  @Output() valuesChangedEvent: Subject<any> = new Subject<any>();
 
   constructor(private viewContainerRef: ViewContainerRef) {}
 
@@ -201,7 +201,7 @@ export class HistogramComponent implements OnInit {
           this.interval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.startValue = this.toString(this.interval.startvalue);
           this.endValue = this.toString(this.interval.endvalue);
-          valueChangedEvent.emit(this.interval);
+          valueChangedEvent.next(this.interval);
           this.showTitle = true;
 
       });
@@ -219,7 +219,7 @@ export class HistogramComponent implements OnInit {
 
   private parseDataKeyToDate(data): void {
       data.forEach(d => {
-          d.key = new Date(d.key);
+          d.key = new Date(d.key * 1000);
       });
   }
 
