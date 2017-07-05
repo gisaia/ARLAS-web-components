@@ -197,12 +197,14 @@ export class HistogramComponent implements OnInit {
       const valueChangedEvent = this.valuesChangedEvent;
       selectionbrush.on('end', (datum: any, index: number) => {
           const selection = d3.event.selection;
-          this.interval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-          this.interval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-          this.startValue = this.toString(this.interval.startvalue);
-          this.endValue = this.toString(this.interval.endvalue);
-          valueChangedEvent.next(this.interval);
-          this.showTitle = true;
+          if (selection !== null) {
+              this.interval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+              this.interval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
+              this.startValue = this.toString(this.interval.startvalue);
+              this.endValue = this.toString(this.interval.endvalue);
+              valueChangedEvent.next(this.interval);
+              this.showTitle = true;
+          }
 
       });
   }
