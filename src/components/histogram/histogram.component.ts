@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef } from '@angular/core';
 
 import { areaChart, barsChart, timelineType, histogramType, MarginModel } from './histogram.utils';
 
@@ -219,7 +219,7 @@ export class HistogramComponent implements OnInit {
 
   private parseDataKeyToDate(data): void {
       data.forEach(d => {
-          d.key = new Date(d.key);
+          d.key = new Date(d.key * 1000);
       });
   }
 
