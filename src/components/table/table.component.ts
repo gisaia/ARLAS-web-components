@@ -1,42 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: 'arlas-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css']
 })
+
 export class TableComponent implements OnInit {
-  settings = {
-    columns: {
-      id: {
-        title: 'ID'
-      },
-      name: {
-        title: 'Full Name'
-      },
-      username: {
-        title: 'User Name'
-      },
-      email: {
-        title: 'Email'
-      }
-    }
-  };
-  
-  data = [
-    {
-      id: 1,
-      name: "Leanne Graham",
-      username: "Bret",
-      email: "Sincere@april.biz"
-    },
-    {
-      id: 2,
-      name: "Nicholas DuBuque",
-      username: "Nicholas.Stanton",
-      email: "Rey.Padberg@rosamond.biz"
-    }
-  ];
+  @Input() settings;
+  @Input() dataSubject: Subject<Object> = new Subject<Object>();
+  @Input() source: Object;
+  @Output() valuesChangedEvent: Subject<any> = new Subject<any>();
 
   constructor() { }
 
