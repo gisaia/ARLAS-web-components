@@ -1,0 +1,1 @@
+{"version":3,"file":"view-cell.js","sourceRoot":"","sources":["../../../../../src/ng2-smart-table/components/cell/cell-view-mode/view-cell.ts"],"names":[],"mappings":"","sourcesContent":["export interface ViewCell {\r\n  value: string | number;\r\n  rowData: any;\r\n}\r\n"]}

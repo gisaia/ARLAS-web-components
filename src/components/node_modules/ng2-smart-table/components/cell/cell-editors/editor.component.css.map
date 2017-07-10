@@ -1,0 +1,1 @@
+{"version":3,"sources":["components/cell/cell-editors/editor.component.scss"],"names":[],"mappings":"AAAA,YAAA,eAGI,MAAO,KACP,YAAa,OACb,QAAS,OAAA","file":"editor.component.css","sourcesContent":[":host {\r\n  input,\r\n  textarea {\r\n    width: 100%;\r\n    line-height: normal;\r\n    padding: .375em .75em;\r\n  }\r\n}\r\n"]}
