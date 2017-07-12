@@ -1,44 +1,102 @@
-# ARLAS UI Components
+# ARLAS web components :
 
-Generic components to use in your project to :
+## About :
+ARLAS-web-components is an Angular library that provides a set of data analytics components :
 
-- Display a big amount of data in a map : **MapComponent**.
-- Plot your data in customizable charts : **HistogramComponent**.
+- **MapComponent**.
+- **HistogramComponent**.
+- **TableComponent**.
 
-# How to use ?
+## Prerequisites :
 
+[Node](https://nodejs.org/en/) version 8.0.0
+
+```
+$ sudo npm install n -g
+$ sudo n 8.0.0
+```
+[npm](https://github.com/npm/npm) version 5.2.0
+````
+$ npm install npm@5.2.0 -g
+````
+[Angular CLI](https://github.com/angular/angular-cli) version 1.2.0.
+```
+$ npm install -g @angular/cli@1.2.0
+```
+[webpack](https://webpack.js.org/) version 2.4.1
+```
+$ npm install -g webpack@2.4.1
+```
+[Gulp](http://gulpjs.com/) version 3.9.1
+```
+$ npm install -g gulp@3.9.1
+```
+## Installing :
+
+To install this library in your npm Angular web app project add the dependency in your package.json :
 ```
 $ npm install arlas-web-component --save
 ```
+## Build :
+Clone project
 
-# API
+```
+$ git clone https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components.git .
+```
 
-* [Histogram](#Histogram)
+Move into the folder
 
-## Histogram
+```
+$ cd ARLAS-web-components
+```
 
-A generic component that plots data in a chart. 
+Get all project's dependencies
 
-### Inputs : 
+```
+$ npm install
+```
 
-- `chartData: EventEmitter<Array<{key: any, value: any}>>` - Data to plot in the histogram. Please, check [data structure](#Data structure)
-- `histogramType: string` - To be set to **timeline** when x axis represents time and **histogram** otherwise.
-- `chartType: string` - Possible values are **area** and **bars**.
-- `chartTitle: string` - The chart title.
-- `chartWidth: number` - The chart width.
-- `chartHeight: number` - The histogram height.
-- `xTicks: number` - Number of ticks in the X axis.
-- `yTicks: number` - Number of ticks in the Y axis.
-- `dataUnit: string` - (Optional) Unit to add in the tooltip
-- `customizedCssClass: string` - Css class name.
+Build the project with ngc and gulp :
 
-### Outputs : 
+```
+$ npm run build-release
 
-- `valuesChangedEvent: EventEmitter<{startvalue: any, endvalue: any}>` - Brush values end event.
+```
 
-### Data structure :
+The build artifacts will be stored in the `dist/` directory. 
 
-- The input data should be an array of `{ key: any, value: any }` object. 
-- `key` represents the **X** axis values.
-- `value` represents the **Y** axis values.
-- When **X** axis values are **date** values, `key` should be given as timestamp and `[histogramType] = "'timeline'"`
+
+## Run / Deployment : 
+
+To run the demo application of this library on dev server  :
+
+```
+$ ng serve 
+```
+Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
+
+## Tests : 
+### Running unit tests
+
+*****TODO*****
+
+### Running end-to-end tests
+
+*****TODO*****
+
+Before running the tests make sure you are serving the app via `ng serve`.
+
+## Documentation : 
+- Please find the documentation of all the components [here](src/components/components-documentation.md)
+
+## Contributing :
+
+- Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+
+# Authors :
+- Gisaia - initial work - [Gisaïa](http://gisaia.fr/) 
+- See also the list of [contributors](https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components/graphs/develop) who participated in this project.
+
+# License : 
+
+- This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
