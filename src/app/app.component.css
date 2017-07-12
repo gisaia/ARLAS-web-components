@@ -12,4 +12,9 @@
     z-index: 1001;
 }
 
-
+#table{
+    position: fixed;
+    bottom: 0;
+    width: 600px;
+    border: 3px solid #73AD21;
+}
