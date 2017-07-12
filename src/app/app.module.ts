@@ -8,7 +8,7 @@ import { TableComponent } from '../components/table/table.component';
 import { TableDemoComponent } from './table-demo/table-demo.component';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { TableModule } from '../components/table/table.module';
-import { MapComponent } from './map/map.component';
+import { MapComponent } from '../components/map/map.component';
 
 @NgModule({
   declarations: [
