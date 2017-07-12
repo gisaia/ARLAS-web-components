@@ -18,7 +18,8 @@ export class TableComponent implements OnInit {
   constructor() {
     this.dataSubject.subscribe(value => {
       this.source = new LocalDataSource()
-      this.source.load(value)
+      this.source.load(value.data)
+      this.settings=value.settings
     })
   }
   ngOnInit() {
