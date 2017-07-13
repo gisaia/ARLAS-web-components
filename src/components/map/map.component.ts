@@ -20,7 +20,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.map = leaflet.map('map', {
       center: [48.8534, 2.3488],
-      zoom: 10
+      zoom: 10,
+      zoomControl:false
     });
     const layer: leaflet.TileLayer = leaflet.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
     this.map.addLayer(layer);
