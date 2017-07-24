@@ -1,16 +1,13 @@
 {
   "name": "arlas-web-components",
-  "version": "1.0.0-rc.1",
-  "description": "An Angular libraray for ploting data in a histogram.",
-  "author": "Gisaia",
-  "main": "./index.js",
-  "typings": "./index.d.ts",
-  "keywords": [
-    "angular",
-    "angular2",
-    "angular 2",
-    "angular4"
-  ],
+  "version": "1.0.0-rc.7",
+  "description": "Components library for ARLAS Web App",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components.git"
+  },
+  "author": "gisaia",
+  "license": "MIT",
   "peerDependencies": {
     "@angular/common": "^4.0.0",
     "@angular/core": "^4.0.0",
@@ -21,5 +18,9 @@
     "ng2-smart-table": "^1.2.1",
     "@types/leaflet": "^1.0.63",
     "leaflet": "^1.0.3"
-  }
+  },
+  "bugs": {
+    "url": "https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components/issues"
+  },
+  "homepage": "https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components/blob/master/README.md"
 }
