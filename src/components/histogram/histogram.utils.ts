@@ -10,3 +10,7 @@ export interface MarginModel {
   left: number;
 }
 
+export enum DateType {
+  second, millisecond
+}
+
