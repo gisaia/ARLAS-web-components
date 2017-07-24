@@ -1,0 +1,90 @@
+.histogram{
+    background: rgba(0,0,255,0);
+    width: 100%;
+}
+
+.histogram text {
+    font-size: 0.8em;
+    fill-opacity: 1;
+    fill: black;
+}
+
+.histogram__description {
+    margin-left: 60px;
+    margin-right: 20px;
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 0.9em;
+    line-height: 1.3;
+    color: deeppink;
+    opacity: 1;
+    z-index: 10000;
+}
+
+.histogram__description--display{
+    display: flex;
+}
+
+.histogram__description__title{
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 1.0em;
+    flex: 1 1 100%;
+    max-width: 40%;
+    color: dodgerblue;
+    opacity: 1;
+    text-align: center;
+    z-index: 8000;
+}
+
+.histogram__description__startvalue {
+    flex: 1 1 100%;
+    max-width: 30%;
+}
+
+.histogram__description__endvalue {
+    flex: 1 1 100%;
+    max-width: 30%;
+    text-align: right;
+}
+
+.histogram__description__startvalue--background, .histogram__description__endvalue--background {
+    background: rgba(220, 220, 220, 0.8);
+}
+
+.histogram__chart--area{
+    fill: dimgrey;
+    fill-opacity: 1;
+    stroke: darkslategrey;
+    stroke-width: 2px;
+    stroke-opacity: 1;
+}
+
+.histogram__chart--bar {
+    fill: dimgrey;
+    fill-opacity: 1;
+    stroke: darkslategrey;
+    stroke-width: 0.5px;
+    stroke-opacity: 1;
+}
+
+.histogram__tooltip{
+  position: absolute;
+  text-align: left;
+  width: 160px;
+  height: 30px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 4px;
+  pointer-events: none;
+  color: darkslategrey;
+  z-index: 20000;
+}
+
+.histogram__tooltip__circle{
+  fill: darkslategrey;
+  opacity: 0;
+  border-radius: 5px;
+}
+
+
