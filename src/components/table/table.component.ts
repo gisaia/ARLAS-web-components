@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { DataSource } from "ng2-smart-table/lib/data-source/data-source";
-import { LocalDataSource } from "ng2-smart-table";
+import { DataSource } from 'ng2-smart-table/lib/data-source/data-source';
+import { LocalDataSource } from 'ng2-smart-table';
 import { element } from 'protractor';
 
 @Component({
@@ -19,23 +19,25 @@ export class TableComponent implements OnInit {
     this.dataSubject.subscribe(value => {
       this.source = new LocalDataSource()
       this.source.load(value.data)
-      this.settings=value.settings
+      this.settings = value.settings
     })
   }
   ngOnInit() {
   }
 
   rowSelect(data) {
-    let dataArray = new Array<Object>();
+    const dataArray = new Array<Object>();
     if (data.source.filterConf.filters.length > 0) {
       data.source.filterConf.filters.forEach(element => {
-        if (element.field != "" && element.search != "")
+        if (element.field !== '' && element.search !== '') {
           dataArray.push({
             field: element.field,
             value: element.search
           })
+        }
       });
+      this.valuesChangedEvent.next(dataArray);
     }
-    this.valuesChangedEvent.next(dataArray);
+
   }
 }
