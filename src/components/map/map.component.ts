@@ -17,16 +17,17 @@ export class MapComponent implements OnInit, AfterViewInit {
   map: L.Map;
   geojsonLayer: L.Layer;
   @Input() layerSubject = new Subject<any>();
+  @Input() basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
   ngAfterViewInit(): void {
     this.map = leaflet.map('map', {
       center: [48.8534, 2.3488],
       zoom: 10,
-      zoomControl:false
+      zoomControl: false
     });
-    const layer: leaflet.TileLayer = leaflet.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+    const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
     this.layerSubject.subscribe(value => {
-      if (this.geojsonLayer != undefined) {
+      if (this.geojsonLayer !== undefined) {
         this.map.removeLayer(this.geojsonLayer)
       }
       this.geojsonLayer = L.geoJSON(value, {
