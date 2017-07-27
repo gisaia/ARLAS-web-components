@@ -69,10 +69,16 @@ export class HistogramComponent implements OnInit {
       if (this.histogramType === timelineType) {
         this.parseDataKeyToDate(data);
       }
-      this.startValue = this.toString(data[0].key);
-      this.interval.startvalue = data[0].key;
-      this.endValue = this.toString(data[data.length - 1].key);
-      this.interval.endvalue = data[data.length - 1].key;
+      if (this.startValue == null) {
+        this.startValue = this.toString(data[0].key);
+        this.interval.startvalue = data[0].key;
+      }
+      if (this.endValue == null) {
+        this.endValue = this.toString(data[data.length - 1].key);
+        this.interval.endvalue = data[data.length - 1].key;
+      }
+      console.log("this.interval.startvalue:"+this.interval.startvalue);
+      console.log("this.interval.endvalue:"+this.interval.endvalue);
 
       const chartDimensions = this.initializeChartDimensions();
       const chartAxes = this.createChartAxes(chartDimensions, data);
@@ -80,16 +86,14 @@ export class HistogramComponent implements OnInit {
       this.plotHistogramData(chartDimensions, chartAxes, data);
       this.showTooltips(chartDimensions, chartAxes, data);
 
-      const selectionBrush = d3.brushX().extent([[0, chartDimensions.height], [chartDimensions.width, 0]]);
-      this.handleOnBrushingEvent(selectionBrush, chartAxes);
-      this.handleEndOfBrushingEvent(selectionBrush, chartAxes);
-      selectionBrush.extent(
-        [[Math.max(0, chartAxes.xDomain(this.interval.startvalue)), 0],
-        [Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width), chartDimensions.height]]
-      );
+      let selectionBrush = d3.brushX().extent([[0, 0], [chartDimensions.width, chartDimensions.height]]);
+      let selectionBrushStart = Math.max(0, chartAxes.xDomain(this.interval.startvalue));
+      let selectionBrushEnd = Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width);
       this.context.append('g')
         .attr('class', 'brush')
-        .call(selectionBrush);
+        .call(selectionBrush).call(selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
+      this.handleOnBrushingEvent(selectionBrush, chartAxes);
+      this.handleEndOfBrushingEvent(selectionBrush, chartAxes);
     } else {
       this.startValue = '';
       this.endValue = '';
@@ -179,7 +183,7 @@ export class HistogramComponent implements OnInit {
       this.dataUnit = '(' + this.dataUnit + ')';
     }
     chartDimensions.svg.selectAll('dot').data(data).enter().append('circle')
-      .attr('r', 2)
+      .attr('r', 10)
       .attr('cx', function (d) { return chartDimensions.margin.left + chartAxes.xDomain(d.key); })
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
