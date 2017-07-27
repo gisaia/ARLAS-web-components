@@ -183,7 +183,7 @@ export class HistogramComponent implements OnInit {
       this.dataUnit = '(' + this.dataUnit + ')';
     }
     chartDimensions.svg.selectAll('dot').data(data).enter().append('circle')
-      .attr('r', 2)
+      .attr('r', 10)
       .attr('cx', function (d) { return chartDimensions.margin.left + chartAxes.xDomain(d.key); })
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
