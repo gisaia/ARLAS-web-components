@@ -23,7 +23,6 @@ import { MapComponent } from '../components/map/map.component';
   imports: [
     BrowserModule,
     Ng2SmartTableModule
-    
   ],
   providers: [],
   bootstrap: [AppComponent]

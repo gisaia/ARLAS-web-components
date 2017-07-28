@@ -14,31 +14,30 @@ import * as d3 from 'd3';
 })
 export class HistogramComponent implements OnInit {
 
-  /* Public properties */
-  margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 };
-  startValue: string = null;
-  endValue: string = null;
-  showTooltip = false;
-  showTitle = true;
-  tooltipHorizontalPosition = '0';
-  tooltipVerticalPosition = '0';
-  tooltipXContent: string;
-  tooltipYContent: string;
-  isDataAvailable = false;
+  public margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 };
+  public startValue: string = null;
+  public endValue: string = null;
+  public showTooltip = false;
+  public showTitle = true;
+  public tooltipHorizontalPosition = '0';
+  public tooltipVerticalPosition = '0';
+  public tooltipXContent: string;
+  public tooltipYContent: string;
+  public isDataAvailable = false;
 
-  @Input() xTicks = 5;
-  @Input() yTicks = 5;
-  @Input() chartType = areaChart;
-  @Input() chartTitle = '';
-  @Input() chartWidth = 500;
-  @Input() chartHeight = 100;
-  @Input() histogramType = timelineType;
-  @Input() customizedCssClass = '';
-  @Input() dataUnit = '';
-  @Input() chartData: Subject<any> = new Subject<any>();
-  @Input() dateType: DateType = DateType.millisecond;
+  @Input() public xTicks = 5;
+  @Input() public yTicks = 5;
+  @Input() public chartType = areaChart;
+  @Input() public chartTitle = '';
+  @Input() public chartWidth = 500;
+  @Input() public chartHeight = 100;
+  @Input() public histogramType = timelineType;
+  @Input() public customizedCssClass = '';
+  @Input() public dataUnit = '';
+  @Input() public chartData: Subject<any> = new Subject<any>();
+  @Input() public dateType: DateType = DateType.millisecond;
 
-  @Output() valuesChangedEvent: Subject<any> = new Subject<any>();
+  @Output() public valuesChangedEvent: Subject<any> = new Subject<any>();
 
   private histogramNode: any;
   private histogramElement: ElementRef;
@@ -48,10 +47,10 @@ export class HistogramComponent implements OnInit {
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
 
-  ngOnInit() {
+  public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     this.chartData.subscribe(value => {
-      this.plotHistogram(value)
+      this.plotHistogram(value);
     });
   }
 
@@ -77,18 +76,15 @@ export class HistogramComponent implements OnInit {
         this.endValue = this.toString(data[data.length - 1].key);
         this.interval.endvalue = data[data.length - 1].key;
       }
-      console.log("this.interval.startvalue:"+this.interval.startvalue);
-      console.log("this.interval.endvalue:"+this.interval.endvalue);
-
       const chartDimensions = this.initializeChartDimensions();
       const chartAxes = this.createChartAxes(chartDimensions, data);
       this.drawChartAxes(chartDimensions, chartAxes);
       this.plotHistogramData(chartDimensions, chartAxes, data);
       this.showTooltips(chartDimensions, chartAxes, data);
 
-      let selectionBrush = d3.brushX().extent([[0, 0], [chartDimensions.width, chartDimensions.height]]);
-      let selectionBrushStart = Math.max(0, chartAxes.xDomain(this.interval.startvalue));
-      let selectionBrushEnd = Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width);
+      const selectionBrush = d3.brushX().extent([[0, 0], [chartDimensions.width, chartDimensions.height]]);
+      const selectionBrushStart = Math.max(0, chartAxes.xDomain(this.interval.startvalue));
+      const selectionBrushEnd = Math.min(chartAxes.xDomain(this.interval.endvalue), chartDimensions.width);
       this.context.append('g')
         .attr('class', 'brush')
         .call(selectionBrush).call(selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
@@ -105,7 +101,7 @@ export class HistogramComponent implements OnInit {
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;
     const height = +this.chartHeight - this.margin.top - this.margin.bottom;
-    return { svg, margin, width, height }
+    return { svg, margin, width, height };
   }
 
   private createChartAxes(chartDimensions: any, data: any): any {
@@ -118,13 +114,13 @@ export class HistogramComponent implements OnInit {
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
     if (data == null || !Array.isArray(data) || data.length <= 0) {
       // if no data is available, we plot an empty histogram. So to give extent to x and y axes, 'data' takes histogram witdh and height
-      data = [{ key: 0, value: 0 }, { key: chartDimensions.width, value: chartDimensions.height }]
+      data = [{ key: 0, value: 0 }, { key: chartDimensions.width, value: chartDimensions.height }];
     }
     xDomain.domain(d3.extent(data, (d: any) => d.key));
     yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
     const xAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
     const yAxis = d3.axisLeft(yDomain).ticks(this.yTicks);
-    return { xDomain, yDomain, xAxis, yAxis }
+    return { xDomain, yDomain, xAxis, yAxis };
   }
 
   private drawChartAxes(chartDimensions: any, chartAxes: any): void {

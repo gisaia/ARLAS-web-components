@@ -4,9 +4,10 @@ import * as leaflet from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/images/marker-icon.png';
 import 'leaflet/dist/images/marker-icon-2x.png';
-export interface p {
-  properties
-  name: string
+
+export interface Named {
+  properties;
+  name: string;
 }
 @Component({
   selector: 'arlas-map',
@@ -14,11 +15,15 @@ export interface p {
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  map: L.Map;
-  geojsonLayer: L.Layer;
-  @Input() layerSubject = new Subject<any>();
-  @Input() basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-  ngAfterViewInit(): void {
+  public map: L.Map;
+  public geojsonLayer: L.Layer;
+  @Input() public layerSubject = new Subject<any>();
+  @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+  constructor() { }
+
+  public ngOnInit() { }
+
+  public ngAfterViewInit(): void {
     this.map = leaflet.map('map', {
       center: [48.8534, 2.3488],
       zoom: 10,
@@ -28,22 +33,15 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.map.addLayer(layer);
     this.layerSubject.subscribe(value => {
       if (this.geojsonLayer !== undefined) {
-        this.map.removeLayer(this.geojsonLayer)
+        this.map.removeLayer(this.geojsonLayer);
       }
       this.geojsonLayer = L.geoJSON(value, {
-        onEachFeature: function (feature: any, layer) {
-          layer.bindPopup('<h1>' + <p>feature.properties.name + '</h1>');
+        onEachFeature: function (feature: any, l) {
+          l.bindPopup('<h1>' + <Named>feature.properties.name + '</h1>');
         }
-      })
-      this.geojsonLayer.addTo(this.map)
-
-    }
-    )
-  }
-
-  constructor() { }
-
-  ngOnInit() {
+      });
+      this.geojsonLayer.addTo(this.map);
+    });
   }
 
 }
