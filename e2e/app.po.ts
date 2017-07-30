@@ -1,11 +1,11 @@
 import { browser, by, element } from 'protractor';
 
 export class ArlasWebComponentsPage {
-  navigateTo() {
+  public navigateTo() {
     return browser.get('/');
   }
 
-  getParagraphText() {
+  public getParagraphText() {
     return element(by.css('gisaia-root h1')).getText();
   }
 }
