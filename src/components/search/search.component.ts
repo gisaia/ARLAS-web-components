@@ -8,13 +8,13 @@ import { Subject } from 'rxjs/Subject';
   encapsulation: ViewEncapsulation.None
 })
 export class SearchComponent implements OnInit {
-  @Output() valuesChangedEvent: Subject<any> = new Subject<any>();
+  @Output() public valuesChangedEvent: Subject<any> = new Subject<any>();
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
 
   }
 
-  runSearch(value: any) {
+  public runSearch(value: any) {
     this.valuesChangedEvent.next(value.search);
   }
 }

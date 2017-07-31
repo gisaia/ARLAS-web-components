@@ -11,29 +11,29 @@ import { element } from 'protractor';
 })
 
 export class TableComponent implements OnInit {
-  @Input() settings: Object;
-  @Input() dataSubject: Subject<any> = new Subject<any>();
-  @Input() source: DataSource;
-  @Output() valuesChangedEvent: Subject<any> = new Subject<any>();
+  @Input() public settings: Object;
+  @Input() public dataSubject: Subject<any> = new Subject<any>();
+  @Input() public source: DataSource;
+  @Output() public valuesChangedEvent: Subject<any> = new Subject<any>();
   constructor() {
     this.dataSubject.subscribe(value => {
-      this.source = new LocalDataSource()
-      this.source.load(value.data)
-      this.settings = value.settings
-    })
+      this.source = new LocalDataSource();
+      this.source.load(value.data);
+      this.settings = value.settings;
+    });
   }
-  ngOnInit() {
+  public ngOnInit() {
   }
 
-  rowSelect(data) {
+  public rowSelect(data) {
     const dataArray = new Array<Object>();
     if (data.source.filterConf.filters.length > 0) {
-      data.source.filterConf.filters.forEach(element => {
-        if (element.field !== '' && element.search !== '') {
+      data.source.filterConf.filters.forEach(e => {
+        if (e.field !== '' && e.search !== '') {
           dataArray.push({
-            field: element.field,
-            value: element.search
-          })
+            field: e.field,
+            value: e.search
+          });
         }
       });
       this.valuesChangedEvent.next(dataArray);
