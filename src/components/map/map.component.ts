@@ -31,17 +31,20 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
-    this.layerSubject.subscribe(value => {
-      if (this.geojsonLayer !== undefined) {
-        this.map.removeLayer(this.geojsonLayer);
-      }
-      this.geojsonLayer = L.geoJSON(value, {
-        onEachFeature: function (feature: any, l) {
-          l.bindPopup('<h1>' + <Named>feature.properties.name + '</h1>');
+    this.layerSubject.subscribe(
+      value => {
+        if (this.geojsonLayer !== undefined) {
+          this.map.removeLayer(this.geojsonLayer);
         }
-      });
-      this.geojsonLayer.addTo(this.map);
-    });
+        if (value.features) {
+          this.geojsonLayer = L.geoJSON(value, {
+            onEachFeature: function (feature: any, l) {
+              l.bindPopup('<h1>' + <Named>feature.properties.name + '</h1>');
+            }
+          });
+          this.geojsonLayer.addTo(this.map);
+        }
+      }
+    );
   }
-
 }
