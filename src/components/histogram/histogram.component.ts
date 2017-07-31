@@ -156,7 +156,14 @@ export class HistogramComponent implements OnInit {
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
       .attr('x', 1)
-      .attr('transform', function (d) { return 'translate(' + chartAxes.xDomain(d.x0) + ',' + chartAxes.yDomain(d[0].value) + ')'; })
+      .attr('transform', function(d) {
+              if (d[0] === undefined ) {
+                  d[0] = {value: 0};
+                  return 'translate(' + chartAxes.xDomain(d.x0) + ',' + chartAxes.yDomain(d[0].value) + ')';
+              } else {
+                  return 'translate(' + (chartAxes.xDomain(d[0].key)) + ',' + chartAxes.yDomain(d[0].value) + ')';
+              }
+          })// TODO : place the bar in the correct position with a relevant width
       .attr('width', function (d) { return chartAxes.xDomain(d.x1) - chartAxes.xDomain(d.x0) - 0.1; })
       .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d[0].value); });
   }
