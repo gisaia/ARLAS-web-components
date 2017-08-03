@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef } from '@angular/core';
 
-import { areaChart, barsChart, timelineType, histogramType, MarginModel, DateType } from './histogram.utils';
+import { areaChart, barsChart, timelineType, histogramType, MarginModel, DateType, HistogramData } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -193,11 +193,7 @@ export class HistogramComponent implements OnInit {
       .attr('height', function(d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')')
       .on('mousemove', function(d){
-        _thisComponent.showTooltip = true;
-        _thisComponent.tooltipXContent = 'x: ' + _thisComponent.toString(d.key);
-        _thisComponent.tooltipYContent = 'y: ' + d.value + ' ' + _thisComponent.dataUnit;
-        _thisComponent.tooltipVerticalPosition = (d3.event.pageX) - 45 + 'px';
-        _thisComponent.tooltipHorizontalPosition = (d3.event.pageY - 15) + 'px';
+        _thisComponent.setTooltipPosition(this, 70, -10, d);
         })
       .on('mouseout', function(d){ _thisComponent.showTooltip = false; });
       this.context.append('g')
@@ -223,24 +219,29 @@ export class HistogramComponent implements OnInit {
 
   private showTooltipsForAreaCharts(chartDimensions, chartAxes, data) {
     const _thisComponent = this;
-    if (this.dataUnit !== '') {
-      this.dataUnit = '(' + this.dataUnit + ')';
-    }
     chartDimensions.svg.selectAll('dot').data(data).enter().append('circle')
       .attr('r', 10)
       .attr('cx', function (d) { return chartDimensions.margin.left + chartAxes.xDomain(d.key); })
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
       .on('mouseover', function (d) {
-        _thisComponent.showTooltip = true;
-        _thisComponent.tooltipXContent = 'x: ' + _thisComponent.toString(d.key);
-        _thisComponent.tooltipYContent = 'y: ' + d.value + ' ' + _thisComponent.dataUnit;
-        _thisComponent.tooltipVerticalPosition = (d3.event.pageX) - 40 + 'px';
-        _thisComponent.tooltipHorizontalPosition = (d3.event.pageY - 15) + 'px';
+        _thisComponent.setTooltipPosition(this, 10, -10, d);
       })
       .on('mouseout', function (d) {
         _thisComponent.showTooltip = false;
       });
+  }
+
+  private setTooltipPosition(tooltipCcontainer: any, dx: number, dy: number, data: HistogramData) {
+    this.showTooltip = true;
+    if (this.dataUnit !== '') {
+      this.dataUnit = '(' + this.dataUnit + ')';
+    }
+    this.tooltipXContent = 'x: ' + this.toString(data.key);
+    this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
+    const mousePosition = d3.mouse(tooltipCcontainer);
+    this.tooltipVerticalPosition = (mousePosition[0]) + dx + 'px';
+    this.tooltipHorizontalPosition = (mousePosition[1]) + dy + 'px';
   }
 
   private handleOnBrushingEvent(selectionbrush: any, chartAxes: any): void {
