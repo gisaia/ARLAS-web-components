@@ -10,6 +10,11 @@ export interface MarginModel {
   left: number;
 }
 
+export interface HistogramData {
+  key: Date|number;
+  value: number;
+}
+
 export enum DateType {
   second, millisecond
 }
