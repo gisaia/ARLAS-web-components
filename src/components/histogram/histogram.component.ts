@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef } from '@angular/core';
 
-import { areaChart, barsChart, timelineType, histogramType, MarginModel, DateType, HistogramData } from './histogram.utils';
+import { areaChart, barsChart, timelineType, histogramType, MarginModel, DateType, HistogramData, SelectedValues,
+         ChartDimensions, ChartAxes } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -34,19 +35,19 @@ export class HistogramComponent implements OnInit {
   @Input() public histogramType = timelineType;
   @Input() public customizedCssClass = '';
   @Input() public dataUnit = '';
-  @Input() public chartData: Subject<any> = new Subject<any>();
+  @Input() public chartData: Subject<Array<{key: number, value: number}>> = new Subject<Array<{key: number, value: number}>>();
   @Input() public dateType: DateType = DateType.millisecond;
   @Input() public xLabels = 4;
   @Input() public barsWidthPercentage = 0.6;
 
 
-  @Output() public valuesChangedEvent: Subject<any> = new Subject<any>();
+  @Output() public valuesChangedEvent: Subject<SelectedValues> = new Subject<SelectedValues>();
 
   private histogramNode: any;
   private histogramElement: ElementRef;
   private histogramTitle: string;
   private context: any;
-  private selectionInterval = { startvalue: null, endvalue: null };
+  private selectionInterval: SelectedValues = {startvalue: null, endvalue: null};
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
 
@@ -57,7 +58,7 @@ export class HistogramComponent implements OnInit {
     });
   }
 
-  public plotHistogram(data: Array<any>): void {
+  public plotHistogram(inputData: Array<{key: number, value: number}>): void {
 
     // set chartWidth value equal to container width
     this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
@@ -67,10 +68,10 @@ export class HistogramComponent implements OnInit {
       this.context.remove();
     }
 
-    if (data !== null && Array.isArray(data) && data.length > 0) {
-      if (this.histogramType === timelineType) {
-        this.parseDataKeyToDate(data);
-      }
+    let data: Array<HistogramData>;
+    if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
+      data = this.parseDataKey(inputData);
+
       if (this.startValue == null) {
         this.startValue = this.toString(data[0].key);
         this.selectionInterval.startvalue = data[0].key;
@@ -101,7 +102,7 @@ export class HistogramComponent implements OnInit {
     }
   }
 
-  private initializeChartDimensions(): any {
+  private initializeChartDimensions(): ChartDimensions {
     const svg = d3.select(this.histogramNode).select('svg');
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;
@@ -109,61 +110,51 @@ export class HistogramComponent implements OnInit {
     return { svg, margin, width, height };
   }
 
-  private createChartAxes(chartDimensions: any, data: Array<any>): any {
-    if (data == null || !Array.isArray(data) || data.length <= 0) {
-      // if no data is available, we plot an empty histogram. So to give extent to x and y axes, 'data' takes histogram witdh and height
-      data = [{ key: 0, value: 0 }, { key: chartDimensions.width, value: chartDimensions.height }];
-    }
-    if (this.chartType === areaChart) {
-      return this.createAreaChartAxes(chartDimensions, data);
-    }  else {
-      return this.createBarsChartAxes(chartDimensions, data);
-    }
-  }
-
-  private createAreaChartAxes (chartDimensions: any, data: Array<any>): any {
-    let xDomain;
+  // retruns d3.ScaleTime<number,number> or d3.ScaleLinear<number,number>
+  private getXDomainScale(): any {
     if (this.histogramType === timelineType) {
-      xDomain = d3.scaleTime().range([0, chartDimensions.width]);
-    } else if (this.histogramType === histogramType) {
-      xDomain = d3.scaleLinear().range([0, chartDimensions.width]);
+      return d3.scaleTime();
+    } else {
+      return d3.scaleLinear();
     }
-    xDomain.domain(d3.extent(data, (d: any) => d.key));
-    const xAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
-    const createdYAxis = this.createYAxis(chartDimensions, data);
-    const yDomain = createdYAxis.yDomain;
-    const yAxis = createdYAxis.yAxis;
-    const stepWidth = 0;
-    return { xDomain, yDomain, xAxis, yAxis, stepWidth };
   }
 
-  private createBarsChartAxes (chartDimensions: any, data: Array<any>): any {
-    const xDomain = d3.scaleLinear().range([0, chartDimensions.width]);
-    const xExtent  = this.getXDomainExtent(data);
-    xDomain.domain(xExtent);
-    const stepWidth = xDomain(data[0].key);
-    const xDiscretDomain = d3.scaleBand()
-                .range([stepWidth, chartDimensions.width - stepWidth])
-                .paddingInner(0.2);
-    xDiscretDomain.domain(data.map(function(d) { return d.key; }));
-    const _thisComponent = this;
-    const labelsPeriod = Math.max(1, Math.round(data.length / this.xLabels));
-    const xAxis = d3.axisBottom(xDiscretDomain).tickSize(0).tickPadding(5).tickValues(xDiscretDomain.domain()
-    .filter(function(d, i) { return !(i % labelsPeriod); }));
-    const createdYAxis = this.createYAxis(chartDimensions, data);
-    const yDomain = createdYAxis.yDomain;
-    const yAxis = createdYAxis.yAxis;
-    return { xDiscretDomain, xDomain, yDomain, xAxis, yAxis, stepWidth };
-  }
-
-  private createYAxis (chartDimensions: any, data: Array<any>): any {
+  private createChartAxes(chartDimensions: ChartDimensions, data: Array<HistogramData>): ChartAxes {
+    const xDomain = (this.getXDomainScale()).range([0, chartDimensions.width]);
+    // The xDomain extent includes data domain and selected values
+    const xDomainExtent = this.getXDomainExtent(data, this.selectionInterval.startvalue, this.selectionInterval.endvalue);
+    xDomain.domain(xDomainExtent);
+    // xDataDomain includes data domain only
+    let xDataDomain;
+    let xAxis;
+    let stepWidth;
+    // Compute the range (in pixels) of xDataDomain where data will be plotted
+    const startRange = xDomain(data[0].key);
+    const endRange = xDomain(data[data.length - 1].key);
+    if (this.chartType === areaChart) {
+      stepWidth = 0;
+      xDataDomain = (this.getXDomainScale()).range([startRange, endRange]);
+      xDataDomain.domain(d3.extent(data, (d: any) => d.key));
+      xAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
+    } else {
+      if (data.length > 1) {
+        stepWidth = xDomain(data[1].key) - xDomain(data[0].key);
+      } else {
+        stepWidth = xDomain(data[0].key);
+      }
+      xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0.2);
+      xDataDomain.domain(data.map(function(d) { return d.key; }));
+      const labelsPeriod = Math.max(1, Math.round(data.length / this.xLabels));
+      xAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(5).tickValues(xDataDomain.domain()
+                .filter(function(d, i) { return !(i % labelsPeriod); }));
+    }
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
     yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
     const yAxis = d3.axisLeft(yDomain).ticks(this.yTicks);
-    return {yDomain, yAxis};
+    return { xDomain, xDataDomain, yDomain, xAxis, yAxis, stepWidth };
   }
 
-  private drawChartAxes(chartDimensions: any, chartAxes: any): void {
+  private drawChartAxes(chartDimensions: ChartDimensions, chartAxes: ChartAxes): void {
     this.context = chartDimensions.svg.append('g')
       .attr('class', 'context')
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')');
@@ -171,44 +162,42 @@ export class HistogramComponent implements OnInit {
       .attr('class', 'axis')
       .attr('transform', 'translate(0,' + chartDimensions.height + ')')
       .call(chartAxes.xAxis);
+    this.context.append('g')
+      .attr('class', 'axis')
+      .call(chartAxes.yAxis);
   }
 
-  private plotHistogramData(chartDimensions: any, chartAxes: any, data: any): void {
+  private plotHistogramData(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     if (this.chartType === barsChart) {
-      this.plotHistogramAsBars(chartDimensions, chartAxes, data);
+      this.plotHistogramDataAsBars(chartDimensions, chartAxes, data);
     } else if (this.chartType === areaChart) {
-      this.plotHistogramAsArea(chartDimensions, chartAxes, data);
+      this.plotHistogramDataAsArea(chartDimensions, chartAxes, data);
     }
   }
 
-  private plotHistogramAsBars(chartDimensions: any, chartAxes: any, data: any): void {
+  private plotHistogramDataAsBars(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
     chartDimensions.svg.selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
-      .attr('x', function(d) {return chartAxes.xDiscretDomain(d.key); })
+      .attr('x', function(d) {return chartAxes.xDataDomain(d.key); })
       .attr('width', chartAxes.stepWidth * _thisComponent.barsWidthPercentage)
       .attr('y', function(d) { return chartAxes.yDomain(d.value); })
       .attr('height', function(d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')')
       .on('mousemove', function(d){
-        _thisComponent.setTooltipPosition(this, 70, -10, d);
+        _thisComponent.setTooltipPosition(-40, -40, d);
+        console.log(this);
+
         })
       .on('mouseout', function(d){ _thisComponent.showTooltip = false; });
-      this.context.append('g')
-      .attr('class', 'axis')
-      .attr('transform', 'translate(' + chartAxes.stepWidth + ', 0)')
-      .call(chartAxes.yAxis);
   }
 
-  private plotHistogramAsArea(chartDimensions: any, chartAxes: any, data: any): void {
-    this.context.append('g')
-      .attr('class', 'axis')
-      .call(chartAxes.yAxis);
+  private plotHistogramDataAsArea(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const area = d3.area()
       .curve(d3.curveMonotoneX)
-      .x((d: any) => chartAxes.xDomain(d.key))
+      .x((d: any) => chartAxes.xDataDomain(d.key))
       .y0(chartDimensions.height)
       .y1((d: any) => chartAxes.yDomain(d.value));
     this.context.append('path')
@@ -217,7 +206,7 @@ export class HistogramComponent implements OnInit {
       .attr('d', area);
   }
 
-  private showTooltipsForAreaCharts(chartDimensions, chartAxes, data) {
+  private showTooltipsForAreaCharts(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
     chartDimensions.svg.selectAll('dot').data(data).enter().append('circle')
       .attr('r', 10)
@@ -225,26 +214,26 @@ export class HistogramComponent implements OnInit {
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
       .on('mouseover', function (d) {
-        _thisComponent.setTooltipPosition(this, 10, -10, d);
+        _thisComponent.setTooltipPosition(-40, -40 , d);
       })
       .on('mouseout', function (d) {
         _thisComponent.showTooltip = false;
       });
   }
 
-  private setTooltipPosition(tooltipCcontainer: any, dx: number, dy: number, data: HistogramData) {
+  private setTooltipPosition(dx: number, dy: number, data: HistogramData): void {
     this.showTooltip = true;
     if (this.dataUnit !== '') {
       this.dataUnit = '(' + this.dataUnit + ')';
     }
     this.tooltipXContent = 'x: ' + this.toString(data.key);
     this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
-    const mousePosition = d3.mouse(tooltipCcontainer);
-    this.tooltipVerticalPosition = (mousePosition[0]) + dx + 'px';
-    this.tooltipHorizontalPosition = (mousePosition[1]) + dy + 'px';
+    this.tooltipVerticalPosition = (d3.event.pageX + dx)  + 'px';
+    this.tooltipHorizontalPosition = (d3.event.pageY + dy)  + 'px';
+
   }
 
-  private handleOnBrushingEvent(selectionbrush: any, chartAxes: any): void {
+  private handleOnBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
     selectionbrush.on('brush', (datum: any, index: number) => {
       const selection = d3.event.selection;
       this.startValue = 'From ' + this.toString(selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0]);
@@ -253,7 +242,7 @@ export class HistogramComponent implements OnInit {
     });
   }
 
-  private handleEndOfBrushingEvent(selectionbrush: any, chartAxes: any): void {
+  private handleEndOfBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
     const valueChangedEvent = this.valuesChangedEvent;
     selectionbrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
@@ -268,24 +257,32 @@ export class HistogramComponent implements OnInit {
     });
   }
 
-  private toString(value: any): any {
+  private toString(value: Date|number): string {
     if (value instanceof Date) {
       return value.toDateString();
-    } else if (value.length === undefined) {
-      return this.round(value, 1).toString();
     } else {
-      return value;
+      return this.round(value, 1).toString();
     }
   }
 
-  private parseDataKeyToDate(data): void {
+
+  private parseDataKey(inputData: Array<{key: number, value: number}>): Array<HistogramData> {
+     if (this.histogramType === timelineType) {
+        return this.parseDataKeyToDate(inputData);
+      } else {
+        return inputData;
+      }
+  }
+  private parseDataKeyToDate(inputData: Array<{key: number, value: number}>) {
+    const parsedData = new Array<HistogramData>();
     let multiplier = 1;
     if (this.dateType === DateType.second) {
       multiplier = 1000;
     }
-    data.forEach(d => {
-      d.key = new Date(d.key * multiplier);
+    inputData.forEach(d => {
+      parsedData.push({key: new Date(d.key * multiplier), value: d.value});
     });
+    return parsedData;
   }
 
   private round(value, precision): number {
@@ -298,15 +295,25 @@ export class HistogramComponent implements OnInit {
     return Math.round(value * multiplier) / multiplier;
   }
 
-  private getXDomainExtent(data: Array<{key: number, value: number}>): Array<Date|number> {
-    const interval = this.getBucketInterval(data);
-    const xDomainExtent = new Array<any>();
+  private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date|number,
+  selectedEndValue: Date|number): Array<Date | number | { valueOf(): number }> {
+    let interval = 0;
+    if (this.chartType === barsChart) {
+      interval = this.getBucketInterval(data);
+    }
+    const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
+    const dataKeyUnionSelectedValues = new Array<Date|number>();
+    data.forEach(d => {
+      dataKeyUnionSelectedValues.push(d.key);
+    });
+    dataKeyUnionSelectedValues.push(selectedStartValue);
+    dataKeyUnionSelectedValues.push(selectedEndValue);
     if ( this.histogramType === timelineType) {
-      xDomainExtent.push(new Date(d3.min(data, (d: any) => d.key).getTime() - interval));
-      xDomainExtent.push(new Date(d3.max(data, (d: any) => d.key).getTime() + interval));
+      xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => d).getTime() - interval));
+      xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => d).getTime() + interval));
     } else {
-      xDomainExtent.push(d3.min(data, (d: any) => d.key) * 1 - interval);
-      xDomainExtent.push(d3.max(data, (d: any) => d.key) * 1 + interval);
+      xDomainExtent.push(d3.min(dataKeyUnionSelectedValues, (d: number) => d) * 1 - interval);
+      xDomainExtent.push(d3.max(dataKeyUnionSelectedValues, (d: number) => d) * 1 + interval);
     }
     return xDomainExtent;
   }
@@ -327,6 +334,5 @@ export class HistogramComponent implements OnInit {
     }
     return interval;
   }
-
 
 }
