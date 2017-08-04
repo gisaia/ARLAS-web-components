@@ -7,7 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint",
+    "tslint": "ng lint",
     "gulp": "gulp",
     "build-release": "ngc -p tsconfig-build.json && gulp",
     "e2e": "ng e2e"
