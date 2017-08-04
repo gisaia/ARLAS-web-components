@@ -8,6 +8,12 @@
   dependencies:
     tslib "^1.7.1"
 
+"@angular/cdk@^2.0.0-beta.8":
+  version "2.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@angular/cdk/-/cdk-2.0.0-beta.8.tgz#71961c851dfbeb19e085e898bf5e4461408f8b57"
+  dependencies:
+    tslib "^1.7.1"
+
 "@angular/cli@1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@angular/cli/-/cli-1.1.1.tgz#ee5cf7637ad859c08e8a5e7a7f2161d0e74ce7a5"
@@ -116,6 +122,12 @@
   dependencies:
     tslib "^1.7.1"
 
+"@angular/material@^2.0.0-beta.8":
+  version "2.0.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@angular/material/-/material-2.0.0-beta.8.tgz#a92852abc9261aea26c2401f576645470be2cf38"
+  dependencies:
+    tslib "^1.7.1"
+
 "@angular/platform-browser-dynamic@^4.0.0":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@angular/platform-browser-dynamic/-/platform-browser-dynamic-4.2.2.tgz#00f4b8d1ce415f432bcc5ab2bb90b0b069036287"
@@ -178,9 +190,9 @@
   version "2.5.45"
   resolved "https://registry.yarnpkg.com/@types/jasmine/-/jasmine-2.5.45.tgz#58928a621d014ce6ab59c5a9c41071f7328b0ca9"
 
-"@types/leaflet@^1.0.63":
-  version "1.0.65"
-  resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.0.65.tgz#15a97bf0087f835efc2e090338e5eedbb806173c"
+"@types/leaflet@^1.0.67":
+  version "1.0.67"
+  resolved "https://registry.yarnpkg.com/@types/leaflet/-/leaflet-1.0.67.tgz#966f134ef2644b4172a319af042341237dce17a0"
   dependencies:
     "@types/geojson" "*"
 
@@ -188,9 +200,9 @@
   version "6.0.78"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.78.tgz#5d4a3f579c1524e01ee21bf474e6fba09198f470"
 
-"@types/node@^8.0.9":
-  version "8.0.9"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.9.tgz#19f44c3b6cb8a70d261d366f73650e3e3891ab2d"
+"@types/node@^8.0.15":
+  version "8.0.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-8.0.19.tgz#e46e2b0243de7d03f15b26b45c59ebb84f657a4e"
 
 "@types/q@^0.0.32":
   version "0.0.32"
