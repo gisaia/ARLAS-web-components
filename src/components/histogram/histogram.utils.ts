@@ -36,6 +36,6 @@ export interface ChartAxes {
   stepWidth: number;
 }
 
-export enum DateType {
+export enum DateUnit {
   second, millisecond
 }
