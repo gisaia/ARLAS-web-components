@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef } from '@angular/core';
 
-import { areaChart, barsChart, timelineType, histogramType, MarginModel, DateUnit, HistogramData, SelectedValues,
+import { ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedValues,
          ChartDimensions, ChartAxes } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
@@ -28,11 +28,11 @@ export class HistogramComponent implements OnInit {
 
   @Input() public xTicks = 5;
   @Input() public yTicks = 5;
-  @Input() public chartType = areaChart;
+  @Input() public chartType: ChartType = ChartType.area;
   @Input() public chartTitle = '';
   @Input() public chartWidth: number = null;
   @Input() public chartHeight: number = null;
-  @Input() public dataType = histogramType;
+  @Input() public dataType: DataType = DataType.numeric;
   @Input() public customizedCssClass = '';
   @Input() public dataUnit = '';
   @Input() public data: Subject<Array<{key: number, value: number}>> = new Subject<Array<{key: number, value: number}>>();
@@ -47,6 +47,7 @@ export class HistogramComponent implements OnInit {
   private histogramElement: ElementRef;
   private histogramTitle: string;
   private context: any;
+  private barsContext: any;
   private selectionInterval: SelectedValues = {startvalue: null, endvalue: null};
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
@@ -75,6 +76,10 @@ export class HistogramComponent implements OnInit {
       this.context.remove();
     }
 
+    if (this.barsContext) {
+      this.barsContext.remove();
+    }
+
     let data: Array<HistogramData>;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
       data = this.parseDataKey(inputData);
@@ -91,7 +96,7 @@ export class HistogramComponent implements OnInit {
       const chartAxes = this.createChartAxes(chartDimensions, data);
       this.drawChartAxes(chartDimensions, chartAxes);
       this.plotHistogramData(chartDimensions, chartAxes, data);
-      if (this.chartType === areaChart) {
+      if (this.chartType === ChartType.area) {
         this.showTooltipsForAreaCharts(chartDimensions, chartAxes, data);
       }
       const selectionBrush = d3.brushX().extent([[chartAxes.stepWidth, 0],
@@ -119,7 +124,7 @@ export class HistogramComponent implements OnInit {
 
   // retruns d3.ScaleTime<number,number> or d3.ScaleLinear<number,number>
   private getXDomainScale(): any {
-    if (this.dataType === timelineType) {
+    if (this.dataType === DataType.time) {
       return d3.scaleTime();
     } else {
       return d3.scaleLinear();
@@ -140,7 +145,7 @@ export class HistogramComponent implements OnInit {
     const endRange = xDomain(data[data.length - 1].key);
     const labelsPeriod = Math.max(1, Math.round(data.length / this.xLabels));
 
-    if (this.chartType === areaChart) {
+    if (this.chartType === ChartType.area) {
       stepWidth = 0;
       xDataDomain = (this.getXDomainScale()).range([startRange, endRange]);
       xDataDomain.domain(d3.extent(data, (d: any) => d.key));
@@ -176,16 +181,16 @@ export class HistogramComponent implements OnInit {
   }
 
   private plotHistogramData(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
-    if (this.chartType === barsChart) {
+    if (this.chartType === ChartType.bars) {
       this.plotHistogramDataAsBars(chartDimensions, chartAxes, data);
-    } else if (this.chartType === areaChart) {
+    } else if (this.chartType === ChartType.area) {
       this.plotHistogramDataAsArea(chartDimensions, chartAxes, data);
     }
   }
 
   private plotHistogramDataAsBars(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
-    chartDimensions.svg.selectAll('.bar')
+    this.barsContext = chartDimensions.svg.selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
@@ -273,7 +278,7 @@ export class HistogramComponent implements OnInit {
 
 
   private parseDataKey(inputData: Array<{key: number, value: number}>): Array<HistogramData> {
-     if (this.dataType === timelineType) {
+     if (this.dataType === DataType.time) {
         return this.parseDataKeyToDate(inputData);
       } else {
         return inputData;
@@ -304,7 +309,7 @@ export class HistogramComponent implements OnInit {
   private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date|number,
   selectedEndValue: Date|number): Array<Date | number | { valueOf(): number }> {
     let interval = 0;
-    if (this.chartType === barsChart) {
+    if (this.chartType === ChartType.bars) {
       interval = this.getBucketInterval(data);
     }
     const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
@@ -314,7 +319,7 @@ export class HistogramComponent implements OnInit {
     });
     dataKeyUnionSelectedValues.push(selectedStartValue);
     dataKeyUnionSelectedValues.push(selectedEndValue);
-    if ( this.dataType === timelineType) {
+    if ( this.dataType === DataType.time) {
       xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => d).getTime() - interval));
       xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => d).getTime() + interval));
     } else {
@@ -328,7 +333,7 @@ export class HistogramComponent implements OnInit {
     let interval = Number.MAX_VALUE;
     if (data.length > 1 ) {
       for (let i = 0; i < (data.length - 1); i++ ) {
-        if ( this.dataType === timelineType) {
+        if ( this.dataType === DataType.time) {
           interval = Math.min(interval, data[i + 1].key.getTime() - data[i].key.getTime());
         } else {
           interval = Math.min(interval, data[i + 1].key - data[i].key);

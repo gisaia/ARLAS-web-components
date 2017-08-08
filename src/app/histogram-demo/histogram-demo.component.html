@@ -14,24 +14,24 @@
       <li> Selected start value : {{selectedTimeValues.startvalue}}</li>
       <li> Selected end value : {{selectedTimeValues.endvalue}}</li>
     </ul>
-    <arlas-histogram [dataType]="'timeline'" [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
+    <arlas-histogram [dataType]="dataType.time" [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
   </div>
 
   <div class="graphs_timeline">
     <p class="graphs_timeline_inputs">dataType = 'time',     dateUnit = DateUnit.second,     xTicks = 9,     yTicks = 2,    chartTitle = 'Chart title'</p>
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
+    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second"></arlas-histogram>
   </div>
 
   <div class="graphs_timeline">
     <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = 9, yTicks = 2, chartTitle = 'Chart title', chartWidth = 500, chartHeight = 100</p>
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'" [chartWidth]="500" [chartHeight]="100"
+    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [chartWidth]="500" [chartHeight]="100"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second"></arlas-histogram>
   </div>
 
   <div class="graphs_timeline">
     <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = 9, yTicks = 2, chartTitle = 'Chart title', dataUnit ='m²'</p>
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
+    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second" [dataUnit]="'m²'"></arlas-histogram>
   </div>
 </div>
@@ -46,25 +46,25 @@
       <li> Selected start value : {{selectedNumericValues.startvalue}}</li>
       <li> Selected end value : {{selectedNumericValues.endvalue}}</li>
     </ul>
-    <arlas-histogram [chartType]="'bars'" [chartTitle]="'Chart title'" (valuesChangedEvent)="setSelectedNUmericValues($event)"
+    <arlas-histogram [chartType]="chartType.bars" [chartTitle]="'Chart title'" (valuesChangedEvent)="setSelectedNUmericValues($event)"
               [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6"></arlas-histogram>
   </div>
 
   <div class="graphs_bars">
     <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', yTicks = 2, xLabels = 2</p>
-    <arlas-histogram [yTicks]="2" [chartType]="'bars'" [chartTitle]="'Chart title'" [xLabels]="2"
+    <arlas-histogram [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [xLabels]="2"
               [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6"></arlas-histogram>
   </div>
 
   <div class="graphs_bars">
     <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xLabels = 2, barWeight = 0.3</p>
-    <arlas-histogram [xTicks]="5"  [yTicks]="2" [chartType]="'bars'" [chartTitle]="'Chart title'" [xLabels]="2" [barWeight]="0.3"
+    <arlas-histogram [xTicks]="5"  [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [xLabels]="2" [barWeight]="0.3"
               [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6"></arlas-histogram>
   </div>
 
   <div class="graphs_bars">
     <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xLabels = 2, barWeight = 0.3, chartWidth = 500, chartHeight = 100</p>
-    <arlas-histogram [xTicks]="5"  [yTicks]="2" [chartType]="'bars'" [chartTitle]="'Chart title'" [xLabels]="2" [barWeight]="0.3"
+    <arlas-histogram [xTicks]="5"  [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [xLabels]="2" [barWeight]="0.3"
               [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [chartWidth]="600" [chartHeight]="150"></arlas-histogram>
   </div>
 </div>
