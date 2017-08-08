@@ -39,6 +39,7 @@ export class HistogramComponent implements OnInit {
   @Input() public dateUnit: DateUnit = DateUnit.millisecond;
   @Input() public xLabels = 4;
   @Input() public barWeight = 0.6;
+  @Input() public isSmoothedCurve = true;
 
 
   @Output() public valuesChangedEvent: Subject<SelectedValues> = new Subject<SelectedValues>();
@@ -206,8 +207,14 @@ export class HistogramComponent implements OnInit {
   }
 
   private plotHistogramDataAsArea(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
+    let curveType: d3.CurveFactory;
+    if (this.isSmoothedCurve) {
+      curveType = d3.curveMonotoneX;
+    } else {
+      curveType = d3.curveLinear;
+    }
     const area = d3.area()
-      .curve(d3.curveMonotoneX)
+      .curve(curveType)
       .x((d: any) => chartAxes.xDataDomain(d.key))
       .y0(chartDimensions.height)
       .y1((d: any) => chartAxes.yDomain(d.value));
