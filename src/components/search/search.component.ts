@@ -14,7 +14,8 @@ export class SearchComponent implements OnInit {
 
   }
 
-  public runSearch(value: any) {
-    this.valuesChangedEvent.next(value.search);
+  public runSearch(form: any) {
+    this.valuesChangedEvent.next(form.value.search);
+    form.reset();
   }
 }
