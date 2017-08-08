@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { DateUnit, HistogramData, SelectedValues } from '../../components/histogram/histogram.utils';
+import { DateUnit, DataType, ChartType, HistogramData, SelectedValues } from '../../components/histogram/histogram.utils';
 import * as d3 from 'd3';
 
 
@@ -14,6 +14,8 @@ export class HistogramDemoComponent implements OnInit {
   public barsHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
   public defaultHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
   public dateUnit = DateUnit;
+  public dataType = DataType;
+  public chartType = ChartType;
   public selectedTimeValues: SelectedValues = {startvalue: null, endvalue: null};
   public selectedNumericValues: SelectedValues = {startvalue: null, endvalue: null};
 
