@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef } from '@angular/core';
 
-import { ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedValues,
+import { ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
          ChartDimensions, ChartAxes } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
@@ -40,16 +40,22 @@ export class HistogramComponent implements OnInit {
   @Input() public xLabels = 4;
   @Input() public barWeight = 0.6;
   @Input() public isSmoothedCurve = true;
+  @Input() public intervalSelection: Subject<SelectedInputValues> = new Subject<SelectedInputValues>();
 
 
-  @Output() public valuesChangedEvent: Subject<SelectedValues> = new Subject<SelectedValues>();
+  @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
 
   private histogramNode: any;
   private histogramElement: ElementRef;
   private histogramTitle: string;
   private context: any;
   private barsContext: any;
-  private selectionInterval: SelectedValues = {startvalue: null, endvalue: null};
+  private selectionInterval: SelectedOutputValues = {startvalue: null, endvalue: null};
+  private selectionBrush: d3.BrushBehavior<any>;
+  private chartAxes: ChartAxes;
+  private inputData: Array<{key: number, value: number}>;
+  private chartDimensions: ChartDimensions;
+  private hasSelectionExceededData = false;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
 
@@ -58,10 +64,12 @@ export class HistogramComponent implements OnInit {
     this.data.subscribe(value => {
       this.plotHistogram(value);
     });
+    this.intervalSelection.subscribe(value => {
+      this.setSelectedInterval(value);
+    });
   }
 
   public plotHistogram(inputData: Array<{key: number, value: number}>): void {
-
     // set chartWidth value equal to container width when it is not specified by the user
     if (this.chartWidth === null) {
       this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
@@ -83,6 +91,7 @@ export class HistogramComponent implements OnInit {
 
     let data: Array<HistogramData>;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
+      this.inputData = inputData;
       data = this.parseDataKey(inputData);
 
       if (this.startValue == null) {
@@ -93,25 +102,69 @@ export class HistogramComponent implements OnInit {
         this.endValue = this.toString(data[data.length - 1].key);
         this.selectionInterval.endvalue = data[data.length - 1].key;
       }
-      const chartDimensions = this.initializeChartDimensions();
-      const chartAxes = this.createChartAxes(chartDimensions, data);
-      this.drawChartAxes(chartDimensions, chartAxes);
-      this.plotHistogramData(chartDimensions, chartAxes, data);
+      this.chartDimensions = this.initializeChartDimensions();
+      this.chartAxes = this.createChartAxes(this.chartDimensions, data);
+      this.drawChartAxes(this.chartDimensions, this.chartAxes);
+      this.plotHistogramData(this.chartDimensions, this.chartAxes, data);
       if (this.chartType === ChartType.area) {
-        this.showTooltipsForAreaCharts(chartDimensions, chartAxes, data);
+        this.showTooltipsForAreaCharts(this.chartDimensions, this.chartAxes, data);
       }
-      const selectionBrush = d3.brushX().extent([[chartAxes.stepWidth, 0],
-      [chartDimensions.width - chartAxes.stepWidth, chartDimensions.height]]);
-      const selectionBrushStart = Math.max(0, chartAxes.xDomain(this.selectionInterval.startvalue));
-      const selectionBrushEnd = Math.min(chartAxes.xDomain(this.selectionInterval.endvalue), chartDimensions.width);
+      this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth, 0],
+      [(this.chartDimensions).width - (this.chartAxes).stepWidth, (this.chartDimensions).height]]);
+      const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
+      const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
       this.context.append('g')
         .attr('class', 'brush')
-        .call(selectionBrush).call(selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
-      this.handleOnBrushingEvent(selectionBrush, chartAxes);
-      this.handleEndOfBrushingEvent(selectionBrush, chartAxes);
+        .call(this.selectionBrush).call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
+      this.handleOnBrushingEvent(this.selectionBrush, this.chartAxes);
+      this.handleEndOfBrushingEvent(this.selectionBrush, this.chartAxes);
+
     } else {
       this.startValue = '';
       this.endValue = '';
+    }
+  }
+
+  private setSelectedInterval(selectedInputValues: SelectedInputValues): void {
+    this.checkSelectedValuesValidity(selectedInputValues);
+    const parsedSelectedValues = this.parseSelectedValues(selectedInputValues);
+    if (parsedSelectedValues.startvalue !== this.selectionInterval.startvalue ||
+     parsedSelectedValues.endvalue !== this.selectionInterval.endvalue) {
+        this.selectionInterval.startvalue = parsedSelectedValues.startvalue;
+        this.selectionInterval.endvalue = parsedSelectedValues.endvalue;
+        this.startValue = this.toString(this.selectionInterval.startvalue);
+        this.endValue = this.toString(this.selectionInterval.endvalue);
+      if (this.isSelectionBeyondDataDomain(selectedInputValues, this.inputData)) {
+        this.plotHistogram(this.inputData);
+        this.hasSelectionExceededData = true;
+      } else {
+        if (this.hasSelectionExceededData) {
+          this.plotHistogram(this.inputData);
+          this.hasSelectionExceededData = false;
+        }
+        const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
+        const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
+        if (this.context) {
+          this.context.select('.brush').call(this.selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
+        }
+      }
+    }
+  }
+
+  private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{key: number, value: number}>): boolean {
+    if ( selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  private checkSelectedValuesValidity(selectedInputValues: SelectedInputValues) {
+    if (selectedInputValues.startvalue > selectedInputValues.endvalue) {
+      throw new Error('Start value is higher than end value');
+    }
+    if (selectedInputValues.startvalue === null && selectedInputValues.endvalue === null) {
+      throw new Error('Start and end values are null');
     }
   }
 
@@ -285,12 +338,13 @@ export class HistogramComponent implements OnInit {
 
 
   private parseDataKey(inputData: Array<{key: number, value: number}>): Array<HistogramData> {
-     if (this.dataType === DataType.time) {
-        return this.parseDataKeyToDate(inputData);
-      } else {
-        return inputData;
-      }
+    if (this.dataType === DataType.time) {
+      return this.parseDataKeyToDate(inputData);
+    } else {
+      return inputData;
+    }
   }
+
   private parseDataKeyToDate(inputData: Array<{key: number, value: number}>) {
     const parsedData = new Array<HistogramData>();
     let multiplier = 1;
@@ -301,6 +355,21 @@ export class HistogramComponent implements OnInit {
       parsedData.push({key: new Date(d.key * multiplier), value: d.value});
     });
     return parsedData;
+  }
+
+  private parseSelectedValues ( selectedValues: SelectedInputValues): SelectedOutputValues {
+    const parsedSelectedValues: SelectedOutputValues = {startvalue: null, endvalue: null};
+    if (this.dataType === DataType.time) {
+      let multiplier = 1;
+      if (this.dateUnit === DateUnit.second) {
+        multiplier = 1000;
+      }
+      parsedSelectedValues.startvalue = new Date(selectedValues.startvalue * multiplier);
+      parsedSelectedValues.endvalue = new Date(selectedValues.endvalue * multiplier);
+      return parsedSelectedValues;
+    } else {
+      return selectedValues;
+    }
   }
 
   private round(value, precision): number {

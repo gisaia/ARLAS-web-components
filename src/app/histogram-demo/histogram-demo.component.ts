@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import { DateUnit, DataType, ChartType, HistogramData, SelectedValues } from '../../components/histogram/histogram.utils';
+import { DateUnit, DataType, ChartType, HistogramData, SelectedOutputValues,
+  SelectedInputValues } from '../../components/histogram/histogram.utils';
 import * as d3 from 'd3';
 
 
@@ -16,8 +17,9 @@ export class HistogramDemoComponent implements OnInit {
   public dateUnit = DateUnit;
   public dataType = DataType;
   public chartType = ChartType;
-  public selectedTimeValues: SelectedValues = {startvalue: null, endvalue: null};
-  public selectedNumericValues: SelectedValues = {startvalue: null, endvalue: null};
+  public selectedTimeValues: SelectedOutputValues = {startvalue: null, endvalue: null};
+  public selectedNumericValues: SelectedOutputValues = {startvalue: null, endvalue: null};
+  public selectValues: Subject<SelectedInputValues> = new Subject<SelectedInputValues>();
 
   constructor() { }
 
@@ -42,6 +44,10 @@ export class HistogramDemoComponent implements OnInit {
 
   }
 
+  private setSelectedValues(component: HistogramDemoComponent, start, end) {
+    const selectInputValues = {startvalue: start, endvalue: end};
+    component.selectValues.next(selectInputValues);
+  }
   private showDefaultGraph(component: HistogramDemoComponent) {
     d3.csv('assets/sp503.csv', this.stringToNumber, function(error, data) {
           if (error) { throw error; }
@@ -57,10 +63,22 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private showBarsHistogram(component: HistogramDemoComponent) {
+    const _thisComponent = this;
     d3.csv('assets/sp501.csv', this.stringToNumber, function(error, data) {
           if (error) { throw error; }
           component.barsHistogramData.next(data);
-      });
+          _thisComponent.sleep(2000).then(value => {_thisComponent.setSelectedValues(component , 1992 , 2060);
+          _thisComponent.sleep(2000).then(value2 => {_thisComponent.setSelectedValues(component, 2020 , 2040); } ); } );
+
+    });
+    // this.sleep(10000);
+    // console.log('ok');
+
+
+  }
+
+  private sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private stringToNumber(d) {

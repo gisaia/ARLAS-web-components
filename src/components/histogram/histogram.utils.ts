@@ -12,9 +12,14 @@ export interface HistogramData {
   value: number;
 }
 
-export interface SelectedValues {
+export interface SelectedOutputValues {
   startvalue: Date|number;
   endvalue: Date|number;
+}
+
+export interface SelectedInputValues {
+  startvalue: number;
+  endvalue: number;
 }
 
 export interface ChartDimensions {
