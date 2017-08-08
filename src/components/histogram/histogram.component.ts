@@ -47,6 +47,7 @@ export class HistogramComponent implements OnInit {
   private histogramElement: ElementRef;
   private histogramTitle: string;
   private context: any;
+  private barsContext: any;
   private selectionInterval: SelectedValues = {startvalue: null, endvalue: null};
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
@@ -73,6 +74,10 @@ export class HistogramComponent implements OnInit {
     // if there is data already ploted, remove it
     if (this.context) {
       this.context.remove();
+    }
+
+    if (this.barsContext) {
+      this.barsContext.remove();
     }
 
     let data: Array<HistogramData>;
@@ -185,7 +190,7 @@ export class HistogramComponent implements OnInit {
 
   private plotHistogramDataAsBars(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
-    chartDimensions.svg.selectAll('.bar')
+    this.barsContext = chartDimensions.svg.selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
