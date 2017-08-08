@@ -9,12 +9,13 @@ A generic component that plots data in a chart.
 ### Inputs : 
 
 - `data: Subject<Array<{key: number, value: number}>>` - Data to plot in the histogram. Please, check [data structure](#Data structure)
-- `dataType: string` - To be set to **time** when x axis represents time and **numeric** otherwise.
+- `dataType: string` - To be set to **time** when x axis represents time and **numeric** otherwise. Default value is : **numeric**.
 - `dataUnit: string` - (Optional) Unit to add in the tooltip
-- `chartType: string` - Possible values are **area** and **bars**.
+- `chartType: string` - Possible values are **area** and **bars**. Default value is : **area**.
 - `chartTitle: string` - The chart title.
 - `chartWidth: number` - The chart width.
 - `chartHeight: number` - The histogram height.
+- `isSmoothedCurve: boolean` - Whether the curve is smoothed or not. Default value is : **true**.
 - `dateUnit` - The unit of data key when it represents time. Possible values are **second** and **millisecond**.
 - `xTicks: number` - Number of ticks in the X axis. Used when chartType = area.
 - `yTicks: number` - Number of ticks in the Y axis.

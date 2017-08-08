@@ -34,6 +34,12 @@
     <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second" [dataUnit]="'m²'"></arlas-histogram>
   </div>
+
+   <div class="graphs_timeline">
+    <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = 9, yTicks = 2, chartTitle = 'Chart title', dataUnit ='m²', isSmoothedCurve = false</p>
+    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
+             [data]="curvedTimelineData" [dateUnit]="dateUnit.second" [dataUnit]="'m²'" [isSmoothedCurve]=false></arlas-histogram>
+  </div>
 </div>
 
 <div class="graphs">
