@@ -53,7 +53,7 @@
       <li> Selected end value : {{selectedNumericValues.endvalue}}</li>
     </ul>
     <arlas-histogram [chartType]="chartType.bars" [chartTitle]="'Chart title'" (valuesChangedEvent)="setSelectedNUmericValues($event)"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6"></arlas-histogram>
+              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [intervalSelection]="selectValues"></arlas-histogram>
   </div>
 
   <div class="graphs_bars">

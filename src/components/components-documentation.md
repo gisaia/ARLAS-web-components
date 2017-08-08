@@ -22,6 +22,7 @@ A generic component that plots data in a chart.
 - `xLabels: number` - Number of labels in the X axis. Used when chartType = bars.
 - `barWeight` - The weight of bars width. Values are between 0 and 1.
 - `customizedCssClass: string` - Css class name.
+- `intervalSelection: SelectedInputValues` - The selected interval of values.
 
 #### Improvements :
 - Add yLabels input : the number of labels in the Y axis.
