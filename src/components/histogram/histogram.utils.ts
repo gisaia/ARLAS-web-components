@@ -2,6 +2,7 @@ export const areaChart = 'area';
 export const barsChart = 'bars';
 export const timelineType = 'timeline';
 export const histogramType = 'histogram';
+import * as d3 from 'd3';
 
 export interface MarginModel {
   top: number;
