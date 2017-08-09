@@ -67,6 +67,22 @@
     stroke-opacity: 1;
 }
 
+.histogram__chart--bar__fullyselected {
+    fill: brown;
+    fill-opacity: 1;
+    stroke: darkslategrey;
+    stroke-width: 0.5px;
+    stroke-opacity: 1;
+}
+
+.histogram__chart--bar__partlyselected {
+    fill: orange;
+    fill-opacity: 1;
+    stroke: darkslategrey;
+    stroke-width: 0.5px;
+    stroke-opacity: 1;
+}
+
 .histogram__tooltip{
   position: absolute;
   text-align: left;
