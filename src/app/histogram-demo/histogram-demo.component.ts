@@ -66,14 +66,9 @@ export class HistogramDemoComponent implements OnInit {
     const _thisComponent = this;
     d3.csv('assets/sp501.csv', this.stringToNumber, function(error, data) {
           if (error) { throw error; }
-          component.barsHistogramData.next(data);
-          _thisComponent.sleep(2000).then(value => {_thisComponent.setSelectedValues(component , 1992 , 2060);
-          _thisComponent.sleep(2000).then(value2 => {_thisComponent.setSelectedValues(component, 2020 , 2040); } ); } );
-
+          _thisComponent.barsHistogramData.next(data);
+          _thisComponent.setSelectedValues(_thisComponent , 1992 , 2060);
     });
-    // this.sleep(10000);
-    // console.log('ok');
-
 
   }
 

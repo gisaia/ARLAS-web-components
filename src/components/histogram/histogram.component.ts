@@ -24,7 +24,6 @@ export class HistogramComponent implements OnInit {
   public tooltipVerticalPosition = '0';
   public tooltipXContent: string;
   public tooltipYContent: string;
-  public isDataAvailable = false;
 
   @Input() public xTicks = 5;
   @Input() public yTicks = 5;
@@ -56,6 +55,7 @@ export class HistogramComponent implements OnInit {
   private inputData: Array<{key: number, value: number}>;
   private chartDimensions: ChartDimensions;
   private hasSelectionExceededData = false;
+  private isIntervalSet = false;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
 
@@ -70,6 +70,8 @@ export class HistogramComponent implements OnInit {
   }
 
   public plotHistogram(inputData: Array<{key: number, value: number}>): void {
+    this.inputData = inputData;
+
     // set chartWidth value equal to container width when it is not specified by the user
     if (this.chartWidth === null) {
       this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
@@ -91,7 +93,6 @@ export class HistogramComponent implements OnInit {
 
     let data: Array<HistogramData>;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
-      this.inputData = inputData;
       data = this.parseDataKey(inputData);
 
       if (this.startValue == null) {
@@ -126,6 +127,7 @@ export class HistogramComponent implements OnInit {
   }
 
   private setSelectedInterval(selectedInputValues: SelectedInputValues): void {
+    this.isIntervalSet = true;
     this.checkSelectedValuesValidity(selectedInputValues);
     const parsedSelectedValues = this.parseSelectedValues(selectedInputValues);
     if (parsedSelectedValues.startvalue !== this.selectionInterval.startvalue ||
@@ -134,18 +136,20 @@ export class HistogramComponent implements OnInit {
         this.selectionInterval.endvalue = parsedSelectedValues.endvalue;
         this.startValue = this.toString(this.selectionInterval.startvalue);
         this.endValue = this.toString(this.selectionInterval.endvalue);
-      if (this.isSelectionBeyondDataDomain(selectedInputValues, this.inputData)) {
-        this.plotHistogram(this.inputData);
-        this.hasSelectionExceededData = true;
-      } else {
-        if (this.hasSelectionExceededData) {
+      if (this.inputData !== null) {
+        if (this.isSelectionBeyondDataDomain(selectedInputValues, this.inputData)) {
           this.plotHistogram(this.inputData);
-          this.hasSelectionExceededData = false;
-        }
-        const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
-        const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
-        if (this.context) {
-          this.context.select('.brush').call(this.selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
+          this.hasSelectionExceededData = true;
+        } else {
+          if (this.hasSelectionExceededData) {
+            this.plotHistogram(this.inputData);
+            this.hasSelectionExceededData = false;
+          }
+          const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
+          const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
+          if (this.context) {
+            this.context.select('.brush').call(this.selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
+          }
         }
       }
     }
@@ -322,10 +326,13 @@ export class HistogramComponent implements OnInit {
         this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         this.startValue = this.toString(this.selectionInterval.startvalue);
         this.endValue = this.toString(this.selectionInterval.endvalue);
-        valueChangedEvent.next(this.selectionInterval);
+        if (!this.isIntervalSet) {
+          valueChangedEvent.next(this.selectionInterval);
+        }
         this.showTitle = true;
       }
     });
+    this.isIntervalSet = false;
   }
 
   private toString(value: Date|number): string {
