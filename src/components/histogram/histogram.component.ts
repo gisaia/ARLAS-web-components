@@ -64,15 +64,16 @@ export class HistogramComponent implements OnInit {
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     this.data.subscribe(value => {
-      this.plotHistogram(value);
+      this.plotHistogram(value, false);
     });
     this.intervalSelection.subscribe(value => {
       this.setSelectedInterval(value);
     });
   }
 
-  public plotHistogram(inputData: Array<{key: number, value: number}>): void {
+  public plotHistogram(inputData: Array<{key: number, value: number}>, isIntervalSet: boolean): void {
     this.inputData = inputData;
+    this.isIntervalSet = isIntervalSet;
 
     // set chartWidth value equal to container width when it is not specified by the user
     if (this.chartWidth === null) {
@@ -140,11 +141,11 @@ export class HistogramComponent implements OnInit {
         this.endValue = this.toString(this.selectionInterval.endvalue);
       if (this.inputData !== null) {
         if (this.isSelectionBeyondDataDomain(selectedInputValues, this.inputData)) {
-          this.plotHistogram(this.inputData);
+          this.plotHistogram(this.inputData, true);
           this.hasSelectionExceededData = true;
         } else {
           if (this.hasSelectionExceededData) {
-            this.plotHistogram(this.inputData);
+            this.plotHistogram(this.inputData, true);
             this.hasSelectionExceededData = false;
           }
           const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
