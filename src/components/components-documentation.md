@@ -23,6 +23,8 @@ A generic component that plots data in a chart.
 - `barWeight` - The weight of bars width. Values are between 0 and 1.
 - `customizedCssClass: string` - Css class name.
 - `intervalSelection: SelectedInputValues` - The selected interval of values.
+- `ticksDateFormat: string` - The date format of ticks. Example : `%B %Y`. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
+- `valuesDateFormat: string` - The date format of the two labels below the chart. Example : `%A %d %B %Y`. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
 
 #### Improvements :
 - Add yLabels input : the number of labels in the Y axis.
