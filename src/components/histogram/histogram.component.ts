@@ -331,7 +331,7 @@ export class HistogramComponent implements OnInit {
         this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         this.startValue = this.toString(this.selectionInterval.startvalue);
         this.endValue = this.toString(this.selectionInterval.endvalue);
-        if (!this.isIntervalSet) {
+        if (this.isIntervalSet === false) {
           valueChangedEvent.next(this.selectionInterval);
         }
         this.showTitle = true;
