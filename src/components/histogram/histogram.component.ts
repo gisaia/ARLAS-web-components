@@ -1,7 +1,9 @@
 import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef } from '@angular/core';
 
-import { ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
-         ChartDimensions, ChartAxes } from './histogram.utils';
+import {
+  ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
+  ChartDimensions, ChartAxes
+} from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -34,7 +36,7 @@ export class HistogramComponent implements OnInit {
   @Input() public dataType: DataType = DataType.numeric;
   @Input() public customizedCssClass = '';
   @Input() public dataUnit = '';
-  @Input() public data: Subject<Array<{key: number, value: number}>> = new Subject<Array<{key: number, value: number}>>();
+  @Input() public data: Subject<Array<{ key: number, value: number }>> = new Subject<Array<{ key: number, value: number }>>();
   @Input() public dateUnit: DateUnit = DateUnit.millisecond;
   @Input() public ticksDateFormat: string = null;
   @Input() public valuesDateFormat: string = null;
@@ -51,29 +53,30 @@ export class HistogramComponent implements OnInit {
   private histogramTitle: string;
   private context: any;
   private barsContext: any;
-  private selectionInterval: SelectedOutputValues = {startvalue: null, endvalue: null};
+  private selectionInterval: SelectedOutputValues = { startvalue: null, endvalue: null };
   private selectionBrush: d3.BrushBehavior<any>;
   private chartAxes: ChartAxes;
-  private inputData: Array<{key: number, value: number}>;
+  private inputData: Array<{ key: number, value: number }>;
   private chartDimensions: ChartDimensions;
   private hasSelectionExceededData = false;
-  private isIntervalSet = false;
+  private fromSetInterval = false;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
 
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     this.data.subscribe(value => {
-      this.plotHistogram(value, false);
+      this.plotHistogram(value);
     });
     this.intervalSelection.subscribe(value => {
+      this.fromSetInterval = true;
       this.setSelectedInterval(value);
+      this.fromSetInterval = false;
     });
   }
 
-  public plotHistogram(inputData: Array<{key: number, value: number}>, isIntervalSet: boolean): void {
+  public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
     this.inputData = inputData;
-    this.isIntervalSet = isIntervalSet;
 
     // set chartWidth value equal to container width when it is not specified by the user
     if (this.chartWidth === null) {
@@ -130,22 +133,22 @@ export class HistogramComponent implements OnInit {
   }
 
   private setSelectedInterval(selectedInputValues: SelectedInputValues): void {
-    this.isIntervalSet = true;
     this.checkSelectedValuesValidity(selectedInputValues);
+    this.fromSetInterval = true;
     const parsedSelectedValues = this.parseSelectedValues(selectedInputValues);
     if (parsedSelectedValues.startvalue !== this.selectionInterval.startvalue ||
-     parsedSelectedValues.endvalue !== this.selectionInterval.endvalue) {
-        this.selectionInterval.startvalue = parsedSelectedValues.startvalue;
-        this.selectionInterval.endvalue = parsedSelectedValues.endvalue;
-        this.startValue = this.toString(this.selectionInterval.startvalue);
-        this.endValue = this.toString(this.selectionInterval.endvalue);
+      parsedSelectedValues.endvalue !== this.selectionInterval.endvalue) {
+      this.selectionInterval.startvalue = parsedSelectedValues.startvalue;
+      this.selectionInterval.endvalue = parsedSelectedValues.endvalue;
+      this.startValue = this.toString(this.selectionInterval.startvalue);
+      this.endValue = this.toString(this.selectionInterval.endvalue);
       if (this.inputData !== null) {
         if (this.isSelectionBeyondDataDomain(selectedInputValues, this.inputData)) {
-          this.plotHistogram(this.inputData, true);
+          this.plotHistogram(this.inputData);
           this.hasSelectionExceededData = true;
         } else {
           if (this.hasSelectionExceededData) {
-            this.plotHistogram(this.inputData, true);
+            this.plotHistogram(this.inputData);
             this.hasSelectionExceededData = false;
           }
           const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
@@ -158,8 +161,8 @@ export class HistogramComponent implements OnInit {
     }
   }
 
-  private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{key: number, value: number}>): boolean {
-    if ( selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key ) {
+  private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{ key: number, value: number }>): boolean {
+    if (selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key) {
       return true;
     } else {
       return false;
@@ -221,9 +224,9 @@ export class HistogramComponent implements OnInit {
         stepWidth = xDomain(data[0].key);
       }
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0.2);
-      xDataDomain.domain(data.map(function(d) { return d.key; }));
+      xDataDomain.domain(data.map(function (d) { return d.key; }));
       xAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(5).tickValues(xDataDomain.domain()
-                .filter(function(d, i) { return !(i % labelsPeriod); }));
+        .filter(function (d, i) { return !(i % labelsPeriod); }));
     }
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
     yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
@@ -258,15 +261,15 @@ export class HistogramComponent implements OnInit {
       .data(data)
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
-      .attr('x', function(d) {return chartAxes.xDataDomain(d.key); })
+      .attr('x', function (d) { return chartAxes.xDataDomain(d.key); })
       .attr('width', chartAxes.stepWidth * _thisComponent.barWeight)
-      .attr('y', function(d) { return chartAxes.yDomain(d.value); })
-      .attr('height', function(d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
+      .attr('y', function (d) { return chartAxes.yDomain(d.value); })
+      .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')')
-      .on('mousemove', function(d){
+      .on('mousemove', function (d) {
         _thisComponent.setTooltipPosition(-40, -40, d);
-        })
-      .on('mouseout', function(d){ _thisComponent.showTooltip = false; });
+      })
+      .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
   }
 
   private plotHistogramDataAsArea(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
@@ -298,7 +301,7 @@ export class HistogramComponent implements OnInit {
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
       .on('mouseover', function (d) {
-        _thisComponent.setTooltipPosition(-40, -40 , d);
+        _thisComponent.setTooltipPosition(-40, -40, d);
       })
       .on('mouseout', function (d) {
         _thisComponent.showTooltip = false;
@@ -309,8 +312,8 @@ export class HistogramComponent implements OnInit {
     this.showTooltip = true;
     this.tooltipXContent = 'x: ' + this.toString(data.key);
     this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
-    this.tooltipVerticalPosition = (d3.event.pageX + dx)  + 'px';
-    this.tooltipHorizontalPosition = (d3.event.pageY + dy)  + 'px';
+    this.tooltipVerticalPosition = (d3.event.pageX + dx) + 'px';
+    this.tooltipHorizontalPosition = (d3.event.pageY + dy) + 'px';
 
   }
 
@@ -332,16 +335,15 @@ export class HistogramComponent implements OnInit {
         this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         this.startValue = this.toString(this.selectionInterval.startvalue);
         this.endValue = this.toString(this.selectionInterval.endvalue);
-        if (this.isIntervalSet === false) {
+        if(!this.fromSetInterval){
           valueChangedEvent.next(this.selectionInterval);
         }
         this.showTitle = true;
       }
     });
-    this.isIntervalSet = false;
   }
 
-  private toString(value: Date|number): string {
+  private toString(value: Date | number): string {
     if (value instanceof Date) {
       if (this.valuesDateFormat !== null) {
         const timeFormat = d3.timeFormat(this.valuesDateFormat);
@@ -355,7 +357,7 @@ export class HistogramComponent implements OnInit {
   }
 
 
-  private parseDataKey(inputData: Array<{key: number, value: number}>): Array<HistogramData> {
+  private parseDataKey(inputData: Array<{ key: number, value: number }>): Array<HistogramData> {
     if (this.dataType === DataType.time) {
       return this.parseDataKeyToDate(inputData);
     } else {
@@ -363,20 +365,20 @@ export class HistogramComponent implements OnInit {
     }
   }
 
-  private parseDataKeyToDate(inputData: Array<{key: number, value: number}>) {
+  private parseDataKeyToDate(inputData: Array<{ key: number, value: number }>) {
     const parsedData = new Array<HistogramData>();
     let multiplier = 1;
     if (this.dateUnit === DateUnit.second) {
       multiplier = 1000;
     }
     inputData.forEach(d => {
-      parsedData.push({key: new Date(d.key * multiplier), value: d.value});
+      parsedData.push({ key: new Date(d.key * multiplier), value: d.value });
     });
     return parsedData;
   }
 
-  private parseSelectedValues ( selectedValues: SelectedInputValues): SelectedOutputValues {
-    const parsedSelectedValues: SelectedOutputValues = {startvalue: null, endvalue: null};
+  private parseSelectedValues(selectedValues: SelectedInputValues): SelectedOutputValues {
+    const parsedSelectedValues: SelectedOutputValues = { startvalue: null, endvalue: null };
     if (this.dataType === DataType.time) {
       let multiplier = 1;
       if (this.dateUnit === DateUnit.second) {
@@ -400,20 +402,20 @@ export class HistogramComponent implements OnInit {
     return Math.round(value * multiplier) / multiplier;
   }
 
-  private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date|number,
-  selectedEndValue: Date|number): Array<Date | number | { valueOf(): number }> {
+  private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date | number,
+    selectedEndValue: Date | number): Array<Date | number | { valueOf(): number }> {
     let interval = 0;
     if (this.chartType === ChartType.bars) {
       interval = this.getBucketInterval(data);
     }
     const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
-    const dataKeyUnionSelectedValues = new Array<Date|number>();
+    const dataKeyUnionSelectedValues = new Array<Date | number>();
     data.forEach(d => {
       dataKeyUnionSelectedValues.push(d.key);
     });
     dataKeyUnionSelectedValues.push(selectedStartValue);
     dataKeyUnionSelectedValues.push(selectedEndValue);
-    if ( this.dataType === DataType.time) {
+    if (this.dataType === DataType.time) {
       xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => d).getTime() - interval));
       xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => d).getTime() + interval));
     } else {
@@ -423,19 +425,19 @@ export class HistogramComponent implements OnInit {
     return xDomainExtent;
   }
 
-  private getBucketInterval (data: Array<{key: any, value: number}>): number {
+  private getBucketInterval(data: Array<{ key: any, value: number }>): number {
     let interval = Number.MAX_VALUE;
-    if (data.length > 1 ) {
-      for (let i = 0; i < (data.length - 1); i++ ) {
-        if ( this.dataType === DataType.time) {
+    if (data.length > 1) {
+      for (let i = 0; i < (data.length - 1); i++) {
+        if (this.dataType === DataType.time) {
           interval = Math.min(interval, data[i + 1].key.getTime() - data[i].key.getTime());
         } else {
           interval = Math.min(interval, data[i + 1].key - data[i].key);
         }
       }
-      if ( interval === Number.MAX_VALUE ) {
-          interval = 0;
-     }
+      if (interval === Number.MAX_VALUE) {
+        interval = 0;
+      }
     }
     return interval;
   }
