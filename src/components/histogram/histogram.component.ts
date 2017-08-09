@@ -37,6 +37,8 @@ export class HistogramComponent implements OnInit {
   @Input() public dataUnit = '';
   @Input() public data: Subject<Array<{key: number, value: number}>> = new Subject<Array<{key: number, value: number}>>();
   @Input() public dateUnit: DateUnit = DateUnit.millisecond;
+  @Input() public ticksDateFormat: string = null;
+  @Input() public valuesDateFormat: string = null;
   @Input() public xLabels = 4;
   @Input() public barWeight = 0.6;
   @Input() public isSmoothedCurve = true;
@@ -204,6 +206,9 @@ export class HistogramComponent implements OnInit {
       xDataDomain = (this.getXDomainScale()).range([startRange, endRange]);
       xDataDomain.domain(d3.extent(data, (d: any) => d.key));
       xAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
+      if (this.dataType === DataType.time && this.ticksDateFormat !== null) {
+        xAxis = xAxis.tickFormat(d3.timeFormat(this.ticksDateFormat));
+      }
     } else {
       if (data.length > 1) {
         stepWidth = xDomain(data[1].key) - xDomain(data[0].key);
@@ -330,7 +335,12 @@ export class HistogramComponent implements OnInit {
 
   private toString(value: Date|number): string {
     if (value instanceof Date) {
-      return value.toDateString();
+      if (this.valuesDateFormat !== null) {
+        const timeFormat = d3.timeFormat(this.valuesDateFormat);
+        return timeFormat(value);
+      } else {
+        return value.toDateString();
+      }
     } else {
       return this.round(value, 1).toString();
     }
