@@ -17,14 +17,19 @@ A generic component that plots data in a chart.
 - `chartHeight: number` - The histogram height.
 - `isSmoothedCurve: boolean` - Whether the curve is smoothed or not. Default value is : **true**.
 - `dateUnit` - The unit of data key when it represents time. Possible values are **second** and **millisecond**.
-- `xTicks: number` - Number of ticks in the X axis. Used when chartType = area.
-- `yTicks: number` - Number of ticks in the Y axis.
-- `xLabels: number` - Number of labels in the X axis. Used when chartType = bars.
 - `barWeight` - The weight of bars width. Values are between 0 and 1.
 - `customizedCssClass: string` - Css class name.
 - `intervalSelection: SelectedInputValues` - The selected interval of values.
 - `ticksDateFormat: string` - The date format of ticks. Example : `%B %Y`. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
 - `valuesDateFormat: string` - The date format of the two labels below the chart. Example : `%A %d %B %Y`. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
+- `xTicks: number` - Number of ticks in the X axis.
+- `yTicks: number` - Number of ticks in the Y axis.
+- `xLabels: number` - Number of labels in the X axis.
+- `yLabels: number` - Number of labels in the Y axis.
+- `showXTicks: boolean` - Whether showing the x axis ticks or not. Default value is : **true**.
+- `showYTicks: boolean` - Whether showing the y axis ticks or not. Default value is : **true**.
+- `showXLabels: boolean` - Whether showing the x axis labels or not. Default value is : **true**.
+- `showYLabels: boolean` - Whether showing the y axis labels or not. Default value is : **true**.
 
 #### Improvements :
 - Add yLabels input : the number of labels in the Y axis.
