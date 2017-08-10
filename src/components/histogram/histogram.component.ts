@@ -40,10 +40,15 @@ export class HistogramComponent implements OnInit {
   @Input() public dateUnit: DateUnit = DateUnit.millisecond;
   @Input() public ticksDateFormat: string = null;
   @Input() public valuesDateFormat: string = null;
-  @Input() public xLabels = 4;
+  @Input() public xLabels = 5;
+  @Input() public yLabels = 5;
   @Input() public barWeight = 0.6;
   @Input() public isSmoothedCurve = true;
   @Input() public intervalSelection: Subject<SelectedInputValues> = new Subject<SelectedInputValues>();
+  @Input() public showXLabels = true;
+  @Input() public showXTicks = true;
+  @Input() public showYLabels = true;
+  @Input() public showYTicks = true;
 
 
   @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
@@ -61,6 +66,10 @@ export class HistogramComponent implements OnInit {
   private hasSelectionExceededData = false;
   private fromSetInterval = false;
   private dataInterval: number;
+  private xTicksAxis;
+  private xLabelsAxis;
+  private yTicksAxis;
+  private yLabelsAxis;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
 
@@ -206,20 +215,23 @@ export class HistogramComponent implements OnInit {
     xDomain.domain(xDomainExtent);
     // xDataDomain includes data domain only
     let xDataDomain;
-    let xAxis;
+    let xTicksAxis;
+    let xLabelsAxis;
     let stepWidth;
     // Compute the range (in pixels) of xDataDomain where data will be plotted
     const startRange = xDomain(data[0].key);
     let endRange;
+    const ticksPeriod = Math.max(1, Math.round(data.length / this.xTicks));
     const labelsPeriod = Math.max(1, Math.round(data.length / this.xLabels));
     if (this.chartType === ChartType.area) {
       stepWidth = 0;
       endRange = xDomain(+data[data.length - 1].key);
       xDataDomain = (this.getXDomainScale()).range([startRange, endRange]);
       xDataDomain.domain(d3.extent(data, (d: any) => d.key));
-      xAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
+      xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
+      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(10).ticks(this.xLabels);
       if (this.dataType === DataType.time && this.ticksDateFormat !== null) {
-        xAxis = xAxis.tickFormat(d3.timeFormat(this.ticksDateFormat));
+        xLabelsAxis = xLabelsAxis.tickFormat(d3.timeFormat(this.ticksDateFormat));
       }
     } else {
       if (data.length > 1) {
@@ -230,26 +242,61 @@ export class HistogramComponent implements OnInit {
       endRange = xDomain(+data[data.length - 1].key + this.dataInterval) ;
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
       xDataDomain.domain(data.map(function(d) { return d.key; }));
-      xAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(5).tickValues(xDataDomain.domain()
+      xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xDataDomain.domain()
+        .filter(function (d, i) { return !(i % ticksPeriod); }));
+      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(7).tickValues(xDataDomain.domain()
         .filter(function (d, i) { return !(i % labelsPeriod); }));
     }
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
     yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
-    const yAxis = d3.axisLeft(yDomain).ticks(this.yTicks);
-    return { xDomain, xDataDomain, yDomain, xAxis, yAxis, stepWidth };
+    const yTicksAxis = d3.axisLeft(yDomain).ticks(this.yTicks);
+    const yLabelsAxis = d3.axisLeft(yDomain).tickSize(0).tickPadding(10).ticks(this.yLabels);
+    return { xDomain, xDataDomain, yDomain, xTicksAxis, yTicksAxis, stepWidth, xLabelsAxis, yLabelsAxis };
   }
 
   private drawChartAxes(chartDimensions: ChartDimensions, chartAxes: ChartAxes): void {
+    // draw two axes for each X and Y
+    // For the first ones, labels are always hidden. The axe and ticks are shown.
+    // The second ones the axe and ticks are always hidden. Only labels are shown.
     this.context = chartDimensions.svg.append('g')
       .attr('class', 'context')
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')');
-    this.context.append('g')
-      .attr('class', 'axis')
+    this.xTicksAxis = this.context.append('g')
+      .attr('class', 'histogram__ticks-axis')
       .attr('transform', 'translate(0,' + chartDimensions.height + ')')
-      .call(chartAxes.xAxis);
-    this.context.append('g')
-      .attr('class', 'axis')
-      .call(chartAxes.yAxis);
+      .call(chartAxes.xTicksAxis);
+    this.xLabelsAxis = this.context.append('g')
+      .attr('class', 'histogram__labels-axis')
+      .attr('transform', 'translate(0,' + chartDimensions.height + ')')
+      .call(chartAxes.xLabelsAxis);
+    this.yTicksAxis = this.context.append('g')
+      .attr('class', 'histogram__ticks-axis')
+      .call(chartAxes.yTicksAxis);
+    this.yLabelsAxis = this.context.append('g')
+      .attr('class', 'histogram__labels-axis')
+      .call(chartAxes.yLabelsAxis);
+
+    // Define css classes for the ticks, labels and the axes
+    this.xTicksAxis.selectAll('path').attr('class', 'histogram__axis');
+    this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
+    this.xTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
+    this.yTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
+    this.xLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
+    this.yLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
+
+    if (!this.showXTicks) {
+      this.xTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
+    }
+    if (!this.showXLabels) {
+      this.xLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
+    }
+
+    if (!this.showYTicks) {
+      this.yTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
+    }
+    if (!this.showYLabels) {
+      this.yLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
+    }
   }
 
   private plotHistogramData(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
@@ -351,9 +398,6 @@ export class HistogramComponent implements OnInit {
           valueChangedEvent.next(this.selectionInterval);
         }
         this.showTitle = true;
-        if (this.chartType === ChartType.bars) {
-          this.applyStyleOnSelectedBars();
-        }
       }
     });
   }

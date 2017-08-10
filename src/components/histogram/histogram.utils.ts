@@ -33,8 +33,10 @@ export interface ChartAxes {
   xDomain: any;
   xDataDomain: any;
   yDomain: d3.ScaleLinear<number, number>;
-  xAxis: d3.Axis<any>;
-  yAxis: d3.Axis<any>;
+  xTicksAxis: d3.Axis<any>;
+  xLabelsAxis: d3.Axis<any>;
+  yTicksAxis: d3.Axis<any>;
+  yLabelsAxis: d3.Axis<any>;
   stepWidth: number;
 }
 

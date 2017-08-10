@@ -104,4 +104,19 @@
   border-radius: 5px;
 }
 
+.histogram__ticks-axis text {
+  display: none;
+}
+
+.histogram__ticks-axis__hidden {
+  display: none;
+}
+
+.histogram__labels-axis .domain {
+  stroke-opacity: 0;
+}
+
+.histogram__labels-axis__hidden {
+  display: none;
+}
 
