@@ -44,4 +44,19 @@ A generic component that plots data in a chart.
 - The input data should be an array of `{ key: number, value: number }` object. 
 - `key` represents the **X** axis values.
 - `value` represents the **Y** axis values.
-- When **X** axis values are **date** values, `key` should be given as timestamp and `[dateType] = "'timeline'"`
+- When **X** axis values are **date** values, `key` should be given as timestamp and `[dataType] = "'time'"`
+
+### Styling :
+
+Customize styles :
+
+- Axes, ticks and labels :
+  - To style the axes use `histogram__axis` css class.
+  - To style the axes use `histogram__axis` css class.
+  - To style the ticks use `histogram__ticks` css class.
+  - To style the labels use `histogram__labels` css class.
+  
+- Bars : 
+  - To style the fully selected bars, use `histogram__chart--bar__fullyselected` css class.
+  - To style the partly selected bars, use `histogram__chart--bar__partlyselected` css class.
+  - To style the non-selected bars, use `histogram__chart--bar` css class.
