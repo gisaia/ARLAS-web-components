@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef, HostListener } from '@angular/core';
 
 import {
   ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
@@ -6,6 +6,8 @@ import {
 } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Rx';
+
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as d3 from 'd3';
 
@@ -70,8 +72,17 @@ export class HistogramComponent implements OnInit {
   private xLabelsAxis;
   private yTicksAxis;
   private yLabelsAxis;
+  private isWidthFixed = false;
+  private isHeightFixed = false;
+  private plottingCount = 0;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) { }
+  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
+    Observable.fromEvent(window, 'resize')
+        .debounceTime(500)
+        .subscribe((event: Event) => {
+          this.resizeHistogram(event);
+        });
+  }
 
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
@@ -87,15 +98,18 @@ export class HistogramComponent implements OnInit {
 
   public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
     this.inputData = inputData;
-
     // set chartWidth value equal to container width when it is not specified by the user
     if (this.chartWidth === null) {
       this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+    } else if (this.chartWidth !== null && this.plottingCount === 0) {
+      this.isWidthFixed = true;
     }
 
     // set chartHeight value equal to container height when it is not specified by the user
     if (this.chartHeight === null) {
       this.chartHeight = this.el.nativeElement.childNodes[0].offsetHeight;
+    } else if (this.chartWidth !== null && this.plottingCount === 0) {
+      this.isHeightFixed = true;
     }
 
     // if there is data already ploted, remove it
@@ -143,6 +157,19 @@ export class HistogramComponent implements OnInit {
       this.startValue = '';
       this.endValue = '';
     }
+
+    this.plottingCount++;
+  }
+
+  private resizeHistogram(e: Event): void {
+    if (this.isWidthFixed === false) {
+      this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+    }
+
+    if (this.isHeightFixed === false) {
+      this.chartHeight = this.el.nativeElement.childNodes[0].offsetHeight;
+    }
+    this.plotHistogram(this.inputData);
   }
 
   private setSelectedInterval(selectedInputValues: SelectedInputValues): void {
@@ -193,6 +220,7 @@ export class HistogramComponent implements OnInit {
 
   private initializeChartDimensions(): ChartDimensions {
     const svg = d3.select(this.histogramNode).select('svg');
+
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;
     const height = +this.chartHeight - this.margin.top - this.margin.bottom;
@@ -403,29 +431,32 @@ export class HistogramComponent implements OnInit {
   }
 
   private applyStyleOnSelectedBars(): void {
-    const _this = this;
+    const _thisComponent = this;
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
-      return d.key >= _this.selectionInterval.startvalue && d.key + _this.barWeight <= _this.selectionInterval.endvalue;
+      return d.key >= _thisComponent.selectionInterval.startvalue
+       && d.key + _thisComponent.barWeight <= _thisComponent.selectionInterval.endvalue;
     })
     .attr('class', 'histogram__chart--bar__fullyselected');
 
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
-      return d.key < _this.selectionInterval.startvalue || d.key > _this.selectionInterval.endvalue;
+      return d.key < _thisComponent.selectionInterval.startvalue || d.key > _thisComponent.selectionInterval.endvalue;
     })
     .attr('class', 'histogram__chart--bar');
 
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
-      return d.key < _this.selectionInterval.startvalue && d.key + _this.barWeight > _this.selectionInterval.startvalue;
+      return d.key < _thisComponent.selectionInterval.startvalue
+      && d.key + _thisComponent.barWeight > _thisComponent.selectionInterval.startvalue;
     })
     .attr('class', 'histogram__chart--bar__partlyselected');
 
 
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
-      return d.key <= _this.selectionInterval.endvalue && d.key + _this.barWeight > _this.selectionInterval.endvalue;
+      return d.key <= _thisComponent.selectionInterval.endvalue
+      && d.key + _thisComponent.barWeight > _thisComponent.selectionInterval.endvalue;
     })
     .attr('class', 'histogram__chart--bar__partlyselected');
   }
