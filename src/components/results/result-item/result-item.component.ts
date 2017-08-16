@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'arlas-result-item',
@@ -6,6 +6,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./result-item.component.css']
 })
 export class ResultItemComponent implements OnInit {
+
+  // itemContent is a fieldName-fieldValue map
+  @Input() public itemContent: Map<string, string | number | Date>;
+
+  private identifier: string;
 
   constructor() { }
 

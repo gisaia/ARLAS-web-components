@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'arlas-result-detailed-item',
@@ -6,6 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./result-detailed-item.component.css']
 })
 export class ResultDetailedItemComponent implements OnInit {
+
+  // Set of detailed informations about the item
+  @Input() public detailedItemInformations: Array<{fieldName: string, fieldValue: string | number | Date }>;
+
+  // Actions list : View, Show on map, Download ...
+  @Input() public actionsList: Array<string>;
 
   constructor() { }
 
