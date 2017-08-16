@@ -10,5 +10,9 @@ export { SearchModule } from './search/search.module';
 export { ErrorModalMsgComponent } from './errormodal/errormodal.component';
 export { ErrorModalComponent } from './errormodal/errormodal.component';
 export { ErrorModalModule } from './errormodal/errormodal.module';
+import { ResultListComponent } from './results/result-list/result-list.component';
+import { ResultItemComponent } from './results/result-item/result-item.component';
+import { ResultDetailedItemComponent } from './results/result-detailed-item/result-detailed-item.component';
+export { ResultsModule } from './results/results.module';
 
 
