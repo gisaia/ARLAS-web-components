@@ -23,7 +23,14 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
   @Input() public controlButtonPosition = 'topright';
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
+  @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
+
   constructor() {
+    this.removeBbox.subscribe(value => {
+      if (value) {
+        this.editLayerGroup.clearLayers();
+      }
+    })
   }
 
   public ngOnInit() { }
@@ -41,7 +48,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     });
 
-    this.setupControls();    
+    this.setupControls();
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup)
@@ -52,7 +59,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       const north = layer.getBounds().getNorth();
       const east = layer.getBounds().getEast();
       const south = layer.getBounds().getSouth();
-      this.selectedBbox.next([west, north, east, south]);
+      this.selectedBbox.next([north, west, south, east]);
     });
   }
 
@@ -87,7 +94,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         position: this.controlButtonPosition,
         callback: () => {
           if (this.editLayerGroup.hasLayer) {
-            this.editLayerGroup.clearLayers();
+            this.removeBbox.next(true);
           }
           (<any>this.map).editTools.startRectangle()
         },
@@ -97,7 +104,9 @@ export class MapComponent implements OnInit, AfterViewInit {
     const RemoveRectangleControl = EditControl.extend({
       options: {
         position: this.controlButtonPosition,
-        callback: () => this.editLayerGroup.clearLayers(),
+        callback: () => {
+          this.removeBbox.next(true);
+        },
         html: 'X'
       }
     });
