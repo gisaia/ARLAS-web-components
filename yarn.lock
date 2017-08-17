@@ -1919,6 +1919,10 @@ domutils@1.5.1:
     dom-serializer "0"
     domelementtype "1"
 
+draggable@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/draggable/-/draggable-4.1.2.tgz#674827f8d7a2acceac7980384ed484882d170370"
+
 duplexer2@0.0.2:
   version "0.0.2"
   resolved "https://registry.yarnpkg.com/duplexer2/-/duplexer2-0.0.2.tgz#c614dcf67e2fb14995a91711e5a617e8a60a31db"
@@ -3488,9 +3492,17 @@ lcid@^1.0.0:
   dependencies:
     invert-kv "^1.0.0"
 
-leaflet@^1.0.3:
+leaflet-editable@^1.1.0:
   version "1.1.0"
-  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.1.0.tgz#63246715cfc783dca6798b843a250e8e6fd84918"
+  resolved "https://registry.yarnpkg.com/leaflet-editable/-/leaflet-editable-1.1.0.tgz#f777597a40a81a273f287b489fd0fe5ccd60c8d0"
+
+leaflet.path.drag@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/leaflet.path.drag/-/leaflet.path.drag-0.0.6.tgz#6d9c3af0b9d7b032544ae16bfde688f0160514a0"
+
+leaflet@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/leaflet/-/leaflet-1.2.0.tgz#fd5d93d9cb00091f5f8a69206d0d6744c1c82697"
 
 less-loader@^4.0.2:
   version "4.0.4"
@@ -4037,17 +4049,6 @@ ncname@1.0.x:
 negotiator@0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
-
-ng2-completer@^1.2.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/ng2-completer/-/ng2-completer-1.5.2.tgz#4f2142b7d9186f64cd8cad79e7da0de9b9e128de"
-
-ng2-smart-table@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/ng2-smart-table/-/ng2-smart-table-1.2.1.tgz#b25102c1a8b0588c508cf913c539ddf0f0b3341d"
-  dependencies:
-    lodash "^4.17.4"
-    ng2-completer "^1.2.2"
 
 no-case@^2.2.0:
   version "2.3.1"
