@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit, Input } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import * as leaflet from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
 import 'leaflet/dist/images/marker-icon.png';
 import 'leaflet/dist/images/marker-icon-2x.png';
-
+import 'leaflet-editable';
 export interface Named {
   properties;
   name: string;
@@ -15,36 +15,98 @@ export interface Named {
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit, AfterViewInit {
-  public map: L.Map;
-  public geojsonLayer: L.Layer;
-  @Input() public layerSubject = new Subject<any>();
+  public map: leaflet.Map;
+  private editLayerGroup: L.LayerGroup = new L.LayerGroup();
+  private newRectangleControl: leaflet.Control;
+  private removeRectangleControl: leaflet.Control;
+
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-  constructor() { }
+  @Input() public controlButtonPosition = 'topright';
+  @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
+  constructor() {
+  }
 
   public ngOnInit() { }
 
   public ngAfterViewInit(): void {
-    this.map = leaflet.map('map', {
+
+    this.map = leaflet.map('map', <any>{
       center: [48.8534, 2.3488],
       zoom: 10,
-      zoomControl: false
+      zoomControl: false,
+      editable: true,
+      editOptions: {
+        featuresLayer: this.editLayerGroup,
+        zIndex: 2000
+      }
     });
+
+    this.setupControls();    
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
-    this.layerSubject.subscribe(
-      value => {
-        if (this.geojsonLayer !== undefined) {
-          this.map.removeLayer(this.geojsonLayer);
-        }
-        if (value.features) {
-          this.geojsonLayer = L.geoJSON(value, {
-            onEachFeature: function (feature: any, l) {
-              l.bindPopup('<h1>' + <Named>feature.properties.name + '</h1>');
-            }
-          });
-          this.geojsonLayer.addTo(this.map);
-        }
-      }
-    );
+    this.map.addLayer(this.editLayerGroup)
+
+    this.map.on('editable:vertex:dragend', (evt) => {
+      const layer: leaflet.Polygon = (<any>evt).layer;
+      const west = layer.getBounds().getWest();
+      const north = layer.getBounds().getNorth();
+      const east = layer.getBounds().getEast();
+      const south = layer.getBounds().getSouth();
+      this.selectedBbox.next([west, north, east, south]);
+    });
   }
+
+
+  private setupControls() {
+    const self = this;
+    const EditControl = leaflet.Control.extend({
+      options: {
+        position: this.controlButtonPosition,
+        callback: null,
+        html: ''
+      },
+      onAdd: function (this: leaflet.Control) {
+        const container = leaflet.DomUtil.create('div', 'leaflet-control leaflet-bar arlas-map-bar-control');
+        const link = <HTMLLinkElement>leaflet.DomUtil.create('a', 'arlas-map-button-control', container);
+        link.href = '#';
+        link.innerHTML = (<any>this.options).html;
+        leaflet.DomEvent.on(link, 'click', leaflet.DomEvent.stop)
+          .on(link, 'click', function (this: leaflet.Control) {
+            (<any>this.options).callback.call(
+              (<any>self.map).editTools,
+              undefined,
+
+            );
+          }, this);
+        return container;
+      }
+    });
+
+    const NewRectangleControl = EditControl.extend({
+      options: {
+        position: this.controlButtonPosition,
+        callback: () => {
+          if (this.editLayerGroup.hasLayer) {
+            this.editLayerGroup.clearLayers();
+          }
+          (<any>this.map).editTools.startRectangle()
+        },
+        html: '⬛'
+      }
+    });
+    const RemoveRectangleControl = EditControl.extend({
+      options: {
+        position: this.controlButtonPosition,
+        callback: () => this.editLayerGroup.clearLayers(),
+        html: 'X'
+      }
+    });
+    this.newRectangleControl = new NewRectangleControl();
+    this.removeRectangleControl = new RemoveRectangleControl();
+
+    this.map.addControl(this.newRectangleControl);
+    this.map.addControl(this.removeRectangleControl);
+
+  }
+
 }

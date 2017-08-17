@@ -30,8 +30,8 @@
     "@types/leaflet": "^1.0.67",
     "core-js": "^2.4.1",
     "d3": "^4.9.1",
-    "leaflet": "^1.0.3",
-    "ng2-smart-table": "^1.2.1",
+    "leaflet": "^1.2.0",
+    "leaflet-editable": "^1.1.0",
     "node": "^0.0.0",
     "rxjs": "^5.1.0",
     "zone.js": "^0.8.4"

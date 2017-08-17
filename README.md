@@ -5,7 +5,6 @@ ARLAS-web-components is an Angular library that provides a set of data analytics
 
 - **MapComponent**.
 - **HistogramComponent**.
-- **TableComponent**.
 
 ## Prerequisites :
 

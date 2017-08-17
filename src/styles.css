@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @import '../node_modules/leaflet/dist/leaflet.css';
-
 .histogramright .histogram__description__startvalue {
   font-size: 0.8em;
 }
@@ -23,4 +22,7 @@
 
 .histogramleft .histogram__description__title {
   font-size: 0.6em;
+}
+a.arlas-map-control{
+    background-color: green;
 }
