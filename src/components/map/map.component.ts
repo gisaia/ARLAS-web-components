@@ -30,7 +30,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       if (value) {
         this.editLayerGroup.clearLayers();
       }
-    })
+    });
   }
 
   public ngOnInit() { }
@@ -51,14 +51,13 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.setupControls();
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
-    this.map.addLayer(this.editLayerGroup)
+    this.map.addLayer(this.editLayerGroup);
 
-    this.map.on('editable:vertex:dragend', (evt) => {
-      const layer: leaflet.Polygon = (<any>evt).layer;
-      const west = layer.getBounds().getWest();
-      const north = layer.getBounds().getNorth();
-      const east = layer.getBounds().getEast();
-      const south = layer.getBounds().getSouth();
+    this.map.on('editable:vertex:dragend', (e) => {
+      const west = (<any>e).layer.getBounds().getWest();
+      const north = (<any>e).layer.getBounds().getNorth();
+      const east = (<any>e).layer.getBounds().getEast();
+      const south = (<any>e).layer.getBounds().getSouth();
       this.selectedBbox.next([north, west, south, east]);
     });
   }
@@ -89,6 +88,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     });
 
+
     const NewRectangleControl = EditControl.extend({
       options: {
         position: this.controlButtonPosition,
@@ -96,7 +96,7 @@ export class MapComponent implements OnInit, AfterViewInit {
           if (this.editLayerGroup.hasLayer) {
             this.removeBbox.next(true);
           }
-          (<any>this.map).editTools.startRectangle()
+          (<any>this.map).editTools.startRectangle();
         },
         html: '⬛'
       }
