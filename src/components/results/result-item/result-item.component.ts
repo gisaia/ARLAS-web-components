@@ -9,6 +9,7 @@ import { RowItem } from '../utils/rowItem';
 export class ResultItemComponent implements OnInit {
 
   @Input() public rowItem: RowItem;
+  public isDetailToggled = false;
 
   private identifier: string;
 

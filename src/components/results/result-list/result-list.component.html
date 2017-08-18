@@ -1,4 +1,4 @@
-<table class="resultlist" [style.width.px]="tableWidth" class="table table-sm table-striped table-bordered table-hover">
+<table class="resultlist" [style.width.px]="tableWidth" class="table table-sm table-responsive table-hover">
   <thead >
     <tr>
       <th class="resultlist__header--columns" *ngFor="let column of columns" >
@@ -10,8 +10,7 @@
       </th>
     </tr>
   </thead>
-  <tbody>
-    <tr arlas-result-item *ngFor="let rowItem of rows"
-    [rowItem]="rowItem"></tr>
+  <tbody arlas-result-item *ngFor="let rowItem of rows"
+    [rowItem]="rowItem">
   </tbody>
 </table>
