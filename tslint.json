@@ -120,7 +120,7 @@
     ],
     "component-selector": [
       true,
-      "element",
+      ["attribute","element"],
       "arlas",
       "kebab-case"
     ],

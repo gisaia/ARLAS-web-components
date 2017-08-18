@@ -10,6 +10,8 @@ import { ResultListComponent } from '../components/results/result-list/result-li
 import { ResultItemComponent } from '../components/results/result-item/result-item.component';
 import { ResultDetailedItemComponent } from '../components/results/result-detailed-item/result-detailed-item.component';
 import { MapDemoComponent } from './map-demo/map-demo.component';
+import { ResultsDemoComponent } from './results-demo/results-demo.component';
+
 
 @NgModule({
   declarations: [
@@ -22,7 +24,8 @@ import { MapDemoComponent } from './map-demo/map-demo.component';
     ErrorModalMsgComponent,
     ResultListComponent,
     ResultItemComponent,
-    ResultDetailedItemComponent
+    ResultDetailedItemComponent,
+    ResultsDemoComponent
 
   ],
   imports: [

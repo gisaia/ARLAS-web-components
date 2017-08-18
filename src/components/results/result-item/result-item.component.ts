@@ -1,14 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { RowItem } from '../utils/rowItem';
 
 @Component({
-  selector: 'arlas-result-item',
+  selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
   styleUrls: ['./result-item.component.css']
 })
 export class ResultItemComponent implements OnInit {
 
-  // itemContent is a fieldName-fieldValue map
-  @Input() public itemContent: Map<string, string | number | Date>;
+  @Input() public rowItem: RowItem;
 
   private identifier: string;
 

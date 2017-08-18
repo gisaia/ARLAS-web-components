@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, OnChanges, SimpleChange, DoCheck, IterableDiffers,
+         ViewContainerRef, ElementRef} from '@angular/core';
 import { SortEnum } from '../results.utils';
-
+import { Column } from '../utils/column';
+import { RowItem } from '../utils/rowItem';
 import { Subject } from 'rxjs/Subject';
 
 
@@ -9,7 +11,7 @@ import { Subject } from 'rxjs/Subject';
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnInit {
+export class ResultListComponent implements OnInit, DoCheck {
 
   // columnName is the shown name
   // fieldName is the real field name that's hidden
@@ -17,14 +19,17 @@ export class ResultListComponent implements OnInit {
   // includes an ID field. It will be the id of each item
   @Input() public fieldsList: Array<{columnName: string, fieldName: string, dataType: string}>;
 
-  // tableContent is a list of fieldName-fieldValue map
-  @Input() public tableContent: Array<Map<string, string | number | Date>> ;
+  // rowItemList is a list of fieldName-fieldValue map
+  @Input() public rowItemList: Array<Map<string, string | number | Date>> ;
+
+  // Name of the id field
+  @Input() public idFieldName: string;
 
   // Actions list for detailed items : View, Show on map, Download ...
   @Input() public actionsList: Array<string>;
 
   // the table width. If not specified, the tableWidth value is equal to container width.
-  @Input() public tableWidth: number;
+  @Input() public tableWidth: number = null;
 
   // Sorting a column event. Do we use a Subject or try ngOnChange ?
   @Output() public sortColumnEvent: Subject<{sort: SortEnum, fieldName: string}>;
@@ -42,9 +47,57 @@ export class ResultListComponent implements OnInit {
   // The moreDataEvent notify the need for more data.
   @Output() public moreDataEvent: Subject<any>;
 
-  constructor() { }
+  public columns: Array<Column>;
+  public rows: Array<RowItem>;
+  private iterableRowsDiffer;
+  private iterableColumnsDiffer;
+
+
+  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private viewContainerRef: ViewContainerRef,
+   private el: ElementRef) {
+    this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
+    this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
+}
+
 
   public ngOnInit() {
+    if (this.tableWidth === null) {
+      this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+    }
+  }
+
+  public ngDoCheck() {
+    const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
+    const rowChanges = this.iterableRowsDiffer.diff(this.rowItemList);
+    if (columnChanges) {
+        this.setColumns();
+    }
+    if (rowChanges) {
+        this.setRows();
+    }
+
+  }
+
+  private setColumns() {
+    this.columns = new Array<Column>();
+    this.fieldsList.forEach(field => {
+      const column = new Column(field.columnName, field.fieldName, field.dataType);
+      if (field.fieldName === this.idFieldName) {
+        column.isIdField = true;
+        // id column is the first one
+        this.columns.unshift(column);
+      } else {
+        this.columns.push(column);
+      }
+    });
+  }
+
+  private setRows() {
+    this.rows = new Array<RowItem>();
+    this.rowItemList.forEach(rowItem => {
+      const row = new RowItem(this.columns, rowItem);
+      this.rows.push(row);
+    });
   }
 
 }
