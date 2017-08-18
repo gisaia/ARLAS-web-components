@@ -1,0 +1,15 @@
+.resultlist__header {
+  text-align: center;
+}
+.resultlist__header--columns {
+  color: #3399ff;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 0.9em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.resultlist {
+  width: 100%;
+}
+
