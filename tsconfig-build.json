@@ -18,8 +18,7 @@
     "paths": {
       "@angular/core": ["node_modules/@angular/core"],
       "rxjs/*": ["node_modules/rxjs/*"],
-      "d3/*": ["node_modules/d3/*"],
-      "leaflet-draw/*": ["node_modules/leaflet-draw/*"]
+      "d3/*": ["node_modules/d3/*"]
     },
     "lib": [
       "es2015",
