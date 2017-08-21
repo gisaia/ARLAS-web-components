@@ -1,6 +1,10 @@
 .resultitem__cell{
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.8em;
-  text-align: center;
+  text-align: left;
   vertical-align: middle;
+}
+
+.resultitem__cell__toggle {
+  float: right;
 }

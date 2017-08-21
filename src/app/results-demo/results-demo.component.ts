@@ -1,4 +1,5 @@
 import { Component, OnInit, SimpleChange } from '@angular/core';
+import { DetailedDataRetrieverImp} from './utils/detailed-data-retriever';
 
 @Component({
   selector: 'arlas-results-demo',
@@ -9,6 +10,7 @@ export class ResultsDemoComponent implements OnInit {
 
   public data: Array<Map<string, string | number | Date>>;
   public fieldsList: Array<{columnName: string, fieldName: string, dataType: string}>;
+  public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
 
   constructor() {}
 
