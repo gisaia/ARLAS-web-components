@@ -9,6 +9,15 @@
   vertical-align: middle;
 }
 
+.resultlist__header--filters {
+  color: #3399ff;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 0.9em;
+  text-align: left;
+  vertical-align: middle;
+  padding: 0.25rem, 0.5rem !important;
+}
+
 .resultlist {
   width: 100%;
 }

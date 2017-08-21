@@ -9,6 +9,9 @@
         </span>
       </th>
     </tr>
+    <tr>
+      <td arlas-result-filter *ngFor="let column of columns" [column]="column" [filtersMap]="filtersMap" (setFiltersEvent)="setFilters($event)"></td>
+    </tr>
   </thead>
   <tbody arlas-result-item *ngFor="let rowItem of rows"
     [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" (actionOnItemEvent)="setActionOnItem($event)">

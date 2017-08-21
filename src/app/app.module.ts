@@ -11,6 +11,8 @@ import { ResultItemComponent } from '../components/results/result-item/result-it
 import { ResultDetailedItemComponent } from '../components/results/result-detailed-item/result-detailed-item.component';
 import { MapDemoComponent } from './map-demo/map-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
+import { ResultFilterComponent } from '../components/results/result-filter/result-filter.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -25,11 +27,13 @@ import { ResultsDemoComponent } from './results-demo/results-demo.component';
     ResultListComponent,
     ResultItemComponent,
     ResultDetailedItemComponent,
-    ResultsDemoComponent
+    ResultsDemoComponent,
+    ResultFilterComponent
 
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

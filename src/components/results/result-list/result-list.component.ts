@@ -43,7 +43,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public consultedItemEvent: Subject<string>;
 
   // The searchedFieldsEvent emits a list of fieldName-fieldValue
-  @Output() public searchedFieldsEvent: Subject<Array<{fieldName: string, fieldValue: string | number | Date }>>;
+  @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   // The moreDataEvent notify the need for more data.
   @Output() public moreDataEvent: Subject<any>;
@@ -56,6 +56,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   public rows: Array<RowItem>;
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
+  private filters: Array<{fieldName: string, fieldValue: string | number | Date }>;
+  private filtersMap: Map<string, string | number | Date>;
 
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private viewContainerRef: ViewContainerRef,
@@ -87,8 +89,14 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
+  public setFilters(filtersMap: Map<string, string | number | Date>): void {
+    this.filtersMap = filtersMap;
+    this.setFiltersEvent.next(this.filtersMap);
+  }
+
   private setColumns() {
     this.columns = new Array<Column>();
+    this.filtersMap = new Map<string, string | number | Date>();
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       if (field.fieldName === this.idFieldName) {
@@ -97,9 +105,12 @@ export class ResultListComponent implements OnInit, DoCheck {
         this.columns.unshift(column);
       } else {
         this.columns.push(column);
+        this.filtersMap.set(column.fieldName, null);
       }
     });
   }
+
+
 
   private setRows() {
     this.rows = new Array<RowItem>();
@@ -108,5 +119,11 @@ export class ResultListComponent implements OnInit, DoCheck {
       this.rows.push(row);
     });
   }
+
+  private getField(field: {fieldName: string, fieldValue: string}, fieldName: string) {
+    return field.fieldName === fieldName;
+  }
+
+
 
 }
