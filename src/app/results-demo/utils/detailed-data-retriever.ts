@@ -9,8 +9,6 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     const detailedDataMap = new Map<string, string>();
     detailedDataMap.set('country', 'France');
     detailedDataMap.set('Resolution', '41000x16000');
-    console.log(detailedDataMap);
-
     const actionsList = new Array<string>();
     actionsList.push('Show on map', 'Download');
     return Observable.from(new Array({details: detailedDataMap, actions: actionsList}));

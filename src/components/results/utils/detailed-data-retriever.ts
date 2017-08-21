@@ -1,6 +1,5 @@
 
 import { Observable } from 'rxjs/Observable';
-import { DetailedItem } from './detailedItem';
 
 export interface DetailedDataRetriever {
 

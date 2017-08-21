@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { RowItem } from '../utils/rowItem';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
+import { Subject } from 'rxjs/Subject';
 
 
 @Component({
@@ -15,6 +15,7 @@ export class ResultItemComponent implements OnInit {
 
   @Input() public rowItem: RowItem;
   @Input() public detailedDataRetriever: DetailedDataRetriever;
+  @Output() public actionOnItemEvent: Subject<{action: string, identifier: string}> = new Subject<{action: string, identifier: string}>();
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
@@ -43,6 +44,10 @@ export class ResultItemComponent implements OnInit {
     }
     this.isDetailToggled = !this.isDetailToggled;
 
+  }
+
+  public setAction(action: string) {
+    this.actionOnItemEvent.next({action: action, identifier: this.identifier});
   }
 
 }

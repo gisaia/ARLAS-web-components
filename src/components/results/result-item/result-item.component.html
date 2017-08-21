@@ -8,5 +8,6 @@
   </td>
 </tr>
 
-<tr *ngIf="isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [detailedItemInformations]="detailedData" [actionsList]="actions">
+<tr *ngIf="isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [detailedItemInformations]="detailedData"
+ [actionsList]="actions" (triggerActionEvent)="setAction($event)">
 </tr>

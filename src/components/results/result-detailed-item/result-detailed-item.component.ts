@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { Column } from '../utils/column';
+import { Subject } from 'rxjs/Subject';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
@@ -8,6 +9,7 @@ import { Column } from '../utils/column';
 })
 export class ResultDetailedItemComponent implements OnInit {
   @Input() public detailColspan: number;
+  @Output() public triggerActionEvent: Subject<string> = new Subject<string>();
 
   // Set of detailed informations about the item
   @Input() public detailedItemInformations: string;
@@ -18,6 +20,10 @@ export class ResultDetailedItemComponent implements OnInit {
   constructor() { }
 
   public ngOnInit() {
+  }
+
+  public setAction(action: string): void {
+    this.triggerActionEvent.next(action);
   }
 
 }

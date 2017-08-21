@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, OnChanges, SimpleChange, DoCheck, IterableDiffers,
          ViewContainerRef, ElementRef} from '@angular/core';
-import { SortEnum } from '../results.utils';
+import { SortEnum } from '../utils/sortEnum';
 import { Column } from '../utils/column';
 import { RowItem } from '../utils/rowItem';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
@@ -48,6 +48,10 @@ export class ResultListComponent implements OnInit, DoCheck {
   // The moreDataEvent notify the need for more data.
   @Output() public moreDataEvent: Subject<any>;
 
+  // The action triggered on an item which identifier is 'identifier'.
+  @Output() public actionOnItemEvent: Subject<{action: string, identifier: string}> = new Subject<{action: string, identifier: string}>();
+
+
   public columns: Array<Column>;
   public rows: Array<RowItem>;
   private iterableRowsDiffer;
@@ -77,6 +81,10 @@ export class ResultListComponent implements OnInit, DoCheck {
         this.setRows();
     }
 
+  }
+
+  public setActionOnItem(actionOnItem: {action: string, identifier: string}) {
+    this.actionOnItemEvent.next(actionOnItem);
   }
 
   private setColumns() {

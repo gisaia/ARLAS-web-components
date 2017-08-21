@@ -3,7 +3,7 @@
 <td class= "resultdetaileditem" [colSpan]="detailColspan - 1">
   {{detailedItemInformations}}
   <br/>
-  <button class="btn btn-primary actions" *ngFor="let action of actionsList">
+  <button class="btn btn-primary actions" *ngFor="let action of actionsList" (click)="setAction(action)">
     {{action}}
   </button>
 </td>
