@@ -7,3 +7,10 @@
 a.arlas-map-control{
     background-color: green;
 }
+
+.arlas-geobox-button{
+    z-index: 2000;
+    position: absolute;
+    right: 6px;
+    top: 80px;
+}
