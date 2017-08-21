@@ -3,6 +3,7 @@ import { Component, OnInit, Input, Output, OnChanges, SimpleChange, DoCheck, Ite
 import { SortEnum } from '../results.utils';
 import { Column } from '../utils/column';
 import { RowItem } from '../utils/rowItem';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 
 
@@ -25,11 +26,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Name of the id field
   @Input() public idFieldName: string;
 
-  // Actions list for detailed items : View, Show on map, Download ...
-  @Input() public actionsList: Array<string>;
-
   // the table width. If not specified, the tableWidth value is equal to container width.
   @Input() public tableWidth: number = null;
+
+  // a detailed-data retriever object that implements DetailedDataRetriever interface .
+  @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
   // Sorting a column event. Do we use a Subject or try ngOnChange ?
   @Output() public sortColumnEvent: Subject<{sort: SortEnum, fieldName: string}>;

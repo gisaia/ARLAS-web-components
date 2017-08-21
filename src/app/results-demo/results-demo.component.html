@@ -1,5 +1,5 @@
 <div class="table-wrapper">
-  <arlas-result-list [rowItemList]="data" [fieldsList]="fieldsList" [idFieldName]="'id'"></arlas-result-list>
+  <arlas-result-list [rowItemList]="data" [fieldsList]="fieldsList" [idFieldName]="'id'" [detailedDataRetriever]="detailedDataRetriever"></arlas-result-list>
   <button class="btn btn-sm btn-primary" (click)="updateData()">New instance of data</button>
   <button class="btn btn-sm btn-primary" (click)="addData()">Push a new row in data</button>
   <br/>

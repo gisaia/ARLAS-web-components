@@ -1,10 +1,12 @@
-<tr >
-  <td class="resultitem__cell" *ngFor="let field of rowItem.columns">
+<tr>
+  <td class="resultitem__cell" *ngFor="let field of rowItem.columns; index as i">
     <span  *ngIf="!field.isIdField">{{rowItem.data.get(field.fieldName)}}{{field.dataType}}</span>
+    <div *ngIf="i === rowItem.columns.length - 1" class="resultitem__cell__toggle">
+      <img *ngIf="!isDetailToggled" src="assets/resultlist-icons/toggle-plus.png" (click) = "toggle()"/>
+      <img *ngIf="isDetailToggled" src="assets/resultlist-icons/toggle-moins.png" (click) = "toggle()"/>
+    </div>
   </td>
-  <img *ngIf="!isDetailToggled" src="assets/resultlist-icons/toggle-plus.png" (click) = "isDetailToggled = !isDetailToggled"/>
-  <img *ngIf="isDetailToggled" src="assets/resultlist-icons/toggle-moins.png" (click) = "isDetailToggled = !isDetailToggled"/>
 </tr>
 
-<tr *ngIf="isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" >
+<tr *ngIf="isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [detailedItemInformations]="detailedData" [actionsList]="actions">
 </tr>

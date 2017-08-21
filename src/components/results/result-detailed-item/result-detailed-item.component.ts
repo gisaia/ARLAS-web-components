@@ -10,7 +10,7 @@ export class ResultDetailedItemComponent implements OnInit {
   @Input() public detailColspan: number;
 
   // Set of detailed informations about the item
-  @Input() public detailedItemInformations: Array<{fieldName: string, fieldValue: string | number | Date }>;
+  @Input() public detailedItemInformations: string;
 
   // Actions list : View, Show on map, Download ...
   @Input() public actionsList: Array<string>;
