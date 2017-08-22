@@ -8,12 +8,12 @@ const PROJECT_ROOT = process.cwd();
 
 function copyHtml() {
     gulp.src('src/components/**/*.html')
-        .pipe(gulp.dest('./dist')).on('end', copyScss);
+        .pipe(gulp.dest('./dist')).on('end', copyAssets);
 }
 
 function copyAssets () {
     gulp.src('./src/assets/**/*')
-        .pipe(gulp.dest('./dist')).on('end', copyScss);
+        .pipe(gulp.dest('./dist/assets')).on('end', copyScss);
 }
 function copyScss () {
     gulp.src('./src/components/**/*.{scss,css}')

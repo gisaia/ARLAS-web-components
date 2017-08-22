@@ -33,7 +33,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
   // Sorting a column event. Do we use a Subject or try ngOnChange ?
-  @Output() public sortColumnEvent: Subject<{sort: SortEnum, fieldName: string}>;
+  @Output() public sortColumnEvent: Subject<{sort: SortEnum, fieldName: string}> = new Subject<{sort: SortEnum, fieldName: string}>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
   @Output() public selectedItemsEvent: Subject<Array<string>>;
@@ -43,7 +43,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public consultedItemEvent: Subject<string>;
 
   // The searchedFieldsEvent emits a list of fieldName-fieldValue
-  @Output() public searchedFieldsEvent: Subject<Array<{fieldName: string, fieldValue: string | number | Date }>>;
+  @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   // The moreDataEvent notify the need for more data.
   @Output() public moreDataEvent: Subject<any>;
@@ -54,9 +54,10 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   public columns: Array<Column>;
   public rows: Array<RowItem>;
+  public filtersMap: Map<string, string | number | Date>;
+
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
-
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private viewContainerRef: ViewContainerRef,
    private el: ElementRef) {
@@ -87,8 +88,25 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
+  public setFilters(filtersMap: Map<string, string | number | Date>): void {
+    this.filtersMap = filtersMap;
+    this.setFiltersEvent.next(this.filtersMap);
+  }
+
+  public sort(column: Column): void {
+    if (column.sortDirection === SortEnum.none) {
+      column.sortDirection = SortEnum.asc;
+    } else if (column.sortDirection === SortEnum.asc) {
+      column.sortDirection = SortEnum.desc;
+    } else {
+      column.sortDirection = SortEnum.asc;
+    }
+    this.sortColumnEvent.next({sort: column.sortDirection, fieldName: column.fieldName});
+  }
+
   private setColumns() {
     this.columns = new Array<Column>();
+    this.filtersMap = new Map<string, string | number | Date>();
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       if (field.fieldName === this.idFieldName) {
@@ -97,9 +115,14 @@ export class ResultListComponent implements OnInit, DoCheck {
         this.columns.unshift(column);
       } else {
         this.columns.push(column);
+        this.filtersMap.set(column.fieldName, null);
       }
     });
   }
+
+
+
+
 
   private setRows() {
     this.rows = new Array<RowItem>();
@@ -108,5 +131,11 @@ export class ResultListComponent implements OnInit, DoCheck {
       this.rows.push(row);
     });
   }
+
+  private getField(field: {fieldName: string, fieldValue: string}, fieldName: string) {
+    return field.fieldName === fieldName;
+  }
+
+
 
 }

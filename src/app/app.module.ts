@@ -12,6 +12,8 @@ import { ResultDetailedItemComponent } from '../components/results/result-detail
 import { MapDemoComponent } from './map-demo/map-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { MdChipsModule } from '@angular/material';
+import { ResultFilterComponent } from '../components/results/result-filter/result-filter.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -26,12 +28,13 @@ import { MdChipsModule } from '@angular/material';
     ResultListComponent,
     ResultItemComponent,
     ResultDetailedItemComponent,
-    ResultsDemoComponent
-
+    ResultsDemoComponent,
+    ResultFilterComponent
   ],
   imports: [
-    BrowserModule,        MdChipsModule
-
+    BrowserModule,
+    MdChipsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
