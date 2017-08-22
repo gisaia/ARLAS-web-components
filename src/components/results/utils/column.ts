@@ -1,4 +1,4 @@
-import { SortEnum } from '../results.utils';
+import { SortEnum } from '../utils/sortEnum';
 
 
 export class Column {
@@ -7,7 +7,7 @@ export class Column {
   public fieldName: string;
   public dataType: string;
   public width: number;
-  public sortDirection: SortEnum;
+  public sortDirection: SortEnum = SortEnum.none;
   public isIdField = false;
 
   constructor(columnName: string, fieldName: string, dataType: string ) {

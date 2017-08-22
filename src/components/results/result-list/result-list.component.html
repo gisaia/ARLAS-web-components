@@ -5,9 +5,16 @@
         <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
         </span>
         <span *ngIf="!column.isIdField">
-          {{column.columnName}}{{column.dataType}}
+          <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
         </span>
+        <div *ngIf="column.sortDirection !== 2" class="resultlist__header--columns__sort">
+          <img *ngIf="column.sortDirection === 0" src="assets/resultlist-icons/sort-down.png" (click) = "sort(column)"/>
+          <img *ngIf="column.sortDirection === 1" src="assets/resultlist-icons/sort-up.png" (click) = "sort(column)"/>
+        </div>
       </th>
+    </tr>
+    <tr>
+      <td arlas-result-filter *ngFor="let column of columns" [column]="column" [filtersMap]="filtersMap" (setFiltersEvent)="setFilters($event)"></td>
     </tr>
   </thead>
   <tbody arlas-result-item *ngFor="let rowItem of rows"
