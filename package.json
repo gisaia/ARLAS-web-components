@@ -1,6 +1,6 @@
 {
   "name": "arlas-web-components",
-  "version": "0.1.0-dev4",
+  "version": "0.1.0-dev5",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
