@@ -33,7 +33,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
   // Sorting a column event. Do we use a Subject or try ngOnChange ?
-  @Output() public sortColumnEvent: Subject<{sort: SortEnum, fieldName: string}>;
+  @Output() public sortColumnEvent: Subject<{sort: SortEnum, fieldName: string}> = new Subject<{sort: SortEnum, fieldName: string}>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
   @Output() public selectedItemsEvent: Subject<Array<string>>;
@@ -54,11 +54,10 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   public columns: Array<Column>;
   public rows: Array<RowItem>;
+  public filtersMap: Map<string, string | number | Date>;
+
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
-  private filters: Array<{fieldName: string, fieldValue: string | number | Date }>;
-  private filtersMap: Map<string, string | number | Date>;
-
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private viewContainerRef: ViewContainerRef,
    private el: ElementRef) {
@@ -94,6 +93,17 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.setFiltersEvent.next(this.filtersMap);
   }
 
+  public sort(column: Column): void {
+    if (column.sortDirection === SortEnum.none) {
+      column.sortDirection = SortEnum.asc;
+    } else if (column.sortDirection === SortEnum.asc) {
+      column.sortDirection = SortEnum.desc;
+    } else {
+      column.sortDirection = SortEnum.asc;
+    }
+    this.sortColumnEvent.next({sort: column.sortDirection, fieldName: column.fieldName});
+  }
+
   private setColumns() {
     this.columns = new Array<Column>();
     this.filtersMap = new Map<string, string | number | Date>();
@@ -109,6 +119,8 @@ export class ResultListComponent implements OnInit, DoCheck {
       }
     });
   }
+
+
 
 
 

@@ -1,3 +1,3 @@
 export enum SortEnum {
-  asc, desc
+  asc, desc, none
 }
