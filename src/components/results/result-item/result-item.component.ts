@@ -20,9 +20,13 @@ export class ResultItemComponent implements OnInit {
     actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}> =
     new Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
     productIdentifier: {idFieldName: string, idValue: string}}>();
+  @Input() public selectedItems: Array<string>;
+  @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
+
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
+  public isChecked = false;
 
   private retrievedDataEvent: Observable<{details: Map<string, string>,
                               actions: Array<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>}>;
@@ -51,8 +55,29 @@ export class ResultItemComponent implements OnInit {
 
   }
 
+<<<<<<< 7c30716a49f68e1ac3899d0bc45e8fdaa02f70d0
   public setAction(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}) {
     this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.identifier}});
+=======
+
+  public setAction(action: string) {
+    this.actionOnItemEvent.next({action: action, identifier: this.identifier});
+>>>>>>> add lines selection
+  }
+
+  public setSelectedItem() {
+    this.isChecked = !this.isChecked;
+    if (this.isChecked) {
+      if (!this.selectedItems.includes(this.identifier)) {
+        this.selectedItems.push(this.identifier);
+      }
+    } else {
+      if (this.selectedItems.includes(this.identifier)) {
+        const index = this.selectedItems.indexOf(this.identifier);
+        this.selectedItems.splice(index, 1);
+      }
+    }
+    this.selectedItemsEvent.next(this.selectedItems);
   }
 
 }

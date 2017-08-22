@@ -36,7 +36,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public sortColumnsEvent: Subject<Map<string, SortEnum>> = new Subject<Map<string, SortEnum>>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
-  @Output() public selectedItemsEvent: Subject<Array<string>>;
+  @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
 
   // consultedItemEvent emits one item identifier that is hovered, selected or clicked on it. The consulted item can be highlighted in
   // the map for example. It's only for consultation.
@@ -98,6 +98,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   public setFilters(filtersMap: Map<string, string | number | Date>): void {
     this.filtersMap = filtersMap;
     this.setFiltersEvent.next(this.filtersMap);
+  }
+
+  public setSelectedItems(selectedItems: Array<string>) {
+    this.selectedItems = selectedItems;
+    this.selectedItemsEvent.next(this.selectedItems);
   }
 
   public sort(column: Column): void {
