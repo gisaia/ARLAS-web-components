@@ -2,8 +2,8 @@
   <td class="resultitem__cell" *ngFor="let field of rowItem.columns; index as i">
     <span  *ngIf="!field.isIdField">{{rowItem.data.get(field.fieldName)}}{{field.dataType}}</span>
     <div *ngIf="i === rowItem.columns.length - 1" class="resultitem__cell__toggle">
-      <img *ngIf="!isDetailToggled" src="assets/resultlist-icons/toggle-plus.png" (click) = "toggle()"/>
-      <img *ngIf="isDetailToggled" src="assets/resultlist-icons/toggle-moins.png" (click) = "toggle()"/>
+      <md-icon class="resultitem__cell__toggle--icon" *ngIf="!isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
+      <ng-template #cancel_toggle><md-icon class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
     </div>
   </td>
 </tr>

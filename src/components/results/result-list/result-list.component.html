@@ -7,9 +7,9 @@
         <span *ngIf="!column.isIdField">
           <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
         </span>
-        <div *ngIf="column.sortDirection !== 2" class="resultlist__header--columns__sort">
-          <img *ngIf="column.sortDirection === 0" src="assets/resultlist-icons/sort-down.png" (click) = "sort(column)"/>
-          <img *ngIf="column.sortDirection === 1" src="assets/resultlist-icons/sort-up.png" (click) = "sort(column)"/>
+        <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
+          <md-icon *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
+          <md-icon *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
         </div>
       </th>
     </tr>
