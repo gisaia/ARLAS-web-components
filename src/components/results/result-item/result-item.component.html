@@ -1,4 +1,4 @@
-<tr>
+<tr (mouseenter)="setConsultedItem()">
   <td class="resultitem__cell" *ngFor="let field of rowItem.columns; index as i">
     <div *ngIf="field.isIdField" class="checkbox">
       <input type="checkbox" value="" [checked]="isChecked" (change)="setSelectedItem()">
