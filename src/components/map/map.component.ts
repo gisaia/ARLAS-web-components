@@ -22,7 +22,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public imagePath = 'assets/images/';
   @Input() public bboxcolor = 'black';
   @Input() public bboxfill = '#ffffff';
-  @Input() public bboxfillOpacity=0.5;
+  @Input() public bboxfillOpacity = 0.5;
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
@@ -68,7 +68,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
-      (<any>this.map).editTools.startRectangle(null,{
+      (<any>this.map).editTools.startRectangle(null, {
         color: this.bboxcolor,
         fillColor: this.bboxfill,
         fillOpacity: this.bboxfillOpacity
