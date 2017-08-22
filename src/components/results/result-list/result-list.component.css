@@ -20,6 +20,11 @@
 
 .resultlist__header--columns__sort {
   float: right;
+
+}
+
+.resultlist__header--columns__sort--icon {
+  font-size:18px;
 }
 
 .resultlist {

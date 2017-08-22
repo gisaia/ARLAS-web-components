@@ -55,9 +55,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   public columns: Array<Column>;
   public rows: Array<RowItem>;
   public filtersMap: Map<string, string | number | Date>;
+  public SortEnum = SortEnum;
 
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
+
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private viewContainerRef: ViewContainerRef,
    private el: ElementRef) {

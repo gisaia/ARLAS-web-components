@@ -8,3 +8,7 @@
 .resultitem__cell__toggle {
   float: right;
 }
+
+.resultitem__cell__toggle--icon {
+  font-size:18px;
+}

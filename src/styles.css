@@ -2,6 +2,7 @@
 @import '../node_modules/leaflet/dist/leaflet.css';
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 @import "../node_modules/font-awesome/css/font-awesome.min.css";
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 .histogramright .histogram__description__startvalue {
   font-size: 0.8em;
 }
@@ -27,4 +28,11 @@
 }
 a.arlas-map-control{
     background-color: green;
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url('./assets/font/material-icons.woff2') format('woff2');
 }
