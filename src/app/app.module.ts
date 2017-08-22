@@ -11,6 +11,7 @@ import { ResultItemComponent } from '../components/results/result-item/result-it
 import { ResultDetailedItemComponent } from '../components/results/result-detailed-item/result-detailed-item.component';
 import { MapDemoComponent } from './map-demo/map-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
+import { MdChipsModule } from '@angular/material';
 
 
 @NgModule({
@@ -29,7 +30,8 @@ import { ResultsDemoComponent } from './results-demo/results-demo.component';
 
   ],
   imports: [
-    BrowserModule
+    BrowserModule,        MdChipsModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]

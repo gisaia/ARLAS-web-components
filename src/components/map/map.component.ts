@@ -19,13 +19,20 @@ export class MapComponent implements OnInit, AfterViewInit {
   private isGeoBox = false;
 
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+  @Input() public imagePath = 'assets/images/';
+  @Input() public bboxcolor = 'black';
+  @Input() public bboxfill = '#ffffff';
+  @Input() public bboxfillOpacity=0.5;
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
   constructor() {
+    L.Icon.Default.imagePath = 'assets/images/';
     this.removeBbox.subscribe(value => {
       if (value) {
         this.editLayerGroup.clearLayers();
+        this.isGeoBox = false;
+        this.textButton = 'Add GeoBox';
       }
     });
   }
@@ -35,8 +42,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   public ngAfterViewInit(): void {
 
     this.map = leaflet.map('map', <any>{
-      center: [48.8534, 2.3488],
-      zoom: 10,
+      center: [45.706179285330855, 2.1972656250000004],
+      zoom: 4,
       zoomControl: false,
       editable: true,
       editOptions: {
@@ -61,15 +68,15 @@ export class MapComponent implements OnInit, AfterViewInit {
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
-      if (this.editLayerGroup.hasLayer) {
-        this.removeBbox.next(true);
-      }
-      (<any>this.map).editTools.startRectangle();
+      (<any>this.map).editTools.startRectangle(null,{
+        color: this.bboxcolor,
+        fillColor: this.bboxfill,
+        fillOpacity: this.bboxfillOpacity
+      });
       this.textButton = 'Remove GeoBox';
     } else {
       this.removeBbox.next(true);
       this.textButton = 'Add GeoBox';
-
     }
   }
   private setBbox(e: leaflet.Event) {

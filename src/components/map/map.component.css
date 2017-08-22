@@ -8,7 +8,7 @@ a.arlas-map-control{
     background-color: green;
 }
 
-.arlas-geobox-button{
+.arlas-geobox-chip{
     z-index: 2000;
     position: absolute;
     right: 6px;
