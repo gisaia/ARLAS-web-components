@@ -15,12 +15,17 @@ export class ResultItemComponent implements OnInit {
 
   @Input() public rowItem: RowItem;
   @Input() public detailedDataRetriever: DetailedDataRetriever;
-  @Output() public actionOnItemEvent: Subject<{action: string, identifier: string}> = new Subject<{action: string, identifier: string}>();
+  @Input() public idFieldName: string;
+  @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
+    actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}> =
+    new Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
+    productIdentifier: {idFieldName: string, idValue: string}}>();
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
 
-  private retrievedDataEvent: Observable<{details: Map<string, string>, actions: Array<string>}>;
+  private retrievedDataEvent: Observable<{details: Map<string, string>,
+                              actions: Array<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>}>;
 
   private identifier: string;
 
@@ -46,8 +51,8 @@ export class ResultItemComponent implements OnInit {
 
   }
 
-  public setAction(action: string) {
-    this.actionOnItemEvent.next({action: action, identifier: this.identifier});
+  public setAction(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}) {
+    this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.identifier}});
   }
 
 }

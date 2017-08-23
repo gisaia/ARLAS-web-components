@@ -49,7 +49,10 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public moreDataEvent: Subject<any>;
 
   // The action triggered on an item which identifier is 'identifier'.
-  @Output() public actionOnItemEvent: Subject<{action: string, identifier: string}> = new Subject<{action: string, identifier: string}>();
+  @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
+   actionBus: Subject<{idFieldName: string, idValue: string}>},
+     productIdentifier: {idFieldName: string, idValue: string}}> = new Subject<{action: {id: string, label: string,
+     actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}>();
 
 
   public columns: Array<Column>;
@@ -86,7 +89,8 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   }
 
-  public setActionOnItem(actionOnItem: {action: string, identifier: string}) {
+  public setActionOnItem(actionOnItem: {action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
+  productIdentifier: {idFieldName: string, idValue: string}}) {
     this.actionOnItemEvent.next(actionOnItem);
   }
 

@@ -9,20 +9,21 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ResultDetailedItemComponent implements OnInit {
   @Input() public detailColspan: number;
-  @Output() public triggerActionEvent: Subject<string> = new Subject<string>();
+  @Output() public triggerActionEvent: Subject<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}> =
+    new Subject<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>();
 
   // Set of detailed informations about the item
   @Input() public detailedItemInformations: string;
 
   // Actions list : View, Show on map, Download ...
-  @Input() public actionsList: Array<string>;
+  @Input() public actionsList: Array<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>;
 
   constructor() { }
 
   public ngOnInit() {
   }
 
-  public setAction(action: string): void {
+  public setAction(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}): void {
     this.triggerActionEvent.next(action);
   }
 
