@@ -6,6 +6,7 @@ import 'leaflet/dist/images/marker-icon.png';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet-editable';
 import 'leaflet.path.drag';
+import './utils/leaflet.pattern/src/Pattern';
 
 @Component({
   selector: 'arlas-map',
@@ -16,6 +17,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   private map: leaflet.Map;
   public textButton = 'Add GeoBox';
   private editLayerGroup: L.LayerGroup = new L.LayerGroup();
+  private detailLayerGroup: L.FeatureGroup = new L.FeatureGroup();
+  public detailIdToLayerId: Map<string, number> = new Map<string, number>();
+
   private isGeoBox = false;
 
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
@@ -23,7 +27,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public bboxcolor = 'black';
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
-  @Input() public addLayerDetailBus =new Subject<L.Layer>();
+  @Input() public addLayerDetailBus = new Subject<any>();
+  @Input() public removeLayerDetailBus = new Subject<any>();
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
@@ -37,7 +42,6 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     });
   }
-
   public ngOnInit() { }
 
   public ngAfterViewInit(): void {
@@ -51,12 +55,59 @@ export class MapComponent implements OnInit, AfterViewInit {
         featuresLayer: this.editLayerGroup,
         zIndex: 2000
       }
+
     });
-    this.addLayerDetailBus.subscribe(layer=>console.log(layer))
+
+    let stripes = (<any>L).stripePattern({
+      fillOpacity: 1.0,
+      patternContentUnits: 'objectBoundingBox',
+      patternUnits: 'objectBoundingBox',
+      height: 0.2,
+      weight: 0.015,
+      spaceWeight: 0.5,
+      spaceColor: "#FC9F28",
+      color: "#FC9F28",
+      opacity: 0.9,
+      spaceOpacity: 0.4,
+      angle: 135
+    })
+    stripes.addTo(this.map);
+    this.addLayerDetailBus.subscribe(layer => {
+      if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
+
+        let detailledLayer = leaflet.geoJSON(layer.geometry, <any>{
+          style: {
+            fillPattern: stripes
+          }
+        })
+
+        this.detailLayerGroup.addLayer(detailledLayer);
+        this.detailLayerGroup.setStyle(detailStyle)
+        this.detailIdToLayerId.set(layer.id, this.detailLayerGroup.getLayerId(detailledLayer))
+      }
+    }
+    )
+
+    this.removeLayerDetailBus.subscribe(layer => {
+      if (layer === "all") {
+        this.detailLayerGroup.clearLayers();
+        this.detailIdToLayerId.clear();
+
+      } else {
+        const layerId = this.detailIdToLayerId.get(layer.idValue)
+        if (layerId !== null || layerId !== undefined) {
+          this.detailLayerGroup.removeLayer(layerId)
+          this.detailIdToLayerId.delete(layer.idValue)
+        }
+      }
+
+    });
 
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup);
+    const detailStyle: any = { color: "#FC9F28", opacity: 1, fillOpacity: 1 };
+    this.map.addLayer(this.detailLayerGroup);
 
     this.map.on('editable:vertex:dragend', (e) => {
       this.setBbox(e);

@@ -5,6 +5,7 @@
     "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
+    "allowJs": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -12,8 +13,8 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-      "exclude": [
-    "node_modules"
+    "exclude": [
+      "node_modules"
     ],
     "lib": [
       "es2016",
