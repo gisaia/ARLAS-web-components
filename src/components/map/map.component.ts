@@ -23,6 +23,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public bboxcolor = 'black';
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
+  @Input() public addLayerDetailBus =new Subject<L.Layer>();
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
@@ -51,6 +52,7 @@ export class MapComponent implements OnInit, AfterViewInit {
         zIndex: 2000
       }
     });
+    this.addLayerDetailBus.subscribe(layer=>console.log(layer))
 
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
