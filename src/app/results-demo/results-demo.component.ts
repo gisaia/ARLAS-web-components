@@ -81,4 +81,8 @@ export class ResultsDemoComponent implements OnInit {
     }
   }
 
+  public setFilters(fieldsToFilter: Map<string, string | number | Date>) {
+    this.data.pop();
+  }
+
 }
