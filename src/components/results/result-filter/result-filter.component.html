@@ -1,2 +1,2 @@
-<input *ngIf="!column.isIdField" type="text" class="form-control resultlist__header--filters" (blur)="setFilters()" [(ngModel)]="inputValue">
+<input *ngIf="!column.isIdField" type="text" class="form-control resultlist__header--filters" (blur)="setFilter()" (keyup.enter)="setFilterOnKeyEnter($event)" [(ngModel)]="inputValue">
 
