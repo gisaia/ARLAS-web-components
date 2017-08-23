@@ -92,7 +92,7 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   }
 
-  public setActionOnItem(actionOnItem: {action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
+  public triggerActionOnItem(actionOnItem: {action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
   productIdentifier: {idFieldName: string, idValue: string}}) {
     this.actionOnItemEvent.next(actionOnItem);
   }

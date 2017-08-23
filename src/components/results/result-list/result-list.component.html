@@ -17,8 +17,14 @@
       <td arlas-result-filter *ngFor="let column of columns" [column]="column" [filtersMap]="filtersMap" (setFiltersEvent)="setFilters($event)"></td>
     </tr>
   </thead>
-  <tbody arlas-result-item *ngFor="let rowItem of rows"
-    [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName"
-    (actionOnItemEvent)="setActionOnItem($event)" (selectedItemsEvent)="setSelectedItems($event)" (consultedItemEvent)="setConsultedItem($event)">
+  <tbody>
+    <ng-container  *ngFor="let rowItem of rows">
+      <tr arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" (selectedItemsEvent)="setSelectedItems($event)" (consultedItemEvent)="setConsultedItem($event)">
+      </tr>
+      <tr *ngIf="rowItem.isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [idFieldName]="idFieldName"
+       (actionOnItemEvent)="triggerActionOnItem($event)">
+      </tr>
+    </ng-container>
   </tbody>
+
 </table>

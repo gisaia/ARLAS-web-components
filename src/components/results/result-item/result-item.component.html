@@ -1,16 +1,12 @@
-<tr (mouseenter)="setConsultedItem()">
-  <td class="resultitem__cell" *ngFor="let field of rowItem.columns; index as i">
+  <td (mouseenter)="setConsultedItem()" class="resultitem__cell" *ngFor="let field of rowItem.columns; index as i">
     <div *ngIf="field.isIdField" class="checkbox">
       <input type="checkbox" value="" [checked]="isChecked" (change)="setSelectedItem()">
     </div>
     <span  *ngIf="!field.isIdField">{{rowItem.data.get(field.fieldName)}}{{field.dataType}}</span>
     <div *ngIf="i === rowItem.columns.length - 1" class="resultitem__cell__toggle">
-      <md-icon class="resultitem__cell__toggle--icon" *ngIf="!isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
+      <md-icon class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
       <ng-template #cancel_toggle><md-icon class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
     </div>
   </td>
-</tr>
 
-<tr *ngIf="isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [detailedItemInformations]="detailedData"
- [actionsList]="actions" (triggerActionEvent)="setAction($event)">
-</tr>
+
