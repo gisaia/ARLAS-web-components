@@ -18,6 +18,7 @@
     </tr>
   </thead>
   <tbody arlas-result-item *ngFor="let rowItem of rows"
-    [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" (actionOnItemEvent)="setActionOnItem($event)">
+    [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [idFieldName]="idFieldName"
+    (actionOnItemEvent)="setActionOnItem($event)">
   </tbody>
 </table>
