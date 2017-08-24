@@ -15,28 +15,27 @@ import { ResultsDemoComponent } from './results-demo/results-demo.component';
 
 import { MdChipsModule, MdIconModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
+import { MapModule } from '../components/map/map.module';
+import { HistogramModule } from '../components/histogram/histogram.module';
+import { ResultsModule } from '../components/results/results.module';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    HistogramComponent,
     HistogramDemoComponent,
-    MapComponent,
     MapDemoComponent,
-    ErrorModalComponent,
-    ErrorModalMsgComponent,
-    ResultListComponent,
-    ResultItemComponent,
-    ResultDetailedItemComponent,
     ResultsDemoComponent,
-    ResultFilterComponent
+
   ],
   imports: [
     BrowserModule,
     MdChipsModule,
     MdIconModule,
-    FormsModule
+    FormsModule,
+    MapModule,
+    HistogramModule,
+    ResultsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
