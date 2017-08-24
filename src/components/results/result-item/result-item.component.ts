@@ -22,7 +22,6 @@ export class ResultItemComponent implements OnInit {
     productIdentifier: {idFieldName: string, idValue: string}}>();
   @Input() public selectedItems: Array<string>;
   @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
-  @Output() public consultedItemEvent: Subject<string> = new Subject<string>();
 
 
   public isDetailToggled = false;
@@ -76,8 +75,5 @@ export class ResultItemComponent implements OnInit {
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public setConsultedItem() {
-    this.consultedItemEvent.next(this.identifier);
-  }
 
 }
