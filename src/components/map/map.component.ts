@@ -58,46 +58,44 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     });
 
-    let stripes = (<any>L).stripePattern({
+    const stripes = (<any>L).stripePattern({
       fillOpacity: 1.0,
       patternContentUnits: 'objectBoundingBox',
       patternUnits: 'objectBoundingBox',
       height: 0.2,
       weight: 0.015,
       spaceWeight: 0.5,
-      spaceColor: "#FC9F28",
-      color: "#FC9F28",
+      spaceColor: '#FC9F28',
+      color: '#FC9F28',
       opacity: 0.9,
       spaceOpacity: 0.4,
       angle: 135
-    })
+    });
     stripes.addTo(this.map);
     this.addLayerDetailBus.subscribe(layer => {
       if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
-
-        let detailledLayer = leaflet.geoJSON(layer.geometry, <any>{
+        const detailledLayer = leaflet.geoJSON(layer.geometry, <any>{
           style: {
             fillPattern: stripes
           }
-        })
-
+        });
         this.detailLayerGroup.addLayer(detailledLayer);
-        this.detailLayerGroup.setStyle(detailStyle)
-        this.detailIdToLayerId.set(layer.id, this.detailLayerGroup.getLayerId(detailledLayer))
+        this.detailLayerGroup.setStyle(detailStyle);
+        this.detailIdToLayerId.set(layer.id, this.detailLayerGroup.getLayerId(detailledLayer));
       }
     }
-    )
+    );
 
     this.removeLayerDetailBus.subscribe(layer => {
-      if (layer === "all") {
+      if (layer === 'all') {
         this.detailLayerGroup.clearLayers();
         this.detailIdToLayerId.clear();
 
       } else {
-        const layerId = this.detailIdToLayerId.get(layer.idValue)
+        const layerId = this.detailIdToLayerId.get(layer.idValue);
         if (layerId !== null || layerId !== undefined) {
-          this.detailLayerGroup.removeLayer(layerId)
-          this.detailIdToLayerId.delete(layer.idValue)
+          this.detailLayerGroup.removeLayer(layerId);
+          this.detailIdToLayerId.delete(layer.idValue);
         }
       }
 
@@ -106,7 +104,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup);
-    const detailStyle: any = { color: "#FC9F28", opacity: 1, fillOpacity: 1 };
+    const detailStyle: any = { color: '#FC9F28', opacity: 1, fillOpacity: 1 };
     this.map.addLayer(this.detailLayerGroup);
 
     this.map.on('editable:vertex:dragend', (e) => {
