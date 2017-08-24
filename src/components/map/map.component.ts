@@ -28,7 +28,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
   @Input() public addLayerDetailBus = new Subject<any>();
-  @Input() public removeLayerDetailBus = new Subject<any>();
+  @Input() public removeLayerDetailBus = new Subject<string>();
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
@@ -86,19 +86,18 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
     );
 
-    this.removeLayerDetailBus.subscribe(layer => {
-      if (layer === 'all') {
+    this.removeLayerDetailBus.subscribe(id => {
+      if (id === 'all') {
         this.detailLayerGroup.clearLayers();
         this.detailIdToLayerId.clear();
 
       } else {
-        const layerId = this.detailIdToLayerId.get(layer.idValue);
+        const layerId = this.detailIdToLayerId.get(id);
         if (layerId !== null || layerId !== undefined) {
           this.detailLayerGroup.removeLayer(layerId);
-          this.detailIdToLayerId.delete(layer.idValue);
+          this.detailIdToLayerId.delete(id);
         }
       }
-
     });
 
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
