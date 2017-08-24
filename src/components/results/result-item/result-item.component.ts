@@ -20,9 +20,15 @@ export class ResultItemComponent implements OnInit {
     actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}> =
     new Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
     productIdentifier: {idFieldName: string, idValue: string}}>();
+  @Input() public selectedItems: Array<string>;
+  @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
+  @Output() public consultedItemEvent: Subject<string> = new Subject<string>();
+
+
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
+  public isChecked = false;
 
   private retrievedDataEvent: Observable<{details: Map<string, string>,
                               actions: Array<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>}>;
@@ -53,6 +59,25 @@ export class ResultItemComponent implements OnInit {
 
   public setAction(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}) {
     this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.identifier}});
+  }
+
+  public setSelectedItem() {
+    this.isChecked = !this.isChecked;
+    const index = this.selectedItems.indexOf(this.identifier);
+    if (this.isChecked) {
+      if (index === -1) {
+        this.selectedItems.push(this.identifier);
+      }
+    } else {
+      if (index !== -1) {
+        this.selectedItems.splice(index, 1);
+      }
+    }
+    this.selectedItemsEvent.next(this.selectedItems);
+  }
+
+  public setConsultedItem() {
+    this.consultedItemEvent.next(this.identifier);
   }
 
 }

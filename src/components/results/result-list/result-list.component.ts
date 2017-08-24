@@ -36,11 +36,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public sortColumnsEvent: Subject<Map<string, SortEnum>> = new Subject<Map<string, SortEnum>>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
-  @Output() public selectedItemsEvent: Subject<Array<string>>;
+  @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
 
   // consultedItemEvent emits one item identifier that is hovered, selected or clicked on it. The consulted item can be highlighted in
   // the map for example. It's only for consultation.
-  @Output() public consultedItemEvent: Subject<string>;
+  @Output() public consultedItemEvent: Subject<string> = new Subject<string>();
 
   // The searchedFieldsEvent emits a list of fieldName-fieldValue
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
@@ -60,6 +60,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   public filtersMap: Map<string, string | number | Date>;
   public sortedColumnsMap: Map<string, SortEnum> = new Map<string, SortEnum>();
   public SortEnum = SortEnum;
+  public selectedItems: Array<string> = new Array<string>();
 
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
@@ -100,6 +101,11 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.setFiltersEvent.next(this.filtersMap);
   }
 
+  public setSelectedItems(selectedItems: Array<string>) {
+    this.selectedItems = selectedItems;
+    this.selectedItemsEvent.next(this.selectedItems);
+  }
+
   public sort(column: Column): void {
     if (column.sortDirection === SortEnum.none) {
       column.sortDirection = SortEnum.asc;
@@ -110,6 +116,10 @@ export class ResultListComponent implements OnInit, DoCheck {
     }
     this.sortedColumnsMap.set(column.fieldName, column.sortDirection);
     this.sortColumnsEvent.next(this.sortedColumnsMap);
+  }
+
+  public setConsultedItem(identifier: string) {
+    this.consultedItemEvent.next(identifier);
   }
 
   private setColumns() {
