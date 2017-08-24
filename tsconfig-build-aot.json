@@ -35,6 +35,10 @@
   "files": [
     "src/components/index.ts"
   ],
+  "angularCompilerOptions": {
+    "genDir": "aot",
+    "skipMetadataEmit": true
+  },
   "include": [
     "src/components/**/*"
   ],

@@ -6,7 +6,7 @@ import 'leaflet/dist/images/marker-icon.png';
 import 'leaflet/dist/images/marker-icon-2x.png';
 import 'leaflet-editable';
 import 'leaflet.path.drag';
-import './utils/leaflet.pattern/src/Pattern';
+import 'Pattern';
 
 @Component({
   selector: 'arlas-map',

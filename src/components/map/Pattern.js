@@ -1,5 +1,5 @@
 'use strict';
- (function (window, document, undefined) {
+ var Pattern=(function (window, document, undefined) {
 
 L.Pattern = L.Evented.extend({
 	includes: [L.Evented],
@@ -493,5 +493,5 @@ L.PatternRect = L.PatternShape.extend({
 });
 
 }(window, document));
-
+module.exports = Pattern;
 

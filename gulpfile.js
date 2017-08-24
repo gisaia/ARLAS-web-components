@@ -11,6 +11,16 @@ function copyHtml() {
         .pipe(gulp.dest('./dist')).on('end', copyAssets);
 }
 
+function copyDts() {
+    gulp.src('src/components/**/*.d.ts')
+        .pipe(gulp.dest('./dist')).on('end', copyAssets);
+}
+
+function copyJS() {
+    gulp.src('src/components/**/*.js')
+        .pipe(gulp.dest('./dist')).on('end', copyAssets);
+}
+
 function copyAssets () {
     gulp.src('./src/assets/**/*')
         .pipe(gulp.dest('./dist/assets')).on('end', copyScss);
@@ -37,11 +47,16 @@ function cleanDistSrc(){
 gulp.task('build:clean-dist-node_modules', cleanDistNodeModules);
 gulp.task('build:clean-dist-src', cleanDistSrc);
 gulp.task('build:copy-and-inline-resource', copyHtml);
+gulp.task('build:copy-and-inline-dts', copyDts);
+gulp.task('build:copy-and-inline-js', copyJS);
+
 
 gulp.task('build:release', function (done) {
     // Synchronously run those tasks.
     return gulpRunSequence(
         'build:copy-and-inline-resource',
+        'build:copy-and-inline-dts',
+        'build:copy-and-inline-js',
         'build:clean-dist-node_modules',
         'build:clean-dist-src',
         done
