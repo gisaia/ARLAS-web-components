@@ -27,7 +27,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public bboxcolor = 'black';
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
-  @Input() public colorDetail =  '#FC9F28';
+  @Input() public colorDetail = '#FC9F28';
   @Input() public addLayerDetailBus = new Subject<any>();
   @Input() public removeLayerDetailBus = new Subject<string>();
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
@@ -66,7 +66,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       height: 0.2,
       weight: 0.015,
       spaceWeight: 0.5,
-      spaceColor:this.colorDetail,
+      spaceColor: this.colorDetail,
       color: this.colorDetail,
       opacity: 0.9,
       spaceOpacity: 0.4,
@@ -104,7 +104,7 @@ export class MapComponent implements OnInit, AfterViewInit {
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup);
-    const detailStyle: any = { color:this.colorDetail, opacity: 1, fillOpacity: 1 };
+    const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
     this.map.addLayer(this.detailLayerGroup);
 
     this.map.on('editable:vertex:dragend', (e) => {
