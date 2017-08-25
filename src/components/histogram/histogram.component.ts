@@ -161,7 +161,7 @@ export class HistogramComponent implements OnInit {
     this.plottingCount++;
   }
 
-  private resizeHistogram(e: Event): void {
+  public resizeHistogram(e: Event): void {
     if (this.isWidthFixed === false) {
       this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
     }
