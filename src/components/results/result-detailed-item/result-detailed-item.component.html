@@ -1,9 +1,11 @@
 <td class= "checkboxcell" [colSpan]="1">
 </td>
-<td class= "resultdetaileditem" [colSpan]="detailColspan - 1">
-  {{detailedItemInformations}}
+<td class="resultdetaileditem" [colSpan]="detailColspan - 1">
+  <span *ngFor="let detail of rowItem.detailedData" class="{{detail.key}}-item-detail">
+    {{detail.key}} : {{detail.value}}
+  </span>
   <br/>
-  <button class="btn btn-primary actions" *ngFor="let action of actionsList" (click)="setAction(action)">
+  <button *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="btn btn-primary {{action.id}}-action resultdetaileditem__actions" >
     {{action.label}}
   </button>
 </td>

@@ -26,8 +26,44 @@
 .resultlist__header--columns__sort--icon {
   font-size:18px;
 }
+.resultlist {
+  height: 100%;
+  overflow: hidden;
+  display: table;
+  margin-bottom: 0;
+}
 
 .resultlist {
   width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
 }
 
+thead tr {
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+tbody {
+  display: block;
+  overflow-y: auto;
+  width: 100%;
+}
+
+::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #555;
+}

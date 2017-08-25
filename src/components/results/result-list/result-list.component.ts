@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, Output, OnChanges, SimpleChange, DoCheck, IterableDiffers,
-         ViewContainerRef, ElementRef} from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, DoCheck, IterableDiffers, ViewContainerRef, ElementRef} from '@angular/core';
 import { SortEnum } from '../utils/sortEnum';
 import { Column } from '../utils/column';
 import { RowItem } from '../utils/rowItem';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Rx';
+
 
 
 @Component({
@@ -12,7 +13,7 @@ import { Subject } from 'rxjs/Subject';
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnInit, DoCheck {
+export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
 
   // columnName is the shown name
   // fieldName is the real field name that's hidden
@@ -60,6 +61,12 @@ export class ResultListComponent implements OnInit, DoCheck {
   public rows: Array<RowItem>;
   public filtersMap: Map<string, string | number | Date>;
   public sortedColumn: {fieldName: string, sortDirection: SortEnum};
+
+  // Heights of table elements
+  public tbodyHeight: number = null;
+  public theadHeight: number = null;
+
+
   public SortEnum = SortEnum;
   public selectedItems: Array<string> = new Array<string>();
 
@@ -71,13 +78,21 @@ export class ResultListComponent implements OnInit, DoCheck {
    private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
+
+    Observable.fromEvent(window, 'resize')
+        .debounceTime(500)
+        .subscribe((event: Event) => {
+          this.setTableHeight();
+        });
 }
 
 
+  public ngAfterViewInit() {
+  }
+
   public ngOnInit() {
-    if (this.tableWidth === null) {
-      this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
-    }
+    this.setTableWidth();
+    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 95;
   }
 
   public ngDoCheck() {
@@ -89,10 +104,9 @@ export class ResultListComponent implements OnInit, DoCheck {
     if (rowChanges) {
         this.setRows();
     }
-
   }
 
-  public setActionOnItem(actionOnItem: {action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
+  public triggerActionOnItem(actionOnItem: {action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
   productIdentifier: {idFieldName: string, idValue: string}}) {
     this.actionOnItemEvent.next(actionOnItem);
   }
@@ -124,6 +138,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.sortColumnEvent.next(this.sortedColumn);
   }
 
+
   public setConsultedItem(identifier: string) {
     this.consultedItemEvent.next(identifier);
   }
@@ -133,6 +148,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.filtersMap = new Map<string, string | number | Date>();
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
+      column.width = (this.tableWidth - 20) / (this.fieldsList.length - 1);
       if (field.fieldName === this.idFieldName) {
         column.isIdField = true;
         // id column is the first one
@@ -143,16 +159,23 @@ export class ResultListComponent implements OnInit, DoCheck {
     });
   }
 
-
-
-
-
   private setRows() {
     this.rows = new Array<RowItem>();
     this.rowItemList.forEach(rowItem => {
       const row = new RowItem(this.columns, rowItem);
       this.rows.push(row);
     });
+  }
+
+  private setTableWidth() {
+    if (this.tableWidth === null) {
+      this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+    }
+  }
+
+  private setTableHeight() {
+    this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
+    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
   }
 
   private getField(field: {fieldName: string, fieldValue: string}, fieldName: string) {
