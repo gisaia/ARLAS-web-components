@@ -33,7 +33,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
   // Sorting a column event. Do we use a Subject or try ngOnChange ?
-  @Output() public sortColumnsEvent: Subject<Map<string, SortEnum>> = new Subject<Map<string, SortEnum>>();
+  @Output() public sortColumnEvent: Subject<{fieldName: string, sortDirection: SortEnum}> =
+  new Subject<{fieldName: string, sortDirection: SortEnum}>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
   @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
@@ -58,7 +59,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   public columns: Array<Column>;
   public rows: Array<RowItem>;
   public filtersMap: Map<string, string | number | Date>;
-  public sortedColumnsMap: Map<string, SortEnum> = new Map<string, SortEnum>();
+  public sortedColumn: {fieldName: string, sortDirection: SortEnum};
   public SortEnum = SortEnum;
   public selectedItems: Array<string> = new Array<string>();
 
@@ -106,16 +107,21 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public sort(column: Column): void {
-    if (column.sortDirection === SortEnum.none) {
-      column.sortDirection = SortEnum.asc;
-    } else if (column.sortDirection === SortEnum.asc) {
-      column.sortDirection = SortEnum.desc;
+  public sort(sortedColumn: Column): void {
+    if (sortedColumn.sortDirection === SortEnum.none) {
+      sortedColumn.sortDirection = SortEnum.asc;
+    } else if (sortedColumn.sortDirection === SortEnum.asc) {
+      sortedColumn.sortDirection = SortEnum.desc;
     } else {
-      column.sortDirection = SortEnum.asc;
+      sortedColumn.sortDirection = SortEnum.asc;
     }
-    this.sortedColumnsMap.set(column.fieldName, column.sortDirection);
-    this.sortColumnsEvent.next(this.sortedColumnsMap);
+    this.sortedColumn = {fieldName: sortedColumn.fieldName, sortDirection: sortedColumn.sortDirection};
+    this.columns.forEach(column => {
+      if (column.fieldName !== sortedColumn.fieldName) {
+        column.sortDirection = SortEnum.none;
+      }
+    });
+    this.sortColumnEvent.next(this.sortedColumn);
   }
 
   public setConsultedItem(identifier: string) {
