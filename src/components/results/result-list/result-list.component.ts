@@ -1,11 +1,12 @@
-import { Component, OnInit, AfterViewInit, Input, Output, DoCheck, IterableDiffers, ViewContainerRef, ElementRef} from '@angular/core';
+import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
+  HostListener} from '@angular/core';
 import { SortEnum } from '../utils/sortEnum';
 import { Column } from '../utils/column';
 import { RowItem } from '../utils/rowItem';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
-
+import { ANIMATION_TYPES } from 'ngx-loading';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { Observable } from 'rxjs/Rx';
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
+export class ResultListComponent implements OnInit, DoCheck {
 
   // columnName is the shown name
   // fieldName is the real field name that's hidden
@@ -29,6 +30,12 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
 
   // the table width. If not specified, the tableWidth value is equal to container width.
   @Input() public tableWidth: number = null;
+
+  // When the scrollbar achieves this lines, more data is called
+  @Input() public nLastLines = 5;
+
+  // When the scrollbar achieves this lines, more data is called
+  @Input() public nbAllHits;
 
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
@@ -48,7 +55,7 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   // The moreDataEvent notify the need for more data.
-  @Output() public moreDataEvent: Subject<any>;
+  @Output() public moreDataEvent: Subject<any> =  new Subject<any>();
 
   // The action triggered on an item which identifier is 'identifier'.
   @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
@@ -65,7 +72,7 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
   // Heights of table elements
   public tbodyHeight: number = null;
   public theadHeight: number = null;
-
+  public ANIMATION_TYPES = ANIMATION_TYPES;
 
   public SortEnum = SortEnum;
   public selectedItems: Array<string> = new Array<string>();
@@ -73,9 +80,10 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
 
+  public isMoreDataRequested = false;
 
-  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private viewContainerRef: ViewContainerRef,
-   private el: ElementRef) {
+
+  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
 
@@ -83,11 +91,17 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
         .debounceTime(500)
         .subscribe((event: Event) => {
           this.setTableHeight();
-        });
-}
+    });
 
+    Observable.fromEvent(window, 'scroll')
+        .debounceTime(500)
+        .subscribe((event: Event) => {
+    });
+  }
 
-  public ngAfterViewInit() {
+  public askForMoreData() {
+     this.moreDataEvent.next('more');
+     this.isMoreDataRequested = true;
   }
 
   public ngOnInit() {
@@ -103,6 +117,8 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
     }
     if (rowChanges) {
         this.setRows();
+        // If the new data is retrived because of an end of scroll, hide the animation
+        this.isMoreDataRequested = false;
     }
   }
 
@@ -137,7 +153,6 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
     });
     this.sortColumnEvent.next(this.sortedColumn);
   }
-
 
   public setConsultedItem(identifier: string) {
     this.consultedItemEvent.next(identifier);
@@ -181,7 +196,5 @@ export class ResultListComponent implements OnInit, DoCheck, AfterViewInit {
   private getField(field: {fieldName: string, fieldValue: string}, fieldName: string) {
     return field.fieldName === fieldName;
   }
-
-
 
 }

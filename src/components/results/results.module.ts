@@ -5,6 +5,8 @@ import { ResultListComponent } from './result-list/result-list.component';
 import { ResultItemComponent } from './result-item/result-item.component';
 import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
 import { ResultFilterComponent } from './result-filter/result-filter.component';
+import { ResultScrollDirective } from './result-directive/result-scroll.directive';
+import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
 import { MdIconModule } from '@angular/material';
 
 
@@ -14,9 +16,10 @@ import { MdIconModule } from '@angular/material';
   imports: [
     CommonModule,
     MdIconModule,
-    FormsModule
+    FormsModule,
+    LoadingModule
   ],
-  declarations: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent],
-  exports: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent]
+  declarations: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective],
+  exports: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective]
 })
 export class ResultsModule {}

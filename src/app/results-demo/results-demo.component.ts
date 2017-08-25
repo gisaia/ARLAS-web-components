@@ -11,6 +11,7 @@ export class ResultsDemoComponent implements OnInit {
   public data: Array<Map<string, string | number | Date>>;
   public fieldsList: Array<{columnName: string, fieldName: string, dataType: string}>;
   public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
+  public count = 0;
 
   constructor() {}
 
@@ -32,6 +33,23 @@ export class ResultsDemoComponent implements OnInit {
       map.set('id', (i + 10) );
       this.data.push(map);
     }
+  }
+
+  public addMoreData() {
+    setTimeout(() => {
+      if ( this.count === 0 ) {
+        for ( let i = 50; i < 70; i++) {
+          const map = new Map<string, string | number | Date>();
+          map.set('source', 'SPOT' + (i + 1));
+          map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
+          map.set('cloud', (i + 1) + '.0');
+          map.set('incidence', (i + 10) );
+          map.set('id', (i + 10) );
+          this.data.push(map);
+        }
+        this.count++;
+      }
+    }, 3000);
   }
 
   public updateData() {

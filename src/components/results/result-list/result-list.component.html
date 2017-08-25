@@ -29,7 +29,7 @@
 
     </tr>
   </thead>
-  <tbody [style.height.px]="tbodyHeight">
+  <tbody [style.height.px]="tbodyHeight" arlasResultScroll [rowItemList]="rowItemList" [nbAllHits]="nbAllHits" [nLastLines]="nLastLines" (moreDataEvent)="askForMoreData()">
     <ng-container  *ngFor="let rowItem of rows">
       <tr (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)" arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName" (selectedItemsEvent)="setSelectedItems($event)">
       </tr>
@@ -39,4 +39,8 @@
     </ng-container>
   </tbody>
 </table>
-
+  <div [style.width.px]="tableWidth" class="resultlist__moredata" *ngIf="isMoreDataRequested">
+    <ngx-loading [show]="isMoreDataRequested" [config]="{ animationType: ANIMATION_TYPES.threeBounce,
+        backdropBackgroundColour: 'rgba(100,100,100,0.5)', backdropBorderRadius: '0',
+        primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">LOADING MORE HITS</ngx-loading>
+  </div>
