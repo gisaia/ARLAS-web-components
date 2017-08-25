@@ -16,9 +16,9 @@ import './Pattern';
 export class MapComponent implements OnInit, AfterViewInit {
   private map: leaflet.Map;
   public textButton = 'Add GeoBox';
-  private editLayerGroup: L.LayerGroup = new L.LayerGroup();
-  private detailLayerGroup: L.FeatureGroup = new L.FeatureGroup();
   public detailIdToLayerId: Map<string, number> = new Map<string, number>();
+  private editLayerGroup: L.LayerGroup = new L.LayerGroup();
+  private detailLayerGroup: L.LayerGroup = new L.LayerGroup();
 
   private isGeoBox = false;
 
@@ -30,6 +30,8 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public colorDetail = '#FC9F28';
   @Input() public addLayerDetailBus = new Subject<any>();
   @Input() public removeLayerDetailBus = new Subject<string>();
+  @Input() public onConsultItemSubject = new Subject<string>();
+
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
@@ -72,6 +74,8 @@ export class MapComponent implements OnInit, AfterViewInit {
       spaceOpacity: 0.4,
       angle: 135
     });
+
+
     stripes.addTo(this.map);
     this.addLayerDetailBus.subscribe(layer => {
       if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
@@ -80,8 +84,9 @@ export class MapComponent implements OnInit, AfterViewInit {
             fillPattern: stripes
           }
         });
+        const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
+        detailledLayer.setStyle(detailStyle);
         this.detailLayerGroup.addLayer(detailledLayer);
-        this.detailLayerGroup.setStyle(detailStyle);
         this.detailIdToLayerId.set(layer.id, this.detailLayerGroup.getLayerId(detailledLayer));
       }
     }
@@ -101,10 +106,19 @@ export class MapComponent implements OnInit, AfterViewInit {
       }
     });
 
+    this.onConsultItemSubject.subscribe(id => {
+
+      const layerId = this.detailIdToLayerId.get(id);
+      if (layerId !== null || layerId !== undefined) {
+
+
+      }
+
+    });
+
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup);
-    const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
     this.map.addLayer(this.detailLayerGroup);
 
     this.map.on('editable:vertex:dragend', (e) => {
