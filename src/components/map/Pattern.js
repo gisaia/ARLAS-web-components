@@ -43,7 +43,6 @@ L.Pattern = L.Evented.extend({
 		if (this.getEvents) {
             this._map.on(this.getEvents(), this);
 		}
-		console.log(this)
 		this.fire('add');
         this._map.fire('patternadd', {pattern: this});
 	},
