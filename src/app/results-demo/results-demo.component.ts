@@ -23,7 +23,7 @@ export class ResultsDemoComponent implements OnInit {
     this.fieldsList.push({columnName: 'Id', fieldName: 'id', dataType: ''});
 
     this.data = new Array<Map<string, string | number | Date>>();
-    for ( let i = 0; i < 5; i++) {
+    for ( let i = 0; i < 50; i++) {
       const map = new Map<string, string | number | Date>();
       map.set('source', 'SPOT' + (i + 1));
       map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
@@ -38,7 +38,7 @@ export class ResultsDemoComponent implements OnInit {
     this.data = new Array<Map<string, string | number | Date>>();
     const map = new Map<string, string | number | Date>();
     map.set('source', 'SPOT' + (5 + 1));
-    map.set('acquired', '2017-0' + (5 + 1) + '-' + (5 + 3));
+    map.set('acquired', '2017-555555550' + (5 + 1) + '-' + (5 + 3));
     map.set('cloud', (5 + 1) + '.0');
     map.set('incidence', (5 + 10) );
     map.set('id', (5 + 10) );

@@ -1,24 +1,42 @@
-<table class="resultlist" [style.width.px]="tableWidth" class="table table-sm table-responsive table-hover">
+<table [style.width.px]="tableWidth" class="table table-sm table-responsive table-hover resultlist">
   <thead >
     <tr>
-      <th class="resultlist__header--columns" *ngFor="let column of columns" >
-        <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
-        </span>
-        <span *ngIf="!column.isIdField">
-          <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
-        </span>
-        <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
-          <md-icon *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
-          <md-icon *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
-        </div>
-      </th>
+      <ng-container *ngFor="let column of columns">
+        <th [style.width.px]="20" *ngIf="column.isIdField" class="resultlist__header--columns" >
+          <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
+          </span>
+        </th>
+        <th  *ngIf="!column.isIdField" [style.width.px]="column.width" class="resultlist__header--columns test" >
+          <span>
+            <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
+          </span>
+          <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
+            <md-icon *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
+            <md-icon *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
+          </div>
+        </th>
+      </ng-container>
     </tr>
     <tr>
-      <td arlas-result-filter *ngFor="let column of columns" [column]="column" [filtersMap]="filtersMap" (setFiltersEvent)="setFilters($event)"></td>
+      <ng-container *ngFor="let column of columns">
+        <td [style.width.px]="20" *ngIf="column.isIdField">
+          <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
+          </span>
+        </td>
+
+        <td arlas-result-filter *ngIf="!column.isIdField" [style.width.px]="column.width" [column]="column" [filtersMap]="filtersMap" (setFiltersEvent)="setFilters($event)"></td>
+      </ng-container>
+
     </tr>
   </thead>
-  <tbody arlas-result-item *ngFor="let rowItem of rows"
-    [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName"
-    (actionOnItemEvent)="setActionOnItem($event)" (selectedItemsEvent)="setSelectedItems($event)" (consultedItemEvent)="setConsultedItem($event)">
+  <tbody [style.height.px]="tbodyHeight">
+    <ng-container  *ngFor="let rowItem of rows">
+      <tr (mouseenter)="setConsultedItem(rowItem.identifier)"  arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName" (selectedItemsEvent)="setSelectedItems($event)">
+      </tr>
+      <tr *ngIf="rowItem.isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [idFieldName]="idFieldName"
+       (actionOnItemEvent)="triggerActionOnItem($event)">
+      </tr>
+    </ng-container>
   </tbody>
 </table>
+

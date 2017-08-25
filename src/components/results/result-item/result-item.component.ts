@@ -22,7 +22,6 @@ export class ResultItemComponent implements OnInit {
     productIdentifier: {idFieldName: string, idValue: string}}>();
   @Input() public selectedItems: Array<string>;
   @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
-  @Output() public consultedItemEvent: Subject<string> = new Subject<string>();
 
 
   public isDetailToggled = false;
@@ -33,28 +32,28 @@ export class ResultItemComponent implements OnInit {
   private retrievedDataEvent: Observable<{details: Map<string, string>,
                               actions: Array<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>}>;
 
-  private identifier: string;
+  protected identifier: string;
 
   constructor() { }
 
   public ngOnInit() {
     this.identifier = (String)(this.rowItem.data.get(this.rowItem.columns[0].fieldName));
+    this.rowItem.identifier = this.identifier;
   }
 
   public toggle() {
-    if ( this.isDetailToggled === false) {
-      if (this.detailedDataRetriever !== null && this.detailedData === '' ) {
+    if ( this.rowItem.isDetailToggled === false) {
+      if (this.detailedDataRetriever !== null && this.rowItem.detailedData.length === 0 ) {
         this.retrievedDataEvent = this.detailedDataRetriever.getData(((String)(this.identifier)));
         this.retrievedDataEvent.subscribe(value => {
-          this.actions = value.actions;
+          this.rowItem.actions = value.actions;
           value.details.forEach((value: string, key: string) => {
-            this.detailedData += key + ': ' + value + '  ';
+            this.rowItem.detailedData.push({key: key, value: value});
           });
         });
+      }
     }
-    }
-    this.isDetailToggled = !this.isDetailToggled;
-
+    this.rowItem.isDetailToggled = !this.rowItem.isDetailToggled;
   }
 
   public setAction(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}) {
@@ -76,8 +75,5 @@ export class ResultItemComponent implements OnInit {
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public setConsultedItem() {
-    this.consultedItemEvent.next(this.identifier);
-  }
 
 }

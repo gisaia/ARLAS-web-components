@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, OnChanges, SimpleChange, DoCheck, IterableDiffers } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { Column } from '../utils/column';
 import { Subject } from 'rxjs/Subject';
 
@@ -14,14 +14,11 @@ export class ResultFilterComponent implements OnInit {
   @Input() public filtersMap: Map<string, string | number | Date>;
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
   @Input() public inputValue: string;
-  private isKeyEnterPressed = false;
 
   private iterableInputDiffer;
   private iterableColumnsDiffer;
 
-  constructor(iterableInputDiffer: IterableDiffers) {
-    this.iterableInputDiffer = iterableInputDiffer.find([]).create(null);
-  }
+  constructor() {}
 
   public ngOnInit() {
   }
