@@ -31,9 +31,9 @@
   </thead>
   <tbody [style.height.px]="tbodyHeight">
     <ng-container  *ngFor="let rowItem of rows">
-      <tr (mouseenter)="setConsultedItem(rowItem.identifier)"  arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName" (selectedItemsEvent)="setSelectedItems($event)">
+      <tr (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)" arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName" (selectedItemsEvent)="setSelectedItems($event)">
       </tr>
-      <tr *ngIf="rowItem.isDetailToggled" arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [idFieldName]="idFieldName"
+      <tr *ngIf="rowItem.isDetailToggled" (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"  arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [idFieldName]="idFieldName"
        (actionOnItemEvent)="triggerActionOnItem($event)">
       </tr>
     </ng-container>

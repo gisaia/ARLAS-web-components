@@ -75,7 +75,7 @@ export class MapComponent implements OnInit, AfterViewInit {
       angle: 135
     });
 
-
+    const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
     stripes.addTo(this.map);
     this.addLayerDetailBus.subscribe(layer => {
       if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
@@ -84,7 +84,6 @@ export class MapComponent implements OnInit, AfterViewInit {
             fillPattern: stripes
           }
         });
-        const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
         detailledLayer.setStyle(detailStyle);
         this.detailLayerGroup.addLayer(detailledLayer);
         this.detailIdToLayerId.set(layer.id, this.detailLayerGroup.getLayerId(detailledLayer));
@@ -107,13 +106,24 @@ export class MapComponent implements OnInit, AfterViewInit {
     });
 
     this.onConsultItemSubject.subscribe(id => {
-
+      let isleaving = false;
+      if (id.split('-')[0] === 'leave') {
+        id = id.split('-')[1];
+        isleaving = true;
+      }
       const layerId = this.detailIdToLayerId.get(id);
       if (layerId !== null || layerId !== undefined) {
+        if (this.detailLayerGroup.getLayer(layerId) !== undefined) {
+          const layer = <any>this.detailLayerGroup.getLayer(layerId);
+          if (isleaving) {
+            detailStyle.color = this.colorDetail;
+          } else {
+            detailStyle.color = this.bboxcolor;
 
-
+          }
+          layer.setStyle(detailStyle);
+        }
       }
-
     });
 
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
