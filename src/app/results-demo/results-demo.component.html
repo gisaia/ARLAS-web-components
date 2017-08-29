@@ -1,6 +1,4 @@
 <div class="table-wrapper">
   <arlas-result-list style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList" [idFieldName]="'id'" [detailedDataRetriever]="detailedDataRetriever"
-                    (setFiltersEvent)="setFilters($event)"></arlas-result-list>
-
-
+  [nbAllHits]="70" (moreDataEvent)="addMoreData()"   (setFiltersEvent)="setFilters($event)"></arlas-result-list>
 </div>
