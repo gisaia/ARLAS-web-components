@@ -2,11 +2,11 @@
   <thead >
     <tr>
       <ng-container *ngFor="let column of columns">
-        <th [style.width.px]="column.width" *ngIf="column.isIdField" class="resultlist__header--columns" >
+        <th [style.max-width.px]="column.width" [style.min-width.px]="column.width" *ngIf="column.isIdField" class="resultlist__header--columns" >
           <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
           </span>
         </th>
-        <th  *ngIf="!column.isIdField" [style.width.px]="column.width" class="resultlist__header--columns test" >
+        <th  *ngIf="!column.isIdField" [style.max-width.px]="column.width" [style.min-width.px]="column.width" class="resultlist__header--columns test" >
           <span>
             <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
           </span>

@@ -168,8 +168,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.filtersMap = new Map<string, string | number | Date>();
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
-      column.width = (this.tableWidth - 20) / (this.fieldsList.length - 1);
-      const checkboxColumnWidth = 20;
+      const checkboxColumnWidth = 25;
       if (field.fieldName === this.idFieldName) {
         // id column is the first one and has a pre fixed width
         // It is the column where checkboxes are put

@@ -1,15 +1,17 @@
   <ng-container *ngFor="let field of rowItem.columns; index as i">
-    <td  *ngIf="field.isIdField"class="resultitem__cell">
+    <td  [style.max-width.px]="field.width" [style.min-width.px]="field.width" *ngIf="field.isIdField" class="resultitem__cell">
       <div *ngIf="field.isIdField" class="checkbox">
-        <input type="checkbox" value="" [checked]="isChecked" (change)="setSelectedItem()">
+        <input type="checkbox" [checked]="isChecked" (change)="setSelectedItem()">
       </div>
     </td>
-    <td [style.max-width.px]="field.width" [style.width.px]="field.width" *ngIf="!field.isIdField" class="resultitem__cell test" >
+    <td [style.max-width.px]="field.width" [style.min-width.px]="field.width" *ngIf="!field.isIdField" class="resultitem__cell" >
+      <label class="resultitem__cell--label clear" [style.max-width.px]="field.width-40" [style.min-width.px]="field.width-40">
+        {{rowItem.data.get(field.fieldName)}}{{field.dataType}}
 
-      <label>{{rowItem.data.get(field.fieldName)}}{{field.dataType}}</label>
-      <div *ngIf="i === rowItem.columns.length - 1" class="resultitem__cell__toggle">
-        <md-icon class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
-        <ng-template #cancel_toggle><md-icon class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
+      </label>
+      <div *ngIf="i === rowItem.columns.length - 1" class="resultitem__cell__toggle clear">
+          <md-icon class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
+          <ng-template #cancel_toggle><md-icon class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
       </div>
     </td>
   </ng-container>

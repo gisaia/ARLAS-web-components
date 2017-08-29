@@ -12,3 +12,18 @@
 .resultitem__cell__toggle--icon {
   font-size:18px;
 }
+
+.incidence-resultitem__cell {
+ float: left;
+ column-gap: 100%
+}
+
+
+.resultitem__cell--label {
+  padding-right:5px;
+  display:block;
+  margin:0;
+  float: left;
+}
+
+.clear {clear:both}
