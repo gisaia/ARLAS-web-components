@@ -12,9 +12,10 @@ export class ResultScrollDirective {
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
   @Input() public nLastLines: number;
   @Input() public nbAllHits: number;
-  @Output() public moreDataEvent: Subject<any> =  new Subject<any>();
+  @Output() public moreDataEvent: Subject<number> =  new Subject<number>();
   private lastScrollTop = 0;
   private lastDataSize = 0;
+  private moreDataCallsCounter = 0;
   private tbodyHeight;
 
   constructor (private el: ElementRef) {}
@@ -32,7 +33,8 @@ export class ResultScrollDirective {
     if ( scrollDown  < nLastElementsHeight + this.tbodyHeight && this.isScrollingDown(scrollTop) && this.hasDataSizeChanged() ) {
       this.lastDataSize = this.rowItemList.length;
       if (this.rowItemList.length < this.nbAllHits) {
-        this.moreDataEvent.next('more_data');
+        this.moreDataCallsCounter++;
+        this.moreDataEvent.next(this.moreDataCallsCounter);
       }
     }
     this.lastScrollTop = scrollTop;

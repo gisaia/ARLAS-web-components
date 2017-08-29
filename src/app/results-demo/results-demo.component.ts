@@ -37,7 +37,7 @@ export class ResultsDemoComponent implements OnInit {
 
   public addMoreData() {
     setTimeout(() => {
-      if ( this.count === 0 ) {
+      if ( this.count < 2 ) {
         for ( let i = 50; i < 70; i++) {
           const map = new Map<string, string | number | Date>();
           map.set('source', 'SPOT' + (i + 1));

@@ -55,7 +55,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   // The moreDataEvent notify the need for more data.
-  @Output() public moreDataEvent: Subject<any> =  new Subject<any>();
+  @Output() public moreDataEvent: Subject<number> =  new Subject<number>();
 
   // The action triggered on an item which identifier is 'identifier'.
   @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
@@ -99,8 +99,8 @@ export class ResultListComponent implements OnInit, DoCheck {
     });
   }
 
-  public askForMoreData() {
-     this.moreDataEvent.next('more');
+  public askForMoreData(moreDataCallsCounter: number) {
+     this.moreDataEvent.next(moreDataCallsCounter);
      this.isMoreDataRequested = true;
   }
 
