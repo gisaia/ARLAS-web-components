@@ -5,24 +5,26 @@ import { RowItem } from '../utils/rowItem';
 
 
 @Directive({
-    selector: '[arlasResultScroll]',
+  selector: '[arlasResultScroll]',
 })
 
 export class ResultScrollDirective implements OnChanges {
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
   @Input() public nLastLines: number;
   @Input() public searchSize: number;
-  @Output() public moreDataEvent: Subject<number> =  new Subject<number>();
+  @Output() public moreDataEvent: Subject<number> = new Subject<number>();
   private lastScrollTop = 0;
   private lastDataSize = 0;
   private moreDataCallsCounter;
   private tbodyHeight;
 
-  constructor (private el: ElementRef) {}
+  constructor(private el: ElementRef) { }
 
-  public ngOnChanges (changes: SimpleChanges) {
+  public ngOnChanges(changes: SimpleChanges) {
     if (changes['rowItemList']) {
       this.moreDataCallsCounter = 0;
+      this.lastScrollTop = 0;
+      this.lastDataSize = 0;
     }
   }
 
@@ -36,7 +38,7 @@ export class ResultScrollDirective implements OnChanges {
     // Ask for more data when the scroll bar :
     // - reaches for the "nLastLines" last lines and it is scrolling down only
     // - when data size increased of 'searchSize'
-    if ( scrollDown  < nLastElementsHeight + this.tbodyHeight && this.isScrollingDown(scrollTop) ) {
+    if (scrollDown < nLastElementsHeight + this.tbodyHeight && this.isScrollingDown(scrollTop)) {
       if ((this.rowItemList.length - this.lastDataSize) === this.searchSize) {
         this.moreDataCallsCounter++;
         this.moreDataEvent.next(this.moreDataCallsCounter);
@@ -47,13 +49,13 @@ export class ResultScrollDirective implements OnChanges {
   }
 
   private isScrollingDown(scrollTop) {
-    if ( scrollTop > this.lastScrollTop) {
+    if (scrollTop > this.lastScrollTop) {
       return true;
     }
   }
 
   private hasDataSizeChanged() {
-    if ((this.rowItemList.length - this.lastDataSize) === this.searchSize ) {
+    if ((this.rowItemList.length - this.lastDataSize) === this.searchSize) {
       return true;
     }
   }
