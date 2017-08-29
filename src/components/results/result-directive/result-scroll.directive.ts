@@ -1,7 +1,7 @@
 import { Directive, Input, Output, HostListener, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { RowItem } from '../utils/rowItem';
+import { RowItem } from '../model/rowItem';
 
 
 @Directive({
@@ -28,6 +28,10 @@ export class ResultScrollDirective implements OnChanges {
     }
   }
 
+  // When scrolling, the position of the scroll bar is calculated
+  // Ask for more data when the scroll bar :
+    // - reaches for the "nLastLines" last lines and it is scrolling down only
+    // - when data size increased of 'searchSize'
   @HostListener('scroll', ['$event'])
   public onScroll(event) {
     this.tbodyHeight = this.el.nativeElement.offsetHeight;
@@ -35,9 +39,6 @@ export class ResultScrollDirective implements OnChanges {
     const scrollHeight = this.el.nativeElement.scrollHeight;
     const scrollDown = scrollHeight - scrollTop;
     const nLastElementsHeight = this.tbodyHeight / scrollHeight * this.rowItemList.length * (this.nLastLines + 1);
-    // Ask for more data when the scroll bar :
-    // - reaches for the "nLastLines" last lines and it is scrolling down only
-    // - when data size increased of 'searchSize'
     if (scrollDown < nLastElementsHeight + this.tbodyHeight && this.isScrollingDown(scrollTop)) {
       if ((this.rowItemList.length - this.lastDataSize) === this.searchSize) {
         this.moreDataCallsCounter++;
@@ -54,9 +55,4 @@ export class ResultScrollDirective implements OnChanges {
     }
   }
 
-  private hasDataSizeChanged() {
-    if ((this.rowItemList.length - this.lastDataSize) === this.searchSize) {
-      return true;
-    }
-  }
 }

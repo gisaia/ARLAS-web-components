@@ -1,4 +1,4 @@
-import { SortEnum } from '../utils/sortEnum';
+import { SortEnum } from '../utils/enumerations/sortEnum';
 
 
 export class Column {
