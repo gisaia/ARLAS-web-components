@@ -27,7 +27,7 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
   @Input() public colorDetail = '#FC9F28';
-  @Input() public addLayerDetailBus = new Subject<{geometry: string,id: string}>();
+  @Input() public addLayerDetailBus = new Subject<{ geometry: string, id: string }>();
   @Input() public removeLayerDetailBus = new Subject<string>();
   @Input() public onConsultItemSubject = new Subject<string>();
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
