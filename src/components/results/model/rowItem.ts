@@ -15,5 +15,4 @@ export class RowItem {
     this.data = rowData;
   }
 
-
 }

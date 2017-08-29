@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { Column } from '../utils/column';
+import { Column } from '../model/column';
 import { Subject } from 'rxjs/Subject';
 
 

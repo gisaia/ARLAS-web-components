@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { Column } from '../utils/column';
-import { RowItem } from '../utils/rowItem';
+import { Column } from '../model/column';
+import { RowItem } from '../model/rowItem';
 
 import { Subject } from 'rxjs/Subject';
 

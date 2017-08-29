@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { RowItem } from '../utils/rowItem';
+import { RowItem } from '../model/rowItem';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 import { Observable } from 'rxjs/Rx';

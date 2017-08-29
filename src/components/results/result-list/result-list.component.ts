@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
   HostListener} from '@angular/core';
-import { SortEnum } from '../utils/sortEnum';
-import { Column } from '../utils/column';
-import { RowItem } from '../utils/rowItem';
+import { SortEnum } from '../utils/enumerations/sortEnum';
+import { Column } from '../model/column';
+import { RowItem } from '../model/rowItem';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';

@@ -1,7 +1,7 @@
 import { Directive, Input, Output, HostListener, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { RowItem } from '../utils/rowItem';
+import { RowItem } from '../model/rowItem';
 
 
 @Directive({

@@ -1,5 +1,5 @@
 export { DateUnit, ChartType, DataType } from './histogram/histogram.utils';
-export { SortEnum } from './results/utils/sortEnum';
+export { SortEnum } from './results/utils/enumerations/sortEnum';
 export { DetailedDataRetriever } from './results/utils/detailed-data-retriever';
 export { HistogramComponent } from './histogram/histogram.component';
 export { HistogramModule } from './histogram/histogram.module';
