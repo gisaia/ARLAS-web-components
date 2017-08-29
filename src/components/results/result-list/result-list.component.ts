@@ -34,8 +34,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   // When the scrollbar achieves this lines, more data is called
   @Input() public nLastLines = 5;
 
-  // When the scrollbar achieves this lines, more data is called
-  @Input() public nbAllHits;
+  // Number of new rows added after each moreDataEvent
+  @Input() public searchSize;
 
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
@@ -55,7 +55,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   // The moreDataEvent notify the need for more data.
-  @Output() public moreDataEvent: Subject<any> =  new Subject<any>();
+  @Output() public moreDataEvent: Subject<number> =  new Subject<number>();
 
   // The action triggered on an item which identifier is 'identifier'.
   @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
@@ -99,8 +99,8 @@ export class ResultListComponent implements OnInit, DoCheck {
     });
   }
 
-  public askForMoreData() {
-     this.moreDataEvent.next('more');
+  public askForMoreData(moreDataCallsCounter: number) {
+     this.moreDataEvent.next(moreDataCallsCounter);
      this.isMoreDataRequested = true;
   }
 
@@ -117,7 +117,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     }
     if (rowChanges) {
         this.setRows();
-        // If the new data is retrived because of an end of scroll, hide the animation
+        // If the new data is retrieved because of an end of scroll, hide the animation
         this.isMoreDataRequested = false;
     }
   }

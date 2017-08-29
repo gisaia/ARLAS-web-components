@@ -29,7 +29,7 @@
 
     </tr>
   </thead>
-  <tbody [style.height.px]="tbodyHeight" arlasResultScroll [rowItemList]="rowItemList" [nbAllHits]="nbAllHits" [nLastLines]="nLastLines" (moreDataEvent)="askForMoreData()">
+  <tbody [style.height.px]="tbodyHeight" arlasResultScroll [rowItemList]="rowItemList" [searchSize]="searchSize" [nLastLines]="nLastLines" (moreDataEvent)="askForMoreData($event)">
     <ng-container  *ngFor="let rowItem of rows">
       <tr (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)" arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName" (selectedItemsEvent)="setSelectedItems($event)">
       </tr>

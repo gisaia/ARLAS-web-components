@@ -37,8 +37,20 @@ export class ResultsDemoComponent implements OnInit {
 
   public addMoreData() {
     setTimeout(() => {
-      if ( this.count === 0 ) {
-        for ( let i = 50; i < 70; i++) {
+      if ( this.count < 2 ) {
+        for ( let i = 50; i < 100; i++) {
+          const map = new Map<string, string | number | Date>();
+          map.set('source', 'SPOT' + (i + 1));
+          map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
+          map.set('cloud', (i + 1) + '.0');
+          map.set('incidence', (i + 10) );
+          map.set('id', (i + 10) );
+          this.data.push(map);
+        }
+        this.count++;
+      } else {
+        this.data = new Array<Map<string, string | number | Date>>();
+        for ( let i = 50; i < 60; i++) {
           const map = new Map<string, string | number | Date>();
           map.set('source', 'SPOT' + (i + 1));
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
