@@ -5,7 +5,9 @@
     {{detail.key}} : {{detail.value}}
   </span>
   <br/>
-  <button *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="btn btn-primary {{action.id}}-action resultdetaileditem__actions" >
+  <md-basic-chip  *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="{{action.id}}-action resultdetaileditem__actions" >
     {{action.label}}
-  </button>
+  </md-basic-chip>
+
+
 </td>

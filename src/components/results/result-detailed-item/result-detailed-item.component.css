@@ -9,4 +9,9 @@
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   margin: 3px;
+  background-color: #043b53;
+  padding: 10px 15px;
+  display: inline-block;
+  color: white;
+  cursor: pointer;
 }

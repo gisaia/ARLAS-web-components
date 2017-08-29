@@ -7,7 +7,8 @@ import { ResultDetailedItemComponent } from './result-detailed-item/result-detai
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultScrollDirective } from './result-directive/result-scroll.directive';
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
-import { MdIconModule } from '@angular/material';
+import { MdIconModule, MdChipsModule } from '@angular/material';
+
 
 
 
@@ -16,6 +17,7 @@ import { MdIconModule } from '@angular/material';
   imports: [
     CommonModule,
     MdIconModule,
+    MdChipsModule,
     FormsModule,
     LoadingModule
   ],
