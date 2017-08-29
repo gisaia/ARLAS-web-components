@@ -72,7 +72,7 @@ A component to structure data in a filterable, sortable, selectable table.
 | **rowItemList** | `Array<Map<string, string | number | Date>>`                       | - It's a list of fieldName-fieldValue map | Mandatory  |
 | **tableWidth**  | `number`                                                           | - The table width. If not specified, the tableWidth value is equal to container width | Optional |
 | **detailedDataRetriever** | `DetailedDataRetriever`                                  | - A detailed-data retriever object that implements DetailedDataRetriever interface | Mandatory  |
-| **nbAllHits**   | `number`                                                           | - Number of all hits to be structured in the table | Mandatory  |
+| **searchSize**   | `number`                                                          | - Number of new rows added after each moreDataEvent | Mandatory  |
 | **nLastLines**  | `number`                                                           | - When the scrollbar achieves this lines, more data is called | Optional. Default value is 5.  |
 
 ### Outputs : 

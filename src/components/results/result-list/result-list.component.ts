@@ -34,8 +34,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   // When the scrollbar achieves this lines, more data is called
   @Input() public nLastLines = 5;
 
-  // When the scrollbar achieves this lines, more data is called
-  @Input() public nbAllHits;
+  // Number of new rows added after each moreDataEvent
+  @Input() public searchSize;
 
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
@@ -117,7 +117,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     }
     if (rowChanges) {
         this.setRows();
-        // If the new data is retrived because of an end of scroll, hide the animation
+        // If the new data is retrieved because of an end of scroll, hide the animation
         this.isMoreDataRequested = false;
     }
   }
