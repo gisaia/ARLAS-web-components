@@ -19,7 +19,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   public detailIdToLayerId: Map<string, number> = new Map<string, number>();
   private editLayerGroup: L.LayerGroup = new L.LayerGroup();
   private detailLayerGroup: L.LayerGroup = new L.LayerGroup();
-
   private isGeoBox = false;
 
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
@@ -28,10 +27,9 @@ export class MapComponent implements OnInit, AfterViewInit {
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
   @Input() public colorDetail = '#FC9F28';
-  @Input() public addLayerDetailBus = new Subject<any>();
+  @Input() public addLayerDetailBus = new Subject<{geometry: string,id: string}>();
   @Input() public removeLayerDetailBus = new Subject<string>();
   @Input() public onConsultItemSubject = new Subject<string>();
-
   @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
   @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
 
@@ -77,9 +75,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
     stripes.addTo(this.map);
+
     this.addLayerDetailBus.subscribe(layer => {
       if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
-        const detailledLayer = leaflet.geoJSON(layer.geometry, <any>{
+        const detailledLayer = leaflet.geoJSON(JSON.parse(layer.geometry), <any>{
           style: {
             fillPattern: stripes
           }
