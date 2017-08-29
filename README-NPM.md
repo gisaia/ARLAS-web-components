@@ -84,4 +84,36 @@ A component to structure data in a filterable, sortable, selectable table.
 | **selectedItemsEvent**  | `Subject<Array<string>>`                                    | - Emits the list of identifiers of the selected items |
 | **consultedItemEvent**  | `Subject<string>`                                           | - Emits the identifier of the hovered item. |
 | **moreDataEvent**       | `Subject<number>`                                           | - The moreDataEvent notify the need for more data. The parameter of the Subject is the number of times this event has been called. |
-| **actionOnItemEvent**   | `Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},productIdentifier: {idFieldName: string, idValue: string}}>`                            | - Emits the clicked-on action id of the productIdentifier |
+| **actionOnItemEvent**   | `Subject<{action: Action, productIdentifier: ProductIdentifier}>`   | - Emits the clicked-on action id of the productIdentifier |
+
+### Interfaces :
+
+1. DetailedDataRetriever:
+
+```
+export interface DetailedDataRetriever {
+
+  getData(identifier: string): Observable<{details: Map<string, string>, actions: Array<Action>}>;
+
+}
+```
+
+2. Action: 
+
+```
+export interface Action {
+  id: string;
+  label: string;
+  actionBus: Subject<{idFieldName: string, idValue: string}>;
+}
+```
+
+3. ProductIdentifier:
+
+```
+export interface ProductIdentifier {
+  idFieldName: string;
+  idValue: string;
+}
+```
+

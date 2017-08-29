@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { RowItem } from '../model/rowItem';
+import { Action, ProductIdentifier } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 import { Observable } from 'rxjs/Rx';
@@ -15,12 +16,8 @@ export class ResultItemComponent implements OnInit {
 
   @Input() public rowItem: RowItem;
   @Input() public detailedDataRetriever: DetailedDataRetriever;
-  @Input() public idFieldName: string;
-  @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
-    actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}> =
-    new Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
-    productIdentifier: {idFieldName: string, idValue: string}}>();
   @Input() public selectedItems: Array<string>;
+
   @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
 
 
@@ -28,9 +25,7 @@ export class ResultItemComponent implements OnInit {
   public detailedData = '';
   public actions;
   public isChecked = false;
-
-  private retrievedDataEvent: Observable<{details: Map<string, string>,
-                              actions: Array<{id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}>}>;
+  private retrievedDataEvent: Observable<{details: Map<string, string>, actions: Array<Action>}>;
 
   protected identifier: string;
 
@@ -41,6 +36,7 @@ export class ResultItemComponent implements OnInit {
     this.rowItem.identifier = this.identifier;
   }
 
+  // Detailed data is retrieved wheb the row is toggled for the first time
   public toggle() {
     if ( this.rowItem.isDetailToggled === false) {
       if (this.detailedDataRetriever !== null && this.rowItem.detailedData.length === 0 ) {
@@ -56,10 +52,7 @@ export class ResultItemComponent implements OnInit {
     this.rowItem.isDetailToggled = !this.rowItem.isDetailToggled;
   }
 
-  public setAction(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}) {
-    this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.identifier}});
-  }
-
+  // Update the list of the selected items
   public setSelectedItem() {
     this.isChecked = !this.isChecked;
     const index = this.selectedItems.indexOf(this.identifier);

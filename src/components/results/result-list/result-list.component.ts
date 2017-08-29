@@ -3,6 +3,7 @@ import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { Column } from '../model/column';
 import { RowItem } from '../model/rowItem';
+import { Action, ProductIdentifier } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
@@ -58,10 +59,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public moreDataEvent: Subject<number> =  new Subject<number>();
 
   // The action triggered on an item which identifier is 'identifier'.
-  @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
-   actionBus: Subject<{idFieldName: string, idValue: string}>},
-     productIdentifier: {idFieldName: string, idValue: string}}> = new Subject<{action: {id: string, label: string,
-     actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}>();
+  @Output() public actionOnItemEvent: Subject<{action: Action, productIdentifier: ProductIdentifier}> =
+    new Subject<{action: Action, productIdentifier: ProductIdentifier}>();
 
 
   public columns: Array<Column>;
@@ -87,28 +86,28 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
 
+    // Resize the table height on window resize
     Observable.fromEvent(window, 'resize')
         .debounceTime(500)
         .subscribe((event: Event) => {
           this.setTableHeight();
     });
-
-    Observable.fromEvent(window, 'scroll')
-        .debounceTime(500)
-        .subscribe((event: Event) => {
-    });
   }
 
+  // when it's called for more data, an animated loading div is shown
   public askForMoreData(moreDataCallsCounter: number) {
      this.moreDataEvent.next(moreDataCallsCounter);
      this.isMoreDataRequested = true;
   }
 
+  // Set the table width and height (tbody height)
   public ngOnInit() {
     this.setTableWidth();
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 95;
   }
 
+  // ngDoCheck is triggered both when the instance of an object has changed or when new elements are
+  // pushed in an Array
   public ngDoCheck() {
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
     const rowChanges = this.iterableRowsDiffer.diff(this.rowItemList);
@@ -117,26 +116,29 @@ export class ResultListComponent implements OnInit, DoCheck {
     }
     if (rowChanges) {
         this.setRows();
-        // If the new data is retrieved because of an end of scroll, hide the animation
+        // If the called "more data" is retrieved, hide the animated loading div
         this.isMoreDataRequested = false;
     }
   }
 
-  public triggerActionOnItem(actionOnItem: {action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
-  productIdentifier: {idFieldName: string, idValue: string}}) {
+  // Emits which action is applied on which item/product
+  public triggerActionOnItem(actionOnItem: {action: Action, productIdentifier: ProductIdentifier}): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
+  // Emits a map of only filtered fields
   public setFilters(filtersMap: Map<string, string | number | Date>): void {
     this.filtersMap = filtersMap;
     this.setFiltersEvent.next(this.filtersMap);
   }
 
+  // Emits a list of item/product identifiers
   public setSelectedItems(selectedItems: Array<string>) {
     this.selectedItems = selectedItems;
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
+  // Emits the column to sort on and the sort direction
   public sort(sortedColumn: Column): void {
     if (sortedColumn.sortDirection === SortEnum.none) {
       sortedColumn.sortDirection = SortEnum.asc;
@@ -154,30 +156,40 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.sortColumnEvent.next(this.sortedColumn);
   }
 
+  // Emits the identifier of the hovered item/product
   public setConsultedItem(identifier: string) {
     this.consultedItemEvent.next(identifier);
   }
 
+
+  // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
     this.filtersMap = new Map<string, string | number | Date>();
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       column.width = (this.tableWidth - 20) / (this.fieldsList.length - 1);
+      const checkboxColumnWidth = 20;
       if (field.fieldName === this.idFieldName) {
+        // id column is the first one and has a pre fixed width
+        // It is the column where checkboxes are put
         column.isIdField = true;
-        // id column is the first one
+        column.width = checkboxColumnWidth;
         this.columns.unshift(column);
       } else {
+        // The other columns have the same width which is the table width (without the id column) divided by the nuber of fields.
+        column.width = (this.tableWidth - checkboxColumnWidth) / (this.fieldsList.length - 1);
         this.columns.push(column);
       }
     });
   }
 
+  // Build the table's rows
   private setRows() {
     this.rows = new Array<RowItem>();
-    this.rowItemList.forEach(rowItem => {
-      const row = new RowItem(this.columns, rowItem);
+    this.rowItemList.forEach(rowData => {
+      // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
+      const row = new RowItem(this.columns, rowData);
       this.rows.push(row);
     });
   }
@@ -191,10 +203,6 @@ export class ResultListComponent implements OnInit, DoCheck {
   private setTableHeight() {
     this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
-  }
-
-  private getField(field: {fieldName: string, fieldValue: string}, fieldName: string) {
-    return field.fieldName === fieldName;
   }
 
 }

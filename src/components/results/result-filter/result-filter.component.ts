@@ -27,6 +27,7 @@ export class ResultFilterComponent implements OnInit {
     event.target.blur();
   }
 
+  // Update the map of the filtered fields. If a filter is empty, the correspondant field is removed from the map
   private setFilter() {
     if (this.inputValue === undefined || this.inputValue === '' || this.inputValue === null) {
       if (this.filtersMap.has(this.column.fieldName)) {

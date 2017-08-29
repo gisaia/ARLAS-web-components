@@ -2,7 +2,7 @@
   <thead >
     <tr>
       <ng-container *ngFor="let column of columns">
-        <th [style.width.px]="20" *ngIf="column.isIdField" class="resultlist__header--columns" >
+        <th [style.width.px]="column.width" *ngIf="column.isIdField" class="resultlist__header--columns" >
           <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
           </span>
         </th>
@@ -19,22 +19,21 @@
     </tr>
     <tr>
       <ng-container *ngFor="let column of columns">
-        <td [style.width.px]="20" *ngIf="column.isIdField">
+        <td [style.width.px]="column.width" *ngIf="column.isIdField">
           <span *ngIf="column.isIdField" class="resultlist__header--columns--hidden">
           </span>
         </td>
-
         <td arlas-result-filter *ngIf="!column.isIdField" [style.width.px]="column.width" [column]="column" [filtersMap]="filtersMap" (setFiltersEvent)="setFilters($event)"></td>
       </ng-container>
-
     </tr>
   </thead>
   <tbody [style.height.px]="tbodyHeight" arlasResultScroll [rowItemList]="rowItemList" [searchSize]="searchSize" [nLastLines]="nLastLines" (moreDataEvent)="askForMoreData($event)">
     <ng-container  *ngFor="let rowItem of rows">
-      <tr (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)" arlas-result-item [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" [idFieldName]="idFieldName" (selectedItemsEvent)="setSelectedItems($event)">
+      <tr arlas-result-item (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"  [rowItem]="rowItem"
+        [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)">
       </tr>
-      <tr *ngIf="rowItem.isDetailToggled" (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"  arlas-result-detailed-item [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [idFieldName]="idFieldName"
-       (actionOnItemEvent)="triggerActionOnItem($event)">
+      <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" (mouseenter)="setConsultedItem(rowItem.identifier)"  (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+        [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [idFieldName]="idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
       </tr>
     </ng-container>
   </tbody>
