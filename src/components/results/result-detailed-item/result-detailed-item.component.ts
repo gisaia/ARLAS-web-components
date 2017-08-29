@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { Column } from '../utils/column';
-import { RowItem } from '../utils/rowItem';
+import { Action, ProductIdentifier } from '../utils/results.utils';
+import { Column } from '../model/column';
+import { RowItem } from '../model/rowItem';
 
 import { Subject } from 'rxjs/Subject';
 
@@ -14,18 +15,16 @@ export class ResultDetailedItemComponent implements OnInit {
   @Input() public idFieldName: string;
   @Input() public rowItem: RowItem;
 
-  @Output() public actionOnItemEvent: Subject<{action: {id: string, label: string,
-    actionBus: Subject<{idFieldName: string, idValue: string}>}, productIdentifier: {idFieldName: string, idValue: string}}> =
-    new Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},
-    productIdentifier: {idFieldName: string, idValue: string}}>();
+  @Output() public actionOnItemEvent: Subject<{action: Action, productIdentifier: ProductIdentifier}> =
+    new Subject<{action: Action, productIdentifier: ProductIdentifier}>();
 
   constructor() { }
 
   public ngOnInit() {
   }
 
-
-  public triggerActionOnItem(action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>}) {
+  // Emits the action on this ResultDetailedItem to the parent (ResultList)
+  public triggerActionOnItem(action: Action) {
     this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.rowItem.identifier}});
   }
 
