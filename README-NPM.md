@@ -1,6 +1,7 @@
 # API
 
 * [Histogram](#Histogram)
+* [ResultList](#ResultList)
 
 ## Histogram
 
@@ -31,10 +32,6 @@ A generic component that plots data in a chart.
 - `showXLabels: boolean` - Whether showing the x axis labels or not. Default value is : **true**.
 - `showYLabels: boolean` - Whether showing the y axis labels or not. Default value is : **true**.
 
-#### Improvements :
-- Add yLabels input : the number of labels in the Y axis.
-- Dissociate the number of ticks and the number of labels.
-
 ### Outputs : 
 
 - `valuesChangedEvent: EventEmitter<{startvalue: any, endvalue: any}>` - Brush values end event.
@@ -60,3 +57,31 @@ Customize styles :
   - To style the fully selected bars, use `histogram__chart--bar__fullyselected` css class.
   - To style the partly selected bars, use `histogram__chart--bar__partlyselected` css class.
   - To style the non-selected bars, use `histogram__chart--bar` css class.
+
+
+## ResultList
+
+A component to structure data in a filterable, sortable, selectable table. 
+
+### Inputs : 
+
+| Input           | type                                                               | Description                 | Optional/ Mandatory |
+| --------------  |  ----------------------------------------------------------------- | --------------------------- | ------------------- |
+| **fieldsList**  | `Array<{columnName: string, fieldName: string, dataType: string}>` | - **columnName** is the shown name. -**fieldName** is the real field name that's hidden. **dataType** (degree, percentage, etc). It includes an ID field. It will be the id of each item | Mandatory  |
+| **idFieldName** | `string`                                                           | - Name of the id field | Mandatory  |
+| **rowItemList** | `Array<Map<string, string | number | Date>>`                       | - It's a list of fieldName-fieldValue map | Mandatory  |
+| **tableWidth**  | `number`                                                           | - The table width. If not specified, the tableWidth value is equal to container width | Optional |
+| **detailedDataRetriever** | `DetailedDataRetriever`                                  | - A detailed-data retriever object that implements DetailedDataRetriever interface | Mandatory  |
+| **nbAllHits**   | `number`                                                           | - Number of all hits to be structured in the table | Mandatory  |
+| **nLastLines**  | `number`                                                           | - When the scrollbar achieves this lines, more data is called | Optional. Default value is 5.  |
+
+### Outputs : 
+
+| Output                  | type                                                        | Description           |
+| ----------------------  |  ---------------------------------------------------------- | --------------------- |
+| **sortColumnEvent**     | `Subject<{fieldName: string, sortDirection: SortEnum}>`     | - **SortEnum** is an enumeration. Its values are : asc, desc 
+| **searchedFieldsEvent** | `Subject<Map<string, string | number | Date>>`              | - Emits a Map of filtered-fields and filter-value. The filters are triggered when pressing Enter key or when losing the focus  |
+| **selectedItemsEvent**  | `Subject<Array<string>>`                                    | - Emits the list of identifiers of the selected items |
+| **consultedItemEvent**  | `Subject<string>`                                           | - Emits the identifier of the hovered item. |
+| **moreDataEvent**       | `Subject<string>`                                           | - The moreDataEvent notify the need for more data |
+| **actionOnItemEvent**   | `Subject<{action: {id: string, label: string, actionBus: Subject<{idFieldName: string, idValue: string}>},productIdentifier: {idFieldName: string, idValue: string}}>`                            | - Emits the clicked-on action id of the productIdentifier |
