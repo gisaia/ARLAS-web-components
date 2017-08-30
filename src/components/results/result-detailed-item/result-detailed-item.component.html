@@ -2,12 +2,10 @@
 </td>
 <td class="resultdetaileditem" [colSpan]="detailColspan - 1">
   <span *ngFor="let detail of rowItem.detailedData" class="{{detail.key}}-item-detail">
-    {{detail.key}} : {{detail.value}}
+    <span class="resultdetaileditem-key">{{detail.key}}</span> : <span class="resultdetaileditem-value">{{detail.value}}</span>
   </span>
   <br/>
   <md-basic-chip  *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="{{action.id}}-action resultdetaileditem__actions" >
     {{action.label}}
   </md-basic-chip>
-
-
 </td>

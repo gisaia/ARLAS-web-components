@@ -20,11 +20,14 @@ export class ResultItemComponent implements OnInit {
 
   @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
 
+  @Output() public borderStyleEvent: Subject<string> =  new Subject<string>();
+
 
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
   public isChecked = false;
+  public borderStyle = 'solid';
   private retrievedDataEvent: Observable<{details: Map<string, string>, actions: Array<Action>}>;
 
   protected identifier: string;
@@ -48,8 +51,13 @@ export class ResultItemComponent implements OnInit {
           });
         });
       }
+      this.borderStyle = 'dashed';
+    } else {
+      this.borderStyle = 'solid';
     }
+    this.borderStyleEvent.next(this.borderStyle);
     this.rowItem.isDetailToggled = !this.rowItem.isDetailToggled;
+
   }
 
   // Update the list of the selected items

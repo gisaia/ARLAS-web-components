@@ -9,6 +9,7 @@ export class Column {
   public width: number;
   public sortDirection: SortEnum = SortEnum.none;
   public isIdField = false;
+  public isToggleField = false;
 
   constructor(columnName: string, fieldName: string, dataType: string ) {
     this.columnName = columnName;

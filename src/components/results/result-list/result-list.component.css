@@ -2,11 +2,12 @@
   text-align: center;
 }
 .resultlist__header--columns {
-  color: #3399ff;
+  color: #043b53;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   text-align: left;
   vertical-align: middle;
+  cursor: pointer;
 }
 
 .resultlist__header--filters {
@@ -44,6 +45,25 @@
   height: 100px;
   position: absolute;
   bottom: 0;
+}
+.resultlist__body--item {
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px dashed #e9ecef;
+}
+
+.resultlist__lastline{
+  border-top: 1px dashed #e9ecef;
+  border-bottom: 0px solid #e9ecef;
+  height: 2px;
+
+}
+.resultlist__body--detailed-item {
+  border-top: 1px dashed #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
+.resultlist__header, .resultlist__filter {
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
 }
 
 thead tr {
