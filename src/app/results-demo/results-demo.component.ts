@@ -29,8 +29,8 @@ export class ResultsDemoComponent implements OnInit {
       map.set('source', 'SPOT' + (i + 1));
       map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
       map.set('cloud', (i + 1) + '.0');
-      map.set('incidence', (i + 10) );
-      map.set('id', (i + 10) );
+      map.set('incidence', (i + 10) + '/25/2015 lundi matin france');
+      map.set('id', (i + 10) + '/25/2015 lundi ' );
       this.data.push(map);
     }
   }

@@ -76,6 +76,9 @@ export class ResultListComponent implements OnInit, DoCheck {
   public SortEnum = SortEnum;
   public selectedItems: Array<string> = new Array<string>();
 
+  public borderStyle = 'solid';
+
+
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
 
@@ -103,7 +106,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Set the table width and height (tbody height)
   public ngOnInit() {
     this.setTableWidth();
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 95;
+    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85;
   }
 
   // ngDoCheck is triggered both when the instance of an object has changed or when new elements are
@@ -162,14 +165,19 @@ export class ResultListComponent implements OnInit, DoCheck {
   }
 
 
+  public setBorderStyle(borderStyle): void {
+    this.borderStyle = borderStyle;
+  }
+
+
   // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
     this.filtersMap = new Map<string, string | number | Date>();
+    const checkboxColumnWidth = 25;
+    const toggleColumnWidth = 35;
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
-      column.width = (this.tableWidth - 20) / (this.fieldsList.length - 1);
-      const checkboxColumnWidth = 20;
       if (field.fieldName === this.idFieldName) {
         // id column is the first one and has a pre fixed width
         // It is the column where checkboxes are put
@@ -178,10 +186,15 @@ export class ResultListComponent implements OnInit, DoCheck {
         this.columns.unshift(column);
       } else {
         // The other columns have the same width which is the table width (without the id column) divided by the nuber of fields.
-        column.width = (this.tableWidth - checkboxColumnWidth) / (this.fieldsList.length - 1);
+        column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / (this.fieldsList.length - 1);
         this.columns.push(column);
       }
     });
+    // add a column for toggle icon
+    const toggleColumn = new Column('', 'toggle', '');
+    toggleColumn.isToggleField = true;
+    toggleColumn.width = toggleColumnWidth;
+    this.columns.push(toggleColumn);
   }
 
   // Build the table's rows
