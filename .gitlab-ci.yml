@@ -6,7 +6,11 @@ before_script:
 lint:
   script:
   - npm run lint
-build:
+arlas-web-components-doc:
   script:
-  - npm run build
+  - npm run build-release
+  artifacts:
+    paths:
+    - documentation
+    name: "arlas-web-components-doc"
 
