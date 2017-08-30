@@ -1,4 +1,4 @@
-/// <reference types="leaflet" />
+import { Evented } from "@types/leaflet";
 declare namespace L{
    export class Pattern extends Evented {
 
