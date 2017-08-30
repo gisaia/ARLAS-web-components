@@ -48,8 +48,11 @@ function cleanDistSrc() {
 function generatedoc() {
     gulp.src('src/**/*.ts')
         .pipe(compodoc({
+            title: 'ARLAS Web Components',
             output: 'documentation',
             tsconfig: 'tsconfig-build.json',
+             disablePrivateOrInternalSupport: true
+
         }))
 }
 
@@ -59,7 +62,7 @@ gulp.task('build:clean-dist-src', cleanDistSrc);
 gulp.task('build:copy-and-inline-resource', copyHtml);
 gulp.task('build:copy-and-inline-dts', copyDts);
 gulp.task('build:copy-and-inline-js', copyJS);
-gulp.task('build:generatedoc',generatedoc);
+gulp.task('build:generatedoc', generatedoc);
 
 gulp.task('build:release', function (done) {
     // Synchronously run those tasks.
