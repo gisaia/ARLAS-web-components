@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const gulpClean = require('gulp-clean');
 const gulpRunSequence = require('run-sequence');
 const inlineResources = require('./tools/inline-resources');
-
+const compodoc = require('@compodoc/gulp-compodoc')
 
 const PROJECT_ROOT = process.cwd();
 
@@ -21,11 +21,11 @@ function copyJS() {
         .pipe(gulp.dest('./dist')).on('end', copyAssets);
 }
 
-function copyAssets () {
+function copyAssets() {
     gulp.src('./src/assets/**/*')
         .pipe(gulp.dest('./dist/assets')).on('end', copyScss);
 }
-function copyScss () {
+function copyScss() {
     gulp.src('./src/components/**/*.{scss,css}')
         .pipe(gulp.dest('./dist')).on('end', inlineResource);
 }
@@ -34,22 +34,32 @@ function inlineResource() {
     inlineResources('./dist/**');
 }
 
-function cleanDistNodeModules(){
+function cleanDistNodeModules() {
     gulp.src('dist/node_modules')
         .pipe(gulpClean(null));
 }
 
-function cleanDistSrc(){
+function cleanDistSrc() {
     gulp.src('dist/src')
         .pipe(gulpClean(null));
 }
+
+
+function generatedoc() {
+    gulp.src('src/**/*.ts')
+        .pipe(compodoc({
+            output: 'documentation',
+            tsconfig: 'tsconfig-build.json',
+        }))
+}
+
 
 gulp.task('build:clean-dist-node_modules', cleanDistNodeModules);
 gulp.task('build:clean-dist-src', cleanDistSrc);
 gulp.task('build:copy-and-inline-resource', copyHtml);
 gulp.task('build:copy-and-inline-dts', copyDts);
 gulp.task('build:copy-and-inline-js', copyJS);
-
+gulp.task('build:generatedoc',generatedoc);
 
 gulp.task('build:release', function (done) {
     // Synchronously run those tasks.
@@ -59,8 +69,9 @@ gulp.task('build:release', function (done) {
         'build:copy-and-inline-js',
         'build:clean-dist-node_modules',
         'build:clean-dist-src',
+        'build:generatedoc',
         done
     );
 });
 
-gulp.task('default',['build:release']);
+gulp.task('default', ['build:release']);
