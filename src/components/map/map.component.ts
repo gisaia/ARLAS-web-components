@@ -78,7 +78,7 @@ export class MapComponent implements OnInit, AfterViewInit {
 
     this.addLayerDetailBus.subscribe(layer => {
       if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
-        const detailledLayer = leaflet.geoJSON(JSON.parse(layer.geometry), <any>{
+        const detailledLayer = leaflet.geoJSON(<any>layer.geometry, <any>{
           style: {
             fillPattern: stripes
           }
