@@ -202,11 +202,16 @@ export class HistogramComponent implements OnInit {
   }
 
   private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{ key: number, value: number }>): boolean {
-    if (selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key) {
+    if (this.inputData.length !== 0) {
+      if (selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key) {
       return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      return true;
     }
+
   }
 
   private checkSelectedValuesValidity(selectedInputValues: SelectedInputValues) {
@@ -394,12 +399,12 @@ export class HistogramComponent implements OnInit {
     this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
     this.tooltipVerticalPosition = (d3.event.pageX + dx) + 'px';
     this.tooltipHorizontalPosition = (d3.event.pageY + dy) + 'px';
-
   }
 
   private handleOnBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
     selectionbrush.on('brush', (datum: any, index: number) => {
       const selection = d3.event.selection;
+
       this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
       this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
       this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
