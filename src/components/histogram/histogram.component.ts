@@ -404,16 +404,17 @@ export class HistogramComponent implements OnInit {
   private handleOnBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
     selectionbrush.on('brush', (datum: any, index: number) => {
       const selection = d3.event.selection;
+      if (selection !== null) {
+        this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+        this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
+        this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
+        this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
+        this.showTitle = false;
 
-      this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-      this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-      this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
-      this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
-      this.showTitle = false;
-
-      if (this.chartType === ChartType.bars) {
-          this.applyStyleOnSelectedBars();
+        if (this.chartType === ChartType.bars) {
+            this.applyStyleOnSelectedBars();
         }
+      }
     });
   }
 
