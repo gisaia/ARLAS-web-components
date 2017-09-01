@@ -12,7 +12,7 @@ A generic component that plots data in a chart.
 - `data: Subject<Array<{key: number, value: number}>>` - Data to plot in the histogram. Please, check [data structure](#Data structure)
 - `dataType: string` - To be set to **time** when x axis represents time and **numeric** otherwise. Default value is : **numeric**.
 - `dataUnit: string` - (Optional) Unit to add in the tooltip
-- `chartType: string` - Possible values are **area** and **bars**. Default value is : **area**.
+- `chartType: string` - Possible values are **area**, **bars** and **oneDimension** . Default value is : **area**.
 - `chartTitle: string` - The chart title.
 - `chartWidth: number` - The chart width.
 - `chartHeight: number` - The histogram height.
@@ -42,13 +42,13 @@ A generic component that plots data in a chart.
 - `key` represents the **X** axis values.
 - `value` represents the **Y** axis values.
 - When **X** axis values are **date** values, `key` should be given as timestamp and `[dataType] = "'time'"`
+- When `[chartType] = "'oneDimension'"`, `value` must be between 0 and 1.
 
 ### Styling :
 
 Customize styles :
 
 - Axes, ticks and labels :
-  - To style the axes use `histogram__axis` css class.
   - To style the axes use `histogram__axis` css class.
   - To style the ticks use `histogram__ticks` css class.
   - To style the labels use `histogram__labels` css class.

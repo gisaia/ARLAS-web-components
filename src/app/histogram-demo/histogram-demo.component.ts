@@ -13,6 +13,7 @@ import * as d3 from 'd3';
 export class HistogramDemoComponent implements OnInit {
   public curvedTimelineData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
   public barsHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
+  public oneDimensionHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
   public defaultHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
   public dateUnit = DateUnit;
   public dataType = DataType;
@@ -41,6 +42,7 @@ export class HistogramDemoComponent implements OnInit {
     this.showDefaultGraph(this);
     this.showCurvedTimeline(this);
     this.showBarsHistogram(this);
+    this.showOneDimensionHistogram(this);
 
   }
 
@@ -72,12 +74,27 @@ export class HistogramDemoComponent implements OnInit {
 
   }
 
+  private showOneDimensionHistogram(component: HistogramDemoComponent) {
+    const _thisComponent = this;
+    d3.csv('assets/sp501.csv', this.oneToZero, function(error, data) {
+          if (error) { throw error; }
+          _thisComponent.oneDimensionHistogramData.next(data);
+          _thisComponent.setSelectedValues(_thisComponent , 1992 , 2060);
+    });
+
+  }
+
   private sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private stringToNumber(d) {
           d.value = +d.value;
+          return d;
+  }
+
+  private oneToZero(d) {
+          d.value = +d.value / 1500;
           return d;
   }
 

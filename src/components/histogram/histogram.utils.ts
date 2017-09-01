@@ -50,7 +50,7 @@ export enum DataType {
 }
 
 export enum ChartType {
-  area, bars
+  area, bars, oneDimension
 }
 
 export enum Position {

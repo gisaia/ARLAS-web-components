@@ -6,6 +6,16 @@
 </div>
 
 <div class="graphs">
+  <p>One dimension histogram</p>
+  <p class="graphs_timeline_inputs">chartType = 'oneDimension', dataType = 'numeric'</p>
+  <div class="graphs_timeline">
+    <arlas-histogram [chartType]="chartType.oneDimension"
+                     [showXTicks]=true
+                     [data]="oneDimensionHistogramData"
+                     [customizedCssClass]="'one_dimension'"></arlas-histogram>
+  </div>
+</div>
+<div class="graphs">
   <p>Curved timelines</p>
   <div>
     <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second</p>
