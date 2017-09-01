@@ -352,7 +352,7 @@ export class HistogramComponent implements OnInit {
       .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')')
       .on('mousemove', function (d) {
-        _thisComponent.setTooltipPosition(-40, -40, d);
+        _thisComponent.setTooltipPosition(40, -40, d, <d3.ContainerElement>this);
       })
       .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
   }
@@ -386,19 +386,20 @@ export class HistogramComponent implements OnInit {
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
       .on('mouseover', function (d) {
-        _thisComponent.setTooltipPosition(-40, -40, d);
+        _thisComponent.setTooltipPosition(-20, -40, d, <d3.ContainerElement>this);
       })
       .on('mouseout', function (d) {
         _thisComponent.showTooltip = false;
       });
   }
 
-  private setTooltipPosition(dx: number, dy: number, data: HistogramData): void {
+  private setTooltipPosition(dx: number, dy: number, data: HistogramData, container: d3.ContainerElement): void {
     this.showTooltip = true;
     this.tooltipXContent = 'x: ' + this.toString(data.key);
     this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
-    this.tooltipVerticalPosition = (d3.event.pageX + dx) + 'px';
-    this.tooltipHorizontalPosition = (d3.event.pageY + dy) + 'px';
+    const xy = d3.mouse(container);
+    this.tooltipVerticalPosition = (xy[0] + dx) + 'px';
+    this.tooltipHorizontalPosition = (xy[1] + dy) + 'px';
   }
 
   private handleOnBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
