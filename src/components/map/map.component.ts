@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, Input, Output, DoCheck, KeyValueDiffers } from '@angular/core';
+import { Component, OnInit, AfterViewInit, Input, Output, DoCheck, KeyValueDiffers, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import * as leaflet from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
@@ -9,7 +9,6 @@ import 'leaflet.path.drag';
 import './Pattern';
 import { decode_bbox } from 'ngeohash';
 import * as tinycolor from 'tinycolor2';
-import { GeoJsonObject } from "@types/geojson";
 @Component({
   selector: 'arlas-map',
   templateUrl: './map.component.html',
@@ -17,49 +16,74 @@ import { GeoJsonObject } from "@types/geojson";
 })
 export class MapComponent implements AfterViewInit, DoCheck {
 
-  private map: leaflet.Map;
+
   public textButton = 'Add GeoBox';
-  public detailIdToLayerId: Map<string, number> = new Map<string, number>();
-  public geohashIdToLayerId: Map<string, number> = new Map<string, number>();
+  private map: leaflet.Map;
   private editLayerGroup: L.LayerGroup = new L.LayerGroup();
   private detailLayerGroup: L.LayerGroup = new L.LayerGroup();
+  private detailIdToLayerId: Map<string, number> = new Map<string, number>();
   private geohashLayerGoup: L.LayerGroup = new L.LayerGroup();
+  private geohashIdToLayerId: Map<string, number> = new Map<string, number>();
   private maxValueOgGeohash = 0;
   private isGeoBox = false;
-  private differ: any;
+  private geoHashDatadiffer: any;
+  private detailItemDatadiffer: any;
+  private stripes: any;
+  private detailStyle: L.PathOptions;
+
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
   @Input() public imagePath = 'assets/images/';
   @Input() public bboxcolor = 'black';
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
   @Input() public colorDetail = '#FC9F28';
-  @Input() public addLayerDetailBus = new Subject<{ geometry: string, id: string }>();
-  @Input() public removeLayerDetailBus = new Subject<string>();
-  @Input() public onConsultItemSubject = new Subject<string>();
   @Input() public geohashMapData: Map<string, [number, number]>;
-  @Output() public selectedBbox: Subject<Array<number>> = new Subject<Array<number>>();
-  @Output() public removeBbox: Subject<boolean> = new Subject<boolean>();
+  @Input() public detailItemMapData: Map<string, [string, boolean]>;
+
+  @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
+  @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
 
   constructor(private differs: KeyValueDiffers) {
 
-    this.differ = differs.find({}).create(null);
-
-    L.Icon.Default.imagePath = 'assets/images/';
-    this.removeBbox.subscribe(value => {
+    this.geoHashDatadiffer = differs.find({}).create(null);
+    this.detailItemDatadiffer = differs.find({}).create(null);
+    L.Icon.Default.imagePath = this.imagePath;
+    this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.editLayerGroup.clearLayers();
         this.isGeoBox = false;
         this.textButton = 'Add GeoBox';
       }
     });
+    this.stripes = (<any>L).stripePattern({
+      fillOpacity: 1.0,
+      patternContentUnits: 'objectBoundingBox',
+      patternUnits: 'objectBoundingBox',
+      height: 0.2,
+      weight: 0.015,
+      spaceWeight: 0.5,
+      spaceColor: this.colorDetail,
+      color: this.colorDetail,
+      opacity: 0.9,
+      spaceOpacity: 0.4,
+      angle: 135
+    });
   }
-  ngDoCheck(): void {
-    var changes = this.differ.diff(this.geohashMapData);
-    if (changes) {
-      changes.forEachChangedItem(r => { this.updateGeoHash(r.key.substring(0,2), r.currentValue) });
-      changes.forEachAddedItem(r => { this.addGeoHash(r.key.substring(0,2), r.currentValue) });
-      changes.forEachRemovedItem(r => { this.removeGeoHash(r.key.substring(0,2), r.currentValue) });
+  public ngDoCheck(): void {
+    const geoHashDataChanges = this.geoHashDatadiffer.diff(this.geohashMapData);
+    if (geoHashDataChanges) {
+      geoHashDataChanges.forEachChangedItem(r => { this.updateGeoHash(r.key.substring(0, 2), r.currentValue); });
+      geoHashDataChanges.forEachAddedItem(r => { this.addGeoHash(r.key.substring(0, 2), r.currentValue); });
+      geoHashDataChanges.forEachRemovedItem(r => { this.removeGeoHash(r.key.substring(0, 2), r.currentValue); });
     }
+    const detailItemDataChanges = this.detailItemDatadiffer.diff(this.detailItemMapData);
+    if (detailItemDataChanges) {
+      detailItemDataChanges.forEachAddedItem(r => { this.addDetailItem(r.key, r.currentValue[0]); });
+      detailItemDataChanges.forEachRemovedItem(r => { this.removeDetailItem(r.key); });
+      detailItemDataChanges.forEachChangedItem(r => { this.updateDetailItem(r.key, r.currentValue[1]); });
+
+    }
+
   }
   public ngAfterViewInit(): void {
 
@@ -75,85 +99,20 @@ export class MapComponent implements AfterViewInit, DoCheck {
 
     });
 
-    const stripes = (<any>L).stripePattern({
-      fillOpacity: 1.0,
-      patternContentUnits: 'objectBoundingBox',
-      patternUnits: 'objectBoundingBox',
-      height: 0.2,
-      weight: 0.015,
-      spaceWeight: 0.5,
-      spaceColor: this.colorDetail,
-      color: this.colorDetail,
-      opacity: 0.9,
-      spaceOpacity: 0.4,
-      angle: 135
-    });
-
-    const detailStyle: any = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
-    stripes.addTo(this.map);
-
-    this.addLayerDetailBus.subscribe(layer => {
-      if (this.detailIdToLayerId.get(layer.id) === null || this.detailIdToLayerId.get(layer.id) === undefined) {
-        const detailledLayer = leaflet.geoJSON(<any>layer.geometry, <any>{
-          style: {
-            fillPattern: stripes
-          }
-        });
-        detailledLayer.setStyle(detailStyle);
-        this.detailLayerGroup.addLayer(detailledLayer);
-        this.detailIdToLayerId.set(layer.id, this.detailLayerGroup.getLayerId(detailledLayer));
-      }
-    }
-    );
-
-    this.removeLayerDetailBus.subscribe(id => {
-      if (id === 'all') {
-        this.detailLayerGroup.clearLayers();
-        this.detailIdToLayerId.clear();
-
-      } else {
-        const layerId = this.detailIdToLayerId.get(id);
-        if (layerId !== null || layerId !== undefined) {
-          this.detailLayerGroup.removeLayer(layerId);
-          this.detailIdToLayerId.delete(id);
-        }
-      }
-    });
-
-    this.onConsultItemSubject.subscribe(id => {
-      let isleaving = false;
-      if (id.split('-')[0] === 'leave') {
-        id = id.split('-')[1];
-        isleaving = true;
-      }
-      const layerId = this.detailIdToLayerId.get(id);
-      if (layerId !== null || layerId !== undefined) {
-        if (this.detailLayerGroup.getLayer(layerId) !== undefined) {
-          const layer = <any>this.detailLayerGroup.getLayer(layerId);
-          if (isleaving) {
-            detailStyle.color = this.colorDetail;
-          } else {
-            detailStyle.color = this.bboxcolor;
-
-          }
-          layer.setStyle(detailStyle);
-        }
-      }
-    });
-
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
+
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup);
     this.map.addLayer(this.detailLayerGroup);
     this.map.addLayer(this.geohashLayerGoup);
-
+    this.stripes.addTo(this.map);
 
     this.map.on('zoomstart', (e) => {
-       this.map.removeLayer(this.geohashLayerGoup);
+      this.map.removeLayer(this.geohashLayerGoup);
     });
 
     this.map.on('zoomend', (e) => {
-       this.map.addLayer(this.geohashLayerGoup);
+      this.map.addLayer(this.geohashLayerGoup);
     });
 
     this.map.on('editable:vertex:dragend', (e) => {
@@ -175,7 +134,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
       });
       this.textButton = 'Remove GeoBox';
     } else {
-      this.removeBbox.next(true);
+      this.onRemoveBbox.next(true);
       this.textButton = 'Add GeoBox';
     }
   }
@@ -184,12 +143,12 @@ export class MapComponent implements AfterViewInit, DoCheck {
     const north = (<any>e).layer.getBounds().getNorth();
     const east = (<any>e).layer.getBounds().getEast();
     const south = (<any>e).layer.getBounds().getSouth();
-    this.selectedBbox.next([north, west, south, east]);
+    this.onChangeBbox.emit([north, west, south, east]);
   }
 
   private addGeoHash(geohash: string, values: [number, number]) {
     if (values[1] !== 0) {
-      const bbox: Array<number> = decode_bbox(geohash)
+      const bbox: Array<number> = decode_bbox(geohash);
       const coordinates = [[
         [bbox[3], bbox[2]],
         [bbox[3], bbox[0]],
@@ -208,8 +167,8 @@ export class MapComponent implements AfterViewInit, DoCheck {
           coordinates: coordinates
         }
       };
-      const layergeojson = leaflet.geoJSON(polygonGeojson.geometry, style)
-      layergeojson.setStyle(f => { return (<any>f.properties).style })
+      const layergeojson = leaflet.geoJSON(polygonGeojson.geometry, style);
+      layergeojson.setStyle(f => (<any>f.properties).style);
       this.geohashLayerGoup.addLayer(layergeojson);
       this.geohashIdToLayerId.set(geohash, this.geohashLayerGoup.getLayerId(layergeojson));
     }
@@ -218,7 +177,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
   private updateGeoHash(geohash: string, values: [number, number]) {
     if (values[1] !== 0) {
       if (this.geohashIdToLayerId.get(geohash) === undefined) {
-        this.addGeoHash(geohash, values)
+        this.addGeoHash(geohash, values);
       } else {
         const style = this.getStyle(values[0], values[1]);
         (<any>this.geohashLayerGoup.getLayer(this.geohashIdToLayerId.get(geohash))).setStyle(style);
@@ -233,24 +192,62 @@ export class MapComponent implements AfterViewInit, DoCheck {
     }
 
   }
+
+  private addDetailItem(id: string, geometry: string) {
+    if (this.detailIdToLayerId.get(id) === null || this.detailIdToLayerId.get(id) === undefined) {
+      this.detailStyle = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
+      const detailledLayer = leaflet.geoJSON(<any>geometry, <any>{
+        style: {
+          fillPattern: this.stripes
+        }
+      });
+      detailledLayer.setStyle(f => this.detailStyle);
+      this.detailLayerGroup.addLayer(detailledLayer);
+      this.detailIdToLayerId.set(id, this.detailLayerGroup.getLayerId(detailledLayer));
+    }
+  }
+  private updateDetailItem(id: string, isleaving: boolean) {
+    const layerId = this.detailIdToLayerId.get(id);
+    if (layerId !== null || layerId !== undefined) {
+      if (this.detailLayerGroup.getLayer(layerId) !== undefined) {
+        const layer = <any>this.detailLayerGroup.getLayer(layerId);
+        if (isleaving) {
+          this.detailStyle.color = this.colorDetail;
+        } else {
+          this.detailStyle.color = this.bboxcolor;
+
+        }
+        layer.setStyle(this.detailStyle);
+      }
+    }
+
+  }
+  private removeDetailItem(id: string) {
+    const layerId = this.detailIdToLayerId.get(id);
+    if (layerId !== null || layerId !== undefined) {
+      this.detailLayerGroup.removeLayer(layerId);
+      this.detailIdToLayerId.delete(id);
+    }
+  }
+
   private getColor(zeroToOne: number): tinycolor.tinycolorInstance {
     // Scrunch the green/cyan range in the middle
-    var sign = (zeroToOne < .5) ? -1 : 1;
+    const sign = (zeroToOne < .5) ? -1 : 1;
     zeroToOne = sign * Math.pow(2 * Math.abs(zeroToOne - .5), .35) / 2 + .5;
     // Linear interpolation between the cold and hot
-    var h0 = 259;
-    var h1 = 12;
-    var h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
+    const h0 = 259;
+    const h1 = 12;
+    const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
     return tinycolor({ h: h, s: 75, v: 90 });
-  };
+  }
   private getStyle(value: number, maxValue: number): L.PolylineOptions {
-    const halfToOne = .5 * value / maxValue * 1.2 + 0.5
+    const halfToOne = .5 * value / maxValue * 1.2 + 0.5;
     const color: tinycolor.tinycolorInstance = this.getColor(halfToOne);
     const style: L.PolylineOptions = {
       weight: 0.3,
       opacity: 1,
       fillOpacity: 0.7,
-      color: tinycolor("white").toHexString(),
+      color: tinycolor('white').toHexString(),
       fillColor: color.toHexString()
 
     };

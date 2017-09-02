@@ -1,5 +1,7 @@
-import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
-  HostListener} from '@angular/core';
+import {
+  Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
+  HostListener
+} from '@angular/core';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { Column } from '../model/column';
 import { RowItem } from '../model/rowItem';
@@ -21,10 +23,10 @@ export class ResultListComponent implements OnInit, DoCheck {
   // fieldName is the real field name that's hidden
   // dataType (degree, percentage, etc)
   // includes an ID field. It will be the id of each item
-  @Input() public fieldsList: Array<{columnName: string, fieldName: string, dataType: string}>;
+  @Input() public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string }>;
 
   // rowItemList is a list of fieldName-fieldValue map
-  @Input() public rowItemList: Array<Map<string, string | number | Date>> ;
+  @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
   // Name of the id field
   @Input() public idFieldName: string;
@@ -42,31 +44,31 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
   // Sorting a column event. Do we use a Subject or try ngOnChange ?
-  @Output() public sortColumnEvent: Subject<{fieldName: string, sortDirection: SortEnum}> =
-  new Subject<{fieldName: string, sortDirection: SortEnum}>();
+  @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
+  new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
   @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
 
   // consultedItemEvent emits one item identifier that is hovered, selected or clicked on it. The consulted item can be highlighted in
   // the map for example. It's only for consultation.
-  @Output() public consultedItemEvent: Subject<string> = new Subject<string>();
+  @Output() public consultedItemEvent: Subject<ProductIdentifier> = new Subject<ProductIdentifier>();
 
   // The searchedFieldsEvent emits a list of fieldName-fieldValue
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   // The moreDataEvent notify the need for more data.
-  @Output() public moreDataEvent: Subject<number> =  new Subject<number>();
+  @Output() public moreDataEvent: Subject<number> = new Subject<number>();
 
   // The action triggered on an item which identifier is 'identifier'.
-  @Output() public actionOnItemEvent: Subject<{action: Action, productIdentifier: ProductIdentifier}> =
-    new Subject<{action: Action, productIdentifier: ProductIdentifier}>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action, productIdentifier: ProductIdentifier }> =
+  new Subject<{ action: Action, productIdentifier: ProductIdentifier }>();
 
 
   public columns: Array<Column>;
   public rows: Array<RowItem>;
   public filtersMap: Map<string, string | number | Date>;
-  public sortedColumn: {fieldName: string, sortDirection: SortEnum};
+  public sortedColumn: { fieldName: string, sortDirection: SortEnum };
 
   // Heights of table elements
   public tbodyHeight: number = null;
@@ -91,16 +93,16 @@ export class ResultListComponent implements OnInit, DoCheck {
 
     // Resize the table height on window resize
     Observable.fromEvent(window, 'resize')
-        .debounceTime(500)
-        .subscribe((event: Event) => {
-          this.setTableHeight();
-    });
+      .debounceTime(500)
+      .subscribe((event: Event) => {
+        this.setTableHeight();
+      });
   }
 
   // when it's called for more data, an animated loading div is shown
   public askForMoreData(moreDataCallsCounter: number) {
-     this.moreDataEvent.next(moreDataCallsCounter);
-     this.isMoreDataRequested = true;
+    this.moreDataEvent.next(moreDataCallsCounter);
+    this.isMoreDataRequested = true;
   }
 
   // Set the table width and height (tbody height)
@@ -115,17 +117,17 @@ export class ResultListComponent implements OnInit, DoCheck {
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
     const rowChanges = this.iterableRowsDiffer.diff(this.rowItemList);
     if (columnChanges) {
-        this.setColumns();
+      this.setColumns();
     }
     if (rowChanges) {
-        this.setRows();
-        // If the called "more data" is retrieved, hide the animated loading div
-        this.isMoreDataRequested = false;
+      this.setRows();
+      // If the called "more data" is retrieved, hide the animated loading div
+      this.isMoreDataRequested = false;
     }
   }
 
   // Emits which action is applied on which item/product
-  public triggerActionOnItem(actionOnItem: {action: Action, productIdentifier: ProductIdentifier}): void {
+  public triggerActionOnItem(actionOnItem: { action: Action, productIdentifier: ProductIdentifier }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
@@ -150,7 +152,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     } else {
       sortedColumn.sortDirection = SortEnum.asc;
     }
-    this.sortedColumn = {fieldName: sortedColumn.fieldName, sortDirection: sortedColumn.sortDirection};
+    this.sortedColumn = { fieldName: sortedColumn.fieldName, sortDirection: sortedColumn.sortDirection };
     this.columns.forEach(column => {
       if (column.fieldName !== sortedColumn.fieldName) {
         column.sortDirection = SortEnum.none;
@@ -161,9 +163,12 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   // Emits the identifier of the hovered item/product
   public setConsultedItem(identifier: string) {
-    this.consultedItemEvent.next(identifier);
+    const productIdentifier: ProductIdentifier = {
+      idFieldName: this.idFieldName,
+      idValue: identifier
+    };
+    this.consultedItemEvent.next(productIdentifier);
   }
-
 
   public setBorderStyle(borderStyle): void {
     this.borderStyle = borderStyle;
