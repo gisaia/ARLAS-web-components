@@ -202,11 +202,16 @@ export class HistogramComponent implements OnInit {
   }
 
   private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{ key: number, value: number }>): boolean {
-    if (selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key) {
+    if (this.inputData.length !== 0) {
+      if (selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key) {
       return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      return true;
     }
+
   }
 
   private checkSelectedValuesValidity(selectedInputValues: SelectedInputValues) {
@@ -347,7 +352,7 @@ export class HistogramComponent implements OnInit {
       .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')')
       .on('mousemove', function (d) {
-        _thisComponent.setTooltipPosition(-40, -40, d);
+        _thisComponent.setTooltipPosition(40, -40, d, <d3.ContainerElement>this);
       })
       .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
   }
@@ -381,34 +386,36 @@ export class HistogramComponent implements OnInit {
       .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
       .attr('class', 'histogram__tooltip__circle')
       .on('mouseover', function (d) {
-        _thisComponent.setTooltipPosition(-40, -40, d);
+        _thisComponent.setTooltipPosition(-20, -40, d, <d3.ContainerElement>this);
       })
       .on('mouseout', function (d) {
         _thisComponent.showTooltip = false;
       });
   }
 
-  private setTooltipPosition(dx: number, dy: number, data: HistogramData): void {
+  private setTooltipPosition(dx: number, dy: number, data: HistogramData, container: d3.ContainerElement): void {
     this.showTooltip = true;
     this.tooltipXContent = 'x: ' + this.toString(data.key);
     this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
-    this.tooltipVerticalPosition = (d3.event.pageX + dx) + 'px';
-    this.tooltipHorizontalPosition = (d3.event.pageY + dy) + 'px';
-
+    const xy = d3.mouse(container);
+    this.tooltipVerticalPosition = (xy[0] + dx) + 'px';
+    this.tooltipHorizontalPosition = (xy[1] + dy) + 'px';
   }
 
   private handleOnBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
     selectionbrush.on('brush', (datum: any, index: number) => {
       const selection = d3.event.selection;
-      this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-      this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-      this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
-      this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
-      this.showTitle = false;
+      if (selection !== null) {
+        this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+        this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
+        this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
+        this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
+        this.showTitle = false;
 
-      if (this.chartType === ChartType.bars) {
-          this.applyStyleOnSelectedBars();
+        if (this.chartType === ChartType.bars) {
+            this.applyStyleOnSelectedBars();
         }
+      }
     });
   }
 

@@ -2,6 +2,7 @@
     background: rgba(0,0,255,0);
     width: 100%;
     height: 100%;
+    position: relative;
 }
 
 .histogram text {
@@ -86,15 +87,13 @@
 .histogram__tooltip{
   position: absolute;
   text-align: left;
-  width: 160px;
-  height: 30px;
   padding: 2px;
   font: 12px sans-serif;
-  background: lightsteelblue;
+  background: #043b53;
   border: 0px;
-  border-radius: 4px;
+  border-radius: 2px;
   pointer-events: none;
-  color: darkslategrey;
+  color: white;
   z-index: 20000;
 }
 
