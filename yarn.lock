@@ -4473,6 +4473,10 @@ next-tick@1:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/next-tick/-/next-tick-1.0.0.tgz#ca86d1fe8828169b0120208e3dc8424b9db8342c"
 
+ngeohash@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/ngeohash/-/ngeohash-0.6.0.tgz#329713e9e73d1f1a46d92aab0b94adb94533f687"
+
 ngx-loading@^1.0.7:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/ngx-loading/-/ngx-loading-1.0.7.tgz#592a2114466c5a2a20a0b7c2e6305c6ad505cf9f"
@@ -6421,6 +6425,10 @@ timers-ext@0.1:
   dependencies:
     es5-ext "~0.10.14"
     next-tick "1"
+
+tinycolor2@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
 
 tmp@0.0.24:
   version "0.0.24"

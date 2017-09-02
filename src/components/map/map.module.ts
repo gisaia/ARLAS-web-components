@@ -6,10 +6,12 @@ import { MdChipsModule } from '@angular/material';
 @NgModule({
   imports: [
     CommonModule,
-        MdChipsModule
+    MdChipsModule
 
   ],
   declarations: [MapComponent],
   exports: [MapComponent]
 })
-export class MapModule {}
+export class MapModule {
+
+}

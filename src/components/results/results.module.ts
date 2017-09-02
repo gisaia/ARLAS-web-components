@@ -22,6 +22,7 @@ import { MdIconModule, MdChipsModule } from '@angular/material';
     LoadingModule
   ],
   declarations: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective],
-  exports: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective]
+  exports: [ResultListComponent, ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective],
+
 })
 export class ResultsModule {}
