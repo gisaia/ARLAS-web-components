@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, 
 
 import {
   ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
-  ChartDimensions, ChartAxes
+  ChartDimensions, ChartAxes, Position
 } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
@@ -19,7 +19,7 @@ import * as d3 from 'd3';
 })
 export class HistogramComponent implements OnInit {
 
-  public margin: MarginModel = { top: 2, right: 20, bottom: 20, left: 60 };
+  public margin: MarginModel = { top: 4, right: 20, bottom: 20, left: 60 };
   public startValue: string = null;
   public endValue: string = null;
   public showTooltip = false;
@@ -51,6 +51,8 @@ export class HistogramComponent implements OnInit {
   @Input() public showXTicks = true;
   @Input() public showYLabels = true;
   @Input() public showYTicks = true;
+  @Input() public descriptionPosition: Position = Position.bottom;
+  @Input() public xAxisPosition: Position = Position.bottom;
 
 
   @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
@@ -70,11 +72,13 @@ export class HistogramComponent implements OnInit {
   private dataInterval: number;
   private xTicksAxis;
   private xLabelsAxis;
+  private xAxis;
   private yTicksAxis;
   private yLabelsAxis;
   private isWidthFixed = false;
   private isHeightFixed = false;
   private plottingCount = 0;
+  private minusSign = 1;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
     Observable.fromEvent(window, 'resize')
@@ -94,6 +98,10 @@ export class HistogramComponent implements OnInit {
       this.setSelectedInterval(value);
       this.fromSetInterval = false;
     });
+
+    if (this.xAxisPosition === Position.top) {
+      this.minusSign = -1;
+    }
   }
 
   public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
@@ -241,6 +249,12 @@ export class HistogramComponent implements OnInit {
     }
   }
 
+  // create three axes for X and two for Y
+    // For X: - The first axis contains a line only that is always at the bottom of the chart
+    //        - The second one contains a line and ticks. Labels are always hidden.
+    //        - For the third one, only labels are shown.
+    // For Y: - The first axis contains a line and ticks. Labels are always hidden.
+    //        - For the second one, only labels are shown.
   private createChartAxes(chartDimensions: ChartDimensions, data: Array<HistogramData>): ChartAxes {
     const xDomain = (this.getXDomainScale()).range([0, chartDimensions.width]);
     // The xDomain extent includes data domain and selected values
@@ -248,6 +262,7 @@ export class HistogramComponent implements OnInit {
     xDomain.domain(xDomainExtent);
     // xDataDomain includes data domain only
     let xDataDomain;
+    let xAxis;
     let xTicksAxis;
     let xLabelsAxis;
     let stepWidth;
@@ -261,8 +276,9 @@ export class HistogramComponent implements OnInit {
       endRange = xDomain(+data[data.length - 1].key);
       xDataDomain = (this.getXDomainScale()).range([startRange, endRange]);
       xDataDomain.domain(d3.extent(data, (d: any) => d.key));
-      xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks);
-      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(10).ticks(this.xLabels);
+      xAxis = d3.axisBottom(xDomain).tickSize(0);
+      xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks).tickSize(this.minusSign * 5 );
+      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).ticks(this.xLabels);
       if (this.dataType === DataType.time && this.ticksDateFormat !== null) {
         xLabelsAxis = xLabelsAxis.tickFormat(d3.timeFormat(this.ticksDateFormat));
       }
@@ -276,31 +292,43 @@ export class HistogramComponent implements OnInit {
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
       xDataDomain.domain(data.map(function(d) { return d.key; }));
       xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xDataDomain.domain()
-        .filter(function (d, i) { return !(i % ticksPeriod); }));
-      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(7).tickValues(xDataDomain.domain()
+        .filter(function (d, i) { return !(i % ticksPeriod); })).tickSize(this.minusSign * 5);
+      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xDataDomain.domain()
         .filter(function (d, i) { return !(i % labelsPeriod); }));
+      xAxis = d3.axisBottom(xDomain).tickSize(0);
+
     }
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
     yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
     const yTicksAxis = d3.axisLeft(yDomain).ticks(this.yTicks);
     const yLabelsAxis = d3.axisLeft(yDomain).tickSize(0).tickPadding(10).ticks(this.yLabels);
-    return { xDomain, xDataDomain, yDomain, xTicksAxis, yTicksAxis, stepWidth, xLabelsAxis, yLabelsAxis };
+    return { xDomain, xDataDomain, yDomain, xTicksAxis, yTicksAxis, stepWidth, xLabelsAxis, yLabelsAxis, xAxis };
   }
 
+
+  // draw three axes for X and two for Y
+    // For X: - The first axis contains a line only that is always at the bottom of the chart
+    //        - The second one contains a line and ticks. Labels are always hidden.
+    //        - For the third one, only labels are shown.
+    // For Y: - The first axis contains a line and ticks. Labels are always hidden.
+    //        - For the second one, only labels are shown.
   private drawChartAxes(chartDimensions: ChartDimensions, chartAxes: ChartAxes): void {
-    // draw two axes for each X and Y
-    // For the first ones, labels are always hidden. The axe and ticks are shown.
-    // The second ones the axe and ticks are always hidden. Only labels are shown.
+    const _thisComponent = this;
+    const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
     this.context = chartDimensions.svg.append('g')
       .attr('class', 'context')
-      .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')');
+      .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + marginTopBottom + ')');
+    this.xAxis = this.context.append('g')
+      .attr('class', 'histogram__only-axis')
+      .attr('transform', 'translate(0,' + chartDimensions.height + ')')
+      .call(chartAxes.xAxis);
     this.xTicksAxis = this.context.append('g')
       .attr('class', 'histogram__ticks-axis')
-      .attr('transform', 'translate(0,' + chartDimensions.height + ')')
+      .attr('transform', 'translate(0,' + chartDimensions.height * _thisComponent.xAxisPosition + ')')
       .call(chartAxes.xTicksAxis);
     this.xLabelsAxis = this.context.append('g')
       .attr('class', 'histogram__labels-axis')
-      .attr('transform', 'translate(0,' + chartDimensions.height + ')')
+      .attr('transform', 'translate(0,' + chartDimensions.height * _thisComponent.xAxisPosition + ')')
       .call(chartAxes.xLabelsAxis);
     this.yTicksAxis = this.context.append('g')
       .attr('class', 'histogram__ticks-axis')
@@ -311,6 +339,7 @@ export class HistogramComponent implements OnInit {
 
     // Define css classes for the ticks, labels and the axes
     this.xTicksAxis.selectAll('path').attr('class', 'histogram__axis');
+    this.xAxis.selectAll('path').attr('class', 'histogram__axis');
     this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
     this.xTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
     this.yTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
@@ -342,6 +371,8 @@ export class HistogramComponent implements OnInit {
 
   private plotHistogramDataAsBars(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
+    const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
+
     this.barsContext = chartDimensions.svg.selectAll('.bar')
       .data(data)
       .enter().append('rect')
@@ -350,7 +381,7 @@ export class HistogramComponent implements OnInit {
       .attr('width', chartAxes.stepWidth * _thisComponent.barWeight)
       .attr('y', function (d) { return chartAxes.yDomain(d.value); })
       .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
-      .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + chartDimensions.margin.top + ')')
+      .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + marginTopBottom + ')')
       .on('mousemove', function (d) {
         _thisComponent.setTooltipPosition(40, -40, d, <d3.ContainerElement>this);
       })

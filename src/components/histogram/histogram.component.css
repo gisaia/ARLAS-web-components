@@ -107,6 +107,10 @@
   display: none;
 }
 
+.histogram__only-axis text {
+  display: none;
+}
+
 .histogram__ticks-axis__hidden {
   display: none;
 }
