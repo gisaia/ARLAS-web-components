@@ -39,6 +39,9 @@ export class MapComponent implements AfterViewInit, DoCheck {
   @Input() public colorDetail = '#FC9F28';
   @Input() public geohashMapData: Map<string, [number, number]>;
   @Input() public detailItemMapData: Map<string, [string, boolean]>;
+  @Input() public lowleveldetailZoom = 1;
+  @Input() public mediumleveldetailZoom = 3;
+  @Input() public highleveldetailZoom = 8;
 
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
@@ -72,7 +75,9 @@ export class MapComponent implements AfterViewInit, DoCheck {
   public ngDoCheck(): void {
     const geoHashDataChanges = this.geoHashDatadiffer.diff(this.geohashMapData);
     if (geoHashDataChanges) {
-      geoHashDataChanges.forEachChangedItem(r => { this.updateGeoHash(r.key.substring(0, 2), r.currentValue); });
+      geoHashDataChanges.forEachChangedItem(r => {
+        this.updateGeoHash(r.key.substring(0, 2), r.currentValue);
+      });
       geoHashDataChanges.forEachAddedItem(r => { this.addGeoHash(r.key.substring(0, 2), r.currentValue); });
       geoHashDataChanges.forEachRemovedItem(r => { this.removeGeoHash(r.key.substring(0, 2), r.currentValue); });
     }
@@ -112,7 +117,9 @@ export class MapComponent implements AfterViewInit, DoCheck {
     });
 
     this.map.on('zoomend', (e) => {
-      this.map.addLayer(this.geohashLayerGoup);
+      if (this.map.getZoom() < this.highleveldetailZoom) {
+        this.map.addLayer(this.geohashLayerGoup);
+      }
     });
 
     this.map.on('editable:vertex:dragend', (e) => {
