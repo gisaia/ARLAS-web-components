@@ -38,6 +38,7 @@ export interface ChartAxes {
   yTicksAxis: d3.Axis<any>;
   yLabelsAxis: d3.Axis<any>;
   stepWidth: number;
+  xAxis: d3.Axis<any>;
 }
 
 export enum DateUnit {
@@ -50,4 +51,8 @@ export enum DataType {
 
 export enum ChartType {
   area, bars
+}
+
+export enum Position {
+  top, bottom
 }

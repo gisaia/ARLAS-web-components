@@ -1,4 +1,4 @@
-export { DateUnit, ChartType, DataType } from './histogram/histogram.utils';
+export { DateUnit, ChartType, DataType, Position } from './histogram/histogram.utils';
 export { SortEnum } from './results/utils/enumerations/sortEnum';
 export { DetailedDataRetriever } from './results/utils/detailed-data-retriever';
 export { Action, ProductIdentifier } from './results/utils/results.utils';

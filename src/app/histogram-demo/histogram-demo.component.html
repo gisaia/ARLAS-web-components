@@ -1,7 +1,7 @@
 <div class="graphs">
   <p>Default histogram</p>
   <div class="graphs_timeline">
-    <arlas-histogram [data]="defaultHistogramData"></arlas-histogram>
+    <arlas-histogram [data]="defaultHistogramData" [xAxisPosition]="0"></arlas-histogram>
   </div>
 </div>
 
@@ -16,7 +16,8 @@
     </ul>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [dataType]="dataType.time" [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
+    <arlas-histogram [dataType]="dataType.time"
+                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
   </div>
 
   <p class="graphs_timeline_inputs">dataType = 'time',     dateUnit = DateUnit.second,     xTicks = 9,     yTicks = 2,    chartTitle = 'Chart title'</p>
@@ -74,8 +75,14 @@
     <li> Selected end value : {{selectedNumericValues.endvalue}}</li>
   </ul>
   <div class="graphs_bars">
-    <arlas-histogram [chartType]="chartType.bars" [chartTitle]="'Chart title'" (valuesChangedEvent)="setSelectedNUmericValues($event)"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [intervalSelection]="selectValues"></arlas-histogram>
+    <arlas-histogram [chartType]="chartType.bars"
+                     [chartTitle]="'Chart title'"
+                     (valuesChangedEvent)="setSelectedNUmericValues($event)"
+                     [data]="barsHistogramData"
+                     [dateUnit]="dateUnit.second"
+                     [intervalSelection]="selectValues"
+                     [xAxisPosition]="0"
+                     [descriptionPosition]="0"></arlas-histogram>
   </div>
 
   <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', yTicks = yLabels = 2, xTicks = xLabels = 2</p>
