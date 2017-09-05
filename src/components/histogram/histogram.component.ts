@@ -54,6 +54,7 @@ export class HistogramComponent implements OnInit {
   @Input() public showYTicks = true;
   @Input() public descriptionPosition: Position = Position.bottom;
   @Input() public xAxisPosition: Position = Position.bottom;
+  @Input() public paletteColors: [number, number] | string = null;
 
 
   @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
@@ -80,12 +81,9 @@ export class HistogramComponent implements OnInit {
   private isHeightFixed = false;
   // Counter of how many times the chart has been plotted/replotted
   private plottingCount = 0;
-<<<<<<< 99daa8640e32aa84a90d7a18d147d5bfb9e90140
   private minusSign = 1;
-=======
   // yDimension = 0 for one dimension charts
   private yDimension = 1;
->>>>>>> add the option of 1 dimension histogram with palette
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
     Observable.fromEvent(window, 'resize')
@@ -195,14 +193,31 @@ export class HistogramComponent implements OnInit {
 
   private getColor(zeroToOne: number): tinycolorInstance {
     // Scrunch the green/cyan range in the middle
+
     const sign = (zeroToOne < .5) ? -1 : 1;
     zeroToOne = sign * Math.pow(2 * Math.abs(zeroToOne - .5), .35) / 2 + .5;
 
     // Linear interpolation between the cold and hot
-    const h0 = 259;
-    const h1 = 12;
-    const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
-    return tinycolor({ h: h, s: 75, v: 90 });
+    if (this.paletteColors === null) {
+      const h0 = 259;
+      const h1 = 12;
+      const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
+      return tinycolor({ h: h, s: 100, v: 90 });
+    } else {
+      if (this.paletteColors instanceof Array) {
+        const h0 = this.paletteColors[1];
+        const h1 = this.paletteColors[0];
+        const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
+        return tinycolor({ h: h, s: 100, v: 90 });
+      } else {
+        const color = tinycolor(this.paletteColors.toString());
+        const h = color.toHsv().h;
+        const s0 = 100;
+        const s1 = 20;
+        const s = (s1) * (1 - zeroToOne) + (s0) * (zeroToOne);
+        return tinycolor({ h: h, s: s, v: 90 });
+      }
+    }
   }
 
 
@@ -357,11 +372,8 @@ export class HistogramComponent implements OnInit {
       .attr('transform', 'translate(0,' + chartDimensions.height * _thisComponent.xAxisPosition + ')')
       .call(chartAxes.xLabelsAxis);
     this.xTicksAxis.selectAll('path').attr('class', 'histogram__axis');
-<<<<<<< 99daa8640e32aa84a90d7a18d147d5bfb9e90140
     this.xAxis.selectAll('path').attr('class', 'histogram__axis');
     this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
-=======
->>>>>>> add the option of 1 dimension histogram with palette
     this.xTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
     this.xLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
     if (!this.showXTicks) {
