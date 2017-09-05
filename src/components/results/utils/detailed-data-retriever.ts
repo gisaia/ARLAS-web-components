@@ -6,6 +6,6 @@ import { Subject } from 'rxjs/Subject';
 
 export interface DetailedDataRetriever {
 
-  getData(identifier: string): Observable<{details: Map<string, string>, actions: Array<Action>}>;
+  getData(identifier: string): Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
 
 }

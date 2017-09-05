@@ -18,9 +18,9 @@ export class ResultItemComponent implements OnInit {
   @Input() public detailedDataRetriever: DetailedDataRetriever;
   @Input() public selectedItems: Array<string>;
 
-  @Output() public selectedItemsEvent: Subject<Array<string>> =  new Subject<Array<string>>();
+  @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
 
-  @Output() public borderStyleEvent: Subject<string> =  new Subject<string>();
+  @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
 
 
   public isDetailToggled = false;
@@ -28,7 +28,7 @@ export class ResultItemComponent implements OnInit {
   public actions;
   public isChecked = false;
   public borderStyle = 'solid';
-  private retrievedDataEvent: Observable<{details: Map<string, string>, actions: Array<Action>}>;
+  private retrievedDataEvent: Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
 
   protected identifier: string;
 
@@ -41,13 +41,15 @@ export class ResultItemComponent implements OnInit {
 
   // Detailed data is retrieved wheb the row is toggled for the first time
   public toggle() {
-    if ( this.rowItem.isDetailToggled === false) {
-      if (this.detailedDataRetriever !== null && this.rowItem.detailedData.length === 0 ) {
+    if (this.rowItem.isDetailToggled === false) {
+      if (this.detailedDataRetriever !== null && this.rowItem.detailedData.length === 0) {
         this.retrievedDataEvent = this.detailedDataRetriever.getData(((String)(this.identifier)));
         this.retrievedDataEvent.subscribe(value => {
           this.rowItem.actions = value.actions;
-          value.details.forEach((value: string, key: string) => {
-            this.rowItem.detailedData.push({key: key, value: value});
+          value.details.forEach((v, k) => {
+            const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();
+            v.forEach((value, key) => details.push({ key: key, value: value }));
+            this.rowItem.detailedData.push({ group: k, details: details });
           });
         });
       }
