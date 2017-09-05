@@ -30,6 +30,10 @@ a.arlas-map-control{
     background-color: green;
 }
 
+.one_dimension .histogram__axis {
+  stroke: white ;
+}
+
 @font-face {
   font-family: 'Material Icons';
   font-style: normal;

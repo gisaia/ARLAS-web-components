@@ -10,6 +10,7 @@ import { Observable } from 'rxjs/Rx';
 
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as d3 from 'd3';
+import * as tinycolor from 'tinycolor2';
 
 @Component({
   selector: 'arlas-histogram',
@@ -53,6 +54,7 @@ export class HistogramComponent implements OnInit {
   @Input() public showYTicks = true;
   @Input() public descriptionPosition: Position = Position.bottom;
   @Input() public xAxisPosition: Position = Position.bottom;
+  @Input() public paletteColors: [number, number] | string = null;
 
 
   @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
@@ -77,8 +79,11 @@ export class HistogramComponent implements OnInit {
   private yLabelsAxis;
   private isWidthFixed = false;
   private isHeightFixed = false;
+  // Counter of how many times the chart has been plotted/replotted
   private plottingCount = 0;
   private minusSign = 1;
+  // yDimension = 0 for one dimension charts
+  private yDimension = 1;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
     Observable.fromEvent(window, 'resize')
@@ -113,10 +118,16 @@ export class HistogramComponent implements OnInit {
       this.isWidthFixed = true;
     }
 
+    // Set oneDimension chart height to 50px as a default value
+    if (this.chartType === ChartType.oneDimension && this.chartHeight === null) {
+      this.chartHeight = 8 + this.margin.top + this.margin.bottom;
+      this.yDimension = 0;
+    }
+
     // set chartHeight value equal to container height when it is not specified by the user
     if (this.chartHeight === null) {
       this.chartHeight = this.el.nativeElement.childNodes[0].offsetHeight;
-    } else if (this.chartWidth !== null && this.plottingCount === 0) {
+    } else if (this.chartHeight !== null && this.plottingCount === 0) {
       this.isHeightFixed = true;
     }
 
@@ -148,7 +159,7 @@ export class HistogramComponent implements OnInit {
       if (this.chartType === ChartType.area) {
         this.showTooltipsForAreaCharts(this.chartDimensions, this.chartAxes, data);
       }
-      this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth, 0],
+      this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth * this.yDimension, 0],
       [(this.chartDimensions).width, (this.chartDimensions).height]]);
       const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
       const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
@@ -179,6 +190,36 @@ export class HistogramComponent implements OnInit {
     }
     this.plotHistogram(this.inputData);
   }
+
+  private getColor(zeroToOne: number): tinycolorInstance {
+    // Scrunch the green/cyan range in the middle
+
+    const sign = (zeroToOne < .5) ? -1 : 1;
+    zeroToOne = sign * Math.pow(2 * Math.abs(zeroToOne - .5), .35) / 2 + .5;
+
+    // Linear interpolation between the cold and hot
+    if (this.paletteColors === null) {
+      const h0 = 259;
+      const h1 = 12;
+      const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
+      return tinycolor({ h: h, s: 100, v: 90 });
+    } else {
+      if (this.paletteColors instanceof Array) {
+        const h0 = this.paletteColors[1];
+        const h1 = this.paletteColors[0];
+        const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
+        return tinycolor({ h: h, s: 100, v: 90 });
+      } else {
+        const color = tinycolor(this.paletteColors.toString());
+        const h = color.toHsv().h;
+        const s0 = 100;
+        const s1 = 20;
+        const s = (s1) * (1 - zeroToOne) + (s0) * (zeroToOne);
+        return tinycolor({ h: h, s: s, v: 90 });
+      }
+    }
+  }
+
 
   private setSelectedInterval(selectedInputValues: SelectedInputValues): void {
     this.checkSelectedValuesValidity(selectedInputValues);
@@ -330,34 +371,36 @@ export class HistogramComponent implements OnInit {
       .attr('class', 'histogram__labels-axis')
       .attr('transform', 'translate(0,' + chartDimensions.height * _thisComponent.xAxisPosition + ')')
       .call(chartAxes.xLabelsAxis);
-    this.yTicksAxis = this.context.append('g')
-      .attr('class', 'histogram__ticks-axis')
-      .call(chartAxes.yTicksAxis);
-    this.yLabelsAxis = this.context.append('g')
-      .attr('class', 'histogram__labels-axis')
-      .call(chartAxes.yLabelsAxis);
-
-    // Define css classes for the ticks, labels and the axes
     this.xTicksAxis.selectAll('path').attr('class', 'histogram__axis');
     this.xAxis.selectAll('path').attr('class', 'histogram__axis');
     this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
     this.xTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
-    this.yTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
     this.xLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
-    this.yLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
-
     if (!this.showXTicks) {
-      this.xTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
+        this.xTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
     }
     if (!this.showXLabels) {
       this.xLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
     }
 
-    if (!this.showYTicks) {
-      this.yTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
-    }
-    if (!this.showYLabels) {
-      this.yLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
+
+    if (this.chartType !== ChartType.oneDimension) {
+      this.yTicksAxis = this.context.append('g')
+      .attr('class', 'histogram__ticks-axis')
+      .call(chartAxes.yTicksAxis);
+      this.yLabelsAxis = this.context.append('g')
+      .attr('class', 'histogram__labels-axis')
+      .call(chartAxes.yLabelsAxis);
+      // Define css classes for the ticks, labels and the axes
+      this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
+      this.yTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
+      this.yLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
+      if (!this.showYTicks) {
+        this.yTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
+      }
+      if (!this.showYLabels) {
+        this.yLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
+      }
     }
   }
 
@@ -366,6 +409,8 @@ export class HistogramComponent implements OnInit {
       this.plotHistogramDataAsBars(chartDimensions, chartAxes, data);
     } else if (this.chartType === ChartType.area) {
       this.plotHistogramDataAsArea(chartDimensions, chartAxes, data);
+    } else if (this.chartType === ChartType.oneDimension) {
+      this.plotHistogramDataAsOneDimension(chartDimensions, chartAxes, data);
     }
   }
 
@@ -386,6 +431,21 @@ export class HistogramComponent implements OnInit {
         _thisComponent.setTooltipPosition(40, -40, d, <d3.ContainerElement>this);
       })
       .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
+  }
+
+  private plotHistogramDataAsOneDimension(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
+    const _thisComponent = this;
+    this.barWeight = 1;
+    this.yDimension = 0;
+    this.context.selectAll('.bar')
+      .data(data)
+      .enter().append('rect')
+      .attr('x', function (d) { return chartAxes.xDataDomain(d.key); })
+      .attr('width', chartAxes.stepWidth * _thisComponent.barWeight)
+      .attr('y', function (d) { return chartAxes.yDomain(d.value) * _thisComponent.yDimension; })
+      .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value) * _thisComponent.yDimension; })
+      .style('fill', function (d) { return _thisComponent.getColor(d.value).toHexString(); })
+      .style('stroke', function (d) { return _thisComponent.getColor(d.value).toHexString(); });
   }
 
   private plotHistogramDataAsArea(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
@@ -508,7 +568,11 @@ export class HistogramComponent implements OnInit {
         return value.toDateString();
       }
     } else {
-      return this.round(value, 1).toString();
+      if (this.chartType === ChartType.oneDimension) {
+        return Math.trunc(value).toString();
+      } else {
+        return this.round(value, 1).toString();
+      }
     }
   }
 
@@ -561,7 +625,7 @@ export class HistogramComponent implements OnInit {
   private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date|number,
   selectedEndValue: Date|number): Array<Date | number | { valueOf(): number }> {
     this.dataInterval = 0;
-    if (this.chartType === ChartType.bars) {
+    if (this.chartType !== ChartType.area) {
       this.dataInterval = this.getBucketInterval(data);
     }
     const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
@@ -575,7 +639,7 @@ export class HistogramComponent implements OnInit {
       xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => d).getTime() - this.dataInterval));
       xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => d).getTime() + this.dataInterval));
     } else {
-      xDomainExtent.push(d3.min(dataKeyUnionSelectedValues, (d: number) => d) * 1 - this.dataInterval);
+      xDomainExtent.push(d3.min(dataKeyUnionSelectedValues, (d: number) => d) * 1 - this.dataInterval * this.yDimension);
       xDomainExtent.push(d3.max(dataKeyUnionSelectedValues, (d: number) => d) * 1 + this.dataInterval);
     }
     return xDomainExtent;

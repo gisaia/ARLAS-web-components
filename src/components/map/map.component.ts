@@ -95,7 +95,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
     this.map = leaflet.map('map', <any>{
       center: [45.706179285330855, 2.1972656250000004],
       zoom: 4,
-      attributionControl:false,
+      attributionControl: false,
       zoomControl: false,
       editable: true,
       editOptions: {
@@ -238,7 +238,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
     }
   }
 
-  private getColor(zeroToOne: number): tinycolor.tinycolorInstance {
+  private getColor(zeroToOne: number): tinycolorInstance {
     // Scrunch the green/cyan range in the middle
     const sign = (zeroToOne < .5) ? -1 : 1;
     zeroToOne = sign * Math.pow(2 * Math.abs(zeroToOne - .5), .35) / 2 + .5;
@@ -250,7 +250,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
   }
   private getStyle(value: number, maxValue: number): L.PolylineOptions {
     const halfToOne = .5 * value / maxValue * 1.2 + 0.5;
-    const color: tinycolor.tinycolorInstance = this.getColor(halfToOne);
+    const color: tinycolorInstance = this.getColor(halfToOne);
     const style: L.PolylineOptions = {
       weight: 0.3,
       opacity: 1,
