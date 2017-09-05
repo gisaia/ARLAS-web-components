@@ -95,6 +95,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
     this.map = leaflet.map('map', <any>{
       center: [45.706179285330855, 2.1972656250000004],
       zoom: 4,
+      attributionControl:false,
       zoomControl: false,
       editable: true,
       editOptions: {
