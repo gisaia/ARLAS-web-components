@@ -1,5 +1,5 @@
 import { Evented } from "leaflet";
-declare namespace L{
+declare namespace leaflet{
    export class Pattern extends Evented {
 
 }

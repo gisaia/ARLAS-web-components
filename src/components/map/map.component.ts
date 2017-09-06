@@ -28,6 +28,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
   private isGeoBox = false;
   private geoHashDatadiffer: any;
   private detailItemDatadiffer: any;
+  private stripes: any;
   private detailStyle: leaflet.PathOptions;
 
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
@@ -57,6 +58,20 @@ export class MapComponent implements AfterViewInit, DoCheck {
         this.textButton = 'Add GeoBox';
       }
     });
+    this.stripes = (<any>leaflet).stripePattern({
+      fillOpacity: 1.0,
+      patternContentUnits: 'objectBoundingBox',
+      patternUnits: 'objectBoundingBox',
+      height: 0.2,
+      weight: 0.015,
+      spaceWeight: 0.5,
+      spaceColor: this.colorDetail,
+      color: this.colorDetail,
+      opacity: 0.9,
+      spaceOpacity: 0.4,
+      angle: 135
+    });
+
 
   }
   public ngDoCheck(): void {
@@ -98,6 +113,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
     this.map.addLayer(this.editLayerGroup);
     this.map.addLayer(this.detailLayerGroup);
     this.map.addLayer(this.geohashLayerGoup);
+    this.stripes.addTo(this.map);
 
     this.map.on('zoomstart', (e) => {
       this.map.removeLayer(this.geohashLayerGoup);
@@ -192,6 +208,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
       this.detailStyle = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
       const detailledLayer = leaflet.geoJSON(<any>geometry, <any>{
         style: {
+          fillPattern: this.stripes
         }
       });
       detailledLayer.setStyle(f => this.detailStyle);
