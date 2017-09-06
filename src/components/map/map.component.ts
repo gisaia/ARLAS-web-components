@@ -20,7 +20,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
   public textButton = 'Add GeoBox';
   private map: leaflet.Map;
   private editLayerGroup: leaflet.LayerGroup = new leaflet.LayerGroup();
-  private detailLayerGroup:leaflet.LayerGroup = new leaflet.LayerGroup();
+  private detailLayerGroup: leaflet.LayerGroup = new leaflet.LayerGroup();
   private detailIdToLayerId: Map<string, number> = new Map<string, number>();
   private geohashLayerGoup: leaflet.LayerGroup = new leaflet.LayerGroup();
   private geohashIdToLayerId: Map<string, number> = new Map<string, number>();
