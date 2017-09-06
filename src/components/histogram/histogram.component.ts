@@ -327,7 +327,11 @@ export class HistogramComponent implements OnInit {
       if (data.length > 1) {
         stepWidth = xDomain(data[1].key) - xDomain(data[0].key);
       } else {
-        stepWidth = xDomain(data[0].key);
+        if (data[0].key === this.selectionInterval.startvalue && data[0].key === this.selectionInterval.endvalue) {
+          stepWidth = xDomain(data[0].key) / (this.barWeight * 10 );
+        } else {
+          stepWidth = (xDomain(<number>data[0].key + this.dataInterval ) - xDomain(data[0].key));
+        }
       }
       endRange = xDomain(+data[data.length - 1].key + this.dataInterval) ;
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
@@ -337,12 +341,12 @@ export class HistogramComponent implements OnInit {
       xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xDataDomain.domain()
         .filter(function (d, i) { return !(i % labelsPeriod); }));
       xAxis = d3.axisBottom(xDomain).tickSize(0);
-
     }
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
     yDomain.domain([0, d3.max(data, (d: any) => d.value)]);
     const yTicksAxis = d3.axisLeft(yDomain).ticks(this.yTicks);
     const yLabelsAxis = d3.axisLeft(yDomain).tickSize(0).tickPadding(10).ticks(this.yLabels);
+
     return { xDomain, xDataDomain, yDomain, xTicksAxis, yTicksAxis, stepWidth, xLabelsAxis, yLabelsAxis, xAxis };
   }
 
@@ -373,7 +377,6 @@ export class HistogramComponent implements OnInit {
       .call(chartAxes.xLabelsAxis);
     this.xTicksAxis.selectAll('path').attr('class', 'histogram__axis');
     this.xAxis.selectAll('path').attr('class', 'histogram__axis');
-    this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
     this.xTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
     this.xLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
     if (!this.showXTicks) {
@@ -417,7 +420,6 @@ export class HistogramComponent implements OnInit {
   private plotHistogramDataAsBars(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
     const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
-
     this.barsContext = chartDimensions.svg.selectAll('.bar')
       .data(data)
       .enter().append('rect')
@@ -533,7 +535,7 @@ export class HistogramComponent implements OnInit {
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
       return d.key >= _thisComponent.selectionInterval.startvalue
-       && d.key + _thisComponent.barWeight <= _thisComponent.selectionInterval.endvalue;
+       && d.key + _thisComponent.barWeight * _thisComponent.dataInterval <= _thisComponent.selectionInterval.endvalue;
     })
     .attr('class', 'histogram__chart--bar__fullyselected');
 
@@ -546,7 +548,7 @@ export class HistogramComponent implements OnInit {
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
       return d.key < _thisComponent.selectionInterval.startvalue
-      && d.key + _thisComponent.barWeight > _thisComponent.selectionInterval.startvalue;
+      && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.startvalue;
     })
     .attr('class', 'histogram__chart--bar__partlyselected');
 
@@ -554,7 +556,7 @@ export class HistogramComponent implements OnInit {
     (this.barsContext).filter(function(d) {
       d.key = +d.key;
       return d.key <= _thisComponent.selectionInterval.endvalue
-      && d.key + _thisComponent.barWeight > _thisComponent.selectionInterval.endvalue;
+      && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.endvalue;
     })
     .attr('class', 'histogram__chart--bar__partlyselected');
   }
@@ -626,7 +628,7 @@ export class HistogramComponent implements OnInit {
   selectedEndValue: Date|number): Array<Date | number | { valueOf(): number }> {
     this.dataInterval = 0;
     if (this.chartType !== ChartType.area) {
-      this.dataInterval = this.getBucketInterval(data);
+      this.dataInterval = this.getBucketInterval(data, selectedStartValue, selectedEndValue);
     }
     const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
     const dataKeyUnionSelectedValues = new Array<Date | number>();
@@ -645,7 +647,8 @@ export class HistogramComponent implements OnInit {
     return xDomainExtent;
   }
 
-  private getBucketInterval(data: Array<{ key: any, value: number }>): number {
+  private getBucketInterval(data: Array<{ key: any, value: number }>, selectedStartValue: Date|number,
+  selectedEndValue: Date|number): number {
     let interval = Number.MAX_VALUE;
     if (data.length > 1) {
       for (let i = 0; i < (data.length - 1); i++) {
@@ -657,6 +660,16 @@ export class HistogramComponent implements OnInit {
       }
       if (interval === Number.MAX_VALUE) {
         interval = 0;
+      }
+    } else {
+      // three cases
+      if (data[0].key === selectedStartValue && data[0].key === selectedEndValue) {
+        interval = 1;
+      } else if ( data[0].key === selectedStartValue || data[0].key === selectedEndValue ) {
+        const isoInterval = Math.max(Math.abs(data[0].key - <number>selectedStartValue), Math.abs(data[0].key - <number>selectedEndValue));
+        interval = Math.min(1, isoInterval);
+      } else {
+        interval = Math.min(1, Math.abs(data[0].key - <number>selectedStartValue), Math.abs(data[0].key - <number>selectedEndValue));
       }
     }
     return interval;
