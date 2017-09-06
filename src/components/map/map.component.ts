@@ -19,17 +19,17 @@ export class MapComponent implements AfterViewInit, DoCheck {
 
   public textButton = 'Add GeoBox';
   private map: leaflet.Map;
-  private editLayerGroup: L.LayerGroup = new L.LayerGroup();
-  private detailLayerGroup: L.LayerGroup = new L.LayerGroup();
+  private editLayerGroup: leaflet.LayerGroup = new leaflet.LayerGroup();
+  private detailLayerGroup:leaflet.LayerGroup = new leaflet.LayerGroup();
   private detailIdToLayerId: Map<string, number> = new Map<string, number>();
-  private geohashLayerGoup: L.LayerGroup = new L.LayerGroup();
+  private geohashLayerGoup: leaflet.LayerGroup = new leaflet.LayerGroup();
   private geohashIdToLayerId: Map<string, number> = new Map<string, number>();
   private maxValueOgGeohash = 0;
   private isGeoBox = false;
   private geoHashDatadiffer: any;
   private detailItemDatadiffer: any;
   private stripes: any;
-  private detailStyle: L.PathOptions;
+  private detailStyle: leaflet.PathOptions;
 
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
   @Input() public imagePath = 'assets/images/';
@@ -146,7 +146,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
       this.textButton = 'Add GeoBox';
     }
   }
-  private setBbox(e: leaflet.Event) {
+  private setBbox(e) {
     const west = (<any>e).layer.getBounds().getWest();
     const north = (<any>e).layer.getBounds().getNorth();
     const east = (<any>e).layer.getBounds().getEast();
