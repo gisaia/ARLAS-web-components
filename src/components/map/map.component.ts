@@ -28,7 +28,6 @@ export class MapComponent implements AfterViewInit, DoCheck {
   private isGeoBox = false;
   private geoHashDatadiffer: any;
   private detailItemDatadiffer: any;
-  private stripes: any;
   private detailStyle: leaflet.PathOptions;
 
   @Input() public basemapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
@@ -50,7 +49,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
 
     this.geoHashDatadiffer = differs.find({}).create(null);
     this.detailItemDatadiffer = differs.find({}).create(null);
-    L.Icon.Default.imagePath = this.imagePath;
+    leaflet.Icon.Default.imagePath = this.imagePath;
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.editLayerGroup.clearLayers();
@@ -58,19 +57,7 @@ export class MapComponent implements AfterViewInit, DoCheck {
         this.textButton = 'Add GeoBox';
       }
     });
-    this.stripes = (<any>L).stripePattern({
-      fillOpacity: 1.0,
-      patternContentUnits: 'objectBoundingBox',
-      patternUnits: 'objectBoundingBox',
-      height: 0.2,
-      weight: 0.015,
-      spaceWeight: 0.5,
-      spaceColor: this.colorDetail,
-      color: this.colorDetail,
-      opacity: 0.9,
-      spaceOpacity: 0.4,
-      angle: 135
-    });
+
   }
   public ngDoCheck(): void {
     const geoHashDataChanges = this.geoHashDatadiffer.diff(this.geohashMapData);
@@ -111,7 +98,6 @@ export class MapComponent implements AfterViewInit, DoCheck {
     this.map.addLayer(this.editLayerGroup);
     this.map.addLayer(this.detailLayerGroup);
     this.map.addLayer(this.geohashLayerGoup);
-    this.stripes.addTo(this.map);
 
     this.map.on('zoomstart', (e) => {
       this.map.removeLayer(this.geohashLayerGoup);
@@ -206,7 +192,6 @@ export class MapComponent implements AfterViewInit, DoCheck {
       this.detailStyle = { color: this.colorDetail, opacity: 1, fillOpacity: 1 };
       const detailledLayer = leaflet.geoJSON(<any>geometry, <any>{
         style: {
-          fillPattern: this.stripes
         }
       });
       detailledLayer.setStyle(f => this.detailStyle);
@@ -248,10 +233,10 @@ export class MapComponent implements AfterViewInit, DoCheck {
     const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
     return tinycolor({ h: h, s: 75, v: 90 });
   }
-  private getStyle(value: number, maxValue: number): L.PolylineOptions {
+  private getStyle(value: number, maxValue: number): leaflet.PolylineOptions {
     const halfToOne = .5 * value / maxValue * 1.2 + 0.5;
     const color: tinycolorInstance = this.getColor(halfToOne);
-    const style: L.PolylineOptions = {
+    const style: leaflet.PolylineOptions = {
       weight: 0.3,
       opacity: 1,
       fillOpacity: 0.7,
