@@ -11,16 +11,16 @@ import * as d3 from 'd3';
   styleUrls: ['./histogram-demo.component.css']
 })
 export class HistogramDemoComponent implements OnInit {
-  public curvedTimelineData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
-  public barsHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
-  public oneDimensionHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
-  public defaultHistogramData: Subject<Array<HistogramData>> = new Subject<Array<HistogramData>>();
+  public curvedTimelineData: Array<HistogramData>;
+  public barsHistogramData: Array<HistogramData>;
+  public oneDimensionHistogramData: Array<HistogramData>;
+  public defaultHistogramData: Array<HistogramData>;
   public dateUnit = DateUnit;
   public dataType = DataType;
   public chartType = ChartType;
   public selectedTimeValues: SelectedOutputValues = {startvalue: null, endvalue: null};
   public selectedNumericValues: SelectedOutputValues = {startvalue: null, endvalue: null};
-  public selectValues: Subject<SelectedInputValues> = new Subject<SelectedInputValues>();
+  public selectValues: SelectedInputValues;
 
   constructor() { }
 
@@ -48,19 +48,19 @@ export class HistogramDemoComponent implements OnInit {
 
   private setSelectedValues(component: HistogramDemoComponent, start, end) {
     const selectInputValues = {startvalue: start, endvalue: end};
-    component.selectValues.next(selectInputValues);
+    component.selectValues = selectInputValues;
   }
   private showDefaultGraph(component: HistogramDemoComponent) {
     d3.csv('assets/sp503.csv', this.stringToNumber, function(error, data) {
           if (error) { throw error; }
-          component.defaultHistogramData.next(data);
+          component.defaultHistogramData = data;
     });
   }
 
   private showCurvedTimeline(component: HistogramDemoComponent) {
     d3.csv('assets/sp500.csv', this.stringToNumber, function(error, data) {
           if (error) { throw error; }
-          component.curvedTimelineData.next(data);
+          component.curvedTimelineData = data;
     });
   }
 
@@ -68,7 +68,7 @@ export class HistogramDemoComponent implements OnInit {
     const _thisComponent = this;
     d3.csv('assets/sp501.csv', this.stringToNumber, function(error, data) {
           if (error) { throw error; }
-          _thisComponent.barsHistogramData.next(data);
+          _thisComponent.barsHistogramData = data;
           _thisComponent.setSelectedValues(_thisComponent , 1992 , 2060);
     });
 
@@ -78,7 +78,7 @@ export class HistogramDemoComponent implements OnInit {
     const _thisComponent = this;
     d3.csv('assets/sp501.csv', this.oneToZero, function(error, data) {
           if (error) { throw error; }
-          _thisComponent.oneDimensionHistogramData.next(data);
+          _thisComponent.oneDimensionHistogramData = data;
           _thisComponent.setSelectedValues(_thisComponent , 1992 , 2060);
     });
 

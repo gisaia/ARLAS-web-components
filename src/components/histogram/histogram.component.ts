@@ -101,11 +101,13 @@ export class HistogramComponent implements OnInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
-    this.plotHistogram(this.data);
-    if (this.intervalSelection !== undefined) {
-      this.setSelectedInterval(this.intervalSelection);
+    if (this.data !== undefined) {
+      this.plotHistogram(this.data);
+      if (this.intervalSelection !== undefined) {
+        this.setSelectedInterval(this.intervalSelection);
+      }
+      this.fromSetInterval = false;
     }
-    this.fromSetInterval = false;
   }
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
