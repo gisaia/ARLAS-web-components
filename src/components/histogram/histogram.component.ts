@@ -1,4 +1,7 @@
-import { Component, OnInit, Input, Output, ViewEncapsulation, ViewContainerRef, ElementRef, HostListener } from '@angular/core';
+import {
+  Component, OnInit, Input, Output, ViewEncapsulation,
+  ViewContainerRef, ElementRef, HostListener, OnChanges, SimpleChanges
+} from '@angular/core';
 
 import {
   ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
@@ -18,7 +21,8 @@ import * as tinycolor from 'tinycolor2';
   styleUrls: ['./histogram.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class HistogramComponent implements OnInit {
+export class HistogramComponent implements OnInit, OnChanges {
+
 
   public margin: MarginModel = { top: 4, right: 20, bottom: 20, left: 60 };
   public startValue: string = null;
@@ -39,7 +43,7 @@ export class HistogramComponent implements OnInit {
   @Input() public dataType: DataType = DataType.numeric;
   @Input() public customizedCssClass = '';
   @Input() public dataUnit = '';
-  @Input() public data: Subject<Array<{ key: number, value: number }>> = new Subject<Array<{ key: number, value: number }>>();
+  @Input() public data: Array<{ key: number, value: number }>;
   @Input() public dateUnit: DateUnit = DateUnit.millisecond;
   @Input() public ticksDateFormat: string = null;
   @Input() public valuesDateFormat: string = null;
@@ -47,7 +51,7 @@ export class HistogramComponent implements OnInit {
   @Input() public yLabels = 5;
   @Input() public barWeight = 0.6;
   @Input() public isSmoothedCurve = true;
-  @Input() public intervalSelection: Subject<SelectedInputValues> = new Subject<SelectedInputValues>();
+  @Input() public intervalSelection: SelectedInputValues;
   @Input() public showXLabels = true;
   @Input() public showXTicks = true;
   @Input() public showYLabels = true;
@@ -86,24 +90,25 @@ export class HistogramComponent implements OnInit {
   private yDimension = 1;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
+
+
     Observable.fromEvent(window, 'resize')
-        .debounceTime(500)
-        .subscribe((event: Event) => {
-          this.resizeHistogram(event);
-        });
+      .debounceTime(500)
+      .subscribe((event: Event) => {
+        this.resizeHistogram(event);
+      });
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    this.histogramNode = this.viewContainerRef.element.nativeElement;
+    this.plotHistogram(this.data);
+    if (this.intervalSelection !== undefined) {
+      this.setSelectedInterval(this.intervalSelection);
+    }
+    this.fromSetInterval = false;
+  }
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
-    this.data.subscribe(value => {
-      this.plotHistogram(value);
-    });
-    this.intervalSelection.subscribe(value => {
-      this.fromSetInterval = true;
-      this.setSelectedInterval(value);
-      this.fromSetInterval = false;
-    });
-
     if (this.xAxisPosition === Position.top) {
       this.minusSign = -1;
     }
@@ -253,7 +258,7 @@ export class HistogramComponent implements OnInit {
   private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{ key: number, value: number }>): boolean {
     if (this.inputData.length !== 0) {
       if (selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key) {
-      return true;
+        return true;
       } else {
         return false;
       }
@@ -274,7 +279,6 @@ export class HistogramComponent implements OnInit {
 
   private initializeChartDimensions(): ChartDimensions {
     const svg = d3.select(this.histogramNode).select('svg');
-
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;
     const height = +this.chartHeight - this.margin.top - this.margin.bottom;
@@ -291,11 +295,11 @@ export class HistogramComponent implements OnInit {
   }
 
   // create three axes for X and two for Y
-    // For X: - The first axis contains a line only that is always at the bottom of the chart
-    //        - The second one contains a line and ticks. Labels are always hidden.
-    //        - For the third one, only labels are shown.
-    // For Y: - The first axis contains a line and ticks. Labels are always hidden.
-    //        - For the second one, only labels are shown.
+  // For X: - The first axis contains a line only that is always at the bottom of the chart
+  //        - The second one contains a line and ticks. Labels are always hidden.
+  //        - For the third one, only labels are shown.
+  // For Y: - The first axis contains a line and ticks. Labels are always hidden.
+  //        - For the second one, only labels are shown.
   private createChartAxes(chartDimensions: ChartDimensions, data: Array<HistogramData>): ChartAxes {
     const xDomain = (this.getXDomainScale()).range([0, chartDimensions.width]);
     // The xDomain extent includes data domain and selected values
@@ -318,7 +322,7 @@ export class HistogramComponent implements OnInit {
       xDataDomain = (this.getXDomainScale()).range([startRange, endRange]);
       xDataDomain.domain(d3.extent(data, (d: any) => d.key));
       xAxis = d3.axisBottom(xDomain).tickSize(0);
-      xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks).tickSize(this.minusSign * 5 );
+      xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks).tickSize(this.minusSign * 5);
       xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).ticks(this.xLabels);
       if (this.dataType === DataType.time && this.ticksDateFormat !== null) {
         xLabelsAxis = xLabelsAxis.tickFormat(d3.timeFormat(this.ticksDateFormat));
@@ -328,14 +332,14 @@ export class HistogramComponent implements OnInit {
         stepWidth = xDomain(data[1].key) - xDomain(data[0].key);
       } else {
         if (data[0].key === this.selectionInterval.startvalue && data[0].key === this.selectionInterval.endvalue) {
-          stepWidth = xDomain(data[0].key) / (this.barWeight * 10 );
+          stepWidth = xDomain(data[0].key) / (this.barWeight * 10);
         } else {
-          stepWidth = (xDomain(<number>data[0].key + this.dataInterval ) - xDomain(data[0].key));
+          stepWidth = (xDomain(<number>data[0].key + this.dataInterval) - xDomain(data[0].key));
         }
       }
-      endRange = xDomain(+data[data.length - 1].key + this.dataInterval) ;
+      endRange = xDomain(+data[data.length - 1].key + this.dataInterval);
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
-      xDataDomain.domain(data.map(function(d) { return d.key; }));
+      xDataDomain.domain(data.map(function (d) { return d.key; }));
       xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xDataDomain.domain()
         .filter(function (d, i) { return !(i % ticksPeriod); })).tickSize(this.minusSign * 5);
       xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xDataDomain.domain()
@@ -352,11 +356,11 @@ export class HistogramComponent implements OnInit {
 
 
   // draw three axes for X and two for Y
-    // For X: - The first axis contains a line only that is always at the bottom of the chart
-    //        - The second one contains a line and ticks. Labels are always hidden.
-    //        - For the third one, only labels are shown.
-    // For Y: - The first axis contains a line and ticks. Labels are always hidden.
-    //        - For the second one, only labels are shown.
+  // For X: - The first axis contains a line only that is always at the bottom of the chart
+  //        - The second one contains a line and ticks. Labels are always hidden.
+  //        - For the third one, only labels are shown.
+  // For Y: - The first axis contains a line and ticks. Labels are always hidden.
+  //        - For the second one, only labels are shown.
   private drawChartAxes(chartDimensions: ChartDimensions, chartAxes: ChartAxes): void {
     const _thisComponent = this;
     const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
@@ -380,7 +384,7 @@ export class HistogramComponent implements OnInit {
     this.xTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
     this.xLabelsAxis.selectAll('text').attr('class', 'histogram__labels');
     if (!this.showXTicks) {
-        this.xTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
+      this.xTicksAxis.selectAll('g').attr('class', 'histogram__ticks-axis__hidden');
     }
     if (!this.showXLabels) {
       this.xLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
@@ -389,11 +393,11 @@ export class HistogramComponent implements OnInit {
 
     if (this.chartType !== ChartType.oneDimension) {
       this.yTicksAxis = this.context.append('g')
-      .attr('class', 'histogram__ticks-axis')
-      .call(chartAxes.yTicksAxis);
+        .attr('class', 'histogram__ticks-axis')
+        .call(chartAxes.yTicksAxis);
       this.yLabelsAxis = this.context.append('g')
-      .attr('class', 'histogram__labels-axis')
-      .call(chartAxes.yLabelsAxis);
+        .attr('class', 'histogram__labels-axis')
+        .call(chartAxes.yLabelsAxis);
       // Define css classes for the ticks, labels and the axes
       this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
       this.yTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
@@ -506,14 +510,13 @@ export class HistogramComponent implements OnInit {
         this.showTitle = false;
 
         if (this.chartType === ChartType.bars) {
-            this.applyStyleOnSelectedBars();
+          this.applyStyleOnSelectedBars();
         }
       }
     });
   }
 
   private handleEndOfBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
-    const valueChangedEvent = this.valuesChangedEvent;
     const _thisComponent = this;
     selectionbrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
@@ -523,7 +526,7 @@ export class HistogramComponent implements OnInit {
         this.startValue = this.toString(this.selectionInterval.startvalue);
         this.endValue = this.toString(this.selectionInterval.endvalue);
         if (!this.fromSetInterval) {
-          valueChangedEvent.next(this.selectionInterval);
+          this.valuesChangedEvent.next(this.selectionInterval);
         }
         this.showTitle = true;
       }
@@ -532,36 +535,36 @@ export class HistogramComponent implements OnInit {
 
   private applyStyleOnSelectedBars(): void {
     const _thisComponent = this;
-    (this.barsContext).filter(function(d) {
+    (this.barsContext).filter(function (d) {
       d.key = +d.key;
       return d.key >= _thisComponent.selectionInterval.startvalue
-       && d.key + _thisComponent.barWeight * _thisComponent.dataInterval <= _thisComponent.selectionInterval.endvalue;
+        && d.key + _thisComponent.barWeight * _thisComponent.dataInterval <= _thisComponent.selectionInterval.endvalue;
     })
-    .attr('class', 'histogram__chart--bar__fullyselected');
+      .attr('class', 'histogram__chart--bar__fullyselected');
 
-    (this.barsContext).filter(function(d) {
+    (this.barsContext).filter(function (d) {
       d.key = +d.key;
       return d.key < _thisComponent.selectionInterval.startvalue || d.key > _thisComponent.selectionInterval.endvalue;
     })
-    .attr('class', 'histogram__chart--bar');
+      .attr('class', 'histogram__chart--bar');
 
-    (this.barsContext).filter(function(d) {
+    (this.barsContext).filter(function (d) {
       d.key = +d.key;
       return d.key < _thisComponent.selectionInterval.startvalue
-      && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.startvalue;
+        && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.startvalue;
     })
-    .attr('class', 'histogram__chart--bar__partlyselected');
+      .attr('class', 'histogram__chart--bar__partlyselected');
 
 
-    (this.barsContext).filter(function(d) {
+    (this.barsContext).filter(function (d) {
       d.key = +d.key;
       return d.key <= _thisComponent.selectionInterval.endvalue
-      && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.endvalue;
+        && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.endvalue;
     })
-    .attr('class', 'histogram__chart--bar__partlyselected');
+      .attr('class', 'histogram__chart--bar__partlyselected');
   }
 
-  private toString(value: Date|number): string {
+  private toString(value: Date | number): string {
     if (value instanceof Date) {
       if (this.valuesDateFormat !== null) {
         const timeFormat = d3.timeFormat(this.valuesDateFormat);
@@ -624,8 +627,8 @@ export class HistogramComponent implements OnInit {
     return Math.round(value * multiplier) / multiplier;
   }
 
-  private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date|number,
-  selectedEndValue: Date|number): Array<Date | number | { valueOf(): number }> {
+  private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date | number,
+    selectedEndValue: Date | number): Array<Date | number | { valueOf(): number }> {
     this.dataInterval = 0;
     if (this.chartType !== ChartType.area) {
       this.dataInterval = this.getBucketInterval(data, selectedStartValue, selectedEndValue);
@@ -637,7 +640,7 @@ export class HistogramComponent implements OnInit {
     });
     dataKeyUnionSelectedValues.push(selectedStartValue);
     dataKeyUnionSelectedValues.push(selectedEndValue);
-    if ( this.dataType === DataType.time) {
+    if (this.dataType === DataType.time) {
       xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => d).getTime() - this.dataInterval));
       xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => d).getTime() + this.dataInterval));
     } else {
@@ -647,8 +650,8 @@ export class HistogramComponent implements OnInit {
     return xDomainExtent;
   }
 
-  private getBucketInterval(data: Array<{ key: any, value: number }>, selectedStartValue: Date|number,
-  selectedEndValue: Date|number): number {
+  private getBucketInterval(data: Array<{ key: any, value: number }>, selectedStartValue: Date | number,
+    selectedEndValue: Date | number): number {
     let interval = Number.MAX_VALUE;
     if (data.length > 1) {
       for (let i = 0; i < (data.length - 1); i++) {
@@ -665,7 +668,7 @@ export class HistogramComponent implements OnInit {
       // three cases
       if (data[0].key === selectedStartValue && data[0].key === selectedEndValue) {
         interval = 1;
-      } else if ( data[0].key === selectedStartValue || data[0].key === selectedEndValue ) {
+      } else if (data[0].key === selectedStartValue || data[0].key === selectedEndValue) {
         const isoInterval = Math.max(Math.abs(data[0].key - <number>selectedStartValue), Math.abs(data[0].key - <number>selectedEndValue));
         interval = Math.min(1, isoInterval);
       } else {
