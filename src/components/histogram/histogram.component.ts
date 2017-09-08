@@ -125,7 +125,7 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.isWidthFixed = true;
     }
 
-    // Set oneDimension chart height to 50px as a default value
+    // Set oneDimension chart height to 8px as a default value
     if (this.chartType === ChartType.oneDimension && this.chartHeight === null) {
       this.chartHeight = 8 + this.margin.top + this.margin.bottom;
       this.yDimension = 0;
@@ -136,6 +136,10 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.chartHeight = this.el.nativeElement.childNodes[0].offsetHeight;
     } else if (this.chartHeight !== null && this.plottingCount === 0) {
       this.isHeightFixed = true;
+      if (this.chartType === ChartType.oneDimension) {
+        this.yDimension = 0;
+        this.chartHeight = this.chartHeight + this.margin.top + this.margin.bottom;
+      }
     }
 
     // if there is data already ploted, remove it
@@ -218,11 +222,12 @@ export class HistogramComponent implements OnInit, OnChanges {
         return tinycolor({ h: h, s: 100, v: 90 });
       } else {
         const color = tinycolor(this.paletteColors.toString());
-        const h = color.toHsv().h;
-        const s0 = 100;
-        const s1 = 20;
-        const s = (s1) * (1 - zeroToOne) + (s0) * (zeroToOne);
-        return tinycolor({ h: h, s: s, v: 90 });
+        const h = color.toHsl().h;
+        const s = color.toHsl().s;
+        const l0 = 85;
+        const l1 = 20;
+        const l = (l0) * (1 - zeroToOne) + (l1) * (zeroToOne);
+        return tinycolor({ h: h, s: s, l: l });
       }
     }
   }
@@ -333,10 +338,14 @@ export class HistogramComponent implements OnInit, OnChanges {
       if (data.length > 1) {
         stepWidth = xDomain(data[1].key) - xDomain(data[0].key);
       } else {
-        if (data[0].key === this.selectionInterval.startvalue && data[0].key === this.selectionInterval.endvalue) {
-          stepWidth = xDomain(data[0].key) / (this.barWeight * 10);
+        if (this.chartType === ChartType.oneDimension) {
+          stepWidth = this.chartDimensions.width;
         } else {
-          stepWidth = (xDomain(<number>data[0].key + this.dataInterval) - xDomain(data[0].key));
+          if (data[0].key === this.selectionInterval.startvalue && data[0].key === this.selectionInterval.endvalue) {
+            stepWidth = xDomain(data[0].key) / (this.barWeight * 10);
+          } else {
+            stepWidth = (xDomain(<number>data[0].key + this.dataInterval) - xDomain(data[0].key));
+          }
         }
       }
       endRange = xDomain(+data[data.length - 1].key + this.dataInterval);
@@ -444,7 +453,6 @@ export class HistogramComponent implements OnInit, OnChanges {
   private plotHistogramDataAsOneDimension(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
     this.barWeight = 1;
-    this.yDimension = 0;
     this.context.selectAll('.bar')
       .data(data)
       .enter().append('rect')
