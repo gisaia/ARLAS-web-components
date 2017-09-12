@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, Input, Output, DoCheck, KeyValueDiffers, EventEmitter } from '@angular/core';
+import { OnChanges } from '@angular/core/core';
+import { Component, OnInit, AfterViewInit, Input, Output, DoCheck, KeyValueDiffers, EventEmitter, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import * as leaflet from 'leaflet';
 import 'leaflet/dist/images/marker-shadow.png';
@@ -14,19 +15,22 @@ import * as tinycolor from 'tinycolor2';
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
-export class MapComponent implements AfterViewInit, DoCheck {
-
+export class MapComponent implements AfterViewInit, DoCheck, OnChanges {
 
   public textButton = 'Add GeoBox';
+  public textCircleButton = 'Add Circle';
+  public textGeohahsButton = 'Add Geohash';
   private map: leaflet.Map;
   private editLayerGroup: leaflet.LayerGroup = new leaflet.LayerGroup();
   private detailLayerGroup: leaflet.LayerGroup = new leaflet.LayerGroup();
   private detailIdToLayerId: Map<string, number> = new Map<string, number>();
   private geohashLayerGoup: leaflet.LayerGroup = new leaflet.LayerGroup();
-  private geohashIdToLayerId: Map<string, number> = new Map<string, number>();
+  private circleLayerGoup: leaflet.LayerGroup = new leaflet.LayerGroup();
+
   private maxValueOgGeohash = 0;
   private isGeoBox = false;
-  private geoHashDatadiffer: any;
+  private isCircle = false;
+  private isGeoHash = false;
   private detailItemDatadiffer: any;
   private stripes: any;
   private detailStyle: leaflet.PathOptions;
@@ -37,18 +41,21 @@ export class MapComponent implements AfterViewInit, DoCheck {
   @Input() public bboxfill = '#ffffff';
   @Input() public bboxfillOpacity = 0.5;
   @Input() public colorDetail = '#FC9F28';
-  @Input() public geohashMapData: Map<string, [number, number]>;
   @Input() public detailItemMapData: Map<string, [string, boolean]>;
   @Input() public lowleveldetailZoom = 1;
   @Input() public mediumleveldetailZoom = 3;
   @Input() public highleveldetailZoom = 8;
-
+  @Input() public geojsondata: { type: string, features: Array<any> } = {
+    "type": "FeatureCollection",
+    "features": []
+  };
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
+  @Output() public onChangeZoom: EventEmitter<number> = new EventEmitter<number>();
+
 
   constructor(private differs: KeyValueDiffers) {
 
-    this.geoHashDatadiffer = differs.find({}).create(null);
     this.detailItemDatadiffer = differs.find({}).create(null);
     leaflet.Icon.Default.imagePath = this.imagePath;
     this.onRemoveBbox.subscribe(value => {
@@ -71,18 +78,21 @@ export class MapComponent implements AfterViewInit, DoCheck {
       spaceOpacity: 0.4,
       angle: 135
     });
-
-
   }
-  public ngDoCheck(): void {
-    const geoHashDataChanges = this.geoHashDatadiffer.diff(this.geohashMapData);
-    if (geoHashDataChanges) {
-      geoHashDataChanges.forEachChangedItem(r => {
-        this.updateGeoHash(r.key.substring(0, 2), r.currentValue);
-      });
-      geoHashDataChanges.forEachAddedItem(r => { this.addGeoHash(r.key.substring(0, 2), r.currentValue); });
-      geoHashDataChanges.forEachRemovedItem(r => { this.removeGeoHash(r.key.substring(0, 2), r.currentValue); });
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['geojsondata'] !== undefined) {
+      this.geojsondata = changes['geojsondata'].currentValue;
+      if (this.isCircle) {
+        this.drawCircle();
+      }
+      if (this.isGeoHash) {
+        this.drawGeoHash();
+      }
     }
+  }
+
+  public ngDoCheck(): void {
     const detailItemDataChanges = this.detailItemDatadiffer.diff(this.detailItemMapData);
     if (detailItemDataChanges) {
       detailItemDataChanges.forEachAddedItem(r => { this.addDetailItem(r.key, r.currentValue[0]); });
@@ -93,7 +103,6 @@ export class MapComponent implements AfterViewInit, DoCheck {
 
   }
   public ngAfterViewInit(): void {
-
     this.map = leaflet.map('map', <any>{
       center: [45.706179285330855, 2.1972656250000004],
       zoom: 4,
@@ -104,27 +113,32 @@ export class MapComponent implements AfterViewInit, DoCheck {
         featuresLayer: this.editLayerGroup,
         zIndex: 2000
       }
-
     });
 
     const layer: leaflet.TileLayer = leaflet.tileLayer(this.basemapUrl);
-
     this.map.addLayer(layer);
     this.map.addLayer(this.editLayerGroup);
     this.map.addLayer(this.detailLayerGroup);
-    this.map.addLayer(this.geohashLayerGoup);
+
     this.stripes.addTo(this.map);
-
     this.map.on('zoomstart', (e) => {
-      this.map.removeLayer(this.geohashLayerGoup);
-    });
-
-    this.map.on('zoomend', (e) => {
-      if (this.map.getZoom() < this.highleveldetailZoom) {
-        this.map.addLayer(this.geohashLayerGoup);
+      if (this.isCircle) {
+        this.map.removeLayer(this.circleLayerGoup);
+      }
+      if (this.isGeoHash) {
+        this.map.removeLayer(this.geohashLayerGoup);
       }
     });
 
+    this.map.on('zoomend', (e) => {
+      if (this.isCircle) {
+        this.map.addLayer(this.circleLayerGoup);
+      }
+      if (this.isGeoHash) {
+        this.map.addLayer(this.geohashLayerGoup);
+      }
+      this.onChangeZoom.next(this.map.getZoom());
+    });
     this.map.on('editable:vertex:dragend', (e) => {
       this.setBbox(e);
     });
@@ -133,7 +147,30 @@ export class MapComponent implements AfterViewInit, DoCheck {
       this.setBbox(e);
     });
   }
+  public toggleCircle() {
+    this.isCircle = !this.isCircle;
+    if (this.isCircle) {
+      this.drawCircle();
+      this.textCircleButton = 'Remove Circle';
+    } else {
+      this.map.removeLayer(this.circleLayerGoup);
+      this.textCircleButton = 'Add Circle';
+      this.isCircle=false;
 
+    }
+  }
+
+  public toggleGeohash() {
+    this.isGeoHash = !this.isGeoHash;
+    if (this.isGeoHash) {
+      this.drawGeoHash();
+      this.textGeohahsButton = 'Remove GeoHash';
+    } else {
+      this.map.removeLayer(this.geohashLayerGoup);
+      this.textGeohahsButton = 'Add GeoHash';
+      this.isGeoHash=false;
+    }
+  }
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
@@ -148,59 +185,51 @@ export class MapComponent implements AfterViewInit, DoCheck {
       this.textButton = 'Add GeoBox';
     }
   }
+
+  private drawGeoHash() {
+    const geohashLayer = leaflet.geoJSON(this.geojsondata, {
+      filter: function (feature) {
+        if (feature.geometry.type === 'Polygon') {
+          return true;
+        }
+      }
+    });
+    this.geohashLayerGoup.clearLayers();
+    this.geohashLayerGoup.addLayer(geohashLayer);
+    geohashLayer.setStyle(f => { return { fillColor: (<any>f.properties).color, opacity: 0, fillOpacity: 0.7 } });
+    this.map.addLayer(this.geohashLayerGoup);
+
+
+  }
+  private drawCircle() {
+    const cricleLayer = leaflet.geoJSON(this.geojsondata, {
+      filter: function (feature) {
+        if (feature.geometry.type === 'Point') {
+          return true;
+        }
+      },
+      pointToLayer: function (feature, latlng) {
+        return leaflet.circleMarker(latlng, {
+          radius: feature.properties['radius'],
+          fillColor: feature.properties['color'],
+          weight: 1,
+          fillOpacity: 0.7,
+          opacity: 0
+        });
+      }
+    });
+    this.circleLayerGoup.clearLayers();
+    this.circleLayerGoup.addLayer(cricleLayer);
+    this.map.addLayer(this.circleLayerGoup);
+
+  }
+
   private setBbox(e) {
     const west = (<any>e).layer.getBounds().getWest();
     const north = (<any>e).layer.getBounds().getNorth();
     const east = (<any>e).layer.getBounds().getEast();
     const south = (<any>e).layer.getBounds().getSouth();
     this.onChangeBbox.emit([north, west, south, east]);
-  }
-
-  private addGeoHash(geohash: string, values: [number, number]) {
-    if (values[1] !== 0) {
-      const bbox: Array<number> = decode_bbox(geohash);
-      const coordinates = [[
-        [bbox[3], bbox[2]],
-        [bbox[3], bbox[0]],
-        [bbox[1], bbox[0]],
-        [bbox[1], bbox[2]],
-        [bbox[3], bbox[2]],
-      ]];
-      const style = this.getStyle(values[0], values[1]);
-      const polygonGeojson = {
-        type: 'Feature',
-        properties: {
-          syle: style
-        },
-        geometry: {
-          type: 'Polygon',
-          coordinates: coordinates
-        }
-      };
-      const layergeojson = leaflet.geoJSON(polygonGeojson.geometry, style);
-      layergeojson.setStyle(f => (<any>f.properties).style);
-      this.geohashLayerGoup.addLayer(layergeojson);
-      this.geohashIdToLayerId.set(geohash, this.geohashLayerGoup.getLayerId(layergeojson));
-    }
-  }
-
-  private updateGeoHash(geohash: string, values: [number, number]) {
-    if (values[1] !== 0) {
-      if (this.geohashIdToLayerId.get(geohash) === undefined) {
-        this.addGeoHash(geohash, values);
-      } else {
-        const style = this.getStyle(values[0], values[1]);
-        (<any>this.geohashLayerGoup.getLayer(this.geohashIdToLayerId.get(geohash))).setStyle(style);
-      }
-    }
-  }
-  private removeGeoHash(geohash: string, values: [number, number]) {
-    const layerId = this.geohashIdToLayerId.get(geohash);
-    if (layerId !== null || layerId !== undefined) {
-      this.geohashLayerGoup.removeLayer(layerId);
-      this.geohashIdToLayerId.delete(geohash);
-    }
-
   }
 
   private addDetailItem(id: string, geometry: string) {
@@ -230,7 +259,6 @@ export class MapComponent implements AfterViewInit, DoCheck {
         layer.setStyle(this.detailStyle);
       }
     }
-
   }
   private removeDetailItem(id: string) {
     const layerId = this.detailIdToLayerId.get(id);
@@ -238,29 +266,5 @@ export class MapComponent implements AfterViewInit, DoCheck {
       this.detailLayerGroup.removeLayer(layerId);
       this.detailIdToLayerId.delete(id);
     }
-  }
-
-  private getColor(zeroToOne: number): tinycolorInstance {
-    // Scrunch the green/cyan range in the middle
-    const sign = (zeroToOne < .5) ? -1 : 1;
-    zeroToOne = sign * Math.pow(2 * Math.abs(zeroToOne - .5), .35) / 2 + .5;
-    // Linear interpolation between the cold and hot
-    const h0 = 259;
-    const h1 = 12;
-    const h = (h0) * (1 - zeroToOne) + (h1) * (zeroToOne);
-    return tinycolor({ h: h, s: 75, v: 90 });
-  }
-  private getStyle(value: number, maxValue: number): leaflet.PolylineOptions {
-    const halfToOne = .5 * value / maxValue * 1.2 + 0.5;
-    const color: tinycolorInstance = this.getColor(halfToOne);
-    const style: leaflet.PolylineOptions = {
-      weight: 0.3,
-      opacity: 1,
-      fillOpacity: 0.7,
-      color: tinycolor('white').toHexString(),
-      fillColor: color.toHexString()
-
-    };
-    return style;
   }
 }
