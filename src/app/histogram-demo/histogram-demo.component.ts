@@ -94,7 +94,7 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private oneToZero(d) {
-          d.value = +d.value / 1500;
+          d.value = +d.value / 1452.43;
           return d;
   }
 
