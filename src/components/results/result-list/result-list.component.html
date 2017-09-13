@@ -44,6 +44,18 @@
         </td>
       </ng-container>
     </tr>
+    <tr class="resultlist__mode">
+      <td [colSpan]="columns.length" class="resultlist__mode__groupedButton">
+          <md-button-toggle-group #group="mdButtonToggleGroup" style="margin: 5px" (change)="whichMode($event)">
+            <md-button-toggle value="{{ModeEnum.list}}" [checked]="true">
+              <md-icon>list</md-icon>
+            </md-button-toggle>
+            <md-button-toggle value="{{ModeEnum.grid}}">
+              <md-icon>apps</md-icon>
+            </md-button-toggle>
+          </md-button-toggle-group>
+        </td>
+    </tr>
   </thead>
   <tbody arlasResultScroll [style.height.px]="tbodyHeight"
                            [rowItemList]="rowItemList"

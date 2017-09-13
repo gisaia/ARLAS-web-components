@@ -3,13 +3,17 @@ import {
   HostListener
 } from '@angular/core';
 import { SortEnum } from '../utils/enumerations/sortEnum';
+import { ModeEnum } from '../utils/enumerations/modeEnum';
+
 import { Column } from '../model/column';
 import { RowItem } from '../model/rowItem';
-import { Action, ProductIdentifier } from '../utils/results.utils';
+import { Action, ProductIdentifier, GridElement } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
 import { ANIMATION_TYPES } from 'ngx-loading';
+import { MdButtonToggleChange } from '@angular/material';
+
 
 
 @Component({
@@ -73,9 +77,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Heights of table elements
   public tbodyHeight: number = null;
   public theadHeight: number = null;
-  public ANIMATION_TYPES = ANIMATION_TYPES;
 
+  public ANIMATION_TYPES = ANIMATION_TYPES;
+  public ModeEnum = ModeEnum;
   public SortEnum = SortEnum;
+
   public selectedItems: Array<string> = new Array<string>();
 
   public borderStyle = 'solid';
@@ -85,6 +91,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   private iterableColumnsDiffer;
 
   public isMoreDataRequested = false;
+  public resultMode: ModeEnum = ModeEnum.list;
 
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
@@ -174,6 +181,13 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.borderStyle = borderStyle;
   }
 
+  private whichMode(toggleChangeEvent: MdButtonToggleChange) {
+    if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
+      this.resultMode = ModeEnum.grid;
+    } else {
+      this.resultMode = ModeEnum.list;
+    }
+  }
 
   // Build the table's columns
   private setColumns() {
