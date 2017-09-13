@@ -7,7 +7,8 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 import { Column } from '../model/column';
 import { RowItem } from '../model/rowItem';
-import { Action, ProductIdentifier, GridElement } from '../utils/results.utils';
+import { GridTile} from '../model/gridTile';
+import { Action, ProductIdentifier, FieldsConfiguration } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
@@ -32,8 +33,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   // rowItemList is a list of fieldName-fieldValue map
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
+  // DEPRECATED
   // Name of the id field
   @Input() public idFieldName: string;
+
+  @Input() public fieldsConfiguration: FieldsConfiguration;
 
   // the table width. If not specified, the tableWidth value is equal to container width.
   @Input() public tableWidth: number = null;
@@ -71,6 +75,7 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   public columns: Array<Column>;
   public rows: Array<RowItem>;
+  public gridTiles: Array<GridTile>;
   public filtersMap: Map<string, string | number | Date>;
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
 
@@ -128,6 +133,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     }
     if (rowChanges) {
       this.setRows();
+      this.setGridTiles();
       // If the called "more data" is retrieved, hide the animated loading div
       this.isMoreDataRequested = false;
     }
@@ -223,6 +229,19 @@ export class ResultListComponent implements OnInit, DoCheck {
       // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
       const row = new RowItem(this.columns, rowData);
       this.rows.push(row);
+    });
+  }
+
+    // Build the table's rows
+  private setGridTiles() {
+    this.gridTiles = new Array<GridTile>();
+    this.rowItemList.forEach(gridData => {
+      const id = gridData.get(this.fieldsConfiguration.idFieldName);
+      const urlImage = gridData.get(this.fieldsConfiguration.urlImageFieldName);
+      const urlThumbnail = gridData.get(this.fieldsConfiguration.urlThumbnailFieldName);
+      const title = gridData.get(this.fieldsConfiguration.titleFieldName);
+      const gridTile = new GridTile(<string>id, <string>urlImage, <string>urlThumbnail, <string>title);
+      this.gridTiles.push(gridTile);
     });
   }
 

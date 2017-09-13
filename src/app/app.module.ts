@@ -10,6 +10,7 @@ import { ResultListComponent } from '../components/results/result-list/result-li
 import { ResultFilterComponent } from '../components/results/result-filter/result-filter.component';
 import { ResultItemComponent } from '../components/results/result-item/result-item.component';
 import { ResultDetailedItemComponent } from '../components/results/result-detailed-item/result-detailed-item.component';
+
 import { ResultScrollDirective } from '../components/results/result-directive/result-scroll.directive';
 
 import { MapDemoComponent } from './map-demo/map-demo.component';
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { MapModule } from '../components/map/map.module';
 import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
+import { ResultGridTileComponent } from '../components/results/result-grid-tile/result-grid-tile.component';
 
 
 @NgModule({
@@ -27,8 +29,7 @@ import { ResultsModule } from '../components/results/results.module';
     AppComponent,
     HistogramDemoComponent,
     MapDemoComponent,
-    ResultsDemoComponent,
-
+    ResultsDemoComponent
   ],
   imports: [
     BrowserModule,

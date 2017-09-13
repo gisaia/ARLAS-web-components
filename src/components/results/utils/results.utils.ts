@@ -13,3 +13,9 @@ export interface ProductIdentifier {
   idValue: string;
 }
 
+export interface FieldsConfiguration {
+  idFieldName: string;
+  urlImageFieldName: string;
+  urlThumbnailFieldName: string;
+  titleFieldName: string;
+}

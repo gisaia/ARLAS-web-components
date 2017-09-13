@@ -62,7 +62,7 @@
                            [searchSize]="searchSize"
                            [nLastLines]="nLastLines"
                            (moreDataEvent)="askForMoreData($event)">
-    <ng-container *ngIf="resultMode == ModeEnum.list; else grid_mode">
+    <ng-container *ngIf="resultMode == ModeEnum.list">
       <ng-container *ngFor="let rowItem of rows; index as i">
         <tr arlas-result-item class="resultlist__body--item"
                             (mouseenter)="setConsultedItem(rowItem.identifier)"
@@ -84,8 +84,14 @@
         </tr>
       </ng-container>
     </ng-container>
-    <ng-template #grid_mode>
-    </ng-template>
+    <ng-container *ngIf="resultMode == ModeEnum.grid">
+      <md-grid-list cols="4" rowHeight="1:1">
+        <md-grid-tile class="barbet" *ngFor="let gridTile of gridTiles" >
+              <arlas-result-grid-tile class="hamou" [gridTile]="gridTile"></arlas-result-grid-tile>
+
+        </md-grid-tile>
+      </md-grid-list>
+    </ng-container>
   </tbody>
 </table>
 <div *ngIf="isMoreDataRequested" class="resultlist__moredata" [style.width.px]="tableWidth">

@@ -2,8 +2,14 @@
 <md-sidenav-container class="example-container">
   <md-sidenav align="end" #sidenav class="example-sidenav">
     <div class="table-wrapper">
-          <arlas-result-list style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList" [idFieldName]="'id'" [detailedDataRetriever]="detailedDataRetriever"
-          [searchSize]="50" (moreDataEvent)="addMoreData()"   (setFiltersEvent)="setFilters($event)"></arlas-result-list>
+          <arlas-result-list style="height:100%" [rowItemList]="data"
+                                                 [fieldsList]="fieldsList"
+                                                 [idFieldName]="'id'"
+                                                 [detailedDataRetriever]="detailedDataRetriever"
+                                                 [fieldsConfiguration]="fieldsConfiguration"
+                                                 [searchSize]="50"
+                                                 (moreDataEvent)="addMoreData()"
+                                                 (setFiltersEvent)="setFilters($event)"></arlas-result-list>
     </div>
   </md-sidenav>
 

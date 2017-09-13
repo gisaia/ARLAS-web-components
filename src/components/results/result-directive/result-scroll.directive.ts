@@ -2,6 +2,7 @@ import { Directive, Input, Output, HostListener, ElementRef, OnChanges, SimpleCh
 import { Subject } from 'rxjs/Subject';
 
 import { RowItem } from '../model/rowItem';
+import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 
 @Directive({
@@ -12,19 +13,20 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
   @Input() public nLastLines: number;
   @Input() public searchSize: number;
+  @Input() public resultMode: ModeEnum;
   @Output() public moreDataEvent: Subject<number> = new Subject<number>();
   private lastScrollTop = 0;
   private lastDataSize = 0;
   private moreDataCallsCounter;
   private tbodyHeight;
-
   constructor(private el: ElementRef) { }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes['rowItemList']) {
+    if (changes['rowItemList'] || changes['resultMode'] ) {
       this.moreDataCallsCounter = 0;
       this.lastScrollTop = 0;
       this.lastDataSize = 0;
+      this.el.nativeElement.scrollTop = 0;
     }
   }
 

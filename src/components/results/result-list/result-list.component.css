@@ -69,6 +69,16 @@
   margin: 0 auto;
 }
 
+.hamou {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.barbet {
+  margin-top: 5px;
+}
+
 thead tr {
   display: block;
   position: relative;
