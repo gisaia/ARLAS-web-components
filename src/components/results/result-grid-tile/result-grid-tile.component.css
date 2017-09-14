@@ -9,6 +9,13 @@
   height:100%;
   margin:1px;
   border: 1px solid #043b53;
+  position: relative;
+}
+
+.resultgrid--checkbox{
+  position: absolute;
+  top: 5px;
+  left: 5px;
 }
 
 .resultgrid__img {

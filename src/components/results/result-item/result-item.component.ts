@@ -1,10 +1,15 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { RowItem } from '../model/rowItem';
+import { ItemComponent } from '../model/itemComponent';
+
+import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { Action, ProductIdentifier } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 import { Observable } from 'rxjs/Rx';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+
 
 
 @Component({
@@ -12,31 +17,39 @@ import { Subject } from 'rxjs/Subject';
   templateUrl: './result-item.component.html',
   styleUrls: ['./result-item.component.css']
 })
-export class ResultItemComponent implements OnInit {
+export class ResultItemComponent extends ItemComponent implements OnInit {
 
   @Input() public rowItem: RowItem;
   @Input() public detailedDataRetriever: DetailedDataRetriever;
   @Input() public selectedItems: Array<string>;
+  @Input() public lastChangedCheckBoxEvent: Subject<{identifier: string, mode: ModeEnum}> =
+   new Subject<{identifier: string, mode: ModeEnum}>();
+
 
   @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
-
   @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
-
+  @Output() public changeheckBoxEvent: Subject<{identifier: string, mode: ModeEnum}> =
+   new Subject<{identifier: string, mode: ModeEnum}>();
 
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
-  public isChecked = false;
   public borderStyle = 'solid';
   private retrievedDataEvent: Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
-
   protected identifier: string;
 
-  constructor() { }
+  constructor() {
+    super();
+  }
 
   public ngOnInit() {
     this.identifier = (String)(this.rowItem.data.get(this.rowItem.columns[0].fieldName));
     this.rowItem.identifier = this.identifier;
+    this.lastChangedCheckBoxEvent.subscribe((item: {identifier: string, mode: ModeEnum}) => {
+      if (item != null && item.mode === ModeEnum.grid && item.identifier === this.identifier) {
+        this.isChecked = !this.isChecked;
+      }
+    });
   }
 
   // Detailed data is retrieved wheb the row is toggled for the first time
@@ -64,17 +77,9 @@ export class ResultItemComponent implements OnInit {
 
   // Update the list of the selected items
   public setSelectedItem() {
-    this.isChecked = !this.isChecked;
-    const index = this.selectedItems.indexOf(this.identifier);
-    if (this.isChecked) {
-      if (index === -1) {
-        this.selectedItems.push(this.identifier);
-      }
-    } else {
-      if (index !== -1) {
-        this.selectedItems.splice(index, 1);
-      }
-    }
+    super.setSelectedItem(this.identifier, this.selectedItems);
+    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
+    this.changeheckBoxEvent.next({identifier: this.identifier, mode: ModeEnum.list});
     this.selectedItemsEvent.next(this.selectedItems);
   }
 

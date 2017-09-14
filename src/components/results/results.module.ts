@@ -9,7 +9,7 @@ import { ResultDetailedItemComponent } from './result-detailed-item/result-detai
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultScrollDirective } from './result-directive/result-scroll.directive';
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
-import { MdIconModule, MdChipsModule, MdButtonToggleModule, MdButtonModule, MdGridListModule } from '@angular/material';
+import { MdIconModule, MdChipsModule, MdButtonToggleModule, MdButtonModule, MdGridListModule, MdCheckboxModule } from '@angular/material';
 
 
 
@@ -23,6 +23,7 @@ import { MdIconModule, MdChipsModule, MdButtonToggleModule, MdButtonModule, MdGr
     MdButtonToggleModule,
     MdButtonModule,
     MdGridListModule,
+    MdCheckboxModule,
     FormsModule,
     LoadingModule
   ],

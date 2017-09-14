@@ -1,5 +1,6 @@
 <div class="resultgrid">
   <div class="resultgrid--container">
+    <md-checkbox class="resultgrid--checkbox" (change)="setSelectedItem()" [checked]="isChecked"></md-checkbox>
     <div class="resultgrid__img" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'">
     </div>
     <div>

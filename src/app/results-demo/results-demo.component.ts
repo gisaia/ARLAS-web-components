@@ -34,8 +34,7 @@ export class ResultsDemoComponent implements OnInit {
       map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
       map.set('cloud', (i + 1) + '.0');
       map.set('incidence', (i + 10) + '/25/2015 lundi matin france');
-      map.set('id', 'http://www.intelligence-airbusds.com/files/pgallery' +
-      '/public/r14714_15_satellite_image_spot6_toulouse_france_2012_thumbnail.jpg' );
+      map.set('id', (i + 10) + 'd' );
       this.data.push(map);
     }
   }
@@ -49,7 +48,7 @@ export class ResultsDemoComponent implements OnInit {
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
           map.set('cloud', (i + 1) + '.0');
           map.set('incidence', (i + 10) );
-          map.set('id', (i + 10) );
+          map.set('id', (i + 10) + '' );
           this.data.push(map);
         }
         this.count++;
@@ -61,7 +60,7 @@ export class ResultsDemoComponent implements OnInit {
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
           map.set('cloud', (i + 1) + '.0');
           map.set('incidence', (i + 10) );
-          map.set('id', (i + 10) );
+          map.set('id', (i + 10) + '' );
           this.data.push(map);
         }
         this.count++;

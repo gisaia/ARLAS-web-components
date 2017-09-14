@@ -11,6 +11,7 @@ import { GridTile} from '../model/gridTile';
 import { Action, ProductIdentifier, FieldsConfiguration } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 import { ANIMATION_TYPES } from 'ngx-loading';
 import { MdButtonToggleChange } from '@angular/material';
@@ -89,15 +90,18 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   public selectedItems: Array<string> = new Array<string>();
 
-  public borderStyle = 'solid';
-
-
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
 
   public isMoreDataRequested = false;
   public resultMode: ModeEnum = ModeEnum.list;
 
+  public borderStyle = 'solid';
+  public displayList = 'block';
+  public displayGrid = 'none';
+
+  public lastChangedCheckBoxEvent: Subject<{identifier: string, mode: ModeEnum}> =
+   new Subject<{identifier: string, mode: ModeEnum}>();
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
@@ -132,10 +136,10 @@ export class ResultListComponent implements OnInit, DoCheck {
       this.setColumns();
     }
     if (rowChanges) {
-      this.setRows();
-      this.setGridTiles();
+      this.setRowsAndGrids();
       // If the called "more data" is retrieved, hide the animated loading div
       this.isMoreDataRequested = false;
+      this.lastChangedCheckBoxEvent = new Subject<{identifier: string, mode: ModeEnum}>();
     }
   }
 
@@ -154,6 +158,11 @@ export class ResultListComponent implements OnInit, DoCheck {
   public setSelectedItems(selectedItems: Array<string>) {
     this.selectedItems = selectedItems;
     this.selectedItemsEvent.next(this.selectedItems);
+  }
+
+  // notify the other mode of the new checked/unchecked checkbox
+  public notifyCheckbox(item: {identifier: string, mode: ModeEnum}) {
+    this.lastChangedCheckBoxEvent.next(item);
   }
 
   // Emits the column to sort on and the sort direction
@@ -190,8 +199,12 @@ export class ResultListComponent implements OnInit, DoCheck {
   private whichMode(toggleChangeEvent: MdButtonToggleChange) {
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
+      this.displayGrid = 'block';
+      this.displayList = 'none';
     } else {
       this.resultMode = ModeEnum.list;
+      this.displayGrid = 'none';
+      this.displayList = 'block';
     }
   }
 
@@ -222,27 +235,30 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.columns.push(toggleColumn);
   }
 
-  // Build the table's rows
-  private setRows() {
+  // Build the table's rows and grids
+  private setRowsAndGrids() {
     this.rows = new Array<RowItem>();
-    this.rowItemList.forEach(rowData => {
-      // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
-      const row = new RowItem(this.columns, rowData);
-      this.rows.push(row);
+    this.gridTiles = new Array<GridTile>();
+
+    this.rowItemList.forEach(itemData => {
+      this.setRow(itemData);
+      this.setGrid(itemData);
     });
   }
 
-    // Build the table's rows
-  private setGridTiles() {
-    this.gridTiles = new Array<GridTile>();
-    this.rowItemList.forEach(gridData => {
-      const id = gridData.get(this.fieldsConfiguration.idFieldName);
-      const urlImage = gridData.get(this.fieldsConfiguration.urlImageFieldName);
-      const urlThumbnail = gridData.get(this.fieldsConfiguration.urlThumbnailFieldName);
-      const title = gridData.get(this.fieldsConfiguration.titleFieldName);
-      const gridTile = new GridTile(<string>id, <string>urlImage, <string>urlThumbnail, <string>title);
-      this.gridTiles.push(gridTile);
-    });
+  private setRow(rowData: Map<string, string | number | Date>) {
+    // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
+    const row = new RowItem(this.columns, rowData);
+    this.rows.push(row);
+  }
+
+  private setGrid(gridData: Map<string, string | number | Date>) {
+    const id = gridData.get(this.fieldsConfiguration.idFieldName);
+    const urlImage = gridData.get(this.fieldsConfiguration.urlImageFieldName);
+    const urlThumbnail = gridData.get(this.fieldsConfiguration.urlThumbnailFieldName);
+    const title = gridData.get(this.fieldsConfiguration.titleFieldName);
+    const gridTile = new GridTile(<string>id, <string>urlImage, <string>urlThumbnail, <string>title);
+    this.gridTiles.push(gridTile);
   }
 
   private setTableWidth() {
