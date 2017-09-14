@@ -1,0 +1,81 @@
+<table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
+  <thead >
+    <tr class="resultlist__header">
+      <ng-container *ngFor="let column of columns">
+        <th *ngIf="column.isIdField"
+            [style.max-width.px]="column.width"
+            [style.min-width.px]="column.width"
+            class="resultlist__header--columns" >
+          <span  class="resultlist__header--columns--hidden"></span>
+        </th>
+        <th *ngIf="!column.isIdField && !column.isToggleField"
+            [style.max-width.px]="column.width"
+            [style.min-width.px]="column.width"
+            class="resultlist__header--columns" >
+          <span>
+            <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
+          </span>
+          <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
+            <md-icon *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
+            <md-icon *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
+          </div>
+        </th>
+        <th *ngIf="column.isToggleField" class="resultlist__header--columns"
+                           [style.max-width.px]="column.width"
+                           [style.min-width.px]="column.width">
+          <span  class="resultlist__header--columns--hidden">
+          </span>
+        </th>
+      </ng-container>
+    </tr>
+    <tr class="resultlist__filter">
+      <ng-container *ngFor="let column of columns">
+        <td [style.width.px]="column.width" *ngIf="column.isIdField">
+          <span class="resultlist__header--columns--hidden"></span>
+        </td>
+        <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
+                           [style.width.px]="column.width"
+                           [column]="column"
+                           [filtersMap]="filtersMap"
+                           (setFiltersEvent)="setFilters($event)">
+        </td>
+        <td *ngIf="column.isToggleField" [style.width.px]="column.width">
+          <span class="resultlist__header--columns--hidden"></span>
+        </td>
+      </ng-container>
+    </tr>
+  </thead>
+  <tbody arlasResultScroll [style.height.px]="tbodyHeight"
+                           [rowItemList]="rowItemList"
+                           [searchSize]="searchSize"
+                           [nLastLines]="nLastLines"
+                           (moreDataEvent)="askForMoreData($event)">
+    <ng-container *ngFor="let rowItem of rows; index as i">
+      <tr arlas-result-item class="resultlist__body--item"
+                           (mouseenter)="setConsultedItem(rowItem.identifier)"
+                           (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                           [rowItem]="rowItem"
+                           [detailedDataRetriever]="detailedDataRetriever"
+                           [selectedItems]="selectedItems"
+                           (selectedItemsEvent)="setSelectedItems($event)"
+                           (borderStyleEvent)="setBorderStyle($event)"
+                           [style.border-bottom-style]="borderStyle" >
+      </tr>
+      <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
+                           (mouseenter)="setConsultedItem(rowItem.identifier)"
+                           (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                           [detailColspan]="rowItem.columns.length"
+                           [rowItem]="rowItem"
+                           [idFieldName]="idFieldName"
+                           (actionOnItemEvent)="triggerActionOnItem($event)">
+      </tr>
+    </ng-container>
+  </tbody>
+</table>
+<div *ngIf="isMoreDataRequested" class="resultlist__moredata" [style.width.px]="tableWidth">
+  <ngx-loading
+        [show]="isMoreDataRequested"
+        [config]="{ animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
+                    backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+  </ngx-loading>
+</div>

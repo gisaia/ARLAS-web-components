@@ -1,5 +1,16 @@
 #map{
     width: 100%;
     height: 100%;
+    position: absolute;
 
+}
+a.arlas-map-control{
+    background-color: green;
+}
+
+.arlas-geobox-chip{
+    z-index: 2000;
+    position: absolute;
+    right: 6px;
+    top: 80px;
 }

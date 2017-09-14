@@ -64,7 +64,7 @@
     ],
     "no-misused-new": true,
     "no-non-null-assertion": true,
-    "no-shadowed-variable": true,
+    "no-shadowed-variable": false,
     "no-string-literal": false,
     "no-string-throw": true,
     "no-switch-case-fall-through": true,
@@ -120,7 +120,7 @@
     ],
     "component-selector": [
       true,
-      "element",
+      ["attribute","element"],
       "arlas",
       "kebab-case"
     ],

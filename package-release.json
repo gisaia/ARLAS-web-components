@@ -1,0 +1,34 @@
+{
+  "name": "arlas-web-components",
+  "version": "*update by script*",
+  "description": "Components library for ARLAS Web App",
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components.git"
+  },
+  "author": "gisaia",
+  "license": "apache2",
+  "peerDependencies": {
+    "@angular/common": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/forms": "^4.0.0",
+    "rxjs": "^5.1.0"
+  },
+  "dependencies": {
+    "d3": "^4.9.1",
+    "@angular/material": "2.0.0-beta.8",
+    "@types/leaflet": "^1.0.63",
+    "leaflet": "^1.0.3",
+    "leaflet-editable": "^1.1.0",
+    "leaflet.path.drag": "^0.0.6",
+    "font-awesome": "^4.7.0",
+    "bootstrap": "^4.0.0-beta",
+    "ngx-loading": "^1.0.7",
+    "ngeohash": "^0.6.0",
+    "tinycolor2": "^1.4.1"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components/issues"
+  },
+  "homepage": "https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components/blob/master/README.md"
+}

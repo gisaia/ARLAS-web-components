@@ -1,0 +1,22 @@
+  <ng-container *ngFor="let field of rowItem.columns;">
+    <td *ngIf="field.isIdField" class="resultitem__cell"
+                              [style.max-width.px]="field.width"
+                              [style.min-width.px]="field.width" >
+      <div *ngIf="field.isIdField" class="checkbox">
+        <input type="checkbox" [checked]="isChecked" (change)="setSelectedItem()">
+      </div>
+    </td>
+    <td *ngIf="!field.isIdField && !field.isToggleField" class="resultitem__cell"
+                              [style.max-width.px]="field.width"
+                              [style.min-width.px]="field.width">
+      <label class="resultitem__cell--label">{{rowItem.data.get(field.fieldName)}}{{field.dataType}}</label>
+    </td>
+    <td *ngIf="field.isToggleField" class="resultitem__cell"
+                              [style.max-width.px]="field.width"
+                              [style.min-width.px]="field.width">
+      <md-icon class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
+      <ng-template #cancel_toggle><md-icon class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
+    </td>
+  </ng-container>
+
+

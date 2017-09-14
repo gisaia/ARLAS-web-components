@@ -1,4 +1,3 @@
-image: node:6.0
 cache:
   paths:
   - node_modules/
@@ -7,7 +6,11 @@ before_script:
 lint:
   script:
   - npm run lint
-build:
+arlas-web-components-doc:
   script:
   - npm run build-release
+  artifacts:
+    paths:
+    - documentation
+    name: "arlas-web-components-doc"
 

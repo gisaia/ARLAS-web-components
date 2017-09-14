@@ -1,0 +1,25 @@
+.resultdetaileditem{
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 0.7em;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.resultdetaileditem__actions {
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 0.9em;
+  margin: 3px 6px 3px 0;
+  background-color: #043b53;
+  padding: 10px 15px;
+  display: inline-block;
+  color: white;
+  cursor: pointer;
+}
+
+.resultdetaileditem-key {
+  font-weight: bold;
+}
+
+.resultdetaileditem-value {
+  margin-right: 10px;;
+}
