@@ -46,8 +46,8 @@ export class MapComponent implements AfterViewInit, DoCheck, OnChanges {
   @Input() public mediumleveldetailZoom = 3;
   @Input() public highleveldetailZoom = 8;
   @Input() public geojsondata: { type: string, features: Array<any> } = {
-    "type": "FeatureCollection",
-    "features": []
+    'type': 'FeatureCollection',
+    'features': []
   };
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
@@ -155,8 +155,7 @@ export class MapComponent implements AfterViewInit, DoCheck, OnChanges {
     } else {
       this.map.removeLayer(this.circleLayerGoup);
       this.textCircleButton = 'Add Circle';
-      this.isCircle=false;
-
+      this.isCircle = false;
     }
   }
 
@@ -168,7 +167,7 @@ export class MapComponent implements AfterViewInit, DoCheck, OnChanges {
     } else {
       this.map.removeLayer(this.geohashLayerGoup);
       this.textGeohahsButton = 'Add GeoHash';
-      this.isGeoHash=false;
+      this.isGeoHash = false;
     }
   }
   public toggleGeoBox() {
@@ -196,7 +195,7 @@ export class MapComponent implements AfterViewInit, DoCheck, OnChanges {
     });
     this.geohashLayerGoup.clearLayers();
     this.geohashLayerGoup.addLayer(geohashLayer);
-    geohashLayer.setStyle(f => { return { fillColor: (<any>f.properties).color, opacity: 0, fillOpacity: 0.7 } });
+    geohashLayer.setStyle(f => ({ fillColor: (<any>f.properties).color, opacity: 0, fillOpacity: 0.7 }));
     this.map.addLayer(this.geohashLayerGoup);
 
 

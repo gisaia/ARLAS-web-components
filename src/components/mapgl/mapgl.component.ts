@@ -1,18 +1,21 @@
-import { OnChanges } from '@angular/core/core';
-import { Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit, SimpleChanges, EventEmitter } from '@angular/core';
+import {
+  Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
+  SimpleChanges, EventEmitter, OnChanges
+} from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { decode_bbox } from 'ngeohash';
 import * as tinycolor from 'tinycolor2';
-import * as supercluster from 'supercluster'
+import * as supercluster from 'supercluster';
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
 import { paddedBounds } from './mapgl.component.util';
 
 
-export interface onMoveResult {
-  zoom: number,
-  extend: Array<number>
-  extendForLoad: Array<number>
-  extendForTest: Array<number>
+export interface OnMoveResult {
+  zoom: number;
+  center:Array<number>;
+  extend: Array<number>;
+  extendForLoad: Array<number>;
+  extendForTest: Array<number>;
 }
 
 @Component({
@@ -25,7 +28,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public textButton = 'Add GeoBox';
   public textCircleButton = 'Add Circle';
   public textGeohahsButton = 'Add Geohash';
-
   private map;
   private index;
   private north;
@@ -46,23 +48,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     'type': 'FeatureCollection',
     'features': []
   };
-
-
   @Input() public basemapUrl = 'http://osm-liberty.lukasmartinelli.ch/style.json';
   @Input() public geojsondata: { type: string, features: Array<any> } = {
     'type': 'FeatureCollection',
     'features': []
   };
-  @Input() public margePanForLoad;
-  @Input() public margePanForTest;
+  @Input() public margePanForLoad: number;
+  @Input() public margePanForTest: number;
   @Input() public clusterdata: { type: string, features: Array<any> } = {
     'type': 'FeatureCollection',
     'features': []
   };
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
-  @Output() public onMove: EventEmitter<onMoveResult> = new EventEmitter<onMoveResult>();
-
+  @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
 
   constructor() {
     this.onRemoveBbox.subscribe(value => {
@@ -70,24 +69,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.geoboxdata = {
           type: 'FeatureCollection',
           features: []
-        }
+        };
         this.map.getSource('geobox').setData(this.geoboxdata);
         this.isGeoBox = false;
         this.textButton = 'Add GeoBox';
       }
     });
-
   }
+
   public ngOnInit() {
     this.map = new mapboxgl.Map({
       container: 'mapgl',
       style: this.basemapUrl,
       center: [2.1972656250000004, 45.706179285330855],
-      zoom: 4,
+      zoom: 2,
       renderWorldCopies: false
     });
     this.map.boxZoom.disable();
-  };
+  }
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
       if (this.map.getSource('point') !== undefined) {
@@ -99,24 +98,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.map.getSource('cluster') !== undefined) {
         if (changes['clusterdata'] !== undefined) {
           this.clusterdata = changes['clusterdata'].currentValue;
-          this.index = supercluster({
-            radius: 40,
-            maxZoom: 22
-          });
-          this.index.load(this.clusterdata.features);
-          const data = this.index.getClusters([this.west, this.south, this.east, this.north], Math.round(this.zoom));
-          console.log(data);
-          const newclusterData = {
-            'type': 'FeatureCollection',
-            'features': data
-          };
-          this.map.getSource('cluster').setData(newclusterData);
+          this.map.getSource('cluster').setData(this.clusterdata);
         }
       }
     }
   }
 
-  ngAfterViewInit() {
+  public ngAfterViewInit() {
     this.map.on('load', () => {
       // Add a single point to the map
       this.map.addSource('point', {
@@ -125,7 +113,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.map.addSource('cluster', {
         'type': 'geojson',
-        'data': this.clusterdata
+        'data': this.clusterdata,
+        cluster: true,
+        clusterMaxZoom: 14, // Max zoom to cluster points on
+        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
       });
       this.map.addSource('geobox', {
         'type': 'geojson',
@@ -171,15 +162,27 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'layout': {
           'visibility': 'visible'
         },
-        'paint': {
-          'circle-radius': {
-            'type': 'identity',
-            'property': 'point_count'
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": {
+            property: "point_count",
+            type: "interval",
+            stops: [
+              [0, "#51bbd6"],
+              [10, "#f1f075"],
+              [75, "#f28cb1"],
+            ]
           },
-          'circle-color': 'red',
-          'circle-opacity': 1
-        },
-        'filter': ['==', '$type', 'Point'],
+          "circle-radius": {
+            property: "point_count",
+            type: "interval",
+            stops: [
+              [0, 20],
+              [10, 30],
+              [75, 40]
+            ]
+          }
+        }
       });
       this.map.addLayer({
         'id': 'cluster-count',
@@ -213,17 +216,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     });
     this.map.on('moveend', () => {
-      this.west = this.map.getBounds().getWest()
+      this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-      const onMoveData: onMoveResult = {
+      const onMoveData: OnMoveResult = {
         zoom: this.zoom,
+        center:this.map.getCenter(),
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
         extendForTest: []
-      }
+      };
       const canvas = this.map.getCanvasContainer();
       const positionInfo = canvas.getBoundingClientRect();
       const height = positionInfo.height;
@@ -239,13 +243,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.max(extendForLoadLatLng[0].lng, -180),
         Math.max(extendForLoadLatLng[0].lat, -90),
         Math.min(extendForLoadLatLng[1].lng, 180)
-      ]
+      ];
       onMoveData.extendForTest = [
         Math.min(extendForTestdLatLng[1].lat, 90),
         Math.max(extendForTestdLatLng[0].lng, -180),
         Math.max(extendForTestdLatLng[0].lat, -90),
         Math.min(extendForTestdLatLng[1].lng, 180)
-      ]
+      ];
       this.onMove.next(onMoveData);
     });
     this.map.on('mousedown', (e) => {
@@ -254,14 +258,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.startlngLat = undefined;
       }
-    })
+    });
     this.map.on('mouseup', (e) => {
       if (this.isGeoBox) {
         this.endlngLat = e.lngLat;
       } else {
         this.endlngLat = undefined;
       }
-    })
+    });
   }
 
   public toggleCircle() {
@@ -288,12 +292,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public toggle(event) {
-    console.log(event)
     if (event.checked === true) {
       this.map.setLayoutProperty('polygon', 'visibility', 'visible');
       this.map.setLayoutProperty('point', 'visibility', 'none');
-
-
     } else {
       this.map.setLayoutProperty('polygon', 'visibility', 'none');
       this.map.setLayoutProperty('point', 'visibility', 'visible');
@@ -306,12 +307,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.getCanvas().style.cursor = 'crosshair';
       this.textButton = 'Remove GeoBox';
     } else {
-
       this.map.getCanvas().style.cursor = '';
       this.geoboxdata = {
         type: 'FeatureCollection',
         features: []
-      }
+      };
       this.map.getSource('geobox').setData(this.geoboxdata);
       this.onRemoveBbox.next(true);
       this.textButton = 'Add GeoBox';
@@ -321,7 +321,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
-    if (!this.isGeoBox || this.geoboxdata.features.length > 0) return;
+    if (!this.isGeoBox || this.geoboxdata.features.length > 0) { return; }
     // Disable default drag zooming when we add a geobox.
     this.map.dragPan.disable();
     // Call functions for the following events
@@ -340,7 +340,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.current = new mapboxgl.Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
-    );;
+    );
     // Append the box element if it doesnt exist
     if (this.box === undefined) {
       this.box = document.createElement('div');
@@ -383,7 +383,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const endlat: number = this.endlngLat.lat;
       const west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
-      const east = Math.max(startlng, endlng);;
+      const east = Math.max(startlng, endlng);
       const south = Math.min(startlat, endlat);
       this.onChangeBbox.emit([north, west, south, east]);
       const coordinates = [[
@@ -405,7 +405,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.geoboxdata = {
         type: 'FeatureCollection',
         features: [polygonGeojson]
-      }
+      };
       this.map.getSource('geobox').setData(this.geoboxdata);
       if (this.box) {
         this.box.parentNode.removeChild(this.box);

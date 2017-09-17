@@ -15,7 +15,7 @@ import { ResultScrollDirective } from '../components/results/result-directive/re
 import { MapglDemoComponent } from './map-demo/mapgl-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 
-import { MdChipsModule, MdIconModule, MdSidenavModule,MdSlideToggleModule } from '@angular/material';
+import { MdChipsModule, MdIconModule, MdSidenavModule, MdSlideToggleModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { MapModule } from '../components/map/map.module';
 import { HistogramModule } from '../components/histogram/histogram.module';
