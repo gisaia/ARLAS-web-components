@@ -12,7 +12,7 @@ import { paddedBounds } from './mapgl.component.util';
 
 export interface OnMoveResult {
   zoom: number;
-  center:Array<number>;
+  center: Array<number>;
   extend: Array<number>;
   extendForLoad: Array<number>;
   extendForTest: Array<number>;
@@ -162,20 +162,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'layout': {
           'visibility': 'visible'
         },
-        filter: ["has", "point_count"],
+        filter: ['has', 'point_count'],
         paint: {
-          "circle-color": {
-            property: "point_count",
-            type: "interval",
+          'circle-color': {
+            property: 'point_count',
+            type: 'interval',
             stops: [
-              [0, "#51bbd6"],
-              [10, "#f1f075"],
-              [75, "#f28cb1"],
+              [0, '#51bbd6'],
+              [10, '#f1f075'],
+              [75, '#f28cb1'],
             ]
           },
-          "circle-radius": {
-            property: "point_count",
-            type: "interval",
+          'circle-radius': {
+            property: 'point_count',
+            type: 'interval',
             stops: [
               [0, 20],
               [10, 30],
@@ -223,7 +223,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.zoom = this.map.getZoom();
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
-        center:this.map.getCenter(),
+        center: this.map.getCenter(),
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
         extendForTest: []
