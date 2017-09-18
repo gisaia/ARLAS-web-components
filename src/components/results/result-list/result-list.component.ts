@@ -196,7 +196,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.borderStyle = borderStyle;
   }
 
-  private whichMode(toggleChangeEvent: MdButtonToggleChange) {
+  public whichMode(toggleChangeEvent: MdButtonToggleChange) {
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
       this.displayGrid = 'block';
