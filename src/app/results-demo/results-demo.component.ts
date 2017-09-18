@@ -1,5 +1,6 @@
 import { Component, OnInit, SimpleChange } from '@angular/core';
 import { DetailedDataRetrieverImp} from './utils/detailed-data-retriever';
+import { FieldsConfiguration } from '../../components/results/utils/results.utils';
 
 @Component({
   selector: 'arlas-results-demo',
@@ -10,13 +11,16 @@ export class ResultsDemoComponent implements OnInit {
 
   public data: Array<Map<string, string | number | Date>>;
   public fieldsList: Array<{columnName: string, fieldName: string, dataType: string}>;
+  public fieldsConfiguration: FieldsConfiguration;
   public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
   public count = 0;
 
   constructor() {}
 
   public ngOnInit() {
+    this.fieldsConfiguration = {idFieldName: 'id', urlImageFieldName: 'cloud', urlThumbnailFieldName: 'id', titleFieldName: 'source'};
     this.fieldsList = new Array<{columnName: string, fieldName: string, dataType: string}>();
+
     this.fieldsList.push({columnName: 'Source', fieldName: 'source', dataType: ''});
     this.fieldsList.push({columnName: 'Acquired', fieldName: 'acquired', dataType: ''});
     this.fieldsList.push({columnName: 'Cloud', fieldName: 'cloud', dataType: '%'});
@@ -30,7 +34,7 @@ export class ResultsDemoComponent implements OnInit {
       map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
       map.set('cloud', (i + 1) + '.0');
       map.set('incidence', (i + 10) + '/25/2015 lundi matin france');
-      map.set('id', (i + 10) + '/25/2015 lundi ' );
+      map.set('id', (i + 10) + 'd' );
       this.data.push(map);
     }
   }
@@ -44,7 +48,7 @@ export class ResultsDemoComponent implements OnInit {
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
           map.set('cloud', (i + 1) + '.0');
           map.set('incidence', (i + 10) );
-          map.set('id', (i + 10) );
+          map.set('id', (i + 10) + '' );
           this.data.push(map);
         }
         this.count++;
@@ -56,7 +60,7 @@ export class ResultsDemoComponent implements OnInit {
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
           map.set('cloud', (i + 1) + '.0');
           map.set('incidence', (i + 10) );
-          map.set('id', (i + 10) );
+          map.set('id', (i + 10) + '' );
           this.data.push(map);
         }
         this.count++;

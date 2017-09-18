@@ -44,31 +44,62 @@
         </td>
       </ng-container>
     </tr>
+    <tr class="resultlist__mode">
+      <td [colSpan]="columns.length" class="resultlist__mode__groupedButton">
+          <md-button-toggle-group #group="mdButtonToggleGroup" style="margin: 5px" (change)="whichMode($event)">
+            <md-button-toggle value="{{ModeEnum.list}}" [checked]="true">
+              <md-icon>list</md-icon>
+            </md-button-toggle>
+            <md-button-toggle value="{{ModeEnum.grid}}">
+              <md-icon>apps</md-icon>
+            </md-button-toggle>
+          </md-button-toggle-group>
+        </td>
+    </tr>
   </thead>
   <tbody arlasResultScroll [style.height.px]="tbodyHeight"
                            [rowItemList]="rowItemList"
                            [searchSize]="searchSize"
                            [nLastLines]="nLastLines"
                            (moreDataEvent)="askForMoreData($event)">
-    <ng-container *ngFor="let rowItem of rows; index as i">
-      <tr arlas-result-item class="resultlist__body--item"
-                           (mouseenter)="setConsultedItem(rowItem.identifier)"
-                           (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
-                           [rowItem]="rowItem"
-                           [detailedDataRetriever]="detailedDataRetriever"
-                           [selectedItems]="selectedItems"
-                           (selectedItemsEvent)="setSelectedItems($event)"
-                           (borderStyleEvent)="setBorderStyle($event)"
-                           [style.border-bottom-style]="borderStyle" >
-      </tr>
-      <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
-                           (mouseenter)="setConsultedItem(rowItem.identifier)"
-                           (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
-                           [detailColspan]="rowItem.columns.length"
-                           [rowItem]="rowItem"
-                           [idFieldName]="idFieldName"
-                           (actionOnItemEvent)="triggerActionOnItem($event)">
-      </tr>
+    <ng-container>
+      <ng-container *ngFor="let rowItem of rows; index as i">
+        <tr arlas-result-item class="resultlist__body--item"
+                            (mouseenter)="setConsultedItem(rowItem.identifier)"
+                            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                            [rowItem]="rowItem"
+                            (changeheckBoxEvent)="notifyCheckbox($event)"
+                            [lastChangedCheckBoxEvent]="lastChangedCheckBoxEvent"
+                            [detailedDataRetriever]="detailedDataRetriever"
+                            [selectedItems]="selectedItems"
+                            (selectedItemsEvent)="setSelectedItems($event)"
+                            (borderStyleEvent)="setBorderStyle($event)"
+                            [style.border-bottom-style]="borderStyle"
+                            [style.display]="displayList" >
+        </tr>
+        <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
+                            (mouseenter)="setConsultedItem(rowItem.identifier)"
+                            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                            [detailColspan]="rowItem.columns.length"
+                            [rowItem]="rowItem"
+                            [idFieldName]="idFieldName"
+                            (actionOnItemEvent)="triggerActionOnItem($event)"
+                            [style.display]="displayList">
+        </tr>
+      </ng-container>
+    </ng-container>
+    <ng-container >
+      <md-grid-list cols="4" rowHeight="1:1" [style.display]="displayGrid">
+        <md-grid-tile class="barbet" *ngFor="let gridTile of gridTiles" >
+              <arlas-result-grid-tile class="hamou"
+                            [gridTile]="gridTile"
+                            [selectedItems]="selectedItems"
+                            (selectedItemsEvent)="setSelectedItems($event)"
+                            [lastChangedCheckBoxEvent]="lastChangedCheckBoxEvent"
+                            (changedCheckBoxEvent)="notifyCheckbox($event)">
+              </arlas-result-grid-tile>
+        </md-grid-tile>
+      </md-grid-list>
     </ng-container>
   </tbody>
 </table>

@@ -54,16 +54,29 @@
 .resultlist__lastline{
   border-top: 1px dashed #e9ecef;
   border-bottom: 0px solid #e9ecef;
-  height: 2px;
-
 }
 .resultlist__body--detailed-item {
   border-top: 1px dashed #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
-.resultlist__header, .resultlist__filter {
+.resultlist__header, .resultlist__filter, .resultlist__mode  {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
+}
+
+.resultlist__mode__groupedButton{
+  display: table;
+  margin: 0 auto;
+}
+
+.hamou {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.barbet {
+  margin-top: 5px;
 }
 
 thead tr {
