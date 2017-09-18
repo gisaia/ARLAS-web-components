@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import {
-  ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues, SelectedInputValues,
+  ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues,
   ChartDimensions, ChartAxes, Position
 } from './histogram.utils';
 
@@ -14,6 +14,7 @@ import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as d3 from 'd3';
 import * as tinycolor from 'tinycolor2';
+import { SelectedInputValues } from './histogram.utils';
 
 @Component({
   selector: 'arlas-histogram',

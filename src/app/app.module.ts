@@ -13,23 +13,27 @@ import { ResultDetailedItemComponent } from '../components/results/result-detail
 
 import { ResultScrollDirective } from '../components/results/result-directive/result-scroll.directive';
 
-import { MapDemoComponent } from './map-demo/map-demo.component';
+import { MapglDemoComponent } from './map-demo/mapgl-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 
-import { MdChipsModule, MdIconModule, MdSidenavModule } from '@angular/material';
+import { MdChipsModule, MdIconModule, MdSidenavModule, MdSlideToggleModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { MapModule } from '../components/map/map.module';
 import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
 import { ResultGridTileComponent } from '../components/results/result-grid-tile/result-grid-tile.component';
+import { MapglComponent } from '../components/mapgl/mapgl.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HistogramDemoComponent,
-    MapDemoComponent,
     ResultsDemoComponent
+    MapglDemoComponent,
+    ResultsDemoComponent,
+    MapglComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -39,7 +43,8 @@ import { ResultGridTileComponent } from '../components/results/result-grid-tile/
     FormsModule,
     MapModule,
     HistogramModule,
-    ResultsModule
+    ResultsModule,
+    MdSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -6,6 +6,8 @@
     "target": "es5",
     "baseUrl": "",
     "types": [
+      "mapbox-gl",
+      "geojson",
       "jasmine",
       "node"
     ]
