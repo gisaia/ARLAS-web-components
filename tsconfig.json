@@ -1,1 +1,28 @@
-{"compileOnSave":false,"compilerOptions":{"outDir":"./dist/out-tsc","baseUrl":"src","sourceMap":true,"declaration":false,"allowJs":true,"moduleResolution":"node","emitDecoratorMetadata":true,"experimentalDecorators":true,"target":"es5","typeRoots":["node_modules/@types"],"exclude":["node_modules"],"lib":["es2016","dom"]}}
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/out-tsc",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "declaration": false,
+    "allowJs": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "types": [
+      "mapbox-gl",
+      "geojson"
+    ],
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "exclude": [
+      "node_modules"
+    ],
+    "lib": [
+      "es2016",
+      "dom"
+    ]
+  }
+}

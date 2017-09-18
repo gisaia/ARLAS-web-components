@@ -12,22 +12,24 @@ import { ResultItemComponent } from '../components/results/result-item/result-it
 import { ResultDetailedItemComponent } from '../components/results/result-detailed-item/result-detailed-item.component';
 import { ResultScrollDirective } from '../components/results/result-directive/result-scroll.directive';
 
-import { MapDemoComponent } from './map-demo/map-demo.component';
+import { MapglDemoComponent } from './map-demo/mapgl-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 
-import { MdChipsModule, MdIconModule, MdSidenavModule } from '@angular/material';
+import { MdChipsModule, MdIconModule, MdSidenavModule, MdSlideToggleModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { MapModule } from '../components/map/map.module';
 import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
+import { MapglComponent } from '../components/mapgl/mapgl.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     HistogramDemoComponent,
-    MapDemoComponent,
+    MapglDemoComponent,
     ResultsDemoComponent,
+    MapglComponent,
 
   ],
   imports: [
@@ -38,7 +40,8 @@ import { ResultsModule } from '../components/results/results.module';
     FormsModule,
     MapModule,
     HistogramModule,
-    ResultsModule
+    ResultsModule,
+    MdSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent]
