@@ -21,6 +21,8 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   @Input() public selectedItems: Set<string>;
 
   @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
+
   @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
 
   public isDetailToggled = false;
@@ -56,6 +58,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     this.rowItem.isChecked = !this.rowItem.isChecked;
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
     this.selectedItemsEvent.next(this.selectedItems);
+    this.selectedItemPositionEvent.next(this.rowItem);
   }
 
 }

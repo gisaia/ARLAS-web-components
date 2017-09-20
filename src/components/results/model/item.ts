@@ -29,6 +29,7 @@ export class Item {
   public actions: Array<Action>;
   public isDetailToggled = false;
   public isChecked = false;
+  public position: number;
 
   constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
     this.columns = columns;

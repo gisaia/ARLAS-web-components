@@ -21,6 +21,8 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   @Input() public detailedDataRetriever: DetailedDataRetriever;
 
   @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
+
   @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
 
   constructor() {
@@ -35,10 +37,12 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
     this.gridTile.isChecked = !this.gridTile.isChecked;
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in list mode
     this.selectedItemsEvent.next(this.selectedItems);
+    this.selectedItemPositionEvent.next(this.gridTile);
   }
 
   public setClickedOnItem() {
     this.retrieveDetailedData(this.detailedDataRetriever, this.gridTile);
     this.clickedOnItemEvent.next(this.gridTile);
+
   }
 }

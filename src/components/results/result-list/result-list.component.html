@@ -46,6 +46,20 @@
     </tr>
     <tr class="resultlist__tools">
       <td [colSpan]="columns.length" [style.width.px]="tableWidth">
+        <div class="resultlist__tools--select">
+          <div class="resultlist__tools--select-all">
+            <div class="resultgrid--checkbox">
+              <md-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [labelPosition]="'below'">{{selectedItems.size}} </md-checkbox>
+            </div>
+            <span class="resultgrid--checkbox__count">All</span>
+          </div>
+          <div class="resultlist__tools--select-between">
+            <button md-icon-button color="#043b53" (click)="selectInBetween()">
+              <md-icon style="-webkit-transform: rotate(-90deg)">vertical_align_center</md-icon>
+            </button>
+          </div>
+        </div>
+
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
           <md-button-toggle-group #group="mdButtonToggleGroup" style="margin: 5px" (change)="whichMode($event)">
             <md-button-toggle value="{{ModeEnum.list}}" [checked]="true">
@@ -85,6 +99,7 @@
                             [detailedDataRetriever]="detailedDataRetriever"
                             [selectedItems]="selectedItems"
                             (selectedItemsEvent)="setSelectedItems($event)"
+                            (selectedItemPositionEvent)="setItemsPositionsList($event)"
                             (borderStyleEvent)="setBorderStyle($event)"
                             [style.border-bottom-style]="borderStyle"
                             [style.display]="displayList" >
