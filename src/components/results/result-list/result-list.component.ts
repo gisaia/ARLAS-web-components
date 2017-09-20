@@ -48,6 +48,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Number of new rows added after each moreDataEvent
   @Input() public searchSize;
 
+  @Input() public detailedGridHeight = 250;
+
   @Input() public nbGridColumns = 3;
 
   // a detailed-data retriever object that implements DetailedDataRetriever interface .

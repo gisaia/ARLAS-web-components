@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResultListComponent } from './result-list/result-list.component';
 import { ResultGridTileComponent } from './result-grid-tile/result-grid-tile.component';
+import { ResultDetailedGridComponent } from './result-detailed-grid/result-detailed-grid.component';
 
 import { ResultItemComponent } from './result-item/result-item.component';
 import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
@@ -28,9 +29,9 @@ import { MdIconModule, MdChipsModule, MdButtonToggleModule, MdButtonModule, MdGr
     LoadingModule
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
-   ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective],
+   ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
   exports: [ResultListComponent, ResultGridTileComponent,
-   ResultItemComponent, ResultDetailedItemComponent, ResultFilterComponent, ResultScrollDirective],
+   ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
 
 })
 export class ResultsModule {}

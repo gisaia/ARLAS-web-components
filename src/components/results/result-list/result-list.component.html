@@ -56,6 +56,18 @@
             </md-button-toggle>
           </md-button-toggle-group>
         </div>
+
+      </td>
+    </tr>
+    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null"
+                           [style.display]="displayGrid">
+      <td class="resultlist__grid-detail--td" [colSpan]="columns.length">
+        <arlas-result-detailed-grid
+                           [gridTile]="selectedGridItem"
+                           [detailWidth]="tableWidth"
+                           [detailHeight]="detailedGridHeight"
+                           (actionOnItemEvent)="triggerActionOnItem($event)">
+        </arlas-result-detailed-grid>
       </td>
     </tr>
   </thead>
@@ -90,7 +102,11 @@
             <arlas-result-grid-tile class="resultlist__grid-tile"
                             [gridTile]="rowItem"
                             [selectedItems]="selectedItems"
-                            (selectedItemsEvent)="setSelectedItems($event)">
+                            [detailedDataRetriever]="detailedDataRetriever"
+                            (selectedItemsEvent)="setSelectedItems($event)"
+                            (clickedOnItemEvent)="setSelectedGridItem($event)"
+                            (mouseenter)="setConsultedItem(rowItem.identifier)"
+                            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)">
             </arlas-result-grid-tile>
           </md-grid-tile>
         </ng-container>

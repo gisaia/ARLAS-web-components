@@ -18,8 +18,10 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
 
   @Input() public gridTile: Item;
   @Input() public selectedItems: Set<string>;
+  @Input() public detailedDataRetriever: DetailedDataRetriever;
 
   @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
 
   constructor() {
     super();
@@ -35,4 +37,8 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
+  public setClickedOnItem() {
+    this.retrieveDetailedData(this.detailedDataRetriever, this.gridTile);
+    this.clickedOnItemEvent.next(this.gridTile);
+  }
 }
