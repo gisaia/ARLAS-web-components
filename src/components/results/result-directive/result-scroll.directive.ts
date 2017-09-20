@@ -1,7 +1,5 @@
 import { Directive, Input, Output, HostListener, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-
-import { RowItem } from '../model/rowItem';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 

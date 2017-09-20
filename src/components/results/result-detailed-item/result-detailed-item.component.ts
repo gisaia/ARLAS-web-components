@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Action, ProductIdentifier } from '../utils/results.utils';
 import { Column } from '../model/column';
-import { RowItem } from '../model/rowItem';
+import { Item } from '../model/item';
 
 import { Subject } from 'rxjs/Subject';
 
@@ -13,7 +13,7 @@ import { Subject } from 'rxjs/Subject';
 export class ResultDetailedItemComponent implements OnInit {
   @Input() public detailColspan: number;
   @Input() public idFieldName: string;
-  @Input() public rowItem: RowItem;
+  @Input() public rowItem: Item;
 
   @Output() public actionOnItemEvent: Subject<{action: Action, productIdentifier: ProductIdentifier}> =
     new Subject<{action: Action, productIdentifier: ProductIdentifier}>();

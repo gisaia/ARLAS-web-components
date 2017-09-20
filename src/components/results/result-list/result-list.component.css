@@ -59,7 +59,7 @@
   border-top: 1px dashed #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
-.resultlist__header, .resultlist__filter, .resultlist__mode  {
+.resultlist__header, .resultlist__filter, .resultlist__tools  {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
@@ -69,13 +69,13 @@
   margin: 0 auto;
 }
 
-.hamou {
+.resultlist__grid-tile {
   display: block;
   height: 100%;
   width: 100%;
 }
 
-.barbet {
+.resultlist__md-grid-tile {
   margin-top: 5px;
 }
 

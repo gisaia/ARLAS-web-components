@@ -6,8 +6,7 @@ import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 import { Column } from '../model/column';
-import { RowItem } from '../model/rowItem';
-import { GridTile} from '../model/gridTile';
+import { Item } from '../model/item';
 import { Action, ProductIdentifier, FieldsConfiguration } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
@@ -49,6 +48,8 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Number of new rows added after each moreDataEvent
   @Input() public searchSize;
 
+  @Input() public nbGridColumns = 3;
+
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
@@ -75,8 +76,7 @@ export class ResultListComponent implements OnInit, DoCheck {
 
 
   public columns: Array<Column>;
-  public rows: Array<RowItem>;
-  public gridTiles: Array<GridTile>;
+  public items: Array<Item>;
   public filtersMap: Map<string, string | number | Date>;
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
 
@@ -88,20 +88,21 @@ export class ResultListComponent implements OnInit, DoCheck {
   public ModeEnum = ModeEnum;
   public SortEnum = SortEnum;
 
-  public selectedItems: Array<string> = new Array<string>();
+  public selectedItems: Set<string> = new Set<string>();
+  public selectedGridItem: Item;
 
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
 
   public isMoreDataRequested = false;
+  public hasGridMode = false;
   public resultMode: ModeEnum = ModeEnum.list;
 
   public borderStyle = 'solid';
   public displayList = 'block';
+  public displayListGrid = 'inline';
   public displayGrid = 'none';
 
-  public lastChangedCheckBoxEvent: Subject<{identifier: string, mode: ModeEnum}> =
-   new Subject<{identifier: string, mode: ModeEnum}>();
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
@@ -123,23 +124,26 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   // Set the table width and height (tbody height)
   public ngOnInit() {
+    if (this.fieldsConfiguration.urlThumbnailFieldName !== undefined) {
+      this.hasGridMode = true;
+    }
+
     this.setTableWidth();
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85;
+    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
   }
 
   // ngDoCheck is triggered both when the instance of an object has changed or when new elements are
   // pushed in an Array
   public ngDoCheck() {
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
-    const rowChanges = this.iterableRowsDiffer.diff(this.rowItemList);
+    const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
     if (columnChanges) {
       this.setColumns();
     }
-    if (rowChanges) {
-      this.setRowsAndGrids();
+    if (itemChanges) {
+      this.setItems();
       // If the called "more data" is retrieved, hide the animated loading div
       this.isMoreDataRequested = false;
-      this.lastChangedCheckBoxEvent = new Subject<{identifier: string, mode: ModeEnum}>();
     }
   }
 
@@ -155,14 +159,9 @@ export class ResultListComponent implements OnInit, DoCheck {
   }
 
   // Emits a list of item/product identifiers
-  public setSelectedItems(selectedItems: Array<string>) {
+  public setSelectedItems(selectedItems: Set<string>) {
     this.selectedItems = selectedItems;
-    this.selectedItemsEvent.next(this.selectedItems);
-  }
-
-  // notify the other mode of the new checked/unchecked checkbox
-  public notifyCheckbox(item: {identifier: string, mode: ModeEnum}) {
-    this.lastChangedCheckBoxEvent.next(item);
+    this.selectedItemsEvent.next(Array.from(this.selectedItems));
   }
 
   // Emits the column to sort on and the sort direction
@@ -196,15 +195,21 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.borderStyle = borderStyle;
   }
 
+  public setSelectedGridItem(item: Item) {
+    this.selectedGridItem = item;
+  }
+
   public whichMode(toggleChangeEvent: MdButtonToggleChange) {
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
       this.displayGrid = 'block';
       this.displayList = 'none';
+      this.displayListGrid = 'block';
     } else {
       this.resultMode = ModeEnum.list;
       this.displayGrid = 'none';
       this.displayList = 'block';
+      this.displayListGrid = 'inline';
     }
   }
 
@@ -235,30 +240,18 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.columns.push(toggleColumn);
   }
 
-  // Build the table's rows and grids
-  private setRowsAndGrids() {
-    this.rows = new Array<RowItem>();
-    this.gridTiles = new Array<GridTile>();
-
+  // Build the component's rows and grids
+  private setItems() {
+    this.items = new Array<Item>();
     this.rowItemList.forEach(itemData => {
-      this.setRow(itemData);
-      this.setGrid(itemData);
+      // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
+      const item = new Item(this.columns, itemData);
+      item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
+      item.title = <string>itemData.get(this.fieldsConfiguration.titleFieldName);
+      item.urlImage = <string>itemData.get(this.fieldsConfiguration.urlImageFieldName);
+      item.urlThumbnail = <string>itemData.get(this.fieldsConfiguration.urlThumbnailFieldName);
+      this.items.push(item);
     });
-  }
-
-  private setRow(rowData: Map<string, string | number | Date>) {
-    // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
-    const row = new RowItem(this.columns, rowData);
-    this.rows.push(row);
-  }
-
-  private setGrid(gridData: Map<string, string | number | Date>) {
-    const id = gridData.get(this.fieldsConfiguration.idFieldName);
-    const urlImage = gridData.get(this.fieldsConfiguration.urlImageFieldName);
-    const urlThumbnail = gridData.get(this.fieldsConfiguration.urlThumbnailFieldName);
-    const title = gridData.get(this.fieldsConfiguration.titleFieldName);
-    const gridTile = new GridTile(<string>id, <string>urlImage, <string>urlThumbnail, <string>title);
-    this.gridTiles.push(gridTile);
   }
 
   private setTableWidth() {

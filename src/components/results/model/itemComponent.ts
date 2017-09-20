@@ -1,18 +1,38 @@
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { Item } from '../model/item';
+import { Action } from '../utils/results.utils';
+
+
+import { Observable } from 'rxjs/Rx';
+import { Subject } from 'rxjs/Subject';
 export class ItemComponent {
-  public isChecked = false;
 
+  protected retrievedDataEvent: Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
 
-  public setSelectedItem(identifier: string, selectedItems: Array<string>) {
-    this.isChecked = !this.isChecked;
-    const index = selectedItems.indexOf(identifier);
-    if (this.isChecked) {
-      if (index === -1) {
-        selectedItems.push(identifier);
+  public setSelectedItem(isChecked: Boolean, identifier: string, selectedItems: Set<string>) {
+    isChecked = !isChecked;
+    if (isChecked) {
+      if (!selectedItems.has(identifier)) {
+        selectedItems.add(identifier);
       }
     } else {
-      if (index !== -1) {
-        selectedItems.splice(index, 1);
+      if (selectedItems.has(identifier)) {
+        selectedItems.delete(identifier);
       }
     }
+  }
+
+  public retrieveDetailedData(detailedDataRetriever: DetailedDataRetriever, item: Item) {
+    if (detailedDataRetriever !== null && item.itemDetailedData.length === 0) {
+        this.retrievedDataEvent = detailedDataRetriever.getData(((String)(item.identifier)));
+        this.retrievedDataEvent.subscribe(value => {
+          item.actions = value.actions;
+          value.details.forEach((v, k) => {
+            const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();
+            v.forEach((value, key) => details.push({ key: key, value: value }));
+            item.itemDetailedData.push({ group: k, details: details });
+          });
+        });
+      }
   }
 }
