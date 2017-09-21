@@ -1,6 +1,6 @@
 import { Component, OnInit, SimpleChange } from '@angular/core';
 import { DetailedDataRetrieverImp} from './utils/detailed-data-retriever';
-import { FieldsConfiguration } from '../../components/results/utils/results.utils';
+import { FieldsConfiguration, Action } from '../../components/results/utils/results.utils';
 
 @Component({
   selector: 'arlas-results-demo',
@@ -13,6 +13,7 @@ export class ResultsDemoComponent implements OnInit {
   public fieldsList: Array<{columnName: string, fieldName: string, dataType: string}>;
   public fieldsConfiguration: FieldsConfiguration;
   public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
+  public globalActionsList = new Array<Action>();
   public count = 0;
 
   constructor() {}
@@ -28,6 +29,7 @@ export class ResultsDemoComponent implements OnInit {
     this.fieldsList.push({columnName: 'Incidence', fieldName: 'incidence', dataType: '°'});
     this.fieldsList.push({columnName: 'Id', fieldName: 'id', dataType: ''});
 
+    this.globalActionsList.push({id: '1', label: 'Download', actionBus: null});
     this.data = new Array<Map<string, string | number | Date>>();
     for ( let i = 0; i < 50; i++) {
       const map = new Map<string, string | number | Date>();

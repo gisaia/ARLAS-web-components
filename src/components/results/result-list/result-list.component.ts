@@ -52,6 +52,8 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   @Input() public nbGridColumns = 3;
 
+  @Input() public globalActionsList = new Array<Action>();
+
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
@@ -76,6 +78,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public actionOnItemEvent: Subject<{ action: Action, productIdentifier: ProductIdentifier }> =
   new Subject<{ action: Action, productIdentifier: ProductIdentifier }>();
 
+ @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
 
   public columns: Array<Column>;
   public items: Array<Item>;
@@ -155,6 +158,10 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Emits which action is applied on which item/product
   public triggerActionOnItem(actionOnItem: { action: Action, productIdentifier: ProductIdentifier }): void {
     this.actionOnItemEvent.next(actionOnItem);
+  }
+
+  public setGlobalAction(action: Action) {
+    this.globalActionEvent.next(action);
   }
 
   // Emits a map of only filtered fields
