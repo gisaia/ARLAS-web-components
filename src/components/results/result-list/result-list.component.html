@@ -87,8 +87,7 @@
 
       </td>
     </tr>
-    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null"
-                           [style.display]="displayGrid">
+    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null && resultMode==ModeEnum.grid">
       <td class="resultlist__grid-detail--td" [colSpan]="columns.length">
         <arlas-result-detailed-grid
                            [gridTile]="selectedGridItem"
@@ -104,41 +103,45 @@
                            [searchSize]="searchSize"
                            [nLastLines]="nLastLines"
                            (moreDataEvent)="askForMoreData($event)">
-      <md-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
+      <md-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid" >
         <ng-container *ngFor="let rowItem of items; index as i">
-          <tr arlas-result-item class="resultlist__body--item"
-                            (mouseenter)="setConsultedItem(rowItem.identifier)"
-                            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
-                            [rowItem]="rowItem"
-                            [detailedDataRetriever]="detailedDataRetriever"
-                            [selectedItems]="selectedItems"
-                            (selectedItemsEvent)="setSelectedItems($event)"
-                            (selectedItemPositionEvent)="setItemsPositionsList($event)"
-                            (borderStyleEvent)="setBorderStyle($event)"
-                            [style.border-bottom-style]="borderStyle"
-                            [style.display]="displayList" >
-          </tr>
-          <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
-                            (mouseenter)="setConsultedItem(rowItem.identifier)"
-                            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
-                            [detailColspan]="rowItem.columns.length"
-                            [rowItem]="rowItem"
-                            [idFieldName]="idFieldName"
-                            (actionOnItemEvent)="triggerActionOnItem($event)"
-                            [style.display]="displayList">
-          </tr>
-          <md-grid-tile [style.display]="displayGrid" class="resultlist__md-grid-tile" >
-            <arlas-result-grid-tile class="resultlist__grid-tile"
-                            [gridTile]="rowItem"
-                            [selectedItems]="selectedItems"
-                            [detailedDataRetriever]="detailedDataRetriever"
-                            (selectedItemsEvent)="setSelectedItems($event)"
-                            (selectedItemPositionEvent)="setItemsPositionsList($event)"
-                            (clickedOnItemEvent)="setSelectedGridItem($event)"
-                            (mouseenter)="setConsultedItem(rowItem.identifier)"
-                            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)">
-            </arlas-result-grid-tile>
-          </md-grid-tile>
+          <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
+            <tr arlas-result-item class="resultlist__body--item"
+                              (mouseenter)="setConsultedItem(rowItem.identifier)"
+                              (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                              [rowItem]="rowItem"
+                              [detailedDataRetriever]="detailedDataRetriever"
+                              [selectedItems]="selectedItems"
+                              (selectedItemsEvent)="setSelectedItems($event)"
+                              (selectedItemPositionEvent)="setItemsPositionsList($event)"
+                              (borderStyleEvent)="setBorderStyle($event)"
+                              [style.border-bottom-style]="borderStyle"
+                              >
+            </tr>
+            <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
+                              (mouseenter)="setConsultedItem(rowItem.identifier)"
+                              (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                              [detailColspan]="rowItem.columns.length"
+                              [rowItem]="rowItem"
+                              [idFieldName]="idFieldName"
+                              (actionOnItemEvent)="triggerActionOnItem($event)"
+                              >
+            </tr>
+          </ng-container>
+          <ng-template #grid_mode>
+            <md-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile" >
+              <arlas-result-grid-tile class="resultlist__grid-tile"
+                              [gridTile]="rowItem"
+                              [selectedItems]="selectedItems"
+                              [detailedDataRetriever]="detailedDataRetriever"
+                              (selectedItemsEvent)="setSelectedItems($event)"
+                              (selectedItemPositionEvent)="setItemsPositionsList($event)"
+                              (clickedOnItemEvent)="setSelectedGridItem($event)"
+                              (mouseenter)="setConsultedItem(rowItem.identifier)"
+                              (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)">
+              </arlas-result-grid-tile>
+            </md-grid-tile>
+          </ng-template>
         </ng-container>
       </md-grid-list>
   </tbody>

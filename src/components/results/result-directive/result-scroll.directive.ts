@@ -38,8 +38,10 @@ export class ResultScrollDirective implements OnChanges {
     const scrollTop = this.el.nativeElement.scrollTop;
     const scrollHeight = this.el.nativeElement.scrollHeight;
     const scrollDown = scrollHeight - scrollTop;
-    const nLastElementsHeight = this.tbodyHeight / scrollHeight * this.rowItemList.length * (this.nLastLines + 1);
-    if (scrollDown < nLastElementsHeight + this.tbodyHeight && this.isScrollingDown(scrollTop)) {
+
+    const scrollTopTrigger = scrollHeight * (1 - this.nLastLines / this.rowItemList.length - this.tbodyHeight / scrollHeight);
+
+    if (scrollTop > scrollTopTrigger && this.isScrollingDown(scrollTop)) {
       if ((this.rowItemList.length - this.lastDataSize) === this.searchSize) {
         this.moreDataCallsCounter++;
         this.moreDataEvent.next(this.moreDataCallsCounter);

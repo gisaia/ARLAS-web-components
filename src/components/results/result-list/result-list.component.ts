@@ -106,10 +106,10 @@ export class ResultListComponent implements OnInit, DoCheck {
   public resultMode: ModeEnum = ModeEnum.list;
   public allItemsChecked = false;
 
+  private detailedGridCounter = 0;
+
   public borderStyle = 'solid';
-  public displayList = 'block';
   public displayListGrid = 'inline';
-  public displayGrid = 'none';
 
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
@@ -135,7 +135,6 @@ export class ResultListComponent implements OnInit, DoCheck {
     if (this.fieldsConfiguration.urlThumbnailFieldName !== undefined) {
       this.hasGridMode = true;
     }
-
     this.setTableWidth();
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
   }
@@ -214,20 +213,23 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   public setSelectedGridItem(item: Item) {
     this.selectedGridItem = item;
+    if (this.detailedGridCounter === 0) {
+      this.detailedGridCounter++;
+    }
+    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 - this.detailedGridHeight;
   }
 
   public whichMode(toggleChangeEvent: MdButtonToggleChange) {
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
-      this.displayGrid = 'block';
-      this.displayList = 'none';
       this.displayListGrid = 'block';
     } else {
       this.resultMode = ModeEnum.list;
-      this.displayGrid = 'none';
-      this.displayList = 'block';
       this.displayListGrid = 'inline';
     }
+    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
+    (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+
   }
 
   public selectAllItems() {
