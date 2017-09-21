@@ -1,5 +1,4 @@
-import { UrlMatchResult } from '@angular/router/router';
-import { Url } from 'url';
+
 import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
   SimpleChanges, EventEmitter, OnChanges
@@ -7,9 +6,8 @@ import {
 import { Subject } from 'rxjs/Subject';
 import { decode_bbox } from 'ngeohash';
 import * as tinycolor from 'tinycolor2';
-import * as supercluster from 'supercluster';
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
-import { paddedBounds } from './mapgl.component.util';
+import * as supercluster from 'supercluster'; import { paddedBounds } from './mapgl.component.util';
+import { LngLat } from 'mapbox-gl';
 
 
 export interface OnMoveResult {
@@ -53,8 +51,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private canvas;
   private box;
   private current;
-  private startlngLat: mapboxgl.LngLat = {};
-  private endlngLat: mapboxgl.LngLat = {};
+  private startlngLat: any;
+  private endlngLat: any;
   private geoboxdata: { type: string, features: Array<any> } = this.emptyData;
   private maxCountValue = 0;
   private cluster;
