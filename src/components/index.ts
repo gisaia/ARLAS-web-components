@@ -5,7 +5,6 @@ export { DetailedDataRetriever } from './results/utils/detailed-data-retriever';
 export { Action, ProductIdentifier, FieldsConfiguration } from './results/utils/results.utils';
 export { HistogramComponent } from './histogram/histogram.component';
 export { HistogramModule } from './histogram/histogram.module';
-export { MapComponent } from './map/map.component';
 export { MapModule } from './map/map.module';
 export { MapglComponent } from './mapgl/mapgl.component';
 export { MapglModule } from './mapgl/mapgl.module';

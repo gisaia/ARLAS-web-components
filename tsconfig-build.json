@@ -12,6 +12,8 @@
         "experimentalDecorators": true,
         "stripInternal": true,
         "skipLibCheck": true,
+            "types": ["mapbox-gl", "geojson"],
+
         "typeRoots": [
             "node_modules/@types"
         ],

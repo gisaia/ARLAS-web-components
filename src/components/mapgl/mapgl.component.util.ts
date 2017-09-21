@@ -3,7 +3,7 @@ export function paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: mapboxgl.Map, SW, NE) {
     const topRight = map.project(NE);
     const bottomLeft = map.project(SW);
-    const scale = Math.pow(2, map.getZoom());
+    const scale = 1;
     const SWtopoint = map.project(SW);
     const SWpoint = new mapboxgl.Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
     const SWworld = new mapboxgl.Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);

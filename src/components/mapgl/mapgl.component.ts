@@ -1,3 +1,5 @@
+import { UrlMatchResult } from '@angular/router/router';
+import { Url } from 'url';
 import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
   SimpleChanges, EventEmitter, OnChanges
@@ -18,6 +20,11 @@ export interface OnMoveResult {
   extendForTest: Array<number>;
 }
 
+export enum drawType {
+  RECTANGLE,
+  CIRCLE
+}
+
 @Component({
   selector: 'arlas-mapgl',
   templateUrl: './mapgl.component.html',
@@ -28,6 +35,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public textButton = 'Add GeoBox';
   public textCircleButton = 'Add Circle';
   public textGeohahsButton = 'Add Geohash';
+  private emptyData = {
+    'type': 'FeatureCollection',
+    'features': []
+  };
   private map;
   private index;
   private north;
@@ -44,21 +55,25 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private current;
   private startlngLat: mapboxgl.LngLat = {};
   private endlngLat: mapboxgl.LngLat = {};
-  private geoboxdata: { type: string, features: Array<any> } = {
-    'type': 'FeatureCollection',
-    'features': []
-  };
+  private geoboxdata: { type: string, features: Array<any> } = this.emptyData;
+  private maxCountValue = 0;
+  private cluster;
   @Input() public basemapUrl = 'http://osm-liberty.lukasmartinelli.ch/style.json';
-  @Input() public geojsondata: { type: string, features: Array<any> } = {
-    'type': 'FeatureCollection',
-    'features': []
-  };
+  @Input() public drawType: drawType = drawType.CIRCLE;
+  @Input() public countPath = 'point_count';
+  @Input() public countNormalizePath = 'point_count_normalize';
+  @Input() public circleSize: number;
+  @Input() public paintRuleGeoBox: Object;
+  @Input() public paintRuleCLusterFeatureFill: Object;
+  @Input() public paintRuleClusterFeatureLine: Object;
+  @Input() public paintRuleClusterCircle: Object;
+
+  @Input() public useMapBoxCluster: boolean;
   @Input() public margePanForLoad: number;
   @Input() public margePanForTest: number;
-  @Input() public clusterdata: { type: string, features: Array<any> } = {
-    'type': 'FeatureCollection',
-    'features': []
-  };
+  @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public redrawClientCluster: Subject<boolean>;
+  @Input() public fitBoundsBus: Subject<Array<Array<number>>>;
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
@@ -66,15 +81,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   constructor() {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
-        this.geoboxdata = {
-          type: 'FeatureCollection',
-          features: []
-        };
+        this.geoboxdata = this.emptyData;
         this.map.getSource('geobox').setData(this.geoboxdata);
         this.isGeoBox = false;
         this.textButton = 'Add GeoBox';
       }
     });
+
   }
 
   public ngOnInit() {
@@ -88,40 +101,82 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.boxZoom.disable();
   }
   public ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes['useMapBoxCluster'] !== undefined) {
+      this.useMapBoxCluster = changes['useMapBoxCluster'].currentValue;
+    }
     if (this.map !== undefined) {
-      if (this.map.getSource('point') !== undefined) {
+      if (this.map.getSource('cluster') !== undefined) {
         if (changes['geojsondata'] !== undefined) {
           this.geojsondata = changes['geojsondata'].currentValue;
-          this.map.getSource('point').setData(this.geojsondata);
-        }
-      }
-      if (this.map.getSource('cluster') !== undefined) {
-        if (changes['clusterdata'] !== undefined) {
-          this.clusterdata = changes['clusterdata'].currentValue;
-          this.map.getSource('cluster').setData(this.clusterdata);
+          if (this.useMapBoxCluster) {
+            this.map.getSource('cluster').setData(this.emptyData);
+            this.index = supercluster({
+              radius: 50,
+              maxZoom: 22
+            });
+            this.index.load(<any>this.geojsondata.features);
+            this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.ceil(this.zoom) - 1);
+            this.cluster.forEach(c => {
+              if (this.maxCountValue <= c.properties[this.countPath]) {
+                this.maxCountValue = c.properties[this.countPath];
+              }
+            });
+            this.cluster.forEach(c => {
+              if (c.properties.cluster) {
+                c.properties[this.countNormalizePath] = c.properties[this.countPath] / this.maxCountValue * 100;
+              } else {
+                c.geometry = c.properties.featuregeometry;
+              }
+            });
+            this.map.getSource('cluster').setData({
+              'type': 'FeatureCollection',
+              'features': this.cluster
+            });
+          } else {
+            this.map.getSource('cluster').setData(this.geojsondata);
+            this.maxCountValue = 0;
+          }
+
         }
       }
     }
   }
 
   public ngAfterViewInit() {
+    this.redrawClientCluster.subscribe(value => {
+      if (value) {
+        this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.ceil(this.zoom) - 1);
+        this.cluster.forEach(c => {
+          if (this.maxCountValue <= c.properties[this.countPath]) {
+            this.maxCountValue = c.properties[this.countPath];
+          }
+        });
+        this.cluster.forEach(c => {
+          if (c.properties.cluster) {
+            c.properties[this.countNormalizePath] = c.properties[this.countPath] / this.maxCountValue * 100;
+          } else {
+            c.geometry = c.properties.featuregeometry;
+          }
+        });
+        this.map.getSource('cluster').setData({
+          'type': 'FeatureCollection',
+          'features': this.cluster
+        });
+      }
+    });
+    this.fitBoundsBus.subscribe(value => { this.map.fitBounds(value); });
     this.map.on('load', () => {
-      // Add a single point to the map
-      this.map.addSource('point', {
+      this.map.addSource('cluster', {
         'type': 'geojson',
         'data': this.geojsondata
       });
-      this.map.addSource('cluster', {
-        'type': 'geojson',
-        'data': this.clusterdata,
-        cluster: true,
-        clusterMaxZoom: 14, // Max zoom to cluster points on
-        clusterRadius: 50 // Radius of each cluster when clustering points (defaults to 50)
-      });
+      // Add GeoBox Source
       this.map.addSource('geobox', {
         'type': 'geojson',
         'data': this.geoboxdata
       });
+      // Add GeoBox Lae-yer
       this.map.addLayer({
         'id': 'geobox',
         'type': 'fill',
@@ -129,88 +184,81 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'layout': {
           'visibility': 'visible'
         },
-        'paint': {
-          'fill-color': '#FC9F28',
-          'fill-opacity': 0.7
-        }
+        'paint': this.paintRuleGeoBox
       });
-      this.map.addLayer({
-        'id': 'point',
-        'type': 'circle',
-        'source': 'point',
-        'layout': {
-          'visibility': 'visible'
-        },
-        'paint': {
-          'circle-radius': {
-            'type': 'identity',
-            'property': 'radius'
+      if (this.drawType === drawType.RECTANGLE) {
+        this.map.addLayer({
+          'id': 'polygon',
+          'type': 'fill',
+          'source': 'cluster',
+          'layout': {
+            'visibility': 'visible'
           },
+          'paint': {
+            'fill-color': {
+              'type': 'identity',
+              'property': 'color'
+            },
+            'fill-opacity': 0.7
+          },
+          'filter': ['==', '$type', 'Polygon'],
+        });
+      } else {
+        this.map.addLayer({
+          'id': 'point',
+          'type': 'circle',
+          'source': 'cluster',
+          'layout': {
+            'visibility': 'visible'
+          },
+          paint: this.paintRuleClusterCircle,
+          'filter': [
+            'all', [
+              'has',
+              this.countNormalizePath,
+            ], ['==', '$type', 'Point']
+          ]
+        });
 
-          'circle-color': {
-            'type': 'identity',
-            'property': 'color'
-          },
-          'circle-opacity': 0.7
-        },
-        'filter': ['==', '$type', 'Point'],
-      });
-      this.map.addLayer({
-        'id': 'cluster',
-        'type': 'circle',
-        'source': 'cluster',
-        'layout': {
-          'visibility': 'visible'
-        },
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': {
-            property: 'point_count',
-            type: 'interval',
-            stops: [
-              [0, '#51bbd6'],
-              [10, '#f1f075'],
-              [75, '#f28cb1'],
-            ]
-          },
-          'circle-radius': {
-            property: 'point_count',
-            type: 'interval',
-            stops: [
-              [0, 20],
-              [10, 30],
-              [75, 40]
-            ]
+        this.map.addLayer({
+          'id': 'cluster-count',
+          'type': 'symbol',
+          'source': 'cluster',
+          'filter': ['has', this.countPath],
+          'layout': {
+            'text-field': '{' + this.countPath + '}',
+            'text-font': ['Roboto Regular'],
+            'text-size': 12,
+            'visibility': 'visible'
           }
-        }
-      });
-      this.map.addLayer({
-        'id': 'cluster-count',
-        'type': 'symbol',
-        'source': 'cluster',
-        'filter': ['has', 'point_count'],
-        'layout': {
-          'text-field': '{point_count_abbreviated}',
-          'text-font': ['Roboto Regular'],
-          'text-size': 12
-        }
-      });
-      this.map.addLayer({
-        'id': 'polygon',
-        'type': 'fill',
-        'source': 'point',
-        'layout': {
-          'visibility': 'none'
-        },
-        'paint': {
-          'fill-color': {
-            'type': 'identity',
-            'property': 'color'
-          },
-          'fill-opacity': 0.7
-        },
-        'filter': ['==', '$type', 'Polygon'],
-      });
+        });
+
+        this.map.addLayer({
+          'id': 'features-line',
+          'type': 'line',
+          'source': 'cluster',
+          'filter': [
+            'all', [
+              'has',
+              'featureid',
+            ], ['==', '$type', 'Polygon']
+          ],
+          'paint': this.paintRuleClusterFeatureLine
+        });
+        this.map.addLayer({
+          'id': 'features-fill',
+          'type': 'fill',
+          'source': 'cluster',
+          'filter': [
+            'all', [
+              'has',
+              'featureid',
+            ], ['==', '$type', 'Polygon']
+          ],
+          'paint': this.paintRuleCLusterFeatureFill
+        });
+      }
+
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
 
@@ -267,40 +315,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     });
   }
-
-  public toggleCircle() {
-    this.isCircle = !this.isCircle;
-    if (this.isCircle) {
-      this.map.setLayoutProperty('point', 'visibility', 'visible');
-
-      this.textCircleButton = 'Remove Circle';
-    } else {
-      this.map.setLayoutProperty('point', 'visibility', 'none');
-      this.textCircleButton = 'Add Circle';
-    }
-  }
-
-  public toggleGeohash() {
-    this.isGeoHash = !this.isGeoHash;
-    if (this.isGeoHash) {
-      this.map.setLayoutProperty('polygon', 'visibility', 'visible');
-      this.textGeohahsButton = 'Remove GeoHash';
-    } else {
-      this.map.setLayoutProperty('polygon', 'visibility', 'none');
-      this.textGeohahsButton = 'Add GeoHash';
-    }
-  }
-
-  public toggle(event) {
-    if (event.checked === true) {
-      this.map.setLayoutProperty('polygon', 'visibility', 'visible');
-      this.map.setLayoutProperty('point', 'visibility', 'none');
-    } else {
-      this.map.setLayoutProperty('polygon', 'visibility', 'none');
-      this.map.setLayoutProperty('point', 'visibility', 'visible');
-    }
-  }
-
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
