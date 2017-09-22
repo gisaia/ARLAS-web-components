@@ -1,3 +1,14 @@
-<div id="mapgldemo"   ><arlas-mapgl [margePanForLoad]=40 [margePanForTest]=2 ></arlas-mapgl>
+<div id="mapgldemo"   >
+
+      <arlas-mapgl 
+      [useMapBoxCluster]=true
+      [geojsondata]="geojsondata" 
+        [margePanForLoad]=40 
+        [margePanForTest]=2 
+        [paintRuleClusterCircle]="paintRuleClusterCircle"
+        [paintRuleClusterFeatureLine]="paintRuleClusterFeatureLine"
+        [paintRuleCLusterFeatureFill]="paintRuleCLusterFeatureFill">
+      </arlas-mapgl>
+
 </div>
 

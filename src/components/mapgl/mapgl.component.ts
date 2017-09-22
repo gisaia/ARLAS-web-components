@@ -3,6 +3,8 @@ import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
   SimpleChanges, EventEmitter, OnChanges
 } from '@angular/core';
+import { Http, Response } from '@angular/http';
+
 import { Subject } from 'rxjs/Subject';
 import { decode_bbox } from 'ngeohash';
 import * as tinycolor from 'tinycolor2';
@@ -31,52 +33,54 @@ export enum drawType {
 
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public textButton = 'Add GeoBox';
-  public textCircleButton = 'Add Circle';
-  public textGeohahsButton = 'Add Geohash';
   private emptyData = {
     'type': 'FeatureCollection',
     'features': []
   };
-  private map;
-  private index;
-  private north;
-  private east;
-  private west;
-  private south;
-  private zoom;
+  private map: any;
+  private index: any;
+  private north: number;
+  private east: number;
+  private west: number;
+  private south: number;
+  private zoom: number;
   private isGeoBox = false;
   private isCircle = false;
   private isGeoHash = false;
-  private start;
-  private canvas;
-  private box;
-  private current;
+  private start: mapboxgl.Point;
+  private canvas: HTMLElement;
+  private box: HTMLElement;
+  private current: mapboxgl.Point;
   private startlngLat: any;
   private endlngLat: any;
   private geoboxdata: { type: string, features: Array<any> } = this.emptyData;
   private maxCountValue = 0;
-  private cluster;
-  @Input() public basemapUrl = 'http://osm-liberty.lukasmartinelli.ch/style.json';
+  private cluster: any;
+  @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
+  @Input() public fontClusterlabel = 'Roboto Regular';
+  @Input() public sizeClusterlabel = 12;
+  @Input() public superClusterRadius = 50;
+  @Input() public superClusterMaxZoom = 22;
+  @Input() public initZoom = 2;
+  @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
   @Input() public drawType: drawType = drawType.CIRCLE;
   @Input() public countPath = 'point_count';
   @Input() public countNormalizePath = 'point_count_normalize';
-  @Input() public circleSize: number;
-  @Input() public paintRuleGeoBox: Object;
-  @Input() public paintRuleCLusterFeatureFill: Object;
-  @Input() public paintRuleClusterFeatureLine: Object;
-  @Input() public paintRuleClusterCircle: Object;
-
+  @Input() public paintRuleGeoBox: Object = {};
+  @Input() public paintRuleCLusterFeatureFill: Object = {};
+  @Input() public paintRuleClusterFeatureLine: Object = {};
+  @Input() public paintRuleClusterCircle: Object = {};
   @Input() public useMapBoxCluster: boolean;
   @Input() public margePanForLoad: number;
   @Input() public margePanForTest: number;
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
-  @Input() public redrawClientCluster: Subject<boolean>;
-  @Input() public fitBoundsBus: Subject<Array<Array<number>>>;
+  @Input() public redrawClientCluster: Subject<boolean> = new Subject<boolean>();
+  @Input() public fitBoundsBus: Subject<Array<Array<number>>> = new Subject<Array<Array<number>>>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
 
-  constructor() {
+  constructor(private http: Http) {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
@@ -85,21 +89,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.textButton = 'Add GeoBox';
       }
     });
-
   }
 
   public ngOnInit() {
+
     this.map = new mapboxgl.Map({
       container: 'mapgl',
-      style: this.basemapUrl,
-      center: [2.1972656250000004, 45.706179285330855],
-      zoom: 2,
+      style: this.style,
+      center: this.initCenter,
+      zoom: this.initZoom,
       renderWorldCopies: false
     });
     this.map.boxZoom.disable();
   }
   public ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['useMapBoxCluster'] !== undefined) {
       this.useMapBoxCluster = changes['useMapBoxCluster'].currentValue;
     }
@@ -108,13 +111,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         if (changes['geojsondata'] !== undefined) {
           this.geojsondata = changes['geojsondata'].currentValue;
           if (this.useMapBoxCluster) {
-            this.map.getSource('cluster').setData(this.emptyData);
             this.index = supercluster({
-              radius: 50,
-              maxZoom: 22
+              radius: this.superClusterRadius,
+              maxZoom: this.superClusterMaxZoom
             });
+
+
             this.index.load(<any>this.geojsondata.features);
-            this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.ceil(this.zoom) - 1);
+
+            this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.round(this.zoom));
             this.cluster.forEach(c => {
               if (this.maxCountValue <= c.properties[this.countPath]) {
                 this.maxCountValue = c.properties[this.countPath];
@@ -144,7 +149,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public ngAfterViewInit() {
     this.redrawClientCluster.subscribe(value => {
       if (value) {
-        this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.ceil(this.zoom) - 1);
+        this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.round(this.zoom));
         this.cluster.forEach(c => {
           if (this.maxCountValue <= c.properties[this.countPath]) {
             this.maxCountValue = c.properties[this.countPath];
@@ -165,6 +170,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
     this.fitBoundsBus.subscribe(value => { this.map.fitBounds(value); });
     this.map.on('load', () => {
+      this.west = this.map.getBounds().getWest();
+      this.south = this.map.getBounds().getSouth();
+      this.east = this.map.getBounds().getEast();
+      this.north = this.map.getBounds().getNorth();
+      this.zoom = this.map.getZoom();
       this.map.addSource('cluster', {
         'type': 'geojson',
         'data': this.geojsondata
@@ -203,35 +213,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         });
       } else {
         this.map.addLayer({
-          'id': 'point',
-          'type': 'circle',
-          'source': 'cluster',
-          'layout': {
-            'visibility': 'visible'
-          },
-          paint: this.paintRuleClusterCircle,
-          'filter': [
-            'all', [
-              'has',
-              this.countNormalizePath,
-            ], ['==', '$type', 'Point']
-          ]
-        });
-
-        this.map.addLayer({
-          'id': 'cluster-count',
-          'type': 'symbol',
-          'source': 'cluster',
-          'filter': ['has', this.countPath],
-          'layout': {
-            'text-field': '{' + this.countPath + '}',
-            'text-font': ['Roboto Regular'],
-            'text-size': 12,
-            'visibility': 'visible'
-          }
-        });
-
-        this.map.addLayer({
           'id': 'features-line',
           'type': 'line',
           'source': 'cluster',
@@ -255,8 +236,60 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           ],
           'paint': this.paintRuleCLusterFeatureFill
         });
+        this.map.addLayer({
+          'id': 'point',
+          'type': 'circle',
+          'source': 'cluster',
+          'layout': {
+            'visibility': 'visible'
+          },
+          paint: this.paintRuleClusterCircle,
+          'filter': [
+            'all', [
+              'has',
+              this.countNormalizePath,
+            ], ['==', '$type', 'Point']
+          ]
+        });
+
+        this.map.addLayer({
+          'id': 'cluster-count',
+          'type': 'symbol',
+          'source': 'cluster',
+          'filter': ['has', this.countPath],
+          'layout': {
+            'text-field': '{' + this.countPath + '}',
+            'text-font': [this.fontClusterlabel],
+            'text-size': 12,
+            'visibility': 'visible'
+          }
+        });
       }
 
+      this.map.on('click', 'cluster-count', (e) => {
+        if (e.features[0].properties.cluster_id !== undefined) {
+          const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
+          this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: expansionZoom });
+        } else {
+          const zoom = this.map.getZoom();
+          let newZoom: number;
+          if (zoom >= 0 && zoom < 3) {
+            newZoom = 3;
+          } else if (zoom >= 3 && zoom < 5) {
+            newZoom = 5;
+          } else if (zoom >= 5 && zoom < 7) {
+            newZoom = 7;
+          } else if (zoom >= 7 && zoom < 10) {
+            newZoom = 10;
+          } else if (zoom >= 10 && zoom < 11) {
+            newZoom = 11;
+          } else {
+            newZoom = 12;
+          }
+          this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom });
+
+        }
+      });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
 
@@ -368,7 +401,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     // Adjust width and xy position of the box element ongoing
     const pos = 'translate(' + minX + 'px,' + minY + 'px)';
     this.box.style.transform = pos;
-    this.box.style.WebkitTransform = pos;
+    this.box.style.webkitTransform = pos;
     this.box.style.width = maxX - minX + 'px';
     this.box.style.height = maxY - minY + 'px';
   }

@@ -1,3 +1,4 @@
+import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
@@ -38,7 +39,8 @@ import { MapglModule } from '../components/mapgl/mapgl.module';
     MapglModule,
     HistogramModule,
     ResultsModule,
-    MdSlideToggleModule
+    MdSlideToggleModule,
+    HttpModule
   ],
   providers: [],
   bootstrap: [AppComponent]
