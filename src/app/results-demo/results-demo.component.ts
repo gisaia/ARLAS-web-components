@@ -44,7 +44,7 @@ export class ResultsDemoComponent implements OnInit {
         + '0-%20VHR%20-%20Tr%C3%A8s%20haute%20r%C3%A9solution%20-%20satellite.JPG');
 
       }
-      map.set('incidence', (i + 10) + '/25/2015 lundi matin france');
+      map.set('incidence', (i + 10));
       map.set('id', (i + 10) + 'd' );
       this.data.push(map);
     }

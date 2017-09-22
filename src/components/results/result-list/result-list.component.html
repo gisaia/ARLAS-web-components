@@ -49,7 +49,7 @@
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
             <div class="resultgrid--checkbox">
-              <md-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [labelPosition]="'after'">All</md-checkbox>
+              <md-checkbox (change)="selectAllItems()" [checked]="allItemsChecked"></md-checkbox>
             </div>
           </div>
           <div class="resultgrid--checkbox__count">
@@ -101,7 +101,9 @@
   <tbody arlasResultScroll [style.height.px]="tbodyHeight"
                            [rowItemList]="rowItemList"
                            [searchSize]="searchSize"
+                           [nbGridColumns]="nbGridColumns"
                            [nLastLines]="nLastLines"
+                           [resultMode]="resultMode"
                            (moreDataEvent)="askForMoreData($event)">
       <md-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid" >
         <ng-container *ngFor="let rowItem of items; index as i">
