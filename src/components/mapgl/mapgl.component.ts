@@ -56,6 +56,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private geoboxdata: { type: string, features: Array<any> } = this.emptyData;
   private maxCountValue = 0;
   private cluster: any;
+  private showAllFeature = false;
   @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
   @Input() public fontClusterlabel = 'Roboto Regular';
   @Input() public sizeClusterlabel = 12;
@@ -115,8 +116,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
               radius: this.superClusterRadius,
               maxZoom: this.superClusterMaxZoom
             });
-
-
             this.index.load(<any>this.geojsondata.features);
 
             this.cluster = this.index.getClusters([this.west, this.south, this.east, this.north], Math.round(this.zoom));
@@ -129,9 +128,29 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
               if (c.properties.cluster) {
                 c.properties[this.countNormalizePath] = c.properties[this.countPath] / this.maxCountValue * 100;
               } else {
+                // we have almost one feature, we switch to all feature
                 c.geometry = c.properties.featuregeometry;
+                this.showAllFeature = true;
+                return;
               }
             });
+            if (this.showAllFeature) {
+              let newCluster = [];
+              this.cluster.forEach(c => {
+                if (c.properties.cluster) {
+                  const features = this.index.getLeaves(c.properties.cluster_id, Infinity);
+                  features.forEach(f => {
+                    f.geometry = f.properties.featuregeometry;
+                    newCluster.push(f)
+                  })
+                } else {
+                  // we have almost one feature, we switch to all feature
+                  c.geometry = c.properties.featuregeometry;
+                  newCluster.push(c)
+                }
+              });
+              this.cluster = newCluster;
+            }
             this.map.getSource('cluster').setData({
               'type': 'FeatureCollection',
               'features': this.cluster
@@ -155,13 +174,33 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             this.maxCountValue = c.properties[this.countPath];
           }
         });
-        this.cluster.forEach(c => {
-          if (c.properties.cluster) {
-            c.properties[this.countNormalizePath] = c.properties[this.countPath] / this.maxCountValue * 100;
-          } else {
-            c.geometry = c.properties.featuregeometry;
-          }
-        });
+            this.cluster.forEach(c => {
+              if (c.properties.cluster) {
+                c.properties[this.countNormalizePath] = c.properties[this.countPath] / this.maxCountValue * 100;
+              } else {
+                // we have almost one feature, we switch to all feature
+                c.geometry = c.properties.featuregeometry;
+                this.showAllFeature = true;
+                return;
+              }
+            });
+            if (this.showAllFeature) {
+              let newCluster = [];
+              this.cluster.forEach(c => {
+                if (c.properties.cluster) {
+                  const features = this.index.getLeaves(c.properties.cluster_id, Infinity);
+                  features.forEach(f => {
+                    f.geometry = f.properties.featuregeometry;
+                    newCluster.push(f)
+                  })
+                } else {
+                  // we have almost one feature, we switch to all feature
+                  c.geometry = c.properties.featuregeometry;
+                  newCluster.push(c)
+                }
+              });
+              this.cluster = newCluster;
+            }
         this.map.getSource('cluster').setData({
           'type': 'FeatureCollection',
           'features': this.cluster
@@ -256,13 +295,31 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           'id': 'cluster-count',
           'type': 'symbol',
           'source': 'cluster',
-          'filter': ['has', this.countPath],
+          'filter': [
+            'all', [
+              'has',
+              this.countPath,
+            ], ['==', '$type', 'Point']
+          ],
           'layout': {
             'text-field': '{' + this.countPath + '}',
             'text-font': [this.fontClusterlabel],
             'text-size': 12,
             'visibility': 'visible'
           }
+        });
+        this.map.addLayer({
+          "id": "cluster-count-hover",
+          "type": "fill",
+          "source": "cluster",
+          "layout": {},
+          "paint": {
+            "fill-color": "#627BC1",
+            "fill-opacity": 1
+          },
+          'filter': [
+            'all', ["==", "geohash", ""], ['==', '$type', 'Polygon']
+          ]
         });
       }
 
@@ -274,7 +331,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           const zoom = this.map.getZoom();
           let newZoom: number;
           if (zoom >= 0 && zoom < 3) {
-            newZoom = 3;
+            newZoom = 4;
           } else if (zoom >= 3 && zoom < 5) {
             newZoom = 5;
           } else if (zoom >= 5 && zoom < 7) {
@@ -290,6 +347,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         }
       });
+      this.map.on('mousemove', 'cluster-count', (e) => {
+        this.map.getCanvas().style.cursor = 'pointer';
+        //this.map.setFilter("cluster-count-hover", ["==", "geohash", e.features[0].properties.geohash]);
+
+
+      })
+      this.map.on('mouseleave', 'cluster-count', (e) => {
+        this.map.getCanvas().style.cursor = '';
+        //this.map.setFilter("cluster-count-hover", ["==", "geohash",""]);
+
+
+      })
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
 
