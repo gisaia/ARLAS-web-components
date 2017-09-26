@@ -148,14 +148,16 @@
               </arlas-result-grid-tile>
             </md-grid-tile>
           </ng-template>
+          <div *ngIf="isMoreDataRequested" class="resultlist__moredata" [style.width.px]="tableWidth">
+            <ngx-loading
+              [show]="isMoreDataRequested"
+              [config]="{ animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.4)',
+                          backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
+            </ngx-loading>
+          </div>
         </ng-container>
       </md-grid-list>
+
   </tbody>
 </table>
-<div *ngIf="isMoreDataRequested" class="resultlist__moredata" [style.width.px]="tableWidth">
-  <ngx-loading
-        [show]="isMoreDataRequested"
-        [config]="{ animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
-                    backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
-  </ngx-loading>
-</div>
+
