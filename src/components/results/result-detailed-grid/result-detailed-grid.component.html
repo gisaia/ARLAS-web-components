@@ -1,0 +1,24 @@
+<div class="resultgrid">
+  <div class="resultgrid--container">
+    <div *ngIf="!isDetailedDataShowed; else detailShowed">
+      <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5">
+        <img src="{{gridTile.urlImage}}">
+      </div>
+      <button class="resultgrid__info-button" md-mini-fab color="primary" (click)="showHideDetailedData()">
+        <md-icon>info_outline</md-icon>
+      </button>
+    </div>
+    <ng-template #detailShowed>
+      <button class="resultgrid__info-button" md-mini-fab color="primary" (click)="showHideDetailedData()">
+        <md-icon>image</md-icon>
+      </button>
+      <div arlas-result-detailed-item class="resultgrid--detailed-item"
+                            [rowItem]="gridTile"
+                            [idFieldName]="idFieldName"
+                            [style.width.px]="detailWidth - 5"
+                            [style.height.px]="detailHeight"
+                            (actionOnItemEvent)="triggerActionOnItem($event)">
+      </div>
+    </ng-template>
+  </div>
+</div>

@@ -3,13 +3,13 @@
                               [style.max-width.px]="field.width"
                               [style.min-width.px]="field.width" >
       <div *ngIf="field.isIdField" class="checkbox">
-        <input type="checkbox" [checked]="isChecked" (change)="setSelectedItem()">
+        <input type="checkbox" [checked]="rowItem.isChecked" (change)="setSelectedItem()">
       </div>
     </td>
     <td *ngIf="!field.isIdField && !field.isToggleField" class="resultitem__cell"
                               [style.max-width.px]="field.width"
                               [style.min-width.px]="field.width">
-      <label class="resultitem__cell--label">{{rowItem.data.get(field.fieldName)}}{{field.dataType}}</label>
+      <label class="resultitem__cell--label">{{rowItem.itemData.get(field.fieldName)}}{{field.dataType}}</label>
     </td>
     <td *ngIf="field.isToggleField" class="resultitem__cell"
                               [style.max-width.px]="field.width"

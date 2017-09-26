@@ -1,5 +1,7 @@
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HistogramComponent } from '../components/histogram/histogram.component';
@@ -32,6 +34,7 @@ import { MapglModule } from '../components/mapgl/mapgl.module';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     MdChipsModule,
     MdIconModule,
     MdSidenavModule,
