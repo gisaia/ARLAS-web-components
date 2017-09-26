@@ -24,6 +24,8 @@ import { MdButtonToggleChange } from '@angular/material';
 })
 export class ResultListComponent implements OnInit, DoCheck {
 
+  public GEO_DISTANCE = 'geodistance';
+
   // columnName is the shown name
   // fieldName is the real field name that's hidden
   // dataType (degree, percentage, etc)
@@ -57,9 +59,12 @@ export class ResultListComponent implements OnInit, DoCheck {
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
-  // Sorting a column event. Do we use a Subject or try ngOnChange ?
+  // Sorting a column event.
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
   new Subject<{ fieldName: string, sortDirection: SortEnum }>();
+
+  // Geo_distance sorting event
+  @Output() public geoSortEvent: Subject<string> = new Subject<string>();
 
   // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
   @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
@@ -196,6 +201,16 @@ export class ResultListComponent implements OnInit, DoCheck {
       }
     });
     this.sortColumnEvent.next(this.sortedColumn);
+  }
+
+  public geoSort(column: Column): void {
+    column.sortDirection = SortEnum.asc;
+    this.columns.forEach(column => {
+      if (!column.isIdField) {
+        column.sortDirection = SortEnum.none;
+      }
+    });
+    this.geoSortEvent.next(this.GEO_DISTANCE);
   }
 
   // Emits the identifier of the hovered item/product

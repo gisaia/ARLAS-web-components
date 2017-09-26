@@ -6,6 +6,8 @@
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
+          <md-icon *ngIf="column.sortDirection === SortEnum.asc" class="resultlist__header--columns__geosort--icon--active">gps_fixed</md-icon>
+          <md-icon *ngIf="column.sortDirection === SortEnum.none" (click) = "geoSort(column)" class="resultlist__header--columns__geosort--icon">gps_fixed</md-icon>
           <span  class="resultlist__header--columns--hidden"></span>
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField"
