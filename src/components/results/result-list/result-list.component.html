@@ -6,20 +6,20 @@
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <md-icon *ngIf="column.sortDirection === SortEnum.asc" class="resultlist__header--columns__geosort--icon--active">gps_fixed</md-icon>
-          <md-icon *ngIf="column.sortDirection === SortEnum.none" (click) = "geoSort(column)" class="resultlist__header--columns__geosort--icon">gps_fixed</md-icon>
+          <md-icon *ngIf="column.sortDirection === SortEnum.asc" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</md-icon>
+          <md-icon *ngIf="column.sortDirection === SortEnum.none" (click) = "geoSort(column)" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon">gps_fixed</md-icon>
           <span  class="resultlist__header--columns--hidden"></span>
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField"
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <span>
+          <span mdTooltip="Sort on {{column.columnName}}">
             <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
           </span>
           <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
-            <md-icon *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
-            <md-icon *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
+            <md-icon mdTooltip="{{SORT_DESCENDING}}" *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
+            <md-icon mdTooltip="{{SORT_ASCENDING}}" *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
           </div>
         </th>
         <th *ngIf="column.isToggleField" class="resultlist__header--columns"
@@ -36,6 +36,7 @@
           <span class="resultlist__header--columns--hidden"></span>
         </td>
         <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
+                           mdTooltip="{{FILTER_ON}} {{column.columnName}}"
                            [style.width.px]="column.width"
                            [column]="column"
                            [filtersMap]="filtersMap"
@@ -51,14 +52,14 @@
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
             <div class="resultgrid--checkbox">
-              <md-checkbox (change)="selectAllItems()" [checked]="allItemsChecked"></md-checkbox>
+              <md-checkbox mdTooltip="{{CHECK_ALL}}" (change)="selectAllItems()" [checked]="allItemsChecked"></md-checkbox>
             </div>
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
           </div>
           <div class="resultlist__tools--select-between">
-            <button md-icon-button color="#043b53" (click)="selectInBetween()">
+            <button mdTooltip="{{CHECK_INBETWEEN}}" md-icon-button color="#043b53" (click)="selectInBetween()">
               <md-icon style="-webkit-transform: rotate(-90deg)">vertical_align_center</md-icon>
             </button>
           </div>
@@ -66,7 +67,7 @@
 
         </div>
         <div class="resultlist__tools--actions">
-          <button md-icon-button [mdMenuTriggerFor]="menu">
+          <button mdTooltip="{{GLOBAL_ACTIONS}}" md-icon-button [mdMenuTriggerFor]="menu">
             <md-icon>menu</md-icon>
           </button>
           <md-menu #menu="mdMenu">
@@ -78,10 +79,10 @@
 
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
           <md-button-toggle-group #group="mdButtonToggleGroup" (change)="whichMode($event)">
-            <md-button-toggle value="{{ModeEnum.list}}" [checked]="true">
+            <md-button-toggle mdTooltip="{{LIST_MODE}}" value="{{ModeEnum.list}}" [checked]="true">
               <md-icon>list</md-icon>
             </md-button-toggle>
-            <md-button-toggle value="{{ModeEnum.grid}}">
+            <md-button-toggle mdTooltip="{{GRID_MODE}}" value="{{ModeEnum.grid}}">
               <md-icon>apps</md-icon>
             </md-button-toggle>
           </md-button-toggle-group>
@@ -142,7 +143,8 @@
                               (selectedItemPositionEvent)="setItemsPositionsList($event)"
                               (clickedOnItemEvent)="setSelectedGridItem($event)"
                               (mouseenter)="setConsultedItem(rowItem.identifier)"
-                              (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)">
+                              (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+                              >
               </arlas-result-grid-tile>
             </md-grid-tile>
           </ng-template>

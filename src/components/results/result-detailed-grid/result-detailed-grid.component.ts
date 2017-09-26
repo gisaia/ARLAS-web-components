@@ -11,6 +11,9 @@ import { Subject } from 'rxjs/Subject';
   styleUrls: ['./result-detailed-grid.component.css']
 })
 export class ResultDetailedGridComponent implements OnInit, OnChanges {
+  public SHOW_DETAILS = 'Show details';
+  public SHOW_IMAGE = 'Show image';
+
   @Input() public gridTile: Item;
   @Input() public detailWidth: number;
   @Input() public detailHeight: number;

@@ -1,7 +1,7 @@
 <div class="resultgrid" (click)="setClickedOnItem()">
   <div class="resultgrid--container">
     <input type="checkbox" class="resultgrid--checkbox" (change)="setSelectedItem()" [checked]="gridTile.isChecked">
-    <div class="resultgrid__img" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'">
+    <div mdTooltip="{{SHOW_IMAGE}}"  class="resultgrid__img" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'">
     </div>
     <div class="resultgrid__title">
       <span> {{gridTile.title}} </span>

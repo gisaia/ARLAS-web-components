@@ -25,6 +25,15 @@ import { MdButtonToggleChange } from '@angular/material';
 export class ResultListComponent implements OnInit, DoCheck {
 
   public GEO_DISTANCE = 'geodistance';
+  public GEOSORT = 'Geo distance sort';
+  public SORT_DESCENDING = 'click for descending sort';
+  public SORT_ASCENDING = 'click for ascending sort';
+  public FILTER_ON = 'Filter on';
+  public CHECK_INBETWEEN = 'Check in between';
+  public CHECK_ALL = 'Check all visible items';
+  public GLOBAL_ACTIONS = 'Global actions';
+  public GRID_MODE = 'Grid mode';
+  public LIST_MODE = 'List mode';
 
   // columnName is the shown name
   // fieldName is the real field name that's hidden

@@ -15,6 +15,7 @@ import { Subject } from 'rxjs/Subject';
   styleUrls: ['./result-grid-tile.component.css']
 })
 export class ResultGridTileComponent extends ItemComponent implements OnInit {
+  public SHOW_IMAGE = 'Click to show details';
 
   @Input() public gridTile: Item;
   @Input() public selectedItems: Set<string>;
