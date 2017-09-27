@@ -33,10 +33,6 @@ export class ResultListComponent implements OnInit, DoCheck {
   // rowItemList is a list of fieldName-fieldValue map
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
-  // DEPRECATED
-  // Name of the id field
-  @Input() public idFieldName: string;
-
   @Input() public fieldsConfiguration: FieldsConfiguration;
 
   // the table width. If not specified, the tableWidth value is equal to container width.
@@ -78,7 +74,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public actionOnItemEvent: Subject<{ action: Action, productIdentifier: ProductIdentifier }> =
   new Subject<{ action: Action, productIdentifier: ProductIdentifier }>();
 
- @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
+  @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
 
   public columns: Array<Column>;
   public items: Array<Item>;
@@ -144,6 +140,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   public ngDoCheck() {
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
     const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
+
     if (columnChanges) {
       this.setColumns();
     }
@@ -152,6 +149,7 @@ export class ResultListComponent implements OnInit, DoCheck {
       // If the called "more data" is retrieved, hide the animated loading div
       this.isMoreDataRequested = false;
     }
+
   }
 
   // Emits which action is applied on which item/product
@@ -173,12 +171,13 @@ export class ResultListComponent implements OnInit, DoCheck {
   public setSelectedItems(selectedItems: Set<string>) {
     this.selectedItems = selectedItems;
     if (selectedItems.size !== this.items.length) {
-      this.allItemsChecked = false;
+     this.allItemsChecked = false;
     } else {
-      this.allItemsChecked = true;
+     this.allItemsChecked = true;
     }
     this.selectedItemsEvent.next(Array.from(this.selectedItems));
   }
+
 
   // Emits the column to sort on and the sort direction
   public sort(sortedColumn: Column): void {
@@ -201,7 +200,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   // Emits the identifier of the hovered item/product
   public setConsultedItem(identifier: string) {
     const productIdentifier: ProductIdentifier = {
-      idFieldName: this.idFieldName,
+      idFieldName: this.fieldsConfiguration.idFieldName,
       idValue: identifier
     };
     this.consultedItemEvent.next(productIdentifier);
@@ -228,7 +227,7 @@ export class ResultListComponent implements OnInit, DoCheck {
       this.displayListGrid = 'inline';
     }
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
-    (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+      (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
 
   }
 
@@ -247,21 +246,23 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.setSelectedItems(this.selectedItems);
   }
 
+
   public selectInBetween() {
     const sortedItemsPositions = Array.from(this.selectedItemsPositions).sort((a: number, b: number) => a - b);
     if (sortedItemsPositions.length !== 0) {
       for (let i = sortedItemsPositions[0]; i <= sortedItemsPositions[sortedItemsPositions.length - 1]; i++) {
-      this.items[i].isChecked = true;
-      if (!this.selectedItems.has(this.items[i].identifier)) {
-        this.selectedItems.add(this.items[i].identifier);
-        this.selectedItemsPositions.add(this.items[i].position);
+        this.items[i].isChecked = true;
+        if (!this.selectedItems.has(this.items[i].identifier)) {
+          this.selectedItems.add(this.items[i].identifier);
+          this.selectedItemsPositions.add(this.items[i].position);
+        }
       }
-    }
-    this.setSelectedItems(this.selectedItems);
+      this.setSelectedItems(this.selectedItems);
     }
   }
 
-  public setItemsPositionsList (item: Item) {
+
+  public setItemsPositionsList(item: Item) {
     if (item.isChecked) {
       this.selectedItemsPositions.add(item.position);
     } else {
@@ -277,7 +278,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     const toggleColumnWidth = 35;
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
-      if (field.fieldName === this.idFieldName) {
+      if (field.fieldName === this.fieldsConfiguration.idFieldName) {
         // id column is the first one and has a pre fixed width
         // It is the column where checkboxes are put
         column.isIdField = true;
@@ -326,6 +327,9 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.selectedItems = actualSelectedItems;
     this.setSelectedItems(this.selectedItems);
   }
+
+
+
 
   private setTableWidth() {
     if (this.tableWidth === null) {
