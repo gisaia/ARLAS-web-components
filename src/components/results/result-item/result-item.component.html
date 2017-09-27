@@ -3,7 +3,10 @@
                               [style.max-width.px]="field.width"
                               [style.min-width.px]="field.width" >
       <div *ngIf="field.isIdField" class="checkbox">
-        <input type="checkbox" [checked]="rowItem.isChecked" (change)="setSelectedItem()">
+    <md-icon [hidden]=!rowItem.isChecked (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box</md-icon>
+    <md-icon [hidden]=rowItem.isChecked (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box_outline_blank</md-icon>
+
+
       </div>
     </td>
     <td *ngIf="!field.isIdField && !field.isToggleField" class="resultitem__cell"

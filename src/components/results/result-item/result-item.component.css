@@ -19,3 +19,12 @@
 .resultitem__cell--label {
   margin:0;
 }
+
+.resultitem__icon_check{
+  float: right;
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+  color:#043B53;
+
+}

@@ -12,10 +12,14 @@
   position: relative;
 }
 
-.resultgrid--checkbox{
+.resultgrid__icon_check{
   position: absolute;
   top: 5px;
   left: 5px;
+    font-size: 15px;
+  width: 15px;
+  height: 15px;
+  color:#043B53;
 }
 
 .resultgrid__img {
