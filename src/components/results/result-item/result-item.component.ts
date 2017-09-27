@@ -16,6 +16,9 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 
+  public HIDE_DETAILS = 'Hide details';
+  public SHOW_DETAILS = 'Show details';
+
   @Input() public rowItem: Item;
   @Input() public detailedDataRetriever: DetailedDataRetriever;
   @Input() public selectedItems: Set<string>;

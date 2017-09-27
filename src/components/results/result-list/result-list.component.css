@@ -27,6 +27,18 @@
 .resultlist__header--columns__sort--icon {
   font-size:18px;
 }
+
+.resultlist__header--columns__geosort--icon, .resultlist__header--columns__geosort--icon--active{
+  font-size:14px;
+  padding-top: 5px;
+  padding-left: 2px;
+  color: gray;
+}
+
+.resultlist__header--columns__geosort--icon--active {
+  color: #043b53;
+}
+
 .resultlist {
   height: 100%;
   overflow: hidden;
@@ -54,6 +66,8 @@
   height: 100px;
   position: absolute;
   bottom: 0;
+  background-color: white;
+  opacity: 0.9;
 }
 .resultlist__body--item {
   border-top: 1px solid #e9ecef;

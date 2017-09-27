@@ -17,8 +17,8 @@
     <td *ngIf="field.isToggleField" class="resultitem__cell"
                               [style.max-width.px]="field.width"
                               [style.min-width.px]="field.width">
-      <md-icon class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
-      <ng-template #cancel_toggle><md-icon class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
+      <md-icon mdTooltip="{{SHOW_DETAILS}}" class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</md-icon>
+      <ng-template #cancel_toggle><md-icon mdTooltip="{{HIDE_DETAILS}}" class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</md-icon></ng-template>
     </td>
   </ng-container>
 
