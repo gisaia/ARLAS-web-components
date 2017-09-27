@@ -1,3 +1,4 @@
+import { constructDependencies } from '@angular/core/src/di/reflective_provider';
 import { ProductIdentifier } from '../results/utils/results.utils';
 
 import {
@@ -10,6 +11,7 @@ import { Subject } from 'rxjs/Subject';
 import * as tinycolor from 'tinycolor2';
 import { paddedBounds } from './mapgl.component.util';
 import { LngLat } from 'mapbox-gl';
+import { element } from 'protractor';
 
 
 export interface OnMoveResult {
@@ -73,13 +75,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public margePanForTest: number;
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
   @Input() public boundsToFit: Array<Array<number>>;
+  @Input() public fitBoundsOffSet: Array<number> = [0, 0];
+  @Input() public fitBoundsMaxZoom = 22;
   @Input() public featureToHightLight: {
     isleaving: boolean,
     productIdentifier: ProductIdentifier
   };
+  @Input() public featuresToSelect: Array<ProductIdentifier>;
+
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
+  @Output() public onFeatureClic: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+  @Output() public onFeatureOver: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+
 
   constructor(private http: Http) {
     this.onRemoveBbox.subscribe(value => {
@@ -115,11 +124,21 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
-        this.map.fitBounds(newBoundsToFit);
+        const canvas = this.map.getCanvasContainer();
+        const positionInfo = canvas.getBoundingClientRect();
+        const width = positionInfo.width;
+        this.map.fitBounds(newBoundsToFit, {
+          maxZoom: this.fitBoundsMaxZoom,
+          offset: this.fitBoundsOffSet
+        });
       }
       if (changes['featureToHightLight'] !== undefined) {
         const featureToHightLight = changes['featureToHightLight'].currentValue;
         this.highlightFeature(featureToHightLight);
+      }
+      if (changes['featuresToSelect'] !== undefined) {
+        const featuresToSelect = changes['featuresToSelect'].currentValue;
+        this.selectFeatures(featuresToSelect);
       }
     }
   }
@@ -179,7 +198,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           'paint': this.paintRuleClusterFeatureLine
         });
         this.map.addLayer({
-          'id': 'features-line-hover',
+          'id': 'features-line-select',
           'type': 'line',
           'source': 'cluster',
           'layout': {
@@ -189,9 +208,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             'all', ['!=', '$type', 'Point']
           ],
           'paint': {
-            'line-color': '#627BC1',
-            'line-opacity': 1,
-            'line-width': 5
+            'line-color': this.paintRuleClusterFeatureLine['line-color'],
+            'line-opacity': this.paintRuleClusterFeatureLine['line-opacity'],
+            'line-width': 4
+          }
+        });
+        this.map.addLayer({
+          'id': 'features-fill-hover',
+          'type': 'fill',
+          'source': 'cluster',
+          'layout': {
+            'visibility': 'none'
+          },
+          'filter': [
+            'all', ['!=', '$type', 'Point']
+          ],
+          'paint': {
+            'fill-color': this.paintRuleCLusterFeatureFill['fill-color'],
+            'fill-opacity': 0.9,
           }
         });
 
@@ -212,7 +246,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           'layout': {
             'visibility': 'visible'
           },
-          paint: this.paintRuleClusterCircle,
+          'paint': this.paintRuleClusterCircle,
           'filter': [
             'all', [
               'has',
@@ -241,6 +275,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
 
       this.map.on('click', 'features-fill', (e) => {
+        console.log(e);
+        this.onFeatureClic.next(e);
       });
       this.map.on('mousemove', 'features-fill', (e) => {
       });
@@ -357,17 +393,34 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     isleaving: boolean,
     productIdentifier: ProductIdentifier
   }) {
-    this.map.setLayoutProperty('features-line-hover', 'visibility', 'visible');
-    if (!featureToHightLight.isleaving) {
-      this.map.setFilter('features-line-hover', ['all', ['!=', '$type', 'Point'], ['==',
-        featureToHightLight.productIdentifier.idFieldName,
-        featureToHightLight.productIdentifier.idValue]]
-      );
-    } else {
+    if (this.map.getLayer('features-fill-hover') !== undefined) {
+      this.map.setLayoutProperty('features-fill-hover', 'visibility', 'visible');
+      if (!featureToHightLight.isleaving) {
+        this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
+          featureToHightLight.productIdentifier.idFieldName,
+          featureToHightLight.productIdentifier.idValue]]
+        );
+      } else {
 
-      this.map.setFilter('features-line-hover', ['all', ['!=', '$type', 'Point'], ['==',
-        featureToHightLight.productIdentifier.idFieldName,
-        ' ']]);
+        this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
+          featureToHightLight.productIdentifier.idFieldName,
+          ' ']]);
+      }
+    }
+  }
+
+  private selectFeatures(productToSelect: Array<ProductIdentifier>) {
+    if (this.map.getLayer('features-line-select') !== undefined) {
+      if (productToSelect.length > 0) {
+        this.map.setLayoutProperty('features-line-select', 'visibility', 'visible');
+        const filter = productToSelect.reduce(function (memo, product) {
+          memo.push(product.idValue);
+          return memo;
+        }, ['in', productToSelect[0].idFieldName]);
+        this.map.setFilter('features-line-select', filter);
+      } else {
+        this.map.setLayoutProperty('features-line-select', 'visibility', 'none');
+      }
     }
   }
 
