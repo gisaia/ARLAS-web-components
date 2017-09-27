@@ -186,7 +186,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.selectedItems = selectedItems;
     if (selectedItems.size !== this.items.length) {
      this.allItemsChecked = false;
-    } else {
+    } else if (this.items.length !== 0) {
      this.allItemsChecked = true;
     }
     this.selectedItemsEvent.next(Array.from(this.selectedItems));

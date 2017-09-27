@@ -81,13 +81,18 @@ export class ResultsDemoComponent implements OnInit {
 
   public updateData() {
     this.data = new Array<Map<string, string | number | Date>>();
-    const map = new Map<string, string | number | Date>();
-    map.set('source', 'SPOT' + (5 + 1));
-    map.set('acquired', '2017-555555550' + (5 + 1) + '-' + (5 + 3));
-    map.set('cloud', (5 + 1) + '.0');
-    map.set('incidence', (5 + 10) );
-    map.set('id', (5 + 10) );
-    this.data.push(map);
+    setTimeout(() => {
+      this.data = new Array<Map<string, string | number | Date>>();
+      for ( let i = 0; i < 50; i++) {
+            const map = new Map<string, string | number | Date>();
+            map.set('source', 'SPOT' + (i + 1));
+            map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
+            map.set('cloud', (i + 1) + '.0');
+            map.set('incidence', (i + 10) );
+            map.set('id', (i + (this.count + 1) * 100) + '' );
+            this.data.push(map);
+      }
+    }, 3000);
   }
 
   public addData() {
@@ -127,7 +132,32 @@ export class ResultsDemoComponent implements OnInit {
   }
 
   public setFilters(fieldsToFilter: Map<string, string | number | Date>) {
-    this.data.pop();
+    setTimeout(() => {
+      if ( this.count < 2 ) {
+        for ( let i = 50; i < 100; i++) {
+          const map = new Map<string, string | number | Date>();
+          map.set('source', 'SPOT' + (i + 1));
+          map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
+          map.set('cloud', (i + 1) + '.0');
+          map.set('incidence', (i + 10) );
+          map.set('id', (i + (this.count + 1) * 100) + '' );
+          this.data.push(map);
+        }
+        this.count++;
+      } else {
+        this.data = new Array<Map<string, string | number | Date>>();
+        for ( let i = 50; i < 60; i++) {
+          const map = new Map<string, string | number | Date>();
+          map.set('source', 'SPOT' + (i + 1));
+          map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
+          map.set('cloud', (i + 1) + '.0');
+          map.set('incidence', (i + 10) );
+          map.set('id', (i + (this.count + 1) * 1000) + '' );
+          this.data.push(map);
+        }
+        this.count++;
+      }
+    }, 3000);
   }
 
 }
