@@ -1,7 +1,9 @@
 <div class="resultgrid" (click)="setClickedOnItem()">
   <div class="resultgrid--container">
-    <input type="checkbox" class="resultgrid--checkbox" (change)="setSelectedItem()" [checked]="gridTile.isChecked">
+       <md-icon [hidden]=!gridTile.isChecked (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</md-icon>
+    <md-icon [hidden]=gridTile.isChecked (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</md-icon>
     <div mdTooltip="{{SHOW_IMAGE}}"  class="resultgrid__img" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'">
+
     </div>
     <div class="resultgrid__title">
       <span> {{gridTile.title}} </span>

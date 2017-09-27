@@ -113,6 +113,14 @@
   float: left;
   width: 30%;
 }
+.selectAll__icon_check{
+    margin-top: 8px;
+    float: left;
+  font-size: 30px;
+  width: 30px;
+  height: 30px;
+  color:#043B53;
+}
 
 .resultgrid--checkbox__count {
   float:left;

@@ -17,10 +17,10 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
   @Input() public gridTile: Item;
   @Input() public detailWidth: number;
   @Input() public detailHeight: number;
-  @Input() public idFieldName = 'id';
+  @Input() public idFieldName: string;
 
-  @Output() public actionOnItemEvent: Subject<{action: Action, productIdentifier: ProductIdentifier}> =
-    new Subject<{action: Action, productIdentifier: ProductIdentifier}>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action, productIdentifier: ProductIdentifier }> =
+  new Subject<{ action: Action, productIdentifier: ProductIdentifier }>();
 
   public isDetailedDataShowed = false;
 
@@ -31,7 +31,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-        this.isDetailedDataShowed = false;
+      this.isDetailedDataShowed = false;
     }
   }
 
@@ -40,8 +40,8 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
   }
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
-  public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.gridTile.identifier}});
+  public triggerActionOnItem(actionOnItem: { action: Action, productIdentifier: ProductIdentifier }): void {
+    this.actionOnItemEvent.next(actionOnItem);
   }
 
 }
