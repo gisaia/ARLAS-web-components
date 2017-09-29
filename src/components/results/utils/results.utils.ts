@@ -15,12 +15,12 @@ export interface ProductIdentifier {
 
 export interface FieldsConfiguration {
   idFieldName: string;
-  urlImageFieldName ?: string;
-  urlThumbnailFieldName ?: string;
-  titleFieldName ?: string;
-  baseUrlImage?:string;
-  baseUrlThumbnail?:string;
-  prefixPathUrlImage?:string;
-  prefixPathUrlThumbnail?:string;
+  urlImageFieldName?: string;
+  urlThumbnailFieldName?: string;
+  titleFieldName?: string;
+  baseUrlImage?: string;
+  baseUrlThumbnail?: string;
+  prefixPathUrlImage?: string;
+  prefixPathUrlThumbnail?: string;
 
 }
