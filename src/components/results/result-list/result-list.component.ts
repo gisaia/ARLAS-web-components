@@ -185,9 +185,9 @@ export class ResultListComponent implements OnInit, DoCheck {
   public setSelectedItems(selectedItems: Set<string>) {
     this.selectedItems = selectedItems;
     if (selectedItems.size !== this.items.length) {
-     this.allItemsChecked = false;
+      this.allItemsChecked = false;
     } else {
-     this.allItemsChecked = true;
+      this.allItemsChecked = true;
     }
     this.selectedItemsEvent.next(Array.from(this.selectedItems));
   }
@@ -331,8 +331,12 @@ export class ResultListComponent implements OnInit, DoCheck {
       const item = new Item(this.columns, itemData);
       item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
       item.title = <string>itemData.get(this.fieldsConfiguration.titleFieldName);
-      item.urlImage = <string>itemData.get(this.fieldsConfiguration.urlImageFieldName);
-      item.urlThumbnail = <string>itemData.get(this.fieldsConfiguration.urlThumbnailFieldName);
+      item.urlImage = this.fieldsConfiguration.baseUrlImage +
+        itemData.get(this.fieldsConfiguration.prefixPathUrlImage) + '/'+
+        itemData.get(this.fieldsConfiguration.urlImageFieldName);
+      item.urlThumbnail = this.fieldsConfiguration.baseUrlThumbnail +
+itemData.get(this.fieldsConfiguration.prefixPathUrlThumbnail) + '/'+
+        itemData.get(this.fieldsConfiguration.urlThumbnailFieldName);
       item.position = itemCounter;
       itemCounter++;
       this.items.push(item);

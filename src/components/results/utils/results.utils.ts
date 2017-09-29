@@ -18,4 +18,9 @@ export interface FieldsConfiguration {
   urlImageFieldName ?: string;
   urlThumbnailFieldName ?: string;
   titleFieldName ?: string;
+  baseUrlImage?:string;
+  baseUrlThumbnail?:string;
+  prefixPathUrlImage?:string;
+  prefixPathUrlThumbnail?:string;
+
 }
