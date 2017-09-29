@@ -186,3 +186,9 @@ tbody {
 {
 	background-color: #555;
 }
+
+.selectBetween__icon{
+  color:#043b53;
+  -webkit-transform: rotate(-90deg);
+  cursor: pointer
+}

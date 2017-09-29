@@ -86,8 +86,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
-  @Output() public onFeatureClic: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
-  @Output() public onFeatureOver: EventEmitter<Array<any>> = new EventEmitter<Array<any>>();
+  @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
 
   constructor(private http: Http) {
@@ -275,12 +275,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
 
       this.map.on('click', 'features-fill', (e) => {
-        console.log(e);
-        this.onFeatureClic.next(e);
+
+        this.onFeatureClic.next(e.features);
       });
       this.map.on('mousemove', 'features-fill', (e) => {
+        console.log(e);
       });
       this.map.on('mouseleave', 'features-fill', (e) => {
+        console.log(e);
 
       });
       this.map.on('click', 'cluster', (e) => {
