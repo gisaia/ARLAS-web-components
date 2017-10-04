@@ -73,6 +73,14 @@
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
 }
+.resultlist__body--item-hover-true {
+  border-top: 1px solid red;
+  border-bottom: 1px dashed red;
+}
+.resultlist__body--item-hover-false {
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px dashed #e9ecef;
+}
 
 .resultlist__lastline{
   border-top: 1px dashed #e9ecef;

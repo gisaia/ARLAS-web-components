@@ -89,7 +89,7 @@ export class ResultsDemoComponent implements OnInit {
             map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
             map.set('cloud', (i + 1) + '.0');
             map.set('incidence', (i + 10) );
-            map.set('id', (i + (this.count + 1) * 100) + '' );
+            map.set('id', (i + 10) + 'd' );
             this.data.push(map);
       }
     }, 3000);

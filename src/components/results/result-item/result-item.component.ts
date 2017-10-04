@@ -63,5 +63,13 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     this.selectedItemsEvent.next(this.selectedItems);
     this.selectedItemPositionEvent.next(this.rowItem);
   }
+  public determinateItem() {
+    this.rowItem.isChecked = true;
+    this.rowItem.isindeterminated = false;
+    this.selectedItems.add(this.identifier);
+    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
+    this.selectedItemsEvent.next(this.selectedItems);
+    this.selectedItemPositionEvent.next(this.rowItem);
+  }
 
 }

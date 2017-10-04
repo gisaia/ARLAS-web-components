@@ -41,6 +41,15 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
     this.selectedItemPositionEvent.next(this.gridTile);
   }
 
+  public determinateItem() {
+    this.gridTile.isChecked = true;
+    this.gridTile.isindeterminated = false;
+    this.selectedItems.add(this.gridTile.identifier);
+    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
+    this.selectedItemsEvent.next(this.selectedItems);
+    this.selectedItemPositionEvent.next(this.gridTile);
+  }
+
   public setClickedOnItem() {
     this.retrieveDetailedData(this.detailedDataRetriever, this.gridTile);
     this.clickedOnItemEvent.next(this.gridTile);

@@ -1,3 +1,4 @@
+import { identifierName } from '@angular/compiler/compiler';
 import {
   Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
   HostListener
@@ -14,6 +15,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 import { ANIMATION_TYPES } from 'ngx-loading';
 import { MdButtonToggleChange } from '@angular/material';
+import { SimpleChanges } from '@angular/core';
+import { OnChanges } from '@angular/core/core';
 
 
 
@@ -22,7 +25,7 @@ import { MdButtonToggleChange } from '@angular/material';
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.css']
 })
-export class ResultListComponent implements OnInit, DoCheck {
+export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public GEO_DISTANCE = 'geodistance';
   public GEOSORT = 'Geo distance sort';
@@ -64,6 +67,16 @@ export class ResultListComponent implements OnInit, DoCheck {
   // a detailed-data retriever object that implements DetailedDataRetriever interface .
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
+  // list of Id item for indeterminate status .
+  @Input() public indeterminatedItems: Set<string> = new Set<string>();
+
+  // list of Id item for indeterminate status .
+  @Input() public highlightItems: Set<string> = new Set<string>();
+
+  // Defaut Mode.
+  @Input() public defautMode: ModeEnum;
+
+
   // Sorting a column event.
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
   new Subject<{ fieldName: string, sortDirection: SortEnum }>();
@@ -91,7 +104,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
 
   public columns: Array<Column>;
-  public items: Array<Item>;
+  public items: Array<Item> = new Array<Item>();
   public filtersMap: Map<string, string | number | Date>;
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
 
@@ -113,7 +126,7 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   public isMoreDataRequested = false;
   public hasGridMode = false;
-  public resultMode: ModeEnum = ModeEnum.list;
+  public resultMode: ModeEnum = this.defautMode;
   public allItemsChecked = false;
 
   private detailedGridCounter = 0;
@@ -125,7 +138,7 @@ export class ResultListComponent implements OnInit, DoCheck {
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
-
+    this.resultMode = this.defautMode;
     // Resize the table height on window resize
     Observable.fromEvent(window, 'resize')
       .debounceTime(500)
@@ -142,28 +155,72 @@ export class ResultListComponent implements OnInit, DoCheck {
 
   // Set the table width and height (tbody height)
   public ngOnInit() {
-    if (this.fieldsConfiguration.urlThumbnailFieldName !== undefined) {
+    if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
       this.hasGridMode = true;
     }
     this.setTableWidth();
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['defautMode'] !== undefined) {
+      if (this.defautMode.toString() === ModeEnum.grid.toString()) {
+        this.resultMode = ModeEnum.grid;
+        this.displayListGrid = 'block';
+      } else {
+        this.resultMode = ModeEnum.list;
+        this.displayListGrid = 'inline';
+      }
+      this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
+        (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+    }
+    if (changes['rowItemList'] !== undefined) {
+      this.items = [];
+    }
+    if (changes['indeterminatedItems'] !== undefined) {
+      this.indeterminatedItems.forEach(id => {
+        this.items.forEach(item => {
+          if (item.identifier === id && !this.selectedItems.has(id)) {
+            item.isindeterminated = true;
+          }
+        });
+      });
+    }
+    if (changes['highlightItems'] !== undefined) {
+      if (this.highlightItems.size > 0) {
+        this.highlightItems.forEach(id => {
+          this.items.forEach(item => {
+            if (item.identifier === id) {
+              item.ishighLight = true;
+            }
+          });
+        });
+      } else {
+        this.items.forEach(item => {
+          item.ishighLight = false;
+        });
+      }
+    }
+  }
+
+
   // ngDoCheck is triggered both when the instance of an object has changed or when new elements are
   // pushed in an Array
   public ngDoCheck() {
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
     const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
-
     if (columnChanges) {
       this.setColumns();
     }
     if (itemChanges) {
-      this.setItems();
-      // If the called "more data" is retrieved, hide the animated loading div
+      const itemAdded: Array<string> = new Array<string>();
+      itemChanges.forEachAddedItem(i => {
+        itemAdded.push(i.item.get(this.fieldsConfiguration.idFieldName));
+        this.onAddItems(i.item);
+      });
+      this.setSelectedItems(this.selectedItems);
       this.isMoreDataRequested = false;
     }
-
   }
 
   // Emits which action is applied on which item/product
@@ -252,7 +309,6 @@ export class ResultListComponent implements OnInit, DoCheck {
     }
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
       (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
-
   }
 
   public selectAllItems() {
@@ -262,6 +318,7 @@ export class ResultListComponent implements OnInit, DoCheck {
 
     this.items.forEach(item => {
       item.isChecked = this.allItemsChecked;
+      item.isindeterminated = false;
       if (this.allItemsChecked) {
         this.selectedItems.add(item.identifier);
         this.selectedItemsPositions.add(item.position);
@@ -276,6 +333,7 @@ export class ResultListComponent implements OnInit, DoCheck {
     if (sortedItemsPositions.length !== 0) {
       for (let i = sortedItemsPositions[0]; i <= sortedItemsPositions[sortedItemsPositions.length - 1]; i++) {
         this.items[i].isChecked = true;
+        this.items[i].isindeterminated = false;
         if (!this.selectedItems.has(this.items[i].identifier)) {
           this.selectedItems.add(this.items[i].identifier);
           this.selectedItemsPositions.add(this.items[i].position);
@@ -321,39 +379,56 @@ export class ResultListComponent implements OnInit, DoCheck {
     this.columns.push(toggleColumn);
   }
 
-  // Build the component's rows and grids
-  private setItems() {
-    this.items = new Array<Item>();
-    const actualSelectedItems = new Set<string>();
-    let itemCounter = 0;
-    this.rowItemList.forEach(itemData => {
-      // The columns are passed as parameters so we're sure to build cells of the row in the exact same order of columns
-      const item = new Item(this.columns, itemData);
-      item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
-      item.title = <string>itemData.get(this.fieldsConfiguration.titleFieldName);
-      item.urlImage = this.fieldsConfiguration.baseUrlImage +
-        itemData.get(this.fieldsConfiguration.prefixPathUrlImage) + '/' +
-        itemData.get(this.fieldsConfiguration.urlImageFieldName);
-      item.urlThumbnail = this.fieldsConfiguration.baseUrlThumbnail +
-        itemData.get(this.fieldsConfiguration.prefixPathUrlThumbnail) + '/' +
-        itemData.get(this.fieldsConfiguration.urlThumbnailFieldName);
-      item.position = itemCounter;
-      itemCounter++;
-      this.items.push(item);
-      // When new data is loaded, check the one that were already checked +
-      // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
-      if (!this.allItemsChecked) {
-        if (this.selectedItems.has(item.identifier)) {
-          item.isChecked = true;
-          actualSelectedItems.add(item.identifier);
-        }
+
+
+  private onAddItems(itemData: Map<string, string | number | Date>) {
+    const item = new Item(this.columns, itemData);
+    item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
+    if (this.fieldsConfiguration.titleFieldName) {
+      if (this.fieldsConfiguration.titleFieldName.indexOf(',') < 0) {
+        item.title = <string>itemData.get(this.fieldsConfiguration.titleFieldName);
       } else {
-        item.isChecked = this.allItemsChecked;
-        actualSelectedItems.add(item.identifier);
+        item.title = '';
+        this.fieldsConfiguration.titleFieldName.split(',').forEach(field => {
+          item.title = item.title + ' ' + itemData.get(field);
+        });
       }
-    });
-    this.selectedItems = actualSelectedItems;
-    this.setSelectedItems(this.selectedItems);
+      item.title = item.title.trim();
+    }
+    if (this.fieldsConfiguration.urlImageTemplate) {
+      item.urlImage = this.fieldsConfiguration.urlImageTemplate;
+      this.fieldsConfiguration.urlImageTemplate.split('/').forEach(t => {
+        if (t.indexOf('{') >= 0) {
+          item.urlImage = item.urlImage.replace(t, itemData.get(t.slice(1, -1)).toString());
+        }
+      });
+    }
+    if (this.fieldsConfiguration.urlThumbnailTemplate) {
+      item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
+      this.fieldsConfiguration.urlThumbnailTemplate.split('/').forEach(t => {
+        if (t.indexOf('{') >= 0) {
+          item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(t.slice(1, -1)).toString());
+        }
+      });
+    }
+    item.position = this.items.length + 1;
+    item.ishighLight = false;
+    // When new data is loaded, check the one that were already checked +
+    // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
+    if (this.allItemsChecked) {
+      item.isChecked = true;
+      this.selectedItems.add(item.identifier);
+    } else {
+      if (this.selectedItems.has(item.identifier)) {
+        item.isChecked = true;
+      }
+      if (this.indeterminatedItems.has(item.identifier)) {
+        item.isindeterminated = true;
+      } else {
+        item.isindeterminated = false;
+      }
+    }
+    this.items.push(item);
   }
 
 

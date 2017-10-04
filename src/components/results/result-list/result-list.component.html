@@ -76,10 +76,10 @@
 
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
           <md-button-toggle-group #group="mdButtonToggleGroup" (change)="whichMode($event)">
-            <md-button-toggle mdTooltip="{{LIST_MODE}}" value="{{ModeEnum.list}}" [checked]="true">
+            <md-button-toggle mdTooltip="{{LIST_MODE}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
               <md-icon>list</md-icon>
             </md-button-toggle>
-            <md-button-toggle mdTooltip="{{GRID_MODE}}" value="{{ModeEnum.grid}}">
+            <md-button-toggle mdTooltip="{{GRID_MODE}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
               <md-icon>apps</md-icon>
             </md-button-toggle>
           </md-button-toggle-group>
@@ -100,7 +100,7 @@
     <md-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
-          <tr arlas-result-item class="resultlist__body--item" (mouseenter)="setConsultedItem(rowItem.identifier)" (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
+          <tr arlas-result-item class="resultlist__body--item-hover-{{rowItem.ishighLight}}" (mouseenter)="setConsultedItem(rowItem.identifier)" (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
             [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
             (selectedItemPositionEvent)="setItemsPositionsList($event)" (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle">
           </tr>

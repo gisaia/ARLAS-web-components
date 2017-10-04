@@ -9,9 +9,10 @@ import { Http, Response } from '@angular/http';
 
 import { Subject } from 'rxjs/Subject';
 import * as tinycolor from 'tinycolor2';
-import { paddedBounds } from './mapgl.component.util';
+import { paddedBounds, xyz } from './mapgl.component.util';
 import { LngLat } from 'mapbox-gl';
 import { element } from 'protractor';
+import { DoCheck, IterableDiffers } from '@angular/core';
 
 
 export interface OnMoveResult {
@@ -20,6 +21,7 @@ export interface OnMoveResult {
   extend: Array<number>;
   extendForLoad: Array<number>;
   extendForTest: Array<number>;
+  tiles: Array<{ x: number, y: number, z: number }>;
 }
 
 export enum drawType {
@@ -35,11 +37,11 @@ export enum drawType {
 
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public textButton = 'Add GeoBox';
+  public map: any;
   private emptyData = {
     'type': 'FeatureCollection',
     'features': []
   };
-  private map: any;
   private index: any;
   private north: number;
   private east: number;
@@ -59,6 +61,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private maxCountValue = 0;
   private cluster: any;
   private showAllFeature = false;
+
   @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
   @Input() public fontClusterlabel = 'Roboto Regular';
   @Input() public sizeClusterlabel = 12;
@@ -74,8 +77,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public margePanForLoad: number;
   @Input() public margePanForTest: number;
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public idFeatureField: string;
   @Input() public boundsToFit: Array<Array<number>>;
   @Input() public fitBoundsOffSet: Array<number> = [0, 0];
+  @Input() public redrawTile: Subject<boolean> = new Subject<boolean>();
+
   @Input() public fitBoundsMaxZoom = 22;
   @Input() public featureToHightLight: {
     isleaving: boolean,
@@ -90,7 +96,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
 
-  constructor(private http: Http) {
+  constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
@@ -102,18 +108,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngOnInit() {
-
     this.map = new mapboxgl.Map({
       container: 'mapgl',
       style: this.style,
       center: this.initCenter,
       zoom: this.initZoom,
-      renderWorldCopies: false
+      renderWorldCopies: true
     });
     this.map.boxZoom.disable();
   }
   public ngOnChanges(changes: SimpleChanges): void {
-
     if (this.map !== undefined) {
       if (this.map.getSource('cluster') !== undefined) {
         if (changes['geojsondata'] !== undefined) {
@@ -163,7 +167,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       // Add GeoBox Lae-yer
       this.map.addLayer({
         'id': 'geobox',
-        'type': 'fill',
+        'type': 'line',
         'source': 'geobox',
         'layout': {
           'visibility': 'visible'
@@ -275,15 +279,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
 
       this.map.on('click', 'features-fill', (e) => {
-
-        this.onFeatureClic.next(e.features);
+        this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
       });
       this.map.on('mousemove', 'features-fill', (e) => {
-        console.log(e);
+        this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
+
       });
       this.map.on('mouseleave', 'features-fill', (e) => {
-        console.log(e);
-
+        this.onFeatureOver.next([]);
       });
       this.map.on('click', 'cluster', (e) => {
         if (e.features[0].properties.cluster_id !== undefined) {
@@ -309,6 +312,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         }
       });
+      this.map.showTileBoundaries = true;
       this.map.on('mousemove', 'cluster', (e) => {
         this.map.getCanvas().style.cursor = 'pointer';
       });
@@ -332,7 +336,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         center: this.map.getCenter(),
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
-        extendForTest: []
+        extendForTest: [],
+        tiles: []
+
       };
       const canvas = this.map.getCanvasContainer();
       const positionInfo = canvas.getBoundingClientRect();
@@ -356,6 +362,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.max(extendForTestdLatLng[0].lat, -90),
         Math.min(extendForTestdLatLng[1].lng, 180)
       ];
+      onMoveData.tiles = xyz([[onMoveData.extendForLoad[1],
+      onMoveData.extendForLoad[2]],
+      [onMoveData.extendForLoad[3],
+      onMoveData.extendForLoad[0]]], Math.ceil((this.zoom) - 1));
       this.onMove.next(onMoveData);
     });
     this.map.on('mousedown', (e) => {
@@ -370,6 +380,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.endlngLat = e.lngLat;
       } else {
         this.endlngLat = undefined;
+      }
+    });
+    this.redrawTile.subscribe(value => {
+      if (value) {
+        if (this.map.getSource('cluster') !== undefined) {
+          this.map.getSource('cluster').setData(this.geojsondata);
+        }
       }
     });
   }
@@ -488,11 +505,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const endlng: number = this.endlngLat.lng;
       const startlat: number = this.startlngLat.lat;
       const endlat: number = this.endlngLat.lat;
-      const west = Math.min(startlng, endlng);
+      let west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
-      const east = Math.max(startlng, endlng);
+      let east = Math.max(startlng, endlng);
       const south = Math.min(startlat, endlat);
-      this.onChangeBbox.emit([north, west, south, east]);
       const coordinates = [[
         [east, south],
         [east, north],
@@ -500,6 +516,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         [west, south],
         [east, south],
       ]];
+      if (west < -180) {
+        west = west + 360;
+      }
+      if (east > 180) {
+        east = east - 360;
+      }
+      this.onChangeBbox.emit([north, west, south, east]);
+
       const polygonGeojson = {
         type: 'Feature',
         properties: {
