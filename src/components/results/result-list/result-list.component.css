@@ -74,12 +74,15 @@
   border-bottom: 1px dashed #e9ecef;
 }
 .resultlist__body--item-hover-true {
-  border-top: 1px solid red;
-  border-bottom: 1px dashed red;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px dashed #e9ecef;
+    background-color: rgba(0,0,0,0.075);
+
 }
 .resultlist__body--item-hover-false {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
+
 }
 
 .resultlist__lastline{
@@ -160,6 +163,7 @@
   height: 100%;
   width: 100%;
 }
+
 
 .resultlist__md-grid-tile {
   margin-top: 5px;

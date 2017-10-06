@@ -1,5 +1,5 @@
 <div class="resultgrid" (click)="setClickedOnItem()">
-  <div class="resultgrid--container">
+  <div class="resultgrid--container-hover-{{gridTile.ishighLight}}">
        <md-icon [hidden]=!gridTile.isChecked||gridTile.isindeterminated (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</md-icon>
        <md-icon [hidden]=gridTile.isChecked||gridTile.isindeterminated (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</md-icon>
        <md-icon [hidden]=!gridTile.isindeterminated (click)="determinateItem()" class="primary resultgrid__icon_check mat-icon material-icons">indeterminate_check_box</md-icon>

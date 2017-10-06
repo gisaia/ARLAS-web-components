@@ -76,6 +76,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   // Defaut Mode.
   @Input() public defautMode: ModeEnum;
 
+  // Hide Body table.
+  @Input() public isBodyHidden: boolean;
+
+  // Hide Body table.
+  @Input() public isGeoSortActived = false;
 
   // Sorting a column event.
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
@@ -174,6 +179,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
         (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
     }
+
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
     }
@@ -188,12 +194,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
     if (changes['highlightItems'] !== undefined) {
       if (this.highlightItems.size > 0) {
-        this.highlightItems.forEach(id => {
-          this.items.forEach(item => {
-            if (item.identifier === id) {
-              item.ishighLight = true;
-            }
-          });
+        this.items.forEach(item => {
+          if (this.highlightItems.has(item.identifier)) {
+            item.ishighLight = true;
+          } else {
+            item.ishighLight = false;
+          }
         });
       } else {
         this.items.forEach(item => {
@@ -252,6 +258,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   // Emits the column to sort on and the sort direction
   public sort(sortedColumn: Column): void {
+    this.isGeoSortActived = false;
     if (sortedColumn.sortDirection === SortEnum.none) {
       sortedColumn.sortDirection = SortEnum.asc;
     } else if (sortedColumn.sortDirection === SortEnum.asc) {
@@ -269,7 +276,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   public geoSort(column: Column): void {
-    column.sortDirection = SortEnum.asc;
+    this.isGeoSortActived = true;
     this.columns.forEach(column => {
       if (!column.isIdField) {
         column.sortDirection = SortEnum.none;

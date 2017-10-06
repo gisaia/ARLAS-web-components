@@ -1,6 +1,6 @@
 import { constructDependencies } from '@angular/core/src/di/reflective_provider';
 import { ProductIdentifier } from '../results/utils/results.utils';
-
+import { bboxes } from 'ngeohash';
 import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
   SimpleChanges, EventEmitter, OnChanges
@@ -22,6 +22,7 @@ export interface OnMoveResult {
   extendForLoad: Array<number>;
   extendForTest: Array<number>;
   tiles: Array<{ x: number, y: number, z: number }>;
+  geohash: Array<string>;
 }
 
 export enum drawType {
@@ -277,13 +278,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           }
         });
       }
-
       this.map.on('click', 'features-fill', (e) => {
         this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
       });
+
       this.map.on('mousemove', 'features-fill', (e) => {
         this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
-
       });
       this.map.on('mouseleave', 'features-fill', (e) => {
         this.onFeatureOver.next([]);
@@ -312,7 +312,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         }
       });
-      this.map.showTileBoundaries = true;
+      this.map.showTileBoundaries = false;
       this.map.on('mousemove', 'cluster', (e) => {
         this.map.getCanvas().style.cursor = 'pointer';
       });
@@ -337,8 +337,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
         extendForTest: [],
-        tiles: []
-
+        tiles: [],
+        geohash: bboxes(Math.min(this.south, this.north),
+          Math.min(this.east, this.west),
+          Math.max(this.south, this.north),
+          Math.max(this.east, this.west), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1))
       };
       const canvas = this.map.getCanvasContainer();
       const positionInfo = canvas.getBoundingClientRect();
@@ -542,6 +545,21 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
+    }
+  }
+  private getPrecisionFromZoom(zoom: number): number {
+    if (zoom >= 0 && zoom < 3) {
+      return 1;
+    } else if (zoom >= 3 && zoom < 5) {
+      return 2;
+    } else if (zoom >= 5 && zoom < 7) {
+      return 3;
+    } else if (zoom >= 7 && zoom < 10) {
+      return 4;
+    } else if (zoom >= 10 && zoom < 11) {
+      return 5;
+    } else {
+      return 6;
     }
   }
 }

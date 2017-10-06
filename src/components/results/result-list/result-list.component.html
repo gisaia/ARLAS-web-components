@@ -6,8 +6,8 @@
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <md-icon *ngIf="column.sortDirection === SortEnum.asc" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</md-icon>
-          <md-icon *ngIf="column.sortDirection === SortEnum.none" (click) = "geoSort(column)" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon">gps_fixed</md-icon>
+          <md-icon [hidden]="!isGeoSortActived" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</md-icon>
+          <md-icon [hidden]="isGeoSortActived" (click) = "geoSort(column)" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon">gps_fixed</md-icon>
           <span  class="resultlist__header--columns--hidden"></span>
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField"
@@ -95,7 +95,7 @@
       </td>
     </tr>
   </thead>
-  <tbody arlasResultScroll [style.height.px]="tbodyHeight" [rowItemList]="rowItemList" [searchSize]="searchSize" [nbGridColumns]="nbGridColumns"
+  <tbody arlasResultScroll [hidden]="isBodyHidden" [style.height.px]="tbodyHeight" [rowItemList]="rowItemList" [searchSize]="searchSize" [nbGridColumns]="nbGridColumns"
     [nLastLines]="nLastLines" [resultMode]="resultMode" (moreDataEvent)="askForMoreData($event)">
     <md-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
