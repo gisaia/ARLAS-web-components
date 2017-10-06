@@ -1,6 +1,6 @@
 {
-  "name": "@gisaia-team/arlas-web-components",
-  "version": "0.2.0-dev9",
+  "name": "arlas-web-components",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
