@@ -331,6 +331,42 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
+      let geohashList = [];
+      if (this.west < -180 && this.east > 180) {
+        geohashList = bboxes(Math.min(this.south, this.north),
+          -180,
+          Math.max(this.south, this.north),
+          180, Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+      } else if (this.west < -180 && this.east < 180) {
+        const geohashList_1: Array<string> = bboxes(Math.min(this.south, this.north),
+          Math.min(-180, this.west + 360),
+          Math.max(this.south, this.north),
+          Math.max(-180, this.west + 360), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+        const geohashList_2: Array<string> = bboxes(Math.min(this.south, this.north),
+          Math.min(this.east, 180),
+          Math.max(this.south, this.north),
+          Math.max(this.east, 180), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+        geohashList = geohashList_1.concat(geohashList_2);
+
+      } else if (this.east > 180 && this.west > -180) {
+        const geohashList_1: Array<string> = bboxes(Math.min(this.south, this.north),
+          Math.min(180, this.east - 360),
+          Math.max(this.south, this.north),
+          Math.max(180, this.east - 360), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+
+        const geohashList_2: Array<string> = bboxes(Math.min(this.south, this.north),
+          Math.min(this.west, -180),
+          Math.max(this.south, this.north),
+          Math.max(this.west, -180), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+        geohashList = geohashList_1.concat(geohashList_2);
+      } else {
+        geohashList = bboxes(Math.min(this.south, this.north),
+          Math.min(this.east, this.west),
+          Math.max(this.south, this.north),
+          Math.max(this.east, this.west), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+      }
+
+
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
         center: this.map.getCenter(),
@@ -338,11 +374,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         extendForLoad: [],
         extendForTest: [],
         tiles: [],
-        geohash: bboxes(Math.min(this.south, this.north),
-          Math.min(this.east, this.west),
-          Math.max(this.south, this.north),
-          Math.max(this.east, this.west), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1))
+        geohash: geohashList
       };
+
       const canvas = this.map.getCanvasContainer();
       const positionInfo = canvas.getBoundingClientRect();
       const height = positionInfo.height;
