@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
-
 import { ModeEnum } from '../utils/enumerations/modeEnum';
-import { Action, ProductIdentifier } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 import { Observable } from 'rxjs/Rx';

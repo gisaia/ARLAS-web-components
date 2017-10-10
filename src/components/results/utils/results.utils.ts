@@ -8,7 +8,7 @@ export interface Action {
 
 }
 
-export interface ProductIdentifier {
+export interface ElementIdentifier {
   idFieldName: string;
   idValue: string;
 }

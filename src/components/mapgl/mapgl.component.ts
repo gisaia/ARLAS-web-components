@@ -1,5 +1,5 @@
 import { constructDependencies } from '@angular/core/src/di/reflective_provider';
-import { ProductIdentifier } from '../results/utils/results.utils';
+import { ElementIdentifier } from '../results/utils/results.utils';
 import { bboxes } from 'ngeohash';
 import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
@@ -86,9 +86,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public fitBoundsMaxZoom = 22;
   @Input() public featureToHightLight: {
     isleaving: boolean,
-    productIdentifier: ProductIdentifier
+    elementidentifier: ElementIdentifier
   };
-  @Input() public featuresToSelect: Array<ProductIdentifier>;
+  @Input() public featuresToSelect: Array<ElementIdentifier>;
 
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
@@ -447,32 +447,32 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private highlightFeature(featureToHightLight: {
     isleaving: boolean,
-    productIdentifier: ProductIdentifier
+    elementidentifier: ElementIdentifier
   }) {
     if (this.map.getLayer('features-fill-hover') !== undefined) {
       this.map.setLayoutProperty('features-fill-hover', 'visibility', 'visible');
       if (!featureToHightLight.isleaving) {
         this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
-          featureToHightLight.productIdentifier.idFieldName,
-          featureToHightLight.productIdentifier.idValue]]
+          featureToHightLight.elementidentifier.idFieldName,
+          featureToHightLight.elementidentifier.idValue]]
         );
       } else {
 
         this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
-          featureToHightLight.productIdentifier.idFieldName,
+          featureToHightLight.elementidentifier.idFieldName,
           ' ']]);
       }
     }
   }
 
-  private selectFeatures(productToSelect: Array<ProductIdentifier>) {
+  private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
     if (this.map.getLayer('features-line-select') !== undefined) {
-      if (productToSelect.length > 0) {
+      if (elementToSelect.length > 0) {
         this.map.setLayoutProperty('features-line-select', 'visibility', 'visible');
-        const filter = productToSelect.reduce(function (memo, product) {
-          memo.push(product.idValue);
+        const filter = elementToSelect.reduce(function (memo, element) {
+          memo.push(element.idValue);
           return memo;
-        }, ['in', productToSelect[0].idFieldName]);
+        }, ['in', elementToSelect[0].idFieldName]);
         this.map.setFilter('features-line-select', filter);
       } else {
         this.map.setLayoutProperty('features-line-select', 'visibility', 'none');

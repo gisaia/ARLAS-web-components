@@ -8,7 +8,7 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 import { Column } from '../model/column';
 import { Item } from '../model/item';
-import { Action, ProductIdentifier, FieldsConfiguration } from '../utils/results.utils';
+import { Action, ElementIdentifier, FieldsConfiguration } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -94,7 +94,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   // consultedItemEvent emits one item identifier that is hovered, selected or clicked on it. The consulted item can be highlighted in
   // the map for example. It's only for consultation.
-  @Output() public consultedItemEvent: Subject<ProductIdentifier> = new Subject<ProductIdentifier>();
+  @Output() public consultedItemEvent: Subject<ElementIdentifier> = new Subject<ElementIdentifier>();
 
   // The searchedFieldsEvent emits a list of fieldName-fieldValue
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
@@ -103,8 +103,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Output() public moreDataEvent: Subject<number> = new Subject<number>();
 
   // The action triggered on an item which identifier is 'identifier'.
-  @Output() public actionOnItemEvent: Subject<{ action: Action, productIdentifier: ProductIdentifier }> =
-  new Subject<{ action: Action, productIdentifier: ProductIdentifier }>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
+  new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
   @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
 
@@ -230,7 +230,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   // Emits which action is applied on which item/product
-  public triggerActionOnItem(actionOnItem: { action: Action, productIdentifier: ProductIdentifier }): void {
+  public triggerActionOnItem(actionOnItem: { action: Action, elementidentifier: ElementIdentifier }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
@@ -287,11 +287,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   // Emits the identifier of the hovered item/product
   public setConsultedItem(identifier: string) {
-    const productIdentifier: ProductIdentifier = {
+    const elementidentifier: ElementIdentifier = {
       idFieldName: this.fieldsConfiguration.idFieldName,
       idValue: identifier
     };
-    this.consultedItemEvent.next(productIdentifier);
+    this.consultedItemEvent.next(elementidentifier);
   }
 
   public setBorderStyle(borderStyle): void {

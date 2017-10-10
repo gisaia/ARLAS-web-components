@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { Action, ProductIdentifier } from '../utils/results.utils';
+import { Action, ElementIdentifier } from '../utils/results.utils';
 import { Column } from '../model/column';
 import { Item } from '../model/item';
 
@@ -15,8 +15,8 @@ export class ResultDetailedItemComponent implements OnInit {
   @Input() public idFieldName: string;
   @Input() public rowItem: Item;
 
-  @Output() public actionOnItemEvent: Subject<{action: Action, productIdentifier: ProductIdentifier}> =
-    new Subject<{action: Action, productIdentifier: ProductIdentifier}>();
+  @Output() public actionOnItemEvent: Subject<{action: Action, elementidentifier: ElementIdentifier}> =
+    new Subject<{action: Action, elementidentifier: ElementIdentifier}>();
 
   constructor() { }
 
@@ -25,7 +25,7 @@ export class ResultDetailedItemComponent implements OnInit {
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({action: action, productIdentifier: {idFieldName: this.idFieldName, idValue: this.rowItem.identifier}});
+    this.actionOnItemEvent.next({action: action, elementidentifier: {idFieldName: this.idFieldName, idValue: this.rowItem.identifier}});
   }
 
 }

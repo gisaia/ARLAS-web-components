@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
-import { Action, ProductIdentifier } from '../utils/results.utils';
+import { Action, ElementIdentifier } from '../utils/results.utils';
 
 import { Item } from '../model/item';
 import { Subject } from 'rxjs/Subject';
@@ -19,8 +19,8 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
   @Input() public detailHeight: number;
   @Input() public idFieldName: string;
 
-  @Output() public actionOnItemEvent: Subject<{ action: Action, productIdentifier: ProductIdentifier }> =
-  new Subject<{ action: Action, productIdentifier: ProductIdentifier }>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
+  new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
   public isDetailedDataShowed = false;
 
@@ -40,7 +40,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
   }
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
-  public triggerActionOnItem(actionOnItem: { action: Action, productIdentifier: ProductIdentifier }): void {
+  public triggerActionOnItem(actionOnItem: { action: Action, elementidentifier: ElementIdentifier }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
