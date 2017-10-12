@@ -28,7 +28,7 @@
     </ul>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [dataType]="dataType.time"
+    <arlas-histogram [dataType]="dataType.time" [showXLabels]=false [showYLabels]=false
                      [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
   </div>
 

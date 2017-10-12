@@ -1,5 +1,6 @@
 <div class="histogram" [ngClass]="customizedCssClass">
-    <div *ngIf="descriptionPosition === 0" class="histogram__description" [style.width.px]="chartWidth-margin.left-margin.right">
+    <div *ngIf="descriptionPosition === 0" class="histogram__description" [style.width.px]="chartWidth-margin.left-margin.right"
+        [style.margin-left.px]="margin.left" [style.margin-right.px]="margin.right">
         <div class="histogram__description--display">
           <div class="histogram__description__startvalue"><span class="histogram__description__startvalue--background">{{startValue}}</span></div>
           <div class="histogram__description__title"><span *ngIf="showTitle">{{chartTitle}}</span></div>
@@ -7,7 +8,8 @@
         </div>
     </div>
     <svg id="svgix" class="histogram__chart" [style.width.px]="chartWidth" [style.height.px]="chartHeight"></svg>
-    <div *ngIf="descriptionPosition === 1" class="histogram__description" [style.width.px]="chartWidth-margin.left-margin.right">
+    <div *ngIf="descriptionPosition === 1" class="histogram__description" [style.width.px]="chartWidth-margin.left-margin.right"
+        [style.margin-left.px]="margin.left" [style.margin-right.px]="margin.right">
         <div class="histogram__description--display">
           <div class="histogram__description__startvalue"><span class="histogram__description__startvalue--background">{{startValue}}</span></div>
           <div class="histogram__description__title"><span *ngIf="showTitle">{{chartTitle}}</span></div>

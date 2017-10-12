@@ -19,8 +19,8 @@ export class ResultsDemoComponent implements OnInit {
   constructor() {}
 
   public ngOnInit() {
-    this.fieldsConfiguration = {idFieldName: 'id', urlImageFieldName:
-    'urlImage', urlThumbnailFieldName: 'urlImage', titleFieldName: 'source'};
+    this.fieldsConfiguration = {idFieldName: 'id', urlImageTemplate:
+    'urlImage', urlThumbnailTemplate: 'urlImage', titleFieldName: 'source'};
     this.fieldsList = new Array<{columnName: string, fieldName: string, dataType: string}>();
 
     this.fieldsList.push({columnName: 'Source', fieldName: 'source', dataType: ''});
