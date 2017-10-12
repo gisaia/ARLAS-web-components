@@ -52,6 +52,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   @Input() public yLabels = 5;
   @Input() public barWeight = 0.6;
   @Input() public isSmoothedCurve = true;
+  @Input() public isHistogramSelectable = true;
   @Input() public intervalSelection: SelectedInputValues;
   @Input() public showXLabels = true;
   @Input() public showXTicks = true;
@@ -200,7 +201,8 @@ export class HistogramComponent implements OnInit, OnChanges {
       [(this.chartDimensions).width, (this.chartDimensions).height]]);
       const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
       const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
-      this.context.append('g')
+      if (this.isHistogramSelectable) {
+        this.context.append('g')
         .attr('class', 'brush')
         .call(this.selectionBrush).call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
       if (this.chartType === ChartType.bars) {
@@ -208,6 +210,7 @@ export class HistogramComponent implements OnInit, OnChanges {
       }
       this.handleOnBrushingEvent(this.selectionBrush, this.chartAxes);
       this.handleEndOfBrushingEvent(this.selectionBrush, this.chartAxes);
+      }
 
     } else {
       this.startValue = '';
