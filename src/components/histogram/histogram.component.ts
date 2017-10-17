@@ -25,7 +25,7 @@ import { SelectedInputValues } from './histogram.utils';
 export class HistogramComponent implements OnInit, OnChanges {
 
 
-  public margin: MarginModel = { top: 4, right: 20, bottom: 20, left: 60 };
+  public margin: MarginModel = { top: 4, right: 10, bottom: 20, left: 60 };
   public startValue: string = null;
   public endValue: string = null;
   public showTooltip = false;
@@ -52,6 +52,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   @Input() public yLabels = 5;
   @Input() public barWeight = 0.6;
   @Input() public isSmoothedCurve = true;
+  @Input() public isHistogramSelectable = true;
   @Input() public intervalSelection: SelectedInputValues;
   @Input() public showXLabels = true;
   @Input() public showXTicks = true;
@@ -89,6 +90,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   private minusSign = 1;
   // yDimension = 0 for one dimension charts
   private yDimension = 1;
+  private tooltipxPositionWeight = 40;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
 
@@ -117,8 +119,24 @@ export class HistogramComponent implements OnInit, OnChanges {
     }
   }
 
-  public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
-    this.inputData = inputData;
+  public setHistogramMargins() {
+    // tighten right and bottom margins when X labels are not shown
+    if (!this.showXLabels) {
+      this.margin.bottom = 5;
+      this.margin.right = 0;
+    }
+
+    // tighten left margin when Y labels are not shown
+    // for oneDimension, left margin is tightened only if showYLabels = true
+    if (!this.showYLabels || (!this.showYLabels && this.chartType === ChartType.oneDimension)) {
+      this.tooltipxPositionWeight = -15;
+      if (this.showXLabels) {
+        this.margin.left = 10;
+      } else {
+        this.margin.left = 5;
+      }
+    }
+
     // set chartWidth value equal to container width when it is not specified by the user
     if (this.chartWidth === null) {
       this.chartWidth = this.el.nativeElement.childNodes[0].offsetWidth;
@@ -142,6 +160,14 @@ export class HistogramComponent implements OnInit, OnChanges {
         this.chartHeight = this.chartHeight + this.margin.top + this.margin.bottom;
       }
     }
+
+
+  }
+
+  public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
+    this.inputData = inputData;
+
+    this.setHistogramMargins();
 
     // if there is data already ploted, remove it
     if (this.context) {
@@ -175,7 +201,8 @@ export class HistogramComponent implements OnInit, OnChanges {
       [(this.chartDimensions).width, (this.chartDimensions).height]]);
       const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
       const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
-      this.context.append('g')
+      if (this.isHistogramSelectable) {
+        this.context.append('g')
         .attr('class', 'brush')
         .call(this.selectionBrush).call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
       if (this.chartType === ChartType.bars) {
@@ -183,6 +210,7 @@ export class HistogramComponent implements OnInit, OnChanges {
       }
       this.handleOnBrushingEvent(this.selectionBrush, this.chartAxes);
       this.handleEndOfBrushingEvent(this.selectionBrush, this.chartAxes);
+      }
 
     } else {
       this.startValue = '';
@@ -446,7 +474,8 @@ export class HistogramComponent implements OnInit, OnChanges {
       .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
       .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + marginTopBottom + ')')
       .on('mousemove', function (d) {
-        _thisComponent.setTooltipPosition(40, -40, d, <d3.ContainerElement>this);
+
+        _thisComponent.setTooltipPosition(_thisComponent.tooltipxPositionWeight, -40, d, <d3.ContainerElement>this);
       })
       .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
   }
