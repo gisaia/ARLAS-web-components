@@ -645,12 +645,14 @@ export class HistogramComponent implements OnInit, OnChanges {
   private parseSelectedValues(selectedValues: SelectedInputValues): SelectedOutputValues {
     const parsedSelectedValues: SelectedOutputValues = { startvalue: null, endvalue: null };
     if (this.dataType === DataType.time) {
-      let multiplier = 1;
-      if (this.dateUnit === DateUnit.second) {
-        multiplier = 1000;
+      if (this.dateUnit === DateUnit.second && (typeof (<Date>selectedValues.startvalue).getMonth !== 'function')) {
+        const multiplier = 1000;
+        parsedSelectedValues.startvalue = new Date(<number>selectedValues.startvalue * multiplier);
+        parsedSelectedValues.endvalue = new Date(<number>selectedValues.endvalue * multiplier);
+      } else if ((typeof (<Date>selectedValues.startvalue).getMonth === 'function')) {
+        parsedSelectedValues.startvalue = new Date(<Date>selectedValues.startvalue);
+        parsedSelectedValues.endvalue = new Date(<Date>selectedValues.endvalue);
       }
-      parsedSelectedValues.startvalue = new Date(selectedValues.startvalue * multiplier);
-      parsedSelectedValues.endvalue = new Date(selectedValues.endvalue * multiplier);
       return parsedSelectedValues;
     } else {
       return selectedValues;
