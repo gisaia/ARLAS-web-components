@@ -27,12 +27,12 @@ export class ResultFilterComponent implements OnInit, OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['filtersMap'] !== undefined) {
       if (changes['filtersMap'].currentValue !== undefined) {
-        if(changes['filtersMap'].currentValue!==changes['filtersMap'].previousValue){
-            if(changes['filtersMap'].currentValue.get(this.column.fieldName)!==undefined){
-              if(this.inputValue!==changes['filtersMap'].currentValue.get(this.column.fieldName)){
-                this.inputValue=changes['filtersMap'].currentValue.get(this.column.fieldName);
-              }
+        if (changes['filtersMap'].currentValue !== changes['filtersMap'].previousValue) {
+          if (changes['filtersMap'].currentValue.get(this.column.fieldName) !== undefined) {
+            if (this.inputValue !== changes['filtersMap'].currentValue.get(this.column.fieldName)) {
+              this.inputValue = changes['filtersMap'].currentValue.get(this.column.fieldName);
             }
+          }
         }
       }
     }
