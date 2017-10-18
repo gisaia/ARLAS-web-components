@@ -37,7 +37,6 @@ export enum drawType {
 })
 
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
-  public textButton = 'Add GeoBox';
   public map: any;
   private emptyData = {
     'type': 'FeatureCollection',
@@ -49,7 +48,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private west: number;
   private south: number;
   private zoom: number;
-  private isGeoBox = false;
+  private isGeoBox;
   private isCircle = false;
   private isGeoHash = false;
   private start: mapboxgl.Point;
@@ -58,7 +57,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private current: mapboxgl.Point;
   private startlngLat: any;
   private endlngLat: any;
-  private geoboxdata: { type: string, features: Array<any> } = this.emptyData;
   private maxCountValue = 0;
   private cluster: any;
   private showAllFeature = false;
@@ -78,6 +76,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public margePanForLoad: number;
   @Input() public margePanForTest: number;
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public geoboxdata: { type: string, features: Array<any> } = this.emptyData;
+
   @Input() public idFeatureField: string;
   @Input() public boundsToFit: Array<Array<number>>;
   @Input() public fitBoundsOffSet: Array<number> = [0, 0];
@@ -103,7 +103,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.geoboxdata = this.emptyData;
         this.map.getSource('geobox').setData(this.geoboxdata);
         this.isGeoBox = false;
-        this.textButton = 'Add GeoBox';
       }
     });
   }
@@ -155,16 +154,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-
-      this.map.addSource('cluster', {
-        'type': 'geojson',
-        'data': this.geojsondata
-      });
       // Add GeoBox Source
       this.map.addSource('geobox', {
         'type': 'geojson',
         'data': this.geoboxdata
       });
+      this.map.addSource('cluster', {
+        'type': 'geojson',
+        'data': this.geojsondata
+      });
+
       // Add GeoBox Lae-yer
       this.map.addLayer({
         'id': 'geobox',
@@ -426,12 +425,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     });
+
   }
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
       this.map.getCanvas().style.cursor = 'crosshair';
-      this.textButton = 'Remove GeoBox';
     } else {
       this.map.getCanvas().style.cursor = '';
       this.geoboxdata = {
@@ -440,7 +439,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
       this.map.getSource('geobox').setData(this.geoboxdata);
       this.onRemoveBbox.next(true);
-      this.textButton = 'Add GeoBox';
     }
   }
 

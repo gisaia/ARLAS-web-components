@@ -1,6 +1,7 @@
 <div id="mapgl">
 </div>
-<md-basic-chip class='arlas-gl-geobox-chip' (click)="toggleGeoBox()">{{this.textButton}}</md-basic-chip>
+<md-basic-chip [hidden]="geoboxdata?.features.length>0" class='arlas-gl-geobox-chip' (click)="toggleGeoBox()">Add GeoBox</md-basic-chip>
+<md-basic-chip [hidden]="geoboxdata?.features.length==0" class='arlas-gl-geobox-chip' (click)="toggleGeoBox()">Remove GeoBox</md-basic-chip>
 
 
 
