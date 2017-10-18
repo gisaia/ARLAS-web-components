@@ -35,6 +35,10 @@ export class HistogramComponent implements OnInit, OnChanges {
   public tooltipXContent: string;
   public tooltipYContent: string;
 
+  public inputData: Array<{ key: number, value: number }>;
+  public dataLength;
+  public displaySvg = 'none';
+
   @Input() public xTicks = 5;
   @Input() public yTicks = 5;
   @Input() public chartType: ChartType = ChartType.area;
@@ -73,7 +77,6 @@ export class HistogramComponent implements OnInit, OnChanges {
   private selectionInterval: SelectedOutputValues = { startvalue: null, endvalue: null };
   private selectionBrush: d3.BrushBehavior<any>;
   private chartAxes: ChartAxes;
-  private inputData: Array<{ key: number, value: number }>;
   private chartDimensions: ChartDimensions;
   private hasSelectionExceededData = false;
   private fromSetInterval = false;
@@ -106,7 +109,7 @@ export class HistogramComponent implements OnInit, OnChanges {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     if (this.data !== undefined) {
       this.plotHistogram(this.data);
-      if (this.intervalSelection !== undefined) {
+      if (this.intervalSelection !== undefined && this.data.length > 0) {
         this.setSelectedInterval(this.intervalSelection);
       }
       this.fromSetInterval = false;
@@ -167,6 +170,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
     this.inputData = inputData;
 
+
     this.setHistogramMargins();
 
     // if there is data already ploted, remove it
@@ -178,9 +182,11 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.barsContext.remove();
     }
 
+
     let data: Array<HistogramData>;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
       data = this.parseDataKey(inputData);
+      this.dataLength =  data.length;
 
       if (this.startValue == null) {
         this.startValue = this.toString(data[0].key);
@@ -314,6 +320,11 @@ export class HistogramComponent implements OnInit, OnChanges {
   }
 
   private initializeChartDimensions(): ChartDimensions {
+    if (this.dataLength > 1) {
+      this.displaySvg = 'block';
+    } else {
+      this.displaySvg = 'none';
+    }
     const svg = d3.select(this.histogramNode).select('svg');
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;

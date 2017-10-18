@@ -46,6 +46,12 @@
     text-align: right;
 }
 
+.histogram__no-chart__key, .histogram__no-chart__value {
+  display: block;
+  text-align: center;
+  padding: 5px;
+}
+
 .histogram__description__startvalue--background, .histogram__description__endvalue--background {
     background: rgba(220, 220, 220, 0.8);
 }
