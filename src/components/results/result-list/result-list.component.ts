@@ -82,6 +82,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   // Hide Body table.
   @Input() public isGeoSortActived = false;
 
+
+    // The searchedFieldsEvent emits a list of fieldName-fieldValue
+  @Input() public filtersMap: Map<string, string | number | Date>;
+
   // Sorting a column event.
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
   new Subject<{ fieldName: string, sortDirection: SortEnum }>();
@@ -110,7 +114,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
-  public filtersMap: Map<string, string | number | Date>;
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
 
   // Heights of table elements
@@ -362,7 +365,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
-    this.filtersMap = new Map<string, string | number | Date>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
     this.fieldsList.forEach(field => {

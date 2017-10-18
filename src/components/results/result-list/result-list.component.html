@@ -46,7 +46,7 @@
       </ng-container>
     </tr>
     <tr class="resultlist__tools">
-      <td [colSpan]="columns.length" [style.width.px]="tableWidth">
+      <td [colSpan]="columns?.length" [style.width.px]="tableWidth">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
             <div class="resultgrid--checkbox">
@@ -88,7 +88,7 @@
       </td>
     </tr>
     <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null && resultMode==ModeEnum.grid">
-      <td class="resultlist__grid-detail--td" [colSpan]="columns.length">
+      <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
           [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
         </arlas-result-detailed-grid>
