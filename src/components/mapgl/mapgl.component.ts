@@ -6,11 +6,9 @@ import {
   SimpleChanges, EventEmitter, OnChanges
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
-
 import { Subject } from 'rxjs/Subject';
 import * as tinycolor from 'tinycolor2';
 import { paddedBounds, xyz } from './mapgl.component.util';
-import { LngLat } from 'mapbox-gl';
 import { element } from 'protractor';
 import { DoCheck, IterableDiffers } from '@angular/core';
 
