@@ -18,8 +18,8 @@ export interface SelectedOutputValues {
 }
 
 export interface SelectedInputValues {
-  startvalue: number;
-  endvalue: number;
+  startvalue: Date | number;
+  endvalue: Date | number;
 }
 
 export interface ChartDimensions {

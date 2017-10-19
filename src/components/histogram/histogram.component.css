@@ -46,6 +46,12 @@
     text-align: right;
 }
 
+.histogram__no-chart__key, .histogram__no-chart__value {
+  display: block;
+  text-align: center;
+  padding: 5px;
+}
+
 .histogram__description__startvalue--background, .histogram__description__endvalue--background {
     background: rgba(220, 220, 220, 0.8);
 }
@@ -120,4 +126,17 @@
 .histogram__labels-axis__hidden {
   display: none;
 }
+
+.histogram__brush--handles {
+  stroke: #868686;
+  fill: #868686;
+  opacity: 0.5;
+  display: none;
+}
+
+.brush:hover .histogram__brush--handles {
+  display: block;
+}
+
+
 
