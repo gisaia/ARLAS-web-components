@@ -127,3 +127,16 @@
   display: none;
 }
 
+.histogram__brush--handles {
+  stroke: #868686;
+  fill: #868686;
+  opacity: 0.5;
+  display: none;
+}
+
+.brush:hover .histogram__brush--handles {
+  display: block;
+}
+
+
+

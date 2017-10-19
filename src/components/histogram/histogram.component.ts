@@ -36,8 +36,10 @@ export class HistogramComponent implements OnInit, OnChanges {
   public tooltipYContent: string;
 
   public inputData: Array<{ key: number, value: number }>;
-  public dataLength;
+  public dataLength: number;
   public displaySvg = 'none';
+  public brushHandles;
+  public brushHandlesHeight: number = null;
 
   @Input() public xTicks = 5;
   @Input() public yTicks = 5;
@@ -65,6 +67,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   @Input() public descriptionPosition: Position = Position.bottom;
   @Input() public xAxisPosition: Position = Position.bottom;
   @Input() public paletteColors: [number, number] | string = null;
+  @Input() public brushHandlesHeightWeight = 1 / 2;
 
 
   @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
@@ -126,7 +129,7 @@ export class HistogramComponent implements OnInit, OnChanges {
     // tighten right and bottom margins when X labels are not shown
     if (!this.showXLabels) {
       this.margin.bottom = 5;
-      this.margin.right = 0;
+      this.margin.right = 7;
     }
 
     // tighten left margin when Y labels are not shown
@@ -136,8 +139,13 @@ export class HistogramComponent implements OnInit, OnChanges {
       if (this.showXLabels) {
         this.margin.left = 10;
       } else {
-        this.margin.left = 5;
+        this.margin.left = 7;
       }
+    }
+
+    if (!this.isHistogramSelectable) {
+      this.margin.right = 0;
+      this.margin.left = 5;
     }
 
     // set chartWidth value equal to container width when it is not specified by the user
@@ -170,7 +178,6 @@ export class HistogramComponent implements OnInit, OnChanges {
   public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
     this.inputData = inputData;
 
-
     this.setHistogramMargins();
 
     // if there is data already ploted, remove it
@@ -181,7 +188,6 @@ export class HistogramComponent implements OnInit, OnChanges {
     if (this.barsContext) {
       this.barsContext.remove();
     }
-
 
     let data: Array<HistogramData>;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
@@ -205,24 +211,14 @@ export class HistogramComponent implements OnInit, OnChanges {
       }
       this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth * this.yDimension, 0],
       [(this.chartDimensions).width, (this.chartDimensions).height]]);
-      const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
-      const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
-      if (this.isHistogramSelectable) {
-        this.context.append('g')
-        .attr('class', 'brush')
-        .call(this.selectionBrush).call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
-      if (this.chartType === ChartType.bars) {
-        this.applyStyleOnSelectedBars();
-      }
-      this.handleOnBrushingEvent(this.selectionBrush, this.chartAxes);
-      this.handleEndOfBrushingEvent(this.selectionBrush, this.chartAxes);
-      }
 
+      if (this.isHistogramSelectable) {
+        this.addSelectionBrush();
+      }
     } else {
       this.startValue = '';
       this.endValue = '';
     }
-
     this.plottingCount++;
   }
 
@@ -235,6 +231,48 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.chartHeight = this.el.nativeElement.childNodes[0].offsetHeight;
     }
     this.plotHistogram(this.inputData);
+  }
+
+  private addSelectionBrush(): void {
+
+    const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
+    const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
+    const _thisComponent =  this;
+    const brush = this.context.append('g')
+      .attr('class', 'brush')
+      .call(this.selectionBrush);
+
+    this.handleStartOfBrushingEvent();
+
+    const brushResizePath = function(d) {
+        const e = +(d.type === 'e'),
+            x = e ? 1 : -1,
+            y = _thisComponent.brushHandlesHeight;
+        return 'M' + (.5 * x) + ',' + y
+            + 'A6,6 0 0 ' + e + ' ' + (6.5 * x) + ',' + (y + 6)
+            + 'V' + (2 * y - 6) + 'A6,6 0 0 ' + e + ' ' + (.5 * x) + ',' + (2 * y)
+            + 'Z'
+            + 'M' + (2.5 * x) + ',' + (y + 8)
+            + 'V' + (2 * y - 8)
+            + 'M' + (4.5 * x) + ',' + (y + 8)
+            + 'V' + (2 * y - 8);
+    };
+
+    this.brushHandles = brush.selectAll('.histogram__brush--handles')
+    .data([{type: 'w'}, {type: 'e'}])
+    .enter().append('path')
+      .attr('class', 'histogram__brush--handles')
+      .attr('stroke', '#000')
+      .attr('cursor', 'ew-resize')
+      .attr('d', brushResizePath);
+
+    brush.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
+
+    if (this.chartType === ChartType.bars) {
+      this.applyStyleOnSelectedBars();
+    }
+    this.handleOnBrushingEvent();
+    this.handleEndOfBrushingEvent();
   }
 
   private getColor(zeroToOne: number): tinycolorInstance {
@@ -321,10 +359,10 @@ export class HistogramComponent implements OnInit, OnChanges {
 
   private initializeChartDimensions(): ChartDimensions {
     if (this.dataLength > 1) {
-      this.displaySvg = 'block';
-    } else {
-      this.displaySvg = 'none';
-    }
+        this.displaySvg = 'block';
+      } else {
+        this.displaySvg = 'none';
+      }
     const svg = d3.select(this.histogramNode).select('svg');
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;
@@ -550,12 +588,37 @@ export class HistogramComponent implements OnInit, OnChanges {
     this.tooltipHorizontalPosition = (xy[1] + dy) + 'px';
   }
 
-  private handleOnBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
-    selectionbrush.on('brush', (datum: any, index: number) => {
+  private translateBrushHandles(selection: any) {
+    const xTranslation = this.brushHandlesHeight - (this.chartDimensions.height - this.brushHandlesHeight) / 2;
+    if (selection !== null) {
+      const sx = selection.map(this.chartAxes.xDomain.invert);
+      this.brushHandles.attr('display', null).attr('transform', function(d, i) { console.log(selection[i]);
+       return 'translate(' + [ selection[i], -xTranslation] + ')'; });
+
+    } else {
+      this.brushHandles.attr('display', 'none');
+    }
+  }
+
+  private handleStartOfBrushingEvent(): void {
+    if (this.brushHandlesHeightWeight <= 1 && this.brushHandlesHeightWeight > 0 ) {
+      this.brushHandlesHeight = this.chartDimensions.height * this.brushHandlesHeightWeight;
+    } else {
+      this.brushHandlesHeight = this.chartDimensions.height;
+    }
+    this.selectionBrush.on('start', () => {
+      const selection = d3.event.selection;
+      this.translateBrushHandles(selection);
+    });
+  }
+
+  private handleOnBrushingEvent(): void {
+    const _thisComponent = this;
+    this.selectionBrush.on('brush', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
-        this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-        this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
+        this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
+        this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
         this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
         this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
         this.showTitle = false;
@@ -564,22 +627,24 @@ export class HistogramComponent implements OnInit, OnChanges {
           this.applyStyleOnSelectedBars();
         }
       }
+      this.translateBrushHandles(selection);
     });
   }
 
-  private handleEndOfBrushingEvent(selectionbrush: d3.BrushBehavior<any>, chartAxes: ChartAxes): void {
+  private handleEndOfBrushingEvent(): void {
     const _thisComponent = this;
-    selectionbrush.on('end', (datum: any, index: number) => {
+    this.selectionBrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
-        this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-        this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
+        this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
+        this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
         this.startValue = this.toString(this.selectionInterval.startvalue);
         this.endValue = this.toString(this.selectionInterval.endvalue);
         if (!this.fromSetInterval) {
           this.valuesChangedEvent.next(this.selectionInterval);
         }
         this.showTitle = true;
+
       }
     });
   }
