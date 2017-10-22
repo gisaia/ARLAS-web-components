@@ -1,4 +1,3 @@
-import { constructDependencies } from '@angular/core/src/di/reflective_provider';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { bboxes } from 'ngeohash';
 import {
@@ -64,36 +63,37 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public sizeClusterlabel = 12;
   @Input() public initZoom = 2;
   @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
-  @Input() public drawType: drawType = drawType.CIRCLE;
+  @Input() public drawType: drawType;
   @Input() public countPath = 'point_count';
   @Input() public countNormalizePath = 'point_count_normalize';
   @Input() public paintRuleGeoBox: Object = {};
-  @Input() public paintRuleCLusterFeatureFill: Object = {};
-  @Input() public paintRuleClusterFeatureLine: Object = {};
+  @Input() public paintRuleFeatureFill: Object = {};
+  @Input() public paintRuleFeatureLine: Object = {};
   @Input() public paintRuleClusterCircle: Object = {};
+  @Input() public paintRuleClusterLineRectangle: Object = {};
+  @Input() public paintRuleClusterFillRectangle: Object = {};
+  @Input() public paintRuleFeatureCirclePoint: Object = {};
   @Input() public margePanForLoad: number;
   @Input() public margePanForTest: number;
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
   @Input() public geoboxdata: { type: string, features: Array<any> } = this.emptyData;
-
   @Input() public idFeatureField: string;
   @Input() public boundsToFit: Array<Array<number>>;
   @Input() public fitBoundsOffSet: Array<number> = [0, 0];
-  @Input() public redrawTile: Subject<boolean> = new Subject<boolean>();
-
   @Input() public fitBoundsMaxZoom = 22;
   @Input() public featureToHightLight: {
     isleaving: boolean,
     elementidentifier: ElementIdentifier
   };
   @Input() public featuresToSelect: Array<ElementIdentifier>;
-
+  @Input() public zoomToPrecisionCluster:Object;
+  @Input() private maxPrecision:number;
+  @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
   @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
-
 
   constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -174,73 +174,27 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       if (this.drawType === drawType.RECTANGLE) {
         this.map.addLayer({
-          'id': 'geohash',
+          'id': 'cluster',
           'type': 'fill',
           'source': 'cluster',
           'layout': {
             'visibility': 'visible'
           },
-          'paint': {
-            'fill-color': {
-              'type': 'identity',
-              'property': 'color'
-            },
-            'fill-opacity': 0.7
+          'paint': this.paintRuleClusterFillRectangle,
+          'filter': ['==', '$type', 'Polygon'],
+        });
+
+        this.map.addLayer({
+          'id': 'cluster-line',
+          'type': 'line',
+          'source': 'cluster',
+          'layout': {
+            'visibility': 'visible'
           },
+          'paint': this.paintRuleClusterLineRectangle,
           'filter': ['==', '$type', 'Polygon'],
         });
       } else {
-        this.map.addLayer({
-          'id': 'features-line',
-          'type': 'line',
-          'source': 'cluster',
-          'filter': [
-            'all', ['!=', '$type', 'Point']
-          ],
-          'paint': this.paintRuleClusterFeatureLine
-        });
-        this.map.addLayer({
-          'id': 'features-line-select',
-          'type': 'line',
-          'source': 'cluster',
-          'layout': {
-            'visibility': 'none'
-          },
-          'filter': [
-            'all', ['!=', '$type', 'Point']
-          ],
-          'paint': {
-            'line-color': this.paintRuleClusterFeatureLine['line-color'],
-            'line-opacity': this.paintRuleClusterFeatureLine['line-opacity'],
-            'line-width': 4
-          }
-        });
-        this.map.addLayer({
-          'id': 'features-fill-hover',
-          'type': 'fill',
-          'source': 'cluster',
-          'layout': {
-            'visibility': 'none'
-          },
-          'filter': [
-            'all', ['!=', '$type', 'Point']
-          ],
-          'paint': {
-            'fill-color': this.paintRuleCLusterFeatureFill['fill-color'],
-            'fill-opacity': 0.9,
-          }
-        });
-
-
-        this.map.addLayer({
-          'id': 'features-fill',
-          'type': 'fill',
-          'source': 'cluster',
-          'filter': [
-            'all', ['!=', '$type', 'Point']
-          ],
-          'paint': this.paintRuleCLusterFeatureFill
-        });
         this.map.addLayer({
           'id': 'cluster',
           'type': 'circle',
@@ -275,6 +229,77 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           }
         });
       }
+
+
+      this.map.addLayer({
+        'id': 'features-line',
+        'type': 'line',
+        'source': 'cluster',
+        'filter': [
+          'all', ['!=', '$type', 'Point']
+        ],
+        'paint': this.paintRuleFeatureLine
+      });
+      this.map.addLayer({
+        'id': 'features-line-select',
+        'type': 'line',
+        'source': 'cluster',
+        'layout': {
+          'visibility': 'none'
+        },
+        'filter': [
+          'all', ['!=', '$type', 'Point']
+        ],
+        'paint': {
+          'line-color': this.paintRuleFeatureLine['line-color'],
+          'line-opacity': this.paintRuleFeatureLine['line-opacity'],
+          'line-width': 4
+        }
+      });
+      this.map.addLayer({
+        'id': 'features-fill-hover',
+        'type': 'fill',
+        'source': 'cluster',
+        'layout': {
+          'visibility': 'none'
+        },
+        'filter': [
+          'all', ['!=', '$type', 'Point']
+        ],
+        'paint': {
+          'fill-color': this.paintRuleFeatureFill['fill-color'],
+          'fill-opacity': 0.9,
+        }
+      });
+      this.map.addLayer({
+        'id': 'features-fill',
+        'type': 'fill',
+        'source': 'cluster',
+        'filter': [
+          'all', ['!=', '$type', 'Point']
+        ],
+        'paint': this.paintRuleFeatureFill
+      });
+
+
+      this.map.addLayer({
+        'id': 'features-point',
+        'type': 'circle',
+        'source': 'cluster',
+        'filter': [
+          'all', [
+            '!has',
+            this.countPath,
+          ], ['==', '$type', 'Point']
+        ],
+        'paint': this.paintRuleFeatureCirclePoint
+
+      });
+
+      this.map.on('click', 'features-point', (e) => {
+        this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
+      });
+
       this.map.on('click', 'features-fill', (e) => {
         this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
       });
@@ -285,6 +310,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.on('mouseleave', 'features-fill', (e) => {
         this.onFeatureOver.next([]);
       });
+
+      this.map.on('mousemove', 'features-point', (e) => {
+        this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
+      });
+      this.map.on('mouseleave', 'features-point', (e) => {
+        this.onFeatureOver.next([]);
+      });
+
+
       this.map.on('click', 'cluster', (e) => {
         if (e.features[0].properties.cluster_id !== undefined) {
           const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
@@ -425,6 +459,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
 
   }
+
+    private getPrecisionFromZoom(zoom: number): number {
+        if(this.zoomToPrecisionCluster[Math.ceil(zoom) - 1]!==undefined){
+                return this.zoomToPrecisionCluster[Math.ceil(zoom) - 1]
+        }else{
+            return this.maxPrecision;
+        }
+    }
+
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
@@ -453,7 +496,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           featureToHightLight.elementidentifier.idValue]]
         );
       } else {
-
         this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
           featureToHightLight.elementidentifier.idFieldName,
           ' ']]);
@@ -575,21 +617,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
-    }
-  }
-  private getPrecisionFromZoom(zoom: number): number {
-    if (zoom >= 0 && zoom < 3) {
-      return 1;
-    } else if (zoom >= 3 && zoom < 5) {
-      return 2;
-    } else if (zoom >= 5 && zoom < 7) {
-      return 3;
-    } else if (zoom >= 7 && zoom < 10) {
-      return 4;
-    } else if (zoom >= 10 && zoom < 11) {
-      return 5;
-    } else {
-      return 6;
     }
   }
 }
