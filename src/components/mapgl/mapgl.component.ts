@@ -11,7 +11,6 @@ import { paddedBounds, xyz } from './mapgl.component.util';
 import { element } from 'protractor';
 import { DoCheck, IterableDiffers } from '@angular/core';
 
-
 export interface OnMoveResult {
   zoom: number;
   center: Array<number>;
@@ -86,8 +85,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     elementidentifier: ElementIdentifier
   };
   @Input() public featuresToSelect: Array<ElementIdentifier>;
-  @Input() public zoomToPrecisionCluster:Object;
-  @Input() private maxPrecision:number;
+  @Input() public zoomToPrecisionCluster: Object;
+  @Input() private maxPrecision: number;
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
@@ -460,14 +459,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-    private getPrecisionFromZoom(zoom: number): number {
-        if(this.zoomToPrecisionCluster[Math.ceil(zoom) - 1]!==undefined){
-                return this.zoomToPrecisionCluster[Math.ceil(zoom) - 1]
-        }else{
-            return this.maxPrecision;
-        }
-    }
-
   public toggleGeoBox() {
     this.isGeoBox = !this.isGeoBox;
     if (this.isGeoBox) {
@@ -617,6 +608,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
+    }
+  }
+  private getPrecisionFromZoom(zoom: number): number {
+    if (this.zoomToPrecisionCluster[Math.ceil(zoom) - 1] !== undefined) {
+      return this.zoomToPrecisionCluster[Math.ceil(zoom) - 1];
+    } else {
+      return this.maxPrecision;
     }
   }
 }
