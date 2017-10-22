@@ -192,7 +192,7 @@ export class HistogramComponent implements OnInit, OnChanges {
     let data: Array<HistogramData>;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
       data = this.parseDataKey(inputData);
-      this.dataLength =  data.length;
+      this.dataLength = data.length;
 
       if (this.startValue == null) {
         this.startValue = this.toString(data[0].key);
@@ -237,30 +237,30 @@ export class HistogramComponent implements OnInit, OnChanges {
 
     const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
     const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
-    const _thisComponent =  this;
+    const _thisComponent = this;
     const brush = this.context.append('g')
       .attr('class', 'brush')
       .call(this.selectionBrush);
 
     this.handleStartOfBrushingEvent();
 
-    const brushResizePath = function(d) {
-        const e = +(d.type === 'e'),
-            x = e ? 1 : -1,
-            y = _thisComponent.brushHandlesHeight;
-        return 'M' + (.5 * x) + ',' + y
-            + 'A6,6 0 0 ' + e + ' ' + (6.5 * x) + ',' + (y + 6)
-            + 'V' + (2 * y - 6) + 'A6,6 0 0 ' + e + ' ' + (.5 * x) + ',' + (2 * y)
-            + 'Z'
-            + 'M' + (2.5 * x) + ',' + (y + 8)
-            + 'V' + (2 * y - 8)
-            + 'M' + (4.5 * x) + ',' + (y + 8)
-            + 'V' + (2 * y - 8);
+    const brushResizePath = function (d) {
+      const e = +(d.type === 'e'),
+        x = e ? 1 : -1,
+        y = _thisComponent.brushHandlesHeight;
+      return 'M' + (.5 * x) + ',' + y
+        + 'A6,6 0 0 ' + e + ' ' + (6.5 * x) + ',' + (y + 6)
+        + 'V' + (2 * y - 6) + 'A6,6 0 0 ' + e + ' ' + (.5 * x) + ',' + (2 * y)
+        + 'Z'
+        + 'M' + (2.5 * x) + ',' + (y + 8)
+        + 'V' + (2 * y - 8)
+        + 'M' + (4.5 * x) + ',' + (y + 8)
+        + 'V' + (2 * y - 8);
     };
 
     this.brushHandles = brush.selectAll('.histogram__brush--handles')
-    .data([{type: 'w'}, {type: 'e'}])
-    .enter().append('path')
+      .data([{ type: 'w' }, { type: 'e' }])
+      .enter().append('path')
       .attr('class', 'histogram__brush--handles')
       .attr('stroke', '#000')
       .attr('cursor', 'ew-resize')
@@ -359,10 +359,10 @@ export class HistogramComponent implements OnInit, OnChanges {
 
   private initializeChartDimensions(): ChartDimensions {
     if (this.dataLength > 1) {
-        this.displaySvg = 'block';
-      } else {
-        this.displaySvg = 'none';
-      }
+      this.displaySvg = 'block';
+    } else {
+      this.displaySvg = 'none';
+    }
     const svg = d3.select(this.histogramNode).select('svg');
     const margin = this.margin;
     const width = +this.chartWidth - this.margin.left - this.margin.right;
@@ -592,8 +592,9 @@ export class HistogramComponent implements OnInit, OnChanges {
     const xTranslation = this.brushHandlesHeight - (this.chartDimensions.height - this.brushHandlesHeight) / 2;
     if (selection !== null) {
       const sx = selection.map(this.chartAxes.xDomain.invert);
-      this.brushHandles.attr('display', null).attr('transform', function(d, i) { console.log(selection[i]);
-       return 'translate(' + [ selection[i], -xTranslation] + ')'; });
+      this.brushHandles.attr('display', null).attr('transform', function (d, i) {
+        return 'translate(' + [selection[i], -xTranslation] + ')';
+      });
 
     } else {
       this.brushHandles.attr('display', 'none');
@@ -601,7 +602,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   }
 
   private handleStartOfBrushingEvent(): void {
-    if (this.brushHandlesHeightWeight <= 1 && this.brushHandlesHeightWeight > 0 ) {
+    if (this.brushHandlesHeightWeight <= 1 && this.brushHandlesHeightWeight > 0) {
       this.brushHandlesHeight = this.chartDimensions.height * this.brushHandlesHeightWeight;
     } else {
       this.brushHandlesHeight = this.chartDimensions.height;
@@ -728,6 +729,9 @@ export class HistogramComponent implements OnInit, OnChanges {
       } else if ((typeof (<Date>selectedValues.startvalue).getMonth === 'function')) {
         parsedSelectedValues.startvalue = new Date(<Date>selectedValues.startvalue);
         parsedSelectedValues.endvalue = new Date(<Date>selectedValues.endvalue);
+      } else {
+        parsedSelectedValues.startvalue = new Date(<number>selectedValues.startvalue);
+        parsedSelectedValues.endvalue = new Date(<number>selectedValues.endvalue);
       }
       return parsedSelectedValues;
     } else {
