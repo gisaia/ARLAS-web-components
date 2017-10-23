@@ -194,11 +194,11 @@ export class HistogramComponent implements OnInit, OnChanges {
       data = this.parseDataKey(inputData);
       this.dataLength = data.length;
 
-      if (this.startValue == null) {
+      if (this.startValue == null || this.startValue === '') {
         this.startValue = this.toString(data[0].key);
         this.selectionInterval.startvalue = data[0].key;
       }
-      if (this.endValue == null) {
+      if (this.endValue == null || this.endValue === '') {
         this.endValue = this.toString(data[data.length - 1].key);
         this.selectionInterval.endvalue = data[data.length - 1].key;
       }
@@ -218,6 +218,7 @@ export class HistogramComponent implements OnInit, OnChanges {
     } else {
       this.startValue = '';
       this.endValue = '';
+      this.dataLength = 0;
     }
     this.plottingCount++;
   }
