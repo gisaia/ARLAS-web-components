@@ -44,7 +44,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private west: number;
   private south: number;
   private zoom: number;
-  private isGeoBox;
+  private isDrawingBbox = false;
   private isCircle = false;
   private isGeoHash = false;
   private start: mapboxgl.Point;
@@ -99,7 +99,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (value) {
         this.geoboxdata = this.emptyData;
         this.map.getSource('geobox').setData(this.geoboxdata);
-        this.isGeoBox = false;
       }
     });
   }
@@ -121,6 +120,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.geojsondata = changes['geojsondata'].currentValue;
           this.map.getSource('cluster').setData(this.geojsondata);
           this.maxCountValue = 0;
+        }
+      }
+      if (this.map.getSource('geobox') !== undefined) {
+        if (changes['geoboxdata'] !== undefined) {
+          this.map.getSource('geobox').setData(this.geoboxdata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -436,14 +440,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.onMove.next(onMoveData);
     });
     this.map.on('mousedown', (e) => {
-      if (this.isGeoBox) {
+      if (this.geoboxdata.features.length === 0) {
         this.startlngLat = e.lngLat;
       } else {
         this.startlngLat = undefined;
       }
     });
     this.map.on('mouseup', (e) => {
-      if (this.isGeoBox) {
+      if (this.geoboxdata.features.length === 0) {
         this.endlngLat = e.lngLat;
       } else {
         this.endlngLat = undefined;
@@ -460,9 +464,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public toggleGeoBox() {
-    this.isGeoBox = !this.isGeoBox;
-    if (this.isGeoBox) {
+    if (this.geoboxdata.features.length === 0) {
       this.map.getCanvas().style.cursor = 'crosshair';
+      this.isDrawingBbox = true;
     } else {
       this.map.getCanvas().style.cursor = '';
       this.geoboxdata = {
@@ -471,6 +475,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
       this.map.getSource('geobox').setData(this.geoboxdata);
       this.onRemoveBbox.next(true);
+      this.isDrawingBbox=false;
     }
   }
 
@@ -511,7 +516,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
-    if (!this.isGeoBox || this.geoboxdata.features.length > 0) { return; }
+    if (!this.isDrawingBbox||this.geoboxdata.features.length > 0) { return; }
     // Disable default drag zooming when we add a geobox.
     this.map.dragPan.disable();
     // Call functions for the following events
@@ -604,6 +609,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         features: [polygonGeojson]
       };
       this.map.getSource('geobox').setData(this.geoboxdata);
+      this.isDrawingBbox=false;
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
