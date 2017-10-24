@@ -475,7 +475,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
       this.map.getSource('geobox').setData(this.geoboxdata);
       this.onRemoveBbox.next(true);
-      this.isDrawingBbox=false;
+      this.isDrawingBbox = false;
     }
   }
 
@@ -516,7 +516,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
-    if (!this.isDrawingBbox||this.geoboxdata.features.length > 0) { return; }
+    if (!this.isDrawingBbox || this.geoboxdata.features.length > 0) { return; }
     // Disable default drag zooming when we add a geobox.
     this.map.dragPan.disable();
     // Call functions for the following events
@@ -609,7 +609,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         features: [polygonGeojson]
       };
       this.map.getSource('geobox').setData(this.geoboxdata);
-      this.isDrawingBbox=false;
+      this.isDrawingBbox = false;
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
