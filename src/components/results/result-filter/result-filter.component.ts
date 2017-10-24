@@ -32,6 +32,8 @@ export class ResultFilterComponent implements OnInit, OnChanges {
             if (this.inputValue !== changes['filtersMap'].currentValue.get(this.column.fieldName)) {
               this.inputValue = changes['filtersMap'].currentValue.get(this.column.fieldName);
             }
+          }else{
+            this.inputValue='';
           }
         }
       }
