@@ -14,7 +14,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 import { ANIMATION_TYPES } from 'ngx-loading';
-import { MdButtonToggleChange } from '@angular/material';
+import { MatButtonToggleChange } from '@angular/material';
 import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
 
@@ -309,7 +309,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 - this.detailedGridHeight;
   }
 
-  public whichMode(toggleChangeEvent: MdButtonToggleChange) {
+  public whichMode(toggleChangeEvent: MatButtonToggleChange) {
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';

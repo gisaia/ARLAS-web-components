@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapglComponent } from './mapgl.component';
-import { MdChipsModule } from '@angular/material';
-import { MdSlideToggleModule } from '@angular/material';
+import { MatChipsModule } from '@angular/material';
+import { MatSlideToggleModule } from '@angular/material';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    MdChipsModule,
-    MdSlideToggleModule
+    MatChipsModule,
+    MatSlideToggleModule
 
   ],
   declarations: [MapglComponent],

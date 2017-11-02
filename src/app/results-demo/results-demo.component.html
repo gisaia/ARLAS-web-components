@@ -1,6 +1,6 @@
 
-<md-sidenav-container class="example-container">
-  <md-sidenav align="end" #sidenav class="example-sidenav">
+<mat-sidenav-container class="example-container">
+  <mat-sidenav align="end" #sidenav class="example-sidenav">
     <button (click)="updateData()">New data</button>
     <div class="table-wrapper">
           <arlas-result-list style="height:100%" [rowItemList]="data"
@@ -13,12 +13,12 @@
                                                  (moreDataEvent)="addMoreData()"
                                                  (setFiltersEvent)="setFilters($event)"></arlas-result-list>
     </div>
-  </md-sidenav>
+  </mat-sidenav>
 
   <div class="example-sidenav-content">
-    <button type="button" md-button (click)="sidenav.open()">
+    <button type="button" mat-button (click)="sidenav.open()">
       Open sidenav
     </button>
   </div>
 
-</md-sidenav-container>
+</mat-sidenav-container>

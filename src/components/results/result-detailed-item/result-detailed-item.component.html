@@ -8,7 +8,7 @@
   </span><br> <br/>
 
   </span>
-  <md-basic-chip *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="{{action.id}}-action resultdetaileditem__actions">
+  <mat-basic-chip *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="{{action.id}}-action resultdetaileditem__actions">
     {{action.label}}
-  </md-basic-chip>
+  </mat-basic-chip>
 </td>
