@@ -17,6 +17,23 @@
                      [chartHeight]="10"></arlas-histogram>
   </div>
 </div>
+
+<div class="graphs">
+  <p>Swimlane</p>
+  <p class="graphs_timeline_inputs">chartType = 'swimlane', dataType = 'numeric'</p>
+  <div class="graphs_timeline">
+    <arlas-histogram [chartType]="chartType.swimlane"
+                     [showXTicks]=true
+                     [showYLabels]=false
+                     [swimLaneLabelsWidth]=50
+                     [xTicks]=12
+                     [barWeight]=0.6
+                     [data]="swimlaneHistogramData"
+                     [paletteColors]="[0,170]"
+                     [customizedCssClass]="'one_dimension'"
+                     [chartHeight]="180"></arlas-histogram>
+  </div>
+</div>
 <div class="graphs">
   <p>Curved timelines</p>
   <div>

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { DateUnit, DataType, ChartType, HistogramData, SelectedOutputValues,
-  SelectedInputValues } from '../../components/histogram/histogram.utils';
+  SelectedInputValues, SwimlaneData } from '../../components/histogram/histogram.utils';
 import * as d3 from 'd3';
 
 
@@ -15,6 +15,7 @@ export class HistogramDemoComponent implements OnInit {
   public barsHistogramData: Array<HistogramData>;
   public oneDimensionHistogramData: Array<HistogramData>;
   public defaultHistogramData: Array<HistogramData>;
+  public swimlaneHistogramData: Map<any, any>;
   public dateUnit = DateUnit;
   public dataType = DataType;
   public chartType = ChartType;
@@ -43,6 +44,7 @@ export class HistogramDemoComponent implements OnInit {
     this.showCurvedTimeline(this);
     this.showBarsHistogram(this);
     this.showOneDimensionHistogram(this);
+    this.showSwimlaneHistogram(this);
 
   }
 
@@ -80,6 +82,19 @@ export class HistogramDemoComponent implements OnInit {
           if (error) { throw error; }
           _thisComponent.oneDimensionHistogramData = data;
           _thisComponent.setSelectedValues(_thisComponent , 1992 , 2060);
+    });
+
+  }
+
+  private showSwimlaneHistogram(component: HistogramDemoComponent) {
+    const _thisComponent = this;
+    d3.csv('assets/sp501.csv', this.oneToZero, function(error, data) {
+          if (error) { throw error; }
+          _thisComponent.swimlaneHistogramData = new Map<any, any>();
+          _thisComponent.swimlaneHistogramData.set('line1', data);
+          _thisComponent.swimlaneHistogramData.set('line2', data);
+          _thisComponent.swimlaneHistogramData.set('line3', data);
+
     });
 
   }

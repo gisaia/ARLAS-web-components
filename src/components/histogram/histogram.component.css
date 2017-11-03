@@ -65,9 +65,9 @@
 }
 
 .histogram__chart--bar {
-    fill: dimgrey;
+    fill: dimgrey !important;
     fill-opacity: 1;
-    stroke: darkslategrey;
+    stroke: darkslategrey !important;
     stroke-width: 0.5px;
     stroke-opacity: 1;
 }
@@ -101,6 +101,10 @@
   z-index: 20000;
 }
 
+.histogram__swimlane--tooltip-content {
+  display: block;
+}
+
 .histogram__tooltip__circle{
   fill: darkslategrey;
   opacity: 0;
@@ -115,6 +119,18 @@
   display: none;
 }
 
+.histogram__ticks-axis line {
+  stroke: #B3B1B1;
+}
+
+.histogram__line-separator text {
+  display: none;
+}
+
+.histogram__line-separator .domain {
+  stroke: #B3B1B1;
+}
+
 .histogram__ticks-axis__hidden {
   display: none;
 }
@@ -127,10 +143,15 @@
   display: none;
 }
 
+
+.selection {
+  opacity: 0.6;
+}
+
 .histogram__brush--handles {
   stroke: #868686;
   fill: #868686;
-  opacity: 0.5;
+  opacity: 1;
   z-index: 30000;
 }
 
