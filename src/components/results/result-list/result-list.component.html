@@ -68,7 +68,7 @@
             <mat-icon>menu</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button *ngFor="let action of globalActionsList" mat-menu-item (click)="setGlobalAction(action)">
+            <button *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
               <span>{{action.label}}</span>
             </button>
           </mat-menu>
