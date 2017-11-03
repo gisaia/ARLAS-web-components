@@ -10,8 +10,8 @@ import { ResultDetailedItemComponent } from './result-detailed-item/result-detai
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultScrollDirective } from './result-directive/result-scroll.directive';
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
-import { MdIconModule, MdChipsModule, MdButtonToggleModule, MdButtonModule,
-   MdGridListModule, MdCheckboxModule, MdMenuModule, MdTooltipModule } from '@angular/material';
+import { MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
+   MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule } from '@angular/material';
 
 
 
@@ -20,14 +20,14 @@ import { MdIconModule, MdChipsModule, MdButtonToggleModule, MdButtonModule,
 @NgModule({
   imports: [
     CommonModule,
-    MdIconModule,
-    MdChipsModule,
-    MdButtonToggleModule,
-    MdButtonModule,
-    MdGridListModule,
-    MdCheckboxModule,
-    MdMenuModule,
-    MdTooltipModule,
+    MatIconModule,
+    MatChipsModule,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatGridListModule,
+    MatCheckboxModule,
+    MatMenuModule,
+    MatTooltipModule,
     FormsModule,
     LoadingModule
   ],

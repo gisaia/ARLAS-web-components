@@ -104,14 +104,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngOnInit() {
-    this.map = new mapboxgl.Map({
-      container: 'mapgl',
-      style: this.style,
-      center: this.initCenter,
-      zoom: this.initZoom,
-      renderWorldCopies: true
-    });
-    this.map.boxZoom.disable();
+
   }
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
@@ -149,6 +142,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngAfterViewInit() {
+    this.map = new mapboxgl.Map({
+      container: 'mapgl',
+      style: this.style,
+      center: this.initCenter,
+      zoom: this.initZoom,
+      renderWorldCopies: true
+    });
+    this.map.boxZoom.disable();
     this.map.on('load', () => {
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();

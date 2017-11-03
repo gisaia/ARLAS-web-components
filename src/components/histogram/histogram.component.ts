@@ -1,6 +1,6 @@
 import {
   Component, OnInit, Input, Output, ViewEncapsulation,
-  ViewContainerRef, ElementRef, HostListener, OnChanges, SimpleChanges
+  ViewContainerRef, ElementRef, OnChanges, SimpleChanges
 } from '@angular/core';
 
 import {
@@ -23,6 +23,7 @@ import { SelectedInputValues } from './histogram.utils';
   encapsulation: ViewEncapsulation.None
 })
 export class HistogramComponent implements OnInit, OnChanges {
+
 
 
   public margin: MarginModel = { top: 4, right: 10, bottom: 20, left: 60 };
@@ -117,13 +118,23 @@ export class HistogramComponent implements OnInit, OnChanges {
       }
       this.fromSetInterval = false;
     }
+    // to draw the chart on init with correct width
+    if (changes.data) {
+      if (changes.data.previousValue !== undefined) {
+        if (changes.data.previousValue.length === 0) {
+          this.resizeHistogram(null);
+        }
+      }
+    }
   }
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     if (this.xAxisPosition === Position.top) {
       this.minusSign = -1;
     }
+
   }
+
 
   public setHistogramMargins() {
     // tighten right and bottom margins when X labels are not shown
@@ -231,6 +242,7 @@ export class HistogramComponent implements OnInit, OnChanges {
     if (this.isHeightFixed === false) {
       this.chartHeight = this.el.nativeElement.childNodes[0].offsetHeight;
     }
+
     this.plotHistogram(this.inputData);
   }
 
@@ -366,8 +378,8 @@ export class HistogramComponent implements OnInit, OnChanges {
     }
     const svg = d3.select(this.histogramNode).select('svg');
     const margin = this.margin;
-    const width = +this.chartWidth - this.margin.left - this.margin.right;
-    const height = +this.chartHeight - this.margin.top - this.margin.bottom;
+    const width = Math.max(+this.chartWidth - this.margin.left - this.margin.right, 0);
+    const height = Math.max(+this.chartHeight - this.margin.top - this.margin.bottom, 0);
     return { svg, margin, width, height };
   }
 

@@ -6,20 +6,20 @@
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <md-icon [hidden]="!isGeoSortActived" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</md-icon>
-          <md-icon [hidden]="isGeoSortActived" (click) = "geoSort(column)" mdTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon">gps_fixed</md-icon>
+          <mat-icon [hidden]="!isGeoSortActived" matTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</mat-icon>
+          <mat-icon [hidden]="isGeoSortActived" (click) = "geoSort(column)" matTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon">gps_fixed</mat-icon>
           <span  class="resultlist__header--columns--hidden"></span>
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField"
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <span mdTooltip="Sort on {{column.columnName}}">
+          <span matTooltip="Sort on {{column.columnName}}">
             <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
           </span>
           <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
-            <md-icon mdTooltip="{{SORT_DESCENDING}}" *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</md-icon>
-            <md-icon mdTooltip="{{SORT_ASCENDING}}" *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</md-icon>
+            <mat-icon matTooltip="{{SORT_DESCENDING}}" *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</mat-icon>
+            <mat-icon matTooltip="{{SORT_ASCENDING}}" *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</mat-icon>
           </div>
         </th>
         <th *ngIf="column.isToggleField" class="resultlist__header--columns" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
@@ -34,7 +34,7 @@
           <span class="resultlist__header--columns--hidden"></span>
         </td>
         <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
-                           mdTooltip="{{FILTER_ON}} {{column.columnName}}"
+                           matTooltip="{{FILTER_ON}} {{column.columnName}}"
                            [style.width.px]="column.width"
                            [column]="column"
                            [filtersMap]="filtersMap"
@@ -50,39 +50,39 @@
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
             <div class="resultgrid--checkbox">
-                 <md-icon [hidden]="!allItemsChecked" (click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box</md-icon>
-                <md-icon [hidden]="allItemsChecked"(click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box_outline_blank</md-icon>
+                 <mat-icon [hidden]="!allItemsChecked" (click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box</mat-icon>
+                <mat-icon [hidden]="allItemsChecked"(click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
             </div>
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
           </div>
           <div class="resultlist__tools--select-between">
-              <md-icon mdTooltip="{{CHECK_INBETWEEN}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</md-icon>
+              <mat-icon matTooltip="{{CHECK_INBETWEEN}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
           </div>
 
 
         </div>
         <div class="resultlist__tools--actions">
-          <button mdTooltip="{{GLOBAL_ACTIONS}}" md-icon-button [mdMenuTriggerFor]="menu">
-            <md-icon>menu</md-icon>
+          <button matTooltip="{{GLOBAL_ACTIONS}}" mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>menu</mat-icon>
           </button>
-          <md-menu #menu="mdMenu">
-            <button *ngFor="let action of globalActionsList" md-menu-item (click)="setGlobalAction(action)">
+          <mat-menu #menu="matMenu">
+            <button *ngFor="let action of globalActionsList" mat-menu-item (click)="setGlobalAction(action)">
               <span>{{action.label}}</span>
             </button>
-          </md-menu>
+          </mat-menu>
         </div>
 
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
-          <md-button-toggle-group #group="mdButtonToggleGroup" (change)="whichMode($event)">
-            <md-button-toggle mdTooltip="{{LIST_MODE}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
-              <md-icon>list</md-icon>
-            </md-button-toggle>
-            <md-button-toggle mdTooltip="{{GRID_MODE}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
-              <md-icon>apps</md-icon>
-            </md-button-toggle>
-          </md-button-toggle-group>
+          <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
+            <mat-button-toggle matTooltip="{{LIST_MODE}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
+              <mat-icon>list</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle matTooltip="{{GRID_MODE}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
+              <mat-icon>apps</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
         </div>
 
       </td>
@@ -97,7 +97,7 @@
   </thead>
   <tbody arlasResultScroll [hidden]="isBodyHidden" [style.height.px]="tbodyHeight" [rowItemList]="rowItemList" [searchSize]="searchSize" [nbGridColumns]="nbGridColumns"
     [nLastLines]="nLastLines" [resultMode]="resultMode" (moreDataEvent)="askForMoreData($event)">
-    <md-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
+    <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
           <tr arlas-result-item class="resultlist__body--item-hover-{{rowItem.ishighLight}}" (mouseenter)="setConsultedItem(rowItem.identifier)" (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
@@ -110,15 +110,15 @@
           </tr>
         </ng-container>
         <ng-template #grid_mode>
-          <md-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile">
+          <mat-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile">
             <arlas-result-grid-tile class="resultlist__grid-tile" [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
               (selectedItemsEvent)="setSelectedItems($event)" (selectedItemPositionEvent)="setItemsPositionsList($event)" (clickedOnItemEvent)="setSelectedGridItem($event)"
               (mouseenter)="setConsultedItem(rowItem.identifier)" (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)">
             </arlas-result-grid-tile>
-          </md-grid-tile>
+          </mat-grid-tile>
         </ng-template>
       </ng-container>
-    </md-grid-list>
+    </mat-grid-list>
   </tbody>
 </table>
 <div *ngIf="isMoreDataRequested" class="resultlist__moredata" [style.width.px]="tableWidth">
