@@ -341,7 +341,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public selectInBetween() {
     const sortedItemsPositions = Array.from(this.selectedItemsPositions).sort((a: number, b: number) => a - b);
     if (sortedItemsPositions.length !== 0) {
-      for (let i = sortedItemsPositions[0]; i <= sortedItemsPositions[sortedItemsPositions.length - 1]; i++) {
+      for (let i = sortedItemsPositions[0]; i < sortedItemsPositions[sortedItemsPositions.length - 1]; i++) {
         this.items[i].isChecked = true;
         this.items[i].isindeterminated = false;
         if (!this.selectedItems.has(this.items[i].identifier)) {
@@ -352,7 +352,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setSelectedItems(this.selectedItems);
     }
   }
-
 
   public setItemsPositionsList(item: Item) {
     if (item.isChecked) {
