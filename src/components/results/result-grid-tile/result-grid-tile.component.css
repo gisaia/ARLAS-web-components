@@ -38,8 +38,16 @@
   background-repeat: no-repeat;
 }
 
-.resultgrid__title {
+.resultgrid__title-hover-false {
   color: #fff;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-weight: bold;
+  font-size: 0.9em;
+  text-align: left;
+  margin: 5px 0 0 5px;
+}
+.resultgrid__title-hover-true {
+  color:#043B53;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-weight: bold;
   font-size: 0.9em;
