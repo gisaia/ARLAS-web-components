@@ -25,7 +25,7 @@ import { SelectedInputValues } from './histogram.utils';
 export class HistogramComponent implements OnInit, OnChanges {
 
 
-
+  public HISTOGRAM_BARS = 'histogramm__bars';
   public margin: MarginModel = { top: 4, right: 10, bottom: 20, left: 60 };
   public startValue: string = null;
   public endValue: string = null;
@@ -92,12 +92,15 @@ export class HistogramComponent implements OnInit, OnChanges {
   private yLabelsAxis;
   private isWidthFixed = false;
   private isHeightFixed = false;
+  private isBrushing = false;
   // Counter of how many times the chart has been plotted/replotted
   private plottingCount = 0;
   private minusSign = 1;
   // yDimension = 0 for one dimension charts
   private yDimension = 1;
   private tooltipxPositionWeight = 40;
+
+  private brushContext;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
 
@@ -218,14 +221,10 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.chartDimensions = this.initializeChartDimensions();
       this.chartAxes = this.createChartAxes(this.chartDimensions, data);
       this.drawChartAxes(this.chartDimensions, this.chartAxes);
-
       this.plotHistogramData(this.chartDimensions, this.chartAxes, data);
-      if (this.chartType === ChartType.area) {
-        this.showTooltipsForAreaCharts(this.chartDimensions, this.chartAxes, data);
-      }
+      this.showTooltips(data);
       this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth * this.yDimension, 0],
       [(this.chartDimensions).width, (this.chartDimensions).height]]);
-
       if (this.isHistogramSelectable) {
         this.addSelectionBrush();
       }
@@ -280,7 +279,10 @@ export class HistogramComponent implements OnInit, OnChanges {
       .attr('class', 'histogram__brush--handles')
       .attr('stroke', '#000')
       .attr('cursor', 'ew-resize')
-      .attr('d', brushResizePath);
+      .style('z-index', '30000')
+      .attr('d', brushResizePath)
+      .on('mouseover', () => this.isBrushing = true)
+      .on('mouseout', () => this.isBrushing = false);
 
     brush.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
 
@@ -537,19 +539,14 @@ export class HistogramComponent implements OnInit, OnChanges {
     const _thisComponent = this;
     const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
 
-    this.barsContext = chartDimensions.svg.selectAll('.bar')
+    this.barsContext = this.context.append('g').attr('class', this.HISTOGRAM_BARS).selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
       .attr('x', function (d) { return chartAxes.xDataDomain(d.key); })
       .attr('width', chartAxes.stepWidth * _thisComponent.barWeight)
       .attr('y', function (d) { return chartAxes.yDomain(d.value); })
-      .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
-      .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + marginTopBottom + ')')
-      .on('mousemove', function (d) {
-        _thisComponent.setTooltipPosition(_thisComponent.tooltipxPositionWeight, -40, d, <d3.ContainerElement>this);
-      })
-      .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
+      .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); });
   }
 
   private plotHistogramDataAsOneDimension(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
@@ -567,7 +564,6 @@ export class HistogramComponent implements OnInit, OnChanges {
   }
 
   private plotHistogramDataAsArea(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
-
     let curveType: d3.CurveFactory;
     if (this.isSmoothedCurve) {
       curveType = d3.curveMonotoneX;
@@ -585,30 +581,53 @@ export class HistogramComponent implements OnInit, OnChanges {
       .attr('d', area);
   }
 
-  private showTooltipsForAreaCharts(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
+  private showTooltips(data: Array<HistogramData>): void {
     const _thisComponent = this;
     if (this.dataUnit !== '') {
       this.dataUnit = '(' + this.dataUnit + ')';
     }
-    chartDimensions.svg.selectAll('dot').data(data).enter().append('circle')
-      .attr('r', 10)
-      .attr('cx', function (d) { return chartDimensions.margin.left + chartAxes.xDomain(d.key); })
-      .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
-      .attr('class', 'histogram__tooltip__circle')
-      .on('mouseover', function (d) {
-        _thisComponent.setTooltipPosition(-20, -40, d, <d3.ContainerElement>this);
-      })
-      .on('mouseout', function (d) {
-        _thisComponent.showTooltip = false;
-      });
+    this.context.on('mousemove', function (d) {
+      _thisComponent.setTooltipPosition(data, <d3.ContainerElement>this);
+    })
+    .on('mouseout', function (d) {
+      _thisComponent.showTooltip = false;
+    });
   }
 
-  private setTooltipPosition(dx: number, dy: number, data: HistogramData, container: d3.ContainerElement): void {
-
-    this.showTooltip = true;
-    this.tooltipXContent = 'x: ' + this.toString(data.key);
-    this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
+  private setTooltipPosition(data: Array<HistogramData>, container: d3.ContainerElement): void {
     const xy = d3.mouse(container);
+    let dx;
+    let dy;
+    let startPosition;
+    let endPosition;
+    for (let i = 0; i < data.length; i++) {
+      switch (this.chartType) {
+        case ChartType.bars:
+        case ChartType.oneDimension: {
+          startPosition = this.chartAxes.xDomain(data[i].key);
+          endPosition = startPosition + this.chartAxes.stepWidth * this.barWeight;
+          dx = 70;
+          dy = 0;
+          break;
+        }
+        case ChartType.area: {
+          startPosition = this.chartAxes.xDomain(data[i].key) - 10;
+          endPosition = this.chartAxes.xDomain(data[i].key) + 10;
+          dx = 70;
+          dy = 0;
+          break;
+        }
+        default: break;
+      }
+      if ( xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
+        this.showTooltip = true;
+        this.tooltipXContent = 'x: ' + this.toString(data[i].key);
+        this.tooltipYContent = 'y: ' + data[i].value;
+        break;
+      } else {
+        this.showTooltip = false;
+      }
+    }
     this.tooltipVerticalPosition = (xy[0] + dx) + 'px';
     this.tooltipHorizontalPosition = (xy[1] + dy) + 'px';
   }
@@ -641,6 +660,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   private handleOnBrushingEvent(): void {
     const _thisComponent = this;
     this.selectionBrush.on('brush', (datum: any, index: number) => {
+      this.isBrushing = true;
       const selection = d3.event.selection;
       if (selection !== null) {
         this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
@@ -660,6 +680,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   private handleEndOfBrushingEvent(): void {
     const _thisComponent = this;
     this.selectionBrush.on('end', (datum: any, index: number) => {
+      this.isBrushing = false;
       const selection = d3.event.selection;
       if (selection !== null) {
         this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
