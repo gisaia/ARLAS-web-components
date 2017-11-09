@@ -103,7 +103,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   // yDimension = 0 for one dimension charts
   private yDimension = 1;
   private tooltipxPositionWeight = 40;
-
+  private onInit = true;
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
 
 
@@ -126,14 +126,14 @@ export class HistogramComponent implements OnInit, OnChanges {
     // to draw the chart on init with correct width
     if (changes.data) {
       if (changes.data.previousValue !== undefined) {
-        if (changes.data.previousValue.length === 0) {
+        if (changes.data.previousValue.length === 0 && this.onInit) {
           this.resizeHistogram(null);
+          this.onInit = false;
         }
       }
     }
     if (changes.intervalListSelection) {
       if (changes.intervalListSelection.currentValue) {
-        this.selectedBars.clear();
         changes.intervalListSelection.currentValue.forEach(value => {
           (this.barsContext).filter(d => {
             d.key = +d.key;
