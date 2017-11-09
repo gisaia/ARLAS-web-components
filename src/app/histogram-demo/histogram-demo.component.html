@@ -28,7 +28,7 @@
     </ul>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [dataType]="dataType.time" [showXLabels]=false [showYLabels]=false
+    <arlas-histogram [dataType]="dataType.time" [showXLabels]=true [showYLabels]=false [dataType]="dataType.time" [chartType]="chartType.bars"
                      [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
   </div>
 
@@ -100,7 +100,7 @@
   <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', yTicks = yLabels = 2, xTicks = xLabels = 2</p>
   <div class="graphs_bars">
     <arlas-histogram  [xTicks]="2" [xLabels]="2" [yLabels]="2" [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6"></arlas-histogram>
+              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [dataType]="dataType.numeric"></arlas-histogram>
   </div>
 
   <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xTicks = xLabels = 5, yTicks = yLabels = 2, showXTicks=false </p>

@@ -131,7 +131,7 @@
   stroke: #868686;
   fill: #868686;
   opacity: 0.5;
-  display: none;
+  z-index: 30000;
 }
 
 .brush:hover .histogram__brush--handles {

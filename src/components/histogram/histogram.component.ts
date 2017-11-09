@@ -25,7 +25,7 @@ import { SelectedInputValues } from './histogram.utils';
 export class HistogramComponent implements OnInit, OnChanges {
 
 
-
+  public HISTOGRAM_BARS = 'histogramm__bars';
   public margin: MarginModel = { top: 4, right: 10, bottom: 20, left: 60 };
   public startValue: string = null;
   public endValue: string = null;
@@ -96,7 +96,8 @@ export class HistogramComponent implements OnInit, OnChanges {
   private yLabelsAxis;
   private isWidthFixed = false;
   private isHeightFixed = false;
-  private isbrush = false;
+
+  private isBrushing = false;
   // Counter of how many times the chart has been plotted/replotted
   private plottingCount = 0;
   private minusSign = 1;
@@ -104,6 +105,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   private yDimension = 1;
   private tooltipxPositionWeight = 40;
   private onInit = true;
+  private brushContext;
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
 
 
@@ -228,6 +230,8 @@ export class HistogramComponent implements OnInit, OnChanges {
         this.startValue = this.toString(data[0].key);
         this.selectionInterval.startvalue = data[0].key;
       }
+
+
       if (this.endValue == null || this.endValue === '') {
         this.endValue = this.toString(data[data.length - 1].key);
         this.selectionInterval.endvalue = data[data.length - 1].key;
@@ -236,12 +240,9 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.chartAxes = this.createChartAxes(this.chartDimensions, data);
       this.drawChartAxes(this.chartDimensions, this.chartAxes);
       this.plotHistogramData(this.chartDimensions, this.chartAxes, data);
-      if (this.chartType === ChartType.area) {
-        this.showTooltipsForAreaCharts(this.chartDimensions, this.chartAxes, data);
-      }
+      this.showTooltips(data);
       this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth * this.yDimension, 0],
       [(this.chartDimensions).width, (this.chartDimensions).height]]);
-
       if (this.isHistogramSelectable) {
         this.addSelectionBrush();
       }
@@ -298,7 +299,10 @@ export class HistogramComponent implements OnInit, OnChanges {
       .attr('class', 'histogram__brush--handles')
       .attr('stroke', '#000')
       .attr('cursor', 'ew-resize')
-      .attr('d', brushResizePath);
+      .style('z-index', '30000')
+      .attr('d', brushResizePath)
+      .on('mouseover', () => this.isBrushing = true)
+      .on('mouseout', () => this.isBrushing = false);
 
     brush.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
 
@@ -491,10 +495,16 @@ export class HistogramComponent implements OnInit, OnChanges {
       endRange = xDomain(+data[data.length - 1].key + this.dataInterval);
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
       xDataDomain.domain(data.map(function (d) { return d.key; }));
-      xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xDataDomain.domain()
+
+      if (this.dataType === DataType.numeric) {
+        xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xDataDomain.domain()
         .filter(function (d, i) { return !(i % ticksPeriod); })).tickSize(this.minusSign * 5);
-      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xDataDomain.domain()
+        xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xDataDomain.domain()
         .filter(function (d, i) { return !(i % labelsPeriod); }));
+      } else {
+        xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks).tickSize(this.minusSign * 5);
+        xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).ticks(this.xLabels);
+      }
       xAxis = d3.axisBottom(xDomain).tickSize(0);
     }
     const yDomain = d3.scaleLinear().range([chartDimensions.height, 0]);
@@ -563,6 +573,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   }
 
   private plotHistogramData(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
+
     if (this.chartType === ChartType.bars) {
       this.plotHistogramDataAsBars(chartDimensions, chartAxes, data);
     } else if (this.chartType === ChartType.area) {
@@ -575,20 +586,15 @@ export class HistogramComponent implements OnInit, OnChanges {
   private plotHistogramDataAsBars(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const _thisComponent = this;
     const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
-    this.barsContext = chartDimensions.svg.selectAll('.bar')
+
+    this.barsContext = this.context.append('g').attr('class', this.HISTOGRAM_BARS).selectAll('.bar')
       .data(data)
       .enter().append('rect')
       .attr('class', 'histogram__chart--bar')
       .attr('x', function (d) { return chartAxes.xDataDomain(d.key); })
       .attr('width', chartAxes.stepWidth * _thisComponent.barWeight)
       .attr('y', function (d) { return chartAxes.yDomain(d.value); })
-      .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); })
-      .attr('transform', 'translate(' + chartDimensions.margin.left + ',' + marginTopBottom + ')')
-      .on('mousemove', function (d) {
-
-        _thisComponent.setTooltipPosition(_thisComponent.tooltipxPositionWeight, -40, d, <d3.ContainerElement>this);
-      })
-      .on('mouseout', function (d) { _thisComponent.showTooltip = false; });
+      .attr('height', function (d) { return chartDimensions.height - chartAxes.yDomain(d.value); });
   }
 
   private plotHistogramDataAsOneDimension(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
@@ -623,29 +629,53 @@ export class HistogramComponent implements OnInit, OnChanges {
       .attr('d', area);
   }
 
-  private showTooltipsForAreaCharts(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
+  private showTooltips(data: Array<HistogramData>): void {
     const _thisComponent = this;
     if (this.dataUnit !== '') {
       this.dataUnit = '(' + this.dataUnit + ')';
     }
-    chartDimensions.svg.selectAll('dot').data(data).enter().append('circle')
-      .attr('r', 10)
-      .attr('cx', function (d) { return chartDimensions.margin.left + chartAxes.xDomain(d.key); })
-      .attr('cy', function (d) { return chartDimensions.margin.top + chartAxes.yDomain(d.value); })
-      .attr('class', 'histogram__tooltip__circle')
-      .on('mouseover', function (d) {
-        _thisComponent.setTooltipPosition(-20, -40, d, <d3.ContainerElement>this);
-      })
-      .on('mouseout', function (d) {
-        _thisComponent.showTooltip = false;
-      });
+    this.context.on('mousemove', function (d) {
+      _thisComponent.setTooltipPosition(data, <d3.ContainerElement>this);
+    })
+    .on('mouseout', function (d) {
+      _thisComponent.showTooltip = false;
+    });
   }
 
-  private setTooltipPosition(dx: number, dy: number, data: HistogramData, container: d3.ContainerElement): void {
-    this.showTooltip = true;
-    this.tooltipXContent = 'x: ' + this.toString(data.key);
-    this.tooltipYContent = 'y: ' + data.value + ' ' + this.dataUnit;
+  private setTooltipPosition(data: Array<HistogramData>, container: d3.ContainerElement): void {
     const xy = d3.mouse(container);
+    let dx;
+    let dy;
+    let startPosition;
+    let endPosition;
+    for (let i = 0; i < data.length; i++) {
+      switch (this.chartType) {
+        case ChartType.bars:
+        case ChartType.oneDimension: {
+          startPosition = this.chartAxes.xDomain(data[i].key);
+          endPosition = startPosition + this.chartAxes.stepWidth * this.barWeight;
+          dx = 70;
+          dy = 0;
+          break;
+        }
+        case ChartType.area: {
+          startPosition = this.chartAxes.xDomain(data[i].key) - 10;
+          endPosition = this.chartAxes.xDomain(data[i].key) + 10;
+          dx = 70;
+          dy = 0;
+          break;
+        }
+        default: break;
+      }
+      if ( xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
+        this.showTooltip = true;
+        this.tooltipXContent = 'x: ' + this.toString(data[i].key);
+        this.tooltipYContent = 'y: ' + data[i].value;
+        break;
+      } else {
+        this.showTooltip = false;
+      }
+    }
     this.tooltipVerticalPosition = (xy[0] + dx) + 'px';
     this.tooltipHorizontalPosition = (xy[1] + dy) + 'px';
   }
@@ -678,6 +708,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   private handleOnBrushingEvent(): void {
     const _thisComponent = this;
     this.selectionBrush.on('brush', (datum: any, index: number) => {
+      this.isBrushing = true;
       const selection = d3.event.selection;
       if (selection !== null) {
         this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
@@ -691,7 +722,6 @@ export class HistogramComponent implements OnInit, OnChanges {
         }
       }
       this.translateBrushHandles(selection);
-      this.isbrush = true;
     });
   }
 
@@ -703,7 +733,7 @@ export class HistogramComponent implements OnInit, OnChanges {
         const newStartValue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
         const newEndvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
 
-        if ((!this.fromSetInterval) && this.isbrush) {
+        if ((!this.fromSetInterval) && this.isBrushing) {
           this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
           this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
           this.startValue = this.toString(this.selectionInterval.startvalue);
@@ -711,7 +741,7 @@ export class HistogramComponent implements OnInit, OnChanges {
           this.valuesListChangedEvent.next(this.selectionListInterval.concat(this.selectionInterval));
         }
         this.showTitle = true;
-        this.isbrush = false;
+        this.isBrushing = false;
       }
     });
   }
@@ -719,42 +749,43 @@ export class HistogramComponent implements OnInit, OnChanges {
   private applyStyleOnSelectedBars(): void {
     let key;
     (this.barsContext).filter((d) => {
-      key = d.key;
-      d.key = +d.key;
+      key = +d.key;
+
       return this.selectedBars.has(key);
     })
       .attr('class', 'histogram__chart--bar__fullyselected');
     (this.barsContext).filter((d) => {
-      key = d.key;
-      d.key = +d.key;
-      return d.key >= this.selectionInterval.startvalue &&
-        d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
+      key = +d.key;
+
+      return key >= this.selectionInterval.startvalue &&
+        key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
     })
       .attr('class', 'histogram__chart--bar__fullyselected');
     (this.barsContext).filter((d) => {
-      key = d.key;
-      d.key = +d.key;
-      return ((d.key < this.selectionInterval.startvalue || d.key > this.selectionInterval.endvalue) && (!this.selectedBars.has(key)));
+      key = +d.key;
+
+      return ((key < this.selectionInterval.startvalue || key > this.selectionInterval.endvalue) && (!this.selectedBars.has(key)));
     })
       .attr('class', 'histogram__chart--bar');
     (this.barsContext).filter((d) => {
-      key = d.key;
-      d.key = +d.key;
-      return d.key < this.selectionInterval.startvalue && (!this.selectedBars.has(key))
-        && d.key + this.barWeight * this.dataInterval > this.selectionInterval.startvalue;
+      key = +d.key;
+
+      return key < this.selectionInterval.startvalue && (!this.selectedBars.has(key))
+        && key + this.barWeight * this.dataInterval > this.selectionInterval.startvalue;
     })
       .attr('class', 'histogram__chart--bar__partlyselected');
     (this.barsContext).filter((d) => {
-      key = d.key;
-      d.key = +d.key;
-      return d.key <= this.selectionInterval.endvalue && (!this.selectedBars.has(key))
-        && d.key + this.barWeight * this.dataInterval > this.selectionInterval.endvalue;
+      key = +d.key;
+
+      return key <= this.selectionInterval.endvalue && (!this.selectedBars.has(key))
+        && key + this.barWeight * this.dataInterval > this.selectionInterval.endvalue;
     })
       .attr('class', 'histogram__chart--bar__partlyselected');
   }
 
   private toString(value: Date | number): string {
     if (value instanceof Date) {
+
       if (this.valuesDateFormat !== null) {
         const timeFormat = d3.timeFormat(this.valuesDateFormat);
         return timeFormat(value);
@@ -827,11 +858,13 @@ export class HistogramComponent implements OnInit, OnChanges {
     if (this.chartType !== ChartType.area) {
       this.dataInterval = this.getBucketInterval(data, selectedStartValue, selectedEndValue);
     }
+
     const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
     const dataKeyUnionSelectedValues = new Array<Date | number>();
     data.forEach(d => {
       dataKeyUnionSelectedValues.push(d.key);
     });
+
     dataKeyUnionSelectedValues.push(selectedStartValue);
     dataKeyUnionSelectedValues.push(selectedEndValue);
     if (this.dataType === DataType.time) {
@@ -869,6 +902,7 @@ export class HistogramComponent implements OnInit, OnChanges {
         interval = Math.min(1, Math.abs(data[0].key - <number>selectedStartValue), Math.abs(data[0].key - <number>selectedEndValue));
       }
     }
+
     return interval;
   }
 
