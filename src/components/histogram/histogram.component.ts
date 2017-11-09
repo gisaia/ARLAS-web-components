@@ -61,6 +61,8 @@ export class HistogramComponent implements OnInit, OnChanges {
   @Input() public isSmoothedCurve = true;
   @Input() public isHistogramSelectable = true;
   @Input() public intervalSelection: SelectedInputValues;
+  @Input() public intervalListSelection: SelectedInputValues[];
+  @Input() public multiselectable = false;
   @Input() public showXLabels = true;
   @Input() public showXTicks = true;
   @Input() public showYLabels = true;
@@ -71,7 +73,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   @Input() public brushHandlesHeightWeight = 1 / 2;
 
 
-  @Output() public valuesChangedEvent: Subject<SelectedOutputValues> = new Subject<SelectedOutputValues>();
+  @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
 
   private histogramNode: any;
   private histogramElement: ElementRef;
@@ -79,6 +81,8 @@ export class HistogramComponent implements OnInit, OnChanges {
   private context: any;
   private barsContext: any;
   private selectionInterval: SelectedOutputValues = { startvalue: null, endvalue: null };
+  private selectionListInterval: SelectedOutputValues[] = [];
+  private selectedBars = new Set();
   private selectionBrush: d3.BrushBehavior<any>;
   private chartAxes: ChartAxes;
   private chartDimensions: ChartDimensions;
@@ -92,6 +96,7 @@ export class HistogramComponent implements OnInit, OnChanges {
   private yLabelsAxis;
   private isWidthFixed = false;
   private isHeightFixed = false;
+  private isbrush = false;
   // Counter of how many times the chart has been plotted/replotted
   private plottingCount = 0;
   private minusSign = 1;
@@ -126,6 +131,19 @@ export class HistogramComponent implements OnInit, OnChanges {
         }
       }
     }
+    if (changes.intervalListSelection) {
+      if (changes.intervalListSelection.currentValue) {
+        changes.intervalListSelection.currentValue.forEach(value => {
+          (this.barsContext).filter(function (d) {
+            d.key = +d.key;
+            return d.key >= value.startvalue
+              && d.key + this.barWeight * this.dataInterval <= value.endvalue;
+          }).data().map(function (d) { return this.selectedBars.add(d.key); });
+        });
+        this.resizeHistogram(null);
+      }
+    }
+
   }
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
@@ -232,6 +250,7 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.dataLength = 0;
     }
     this.plottingCount++;
+
   }
 
   public resizeHistogram(e: Event): void {
@@ -244,6 +263,7 @@ export class HistogramComponent implements OnInit, OnChanges {
     }
 
     this.plotHistogram(this.inputData);
+    this.applyStyleOnSelectedBars();
   }
 
   private addSelectionBrush(): void {
@@ -283,9 +303,37 @@ export class HistogramComponent implements OnInit, OnChanges {
 
     if (this.chartType === ChartType.bars) {
       this.applyStyleOnSelectedBars();
+      brush.on('dblclick', () => {
+        // fully selected
+        if (this.multiselectable) {
+          (this.barsContext).filter((d) => {
+            d.key = +d.key;
+            return d.key >= this.selectionInterval.startvalue
+              && d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
+          }).data().map(d => this.selectedBars.add(d.key));
+          // party selected
+          (this.barsContext).filter((d) => {
+            d.key = +d.key;
+            return d.key < this.selectionInterval.startvalue
+              && d.key + this.barWeight * this.dataInterval > this.selectionInterval.startvalue;
+          }).data()
+            .map(d => this.selectedBars.add(d.key));
+
+          // party selected
+          (this.barsContext).filter((d) => {
+            d.key = +d.key;
+            return d.key <= this.selectionInterval.endvalue
+              && d.key + this.barWeight * this.dataInterval > this.selectionInterval.endvalue;
+          }).data()
+            .map(d => this.selectedBars.add(d.key));
+          this.selectionListInterval.push({ startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue });
+        }
+      });
     }
     this.handleOnBrushingEvent();
     this.handleEndOfBrushingEvent();
+
+
   }
 
   private getColor(zeroToOne: number): tinycolorInstance {
@@ -642,6 +690,7 @@ export class HistogramComponent implements OnInit, OnChanges {
         }
       }
       this.translateBrushHandles(selection);
+      this.isbrush = true;
     });
   }
 
@@ -650,46 +699,55 @@ export class HistogramComponent implements OnInit, OnChanges {
     this.selectionBrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
-        this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
-        this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
-        this.startValue = this.toString(this.selectionInterval.startvalue);
-        this.endValue = this.toString(this.selectionInterval.endvalue);
-        if (!this.fromSetInterval) {
-          this.valuesChangedEvent.next(this.selectionInterval);
+        const newStartValue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
+        const newEndvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
+
+        if ((!this.fromSetInterval) && this.isbrush) {
+          this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
+          this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
+          this.startValue = this.toString(this.selectionInterval.startvalue);
+          this.endValue = this.toString(this.selectionInterval.endvalue);
+          this.valuesListChangedEvent.next(this.selectionListInterval.concat(this.selectionInterval));
         }
         this.showTitle = true;
-
+        this.isbrush = false;
       }
     });
   }
 
   private applyStyleOnSelectedBars(): void {
-    const _thisComponent = this;
-    (this.barsContext).filter(function (d) {
+    let key;
+    (this.barsContext).filter((d) => {
+      key = d.key;
       d.key = +d.key;
-      return d.key >= _thisComponent.selectionInterval.startvalue
-        && d.key + _thisComponent.barWeight * _thisComponent.dataInterval <= _thisComponent.selectionInterval.endvalue;
+      return this.selectedBars.has(key);
     })
       .attr('class', 'histogram__chart--bar__fullyselected');
-
-    (this.barsContext).filter(function (d) {
+    (this.barsContext).filter((d) => {
+      key = d.key;
       d.key = +d.key;
-      return d.key < _thisComponent.selectionInterval.startvalue || d.key > _thisComponent.selectionInterval.endvalue;
+      return d.key >= this.selectionInterval.startvalue &&
+        d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
+    })
+      .attr('class', 'histogram__chart--bar__fullyselected');
+    (this.barsContext).filter((d) => {
+      key = d.key;
+      d.key = +d.key;
+      return ((d.key < this.selectionInterval.startvalue || d.key > this.selectionInterval.endvalue) && (!this.selectedBars.has(key)));
     })
       .attr('class', 'histogram__chart--bar');
-
-    (this.barsContext).filter(function (d) {
+    (this.barsContext).filter((d) => {
+      key = d.key;
       d.key = +d.key;
-      return d.key < _thisComponent.selectionInterval.startvalue
-        && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.startvalue;
+      return d.key < this.selectionInterval.startvalue && (!this.selectedBars.has(key))
+        && d.key + this.barWeight * this.dataInterval > this.selectionInterval.startvalue;
     })
       .attr('class', 'histogram__chart--bar__partlyselected');
-
-
-    (this.barsContext).filter(function (d) {
+    (this.barsContext).filter((d) => {
+      key = d.key;
       d.key = +d.key;
-      return d.key <= _thisComponent.selectionInterval.endvalue
-        && d.key + _thisComponent.barWeight * _thisComponent.dataInterval > _thisComponent.selectionInterval.endvalue;
+      return d.key <= this.selectionInterval.endvalue && (!this.selectedBars.has(key))
+        && d.key + this.barWeight * this.dataInterval > this.selectionInterval.endvalue;
     })
       .attr('class', 'histogram__chart--bar__partlyselected');
   }
