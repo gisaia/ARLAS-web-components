@@ -133,12 +133,13 @@ export class HistogramComponent implements OnInit, OnChanges {
     }
     if (changes.intervalListSelection) {
       if (changes.intervalListSelection.currentValue) {
+        this.selectedBars.clear();
         changes.intervalListSelection.currentValue.forEach(value => {
-          (this.barsContext).filter(function (d) {
+          (this.barsContext).filter(d => {
             d.key = +d.key;
             return d.key >= value.startvalue
               && d.key + this.barWeight * this.dataInterval <= value.endvalue;
-          }).data().map(function (d) { return this.selectedBars.add(d.key); });
+          }).data().map(d => { this.selectedBars.add(d.key); });
         });
         this.resizeHistogram(null);
       }
