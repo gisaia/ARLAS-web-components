@@ -101,7 +101,7 @@
   z-index: 20000;
 }
 
-.histogram__swimlane--tooltip-content {
+.histogram__swimlane--tooltip-content, .histogram__tooltip-content {
   display: block;
 }
 

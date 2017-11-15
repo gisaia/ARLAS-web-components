@@ -53,6 +53,7 @@ export interface ChartAxes {
 
 export interface Tooltip {
   isShown: boolean;
+  isRightSide: boolean;
   xPosition: number;
   yPosition: number;
   xContent: string;
@@ -63,6 +64,9 @@ export enum DateUnit {
   second, millisecond
 }
 
+export enum SwimlaneMode {
+  variableHeight, fixedHeight
+}
 export enum DataType {
   numeric, time
 }
