@@ -1,140 +1,230 @@
 <div class="graphs">
-  <p>Default histogram</p>
+  <p class="graph__title">Default histogram</p>
   <div class="graphs_timeline">
-    <arlas-histogram [data]="defaultHistogramData" [xAxisPosition]="0"></arlas-histogram>
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [data]="defaultHistogramData"></arlas-histogram>
   </div>
 </div>
 
 <div class="graphs">
-  <p>One dimension histogram</p>
-  <p class="graphs_timeline_inputs">chartType = 'oneDimension', dataType = 'numeric'</p>
-  <div class="graphs_timeline">
+  <p class="graph__title">One dimension histogram</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>chartType</b>: oneDimension</span>
+    <span class ="graph__inputs"><b>dataType</b>: numeric</span>
+    <span class ="graph__inputs"><b>paletteColors</b>: #41d2b0</span>
+  </div>
+
+  <div class="graphs_onedimension">
     <arlas-histogram [chartType]="chartType.oneDimension"
-                     [showXTicks]=true
                      [data]="oneDimensionHistogramData"
                      [paletteColors]="'#41d2b0'"
-                     [customizedCssClass]="'one_dimension'"
+                     [customizedCssClass]="'histogram__area'"
                      [chartHeight]="10"></arlas-histogram>
   </div>
 </div>
 
 <div class="graphs">
-  <p>Swimlane</p>
-  <p class="graphs_timeline_inputs">chartType = 'swimlane', dataType = 'numeric'</p>
+  <p class="graph__title">Swimlane - Variable height</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>chartType</b>: swimlane</span>
+    <span class ="graph__inputs"><b>dataType</b>: time</span>
+    <span class ="graph__inputs"><b>paletteColors</b>: [0,170]</span>
+    <span class ="graph__inputs"><b>multiSelectable</b>: true</span>
+    <span class ="graph__inputs"><b style="color:brown">swimlaneMode</b>: variableHeight</span>
+  </div>
   <div class="graphs_timeline">
     <arlas-histogram [chartType]="chartType.swimlane"
                      [showXTicks]=true
                      [showYLabels]=false
+                     [multiselectable]="true"
                      [swimLaneLabelsWidth]=50
                      [xTicks]=12
                      [barWeight]=0.6
                      [data]="swimlaneHistogramData"
                      [paletteColors]="[0,170]"
-                     [customizedCssClass]="'one_dimension'"
+                     [customizedCssClass]="'histogram__area'"
+                     [dataType]="dataType.time"
+                     [dateUnit]="dateUnit.second"
+                     [chartHeight]="180"></arlas-histogram>
+  </div>
+</div>
+
+<div class="graphs">
+  <p class="graph__title">Swimlane - Fixed height</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>chartType</b>: swimlane</span>
+    <span class ="graph__inputs"><b>dataType</b>: time</span>
+    <span class ="graph__inputs"><b>paletteColors</b>: [0,170]</span>
+    <span class ="graph__inputs"><b>multiSelectable</b>: true</span>
+    <span class ="graph__inputs"><b style="color:brown">swimlaneMode</b>: fixedHeight</span>
+  </div>
+  <div class="graphs_timeline">
+    <arlas-histogram [chartType]="chartType.swimlane"
+                     [showXTicks]=true
+                     [showYLabels]=false
+                     [multiselectable]="true"
+                     [swimLaneLabelsWidth]=50
+                     [xTicks]=12
+                     [barWeight]=0.6
+                     [data]="swimlaneHistogramData"
+                     [paletteColors]="[0,170]"
+                     [customizedCssClass]="'histogram__area'"
+                     [dataType]="dataType.time"
+                     [dateUnit]="dateUnit.second"
+                     [swimlaneMode]="swimlaneMode.fixedHeight"
                      [chartHeight]="180"></arlas-histogram>
   </div>
 </div>
 <div class="graphs">
-  <p>Curved timelines</p>
+  <p class="graph__title">Bars histogram - Time scale</p>
   <div>
-    <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second</p>
-    <p class="graphs_timeline_inputs">Outputs:</p>
-    <ul class="graphs_timeline_outputs">
-      <li> Selected start value : {{selectedTimeValues.startvalue}}</li>
-      <li> Selected end value : {{selectedTimeValues.endvalue}}</li>
-    </ul>
+    <div class ="graph__inputs--wrapper">
+      <span class ="graph__inputs"><b>chartType</b>: bars</span>
+      <span class ="graph__inputs"><b>dataType</b>: time</span>
+    </div>
+    <div class ="graph__inputs--wrapper">
+      <span class ="graph__inputs"><b>Selected start value</b>: {{selectedTimeValues.startvalue}}</span>
+      <span class ="graph__inputs"><b>Selected end value</b>: {{selectedTimeValues.endvalue}}</span>
+    </div>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [dataType]="dataType.time" [showXLabels]=true [showYLabels]=false [dataType]="dataType.time" [chartType]="chartType.bars"
-                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
+    <arlas-histogram  [customizedCssClass]="'histogram__area'" [multiselectable]="true" [dataType]="dataType.time" [showXLabels]=true [showYLabels]=true [dataType]="dataType.time" [chartType]="chartType.bars"
+                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesListChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
   </div>
+</div>
+<div class="graphs">
+  <p class="graph__title">Area histograms - Time scale</p>
 
-  <p class="graphs_timeline_inputs">dataType = 'time',     dateUnit = DateUnit.second,     xTicks = 9,     yTicks = 2,    chartTitle = 'Chart title'</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>chartType</b>: area</span>
+    <span class ="graph__inputs"><b>dataType</b>: time</span>
+    <span class ="graph__inputs"><b>xTicks</b>: 9</span>
+    <span class ="graph__inputs"><b>yTicks</b>: 2</span>
+    <span class ="graph__inputs"><b>chartTitle</b>: Chart title</span>
+  </div>
   <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second"></arlas-histogram>
   </div>
 
-  <p class="graphs_timeline_inputs">dataType = 'time',     dateUnit = DateUnit.second,     xTicks = 9, xLabels = 9, yTicks = 2, yLabels = 2,  chartTitle = 'Chart title'</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs </b> +</span>
+    <span class ="graph__inputs"><b>xLabels</b>: 9</span>
+    <span class ="graph__inputs"><b>yLabels</b>: 2</span>
+  </div>
   <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second"></arlas-histogram>
   </div>
 
-  <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = 9, yTicks = 2, chartTitle = 'Chart title', chartWidth = 500, chartHeight = 100</p>
-  <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [chartWidth]="500" [chartHeight]="100"
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs </b> +</span>
+    <span class ="graph__inputs"><b>chartWidth</b>: 800</span>
+    <span class ="graph__inputs"><b>chartHeight</b>: 100</span>
+  </div>
+
+  <div class="graphs_timeline--controlledHeight">
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [chartWidth]="800" [chartHeight]="100"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second"></arlas-histogram>
   </div>
 
-  <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = xLables = 9 , yTicks = yLabels = 2, chartTitle = 'Chart title', chartWidth = 500, chartHeight = 100</p>
-  <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [chartWidth]="500" [chartHeight]="100"
-             [data]="curvedTimelineData" [dateUnit]="dateUnit.second"></arlas-histogram>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs </b> without <b>chartWidth & chartHeight </b> +</span>
+    <span class ="graph__inputs"><b>ticksDateFormat</b>: %B %Y (x-ticks labels format)</span>
   </div>
-
-
-  <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = xLables = 9 , yTicks = yLabels = 2, chartTitle = 'Chart title', ticksDateFormat = '%B %Y'</p>
   <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second" [ticksDateFormat]="'%B %Y'"></arlas-histogram>
   </div>
 
-  <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = xLables = 9 , yTicks = yLabels = 2, chartTitle = 'Chart title', valuesDateFormat = '%A %d %B %Y'</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs </b> +</span>
+    <span class ="graph__inputs"><b>valuesDateFormat</b>: %A %d %B %Y (tooltip date format)</span>
+  </div>
   <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [ticksDateFormat]="'%B %Y'"
              [data]="curvedTimelineData" [dateUnit]="dateUnit.second" [valuesDateFormat]="'%A %d %B %Y'"></arlas-histogram>
   </div>
 
-  <p class="graphs_timeline_inputs">dataType = 'time', dateUnit = DateUnit.second, xTicks = xLables = 9 , yTicks = yLabels = 2, chartTitle = 'Chart title', isSmoothedCurve = false</p>
+
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs </b> +</span>
+    <span class ="graph__inputs"><b>isSmoothedCurve</b>: false</span>
+    <span class ="graph__inputs"><b>dataType</b>: numeric</span>
+
+  </div>
   <div class="graphs_timeline">
-    <arlas-histogram [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
-             [data]="curvedTimelineData" [dateUnit]="dateUnit.second" [dataUnit]="'m²'" [isSmoothedCurve]=false></arlas-histogram>
+    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
+             [data]="curvedTimelineData" [dataUnit]="'m²'" [isSmoothedCurve]=false></arlas-histogram>
   </div>
 </div>
 
 <div class="graphs">
-  <p>Bars histogram</p>
+  <p class="graph__title">Bars histograms - numeric scale</p>
 
-  <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars'</p>
-  <p class="graphs_bars_inputs">dataType = 'time', dateUnit = DateUnit.second</p>
-  <p class="graphs_bars_inputs">Outputs:</p>
-  <ul class="graphs_bars_outputs">
-    <li> Selected start value : {{selectedNumericValues.startvalue}}</li>
-    <li> Selected end value : {{selectedNumericValues.endvalue}}</li>
-  </ul>
+
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>chartType</b>: bars</span>
+    <span class ="graph__inputs"><b>dataType</b>: numeric</span>
+    <span class ="graph__inputs"><b>intervalSelection</b>: startvalue: 1992, endvalue: 2060</span>
+    <span class ="graph__inputs"><b>xAxisPosition</b>: top</span>
+
+  </div>
+    <div class ="graph__inputs--wrapper">
+      <span class ="graph__inputs"><b>Selected start value</b>: {{selectedNumericValues.startvalue}}</span>
+      <span class ="graph__inputs"><b>Selected end value</b>: {{selectedNumericValues.endvalue}}</span>
+    </div>
   <div class="graphs_bars">
     <arlas-histogram [chartType]="chartType.bars"
                      [chartTitle]="'Chart title'"
-                     (valuesChangedEvent)="setSelectedNUmericValues($event)"
+                     (valuesListChangedEvent)="setSelectedNumericValues($event)"
                      [data]="barsHistogramData"
                      [dateUnit]="dateUnit.second"
                      [intervalSelection]="selectValues"
                      [xAxisPosition]="0"
+                     [customizedCssClass]="'histogram__area'"
                      [descriptionPosition]="0"></arlas-histogram>
   </div>
 
-  <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', yTicks = yLabels = 2, xTicks = xLabels = 2</p>
+
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs</b> without <b>intervalSelection</b> </span>
+    <span class ="graph__inputs"><b>xAxisPosition</b>: bottom</span>
+
+  </div>
   <div class="graphs_bars">
-    <arlas-histogram  [xTicks]="2" [xLabels]="2" [yLabels]="2" [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [dataType]="dataType.numeric"></arlas-histogram>
+    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
+              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs</b>+ </span>
+    <span class ="graph__inputs"><b>barsWeight</b>: 0.3</span>
+  </div>
+  <div class="graphs_bars">
+    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [barWeight]="0.3"
+              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
+  </div>
+
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs</b> without <b>barsWeight</b></span>
+    <span class ="graph__inputs"><b>xTicks</b>: 2</span>
+    <span class ="graph__inputs"><b>yTicks</b>: 2</span>
+    <span class ="graph__inputs"><b>xLabels</b>: 2</span>
+    <span class ="graph__inputs"><b>yLabels</b>: 2</span>
+  </div>
+  <div class="graphs_bars">
+    <arlas-histogram  [xTicks]="2" [xLabels]="2" [yLabels]="2" [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
+              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [dataType]="dataType.numeric" [customizedCssClass]="'histogram__area'"></arlas-histogram>
+  </div>
+
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Previous inputs</b> without <b>xTicks</b></span>
+    <span class ="graph__inputs"><b>xLabels</b>: 5</span>
+    <span class ="graph__inputs"><b>showXTicks</b>: false</span>
+  </div>
   <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xTicks = xLabels = 5, yTicks = yLabels = 2, showXTicks=false </p>
   <div class="graphs_bars">
     <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [showXTicks]=false ></arlas-histogram>
-  </div>
-
-  <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xTicks = xLabels = 5, yTicks = yLabels = 2, barWeight = 0.3</p>
-  <div class="graphs_bars">
-    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [barWeight]="0.3"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6"></arlas-histogram>
-  </div>
-
-  <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xTicks = xLabels = 5, yTicks = yLabels = 2, barWeight = 0.3, chartWidth = 600, chartHeight = 150</p>
-  <div class="graphs_bars">
-    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"  [barWeight]="0.3"
-              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [chartWidth]="600" [chartHeight]="150"></arlas-histogram>
+              [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [showXTicks]=false [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 </div>

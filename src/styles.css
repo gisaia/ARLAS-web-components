@@ -5,29 +5,62 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import   '../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
-.histogramright .histogram__description__startvalue {
-  font-size: 0.8em;
+.histogram__area .histogram__chart--area{
+  fill: #FFC107;
+  fill-opacity: 1;
+  stroke: #C49D28;
+  stroke-width: 1px;
+  stroke-opacity: 1;
 }
 
-.histogramright .histogram__description__endvalue {
-  font-size: 0.8em;
+.histogram__area .histogram__chart--bar__fullyselected {
+  fill: #FFC107;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
 }
 
-.histogramright .histogram__description__title {
-  font-size: 0.8em;
+.histogram__area .histogram__chart--bar__partlyselected {
+  fill: #FFC107;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
 }
 
-.histogramleft .histogram__description__startvalue {
-  font-size: 0.6em;
+
+.histogram__area .histogram__description__startvalue--background,
+.histogram__area .histogram__description__endvalue--background{
+  background-color: white;
 }
 
-.histogramleft .histogram__description__endvalue {
-  font-size: 0.6em;
+.histogram__area .histogram__description__startvalue,
+.histogram__area .histogram__description__endvalue{
+  color: #4CA3EB;
+  }
+
+.histogram__area .histogram__ticks{
+  stroke: #757575;
+  stroke-width: 1px;
 }
 
-.histogramleft .histogram__description__title {
-  font-size: 0.6em;
+.histogram__area .histogram__axis{
+  stroke: #757575;
+  stroke-width: 1px;
 }
+
+.histogram__area .tick text{
+  fill: #757575;
+  font-size: 0.9em;
+}
+
+.histogram__area .histogram__brush--handles {
+  stroke: #757575;
+  fill: #757575;
+}
+
+
 a.arlas-map-control{
     background-color: green;
 }
