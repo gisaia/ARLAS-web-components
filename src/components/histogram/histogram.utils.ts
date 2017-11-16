@@ -12,6 +12,16 @@ export interface HistogramData {
   value: number;
 }
 
+export interface SwimlaneData {
+  key: string;
+  value: Array<{ key: number, value: number }>;
+}
+
+export interface SwimlaneParsedData {
+  key: string;
+  value: Array<{ key: number | Date, value: number }>;
+}
+
 export interface SelectedOutputValues {
   startvalue: Date|number;
   endvalue: Date|number;
@@ -41,16 +51,28 @@ export interface ChartAxes {
   xAxis: d3.Axis<any>;
 }
 
+export interface Tooltip {
+  isShown: boolean;
+  isRightSide: boolean;
+  xPosition: number;
+  yPosition: number;
+  xContent: string;
+  yContent: string;
+}
+
 export enum DateUnit {
   second, millisecond
 }
 
+export enum SwimlaneMode {
+  variableHeight, fixedHeight
+}
 export enum DataType {
   numeric, time
 }
 
 export enum ChartType {
-  area, bars, oneDimension
+  area, bars, oneDimension, swimlane
 }
 
 export enum Position {

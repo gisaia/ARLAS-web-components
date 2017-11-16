@@ -23,8 +23,29 @@
           <div class="histogram__description__endvalue" ><span *ngIf="dataLength > 1" class="histogram__description__endvalue--background">{{endValue}}</span></div>
         </div>
     </div>
-    <div class="histogram__tooltip" *ngIf="showTooltip" [style.left]="tooltipVerticalPosition" [style.top]="tooltipHorizontalPosition">
-        {{tooltipXContent}}<br/>{{tooltipYContent}}
+    <div *ngIf="chartType !== ChartType.swimlane">
+      <div class="histogram__tooltip" *ngIf="tooltip.isShown && !tooltip.isRightSide" [style.left.px]="tooltip.xPosition" [style.top.px]="tooltip.yPosition">
+        <span class="histogram__tooltip-content">{{tooltip.xContent}}</span>
+        <span class="histogram__tooltip-content">{{tooltip.yContent}}</span>
+      </div>
+      <div class="histogram__tooltip" *ngIf="tooltip.isShown && tooltip.isRightSide" [style.right.px]="tooltip.xPosition" [style.top.px]="tooltip.yPosition">
+        <span class="histogram__tooltip-content">{{tooltip.xContent}}</span>
+        <span class="histogram__tooltip-content">{{tooltip.yContent}}</span>
+      </div>
+    </div>
+    <div *ngIf="chartType === ChartType.swimlane">
+      <div *ngFor="let key of Array.from(swimlaneTooltipsMap.keys())">
+        <div class="histogram__tooltip" *ngIf="swimlaneTooltipsMap.get(key).isShown && !swimlaneTooltipsMap.get(key).isRightSide"
+          [style.left.px]="swimlaneTooltipsMap.get(key).xPosition"   [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
+          <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}}</span>
+          <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).yContent}}</span>
+        </div>
+        <div class="histogram__tooltip" *ngIf="swimlaneTooltipsMap.get(key).isShown && swimlaneTooltipsMap.get(key).isRightSide"
+          [style.right.px]="swimlaneTooltipsMap.get(key).xPosition"  [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
+          <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}}</span>
+          <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).yContent}}</span>
+          </div>
+      </div>
     </div>
     <div>
     </div>

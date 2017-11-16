@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { DateUnit, DataType, ChartType, HistogramData, SelectedOutputValues,
-  SelectedInputValues } from '../../components/histogram/histogram.utils';
+  SelectedInputValues, SwimlaneData, SwimlaneMode} from '../../components/histogram/histogram.utils';
 import * as d3 from 'd3';
 
 
@@ -15,8 +15,10 @@ export class HistogramDemoComponent implements OnInit {
   public barsHistogramData: Array<HistogramData>;
   public oneDimensionHistogramData: Array<HistogramData>;
   public defaultHistogramData: Array<HistogramData>;
+  public swimlaneHistogramData: Map<any, any>;
   public dateUnit = DateUnit;
   public dataType = DataType;
+  public swimlaneMode = SwimlaneMode;
   public chartType = ChartType;
   public selectedTimeValues: SelectedOutputValues = {startvalue: null, endvalue: null};
   public selectedNumericValues: SelectedOutputValues = {startvalue: null, endvalue: null};
@@ -28,14 +30,14 @@ export class HistogramDemoComponent implements OnInit {
     this.showData();
   }
 
-  public setSelectedTimeValues(selectedValues: {startvalue: Date, endvalue: Date}) {
-    this.selectedTimeValues.startvalue  = selectedValues.startvalue;
-    this.selectedTimeValues.endvalue = selectedValues.endvalue;
+  public setSelectedTimeValues(selectedValues: Array<{startvalue: Date, endvalue: Date}>) {
+    this.selectedTimeValues.startvalue  = selectedValues[0].startvalue;
+    this.selectedTimeValues.endvalue = selectedValues[0].endvalue;
   }
 
-  public setSelectedNUmericValues(selectedValues: {startvalue: number, endvalue: number}) {
-    this.selectedNumericValues.startvalue  = selectedValues.startvalue;
-    this.selectedNumericValues.endvalue = selectedValues.endvalue;
+  public setSelectedNumericValues(selectedValues: Array<{startvalue: Date, endvalue: Date}>) {
+    this.selectedNumericValues.startvalue  = selectedValues[0].startvalue;
+    this.selectedNumericValues.endvalue = selectedValues[0].endvalue;
   }
 
   private showData() {
@@ -43,6 +45,7 @@ export class HistogramDemoComponent implements OnInit {
     this.showCurvedTimeline(this);
     this.showBarsHistogram(this);
     this.showOneDimensionHistogram(this);
+    this.showSwimlaneHistogram(this);
 
   }
 
@@ -84,6 +87,19 @@ export class HistogramDemoComponent implements OnInit {
 
   }
 
+  private showSwimlaneHistogram(component: HistogramDemoComponent) {
+    const _thisComponent = this;
+    d3.csv('assets/sp500.csv', this.stringToNumber, function(error, data) {
+          if (error) { throw error; }
+          _thisComponent.swimlaneHistogramData = new Map<any, any>();
+          _thisComponent.swimlaneHistogramData.set('line1', data);
+          _thisComponent.swimlaneHistogramData.set('line2', data);
+          _thisComponent.swimlaneHistogramData.set('line3', data);
+
+    });
+
+  }
+
   private sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -94,7 +110,7 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private oneToZero(d) {
-          d.value = +d.value / 1452.43;
+          d.value = +d.value / 1450;
           return d;
   }
 
