@@ -74,6 +74,34 @@
                      [chartHeight]="180"></arlas-histogram>
   </div>
 </div>
+
+<div class="graphs">
+  <p class="graph__title">Swimlane - Circles</p>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>chartType</b>: swimlane</span>
+    <span class ="graph__inputs"><b>dataType</b>: time</span>
+    <span class ="graph__inputs"><b>paletteColors</b>: [0,170]</span>
+    <span class ="graph__inputs"><b>multiSelectable</b>: true</span>
+    <span class ="graph__inputs"><b style="color:brown">swimlaneMode</b>: circles</span>
+  </div>
+  <div class="graphs_timeline">
+    <arlas-histogram [chartType]="chartType.swimlane"
+                     [showXTicks]=true
+                     [showYLabels]=false
+                     [multiselectable]="true"
+                     [swimLaneLabelsWidth]=50
+                     [xTicks]=12
+                     [barWeight]=0.6
+                     [data]="swimlaneHistogramData"
+                     [paletteColors]="[0,170]"
+                     [customizedCssClass]="'histogram__area'"
+                     [dataType]="dataType.time"
+                     [dateUnit]="dateUnit.second"
+                     [swimlaneMode]="swimlaneMode.circles"
+                     [chartHeight]="180"></arlas-histogram>
+  </div>
+</div>
+
 <div class="graphs">
   <p class="graph__title">Bars histogram - Time scale</p>
   <div>

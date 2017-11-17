@@ -65,7 +65,7 @@ export enum DateUnit {
 }
 
 export enum SwimlaneMode {
-  variableHeight, fixedHeight
+  variableHeight, fixedHeight, circles
 }
 export enum DataType {
   numeric, time

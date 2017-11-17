@@ -768,7 +768,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private plotHistogramDataAsOneDimension(chartAxes: ChartAxes,
-    data: Array<HistogramData>, barHeight: number, barWeight: number, dataMaxValue): any {
+   data: Array<HistogramData>, barHeight: number, barWeight: number, dataMaxValue: number): any {
     return this.barsContext = this.context.append('g').attr('class', 'histogram__onedimension-data')
       .selectAll('.bar')
       .data(data)
@@ -795,22 +795,36 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .attr('d', area);
   }
 
+  private plotHistogramDataAsCircles(data: Array<HistogramData>, dataMaxValue: number, swimlaneHeight: number, indexOfSwimlane: number) {
+    return this.barsContext = this.context.append('g')
+    .attr('class', 'histogram__swimlane').selectAll('dot').data(data).enter().append('circle')
+      .attr('r', (d) => Math.min(this.chartAxes.stepWidth, swimlaneHeight) * this.barWeight * Math.sqrt(d.value / dataMaxValue) / 2)
+      .attr('cx', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key) + this.chartAxes.stepWidth * this.barWeight / 2)
+      .attr('cy', (d) => swimlaneHeight * (indexOfSwimlane + 1) - swimlaneHeight / 2)
+      .attr('class', 'histogram__swimlane--circle')
+      .style('fill', (d) => this.getColor(d.value / dataMaxValue).toHexString())
+      .style('stroke', (d) => this.getColor(d.value / dataMaxValue).toHexString())
+      .style('opacity', '0.8');
+  }
 
   private plotHistogramDataAsSwimlane(swimlaneData: Map<string, Array<HistogramData>>): void {
     const swimlaneHeight = this.chartDimensions.height / (swimlaneData.size);
     const keys = swimlaneData.keys();
     for (let i = 0; i < swimlaneData.size; i++) {
       const key = keys.next().value;
-      this.plotHistogramDataAsOneDimension(this.chartAxes, swimlaneData.get(key), swimlaneHeight, this.barWeight,
-          this.swimlaneMaxValuesMap.get(key))
-        .attr('rx', this.swimlaneBorderRadius)
-        .attr('ry', this.swimlaneBorderRadius)
-        .attr('y', swimlaneHeight * (i))
-        .attr('height', (d) => (d.value !== 0) ? this.getSwimlaneContentHeight(swimlaneHeight,
-          d.value, this.swimlaneMaxValuesMap.get(key)) : 0)
-        .attr('transform', (d) => 'translate(' + this.swimLaneLabelsWidth + ','
+      if (this.swimlaneMode === SwimlaneMode.circles) {
+        this.plotHistogramDataAsCircles(swimlaneData.get(key), this.swimlaneMaxValuesMap.get(key), swimlaneHeight, i);
+      } else {
+        this.plotHistogramDataAsOneDimension(this.chartAxes, swimlaneData.get(key), swimlaneHeight, this.barWeight,
+            this.swimlaneMaxValuesMap.get(key))
+          .attr('rx', this.swimlaneBorderRadius)
+          .attr('ry', this.swimlaneBorderRadius)
+          .attr('y', swimlaneHeight * (i))
+          .attr('height', (d) => (d.value !== 0) ? this.getSwimlaneContentHeight(swimlaneHeight,
+            d.value, this.swimlaneMaxValuesMap.get(key)) : 0)
+          .attr('transform', (d) => 'translate(' + this.swimLaneLabelsWidth + ','
           + this.getSwimlaneVerticalTranslation(swimlaneHeight, d.value, this.swimlaneMaxValuesMap.get(key), i) + ')');
-
+      }
       this.swimlaneContextList.push(this.barsContext);
       if (this.swimlaneMode === SwimlaneMode.fixedHeight) {
         this.plotHorizontalTicksForSwimlane(swimlaneData.get(key), swimlaneHeight, this.barWeight, this.swimlaneMaxValuesMap.get(key), i);
