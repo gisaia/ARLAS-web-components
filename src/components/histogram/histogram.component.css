@@ -178,9 +178,6 @@
   z-index: 30000;
 }
 
-.brush:hover .histogram__brush--handles {
-  display: block;
-}
 
 
 
