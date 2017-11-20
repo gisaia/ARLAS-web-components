@@ -112,7 +112,7 @@
   cursor: pointer;
 }
 
-.histogram__swimlane--tooltip-content, .histogram__tooltip-content {
+.histogram__tooltip-content {
   display: block;
 }
 

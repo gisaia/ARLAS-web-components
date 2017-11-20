@@ -34,21 +34,19 @@
     </div>
   </div>
   <div *ngIf="chartType === ChartType.swimlane">
-    <div *ngFor="let key of Array.from(swimlaneTooltipsMap.keys())">
+    <div *ngFor="let key of Array.from(swimlaneTooltipsMap.keys()); index as i">
       <div class="histogram__tooltip" *ngIf="swimlaneTooltipsMap.get(key).isShown && !swimlaneTooltipsMap.get(key).isRightSide"
-        [style.left.px]="swimlaneTooltipsMap.get(key).xPosition" [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
-        <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}}</span>
+        [style.left.px]="swimlaneTooltipsMap.get(key).xPosition"   [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
+        <span *ngIf= "i === 0" class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}} | </span>
         <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).yContent}}</span>
       </div>
       <div class="histogram__tooltip" *ngIf="swimlaneTooltipsMap.get(key).isShown && swimlaneTooltipsMap.get(key).isRightSide"
-        [style.right.px]="swimlaneTooltipsMap.get(key).xPosition" [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
-        <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}}</span>
+        [style.right.px]="swimlaneTooltipsMap.get(key).xPosition"  [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
+        <span *ngIf= "i === 0" class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}} | </span>
         <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).yContent}}</span>
-      </div>
+        </div>
     </div>
   </div>
-
-
   <div *ngFor="let id of selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="topOffsetRemoveInterval"
     [style.left.px]="intervalSelectedMap.get(id)?.x_position-leftOffsetRemoveInterval">
     <svg on-mouseover='overRemove($event)' on-mouseleave='leaveRemove($event)' fill="#043b53" height="24" viewBox="0 0 24 24"
