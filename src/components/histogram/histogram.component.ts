@@ -995,6 +995,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         tooltip.xContent = xContent;
         tooltip.yContent = 'y: ' + data[i].value;
         this.swimlaneTooltipsMap.set(key, tooltip);
+        break;
       } else {
         const hiddenTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
         this.swimlaneTooltipsMap.set(key, hiddenTooltip);

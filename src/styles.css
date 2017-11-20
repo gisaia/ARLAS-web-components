@@ -29,6 +29,10 @@
   stroke-opacity: 1;
 }
 
+.histogram__area .histogram__chart--bar {
+  fill-opacity: 0.3;
+  stroke-opacity: 0.3;
+}
 
 .histogram__area .histogram__description__startvalue--background,
 .histogram__area .histogram__description__endvalue--background{
