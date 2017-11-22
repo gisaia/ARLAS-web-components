@@ -74,6 +74,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
   @Input() public topOffsetRemoveInterval = 40;
   @Input() public leftOffsetRemoveInterval = 18;
+  @Input() public swimlaneBorderRadius = 3;
 
 
   @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
@@ -380,14 +381,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     [(this.chartDimensions).width, (this.chartDimensions).height]]);
     const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
     const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
-    this.verticalTooltipLine = this.context.append('g').append('line')
+    this.verticalTooltipLine = this.context.append('g').append('line').attr('class', 'histogram__swimlane--vertical-tooltip-line')
       .attr('x1', 0)
       .attr('y1', 0)
       .attr('x2', 0)
       .attr('y2', this.chartDimensions.height)
-      .style('stroke-width', 2)
-      .style('stroke', '#000')
-      .style('fill', 'none')
       .style('display', 'none');
     const brush = this.context.append('g')
       .attr('class', 'brush')
@@ -804,7 +802,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     for (let i = 0; i < swimlaneData.size; i++) {
       const key = keys.next().value;
       this.plotHistogramDataAsOneDimension(this.chartAxes, swimlaneData.get(key), swimlaneHeight, this.barWeight,
-        this.swimlaneMaxValuesMap.get(key))
+          this.swimlaneMaxValuesMap.get(key))
+        .attr('rx', this.swimlaneBorderRadius)
+        .attr('ry', this.swimlaneBorderRadius)
         .attr('y', swimlaneHeight * (i))
         .attr('height', (d) => (d.value !== 0) ? this.getSwimlaneContentHeight(swimlaneHeight,
           d.value, this.swimlaneMaxValuesMap.get(key)) : 0)
@@ -819,28 +819,24 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private getSwimlaneContentHeight(swimlaneHeight: number, swimlaneValue?: number, swimlaneMaxValue?: number): number {
-    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? swimlaneHeight : swimlaneValue * swimlaneHeight / swimlaneMaxValue;
+    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? swimlaneHeight - 5 : swimlaneValue * swimlaneHeight / swimlaneMaxValue;
   }
 
   private getSwimlaneVerticalTranslation(swimlaneHeight: number, swimlaneValue?: number,
     swimlaneMaxValue?: number, indexOfSwimlane?: number): number {
-    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? 0
-      : swimlaneHeight - swimlaneValue * swimlaneHeight / swimlaneMaxValue;
+    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? 5
+    : swimlaneHeight - swimlaneValue * swimlaneHeight / swimlaneMaxValue;
   }
 
   private plotHorizontalTicksForSwimlane(data: Array<HistogramData>, swimlaneHeight: number, barWeight: number, dataMaxValue, index) {
     this.context.append('g').attr('class', 'histogram__swimlane-height')
-      .selectAll('path')
-      .data(data)
-      .enter().append('line')
-      .attr('x1', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key))
-      .attr('y1', (d) => swimlaneHeight * (index + 1) - (+d.value) * swimlaneHeight / (+dataMaxValue))
-      .attr('x2', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key) + this.chartAxes.stepWidth * barWeight)
-      .attr('y2', (d) => swimlaneHeight * (index + 1) - (+d.value) * swimlaneHeight / (+dataMaxValue))
-      .style('stroke-width', 2)
-      .style('stroke', '#fff')
-      .style('fill', 'none')
-      .style('opacity', '1');
+    .selectAll('path')
+    .data(data)
+    .enter().append('line').attr('class', 'histogram__swimlane-height--tick')
+    .attr('x1', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key))
+    .attr('y1', (d) => Math.max((swimlaneHeight * (index + 1) - d.value * swimlaneHeight / (+dataMaxValue)), swimlaneHeight * index + 5))
+    .attr('x2', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key) + this.chartAxes.stepWidth * barWeight)
+    .attr('y2', (d) => Math.max((swimlaneHeight * (index + 1) - d.value * swimlaneHeight / (+dataMaxValue)), swimlaneHeight * index + 5));
   }
 
   private showTooltips(data: Array<HistogramData>): void {
@@ -1055,8 +1051,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         if (this.chartType === ChartType.swimlane) {
           this.applyStyleOnSelectedSwimlanes();
         }
+        this.translateBrushHandles(selection);
       }
-      this.translateBrushHandles(selection);
     });
   }
 
@@ -1077,6 +1073,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         }
         this.showTitle = true;
         this.isBrushing = false;
+      } else {
+        this.translateBrushHandles(null);
       }
     });
   }
