@@ -1002,8 +1002,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         if (this.chartType === ChartType.swimlane) {
           this.applyStyleOnSelectedSwimlanes();
         }
+        this.translateBrushHandles(selection);
       }
-      this.translateBrushHandles(selection);
     });
   }
 
@@ -1024,6 +1024,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         }
         this.showTitle = true;
         this.isBrushing = false;
+      } else {
+        this.translateBrushHandles(null);
       }
     });
   }
