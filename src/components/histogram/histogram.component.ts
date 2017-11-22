@@ -157,7 +157,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
             return d.key >= v.startvalue
               && d.key + this.barWeight * this.dataInterval <= v.endvalue;
           }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
-          lastKey = keys.sort()[keys.length - 1];
+          lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           let guid;
           if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
             guid = (<Date>v.startvalue).getTime().toString() + (<Date>v.endvalue).getTime().toString();
@@ -167,13 +167,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           this.intervalSelectedMap.set(guid,
             {
               values: { startvalue: v.startvalue, endvalue: v.endvalue },
-              x_position: this.chartAxes.xDomain(lastKey)
+              x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
             });
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
           }
-          const selectionListInterval = [];
-          this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
         });
         this.intervalSelectedMap.forEach((k, v) => {
           const keys = [];
@@ -183,10 +181,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
             return d.key >= k.values.startvalue
               && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
           }).data().map((d) => { this.selectedBars.add(d.key); keys.push(d.key); });
-          lastKey = keys.sort()[keys.length - 1];
+          lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           this.intervalSelectedMap.set(v, {
             values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
-            x_position: this.chartAxes.xDomain(lastKey)
+            x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
           });
         });
         if (this.barsContext !== undefined) {
@@ -250,6 +248,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.plotHistogramData(this.chartDimensions, this.chartAxes, data);
       this.showTooltips(data);
       this.addSelectionBrush();
+      this.plottingCount++;
     } else {
       this.startValue = '';
       this.endValue = '';
@@ -272,6 +271,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.plotHistogramDataAsSwimlane(swimlanesMapData);
       this.showTooltipsForSwimlane(swimlanesMapData);
       this.addSelectionBrush();
+      this.plottingCount++;
     } else {
       this.startValue = '';
       this.endValue = '';
@@ -308,7 +308,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     } else {
       this.plotHistogramSwimlane(<Map<string, Array<{ key: number, value: number }>>>inputData);
     }
-    this.plottingCount++;
   }
 
   public resizeHistogram(e: Event): void {
@@ -335,11 +334,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         return d.key >= k.values.startvalue
           && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
       }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
-      lastKey = keys.sort()[keys.length - 1];
+      lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
       this.intervalSelectedMap.set(v,
         {
           values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
-          x_position: this.chartAxes.xDomain(lastKey)
+          x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
         });
     });
   }
@@ -419,22 +418,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
             return d.key >= this.selectionInterval.startvalue
               && d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
           }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
-          lastKey = keys.sort()[keys.length - 1];
-          // party selected
-          (this.barsContext).filter((d) => {
-            d.key = +d.key;
-            return d.key < this.selectionInterval.startvalue
-              && d.key + this.barWeight * this.dataInterval > this.selectionInterval.startvalue;
-          }).data()
-            .map(d => this.selectedBars.add(d.key));
-
-          // party selected
-          (this.barsContext).filter((d) => {
-            d.key = +d.key;
-            return d.key <= this.selectionInterval.endvalue
-              && d.key + this.barWeight * this.dataInterval > this.selectionInterval.endvalue;
-          }).data()
-            .map(d => { this.selectedBars.add(d.key); });
+          lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           let guid;
           if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
             guid = (<Date>this.selectionInterval.startvalue).getTime().toString() +
@@ -445,7 +429,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           this.intervalSelectedMap.set(guid,
             {
               values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
-              x_position: this.chartAxes.xDomain(lastKey)
+              x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
             });
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
