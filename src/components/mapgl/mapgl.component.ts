@@ -98,7 +98,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
-        this.map.getSource('geobox').setData(this.geoboxdata);
+        if (this.map.getSource('geobox') !== undefined) {
+          this.map.getSource('geobox').setData(this.geoboxdata);
+        }
       }
     });
   }
@@ -618,8 +620,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   private getPrecisionFromZoom(zoom: number): number {
-    if (this.zoomToPrecisionCluster[Math.ceil(zoom) - 1] !== undefined) {
-      return this.zoomToPrecisionCluster[Math.ceil(zoom) - 1];
+    if (this.zoomToPrecisionCluster[Math.ceil(zoom) - 1].split(',')[1] !== undefined) {
+      return this.zoomToPrecisionCluster[Math.ceil(zoom) - 1].split(',')[1];
     } else {
       return this.maxPrecision;
     }
