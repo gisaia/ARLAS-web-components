@@ -154,6 +154,18 @@
   display: none;
 }
 
+.histogram__swimlane-height--tick {
+  stroke-width: 1px;
+  stroke: #fff;
+  fill: none;
+  opacity: 1;
+}
+
+.histogram__swimlane--vertical-tooltip-line {
+  stroke-width: 2px;
+  stroke: #000;
+  fill: none;
+}
 
 .selection {
   opacity: 0.6;
