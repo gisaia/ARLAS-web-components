@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import {
-  ChartType, DataType, MarginModel, DateUnit, HistogramData, SelectedOutputValues,
+  ChartType, MarginModel, DateUnit, HistogramData, SelectedOutputValues,
   ChartDimensions, ChartAxes, Position
 } from './histogram.utils';
 
@@ -14,7 +14,7 @@ import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as d3 from 'd3';
 import * as tinycolor from 'tinycolor2';
-import { SelectedInputValues } from './histogram.utils';
+import { SelectedInputValues, DataType } from './histogram.utils';
 
 @Component({
   selector: 'arlas-histogram',
@@ -81,7 +81,6 @@ export class HistogramComponent implements OnInit, OnChanges {
   private context: any;
   private barsContext: any;
   private selectionInterval: SelectedOutputValues = { startvalue: null, endvalue: null };
-  private selectionListInterval: SelectedOutputValues[] = [];
   private selectedBars = new Set();
   private selectionBrush: d3.BrushBehavior<any>;
   private chartAxes: ChartAxes;
@@ -96,7 +95,6 @@ export class HistogramComponent implements OnInit, OnChanges {
   private yLabelsAxis;
   private isWidthFixed = false;
   private isHeightFixed = false;
-
   private isBrushing = false;
   // Counter of how many times the chart has been plotted/replotted
   private plottingCount = 0;
@@ -106,9 +104,11 @@ export class HistogramComponent implements OnInit, OnChanges {
   private tooltipxPositionWeight = 40;
   private onInit = true;
   private brushContext;
+  public selectionListIntervalId: string[] = [];
+  public intervalSelectedMap: Map<string, { values: SelectedOutputValues, x_position: number }> =
+  new Map<string, { values: SelectedOutputValues, x_position: number }>();
+
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
-
-
     Observable.fromEvent(window, 'resize')
       .debounceTime(500)
       .subscribe((event: Event) => {
@@ -136,26 +136,63 @@ export class HistogramComponent implements OnInit, OnChanges {
     }
     if (changes.intervalListSelection) {
       if (changes.intervalListSelection.currentValue) {
-        changes.intervalListSelection.currentValue.forEach(value => {
+        this.selectedBars.clear();
+        let lastKey;
+        const keys = [];
+        if (changes.intervalListSelection.currentValue.length === 0) {
+          this.selectionListIntervalId = [];
+          this.intervalSelectedMap.clear();
+        }
+        changes.intervalListSelection.currentValue.forEach(v => {
           (this.barsContext).filter(d => {
             d.key = +d.key;
-            return d.key >= value.startvalue
-              && d.key + this.barWeight * this.dataInterval <= value.endvalue;
-          }).data().map(d => { this.selectedBars.add(d.key); });
+            return d.key >= v.startvalue
+              && d.key + this.barWeight * this.dataInterval <= v.endvalue;
+          }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+          lastKey = keys.sort()[keys.length - 1];
+          let guid;
+          if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
+            guid = (<Date>v.startvalue).getTime().toString() + (<Date>v.endvalue).getTime().toString();
+          } else {
+            guid = v.startvalue.toString() + v.endvalue.toString();
+          }
+          this.intervalSelectedMap.set(guid,
+            {
+              values: { startvalue: v.startvalue, endvalue: v.endvalue },
+              x_position: this.chartAxes.xDomain(lastKey)
+            });
+          if (this.selectionListIntervalId.indexOf(guid) < 0) {
+            this.selectionListIntervalId.push(guid);
+          }
+          const selectionListInterval = [];
+          this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
         });
-        this.resizeHistogram(null);
+        this.intervalSelectedMap.forEach((k, v) => {
+          const keys = [];
+          let lastKey;
+          (this.barsContext).filter((d) => {
+            d.key = +d.key;
+            return d.key >= k.values.startvalue
+              && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
+          }).data().map((d) => { this.selectedBars.add(d.key); keys.push(d.key); });
+          lastKey = keys.sort()[keys.length - 1];
+          this.intervalSelectedMap.set(v, {
+            values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
+            x_position: this.chartAxes.xDomain(lastKey)
+          });
+        });
+        if (this.barsContext !== undefined) {
+          this.applyStyleOnSelectedBars();
+        }
       }
     }
-
   }
   public ngOnInit() {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     if (this.xAxisPosition === Position.top) {
       this.minusSign = -1;
     }
-
   }
-
 
   public setHistogramMargins() {
     // tighten right and bottom margins when X labels are not shown
@@ -203,8 +240,6 @@ export class HistogramComponent implements OnInit, OnChanges {
         this.chartHeight = this.chartHeight + this.margin.top + this.margin.bottom;
       }
     }
-
-
   }
 
   public plotHistogram(inputData: Array<{ key: number, value: number }>): void {
@@ -266,6 +301,35 @@ export class HistogramComponent implements OnInit, OnChanges {
 
     this.plotHistogram(this.inputData);
     this.applyStyleOnSelectedBars();
+    this.intervalSelectedMap.forEach((k, v) => {
+      const keys = [];
+      let lastKey;
+      (this.barsContext).filter(d => {
+        d.key = +d.key;
+        return d.key >= k.values.startvalue
+          && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
+      }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+      lastKey = keys.sort()[keys.length - 1];
+      this.intervalSelectedMap.set(v,
+        {
+          values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
+          x_position: this.chartAxes.xDomain(lastKey)
+        });
+    });
+  }
+
+
+  public removeSelectInterval(id: string) {
+    const index = this.selectionListIntervalId.indexOf(id, 0);
+    if (index > -1) {
+      this.selectionListIntervalId.splice(index, 1);
+    }
+    this.intervalSelectedMap.delete(id);
+    const selectionListInterval = [];
+    this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
+    this.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
+
+
   }
 
   private addSelectionBrush(): void {
@@ -310,12 +374,15 @@ export class HistogramComponent implements OnInit, OnChanges {
       this.applyStyleOnSelectedBars();
       brush.on('dblclick', () => {
         // fully selected
+        let lastKey;
+        const keys = [];
         if (this.multiselectable) {
           (this.barsContext).filter((d) => {
             d.key = +d.key;
             return d.key >= this.selectionInterval.startvalue
               && d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
-          }).data().map(d => this.selectedBars.add(d.key));
+          }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+          lastKey = keys.sort()[keys.length - 1];
           // party selected
           (this.barsContext).filter((d) => {
             d.key = +d.key;
@@ -330,8 +397,24 @@ export class HistogramComponent implements OnInit, OnChanges {
             return d.key <= this.selectionInterval.endvalue
               && d.key + this.barWeight * this.dataInterval > this.selectionInterval.endvalue;
           }).data()
-            .map(d => this.selectedBars.add(d.key));
-          this.selectionListInterval.push({ startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue });
+            .map(d => { this.selectedBars.add(d.key); });
+          let guid;
+          if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
+            guid = (<Date>this.selectionInterval.startvalue).getTime().toString() +
+              (<Date>this.selectionInterval.endvalue).getTime().toString();
+          } else {
+            guid = this.selectionInterval.startvalue.toString() + this.selectionInterval.endvalue.toString();
+          }
+          this.intervalSelectedMap.set(guid,
+            {
+              values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
+              x_position: this.chartAxes.xDomain(lastKey)
+            });
+          if (this.selectionListIntervalId.indexOf(guid) < 0) {
+            this.selectionListIntervalId.push(guid);
+          }
+          const selectionListInterval = [];
+          this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
         }
       });
     }
@@ -494,13 +577,13 @@ export class HistogramComponent implements OnInit, OnChanges {
       }
       endRange = xDomain(+data[data.length - 1].key + this.dataInterval);
       xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
-      xDataDomain.domain(data.map(function (d) { return d.key; }));
+      xDataDomain.domain(data.map((d) => d.key));
 
       if (this.dataType === DataType.numeric) {
         xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xDataDomain.domain()
-        .filter(function (d, i) { return !(i % ticksPeriod); })).tickSize(this.minusSign * 5);
+          .filter((d, i) => !(i % ticksPeriod))).tickSize(this.minusSign * 5);
         xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xDataDomain.domain()
-        .filter(function (d, i) { return !(i % labelsPeriod); }));
+          .filter((d, i) => !(i % labelsPeriod)));
       } else {
         xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks).tickSize(this.minusSign * 5);
         xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).ticks(this.xLabels);
@@ -637,9 +720,9 @@ export class HistogramComponent implements OnInit, OnChanges {
     this.context.on('mousemove', function (d) {
       _thisComponent.setTooltipPosition(data, <d3.ContainerElement>this);
     })
-    .on('mouseout', function (d) {
-      _thisComponent.showTooltip = false;
-    });
+      .on('mouseout', function (d) {
+        _thisComponent.showTooltip = false;
+      });
   }
 
   private setTooltipPosition(data: Array<HistogramData>, container: d3.ContainerElement): void {
@@ -667,7 +750,7 @@ export class HistogramComponent implements OnInit, OnChanges {
         }
         default: break;
       }
-      if ( xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
+      if (xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
         this.showTooltip = true;
         this.tooltipXContent = 'x: ' + this.toString(data[i].key);
         this.tooltipYContent = 'y: ' + data[i].value;
@@ -738,7 +821,9 @@ export class HistogramComponent implements OnInit, OnChanges {
           this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
           this.startValue = this.toString(this.selectionInterval.startvalue);
           this.endValue = this.toString(this.selectionInterval.endvalue);
-          this.valuesListChangedEvent.next(this.selectionListInterval.concat(this.selectionInterval));
+          const selectionListInterval = [];
+          this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
+          this.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
         }
         this.showTitle = true;
         this.isBrushing = false;
@@ -796,7 +881,14 @@ export class HistogramComponent implements OnInit, OnChanges {
       if (this.chartType === ChartType.oneDimension) {
         return Math.trunc(value).toString();
       } else {
-        return this.round(value, 1).toString();
+        if (this.dataType === DataType.time) {
+          const date = new Date(this.round(value, 1));
+          return date.toDateString();
+
+        } else {
+          return this.round(value, 1).toString();
+
+        }
       }
     }
   }
@@ -905,5 +997,4 @@ export class HistogramComponent implements OnInit, OnChanges {
 
     return interval;
   }
-
 }
