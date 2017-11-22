@@ -7,10 +7,10 @@
           <div class="histogram__description__endvalue" ><span *ngIf="dataLength > 1" class="histogram__description__endvalue--background">{{endValue}}</span></div>
         </div>
     </div>
+
     <div [style.display] ="displaySvg">
       <svg  id="svgix" class="histogram__chart" [style.width.px]="chartWidth" [style.height.px]="chartHeight"></svg>
     </div>
-
     <div *ngIf="dataLength === 1" class="histogram__no-chart" [style.width.px]="chartWidth" [style.height.px]="chartHeight">
       <span class="histogram__no-chart__key">{{startValue}}</span>
       <span class="histogram__no-chart__value">{{chartTitle}} : {{inputData[0].value}}</span>
@@ -47,6 +47,13 @@
           </div>
       </div>
     </div>
-    <div>
+
+    
+    <div  *ngFor="let id of selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)"   [style.top.px]="40" [style.left.px]="intervalSelectedMap.get(id)?.x_position-18">
+<svg fill="#043b53" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg" transform="rotate(45)">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+</svg>
     </div>
+    
 </div>

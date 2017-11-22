@@ -100,6 +100,17 @@
   color: white;
   z-index: 20000;
 }
+.histogram__remove{
+    position: absolute;
+  text-align: left;
+  padding: 2px;
+  font: 12px sans-serif;
+  border: 0px;
+  border-radius: 2px;
+  color: #043b53;
+  z-index: 20000;
+  cursor: pointer;
+}
 
 .histogram__swimlane--tooltip-content, .histogram__tooltip-content {
   display: block;
