@@ -72,6 +72,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public paletteColors: [number, number] | string = null;
   @Input() public brushHandlesHeightWeight = 1 / 2;
   @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
+  @Input() public topOffsetRemoveInterval = 40;
+  @Input() public leftOffsetRemoveInterval = 18;
 
 
   @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
@@ -345,6 +347,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
 
   public removeSelectInterval(id: string) {
+    this.tooltip.isShown = false;
     const index = this.selectionListIntervalId.indexOf(id, 0);
     if (index > -1) {
       this.selectionListIntervalId.splice(index, 1);
@@ -353,6 +356,23 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     const selectionListInterval = [];
     this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
     this.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
+  }
+  public overRemove(e) {
+
+    if (e.path[1].offsetTop !== undefined && e.clientX !== undefined) {
+      this.tooltip.isRightSide = true;
+      const dx = (this.chartDimensions.width) - 2 * e.clientX + 25;
+      this.tooltip.xContent = 'Remove this';
+      this.tooltip.yContent = 'period';
+      this.tooltip.isShown = true;
+      this.tooltip.xPosition = (e.clientX + dx);
+      this.tooltip.yPosition = (e.path[1].offsetTop + 30);
+    }
+
+  }
+
+  public leaveRemove() {
+    this.tooltip.isShown = false;
   }
 
   private addSelectionBrush(): void {
@@ -872,14 +892,43 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         default: break;
       }
       if (xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
-        this.tooltip.isShown = true;
-        dx = this.setTooltipXposition(xy[0], this.tooltip);
-        dy = this.setTooltipYposition(xy[1]);
-        this.tooltip.xContent = 'x: ' + this.toString(data[i].key);
-        this.tooltip.yContent = 'y: ' + data[i].value;
+        if (data[i].key >= this.selectionInterval.startvalue
+          && data[i].key <= this.selectionInterval.endvalue) {
+          if (xy[1] < this.chartAxes.yDomain(data[i].value) && this.multiselectable) {
+            this.tooltip.isShown = true;
+            dx = this.setTooltipXposition(xy[0], this.tooltip);
+            dy = this.setTooltipYposition(xy[1]);
+            this.tooltip.xContent = 'Double click';
+            this.tooltip.yContent = 'to save this period';
+
+          } else {
+            this.tooltip.isShown = true;
+            dx = this.setTooltipXposition(xy[0], this.tooltip);
+            dy = this.setTooltipYposition(xy[1]);
+            this.tooltip.xContent = 'x: ' + this.toString(data[i].key);
+            this.tooltip.yContent = 'y: ' + data[i].value;
+          }
+
+        } else {
+          this.tooltip.isShown = true;
+          dx = this.setTooltipXposition(xy[0], this.tooltip);
+          dy = this.setTooltipYposition(xy[1]);
+          this.tooltip.xContent = 'x: ' + this.toString(data[i].key);
+          this.tooltip.yContent = 'y: ' + data[i].value;
+        }
         break;
       } else {
-        this.tooltip.isShown = false;
+        if (data[i].key >= this.selectionInterval.startvalue
+          && data[i].key <= this.selectionInterval.endvalue) {
+          this.tooltip.isShown = true;
+          dx = this.setTooltipXposition(xy[0], this.tooltip);
+          dy = this.setTooltipYposition(xy[1]);
+          this.tooltip.xContent = 'Double click';
+          this.tooltip.yContent = 'to save this period';
+        } else {
+          this.tooltip.isShown = false;
+
+        }
       }
     }
     this.tooltip.xPosition = (xy[0] + dx);
