@@ -1,0 +1,86 @@
+
+.powerbars--wrapper {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgb(194, 194, 194);
+  border-radius: 1px;
+}
+
+.powerbars--container {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100% - 26px);
+  overflow-y: auto;
+  padding: 3px;
+  padding-top:0;
+}
+
+.powerbar__powerbar--progression--measure {
+  float: left;
+  border-right: 1px solid black;
+  width: 20%;
+  height: 100%;
+}
+.powerbars__title {
+  padding: 3px;
+  text-align: center;
+  color: rgb(4, 55, 63);
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 0.8em;
+  border-bottom: 1px solid rgb(209, 209, 209);
+}
+
+.powerbars__clearselection{
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  float: right;
+  cursor: pointer;
+  color: rgb(192, 192, 192)
+}
+
+.powerbars__powerbar {
+  margin-top: 3px;
+}
+
+.powerbars__powerbar:hover {
+  opacity: .8;
+  cursor: pointer;
+}
+
+.powerbar__powerbar--progression--neutral-state, .powerbar__powerbar--progression--selected-bar,
+.powerbar__powerbar--progression--unselected-bar {
+  padding-left: 3px;
+  font-family: "Roboto", "Helvetica Neue", sans-serif;
+  font-size: 0.75em;
+}
+
+.powerbar__powerbar--progression--neutral-state {
+  background-color: rgb(158, 240, 253);
+}
+
+.powerbar__powerbar--progression--selected-bar {
+  background-color: rgb(135, 230, 245);
+}
+
+.powerbar__powerbar--progression--unselected-bar {
+  background-color: rgb(230, 230, 230);
+}
+
+
+::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #555;
+}
