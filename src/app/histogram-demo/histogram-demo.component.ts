@@ -88,16 +88,17 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private showSwimlaneHistogram(component: HistogramDemoComponent) {
-    const _thisComponent = this;
-    d3.csv('assets/sp500.csv', this.stringToNumber, function(error, data) {
+    d3.csv('assets/swimlane.csv', this.stringToNumber, (error, data) => {
           if (error) { throw error; }
-          _thisComponent.swimlaneHistogramData = new Map<any, any>();
-          _thisComponent.swimlaneHistogramData.set('line1', data);
-          _thisComponent.swimlaneHistogramData.set('line2', data);
-          _thisComponent.swimlaneHistogramData.set('line3', data);
 
+          d3.csv('assets/swimlane2.csv', this.stringToNumber, (error, data2) => {
+            if (error) { throw error; }
+            this.swimlaneHistogramData = new Map<any, any>();
+            this.swimlaneHistogramData.set('line1', data);
+            this.swimlaneHistogramData.set('line2', data2);
+            this.swimlaneHistogramData.set('line3', data2);
+      });
     });
-
   }
 
   private sleep(ms) {

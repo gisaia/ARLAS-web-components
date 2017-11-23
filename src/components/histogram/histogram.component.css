@@ -56,38 +56,6 @@
     background: rgba(220, 220, 220, 0.8);
 }
 
-.histogram__chart--area{
-    fill: dimgrey;
-    fill-opacity: 1;
-    stroke: darkslategrey;
-    stroke-width: 2px;
-    stroke-opacity: 1;
-}
-
-.histogram__chart--bar {
-    fill: dimgrey !important;
-    fill-opacity: 1;
-    stroke: darkslategrey !important;
-    stroke-width: 0.5px;
-    stroke-opacity: 1;
-}
-
-.histogram__chart--bar__fullyselected {
-    fill: brown;
-    fill-opacity: 1;
-    stroke: darkslategrey;
-    stroke-width: 0.5px;
-    stroke-opacity: 1;
-}
-
-.histogram__chart--bar__partlyselected {
-    fill: orange;
-    fill-opacity: 1;
-    stroke: darkslategrey;
-    stroke-width: 0.5px;
-    stroke-opacity: 1;
-}
-
 .histogram__tooltip{
   position: absolute;
   text-align: left;
@@ -112,7 +80,7 @@
   cursor: pointer;
 }
 
-.histogram__swimlane--tooltip-content, .histogram__tooltip-content {
+.histogram__tooltip-content {
   display: block;
 }
 
