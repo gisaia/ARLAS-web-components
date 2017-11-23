@@ -36,6 +36,8 @@
                      [showXTicks]=true
                      [showYLabels]=false
                      [multiselectable]="true"
+                     (valuesListChangedEvent)="valueChanged1($event)"
+                      [intervalListSelection]="intervalListSelection1"
                      [swimLaneLabelsWidth]=50
                      [xTicks]=12
                      [barWeight]=0.6
@@ -62,6 +64,8 @@
                      [showXTicks]=true
                      [showYLabels]=false
                      [multiselectable]="true"
+                      (valuesListChangedEvent)="valueChanged2($event)"
+                      [intervalListSelection]="intervalListSelection2"
                      [swimLaneLabelsWidth]=50
                      [xTicks]=12
                      [barWeight]=0.6
@@ -90,6 +94,8 @@
                      [showXTicks]=true
                      [showYLabels]=false
                      [multiselectable]="true"
+                                      (valuesListChangedEvent)="valueChanged3($event)"
+                      [intervalListSelection]="intervalListSelection3"
                      [swimLaneLabelsWidth]=50
                      [xTicks]=12
                      [barWeight]=0.6
@@ -116,8 +122,16 @@
     </div>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram  [customizedCssClass]="'histogram__area'" [multiselectable]="true" [dataType]="dataType.time" [showXLabels]=true [showYLabels]=true [dataType]="dataType.time" [chartType]="chartType.bars"
-                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second" (valuesListChangedEvent)="setSelectedTimeValues($event)"></arlas-histogram>
+    <arlas-histogram  [customizedCssClass]="'histogram__area'" 
+    [multiselectable]="true" [dataType]="dataType.time" 
+    [showXLabels]=true [showYLabels]=true 
+    [dataType]="dataType.time" [chartType]="chartType.bars"
+                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second" 
+                     (valuesListChangedEvent)="setSelectedTimeValues($event)"
+                     
+                     
+                      [intervalListSelection]="intervalListSelection4"
+                     ></arlas-histogram>
   </div>
 </div>
 <div class="graphs">
