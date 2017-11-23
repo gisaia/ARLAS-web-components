@@ -1,0 +1,14 @@
+.powerbars-constructor-container {
+  width: 130px;
+  height: 155px;
+  margin: 10px;
+  margin-right: 0;
+  overflow: hidden;
+  float: left;
+}
+
+.powerbars-constructor-container .powerbar__powerbar--progression--neutral-state {
+  background-color: rgb(177, 250, 148) !important;
+
+}
+

@@ -6,6 +6,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { HistogramComponent } from '../components/histogram/histogram.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
+import { PowerbarsComponent } from '../components/powerbars/powerbars.component';
+
 import { ResultListComponent } from '../components/results/result-list/result-list.component';
 import { ResultFilterComponent } from '../components/results/result-filter/result-filter.component';
 import { ResultItemComponent } from '../components/results/result-item/result-item.component';
@@ -22,14 +24,16 @@ import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
 import { ResultGridTileComponent } from '../components/results/result-grid-tile/result-grid-tile.component';
 import { MapglModule } from '../components/mapgl/mapgl.module';
-
+import { PowerbarsModule } from '../components/powerbars/powerbars.module';
+import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HistogramDemoComponent,
     ResultsDemoComponent,
-    MapglDemoComponent
+    MapglDemoComponent,
+    PowerbarsDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -41,6 +45,7 @@ import { MapglModule } from '../components/mapgl/mapgl.module';
     MapglModule,
     HistogramModule,
     ResultsModule,
+    PowerbarsModule,
     MatSlideToggleModule,
     HttpModule
   ],
