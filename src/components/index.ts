@@ -1,3 +1,5 @@
+export { PowerbarsComponent } from './powerbars/powerbars.component';
+export { PowerbarsModule } from './powerbars/powerbars.module';
 export { DateUnit, ChartType, DataType, Position } from './histogram/histogram.utils';
 export { SortEnum } from './results/utils/enumerations/sortEnum';
 export { ModeEnum } from './results/utils/enumerations/modeEnum';

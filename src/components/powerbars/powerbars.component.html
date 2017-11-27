@@ -1,12 +1,15 @@
 <div class="powerbars--wrapper" [ngClass]="customizedCssClass">
-    <div class="powerbars__title">
-      <span>{{powerBarsTitle}}</span>
-      <mat-icon *ngIf="isClearSelectionButtonShown" class="powerbars__clearselection" (click)="clearSelection()" matTooltip="{{CLEAR_SELECTION}}">grid_off</mat-icon>
-    </div>
       <div class="powerbars--container">
           <div class="powerbars--container--bis">
-              <div *ngFor="let powerbar of powerBarsList" class="powerbars__powerbar" (click)="emitSelectedPowerBar(powerbar)">
-                  <div class="powerbar__powerbar--progression--{{powerbar.classSuffix}}"[style.width]="powerbar.progression+'%'" matTooltip="{{powerbar.count}}" [matTooltipPosition]="'after'">
+              <div *ngIf="selectedPowerbarsList.size !== 0" class="powerbars--selectedbars">
+                  <div *ngFor="let selectedPowerbar of selectedPowerbarsList" class="powerbars__powerbar--{{selectedPowerbar.classSuffix}}" (click)="clickOnPowerbar(selectedPowerbar)">
+                      <div  class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}}"[style.width]="selectedPowerbar.progression+'%'" matTooltip="{{selectedPowerbar.count}}" [matTooltipPosition]="'after'">
+                          {{selectedPowerbar.term}}
+                      </div>
+                  </div>
+              </div>
+              <div *ngFor="let powerbar of powerBarsList" class="powerbars__powerbar--{{powerbar.classSuffix}}" (click)="clickOnPowerbar(powerbar)">
+                  <div *ngIf="!powerbar.isSelected" class="powerbar__powerbar--progression--{{powerbar.classSuffix}}"[style.width]="powerbar.progression+'%'" matTooltip="{{powerbar.count}}" [matTooltipPosition]="'after'">
                       {{powerbar.term}}
                   </div>
               </div>
