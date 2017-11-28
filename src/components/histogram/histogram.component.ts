@@ -4,8 +4,8 @@ import {
 } from '@angular/core';
 
 import {
-  ChartType, MarginModel, DateUnit, HistogramData, SelectedOutputValues,
-  ChartDimensions, ChartAxes, Position
+  ChartType, ChartDimensions, ChartAxes, Tooltip, DataType, HistogramData,
+  MarginModel, DateUnit, SelectedInputValues, SelectedOutputValues, Position
 } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
@@ -14,7 +14,9 @@ import { Observable } from 'rxjs/Rx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as d3 from 'd3';
 import * as tinycolor from 'tinycolor2';
-import { SelectedInputValues, SwimlaneData, SwimlaneParsedData, Tooltip, SwimlaneMode, DataType } from './histogram.utils';
+import { SwimlaneData, SwimlaneParsedData, SwimlaneMode, SwimlaneAxes } from './histogram.utils';
+import { NUMBER_TYPE } from '@angular/compiler/src/output/output_ast';
+import { element } from 'protractor';
 
 @Component({
   selector: 'arlas-histogram',
@@ -39,6 +41,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public brushHandles;
   public brushHandlesHeight: number = null;
   public swimlaneTooltipsMap = new Map<string, Tooltip>();
+  public swimlaneXTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
   public verticalTooltipLine;
 
   @Input() public xTicks = 5;
@@ -90,11 +93,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   private selectedBars = new Set();
   private selectionBrush: d3.BrushBehavior<any>;
   private chartAxes: ChartAxes;
+  private swimlaneAxes: SwimlaneAxes;
   private chartDimensions: ChartDimensions;
   private hasSelectionExceededData = false;
   private fromSetInterval = false;
   private dataInterval: number;
-  private nbSwimlanes = 1;
+  public nbSwimlanes = 1;
   private xTicksAxis;
   private xLabelsAxis;
   private xAxis;
@@ -103,6 +107,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   private isWidthFixed = false;
   private isHeightFixed = false;
   private isSwimlaneHeightFixed = false;
+  private swimlaneHasMoreThanTwoBuckets = false;
 
   private isBrushing = false;
   // Counter of how many times the chart has been plotted/replotted
@@ -115,7 +120,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   private tooltipxPositionWeight = 40;
   private onInit = true;
   private brushContext;
-  private swimlaneMaxValuesMap: Map<string, number>;
+  private swimlaneMaxValue: number = null;
+  private swimlaneIntervalBorders: [number | Date, number | Date];
+  private swimlaneDataDomain: Array<HistogramData> = new Array<HistogramData>();
   private labelsContext;
   public selectionListIntervalId: string[] = [];
   public intervalSelectedMap: Map<string, { values: SelectedOutputValues, x_position: number }> =
@@ -133,10 +140,15 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
     if (this.data !== undefined) {
       this.plotHistogram(this.data);
-      if (this.intervalSelection !== undefined && this.chartType !== ChartType.swimlane &&
-        (<Array<{ key: number, value: number }>>this.data).length > 0) {
+      if ((this.intervalSelection !== undefined && this.chartType !== ChartType.swimlane &&
+        (<Array<{ key: number, value: number }>>this.data).length > 0)
+      || (this.intervalSelection !== undefined && this.chartType === ChartType.swimlane &&
+        this.swimlaneDataDomain.length > 0)
+      ) {
         this.setSelectedInterval(this.intervalSelection);
       }
+
+
       this.fromSetInterval = false;
     }
     // to draw the chart on init with correct width
@@ -149,6 +161,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       }
     }
     if (changes.intervalListSelection) {
+      const chartAxes = (this.chartType ===  ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
       if (changes.intervalListSelection.currentValue) {
         this.selectedBars.clear();
         let lastKey;
@@ -173,7 +186,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           this.intervalSelectedMap.set(guid,
             {
               values: { startvalue: v.startvalue, endvalue: v.endvalue },
-              x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
+              x_position: chartAxes.xDomain(lastKey) + this.margin.left
             });
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
@@ -190,7 +203,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           this.intervalSelectedMap.set(v, {
             values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
-            x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
+            x_position: chartAxes.xDomain(lastKey) + this.margin.left
           });
         });
         if (this.barsContext !== undefined) {
@@ -224,7 +237,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-
   public setHistogramMargins() {
     // tighten right and bottom margins when X labels are not shown
     if (!this.showXLabels) {
@@ -254,7 +266,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.drawChartAxes(this.chartDimensions, this.chartAxes);
       this.plotHistogramData(this.chartDimensions, this.chartAxes, data);
       this.showTooltips(data);
-      this.addSelectionBrush();
+      this.addSelectionBrush(this.chartAxes);
       this.plottingCount++;
     } else {
       this.startValue = '';
@@ -266,35 +278,24 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public plotHistogramSwimlane(inputData: Map<string, Array<{ key: number, value: number }>>) {
     let swimlanesMapData: Map<string, Array<HistogramData>> = null;
     if (inputData !== null && inputData.size > 0) {
+      this.setSwimlaneMaxValue(inputData);
       swimlanesMapData = this.parseSwimlaneDataKey(<Map<string, Array<{ key: number, value: number }>>>inputData);
       this.nbSwimlanes = swimlanesMapData.size;
-      const firstKey = swimlanesMapData.keys().next().value;
-      this.initializeDescriptionValues(swimlanesMapData.get(firstKey)[0].key,
-        swimlanesMapData.get(firstKey)[swimlanesMapData.get(firstKey).length - 1].key);
+      this.setSwimlaneMinMaxValues(swimlanesMapData);
+      this.initializeDescriptionValues(this.swimlaneIntervalBorders[0], this.swimlaneIntervalBorders[1]);
       this.chartDimensions = this.initializeChartDimensions();
-      this.chartAxes = this.createChartAxes(this.chartDimensions, swimlanesMapData.get(firstKey));
-      this.drawChartAxes(this.chartDimensions, this.chartAxes);
+      this.swimlaneAxes = this.createSwimlaneAxes(this.chartDimensions, swimlanesMapData);
+      this.drawChartAxes(this.chartDimensions, this.swimlaneAxes);
       this.addLabels(swimlanesMapData);
       this.plotHistogramDataAsSwimlane(swimlanesMapData);
       this.showTooltipsForSwimlane(swimlanesMapData);
-      this.addSelectionBrush();
+      this.addSelectionBrush(this.swimlaneAxes);
       this.plottingCount++;
     } else {
       this.startValue = '';
       this.endValue = '';
       this.dataLength = 0;
     }
-  }
-
-  public addLabels(swimlanesMapData: Map<string, Array<HistogramData>>) {
-    this.labelsContext = this.context.append('g').classed('foreignObject', true);
-    let i = 0;
-    swimlanesMapData.forEach((swimlane, key) => {
-      this.labelsContext.append('text')
-        .text(() => key)
-        .attr('transform', 'translate(0,' + this.swimlaneHeight * (i + 0.6) + ')');
-      i++;
-    });
   }
 
   public plotHistogram(inputData: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>): void {
@@ -341,6 +342,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (this.chartType === ChartType.swimlane) {
       this.applyStyleOnSelectedSwimlanes();
     }
+    const chartAxes = (this.chartType ===  ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
     this.intervalSelectedMap.forEach((k, v) => {
       const keys = [];
       let lastKey;
@@ -353,11 +355,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.intervalSelectedMap.set(v,
         {
           values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
-          x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
+          x_position: chartAxes.xDomain(lastKey) + this.margin.left
         });
     });
   }
-
 
   public removeSelectInterval(id: string) {
     this.tooltip.isShown = false;
@@ -381,18 +382,44 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.tooltip.xPosition = (e.clientX + dx);
       this.tooltip.yPosition = (e.path[1].offsetTop + 30);
     }
-
   }
 
   public leaveRemove() {
     this.tooltip.isShown = false;
   }
 
-  private addSelectionBrush(): void {
-    this.selectionBrush = d3.brushX().extent([[this.chartAxes.stepWidth * this.yDimension, 0],
+  private setSwimlaneMinMaxValues (swimlanesMapData: Map<string, Array<HistogramData>>) {
+    const firstKey = swimlanesMapData.keys().next().value;
+    const firstArrayLength = swimlanesMapData.get(firstKey).length;
+    let minInterval = swimlanesMapData.get(firstKey)[0].key;
+    let maxInterval = swimlanesMapData.get(firstKey)[firstArrayLength - 1].key;
+    swimlanesMapData.forEach((swimlane, key) => {
+      if (swimlane[0].key <= minInterval) {
+        minInterval = swimlane[0].key;
+      }
+      if (swimlane[swimlane.length - 1].key >= maxInterval) {
+        maxInterval = swimlane[swimlane.length - 1].key;
+      }
+    });
+    this.swimlaneIntervalBorders = [minInterval, maxInterval];
+  }
+
+  private addLabels(swimlanesMapData: Map<string, Array<HistogramData>>) {
+    this.labelsContext = this.context.append('g').classed('foreignObject', true);
+    let i = 0;
+    swimlanesMapData.forEach((swimlane, key) => {
+      this.labelsContext.append('text')
+        .text(() => key)
+        .attr('transform', 'translate(0,' + this.swimlaneHeight * (i + 0.6) + ')');
+      i++;
+    });
+  }
+
+  private addSelectionBrush(chartAxes: ChartAxes | SwimlaneAxes): void {
+    this.selectionBrush = d3.brushX().extent([[chartAxes.stepWidth * this.yDimension, 0],
     [(this.chartDimensions).width - this.swimLaneLabelsWidth * this.swimlaneDimension, (this.chartDimensions).height]]);
-    const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
-    const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
+    const selectionBrushStart = Math.max(0, chartAxes.xDomain(this.selectionInterval.startvalue));
+    const selectionBrushEnd = Math.min(chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
     this.verticalTooltipLine = this.context.append('g').append('line').attr('class', 'histogram__swimlane--vertical-tooltip-line')
       .attr('x1', 0)
       .attr('y1', 0)
@@ -406,7 +433,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .style('pointer-events', 'visible')
       .call(this.selectionBrush);
 
-    this.handleStartOfBrushingEvent();
+    this.handleStartOfBrushingEvent(chartAxes);
 
     const brushResizePath = (d) => {
       const e = +(d.type === 'e'),
@@ -464,7 +491,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           this.intervalSelectedMap.set(guid,
             {
               values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
-              x_position: this.chartAxes.xDomain(lastKey) + this.margin.left
+              x_position: chartAxes.xDomain(lastKey) + this.margin.left
             });
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
@@ -475,8 +502,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         }
       });
     }
-    this.handleOnBrushingEvent();
-    this.handleEndOfBrushingEvent();
+    this.handleOnBrushingEvent(chartAxes);
+    this.handleEndOfBrushingEvent(chartAxes);
   }
 
   private getColor(zeroToOne: number): tinycolorInstance {
@@ -519,8 +546,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.selectionInterval.endvalue = parsedSelectedValues.endvalue;
       this.startValue = this.toString(this.selectionInterval.startvalue);
       this.endValue = this.toString(this.selectionInterval.endvalue);
-      if (this.inputData !== null) {
-        if (this.isSelectionBeyondDataDomain(selectedInputValues, <Array<{ key: number, value: number }>>this.inputData)) {
+      const data = (this.chartType !== ChartType.swimlane) ? this.inputData : this.swimlaneDataDomain;
+      if (data !== null) {
+        if (this.isSelectionBeyondDataDomain(selectedInputValues, <Array<{ key: number, value: number }>>data)) {
           this.plotHistogram(this.inputData);
           this.hasSelectionExceededData = true;
         } else {
@@ -528,8 +556,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
             this.plotHistogram(this.inputData);
             this.hasSelectionExceededData = false;
           }
-          const selectionBrushStart = Math.max(0, this.chartAxes.xDomain(this.selectionInterval.startvalue));
-          const selectionBrushEnd = Math.min(this.chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
+          const chartAxes = (this.chartType ===  ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
+          const selectionBrushStart = Math.max(0, chartAxes.xDomain(this.selectionInterval.startvalue));
+          const selectionBrushEnd = Math.min(chartAxes.xDomain(this.selectionInterval.endvalue), (this.chartDimensions).width);
           if (this.context) {
             this.context.select('.brush').call(this.selectionBrush.move, [selectionBrushStart, selectionBrushEnd]);
           }
@@ -598,6 +627,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         } else if (this.swimlaneHeight !== null && this.plottingCount === 0) {
           this.isSwimlaneHeightFixed = true;
           this.chartHeight = this.swimlaneHeight * this.nbSwimlanes + this.margin.top + this.margin.bottom;
+        } else if (this.swimlaneHeight !== null && this.plottingCount !== 0) {
+          if (this.isHeightFixed) {
+            this.swimlaneHeight = Math.max(+this.chartHeight - this.margin.top - this.margin.bottom, 0) / this.nbSwimlanes;
+          } else {
+            this.chartHeight = this.swimlaneHeight * this.nbSwimlanes + this.margin.top + this.margin.bottom;
+          }
         }
         break;
       }
@@ -712,6 +747,59 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     return { xDomain, xDataDomain, yDomain, xTicksAxis, yTicksAxis, stepWidth, xLabelsAxis, yLabelsAxis, xAxis };
   }
 
+  private createSwimlaneAxes(chartDimensions: ChartDimensions, data: Map<string, Array<HistogramData>>): SwimlaneAxes {
+    const xDomain = (this.getXDomainScale()).range([0, chartDimensions.width - this.swimLaneLabelsWidth]);
+    const swimlaneInterval = this.getSwimlaneInterval(data);
+    let bucketKey = +this.swimlaneIntervalBorders[0] ;
+    const swimlaneArray = new Array<any>();
+    while (bucketKey <= (+this.swimlaneIntervalBorders[1])) {
+      swimlaneArray.push({key: bucketKey, value: 0});
+      bucketKey = bucketKey + swimlaneInterval;
+    }
+    this.swimlaneDataDomain = swimlaneArray;
+    // The xDomain extent includes data domain and selected values
+    const xDomainExtent = this.getXDomainExtent(this.swimlaneDataDomain,
+       this.selectionInterval.startvalue, this.selectionInterval.endvalue, swimlaneInterval);
+    xDomain.domain(xDomainExtent);
+    // xDataDomain includes data domain only
+    const xDataDomainArray = [];
+    let xAxis;
+    let xTicksAxis;
+    let xLabelsAxis;
+    let stepWidth;
+    // Compute the range (in pixels) of xDataDomain where data will be plotted
+    const ticksPeriod = Math.max(1, Math.round(this.swimlaneDataDomain.length / this.xTicks));
+    const labelsPeriod = Math.max(1, Math.round(this.swimlaneDataDomain.length / this.xLabels));
+    const startAllDataRange = xDomain(this.swimlaneDataDomain[0].key);
+    const endAllDataRange = xDomain(+this.swimlaneDataDomain[this.swimlaneDataDomain.length - 1].key + swimlaneInterval);
+
+    const xAllDataDomain = d3.scaleBand().range([startAllDataRange, endAllDataRange]).paddingInner(0);
+    xAllDataDomain.domain(this.swimlaneDataDomain.map((d) => (d.key).toString()));
+    if (this.dataType === DataType.numeric) {
+      xTicksAxis = d3.axisBottom(xDomain).tickPadding(5).tickValues(xAllDataDomain.domain()
+        .filter((d, i) => !(i % ticksPeriod))).tickSize(this.minusSign * 5);
+      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).tickValues(xAllDataDomain.domain()
+        .filter((d, i) => !(i % labelsPeriod)));
+    } else {
+      xTicksAxis = d3.axisBottom(xDomain).ticks(this.xTicks).tickSize(this.minusSign * 5);
+      xLabelsAxis = d3.axisBottom(xDomain).tickSize(0).tickPadding(this.minusSign * 12).ticks(this.xLabels);
+    }
+    xAxis = d3.axisBottom(xDomain).tickSize(0);
+
+    data.forEach(swimlane => {
+      const startRange = xDomain(swimlane[0].key);
+      let endRange;
+      let xDataDomain;
+      stepWidth = xDomain(+swimlane[0].key + swimlaneInterval) - xDomain(+swimlane[0].key);
+      endRange = xDomain(+swimlane[swimlane.length - 1].key + this.dataInterval);
+      xDataDomain = d3.scaleBand().range([startRange, endRange]).paddingInner(0);
+      xDataDomain.domain(swimlane.map((d) => d.key));
+      xDataDomainArray.push(xDataDomain);
+    });
+    return { xDomain, xDataDomainArray, xTicksAxis, stepWidth, xLabelsAxis, xAxis };
+  }
+
+
 
   // draw three axes for X and two for Y
   // For X: - The first axis contains a line only that is always at the bottom of the chart
@@ -719,7 +807,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   //        - For the third one, only labels are shown.
   // For Y: - The first axis contains a line and ticks. Labels are always hidden.
   //        - For the second one, only labels are shown.
-  private drawChartAxes(chartDimensions: ChartDimensions, chartAxes: ChartAxes): void {
+  private drawChartAxes(chartDimensions: ChartDimensions, chartAxes: ChartAxes | SwimlaneAxes): void {
     const marginTopBottom = chartDimensions.margin.top * this.xAxisPosition + chartDimensions.margin.bottom * (1 - this.xAxisPosition);
     const swimLaneLabelsWidth = this.swimlaneDimension * this.swimLaneLabelsWidth;
     this.context = chartDimensions.svg.append('g')
@@ -754,10 +842,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (this.chartType !== ChartType.oneDimension && this.chartType !== ChartType.swimlane) {
       this.yTicksAxis = allAxesContext.append('g')
         .attr('class', 'histogram__ticks-axis')
-        .call(chartAxes.yTicksAxis);
+        .call((<ChartAxes>chartAxes).yTicksAxis);
       this.yLabelsAxis = allAxesContext.append('g')
         .attr('class', 'histogram__labels-axis')
-        .call(chartAxes.yLabelsAxis);
+        .call((<ChartAxes>chartAxes).yLabelsAxis);
       // Define css classes for the ticks, labels and the axes
       this.yTicksAxis.selectAll('path').attr('class', 'histogram__axis');
       this.yTicksAxis.selectAll('line').attr('class', 'histogram__ticks');
@@ -778,7 +866,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       allAxesContext.append('g')
         .attr('class', 'histogram__line-separator')
         .attr('transform', 'translate(' + this.swimlaneDimension * this.swimLaneLabelsWidth + ',' + this.swimlaneHeight * i + ')')
-        .call(this.chartAxes.xAxis);
+        .call(this.swimlaneAxes.xAxis);
     }
   }
 
@@ -818,6 +906,19 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .style('opacity', '0.8');
   }
 
+  private plotHistogramDataAsOneLane(data: Array<HistogramData>, barHeight: number, barWeight: number, index: number): any {
+    return this.barsContext = this.context.append('g').attr('class', 'histogram__onelane-data')
+      .selectAll('.bar')
+      .data(data)
+      .enter().append('rect')
+      .attr('x', (d) => this.swimlaneAxes.xDataDomainArray[index](d.key))
+      .attr('width', this.swimlaneAxes.stepWidth * barWeight)
+      .attr('height', function (d) { return barHeight; })
+      .style('fill', (d) => this.getColor(d.value / this.swimlaneMaxValue).toHexString())
+      .style('stroke', (d) => this.getColor(d.value / this.swimlaneMaxValue).toHexString())
+      .style('opacity', '0.8');
+  }
+
   private plotHistogramDataAsArea(chartDimensions: ChartDimensions, chartAxes: ChartAxes, data: Array<HistogramData>): void {
     const curveType: d3.CurveFactory = (this.isSmoothedCurve) ? d3.curveMonotoneX : d3.curveLinear;
     const area = d3.area()
@@ -832,15 +933,17 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .attr('d', area);
   }
 
-  private plotHistogramDataAsCircles(data: Array<HistogramData>, dataMaxValue: number, swimlaneHeight: number, indexOfSwimlane: number) {
+  private plotHistogramDataAsCircles(data: Array<HistogramData>, swimlaneHeight: number, indexOfSwimlane: number) {
     return this.barsContext = this.context.append('g')
       .attr('class', 'histogram__swimlane').selectAll('dot').data(data).enter().append('circle')
-      .attr('r', (d) => Math.min(this.chartAxes.stepWidth, swimlaneHeight) * this.barWeight * Math.sqrt(d.value / dataMaxValue) / 2)
-      .attr('cx', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key) + this.chartAxes.stepWidth * this.barWeight / 2)
+      .attr('r', (d) => Math.min(this.swimlaneAxes.stepWidth, swimlaneHeight) * this.barWeight *
+      Math.sqrt(d.value / this.swimlaneMaxValue) / 2)
+      .attr('cx', (d) => this.swimLaneLabelsWidth + this.swimlaneAxes.xDataDomainArray[indexOfSwimlane](d.key) +
+      this.swimlaneAxes.stepWidth * this.barWeight / 2)
       .attr('cy', (d) => swimlaneHeight * (indexOfSwimlane + 1) - swimlaneHeight / 2)
       .attr('class', 'histogram__swimlane--circle')
-      .style('fill', (d) => this.getColor(d.value / dataMaxValue).toHexString())
-      .style('stroke', (d) => this.getColor(d.value / dataMaxValue).toHexString())
+      .style('fill', (d) => this.getColor(d.value / this.swimlaneMaxValue).toHexString())
+      .style('stroke', (d) => this.getColor(d.value / this.swimlaneMaxValue).toHexString())
       .style('opacity', '0.8');
   }
 
@@ -849,33 +952,30 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     for (let i = 0; i < swimlaneData.size; i++) {
       const key = keys.next().value;
       if (this.swimlaneMode === SwimlaneMode.circles) {
-        this.plotHistogramDataAsCircles(swimlaneData.get(key), this.swimlaneMaxValuesMap.get(key), this.swimlaneHeight, i);
+        this.plotHistogramDataAsCircles(swimlaneData.get(key), this.swimlaneHeight, i);
       } else {
-        this.plotHistogramDataAsOneDimension(this.chartAxes, swimlaneData.get(key), this.swimlaneHeight, this.barWeight,
-          this.swimlaneMaxValuesMap.get(key))
+        this.plotHistogramDataAsOneLane(swimlaneData.get(key), this.swimlaneHeight, this.barWeight, i)
           .attr('rx', this.swimlaneBorderRadius)
           .attr('ry', this.swimlaneBorderRadius)
           .attr('y', this.swimlaneHeight * (i))
-          .attr('height', (d) => (d.value !== 0) ? this.getSwimlaneContentHeight(this.swimlaneHeight,
-            d.value, this.swimlaneMaxValuesMap.get(key)) : 0)
-          .attr('transform', (d) => 'translate(' + this.swimLaneLabelsWidth + ','
-            + this.getSwimlaneVerticalTranslation(this.swimlaneHeight, d.value, this.swimlaneMaxValuesMap.get(key), i) + ')');
+          .attr('height', (d) => this.getSwimlaneContentHeight(d.value, this.swimlaneMaxValue))
+          .attr('transform', (d) => 'translate(' + this.swimLaneLabelsWidth + ',' + this.getSwimlaneVerticalTranslation(d.value, i) + ')');
       }
       this.swimlaneContextList.push(this.barsContext);
       if (this.swimlaneMode === SwimlaneMode.fixedHeight) {
-        this.plotHorizontalTicksForSwimlane(swimlaneData.get(key), this.barWeight, this.swimlaneMaxValuesMap.get(key), i);
+        this.plotHorizontalTicksForSwimlane(swimlaneData.get(key), this.barWeight, this.swimlaneMaxValue, i);
       }
     }
   }
 
-  private getSwimlaneContentHeight(swimlaneHeight: number, swimlaneValue?: number, swimlaneMaxValue?: number): number {
-    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? swimlaneHeight - 5 : swimlaneValue * swimlaneHeight / swimlaneMaxValue;
+  private getSwimlaneContentHeight(swimlaneValue?: number, swimlaneMaxValue?: number): number {
+    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? this.swimlaneHeight - 5 :
+     swimlaneValue * this.swimlaneHeight / swimlaneMaxValue;
   }
 
-  private getSwimlaneVerticalTranslation(swimlaneHeight: number, swimlaneValue?: number,
-    swimlaneMaxValue?: number, indexOfSwimlane?: number): number {
-    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? 5
-      : swimlaneHeight - swimlaneValue * swimlaneHeight / swimlaneMaxValue;
+  private getSwimlaneVerticalTranslation(swimlaneValue?: number, indexOfSwimlane?: number): number {
+    return (this.swimlaneMode === SwimlaneMode.fixedHeight) ? 5 :
+     this.swimlaneHeight - swimlaneValue * this.swimlaneHeight / this.swimlaneMaxValue;
   }
 
   private plotHorizontalTicksForSwimlane(data: Array<HistogramData>, barWeight: number, dataMaxValue, index) {
@@ -883,9 +983,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .selectAll('path')
       .data(data)
       .enter().append('line').attr('class', 'histogram__swimlane-height--tick')
-      .attr('x1', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key))
+      .attr('x1', (d) => this.swimLaneLabelsWidth + this.swimlaneAxes.xDataDomainArray[index](d.key))
       .attr('y1', (d) => this.swimlaneHeight * (index + 1) - (+d.value) * this.swimlaneHeight / (+dataMaxValue))
-      .attr('x2', (d) => this.swimLaneLabelsWidth + this.chartAxes.xDataDomain(d.key) + this.chartAxes.stepWidth * barWeight)
+      .attr('x2', (d) => this.swimLaneLabelsWidth + this.swimlaneAxes.xDataDomainArray[index](d.key) +
+       this.swimlaneAxes.stepWidth * barWeight)
       .attr('y2', (d) => this.swimlaneHeight * (index + 1) - (+d.value) * this.swimlaneHeight / (+dataMaxValue));
   }
 
@@ -910,6 +1011,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .on('mouseout', () => {
         this.swimlaneTooltipsMap.forEach((tooltipPositon, key) => {
           const hiddenTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
+          this.swimlaneXTooltip.isShown = false;
           this.swimlaneTooltipsMap.set(key, hiddenTooltip);
         });
         this.verticalTooltipLine.style('display', 'none');
@@ -986,27 +1088,30 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     const xy = d3.mouse(container);
     let dx, dy, startPosition, endPosition, middlePosition;
     const tooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
+    this.swimlaneXTooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
     for (let i = 0; i < data.length; i++) {
-      startPosition = this.swimLaneLabelsWidth * this.swimlaneDimension + this.chartAxes.xDomain(data[i].key);
-      endPosition = startPosition + this.chartAxes.stepWidth * this.barWeight;
-      middlePosition = startPosition + this.chartAxes.stepWidth * this.barWeight / 2;
+      startPosition = this.swimLaneLabelsWidth * this.swimlaneDimension + this.swimlaneAxes.xDomain(data[i].key);
+      endPosition = startPosition + this.swimlaneAxes.stepWidth * this.barWeight;
+      middlePosition = startPosition + this.swimlaneAxes.stepWidth * this.barWeight / 2;
 
       if (xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
         this.verticalTooltipLine.style('display', 'block').attr('transform', 'translate(' + middlePosition + ',' + '0)');
-        const xContent = (indexOfKey === 0) ? 'x: ' + this.toString(data[i].key) : null;
         tooltip.isShown = true;
         dx = this.setTooltipXposition(xy[0], tooltip);
         dy = this.setTooltipYposition(xy[1]);
         tooltip.xPosition = (xy[0] + dx);
         tooltip.yPosition = this.swimlaneHeight * (indexOfKey + 0.2);
-        tooltip.xContent = xContent;
+        tooltip.xContent = 'x: ' + this.toString(data[i].key);
         tooltip.yContent = 'y: ' + data[i].value;
+        this.swimlaneXTooltip = tooltip;
         this.swimlaneTooltipsMap.set(key, tooltip);
         break;
       } else {
+        if (this.isBrushing) {
+          this.verticalTooltipLine.style('display', 'none');
+        }
         const hiddenTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
         this.swimlaneTooltipsMap.set(key, hiddenTooltip);
-        this.verticalTooltipLine.style('display', 'none');
       }
     }
   }
@@ -1059,10 +1164,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     return dy;
   }
 
-  private translateBrushHandles(selection: any) {
+  private translateBrushHandles(selection: any, chartAxes: ChartAxes | SwimlaneAxes) {
     const xTranslation = this.brushHandlesHeight - (this.chartDimensions.height - this.brushHandlesHeight) / 2;
     if (selection !== null) {
-      const sx = selection.map(this.chartAxes.xDomain.invert);
+      const sx = selection.map(chartAxes.xDomain.invert);
       this.brushHandles.attr('display', null).attr('transform', function (d, i) {
         return 'translate(' + [selection[i], -xTranslation] + ')';
       });
@@ -1072,7 +1177,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-  private handleStartOfBrushingEvent(): void {
+  private handleStartOfBrushingEvent(chartAxes: ChartAxes | SwimlaneAxes): void {
     if (this.brushHandlesHeightWeight <= 1 && this.brushHandlesHeightWeight > 0) {
       this.brushHandlesHeight = this.chartDimensions.height * this.brushHandlesHeightWeight;
     } else {
@@ -1080,17 +1185,17 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
     this.selectionBrush.on('start', () => {
       const selection = d3.event.selection;
-      this.translateBrushHandles(selection);
+      this.translateBrushHandles(selection, chartAxes);
     });
   }
 
-  private handleOnBrushingEvent(): void {
+  private handleOnBrushingEvent(chartAxes: ChartAxes | SwimlaneAxes): void {
     this.selectionBrush.on('brush', (datum: any, index: number) => {
       this.isBrushing = true;
       const selection = d3.event.selection;
       if (selection !== null) {
-        this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
-        this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
+        this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+        this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
         this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
         this.showTitle = false;
@@ -1100,20 +1205,20 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         if (this.chartType === ChartType.swimlane) {
           this.applyStyleOnSelectedSwimlanes();
         }
-        this.translateBrushHandles(selection);
+        this.translateBrushHandles(selection, chartAxes);
       }
     });
   }
 
-  private handleEndOfBrushingEvent(): void {
+  private handleEndOfBrushingEvent(chartAxes: ChartAxes | SwimlaneAxes): void {
     this.selectionBrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
-        const newStartValue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
-        const newEndvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
+        const newStartValue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+        const newEndvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         if ((!this.fromSetInterval) && this.isBrushing) {
-          this.selectionInterval.startvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[0];
-          this.selectionInterval.endvalue = selection.map(this.chartAxes.xDomain.invert, this.chartAxes.xDomain)[1];
+          this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
+          this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.startValue = this.toString(this.selectionInterval.startvalue);
           this.endValue = this.toString(this.selectionInterval.endvalue);
           const selectionListInterval = [];
@@ -1123,7 +1228,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         this.showTitle = true;
         this.isBrushing = false;
       } else {
-        this.translateBrushHandles(null);
+        this.translateBrushHandles(null, chartAxes);
       }
     });
   }
@@ -1177,10 +1282,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-  private parseDataKey(inputData: Array<{ key: number, value: number }>, lane?: string): Array<HistogramData> {
-    this.dataLength = inputData.length;
-    if (lane) {
-      this.setSwimlaneMaxValues(inputData, lane);
+  private parseDataKey(inputData: Array<{ key: number, value: number }>): Array<HistogramData> {
+    if (this.chartType !== ChartType.swimlane) {
+      this.dataLength = inputData.length;
     }
     return (this.dataType === DataType.time) ? this.parseDataKeyToDate(inputData) : inputData;
   }
@@ -1191,10 +1295,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   private parseSwimlaneDataKey(swimlanesInputData: Map<string, Array<{ key: number, value: number }>>):
     Map<string, Array<HistogramData>> {
     const swimlaneParsedDataMap = new Map<string, Array<HistogramData>>();
-    this.swimlaneMaxValuesMap = new Map<string, number>();
     swimlanesInputData.forEach((swimlane, key) => {
       if (swimlane !== null && Array.isArray(swimlane) && swimlane.length > 0) {
-        swimlaneParsedDataMap.set(key, this.parseDataKey(swimlane, key));
+        swimlaneParsedDataMap.set(key, this.parseDataKey(swimlane));
       }
     });
     return swimlaneParsedDataMap;
@@ -1202,12 +1305,17 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   private parseDataKeyToDate(inputData: Array<{ key: number, value: number }>, lane?: string) {
     const parsedData = new Array<HistogramData>();
-    let multiplier = 1;
-    if (this.dateUnit === DateUnit.second) {
-      multiplier = 1000;
-    }
+    const multiplier = (this.dateUnit === DateUnit.second) ? 1000 : 1;
     inputData.forEach(d => {
       parsedData.push({ key: new Date(d.key * multiplier), value: d.value });
+    });
+    return parsedData;
+  }
+
+  private parseDataKeyToDateWithoutMultiplier(inputData: Array<{ key: number, value: number }>) {
+    const parsedData = new Array<HistogramData>();
+    inputData.forEach(d => {
+      parsedData.push({ key: new Date(d.key), value: d.value });
     });
     return parsedData;
   }
@@ -1232,12 +1340,19 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
-  private setSwimlaneMaxValues(inputData: Array<{ key: number, value: number }>, lane: string) {
-    let maxValue = 0;
-    inputData.forEach(d => {
-      if (maxValue < d.value) { maxValue = d.value; }
+
+  private setSwimlaneMaxValue(swimlaneDataMap: Map<string, Array<{ key: number, value: number }>>) {
+    swimlaneDataMap.forEach((swimlane, key) => {
+      if (this.swimlaneMaxValue === null) {
+        this.swimlaneMaxValue = swimlane[0].value;
+      } else {
+        swimlane.forEach(element => {
+          if (element.value > this.swimlaneMaxValue) {
+            this.swimlaneMaxValue = element.value;
+          }
+        });
+      }
     });
-    if (lane) { this.swimlaneMaxValuesMap.set(lane, maxValue); }
   }
 
   private round(value, precision): number {
@@ -1251,10 +1366,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private getXDomainExtent(data: Array<HistogramData>, selectedStartValue: Date | number,
-    selectedEndValue: Date | number): Array<Date | number | { valueOf(): number }> {
+    selectedEndValue: Date | number, interval?: number): Array<Date | number | { valueOf(): number }> {
     this.dataInterval = 0;
-    if (this.chartType !== ChartType.area) {
+    if (this.chartType !== ChartType.area && this.chartType !== ChartType.swimlane ) {
       this.dataInterval = this.getBucketInterval(data, selectedStartValue, selectedEndValue);
+    } else if (this.chartType === ChartType.swimlane ) {
+      this.dataInterval = interval;
     }
 
     const xDomainExtent = new Array<Date | number | { valueOf(): number }>();
@@ -1266,8 +1383,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     dataKeyUnionSelectedValues.push(selectedStartValue);
     dataKeyUnionSelectedValues.push(selectedEndValue);
     if (this.dataType === DataType.time) {
-      xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => d).getTime() - this.dataInterval));
-      xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => d).getTime() + this.dataInterval));
+      xDomainExtent.push(new Date(d3.min(dataKeyUnionSelectedValues, (d: Date) => +d) - this.dataInterval));
+      xDomainExtent.push(new Date(d3.max(dataKeyUnionSelectedValues, (d: Date) => +d) + this.dataInterval));
     } else {
       xDomainExtent.push(d3.min(dataKeyUnionSelectedValues, (d: number) => d) * 1 - this.dataInterval * this.yDimension);
       xDomainExtent.push(d3.max(dataKeyUnionSelectedValues, (d: number) => d) * 1 + this.dataInterval);
@@ -1281,7 +1398,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (data.length > 1) {
       for (let i = 0; i < (data.length - 1); i++) {
         if (this.dataType === DataType.time) {
-          interval = Math.min(interval, data[i + 1].key.getTime() - data[i].key.getTime());
+          interval = Math.min(interval, +data[i + 1].key - +data[i].key);
         } else {
           interval = Math.min(interval, data[i + 1].key - data[i].key);
         }
@@ -1301,5 +1418,34 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       }
     }
     return interval;
+  }
+
+  private getSwimlaneInterval(swimlaneData: Map<string, Array<HistogramData>>): number {
+    const keys = swimlaneData.keys();
+    for (let i = 0; i < swimlaneData.size; i++) {
+      const key = keys.next().value;
+      if (swimlaneData.get(key).length > 1) {
+        this.swimlaneHasMoreThanTwoBuckets = true;
+        this.dataLength = swimlaneData.get(key).length;
+        this.displaySvg = 'block';
+        return (+swimlaneData.get(key)[1].key - +swimlaneData.get(key)[0].key);
+      }
+    }
+    if (!this.swimlaneHasMoreThanTwoBuckets) {
+      this.dataLength = 3;
+      this.displaySvg = 'block';
+      // all the lanes has 1 bucket maximum
+      let previousKeyPosition = null;
+      let currentKeyPosition = null;
+      let interval = Number.MAX_VALUE;
+      swimlaneData.forEach((swimlane, key) => {
+        previousKeyPosition = currentKeyPosition;
+        currentKeyPosition = +swimlane[0].key;
+        if (previousKeyPosition !== null && previousKeyPosition !== currentKeyPosition) {
+          interval = Math.max(0, Math.min(interval, Math.abs(currentKeyPosition - previousKeyPosition)));
+        }
+      });
+      return (interval === 0 || interval === Number.MAX_VALUE) ? 1 : interval;
+    }
   }
 }

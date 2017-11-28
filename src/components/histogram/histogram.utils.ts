@@ -51,6 +51,15 @@ export interface ChartAxes {
   xAxis: d3.Axis<any>;
 }
 
+export interface SwimlaneAxes {
+  xDomain: any;
+  xDataDomainArray: Array<any>;
+  xTicksAxis: d3.Axis<any>;
+  xLabelsAxis: d3.Axis<any>;
+  stepWidth: number;
+  xAxis: d3.Axis<any>;
+}
+
 export interface Tooltip {
   isShown: boolean;
   isRightSide: boolean;

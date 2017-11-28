@@ -34,15 +34,21 @@
     </div>
   </div>
   <div *ngIf="chartType === ChartType.swimlane">
+    <div class="histogram__tooltip" *ngIf="swimlaneXTooltip.isShown && !swimlaneXTooltip.isRightSide"
+      [style.left.px]="swimlaneXTooltip.xPosition"   [style.top.px]="-20">
+      <span class="histogram__swimlane--tooltip-content">{{swimlaneXTooltip.xContent}}</span>
+    </div>
+    <div class="histogram__tooltip" *ngIf="swimlaneXTooltip.isShown && swimlaneXTooltip.isRightSide"
+      [style.right.px]="swimlaneXTooltip.xPosition"   [style.top.px]="-20">
+      <span class="histogram__swimlane--tooltip-content">{{swimlaneXTooltip.xContent}}</span>
+    </div>
     <div *ngFor="let key of Array.from(swimlaneTooltipsMap.keys()); index as i">
       <div class="histogram__tooltip" *ngIf="swimlaneTooltipsMap.get(key).isShown && !swimlaneTooltipsMap.get(key).isRightSide"
         [style.left.px]="swimlaneTooltipsMap.get(key).xPosition"   [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
-        <span *ngIf= "i === 0" class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}} | </span>
         <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).yContent}}</span>
       </div>
       <div class="histogram__tooltip" *ngIf="swimlaneTooltipsMap.get(key).isShown && swimlaneTooltipsMap.get(key).isRightSide"
         [style.right.px]="swimlaneTooltipsMap.get(key).xPosition"  [style.top.px]="swimlaneTooltipsMap.get(key).yPosition">
-        <span *ngIf= "i === 0" class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).xContent}} | </span>
         <span class="histogram__swimlane--tooltip-content">{{swimlaneTooltipsMap.get(key).yContent}}</span>
         </div>
     </div>
