@@ -4,9 +4,6 @@
 @import "../node_modules/font-awesome/css/font-awesome.min.css";
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import   '../node_modules/mapbox-gl/dist/mapbox-gl.css';
-.airlines .powerbar__powerbar--progression--neutral-state, .airlines .powerbar__powerbar--progression--selected-bar{
-  background-color: rgb(177, 250, 148) !important;
-}
 
 .constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar{
   background-color: rgb(255, 243, 137) !important;
