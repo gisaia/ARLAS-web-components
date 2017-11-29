@@ -370,8 +370,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
     this.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
   }
-  public overRemove(e) {
 
+  public overRemove(e) {
     if (e.path[1].offsetTop !== undefined && e.clientX !== undefined) {
       this.tooltip.isRightSide = true;
       const dx = (this.chartDimensions.width) - 2 * e.clientX + 25;
@@ -453,8 +453,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           let guid;
           if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
-            guid = (<Date>this.selectionInterval.startvalue).getTime().toString() +
-              (<Date>this.selectionInterval.endvalue).getTime().toString();
+            const startMilliString = (<Date>this.selectionInterval.startvalue).getTime().toString();
+            const start = startMilliString.substring(0, startMilliString.length - 3);
+            const endMilliString = (<Date>this.selectionInterval.endvalue).getTime().toString();
+            const end = endMilliString.substring(0, endMilliString.length - 3);
+            guid = start + '000' + end + '000';
           } else {
             guid = this.selectionInterval.startvalue.toString() + this.selectionInterval.endvalue.toString();
           }
@@ -466,6 +469,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
           }
+
           const selectionListInterval = [];
           this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
         }
