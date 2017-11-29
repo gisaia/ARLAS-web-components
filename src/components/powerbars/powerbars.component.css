@@ -70,7 +70,7 @@
 }
 
 .powerbar__powerbar--progression--selected-bar{
-  background-color: rgb(74, 114, 19) !important;
+  background-color: rgb(74, 114, 19);
   color: white;
   font-weight: bold;
 }
