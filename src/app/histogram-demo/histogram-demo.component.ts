@@ -25,6 +25,7 @@ export class HistogramDemoComponent implements OnInit {
   public selectedTimeValues: SelectedOutputValues = { startvalue: null, endvalue: null };
   public selectedNumericValues: SelectedOutputValues = { startvalue: null, endvalue: null };
   public selectValues: SelectedInputValues;
+  public selectValuesSwimlane: SelectedInputValues;
   public intervalListSelection4: SelectedOutputValues[] = [];
   public intervalListSelection3: SelectedOutputValues[] = [];
   public intervalListSelection2: SelectedOutputValues[] = [];
@@ -134,13 +135,27 @@ export class HistogramDemoComponent implements OnInit {
   private showSwimlaneHistogram(component: HistogramDemoComponent) {
     d3.csv('assets/swimlane.csv', this.stringToNumber, (error, data) => {
       if (error) { throw error; }
-
       d3.csv('assets/swimlane2.csv', this.stringToNumber, (error, data2) => {
         if (error) { throw error; }
         this.swimlaneHistogramData = new Map<any, any>();
         this.swimlaneHistogramData.set('line1', data);
-        this.swimlaneHistogramData.set('line2', data2);
-        this.swimlaneHistogramData.set('line3', data2);
+        // this.swimlaneHistogramData.set('line2', data2);
+        // this.swimlaneHistogramData.set('line3', data2);
+        this.selectValuesSwimlane = undefined;
+        setTimeout(() => {
+          this.swimlaneHistogramData = new Map<any, any>();
+          this.swimlaneHistogramData.set('line1', data);
+
+          this.swimlaneHistogramData.set('line2', data2);
+          this.swimlaneHistogramData.set('line3', data2);
+
+          setTimeout(() => {
+            // this.swimlaneHistogramData = new Map<any, any>();
+            // this.swimlaneHistogramData.set('line1', data);
+            this.selectValuesSwimlane = { startvalue: 1513262121, endvalue: 1665262121 };
+          }, 5000);
+        }, 5000);
+
       });
     });
   }

@@ -46,11 +46,14 @@
                      [customizedCssClass]="'histogram__area'"
                      [dataType]="dataType.time"
                      [dateUnit]="dateUnit.second"
-                     [chartHeight]="180"></arlas-histogram>
+                     [swimlaneHeight]=50
+                     [intervalSelection]="selectValuesSwimlane"
+
+                     ></arlas-histogram>
   </div>
 </div>
 
-<div class="graphs">
+<!-- <div class="graphs">
   <p class="graph__title">Swimlane - Fixed height</p>
   <div class ="graph__inputs--wrapper">
     <span class ="graph__inputs"><b>chartType</b>: swimlane</span>
@@ -97,6 +100,8 @@
                                       (valuesListChangedEvent)="valueChanged3($event)"
                       [intervalListSelection]="intervalListSelection3"
                      [swimLaneLabelsWidth]=50
+                     [swimlaneHeight]="30"
+
                      [xTicks]=12
                      [barWeight]=0.6
                      [data]="swimlaneHistogramData"
@@ -107,7 +112,7 @@
                      [swimlaneMode]="swimlaneMode.circles"
                      [chartHeight]="180"></arlas-histogram>
   </div>
-</div>
+</div> -->
 
 <div class="graphs">
   <p class="graph__title">Bars histogram - Time scale</p>
@@ -122,14 +127,14 @@
     </div>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram  [customizedCssClass]="'histogram__area'" 
-    [multiselectable]="true" [dataType]="dataType.time" 
-    [showXLabels]=true [showYLabels]=true 
+    <arlas-histogram  [customizedCssClass]="'histogram__area'"
+    [multiselectable]="true" [dataType]="dataType.time"
+    [showXLabels]=true [showYLabels]=true
     [dataType]="dataType.time" [chartType]="chartType.bars"
-                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second" 
+                     [data]="curvedTimelineData" [dateUnit]="dateUnit.second"
                      (valuesListChangedEvent)="setSelectedTimeValues($event)"
-                     
-                     
+
+
                       [intervalListSelection]="intervalListSelection4"
                      ></arlas-histogram>
   </div>
@@ -235,7 +240,7 @@
 
   </div>
   <div class="graphs_bars">
-    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
+    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [multiselectable]=true
               [data]="barsHistogramData" [dateUnit]="dateUnit.second" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
