@@ -40,6 +40,7 @@ export class PowerbarsComponent implements OnChanges {
     if (this.inpuData !== undefined && this.inpuData.length > 0) {
       this.calculatePowerBarsProgression();
       if (this.selectedPowerbarsTerms !== undefined) {
+        this.selectedPowerbarsList = new Set();
         this.setSelectedPowerbars(this.selectedPowerbarsTerms);
       }
     } else {
