@@ -168,7 +168,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMT' +
       'JsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
       'TMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg==)';
-
     const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d' +
       '3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPiA8ZGVmcz4gIDxwYXRoIGlkPSJhIiBkPS' +
       'JtMCwwbDI0LDBsMCwyNGwtMjQsMGwwLC0yNHoiLz4gPC9kZWZzPiA8Y2xpcFBhdGggaWQ9ImIiPiAgPHVzZSBpZD0ic3ZnXzEiIHhsaW5rOmhyZWY' +
