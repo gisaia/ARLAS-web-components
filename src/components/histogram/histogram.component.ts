@@ -138,28 +138,20 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   public ngOnChanges(changes: SimpleChanges): void {
     this.histogramNode = this.viewContainerRef.element.nativeElement;
-    if (this.data !== undefined) {
+
+    if (changes.data && this.data !== undefined) {
       this.plotHistogram(this.data);
-      if ((this.intervalSelection !== undefined && this.chartType !== ChartType.swimlane &&
-        (<Array<{ key: number, value: number }>>this.data).length > 0)
-        || (this.intervalSelection !== undefined && this.chartType === ChartType.swimlane &&
-          this.swimlaneDataDomain.length > 0)
+    }
+
+    if (changes.intervalSelection && this.intervalSelection !== undefined) {
+      if ((this.chartType !== ChartType.swimlane && (<Array<{ key: number, value: number }>>this.data).length > 0)
+        || (this.chartType === ChartType.swimlane && this.swimlaneDataDomain.length > 0)
       ) {
         this.setSelectedInterval(this.intervalSelection);
       }
-
-
       this.fromSetInterval = false;
     }
-    // to draw the chart on init with correct width
-    if (changes.data) {
-      if (changes.data.previousValue !== undefined) {
-        if (changes.data.previousValue.length === 0 && this.onInit) {
-          this.resizeHistogram(null);
-          this.onInit = false;
-        }
-      }
-    }
+
     if (changes.intervalListSelection) {
       const chartAxes = (this.chartType === ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
       if (changes.intervalListSelection.currentValue) {
@@ -567,7 +559,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   private isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues, inputData: Array<{ key: number, value: number }>): boolean {
     if ((<Array<{ key: number, value: number }>>this.inputData).length !== 0) {
-      return selectedInputValues.startvalue < inputData[0].key || selectedInputValues.endvalue > inputData[inputData.length - 1].key;
+      return +selectedInputValues.startvalue < inputData[0].key || +selectedInputValues.endvalue > inputData[inputData.length - 1].key;
     } else {
       return true;
     }
@@ -1222,6 +1214,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           const selectionListInterval = [];
           this.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
           this.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
+          const data = (this.chartType !== ChartType.swimlane) ? this.inputData : this.swimlaneDataDomain;
+          if (!this.isSelectionBeyondDataDomain(this.selectionInterval, <Array<{ key: number, value: number }>>data)) {
+            this.plotHistogram(this.inputData);
+          }
+
         }
         this.showTitle = true;
         this.isBrushing = false;

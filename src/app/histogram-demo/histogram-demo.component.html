@@ -51,9 +51,9 @@
 
                      ></arlas-histogram>
   </div>
-</div>
+</div> -->
 
-<!-- <div class="graphs">
+<div class="graphs">
   <p class="graph__title">Swimlane - Fixed height</p>
   <div class ="graph__inputs--wrapper">
     <span class ="graph__inputs"><b>chartType</b>: swimlane</span>
@@ -112,7 +112,7 @@
                      [swimlaneMode]="swimlaneMode.circles"
                      [chartHeight]="180"></arlas-histogram>
   </div>
-</div> -->
+</div>
 
 <div class="graphs">
   <p class="graph__title">Bars histogram - Time scale</p>
@@ -138,6 +138,29 @@
                       [intervalListSelection]="intervalListSelection4"
                      ></arlas-histogram>
   </div>
+</div>
+
+<div class ="graph__inputs--wrapper">
+  <span class ="graph__inputs"><b>chartType</b>: bars</span>
+  <span class ="graph__inputs"><b>dataType</b>: numeric</span>
+  <span class ="graph__inputs"><b>intervalSelection</b>: startvalue: 1992, endvalue: 2060</span>
+  <span class ="graph__inputs"><b>xAxisPosition</b>: top</span>
+
+</div>
+  <div class ="graph__inputs--wrapper">
+    <span class ="graph__inputs"><b>Selected start value</b>: {{selectedNumericValues.startvalue}}</span>
+    <span class ="graph__inputs"><b>Selected end value</b>: {{selectedNumericValues.endvalue}}</span>
+  </div>
+<div class="graphs_bars">
+  <arlas-histogram [chartType]="chartType.bars"
+                   [chartTitle]="'Chart title'"
+                   (valuesListChangedEvent)="setSelectedNumericValues($event)"
+                   [data]="barsHistogramData"
+                   [dateUnit]="dateUnit.second"
+                   [intervalSelection]="selectValues"
+                   [xAxisPosition]="0"
+                   [customizedCssClass]="'histogram__area'"
+                   [descriptionPosition]="0"></arlas-histogram>
 </div>
 <div class="graphs">
   <p class="graph__title">Area histograms - Time scale</p>
