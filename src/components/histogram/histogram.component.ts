@@ -1337,6 +1337,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
 
   private setSwimlaneMaxValue(swimlaneDataMap: Map<string, Array<{ key: number, value: number }>>) {
+    this.swimlaneMaxValue = null;
     swimlaneDataMap.forEach((swimlane, key) => {
       if (this.swimlaneMaxValue === null) {
         this.swimlaneMaxValue = swimlane[0].value;
