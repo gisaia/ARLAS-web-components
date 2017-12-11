@@ -155,12 +155,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const nav = new mapboxgl.NavigationControl();
     this.map.addControl(nav, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
-    const addGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+' +
-      'IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9Ij' +
-      'QwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+ICA8cGF0aCBpZD0ic3ZnXzEiIG' +
-      'ZpbGw9Im5vbmUiIGQ9Im0wLDBsMjQsMGwwLDI0bC0yNCwwbDAsLTI0eiIvPiAgPHBhdGggaWQ9InN2Z18yIiAgc3R5bGU9J2ZpbGw6IzMzMzMzMz' +
-      'snIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwybDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LDBsOCwwbDUsMGMxLjEsMCAxLjk5LC' +
-      '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMTJsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
+    const addGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJ' +
+      'odHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+' +
+      'IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iY' +
+      'WNrZ3JvdW5kIiBoZWlnaHQ9Ij' +
+      'QwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgMTwvd' +
+      'Gl0bGU+ICA8cGF0aCBpZD0ic3ZnXzEiIG' +
+      'ZpbGw9Im5vbmUiIGQ9Im0wLDBsMjQsMGwwLDI0bC0yNCwwbDAsLTI0eiIvPiAgPHBhdGggaWQ9InN2Z' +
+      '18yIiAgc3R5bGU9J2ZpbGw6IzMzMzMzMz' +
+      'snIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwybDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LD' +
+      'BsOCwwbDUsMGMxLjEsMCAxLjk5LC' +
+      '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMT' +
+      'JsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
       'TMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg==)';
     const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d' +
       '3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPiA8ZGVmcz4gIDxwYXRoIGlkPSJhIiBkPS' +
