@@ -990,6 +990,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private showTooltipsForSwimlane(swimlaneMapData: Map<string, Array<HistogramData>>): void {
+    this.swimlaneXTooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
     this.context
       .on('mousemove', () => {
         let i = 0;
@@ -1043,16 +1044,16 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
             this.tooltip.isShown = true;
             dx = this.setTooltipXposition(xy[0], this.tooltip);
             dy = this.setTooltipYposition(xy[1]);
-            this.tooltip.xContent = 'x: ' + this.toString(data[i].key);
-            this.tooltip.yContent = 'y: ' + data[i].value;
+            this.tooltip.xContent = this.toString(data[i].key);
+            this.tooltip.yContent = data[i].value.toString();
           }
 
         } else {
           this.tooltip.isShown = true;
           dx = this.setTooltipXposition(xy[0], this.tooltip);
           dy = this.setTooltipYposition(xy[1]);
-          this.tooltip.xContent = 'x: ' + this.toString(data[i].key);
-          this.tooltip.yContent = 'y: ' + data[i].value;
+          this.tooltip.xContent = this.toString(data[i].key);
+          this.tooltip.yContent = data[i].value.toString();
         }
         break;
       } else {
@@ -1078,7 +1079,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     const xy = d3.mouse(container);
     let dx, dy, startPosition, endPosition, middlePosition;
     const tooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
-    this.swimlaneXTooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
     for (let i = 0; i < data.length; i++) {
       startPosition = this.swimLaneLabelsWidth * this.swimlaneDimension + this.swimlaneAxes.xDomain(data[i].key);
       endPosition = startPosition + this.swimlaneAxes.stepWidth * this.barWeight;
@@ -1091,8 +1091,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         dy = this.setTooltipYposition(xy[1]);
         tooltip.xPosition = (xy[0] + dx);
         tooltip.yPosition = this.swimlaneHeight * (indexOfKey + 0.2);
-        tooltip.xContent = 'x: ' + this.toString(data[i].key);
-        tooltip.yContent = 'y: ' + data[i].value;
+        tooltip.xContent = this.toString(data[i].key);
+        tooltip.yContent = data[i].value.toString();
         this.swimlaneXTooltip = tooltip;
         this.swimlaneTooltipsMap.set(key, tooltip);
         break;
