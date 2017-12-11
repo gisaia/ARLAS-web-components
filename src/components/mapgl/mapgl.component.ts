@@ -155,17 +155,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const nav = new mapboxgl.NavigationControl();
     this.map.addControl(nav, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
-    const addGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczL' +
-      'm9yZy8yMDAwL3N2ZyI' +
-      'IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9IjQwM' +
-      'iIgd2lkdGg9IjU4MiIgeT0' +
-      'iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+ICA8cGF0aCBpZD0ic3ZnXzEiIGZpbGw9Im5vbmUiIGQ9Im0wLDBsMjQ' +
-      'sMGwwLDI0bC0yNCwwbDAs' +
-      'LTI0eiIvPiAgPHBhdGggaWQ9InN2Z18yIiAgc3R5bGU9J2ZpbGw6IzMzMzMzMzsnIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwybDA' +
-      'sMTJjMCwxLjEgMC44OSwyIDI' +
-      'sMmw1LDBsOCwwbDUsMGMxLjEsMCAxLjk5LC0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMTJ' +
-      'sMTgsMGwwLDEyem0tNSwtN2wwL' +
-      'DJsLTMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg ==)';
+    const addGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+' +
+      'IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iYWNrZ3JvdW5kIiBoZWlnaHQ9Ij' +
+      'QwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+ICA8cGF0aCBpZD0ic3ZnXzEiIG' +
+      'ZpbGw9Im5vbmUiIGQ9Im0wLDBsMjQsMGwwLDI0bC0yNCwwbDAsLTI0eiIvPiAgPHBhdGggaWQ9InN2Z18yIiAgc3R5bGU9J2ZpbGw6IzMzMzMzMz' +
+      'snIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwybDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LDBsOCwwbDUsMGMxLjEsMCAxLjk5LC' +
+      '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMTJsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
+      'TMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg==)';
     const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d' +
       '3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPiA8ZGVmcz4gIDxwYXRoIGlkPSJhIiBkPS' +
       'JtMCwwbDI0LDBsMCwyNGwtMjQsMGwwLC0yNHoiLz4gPC9kZWZzPiA8Y2xpcFBhdGggaWQ9ImIiPiAgPHVzZSBpZD0ic3ZnXzEiIHhsaW5rOmhyZWY' +
