@@ -5,6 +5,7 @@ import {
   SelectedInputValues, SwimlaneData, SwimlaneMode
 } from '../../components/histogram/histogram.utils';
 import * as d3 from 'd3';
+import { setTimeout } from 'timers';
 
 
 @Component({
@@ -106,9 +107,13 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private showCurvedTimeline(component: HistogramDemoComponent) {
+    component.curvedTimelineData = [];
     d3.csv('assets/sp500.csv', this.stringToNumber, function (error, data) {
       if (error) { throw error; }
-      component.curvedTimelineData = data;
+      component.curvedTimelineData = [];
+      setTimeout(() => {
+        component.curvedTimelineData = data;
+      }, 3000);
     });
   }
 
@@ -139,19 +144,13 @@ export class HistogramDemoComponent implements OnInit {
         if (error) { throw error; }
         this.swimlaneHistogramData = new Map<any, any>();
         this.swimlaneHistogramData.set('line1', data);
-        // this.swimlaneHistogramData.set('line2', data2);
-        // this.swimlaneHistogramData.set('line3', data2);
         this.selectValuesSwimlane = undefined;
         setTimeout(() => {
           this.swimlaneHistogramData = new Map<any, any>();
           this.swimlaneHistogramData.set('line1', data);
-
           this.swimlaneHistogramData.set('line2', data2);
           this.swimlaneHistogramData.set('line3', data2);
-
           setTimeout(() => {
-            // this.swimlaneHistogramData = new Map<any, any>();
-            // this.swimlaneHistogramData.set('line1', data);
             this.selectValuesSwimlane = { startvalue: 1513262121, endvalue: 1665262121 };
           }, 5000);
         }, 5000);
