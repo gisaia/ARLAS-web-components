@@ -388,10 +388,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.map.showTileBoundaries = false;
       this.map.on('mousemove', 'cluster', (e) => {
-        this.map.getCanvas().style.cursor = 'pointer';
+        if (this.isDrawingBbox) {
+          this.map.getCanvas().style.cursor = 'crosshair';
+        } else {
+          this.map.getCanvas().style.cursor = 'pointer';
+        }
       });
       this.map.on('mouseleave', 'cluster', (e) => {
-        this.map.getCanvas().style.cursor = '';
+        if (this.isDrawingBbox) {
+          this.map.getCanvas().style.cursor = 'crosshair';
+
+        } else {
+          this.map.getCanvas().style.cursor = '';
+        }
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
