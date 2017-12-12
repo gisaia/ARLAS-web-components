@@ -489,20 +489,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.onMove.next(onMoveData);
     });
     this.map.on('mousedown', (e) => {
-      if (this.geoboxdata.features.length === 0) {
-        this.startlngLat = e.lngLat;
-      } else {
-        this.startlngLat = undefined;
-      }
       this.startlngLat = e.lngLat;
 
     });
     this.map.on('mouseup', (e) => {
-      if (this.geoboxdata.features.length === 0) {
-        this.endlngLat = e.lngLat;
-      } else {
-        this.endlngLat = undefined;
-      }
       this.endlngLat = e.lngLat;
     });
 
