@@ -10,6 +10,7 @@ import * as tinycolor from 'tinycolor2';
 import { paddedBounds, xyz } from './mapgl.component.util';
 import { element } from 'protractor';
 import { DoCheck, IterableDiffers } from '@angular/core';
+import { PitchToggle, ControlButton } from './mapgl.component.control';
 
 export interface OnMoveResult {
   zoom: number;
@@ -89,7 +90,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() private maxPrecision: number;
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
-  @Output() public onChangeBbox: EventEmitter<Array<number>> = new EventEmitter<Array<number>>();
+  @Output() public onChangeBbox: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
   @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
@@ -151,6 +152,42 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       zoom: this.initZoom,
       renderWorldCopies: true
     });
+    const nav = new mapboxgl.NavigationControl();
+    this.map.addControl(nav, 'top-right');
+    this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
+    const addGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJ' +
+      'odHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+' +
+      'IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iY' +
+      'WNrZ3JvdW5kIiBoZWlnaHQ9Ij' +
+      'QwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgMTwvd' +
+      'Gl0bGU+ICA8cGF0aCBpZD0ic3ZnXzEiIG' +
+      'ZpbGw9Im5vbmUiIGQ9Im0wLDBsMjQsMGwwLDI0bC0yNCwwbDAsLTI0eiIvPiAgPHBhdGggaWQ9InN2Z' +
+      '18yIiAgc3R5bGU9J2ZpbGw6IzMzMzMzMz' +
+      'snIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwybDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LD' +
+      'BsOCwwbDUsMGMxLjEsMCAxLjk5LC' +
+      '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMT' +
+      'JsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
+      'TMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg==)';
+    const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d' +
+      '3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPiA8ZGVmcz4gIDxwYXRoIGlkPSJhIiBkPS' +
+      'JtMCwwbDI0LDBsMCwyNGwtMjQsMGwwLC0yNHoiLz4gPC9kZWZzPiA8Y2xpcFBhdGggaWQ9ImIiPiAgPHVzZSBpZD0ic3ZnXzEiIHhsaW5rOmhyZWY' +
+      '9IiNhIi8+IDwvY2xpcFBhdGg+IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19i' +
+      'YWNrZ3JvdW5kIiBoZWlnaHQ9IjQwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgM' +
+      'TwvdGl0bGU+ICA8cGF0aCBpZD0ic3ZnXzIiIGZpbGw9IiMzMzMzMzMiIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwy' +
+      'bDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LDBsOCwwbDUsMGMxLjEsMCAxLjk5LC0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjk' +
+      'sLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMTJsMTgsMGwwLDEyem0tNSwtN2wwLDJsLTgsMGwwLC0ybDgsMHoiIGNsaXAtcGF0aD0idXJs' +
+      'KCNiKSIvPiA8L2c+PC9zdmc+)';
+
+    const addGeoBoxButton = new ControlButton(addGeoboxicon);
+    const removeBoxButton = new ControlButton(removeGeoboxicon);
+    this.map.addControl(addGeoBoxButton, 'top-right');
+    this.map.addControl(removeBoxButton, 'top-right');
+    addGeoBoxButton.btn.onclick = () => {
+      this.addGeoBox();
+    };
+    removeBoxButton.btn.onclick = () => {
+      this.removeGeoBox();
+    };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
       this.west = this.map.getBounds().getWest();
@@ -351,10 +388,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.map.showTileBoundaries = false;
       this.map.on('mousemove', 'cluster', (e) => {
-        this.map.getCanvas().style.cursor = 'pointer';
+        if (this.isDrawingBbox) {
+          this.map.getCanvas().style.cursor = 'crosshair';
+        } else {
+          this.map.getCanvas().style.cursor = 'pointer';
+        }
       });
       this.map.on('mouseleave', 'cluster', (e) => {
-        this.map.getCanvas().style.cursor = '';
+        if (this.isDrawingBbox) {
+          this.map.getCanvas().style.cursor = 'crosshair';
+
+        } else {
+          this.map.getCanvas().style.cursor = '';
+        }
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
@@ -448,6 +494,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.startlngLat = undefined;
       }
+      this.startlngLat = e.lngLat;
+
     });
     this.map.on('mouseup', (e) => {
       if (this.geoboxdata.features.length === 0) {
@@ -455,7 +503,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       } else {
         this.endlngLat = undefined;
       }
+      this.endlngLat = e.lngLat;
     });
+
     this.redrawTile.subscribe(value => {
       if (value) {
         if (this.map.getSource('cluster') !== undefined) {
@@ -466,22 +516,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  public toggleGeoBox() {
-    if (this.geoboxdata.features.length === 0) {
-      this.map.getCanvas().style.cursor = 'crosshair';
-      this.isDrawingBbox = true;
-    } else {
-      this.map.getCanvas().style.cursor = '';
-      this.geoboxdata = {
-        type: 'FeatureCollection',
-        features: []
-      };
-      this.map.getSource('geobox').setData(this.geoboxdata);
-      this.onRemoveBbox.next(true);
-      this.isDrawingBbox = false;
-    }
+  public addGeoBox() {
+    this.map.getCanvas().style.cursor = 'crosshair';
+    this.isDrawingBbox = true;
   }
 
+  public removeGeoBox() {
+
+    this.map.getCanvas().style.cursor = '';
+    this.geoboxdata.features = [];
+    this.onRemoveBbox.next(true);
+    this.isDrawingBbox = false;
+
+  }
 
   private highlightFeature(featureToHightLight: {
     isleaving: boolean,
@@ -519,7 +566,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
-    if (!this.isDrawingBbox || this.geoboxdata.features.length > 0) { return; }
+    if (!this.isDrawingBbox) { return; }
     // Disable default drag zooming when we add a geobox.
     this.map.dragPan.disable();
     // Call functions for the following events
@@ -596,8 +643,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (east > 180) {
         east = east - 360;
       }
-      this.onChangeBbox.emit([north, west, south, east]);
-
       const polygonGeojson = {
         type: 'Feature',
         properties: {
@@ -607,10 +652,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           coordinates: coordinates
         }
       };
-      this.geoboxdata = {
-        type: 'FeatureCollection',
-        features: [polygonGeojson]
-      };
+      this.geoboxdata.features.push(polygonGeojson);
+      this.onChangeBbox.emit(this.geoboxdata.features);
       this.map.getSource('geobox').setData(this.geoboxdata);
       this.isDrawingBbox = false;
       if (this.box) {
