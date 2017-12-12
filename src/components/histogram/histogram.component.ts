@@ -154,6 +154,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
     if (changes.intervalListSelection) {
       const chartAxes = (this.chartType === ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
+      const bars = (this.chartType !== ChartType.swimlane) ? this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData)
+      : (<Array<{ key: number, value: number }>>this.swimlaneDataDomain);
+
       if (changes.intervalListSelection.currentValue) {
         this.selectedBars.clear();
         let lastKey;
@@ -161,11 +164,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         this.selectionListIntervalId = [];
         this.intervalSelectedMap.clear();
         changes.intervalListSelection.currentValue.forEach(v => {
-          (this.barsContext).filter(d => {
-            d.key = +d.key;
-            return d.key >= v.startvalue
-              && d.key + this.barWeight * this.dataInterval <= v.endvalue;
-          }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+          bars.forEach((d) => {
+            if (+d.key >= v.startvalue && +d.key + this.barWeight * this.dataInterval <= v.endvalue) {
+               this.selectedBars.add(+d.key); keys.push(+d.key);
+            }
+          });
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           let guid;
           if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
@@ -185,11 +188,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         this.intervalSelectedMap.forEach((k, v) => {
           const keys = [];
           let lastKey;
-          (this.barsContext).filter((d) => {
-            d.key = +d.key;
-            return d.key >= k.values.startvalue
-              && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
-          }).data().map((d) => { this.selectedBars.add(d.key); keys.push(d.key); });
+          bars.forEach((d) => {
+            if (+d.key >= k.values.startvalue && +d.key + this.barWeight * this.dataInterval <= k.values.endvalue) {
+               this.selectedBars.add(+d.key); keys.push(+d.key);
+            }
+          });
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           this.intervalSelectedMap.set(v, {
             values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
@@ -326,21 +329,23 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
 
     this.plotHistogram(this.inputData);
-    if (this.chartType === ChartType.bars) {
+    if (this.chartType === ChartType.bars || this.chartType === ChartType.oneDimension)  {
       this.applyStyleOnSelectedBars(this.barsContext);
     }
     if (this.chartType === ChartType.swimlane) {
       this.applyStyleOnSelectedSwimlanes();
     }
     const chartAxes = (this.chartType === ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
+    const bars = (this.chartType !== ChartType.swimlane) ? this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData)
+    : (<Array<{ key: number, value: number }>>this.swimlaneDataDomain);
     this.intervalSelectedMap.forEach((k, v) => {
       const keys = [];
       let lastKey;
-      (this.barsContext).filter(d => {
-        d.key = +d.key;
-        return d.key >= k.values.startvalue
-          && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
-      }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+      bars.forEach((d) => {
+        if (+d.key >= k.values.startvalue && +d.key + this.barWeight * this.dataInterval <= k.values.endvalue) {
+           this.selectedBars.add(+d.key); keys.push(+d.key);
+        }
+      });
       lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
       this.intervalSelectedMap.set(v,
         {
@@ -451,22 +456,26 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .on('mouseout', () => this.isBrushing = false);
 
     brush.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
-    if (this.chartType === ChartType.bars) {
+    if (this.chartType === ChartType.bars || this.chartType === ChartType.oneDimension) {
       this.applyStyleOnSelectedBars(this.barsContext);
     }
     if (this.chartType === ChartType.swimlane) {
       this.applyStyleOnSelectedSwimlanes();
     }
-    if (this.chartType === ChartType.bars || this.chartType === ChartType.swimlane) {
+    if (this.chartType !== ChartType.area) {
       brush.on('dblclick', () => {
         let lastKey;
         const keys = [];
+
         if (this.multiselectable) {
-          (this.barsContext).filter((d) => {
-            d.key = +d.key;
-            return d.key >= this.selectionInterval.startvalue
-              && d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
-          }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+          const bars = (this.chartType !== ChartType.swimlane) ? this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData)
+          : (<Array<{ key: number, value: number }>>this.swimlaneDataDomain);
+          bars.forEach((d) => {
+             if (+d.key >= +this.selectionInterval.startvalue
+              && +d.key + this.barWeight * this.dataInterval <= +this.selectionInterval.endvalue) {
+                this.selectedBars.add(+d.key); keys.push(+d.key);
+              }
+          });
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
           let guid;
           if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
@@ -624,6 +633,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
             this.chartHeight = this.swimlaneHeight * this.nbSwimlanes + this.margin.top + this.margin.bottom;
           }
         }
+        break;
+      }
+      case ChartType.oneDimension: {
+        this.topOffsetRemoveInterval = -5;
+        this.initializeChartHeight();
         break;
       }
       default: {
@@ -938,6 +952,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private plotHistogramDataAsSwimlane(swimlaneData: Map<string, Array<HistogramData>>): void {
+    this.swimlaneContextList = new Array<any>();
     const keys = swimlaneData.keys();
     for (let i = 0; i < swimlaneData.size; i++) {
       const key = keys.next().value;
@@ -1118,12 +1133,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           dx = 25;
           break;
         }
-        case ChartType.oneDimension:
-          {
-            tooltip.isShown = false;
-            dx = 30;
-            break;
-          }
         case ChartType.bars:
         case ChartType.area: {
           dx = 80;
@@ -1131,6 +1140,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         }
         default: break;
       }
+    }
+    if (this.chartType === ChartType.oneDimension) {
+      tooltip.isShown = false;
     }
     return dx;
   }
@@ -1189,7 +1201,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
         this.startValue = 'From ' + this.toString(this.selectionInterval.startvalue);
         this.endValue = ' to ' + this.toString(this.selectionInterval.endvalue);
         this.showTitle = false;
-        if (this.chartType === ChartType.bars) {
+        if (this.chartType === ChartType.bars || this.chartType === ChartType.oneDimension) {
           this.applyStyleOnSelectedBars(this.barsContext);
         }
         if (this.chartType === ChartType.swimlane) {
