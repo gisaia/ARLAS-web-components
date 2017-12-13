@@ -5,9 +5,8 @@ export class PowerBar {
   public isSelected = false;
   public classSuffix = 'neutral-state';
 
-  constructor(term: string, count: number, progression: number) {
+  constructor(term: string, count: number) {
     this.term = term;
     this.count = count;
-    this.progression = progression;
   }
 }
