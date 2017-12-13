@@ -21,7 +21,7 @@ export class PowerbarsComponent implements OnChanges {
    * an array of terms : `selectedPowerbarsTerms` via the `selectedPowerBarEvent` Subject.
    * - And `selectedPowerbarsTerms` can be set from the exterior as an input.
    */
-  @Input() public inpuData: Array<[string, number]>;
+  @Input() public inputData: Array<[string, number]>;
   @Input() public powerBarsTitle: string;
   @Input() public customizedCssClass;
   @Input() public selectedPowerbarsTerms = new Set<string>();
@@ -37,16 +37,20 @@ export class PowerbarsComponent implements OnChanges {
   constructor() { }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.inpuData !== undefined && this.inpuData.length > 0) {
-      this.calculatePowerBarsProgression();
-      if (this.selectedPowerbarsTerms !== undefined) {
-        this.selectedPowerbarsList = new Set();
-        this.setSelectedPowerbars(this.selectedPowerbarsTerms);
+    if (changes.inputData) {
+      if (this.inputData !== undefined) {
+        this.populatePowerbars();
+        this.populateSelectedPowerbars();
+        this.calculateAllPowerBarsProgression();
+      } else {
+        this.inputData = [];
+        this.powerBarsList = [];
       }
-    } else {
-      this.inpuData = [];
-      this.powerBarsList = new Array<PowerBar>();
+    }
 
+    if (changes.selectedPowerbarsTerms && this.selectedPowerbarsTerms !== undefined) {
+      this.selectedPowerbarsList = new Set();
+      this.setSelectedPowerbars(this.selectedPowerbarsTerms);
     }
   }
 
@@ -95,23 +99,51 @@ export class PowerbarsComponent implements OnChanges {
     this.sortSelectedPowerBars(this.powerBarsList[0].count);
   }
 
-  private calculatePowerBarsProgression(): void {
+  private populatePowerbars(): void {
     this.powerBarsList = new Array<PowerBar>();
-    // The inputData is sorted decreasingly
-    this.inpuData.sort((a: [string, number], b: [string, number]) => b[1] - a[1]);
-    const maxPowerBarProgression = this.inpuData[0][1];
-    this.inpuData.forEach(powerbarElement => {
-      const powerBar = new PowerBar(powerbarElement[0], powerbarElement[1], (powerbarElement[1] / maxPowerBarProgression * 100));
+    this.inputData.sort((a: [string, number], b: [string, number]) => b[1] - a[1]);
+    this.inputData.forEach(powerbarElement => {
+      const powerBar = new PowerBar(powerbarElement[0], powerbarElement[1]);
       this.powerBarsList.push(powerBar);
     });
   }
 
-  private recalculatePowerBarsProgression(maxPowerBarList: number) {
-
-    this.powerBarsList.forEach(powerbarElement => {
-      powerbarElement.progression = powerbarElement.count / maxPowerBarList * 100;
-
+  private populateSelectedPowerbars() {
+    this.selectedPowerbarsList.forEach( selectedPowerBar => {
+      selectedPowerBar.count = 0;
     });
+    if (this.selectedPowerbarsTerms !== undefined && this.selectedPowerbarsTerms.size > 0) {
+      this.setSelectedPowerbars(this.selectedPowerbarsTerms);
+    }
+  }
+
+  private calculateAllPowerBarsProgression() {
+    let sum = 0;
+    // calculate the sum
+    this.powerBarsList.forEach(powerBar => {
+      sum += powerBar.count;
+    });
+    this.selectedPowerbarsList.forEach(selectedPowerBar => {
+      if (this.getPowerbarByTerm(selectedPowerBar.term) === null) {
+        sum += selectedPowerBar.count;
+      }
+    });
+
+    // calculate progression
+    this.powerBarsList.forEach(powerBar => {
+      powerBar.progression = powerBar.count / sum * 100;
+      if (powerBar.progression !== 0) {
+        powerBar.progression += 1;
+      }
+    });
+    this.selectedPowerbarsList.forEach(selectedPowerBar => {
+      selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
+      if (selectedPowerBar.progression !== 0) {
+        selectedPowerBar.progression += 1;
+      }
+    });
+
+
   }
 
   private unselectAllButNotSelectedBars() {
@@ -132,16 +164,7 @@ export class PowerbarsComponent implements OnChanges {
     const selectedPowerbarsArray = Array.from(this.selectedPowerbarsList);
     selectedPowerbarsArray.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
     this.selectedPowerbarsList = new Set<PowerBar>();
-    // recalculate the progression for the selected pack
-    let newMax;
-    if (maxPowerBarList > selectedPowerbarsArray[0].count) {
-      newMax = maxPowerBarList;
-    } else {
-      newMax = selectedPowerbarsArray[0].count;
-      this.recalculatePowerBarsProgression(newMax);
-    }
-    selectedPowerbarsArray.forEach(powerBar => {
-      powerBar.progression = powerBar.count / newMax * 100;
+      selectedPowerbarsArray.forEach(powerBar => {
       this.selectedPowerbarsList.add(powerBar);
     });
   }

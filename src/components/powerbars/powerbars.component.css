@@ -52,9 +52,12 @@
 
 .powerbar__powerbar--progression--neutral-state, .powerbar__powerbar--progression--selected-bar,
 .powerbar__powerbar--progression--unselected-bar {
-  padding-left: 3px;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.75em;
+}
+
+.powerbar__powerbar--term {
+  padding-left: 3px;
 }
 
 .powerbar__powerbar--progression--neutral-state {

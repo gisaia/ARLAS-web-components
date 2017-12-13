@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { setTimeout } from 'timers';
 
 @Component({
   selector: 'arlas-powerbars-demo',
@@ -38,6 +39,12 @@ export class PowerbarsDemoComponent implements OnInit {
     this.countries.push(['Italy', 200]);
     this.countries.push(['Spain', 180]);
     this.countries.push(['Portugal', 100]);
+
+    setTimeout(() => {
+      const construct = new Array<[string, number]>();
+      construct.push(['Pilatus', 100]);
+      this.constructors = construct;
+    }, 10000);
   }
 
 }

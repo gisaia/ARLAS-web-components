@@ -43,6 +43,10 @@
   background-color: white;
 }
 
+.histogram__area .histogram__swimlane-height--tick {
+  stroke: black;
+}
+
 .histogram__area .histogram__description__startvalue,
 .histogram__area .histogram__description__endvalue{
   color: #4CA3EB;
