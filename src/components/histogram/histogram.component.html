@@ -54,7 +54,7 @@
     </div>
   </div>
   <div *ngFor="let id of selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="topOffsetRemoveInterval"
-    [style.left.px]="intervalSelectedMap.get(id)?.x_position-leftOffsetRemoveInterval">
+    [style.left.px]="intervalSelectedMap.get(id)?.x_position">
     <svg on-mouseover='overRemove($event)' on-mouseleave='leaveRemove($event)' fill="#043b53" height="24" viewBox="0 0 24 24"
       width="24" xmlns="http://www.w3.org/2000/svg" transform="rotate(45)">
       <path  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />

@@ -154,22 +154,44 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
     if (changes.intervalListSelection) {
       const chartAxes = (this.chartType === ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
-      const bars = (this.chartType !== ChartType.swimlane) ? this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData)
-      : (<Array<{ key: number, value: number }>>this.swimlaneDataDomain);
-
       if (changes.intervalListSelection.currentValue) {
         this.selectedBars.clear();
-        let lastKey;
-        const keys = [];
         this.selectionListIntervalId = [];
         this.intervalSelectedMap.clear();
         changes.intervalListSelection.currentValue.forEach(v => {
-          bars.forEach((d) => {
-            if (+d.key >= v.startvalue && +d.key + this.barWeight * this.dataInterval <= v.endvalue) {
-               this.selectedBars.add(+d.key); keys.push(+d.key);
+          const keys = [];
+          let lastKey;
+          let firstKey;
+
+          if (this.chartType !== ChartType.swimlane) {
+            const bars = this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData);
+            bars.forEach((d) => {
+              if (+d.key >= +v.startvalue
+                && +d.key + this.barWeight * this.dataInterval <= +v.endvalue) {
+                this.selectedBars.add(+d.key); keys.push(+d.key);
+              }
+            });
+          } else {
+            this.swimlaneContextList.forEach(barcontext => {
+              (barcontext).filter((d) => {
+                d.key = +d.key;
+                return d.key >= v.startvalue
+                  && d.key + this.barWeight * this.dataInterval <= v.endvalue;
+              }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
             }
-          });
+            );
+          }
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
+          firstKey = keys.sort((a, b) => { if (a > b) { return a; } })[0];
+          const firstPosition = chartAxes.xDomain(firstKey);
+          const lastPosition = chartAxes.xDomain(lastKey);
+          let finalPosition;
+          if (this.chartType !== ChartType.swimlane) {
+             finalPosition = (firstPosition + lastPosition) / 2 + this.margin.left;
+
+          } else {
+             finalPosition = (firstPosition + lastPosition) / 2 + this.swimLaneLabelsWidth;
+          }
           let guid;
           if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
             guid = (<Date>v.startvalue).getTime().toString() + (<Date>v.endvalue).getTime().toString();
@@ -179,25 +201,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           this.intervalSelectedMap.set(guid,
             {
               values: { startvalue: v.startvalue, endvalue: v.endvalue },
-              x_position: chartAxes.xDomain(lastKey) + this.margin.left
+              x_position: finalPosition
             });
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
           }
-        });
-        this.intervalSelectedMap.forEach((k, v) => {
-          const keys = [];
-          let lastKey;
-          bars.forEach((d) => {
-            if (+d.key >= k.values.startvalue && +d.key + this.barWeight * this.dataInterval <= k.values.endvalue) {
-               this.selectedBars.add(+d.key); keys.push(+d.key);
-            }
-          });
-          lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
-          this.intervalSelectedMap.set(v, {
-            values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
-            x_position: chartAxes.xDomain(lastKey) + this.margin.left
-          });
         });
         if (this.barsContext !== undefined) {
           this.applyStyleOnSelectedBars(this.barsContext);
@@ -329,29 +337,50 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
 
     this.plotHistogram(this.inputData);
-    if (this.chartType === ChartType.bars || this.chartType === ChartType.oneDimension)  {
+    if (this.chartType === ChartType.bars || this.chartType === ChartType.oneDimension) {
       this.applyStyleOnSelectedBars(this.barsContext);
     }
     if (this.chartType === ChartType.swimlane) {
       this.applyStyleOnSelectedSwimlanes();
     }
     const chartAxes = (this.chartType === ChartType.swimlane) ? this.swimlaneAxes : this.chartAxes;
-    const bars = (this.chartType !== ChartType.swimlane) ? this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData)
-    : (<Array<{ key: number, value: number }>>this.swimlaneDataDomain);
     this.intervalSelectedMap.forEach((k, v) => {
       const keys = [];
       let lastKey;
-      bars.forEach((d) => {
-        if (+d.key >= k.values.startvalue && +d.key + this.barWeight * this.dataInterval <= k.values.endvalue) {
-           this.selectedBars.add(+d.key); keys.push(+d.key);
-        }
-      });
-      lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
-      this.intervalSelectedMap.set(v,
-        {
-          values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
-          x_position: chartAxes.xDomain(lastKey) + this.margin.left
+      let firstKey;
+      if (this.chartType !== ChartType.swimlane) {
+        const bars = this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData);
+        bars.forEach((d) => {
+          if (+d.key >= +k.values.startvalue
+            && +d.key + this.barWeight * this.dataInterval <= +k.values.endvalue) {
+            this.selectedBars.add(+d.key); keys.push(+d.key);
+          }
         });
+      } else {
+        this.swimlaneContextList.forEach(barcontext => {
+          (barcontext).filter((d) => {
+            d.key = +d.key;
+            return d.key >= k.values.startvalue
+              && d.key + this.barWeight * this.dataInterval <= k.values.endvalue;
+          }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+        }
+        );
+      }
+      lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
+      firstKey = keys.sort((a, b) => { if (a > b) { return a; } })[0];
+      const firstPosition = chartAxes.xDomain(firstKey);
+      const lastPosition = chartAxes.xDomain(lastKey);
+      let finalPosition;
+      if (this.chartType !== ChartType.swimlane) {
+        finalPosition = (firstPosition + lastPosition) / 2 + this.margin.left;
+
+      } else {
+             finalPosition = (firstPosition + lastPosition) / 2 + this.swimLaneLabelsWidth;
+      }
+      this.intervalSelectedMap.set(v, {
+        values: { startvalue: k.values.startvalue, endvalue: k.values.endvalue },
+        x_position: finalPosition
+      });
     });
   }
 
@@ -465,18 +494,42 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (this.chartType !== ChartType.area) {
       brush.on('dblclick', () => {
         let lastKey;
+        let firstKey;
+
         const keys = [];
 
         if (this.multiselectable) {
-          const bars = (this.chartType !== ChartType.swimlane) ? this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData)
-          : (<Array<{ key: number, value: number }>>this.swimlaneDataDomain);
-          bars.forEach((d) => {
-             if (+d.key >= +this.selectionInterval.startvalue
-              && +d.key + this.barWeight * this.dataInterval <= +this.selectionInterval.endvalue) {
+          if (this.chartType !== ChartType.swimlane) {
+            const bars = this.parseDataKey(<Array<{ key: number, value: number }>>this.inputData);
+            bars.forEach((d) => {
+              if (+d.key >= +this.selectionInterval.startvalue
+                && +d.key + this.barWeight * this.dataInterval <= +this.selectionInterval.endvalue) {
                 this.selectedBars.add(+d.key); keys.push(+d.key);
               }
-          });
+            });
+          } else {
+            this.swimlaneContextList.forEach(barcontext => {
+              (barcontext).filter((d) => {
+                d.key = +d.key;
+                return d.key >= this.selectionInterval.startvalue
+                  && d.key + this.barWeight * this.dataInterval <= this.selectionInterval.endvalue;
+              }).data().map(d => { this.selectedBars.add(d.key); keys.push(d.key); });
+            }
+            );
+          }
+
           lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
+          firstKey = keys.sort((a, b) => { if (a > b) { return a; } })[0];
+
+          const firstPosition = chartAxes.xDomain(firstKey);
+          const lastPosition = chartAxes.xDomain(lastKey);
+          let finalPosition;
+          if (this.chartType !== ChartType.swimlane) {
+             finalPosition = (firstPosition + lastPosition) / 2 + this.margin.left;
+
+          } else {
+             finalPosition = (firstPosition + lastPosition) / 2 + this.swimLaneLabelsWidth;
+          }
           let guid;
           if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
             const startMilliString = (<Date>this.selectionInterval.startvalue).getTime().toString();
@@ -490,7 +543,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           this.intervalSelectedMap.set(guid,
             {
               values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
-              x_position: chartAxes.xDomain(lastKey) + this.margin.left
+              x_position: finalPosition
             });
           if (this.selectionListIntervalId.indexOf(guid) < 0) {
             this.selectionListIntervalId.push(guid);
