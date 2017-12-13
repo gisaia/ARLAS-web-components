@@ -42,74 +42,152 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   // fieldName is the real field name that's hidden
   // dataType (degree, percentage, etc)
   // includes an ID field. It will be the id of each item
+  /**
+   * @Input
+   * @description List of the fields displayed in the table (including the id field)
+   */
   @Input() public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string }>;
 
-  // rowItemList is a list of fieldName-fieldValue map
+  /**
+   * @Input
+   * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid
+   */
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
+  /**
+   * @Input
+   * @description A configuration object that sets id field, title field and urls
+   * to images && thumbnails
+   */
   @Input() public fieldsConfiguration: FieldsConfiguration;
 
-  // the table width. If not specified, the tableWidth value is equal to container width.
+  /**
+   * @Input
+   * @description The table width. If not specified, the tableWidth value is
+   * equal to container width.
+   */
   @Input() public tableWidth: number = null;
 
-  // When the scrollbar achieves this lines, more data is called
+   /**
+   * @Input
+   * @description When the `last - n` line is reached, more data is requested.
+   */
   @Input() public nLastLines = 5;
 
-  // Number of new rows added after each moreDataEvent
+  /**
+   * @Input
+   * @description Number of new rows added each time the `last - n` line is reached.
+   */
   @Input() public searchSize;
 
+  /**
+   * @Input
+   * @description Height of the detail grid div (Grid Mode).
+   */
   @Input() public detailedGridHeight = 250;
 
+  /**
+   * @Input
+   * @description Number of grid columns (Grid Mode).
+   */
   @Input() public nbGridColumns = 3;
 
+  /**
+   * @Input
+   * @description List of actions to apply on the selected items.
+   */
   @Input() public globalActionsList = new Array<Action>();
 
-  // a detailed-data retriever object that implements DetailedDataRetriever interface .
+  /**
+   * @Input
+   * @description A detailed-data-retriever object that implements
+   * DetailedDataRetriever interface.
+   */
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
-  // list of Id item for indeterminate status .
+  /**
+   * @Input
+   * @description List of items ids that are in a indeterminated status.
+   */
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
-  // list of Id item for indeterminate status .
+  /**
+   * @Input
+   * @description List of items ids to be highlighted.
+   */
   @Input() public highlightItems: Set<string> = new Set<string>();
 
-  // Defaut Mode.
+  /**
+   * @Input
+   * @description Mode of representation : `list` or `grid`.
+   */
   @Input() public defautMode: ModeEnum;
 
-  // Hide Body table.
   @Input() public isBodyHidden: boolean;
 
-  // Hide Body table.
+  /**
+   * @Input
+   * @description Whether the sort on the geometry is activated.
+   */
   @Input() public isGeoSortActived = false;
 
 
-    // The searchedFieldsEvent emits a list of fieldName-fieldValue
+  /**
+   * @Input
+   * @description A fieldName-fieldValue map of fields to filter.
+   */
   @Input() public filtersMap: Map<string, string | number | Date>;
 
-  // Sorting a column event.
+  /**
+   * @Output
+   * @description Emits the event of sorting data on the specified column.
+   */
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
   new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 
-  // Geo_distance sorting event
+  /**
+   * @Output
+   * @description Emits the event of geo-sorting data.
+   */
   @Output() public geoSortEvent: Subject<string> = new Subject<string>();
 
-  // selectedItemsEvent emits the list of items identifiers whose checkboxes are selected.
+  /**
+   * @Output
+   * @description Emits the list of items identifiers whose checkboxes are selected.
+   */
   @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
 
-  // consultedItemEvent emits one item identifier that is hovered, selected or clicked on it. The consulted item can be highlighted in
-  // the map for example. It's only for consultation.
+  /**
+   * @Output
+   * @description Emits one item identifier that is hovered, selected or clicked on it
+   * for consultation purposes.
+   */
   @Output() public consultedItemEvent: Subject<ElementIdentifier> = new Subject<ElementIdentifier>();
 
-  // The searchedFieldsEvent emits a list of fieldName-fieldValue
+  /**
+   * @Output
+   * @description Emits the filtred fields map (fieldName-fieldValue map).
+   */
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
-  // The moreDataEvent notify the need for more data.
+  /**
+   * @Output
+   * @description Emits the request of more data to load. The emited number is the number
+   * of times this event has been emitted.
+   */
   @Output() public moreDataEvent: Subject<number> = new Subject<number>();
 
-  // The action triggered on an item which identifier is 'identifier'.
+  /**
+   * @Output
+   * @description Emits the event of applying the specified action on the specified item.
+   */
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
   new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
+  /**
+   * @Output
+   * @description Emits the event of applying the specified globalb action on the selected items.
+   */
   @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
 
   public columns: Array<Column>;

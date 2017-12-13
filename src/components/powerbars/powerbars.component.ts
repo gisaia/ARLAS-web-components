@@ -10,7 +10,6 @@ import { PowerBar } from './model/powerbar';
   templateUrl: './powerbars.component.html',
   styleUrls: ['./powerbars.component.css']
 })
-export class PowerbarsComponent implements OnChanges {
   /**
    * - The component displays an array of [term, count] as bars sorted decreasingly (inputData). The bars length representing the count.
    * - The array of [term, count] is transformed to an array of `PowerBar` object called `powerBarsList` .
@@ -21,17 +20,44 @@ export class PowerbarsComponent implements OnChanges {
    * an array of terms : `selectedPowerbarsTerms` via the `selectedPowerBarEvent` Subject.
    * - And `selectedPowerbarsTerms` can be set from the exterior as an input.
    */
+export class PowerbarsComponent implements OnChanges {
+
+
+  /**
+   * @Input
+   * @description List of powerbars
+   */
   @Input() public inputData: Array<[string, number]>;
-  @Input() public powerBarsTitle: string;
+  /**
+   * @Input
+   * @description Css class name to use to customize a specific powerbar's style.
+   */
   @Input() public customizedCssClass;
+  /**
+   * @Input
+   * @description Term's list of powerbars to select
+   */
   @Input() public selectedPowerbarsTerms = new Set<string>();
+  /**
+   * @Output
+   * @description Emits the list of selected powerbars terms
+   */
   @Output() public selectedPowerBarEvent = new Subject<Set<string>>();
 
   public powerBarsList: Array<PowerBar>;
   public selectedPowerbarsList: Set<PowerBar> = new Set<PowerBar>();
 
+  /**
+   * @constant
+   */
   public SELECTED_BAR = 'selected-bar';
+  /**
+   * @constant
+   */
   public UNSELECTED_BAR = 'unselected-bar';
+  /**
+   * @constant
+   */
   public NEUTRAL_STATE = 'neutral-state';
 
   constructor() { }
@@ -69,6 +95,10 @@ export class PowerbarsComponent implements OnChanges {
     }
     this.selectedPowerBarEvent.next(this.selectedPowerbarsTerms);
   }
+
+  /**
+   * @param selectedPowerbars selects the powerbars whose terms are passed in the parameter
+   */
 
   // Set selected powerbars from the exterior of the component
   public setSelectedPowerbars(selectedPowerbars: Set<string>) {

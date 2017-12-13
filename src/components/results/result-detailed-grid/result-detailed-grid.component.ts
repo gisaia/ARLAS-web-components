@@ -14,11 +14,31 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
   public SHOW_DETAILS = 'Show details';
   public SHOW_IMAGE = 'Show image';
 
+  /**
+   * @Input
+   * @description An object representing an Item and that contains the detailed data.
+   */
   @Input() public gridTile: Item;
+  /**
+   * @Input
+   * @description Width of the detailed grid.
+   */
   @Input() public detailWidth: number;
+  /**
+   * @Input
+   * @description Height of the detailed grid.
+   */
   @Input() public detailHeight: number;
+  /**
+   * @Input
+   * @description Name of the id field.
+   */
   @Input() public idFieldName: string;
 
+  /**
+   * @Output
+   * @description Emits the event of applying the specified action on the specified item.
+   */
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
   new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 

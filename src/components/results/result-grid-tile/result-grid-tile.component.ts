@@ -16,13 +16,40 @@ import { Subject } from 'rxjs/Subject';
 export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public SHOW_IMAGE = 'Click to show details';
 
+  /**
+   * @Input
+   * @description An object representing an Item .
+   */
   @Input() public gridTile: Item;
+  /**
+   * @Input
+   * @description List of all selected items in the result-list.component.
+   * This component sets directly this list.
+   */
   @Input() public selectedItems: Set<string>;
+  /**
+   * @Input
+   * @description A detailed-data-retriever object that implements
+   * DetailedDataRetriever interface.
+   */
   @Input() public detailedDataRetriever: DetailedDataRetriever;
 
+  /**
+   * @Output
+   * @description Emits the list of selected items in result-list.component.
+   */
   @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+
+  /**
+   * @Output
+   * @description Emits the selected/unselected item.
+   */
   @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
 
+  /**
+   * @Output
+   * @description Emits the the item that it has been clicked on it.
+   */
   @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
 
   constructor() {

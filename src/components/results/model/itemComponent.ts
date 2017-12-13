@@ -7,6 +7,9 @@ import { Observable } from 'rxjs/Rx';
 import { Subject } from 'rxjs/Subject';
 export class ItemComponent {
 
+  /**
+   * @description Emits the retrieved detailed data.
+   */
   protected retrievedDataEvent: Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
 
   public setSelectedItem(isChecked: Boolean, identifier: string, selectedItems: Set<string>) {
