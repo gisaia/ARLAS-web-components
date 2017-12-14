@@ -1042,10 +1042,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       .data(data)
       .enter().append('line').attr('class', 'histogram__swimlane-height--tick')
       .attr('x1', (d) => this.swimLaneLabelsWidth + this.swimlaneAxes.xDataDomainArray[index](d.key))
-      .attr('y1', (d) => this.swimlaneHeight * (index + 1) - (+d.value) * this.swimlaneHeight / (+dataMaxValue))
+      .attr('y1', (d) => this.swimlaneHeight * (index + 1) - (+d.value) * (this.swimlaneHeight - 5) / (+dataMaxValue))
       .attr('x2', (d) => this.swimLaneLabelsWidth + this.swimlaneAxes.xDataDomainArray[index](d.key) +
         this.swimlaneAxes.stepWidth * barWeight)
-      .attr('y2', (d) => this.swimlaneHeight * (index + 1) - (+d.value) * this.swimlaneHeight / (+dataMaxValue));
+      .attr('y2', (d) => this.swimlaneHeight * (index + 1) - (+d.value) * (this.swimlaneHeight - 5) / (+dataMaxValue));
   }
 
   private showTooltips(data: Array<HistogramData>): void {
@@ -1406,13 +1406,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     swimlaneDataMap.forEach((swimlane, key) => {
       if (this.swimlaneMaxValue === null) {
         this.swimlaneMaxValue = swimlane[0].value;
-      } else {
-        swimlane.forEach(element => {
-          if (element.value > this.swimlaneMaxValue) {
-            this.swimlaneMaxValue = element.value;
-          }
-        });
       }
+      swimlane.forEach(element => {
+        if (element.value > this.swimlaneMaxValue) {
+          this.swimlaneMaxValue = element.value;
+        }
+      });
     });
   }
 
