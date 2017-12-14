@@ -168,18 +168,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMT' +
       'JsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
       'TMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg==)';
-    const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJodHRwOi8vd3d' +
-      '3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPiA8ZGVmcz4gIDxwYXRoIGlkPSJhIiBkPS' +
-      'JtMCwwbDI0LDBsMCwyNGwtMjQsMGwwLC0yNHoiLz4gPC9kZWZzPiA8Y2xpcFBhdGggaWQ9ImIiPiAgPHVzZSBpZD0ic3ZnXzEiIHhsaW5rOmhyZWY' +
-      '9IiNhIi8+IDwvY2xpcFBhdGg+IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19i' +
-      'YWNrZ3JvdW5kIiBoZWlnaHQ9IjQwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgM' +
-      'TwvdGl0bGU+ICA8cGF0aCBpZD0ic3ZnXzIiIGZpbGw9IiMzMzMzMzMiIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwy' +
-      'bDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LDBsOCwwbDUsMGMxLjEsMCAxLjk5LC0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjk' +
-      'sLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMTJsMTgsMGwwLDEyem0tNSwtN2wwLDJsLTgsMGwwLC0ybDgsMHoiIGNsaXAtcGF0aD0idXJs' +
-      'KCNiKSIvPiA8L2c+PC9zdmc+)';
+    const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB' +
+      '2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIg' +
+      'eG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTYgMTljMCAxLjEuOSAyIDIgMmg4YzEuMSAwIDItLjkgMi0yVjdIN' +
+      'nYxMnpNMTkgNGgtMy41bC0xLTFoLTVsLTEgMUg1djJoMTRWNHoiLz4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZml' +
+      'sbD0ibm9uZSIvPjwvc3ZnPg==)';
 
-    const addGeoBoxButton = new ControlButton(addGeoboxicon);
-    const removeBoxButton = new ControlButton(removeGeoboxicon);
+
+    const addGeoBoxButton = new ControlButton('addgeobox', addGeoboxicon);
+    const removeBoxButton = new ControlButton('removegeobox', removeGeoboxicon);
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
     addGeoBoxButton.btn.onclick = () => {
