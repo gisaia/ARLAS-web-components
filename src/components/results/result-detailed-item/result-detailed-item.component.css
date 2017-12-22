@@ -1,11 +1,26 @@
-.resultdetaileditem{
+.resultdetaileditem /*public*/ /*Sets all texts style.*/
+{
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.7em;
   text-align: left;
   vertical-align: middle;
 }
 
-.resultdetaileditem__actions {
+/*'.{{group.name}}-item-detail*/ /*public*/ /*Sets a specific goup title style.*/
+/*'.{{detail.key}}-item-detail*/ /*public*/ /*Sets a specific detail key style.*/
+
+.resultdetaileditem-key /*public*/ /*Sets key style. (key: value part)*/
+{
+  font-weight: bold;
+}
+
+.resultdetaileditem-value /*public*/ /*Sets value style (key: value part)*/
+{
+  margin-right: 10px;;
+}
+
+.resultdetaileditem__actions /*public*/ /*Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/
+{
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   margin: 3px 6px 3px 0;
@@ -16,10 +31,4 @@
   cursor: pointer;
 }
 
-.resultdetaileditem-key {
-  font-weight: bold;
-}
 
-.resultdetaileditem-value {
-  margin-right: 10px;;
-}

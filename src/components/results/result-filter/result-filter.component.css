@@ -1,3 +1,4 @@
-.resultlist__header--filters {
+.resultlist__header--filters /*public*/ /*Sets filters container style.*/
+{
   margin: 0
 }

@@ -9,22 +9,24 @@
   float: right;
 }
 
-.resultitem__cell__toggle--icon {
+.resultitem__cell__toggle--icon /*public*/ /*Sets the toggle icon style.*/
+{
   font-size:18px;
   margin-right: 5px;
   display: block;
   cursor: pointer;
 }
 
-.resultitem__cell--label {
+.resultitem__cell--label /*public*/ /*Sets labels style.*/
+{
   margin:0;
 }
 
-.resultitem__icon_check{
+.resultitem__icon_check /*public*/ /*Sets the checkbox icon style.*/
+{
   float: right;
   font-size: 15px;
   width: 15px;
   height: 15px;
   color:#043B53;
-
 }

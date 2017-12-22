@@ -19,7 +19,8 @@
   position: relative
 }
 
-.resultgrid__info-button {
+.resultgrid__info-button /*public*/ /*Sets both show-details and show-image buttons style.*/
+{
   background-color: #043b53;
   position: absolute;
   top: 5px;
