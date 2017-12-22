@@ -194,16 +194,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input
    * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
    */
-  @Input() public zoomToPrecisionCluster: Object;
+  @Input() public zoomToPrecisionCluster: Array<Array<number>>;
   /**
    * @Input
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
    */
-  @Input() private maxPrecision: number;
+  @Input() private maxPrecision: Array<number>;
   /**
    * @Output
    * @description Emits the event of whether redraw the tile.
    */
+
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   /**
    * @Output
@@ -786,10 +787,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
   private getPrecisionFromZoom(zoom: number): number {
-    if (this.zoomToPrecisionCluster[Math.ceil(zoom) - 1].split(',')[1] !== undefined) {
-      return this.zoomToPrecisionCluster[Math.ceil(zoom) - 1].split(',')[1];
+    const zoomToPrecisionClusterObject = {};
+    const zoomToPrecisionCluster = this.zoomToPrecisionCluster;
+    zoomToPrecisionCluster.forEach(triplet => {
+      zoomToPrecisionClusterObject[triplet[0]] = [triplet[1], triplet[2]];
+    });
+    if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][0] !== undefined) {
+      return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][0];
     } else {
-      return this.maxPrecision;
+      return this.maxPrecision[0];
+
     }
   }
 }
