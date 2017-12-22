@@ -17,13 +17,40 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public HIDE_DETAILS = 'Hide details';
   public SHOW_DETAILS = 'Show details';
 
+  /**
+   * @Input
+   * @description An object representing an Item .
+   */
   @Input() public rowItem: Item;
+  /**
+   * @Input
+   * @description A detailed-data-retriever object that implements
+   * DetailedDataRetriever interface.
+   */
   @Input() public detailedDataRetriever: DetailedDataRetriever;
+  /**
+   * @Input
+   * @description List of all selected items in the result-list.component.
+   * This component sets directly this list.
+   */
   @Input() public selectedItems: Set<string>;
 
+  /**
+   * @Output
+   * @description Emits the list of selected items in result-list.component.
+   */
   @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+
+  /**
+   * @Output
+   * @description Emits the selected/unselected item.
+   */
   @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
 
+  /**
+   * @Output
+   * @description Emits the border line style depending on the item's toggle state.
+   */
   @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
 
   public isDetailToggled = false;

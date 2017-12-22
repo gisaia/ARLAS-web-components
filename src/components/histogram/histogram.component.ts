@@ -26,6 +26,196 @@ import { element } from 'protractor';
 })
 export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
+  /**
+   * @Input
+   * @description Data to plot in the chart.
+   */
+  @Input() public data: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>;
+  /**
+   * @Input
+   * @description To be set to `time` when x axis represents dates and to `numeric` otherwise.
+   */
+  @Input() public dataType: DataType = DataType.numeric;
+  /**
+   * @Input
+   * @description The unity of data key when it represents `time`.
+   */
+  @Input() public dateUnit: DateUnit = DateUnit.millisecond;
+  /**
+   * @description Unity of data to add in the end of tooltip values.
+   */
+  @Input() public dataUnit = '';
+  /**
+   * @Input
+   * @description The date format of the start/end values.
+   *  Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
+   */
+  @Input() public valuesDateFormat: string = null;
+
+
+  /**
+   * @Input
+   * @description Whether the chart is selectable.
+   */
+  @Input() public isHistogramSelectable = true;
+  /**
+   * @Input
+   * @description Whether the selection is multiple.
+   */
+  @Input() public multiselectable = false;
+  /**
+   * @Input
+   * @description A single interval that selects data.
+   */
+  @Input() public intervalSelection: SelectedInputValues;
+  /**
+   * @Input
+   * @description A list of intervals that select data.
+   */
+  @Input() public intervalListSelection: SelectedInputValues[];
+  /**
+   * @Input
+   * @description Top position of the remove-selection-button.
+   */
+  @Input() public topOffsetRemoveInterval = 40;
+  /**
+   * @Input
+   * @description leftOffsetRemoveInterval.
+   */
+  @Input() public leftOffsetRemoveInterval = 18;
+  /**
+   * @Input
+   * @description A 0 to 1 weight of the brush height. It controls the brush handles height.
+   */
+  @Input() public brushHandlesHeightWeight = 1 / 2;
+
+  /**
+   * @Input
+   * @description Chart's representation type.
+   */
+  @Input() public chartType: ChartType = ChartType.area;
+  /**
+   * @Input
+   * @description Chart's title.
+   */
+  @Input() public chartTitle = '';
+  /**
+   * @Input
+   * @description Chart's width. If not specified, the chart takes the component's container width.
+   */
+  @Input() public chartWidth: number = null;
+  /**
+   * @Input
+   * @description Chart's height. If not specified, the chart takes the component's container height.
+   */
+  @Input() public chartHeight: number = null;
+  /**
+   * @Input
+   * @description Css class name to use to customize a specific `arlas-histogram` component.
+   */
+  @Input() public customizedCssClass = '';
+
+  /**
+   * @Input
+   * @description The xAxis positon : above or below the chart.
+   */
+  @Input() public xAxisPosition: Position = Position.bottom;
+  /**
+   * @Input
+   * @description The start/end values positon : above or below the chart.
+   */
+  @Input() public descriptionPosition: Position = Position.bottom;
+  /**
+   * @Input
+   * @description Number of ticks in the X axis.
+   */
+  @Input() public xTicks = 5;
+  /**
+   * @Input
+   * @description Number of ticks in the Y axis.
+   */
+  @Input() public yTicks = 5;
+  /**
+   * @Input
+   * @description Number of labels in the X axis.
+   */
+  @Input() public xLabels = 5;
+  /**
+   * @Input
+   * @description Number of labels in the Y axis.
+   */
+  @Input() public yLabels = 5;
+  /**
+   * @Input
+   * @description Whether showing the X axis ticks.
+   */
+  @Input() public showXTicks = true;
+  /**
+   * @Input
+   * @description Whether showing the Y axis ticks.
+   */
+  @Input() public showYTicks = true;
+  /**
+   * @Input
+   * @description Whether showing the X axis labels.
+   */
+  @Input() public showXLabels = true;
+  /**
+   * @Input
+   * @description Whether showing the Y axis labels.
+   */
+  @Input() public showYLabels = true;
+  /**
+   * @Input
+   * @description The date format of ticks.
+   * Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
+   */
+  @Input() public ticksDateFormat: string = null;
+
+  /**
+   * @Input
+   * @description Whether the curve of an `area` chart is smoothed.
+   */
+  @Input() public isSmoothedCurve = true;
+
+  /**
+   * @Input
+   * @description Weight applied to bars width. ]0,1].
+   */
+  @Input() public barWeight = 0.6;
+
+  /**
+   * @Input
+   * @description Either a hex string color or a color name (in English) or a saturation interval.
+   */
+  @Input() public paletteColors: [number, number] | string = null;
+  /**
+   * @Input
+   * @description The swimlane representation mode.
+   */
+  @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
+  /**
+   * @Input
+   * @description The width of swimlane labels space.
+   */
+  @Input() public swimLaneLabelsWidth = null;
+  /**
+   * @Input
+   * @description The radius of swimlane bars borders.
+   */
+  @Input() public swimlaneBorderRadius = 3;
+  /**
+   * @Input
+   * @description The height of a single lane. If not specified, a lane height is the chartHeight devided by the number of lanes.
+   */
+  @Input() public swimlaneHeight: number = null;
+
+  /**
+   * @Output
+   * @description Emits the list of selected intervals.
+   */
+  @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
+
 
   public HISTOGRAM_BARS = 'histogramm__bars';
   public ChartType = ChartType;
@@ -44,44 +234,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public swimlaneXTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
   public verticalTooltipLine;
 
-  @Input() public xTicks = 5;
-  @Input() public yTicks = 5;
-  @Input() public chartType: ChartType = ChartType.area;
-  @Input() public chartTitle = '';
-  @Input() public chartWidth: number = null;
-  @Input() public chartHeight: number = null;
-  @Input() public swimLaneLabelsWidth = null;
-  @Input() public dataType: DataType = DataType.numeric;
-  @Input() public customizedCssClass = '';
-  @Input() public dataUnit = '';
-  @Input() public data: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>;
-  @Input() public dateUnit: DateUnit = DateUnit.millisecond;
-  @Input() public ticksDateFormat: string = null;
-  @Input() public valuesDateFormat: string = null;
-  @Input() public xLabels = 5;
-  @Input() public yLabels = 5;
-  @Input() public barWeight = 0.6;
-  @Input() public isSmoothedCurve = true;
-  @Input() public isHistogramSelectable = true;
-  @Input() public intervalSelection: SelectedInputValues;
-  @Input() public intervalListSelection: SelectedInputValues[];
-  @Input() public multiselectable = false;
-  @Input() public showXLabels = true;
-  @Input() public showXTicks = true;
-  @Input() public showYLabels = true;
-  @Input() public showYTicks = true;
-  @Input() public descriptionPosition: Position = Position.bottom;
-  @Input() public xAxisPosition: Position = Position.bottom;
-  @Input() public paletteColors: [number, number] | string = null;
-  @Input() public brushHandlesHeightWeight = 1 / 2;
-  @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
-  @Input() public topOffsetRemoveInterval = 40;
-  @Input() public leftOffsetRemoveInterval = 18;
-  @Input() public swimlaneBorderRadius = 3;
-  @Input() public swimlaneHeight: number = null;
-
-
-  @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
 
   private histogramNode: any;
   private histogramElement: ElementRef;

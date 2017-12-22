@@ -1,41 +1,85 @@
-# API
-
-* [Histogram](#Histogram)
-* [ResultList](#ResultList)
-
-## Histogram
+## Histogram :
 
 A generic component that plots data in a chart. 
 
 ### Inputs : 
 
-- `data: Subject<Array<{key: number, value: number}>>` - Data to plot in the histogram. Please, check [data structure](#Data structure)
-- `dataType: string` - To be set to **time** when x axis represents time and **numeric** otherwise. Default value is : **numeric**.
-- `dataUnit: string` - (Optional) Unit to add in the tooltip
-- `chartType: string` - Possible values are **area**, **bars** and **oneDimension** . Default value is : **area**.
-- `chartTitle: string` - The chart title.
-- `chartWidth: number` - The chart width.
-- `chartHeight: number` - The histogram height.
-- `isSmoothedCurve: boolean` - Whether the curve is smoothed or not. Default value is : **true**.
-- `dateUnit` - The unit of data key when it represents time. Possible values are **second** and **millisecond**.
-- `barWeight` - The weight of bars width. Values are between 0 and 1.
-- `customizedCssClass: string` - Css class name.
-- `intervalSelection: SelectedInputValues` - The selected interval of values.
-- `ticksDateFormat: string` - The date format of ticks. Example : `%B %Y`. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
-- `valuesDateFormat: string` - The date format of the two labels below the chart. Example : `%A %d %B %Y`. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
-- `xTicks: number` - Number of ticks in the X axis.
-- `yTicks: number` - Number of ticks in the Y axis.
-- `xLabels: number` - Number of labels in the X axis.
-- `yLabels: number` - Number of labels in the Y axis.
-- `showXTicks: boolean` - Whether showing the x axis ticks or not. Default value is : **true**.
-- `showYTicks: boolean` - Whether showing the y axis ticks or not. Default value is : **true**.
-- `showXLabels: boolean` - Whether showing the x axis labels or not. Default value is : **true**.
-- `showYLabels: boolean` - Whether showing the y axis labels or not. Default value is : **true**.
+#### Inputs related to the chart's data :
+| Input           |  Type                                             | Description                 | Optional/ Mandatory |
+| --------------  |  ------------------------------------------------ | --------------------------- | ------------------- |
+| **data**        |  Please, check [data structure](#Data structure)  | Data to plot in the chart   | **Mandatory**       |
+| **dataType**    |  `DataType : time, numeric` (Enum) | To be set to **time** when x axis represents dates and to **numeric** otherwise | **Default :** `numeric` |
+| **dateUnit**    |  `DateUnit : second, millisecond` (Enum)          | The unity of data key when it represents **time** | **Default :** `numeric`      |
+| **dataUnit**    |  `string`                                         | Unity of data to add in the end of tooltip values  | **Optional**                 |
+| **valuesDateFormat** | `string` | The date format of the start/end values. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).                        | **Default :** `d3` default value (depends on the x axis scale)|
+
+#### Inputs related to data selection :
+| Input                     |  Type                                             | Description                                | Optional/ Mandatory   |
+| ------------------------- |  ------------------------------------------------ | ------------------------------------------ | --------------------- |
+| **isHistogramSelectable** |  `boolean`                                        | Whether the chart is selectable or not     | **Default :** `true`  |
+| **multiselectable**       |  `boolean`                                        | Whether the selection is multiple or not   | **Default :** `false` |
+| **intervalSelection**     |  `SelectedInputValues`                            | A single interval that selects data        | **Optional**          |
+| **intervalListSelection** |  `SelectedInputValues[]`                          | A list of intervals that select data       | **Optional**          |
+| **topOffsetRemoveInterval**  |  `numeric`                                     | Top position of the remove-selection-button| **Default :** `40`    |
+| **leftOffsetRemoveInterval** |  `numeric`                                     | Left position of the remove-selection-button | **Default :** `18`  |
+| **brushHandlesHeightWeight** |  `numeric`                                     | A 0 to 1 weight of the brush height. It controls the brush handles height.        | **Default :** `0.5`   |
+ 
+#### Inputs related to the chart's type and dimensions :
+
+| Input           |  Type                                                  | Description                 | Optional/ Mandatory |
+| --------------  |  ----------------------------------------------------- | --------------------------- | ------------------- |
+| **chartType**   | `ChartType : area, bars, oneDimension, swimlane` (Enum) | Chart's representation type | **Default :** `area`|
+| **chartTitle**  | `string`                                               | Chart's title               | **Optional**        |
+| **chartWidth**  | `numeric` | Chart's width. If not specified, the chart takes the component's container width   | **Optional**  |
+| **chartHeight** | `numeric` | Chart's height. If not specified, the chart takes the component's container height | **Optional**  |
+| **customizedCssClass** | `string` | Css class name to use to customize a specific `arlas-histogram` component  | **Optional**  |
+
+#### Inputs related to the chart axes :descriptionPosition :
+
+| Input               |  Type                           | Description                              | Optional/ Mandatory     |
+| ------------------- |  ------------------------------ | ---------------------------------------- | ----------------------- |
+| **xAxisPosition**   | `Position : top, bottom` (Enum)  | The xAxis positon : above or below the chart      | **Default :** `bottom`  |
+| **descriptionPosition** | `Position : top, bottom` (Enum)  | The start/end values positon : above or below the chart | **Default :** `bottom`  |
+| **xTicks**          | `numeric`                       | Number of ticks in the X axis            | **Default :** `5`       |
+| **yTicks**          | `numeric`                       | Number of ticks in the Y axis            | **Default :** `5`       |
+| **xLabels**         | `numeric`                       | Number of labels in the X axis           | **Default :** `5`       |
+| **yLabels**         | `numeric`                       | Number of labels in the Y axis           | **Default :** `5`       |
+| **showXTicks**      | `boolean`                       | Whether showing the x axis ticks or not  | **Default :** `true`    |
+| **showYTicks**      | `boolean`                       | Whether showing the y axis ticks or not  | **Default :** `true`    |
+| **showXLabels**     | `boolean`                       | Whether showing the x labels labels or not   | **Default :** `true`    |
+| **showYLabels**     | `boolean`                       | Whether showing the y labels ticks or not   | **Default :** `true`    |
+| **ticksDateFormat** | `string`                        | The date format of ticks. Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).                        | **Default :** `d3` default value (depends on the x axis scale) |
+
+#### Inputs related to **area** ChartType :  
+| Input               |  Type                           | Description                              | Optional/ Mandatory  |
+| ------------------- |  ------------------------------ | ---------------------------------------- | -------------------- |
+| **isSmoothedCurve** | `boolean`                       | Whether the curve is smoothed or not     | **Default** : `true` |
+
+#### Inputs related to **bars** ChartType :  
+| Input               |  Type                           | Description                              | Optional/ Mandatory  |
+| ------------------- |  ------------------------------ | ---------------------------------------- | -------------------- |
+| **barWeight**       | `numeric`                       | A 0 to 1 weight applied to bars width. 0 being excluded    | **Default** : `0.6`  |
+
+#### Inputs related to **oneDimension** ChartType :  
+| Input               |  Type                           | Description                              | Optional/ Mandatory  |
+| ------------------- |  ------------------------------ | ---------------------------------------- | -------------------- |
+| **paletteColors**   | `string` or `[number, number]`  | Either a hex string color or a color name (in English) or a saturation interval| **Optional**       |
+
+#### Inputs related to **swimlane** ChartType :  
+| Input               |  Type                           | Description                                 | Optional/ Mandatory  |
+| ------------------- |  ------------------------------ | ------------------------------------------- | -------------------- |
+| **paletteColors**   | `string` or `[number, number]`  | Either a hex string color or a color name (in English) or a saturation interval| **Optional**       |
+| **barWeight**       | `numeric`                       | A 0 to 1 weight applied to bars width. 0 being excluded  | **Default** : `0.6`  |
+| **swimlaneHeight**  | `numeric`                       | The height of a single lane. If not specified, a lane height is the chartHeight devided by the number of lanes  | **Optional**  |
+| **swimlaneBorderRadius** | `numeric`                  | The radius of swimlane bars borders          | **Default** : `3`    |
+| **swimlaneMode**    | `SwimlaneMode: fixedHeight, variableHeight, circle` | The swimlane representation mode | **Default** : `fixedHeight`  |
+| **swimLaneLabelsWidth** | `numeric`                   | The width of swimlane labels space              | **Default** : `20% of the chart width`  |
+
 
 ### Outputs : 
 
-- `valuesChangedEvent: EventEmitter<{startvalue: any, endvalue: any}>` - Brush values end event.
-
+> `valuesListChangedEvent: Subject<SelectedOutputValue>` : Emits the list of selected intervals.
+ 
 ### Data structure :
 
 - The input data should be an array of `{ key: number, value: number }` object. 
@@ -48,11 +92,13 @@ A generic component that plots data in a chart.
 
 Customize styles :
 
+```
 - Axes, ticks and labels :
   - To style the axes use `histogram__axis` css class.
   - To style the ticks use `histogram__ticks` css class.
   - To style the labels use `histogram__labels` css class.
-  
+```
+
 - Bars : 
   - To style the fully selected bars, use `histogram__chart--bar__fullyselected` css class.
   - To style the partly selected bars, use `histogram__chart--bar__partlyselected` css class.

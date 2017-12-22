@@ -58,41 +58,177 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private cluster: any;
   private showAllFeature = false;
 
+  /**
+   * @Input
+   * @description Style of the map
+   */
   @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
+  /**
+   * @Input
+   * @description Font name of clusters labels.
+   */
   @Input() public fontClusterlabel = 'Roboto Regular';
+  /**
+   * @Input
+   * @description Size of clusters labels
+   */
   @Input() public sizeClusterlabel = 12;
+  /**
+   * @Input
+   * @description Zoom of the map when it's initialized
+   */
   @Input() public initZoom = 2;
+  /**
+   * @Input
+   * @description Coordinates of the map's centre.
+   */
   @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
+  /**
+   * @Input
+   * @description Geometry type of clusters : Rectangles or Circles.
+   */
   @Input() public drawType: drawType;
+  /**
+   * @Input
+   * @description Path to the count property in clusters features.
+   */
   @Input() public countPath = 'point_count';
+  /**
+   * @Input
+   * @description Path to the normalized count property in clusters features.
+   */
   @Input() public countNormalizePath = 'point_count_normalize';
+  /**
+   * @Input
+   * @description Sets the style of geobox.
+   */
   @Input() public paintRuleGeoBox: Object = {};
+  /**
+   * @Input
+   * @description Sets the style of feature's fill.
+   * @example paintRuleGeoBox = {line-color: '#AAAAAA', line-opacity: 0.2}
+   */
   @Input() public paintRuleFeatureFill: Object = {};
+  /**
+   * @Input
+   * @description Sets the style of feature's lines.
+   */
   @Input() public paintRuleFeatureLine: Object = {};
+  /**
+   * @Input
+   * @description Sets the style of circular clusters.
+   */
   @Input() public paintRuleClusterCircle: Object = {};
+  /**
+   * @Input
+   * @description Sets the style of rectangular clusters lines.
+   */
   @Input() public paintRuleClusterLineRectangle: Object = {};
+  /**
+   * @Input
+   * @description Sets the style of rectangular clusters fill.
+   */
   @Input() public paintRuleClusterFillRectangle: Object = {};
+  /**
+   * @Input
+   * @description Sets the style of ponctual features.
+   */
   @Input() public paintRuleFeatureCirclePoint: Object = {};
+  /**
+   * @Input
+   * @description Margin applied to the map extent. Data is loaded in all this extent
+   */
   @Input() public margePanForLoad: number;
+  /**
+   * @Input
+   * @description Margin applied to the map extent.
+   * Before loading data, the components checks first if there are features  already loaded in this extent.
+   */
   @Input() public margePanForTest: number;
+  /**
+   * @Input
+   * @description The data displayed on map.
+   */
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
+  /**
+   * @Input
+   * @description The geobox feature.
+   */
   @Input() public geoboxdata: { type: string, features: Array<any> } = this.emptyData;
+  /**
+   * @Input
+   * @description the field name of ids.
+   */
   @Input() public idFeatureField: string;
+  /**
+   * @Input
+   * @description Bounds that the view map fits. It's an array of two corners. Each corner is an lat-long position :
+   * For example : boundsToFit = [[30.51, -54.3],[30.57, -54.2]]
+   */
   @Input() public boundsToFit: Array<Array<number>>;
+  /**
+   * @Input
+   * @description The padding added in the top-left and bottom-right corners of a map container that shouldn't be accounted
+   * for when setting the view to fit bounds.
+   */
   @Input() public fitBoundsOffSet: Array<number> = [0, 0];
+  /**
+   * @Input
+   * @description The maximum zoom level so that the bounds fit the map view.
+   */
   @Input() public fitBoundsMaxZoom = 22;
+  /**
+   * @Input
+   * @description Feature to highlight.
+   */
   @Input() public featureToHightLight: {
     isleaving: boolean,
     elementidentifier: ElementIdentifier
   };
+  /**
+   * @Input
+   * @description List of feature to select.
+   */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
+  /**
+   * @Input
+   * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
+   */
   @Input() public zoomToPrecisionCluster: Object;
+  /**
+   * @Input
+   * @description A couple of (max precision, max geohash-level) above which data is displayed as features
+   */
   @Input() private maxPrecision: number;
+  /**
+   * @Output
+   * @description Emits the event of whether redraw the tile.
+   */
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
+  /**
+   * @Output
+   * @description Emits the event of removing the geobox.
+   */
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
+  /**
+   * @Output
+   * @description Emits an event at the end of drawing a geobox.
+   */
   @Output() public onChangeBbox: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
+  /**
+   * @Output
+   * @description Emits the event of moving the map.
+   */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
+  /**
+   * @Output
+   * @description Emits the event of clicking on a feature.
+   */
   @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  /**
+   * @Output
+   * @description Emits the event of hovering feature.
+   */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
   constructor(private http: Http, private differs: IterableDiffers) {

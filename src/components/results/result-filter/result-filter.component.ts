@@ -11,11 +11,29 @@ import { Subject } from 'rxjs/Subject';
 })
 export class ResultFilterComponent implements OnInit, OnChanges {
 
-
+  /**
+   * @Input
+   * @description The column to which the filter is applied.
+   */
   @Input() public column: Column;
+  /**
+   * @Input
+   * @description A map of columns to filter : key = column (or field) name & value = field value.
+   * This components sets directly this map.
+   */
   @Input() public filtersMap: Map<string, string | number | Date>;
-  @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+  /**
+   * @Input
+   * @description The filter value.
+   */
   @Input() public inputValue: string;
+
+  /**
+   * @Input
+   * @description Emits the map of filtered columns and the filters values (fieldName-fieldValue map).
+   */
+
+  @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   private iterableInputDiffer;
   private iterableColumnsDiffer;
