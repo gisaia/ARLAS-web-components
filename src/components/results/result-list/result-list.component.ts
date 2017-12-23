@@ -68,10 +68,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public tableWidth: number = null;
 
-   /**
-   * @Input
-   * @description When the `last - n` line is reached, more data is requested.
-   */
+  /**
+  * @Input
+  * @description When the `last - n` line is reached, more data is requested.
+  */
   @Input() public nLastLines = 5;
 
   /**
@@ -124,12 +124,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Input() public defautMode: ModeEnum;
 
   @Input() public isBodyHidden: boolean;
-
   /**
    * @Input
    * @description Whether the sort on the geometry is activated.
    */
-  
   @Input() public isGeoSortActived = false;
   /**
    * @Input
