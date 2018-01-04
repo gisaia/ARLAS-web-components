@@ -30,7 +30,9 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
       this.addLabels(swimlanesMapData);
       this.plotSwimlane(swimlanesMapData);
       this.showTooltipsForSwimlane(swimlanesMapData);
-      this.addSelectionBrush(this.swimlaneAxes);
+      if (this.histogramParams.isHistogramSelectable) {
+        this.addSelectionBrush(this.swimlaneAxes);
+      }
       this.plottingCount++;
     } else {
       this.histogramParams.startValue = '';
