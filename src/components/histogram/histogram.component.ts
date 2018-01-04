@@ -264,8 +264,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.histogram.histogramParams.hasDataChanged = true;
       this.plotHistogram(this.data);
       this.histogram.histogramParams.hasDataChanged = false;
-
-
     }
 
     if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined && this.isHistogramSelectable) {

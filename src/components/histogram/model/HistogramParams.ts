@@ -88,5 +88,4 @@ export class HistogramParams {
 
   // ######################### Parameters set in the component ########################
   public hasDataChanged = false;
-
 }

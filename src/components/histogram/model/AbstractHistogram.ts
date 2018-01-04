@@ -34,7 +34,6 @@ export abstract class AbstractHistogram {
   protected selectedBars = new Set<number>();
   protected fromSetInterval = false;
 
-
   /**Axes && ticks */
   protected xTicksAxis;
   protected xLabelsAxis;
@@ -109,8 +108,8 @@ export abstract class AbstractHistogram {
     this.histogramParams.intervalSelectedMap.clear();
     this.histogramParams.intervalListSelection.forEach((v) => {
       if (this.histogramParams.dataType === DataType.time) {
-        v.startvalue = new Date(v.startvalue.toString());
-        v.endvalue = new Date(v.endvalue.toString());
+        v.startvalue = new Date(+v.startvalue);
+        v.endvalue = new Date(+v.endvalue);
       }
       const finalPosition = this.getIntervalMiddlePositon(axes, +v.startvalue, +v.endvalue);
       let guid;
@@ -418,7 +417,7 @@ export abstract class AbstractHistogram {
       if (selection !== null) {
         const newStartValue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
         const newEndvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-        if ((!this.histogramParams.fromSetInterval) && this.isBrushing) {
+        if ((!this.fromSetInterval) && this.isBrushing) {
           this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
           this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.histogramParams.startValue = HistogramUtils.toString(this.selectionInterval.startvalue, this.histogramParams.chartType,
@@ -428,8 +427,9 @@ export abstract class AbstractHistogram {
           const selectionListInterval = [];
           this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
           this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
-          if (!HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain)) {
+          if (!HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain) && this.hasSelectionExceededData) {
             this.plot(this.histogramParams.data);
+            this.hasSelectionExceededData = false;
           }
         }
         this.histogramParams.showTitle = true;

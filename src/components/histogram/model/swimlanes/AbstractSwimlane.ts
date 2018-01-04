@@ -238,9 +238,10 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     this.context
       .on('mousemove', () => {
         let i = 0;
-        let aBucketIsEncountred = false
+        let aBucketIsEncountred = false;
         swimlaneMapData.forEach((swimlane, key) => {
-          const IsBucketsEncountred  = this.setTooltipPositionForSwimlane(swimlane, key, i, swimlaneMapData.size, <d3.ContainerElement>this.context.node());
+          const IsBucketsEncountred  = this.setTooltipPositionForSwimlane(swimlane, key, i, swimlaneMapData.size,
+             <d3.ContainerElement>this.context.node());
           if (IsBucketsEncountred) {
             aBucketIsEncountred = true;
           }
@@ -258,7 +259,6 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
           this.histogramParams.swimlaneTooltipsMap.set(key, hiddenTooltip);
         });
         this.verticalTooltipLine.style('display', 'none');
-
       });
   }
 
