@@ -32,6 +32,8 @@ export abstract class AbstractHistogram {
   protected isBrushing = false;
   protected hasSelectionExceededData = null;
   protected selectedBars = new Set<number>();
+  protected fromSetInterval = false;
+
 
   /**Axes && ticks */
   protected xTicksAxis;
@@ -56,7 +58,7 @@ export abstract class AbstractHistogram {
   public setSelectedInterval(selectedInputValues: SelectedInputValues): void {
     const axes = this.getAxes();
     this.checkSelectedValuesValidity(selectedInputValues);
-    this.histogramParams.fromSetInterval = true;
+    this.fromSetInterval = true;
     const parsedSelectedValues = HistogramUtils.parseSelectedValues(selectedInputValues,
       this.histogramParams.dataType, this.histogramParams.dateUnit);
     if (parsedSelectedValues.startvalue !== this.selectionInterval.startvalue ||
@@ -85,7 +87,7 @@ export abstract class AbstractHistogram {
         }
       }
     }
-    this.histogramParams.fromSetInterval = false;
+    this.fromSetInterval = false;
   }
 
   public removeSelectInterval(id: string) {
@@ -166,12 +168,11 @@ export abstract class AbstractHistogram {
   }
 
   protected initializeDescriptionValues(start: Date | number, end: Date | number) {
-    if (this.histogramParams.startValue == null || this.histogramParams.startValue === '') {
+    if (!this.fromSetInterval && this.histogramParams.hasDataChanged) {
       this.histogramParams.startValue = HistogramUtils.toString(start, this.histogramParams.chartType,
         this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
       this.selectionInterval.startvalue = start;
-    }
-    if (this.histogramParams.endValue == null || this.histogramParams.endValue === '') {
+
       this.histogramParams.endValue = HistogramUtils.toString(end, this.histogramParams.chartType,
         this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
       this.selectionInterval.endvalue = end;
