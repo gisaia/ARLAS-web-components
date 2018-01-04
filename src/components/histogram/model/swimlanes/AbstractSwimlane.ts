@@ -30,7 +30,9 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
       this.addLabels(swimlanesMapData);
       this.plotSwimlane(swimlanesMapData);
       this.showTooltipsForSwimlane(swimlanesMapData);
-      this.addSelectionBrush(this.swimlaneAxes);
+      if (this.histogramParams.isHistogramSelectable) {
+        this.addSelectionBrush(this.swimlaneAxes);
+      }
       this.plottingCount++;
     } else {
       this.histogramParams.startValue = '';
@@ -155,13 +157,19 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
   protected createSwimlaneAxes(data: Map<string, Array<HistogramData>>): void {
     const xDomain = (this.getXDomainScale()).range([0, this.chartDimensions.width - this.histogramParams.swimLaneLabelsWidth]);
     let bucketKey = +this.swimlaneIntervalBorders[0];
-    this.setDataInterval(data);
+    this.setSwimlaneDataInterval(data);
     const swimlaneArray = new Array<any>();
     while (bucketKey <= (+this.swimlaneIntervalBorders[1])) {
       swimlaneArray.push({ key: bucketKey, value: 0 });
       bucketKey = bucketKey + this.dataInterval;
     }
     this.dataDomain = swimlaneArray;
+    this.histogramParams.dataLength = this.dataDomain.length;
+    if (this.histogramParams.dataLength === 1) {
+      this.histogramParams.dataLength++;
+      this.histogramParams.barWeight = 0.05;
+    }
+
     // The xDomain extent includes data domain and selected values
     const xDomainExtent = this.getXDomainExtent(this.dataDomain,
       this.selectionInterval.startvalue, this.selectionInterval.endvalue);
@@ -230,10 +238,19 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     this.context
       .on('mousemove', () => {
         let i = 0;
+        let aBucketIsEncountred = false;
         swimlaneMapData.forEach((swimlane, key) => {
-          this.setTooltipPositionForSwimlane(swimlane, key, i, swimlaneMapData.size, <d3.ContainerElement>this.context.node());
+          const IsBucketsEncountred  = this.setTooltipPositionForSwimlane(swimlane, key, i, swimlaneMapData.size,
+             <d3.ContainerElement>this.context.node());
+          if (IsBucketsEncountred) {
+            aBucketIsEncountred = true;
+          }
           i++;
         });
+        if (!aBucketIsEncountred) {
+          this.histogramParams.swimlaneXTooltip.isShown = false;
+          this.verticalTooltipLine.style('display', 'none');
+        }
       })
       .on('mouseout', () => {
         this.histogramParams.swimlaneTooltipsMap.forEach((tooltipPositon, key) => {
@@ -246,10 +263,11 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
   }
 
   protected setTooltipPositionForSwimlane(data: Array<HistogramData>, key: string, indexOfKey: number, numberOfSwimlane: number,
-    container: d3.ContainerElement): void {
+    container: d3.ContainerElement): boolean {
     const xy = d3.mouse(container);
     let dx, dy, startPosition, endPosition, middlePosition;
     const tooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
+    let aBucketIsEncountred = false;
     for (let i = 0; i < data.length; i++) {
       startPosition = this.histogramParams.swimLaneLabelsWidth + this.swimlaneAxes.xDomain(data[i].key);
       endPosition = startPosition + this.swimlaneAxes.stepWidth * this.histogramParams.barWeight;
@@ -267,6 +285,7 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
         tooltip.yContent = data[i].value.toString();
         this.histogramParams.swimlaneXTooltip = tooltip;
         this.histogramParams.swimlaneTooltipsMap.set(key, tooltip);
+        aBucketIsEncountred = true;
         break;
       } else {
         if (this.isBrushing) {
@@ -276,6 +295,7 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
         this.histogramParams.swimlaneTooltipsMap.set(key, hiddenTooltip);
       }
     }
+    return aBucketIsEncountred;
   }
 
   protected setTooltipXposition(xPosition: number, tooltip: Tooltip): number {
@@ -305,20 +325,18 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     });
   }
 
-  protected setDataInterval(swimlaneData: Map<string, Array<HistogramData>>): void {
+  protected setSwimlaneDataInterval(swimlaneData: Map<string, Array<HistogramData>>): void {
     const keys = swimlaneData.keys();
     for (let i = 0; i < swimlaneData.size; i++) {
       const key = keys.next().value;
       if (swimlaneData.get(key).length > 1) {
         this.swimlaneHasMoreThanTwoBuckets = true;
-        this.histogramParams.dataLength = swimlaneData.get(key).length;
         this.histogramParams.displaySvg = 'block';
         this.dataInterval =  (+swimlaneData.get(key)[1].key - +swimlaneData.get(key)[0].key);
         break;
       }
     }
     if (!this.swimlaneHasMoreThanTwoBuckets) {
-      this.histogramParams.dataLength = 3;
       this.histogramParams.displaySvg = 'block';
       // all the lanes has 1 bucket maximum
       let previousKeyPosition = null;
@@ -333,6 +351,9 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
       });
       this.dataInterval = (interval === 0 || interval === Number.MAX_VALUE) ? 1 : interval;
     }
+  }
+
+  protected setDataInterval(swimlaneData: Array<HistogramData> | Map<string, Array<HistogramData>>): void {
   }
 
   protected setSwimlaneMaxValue(swimlaneDataMap: Map<string, Array<{ key: number, value: number }>>) {

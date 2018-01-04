@@ -20,7 +20,9 @@ export abstract class AbstractChart extends AbstractHistogram {
       this.drawChartAxes(this.chartAxes, 0);
       this.plotChart(data);
       this.showTooltips(data);
-      this.addSelectionBrush(this.chartAxes, 0);
+      if (this.histogramParams.isHistogramSelectable) {
+        this.addSelectionBrush(this.chartAxes, 0);
+      }
       this.plottingCount++;
     } else {
       this.histogramParams.startValue = '';

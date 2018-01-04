@@ -261,17 +261,19 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
     if (changes.data && this.data !== undefined && this.histogram !== undefined) {
       this.histogram.histogramParams.data = this.data;
+      this.histogram.histogramParams.hasDataChanged = true;
       this.plotHistogram(this.data);
+      this.histogram.histogramParams.hasDataChanged = false;
     }
 
-    if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined) {
+    if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined && this.isHistogramSelectable) {
       this.histogram.histogramParams.intervalSelection = this.intervalSelection;
       if (this.histogram.histogramParams.dataLength > 0) {
         this.histogram.setSelectedInterval(this.intervalSelection);
       }
     }
 
-    if (changes.intervalListSelection && this.histogram !== undefined) {
+    if (changes.intervalListSelection && this.isHistogramSelectable && this.histogram !== undefined) {
       if (changes.intervalListSelection.currentValue) {
         this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
           this.histogram.redrawSelectedIntervals();
@@ -325,6 +327,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.el = this.el;
     this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
     this.histogram.histogramParams.intervalSelection = this.intervalSelection;
+    this.histogram.histogramParams.isHistogramSelectable = this.isHistogramSelectable;
     this.histogram.histogramParams.isSmoothedCurve = this.isSmoothedCurve;
     this.histogram.histogramParams.multiselectable = this.multiselectable;
     this.histogram.histogramParams.paletteColors = this.paletteColors;

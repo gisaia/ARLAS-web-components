@@ -49,6 +49,7 @@ export class HistogramParams {
   public intervalSelection: SelectedInputValues;
   public intervalListSelection: SelectedInputValues[];
   public topOffsetRemoveInterval: number;
+  public isHistogramSelectable;
 
   /** Swimlane */
   public swimlaneBorderRadius;
@@ -76,7 +77,6 @@ export class HistogramParams {
   public startValue: string = null;
   public endValue: string = null;
   public showTitle = true;
-  public fromSetInterval = false;
 
   public intervalSelectedMap: Map<string, { values: SelectedOutputValues, x_position: number }>
     = new Map<string, { values: SelectedOutputValues, x_position: number }>();
@@ -86,4 +86,6 @@ export class HistogramParams {
   public swimlaneXTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
   public swimlaneTooltipsMap = new Map<string, Tooltip>();
 
+  // ######################### Parameters set in the component ########################
+  public hasDataChanged = false;
 }

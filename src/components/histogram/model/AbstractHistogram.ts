@@ -32,6 +32,7 @@ export abstract class AbstractHistogram {
   protected isBrushing = false;
   protected hasSelectionExceededData = null;
   protected selectedBars = new Set<number>();
+  protected fromSetInterval = false;
 
   /**Axes && ticks */
   protected xTicksAxis;
@@ -56,7 +57,7 @@ export abstract class AbstractHistogram {
   public setSelectedInterval(selectedInputValues: SelectedInputValues): void {
     const axes = this.getAxes();
     this.checkSelectedValuesValidity(selectedInputValues);
-    this.histogramParams.fromSetInterval = true;
+    this.fromSetInterval = true;
     const parsedSelectedValues = HistogramUtils.parseSelectedValues(selectedInputValues,
       this.histogramParams.dataType, this.histogramParams.dateUnit);
     if (parsedSelectedValues.startvalue !== this.selectionInterval.startvalue ||
@@ -85,7 +86,7 @@ export abstract class AbstractHistogram {
         }
       }
     }
-    this.histogramParams.fromSetInterval = false;
+    this.fromSetInterval = false;
   }
 
   public removeSelectInterval(id: string) {
@@ -106,26 +107,29 @@ export abstract class AbstractHistogram {
     this.histogramParams.selectionListIntervalId = [];
     this.histogramParams.intervalSelectedMap.clear();
     this.histogramParams.intervalListSelection.forEach((v) => {
-    const finalPosition = this.getIntervalMiddlePositon(axes, +v.startvalue, +v.endvalue);
-    let guid;
-    if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
-      guid = (<Date>v.startvalue).getTime().toString() + (<Date>v.endvalue).getTime().toString();
-    } else {
-      guid = v.startvalue.toString() + v.endvalue.toString();
-    }
-    this.histogramParams.intervalSelectedMap.set(guid,
-      {
-        values: { startvalue: v.startvalue, endvalue: v.endvalue },
-        x_position: finalPosition
-      });
-    if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
-      this.histogramParams.selectionListIntervalId.push(guid);
-    }
+      if (this.histogramParams.dataType === DataType.time) {
+        v.startvalue = new Date(+v.startvalue);
+        v.endvalue = new Date(+v.endvalue);
+      }
+      const finalPosition = this.getIntervalMiddlePositon(axes, +v.startvalue, +v.endvalue);
+      let guid;
+      if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
+        guid = (<Date>v.startvalue).getTime().toString() + (<Date>v.endvalue).getTime().toString();
+      } else {
+        guid = v.startvalue.toString() + v.endvalue.toString();
+      }
+      this.histogramParams.intervalSelectedMap.set(guid,
+        {
+          values: { startvalue: v.startvalue, endvalue: v.endvalue },
+          x_position: finalPosition
+        });
+      if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
+        this.histogramParams.selectionListIntervalId.push(guid);
+      }
     });
     if (this.barsContext !== undefined) {
       this.applyStyleOnSelection();
     }
-
   }
 
   public overRemove(e) {
@@ -166,12 +170,11 @@ export abstract class AbstractHistogram {
   }
 
   protected initializeDescriptionValues(start: Date | number, end: Date | number) {
-    if (this.histogramParams.startValue == null || this.histogramParams.startValue === '') {
+    if (!this.fromSetInterval && this.histogramParams.hasDataChanged) {
       this.histogramParams.startValue = HistogramUtils.toString(start, this.histogramParams.chartType,
         this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
       this.selectionInterval.startvalue = start;
-    }
-    if (this.histogramParams.endValue == null || this.histogramParams.endValue === '') {
+
       this.histogramParams.endValue = HistogramUtils.toString(end, this.histogramParams.chartType,
         this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
       this.selectionInterval.endvalue = end;
@@ -414,7 +417,7 @@ export abstract class AbstractHistogram {
       if (selection !== null) {
         const newStartValue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
         const newEndvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-        if ((!this.histogramParams.fromSetInterval) && this.isBrushing) {
+        if ((!this.fromSetInterval) && this.isBrushing) {
           this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
           this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.histogramParams.startValue = HistogramUtils.toString(this.selectionInterval.startvalue, this.histogramParams.chartType,
@@ -424,8 +427,9 @@ export abstract class AbstractHistogram {
           const selectionListInterval = [];
           this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
           this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
-          if (!HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain)) {
+          if (!HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain) && this.hasSelectionExceededData) {
             this.plot(this.histogramParams.data);
+            this.hasSelectionExceededData = false;
           }
         }
         this.histogramParams.showTitle = true;
