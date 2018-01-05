@@ -219,6 +219,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    */
   @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
 
+  /**
+   * @Output
+   * @description Emits the hovered bucket key (key as in HistogramData).
+   */
+  @Output() public hoveredBucketEvent: Subject<Date | number> = new Subject<Date | number>();
+
   public histogram: AbstractHistogram;
   public ChartType = ChartType;
   public Array = Array;
@@ -330,6 +336,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.dataUnit = this.dataUnit;
     this.histogram.histogramParams.dateUnit = this.dateUnit;
     this.histogram.histogramParams.el = this.el;
+    this.histogram.histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
     this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
     this.histogram.histogramParams.intervalSelection = this.intervalSelection;
     this.histogram.histogramParams.isHistogramSelectable = this.isHistogramSelectable;

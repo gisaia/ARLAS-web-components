@@ -107,7 +107,14 @@ export abstract class AbstractChart extends AbstractHistogram {
   protected showTooltips(data: Array<HistogramData>): void {
     if (this.histogramParams.dataUnit !== '') { this.histogramParams.dataUnit = '(' + this.histogramParams.dataUnit + ')'; }
     this.context
-      .on('mousemove', () => this.setTooltipPositions(data, <d3.ContainerElement>this.context.node()))
+      .on('mousemove', () => {
+        const previousHoveredBucketKey = this.hoveredBucketKey;
+        this.hoveredBucketKey = null;
+        this.setTooltipPositions(data, <d3.ContainerElement>this.context.node());
+        if (this.hoveredBucketKey !== previousHoveredBucketKey && this.hoveredBucketKey !== null) {
+          this.histogramParams.hoveredBucketEvent.next(this.hoveredBucketKey);
+        }
+      })
       .on('mouseout', () => this.histogramParams.tooltip.isShown = false);
   }
 
@@ -124,6 +131,7 @@ export abstract class AbstractChart extends AbstractHistogram {
       dx = this.setTooltipXposition(xy[0]);
       dy = this.setTooltipYposition(xy[1]);
       if (xy[0] >= startPosition && xy[0] < endPosition && !this.isBrushing) {
+        this.hoveredBucketKey = data[i].key;
         if (data[i].key >= this.selectionInterval.startvalue && data[i].key <= this.selectionInterval.endvalue) {
           if (xy[1] < this.chartAxes.yDomain(data[i].value) && this.histogramParams.multiselectable) {
             this.histogramParams.tooltip.xContent = 'Double click';

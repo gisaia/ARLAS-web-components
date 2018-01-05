@@ -13,6 +13,7 @@ export class HistogramParams {
   public dataUnit: string;
   public dateUnit: DateUnit;
   public chartType: ChartType;
+  public hoveredBucketEvent: Subject<Date | number>;
 
 
   /** Dimensions */

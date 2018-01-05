@@ -13,6 +13,7 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
   protected swimlaneContextList = new Array<any>();
   protected verticalTooltipLine;
   protected labelsContext;
+  protected aBucketIsEncountred = false;
 
   public plot(inputData: Map<string, Array<{ key: number, value: number }>>) {
     super.plot(inputData);
@@ -238,18 +239,20 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     this.context
       .on('mousemove', () => {
         let i = 0;
-        let aBucketIsEncountred = false;
+        this.aBucketIsEncountred = false;
+        const previousHoveredBucketKey = this.hoveredBucketKey;
+        this.hoveredBucketKey = null;
         swimlaneMapData.forEach((swimlane, key) => {
-          const IsBucketsEncountred  = this.setTooltipPositionForSwimlane(swimlane, key, i, swimlaneMapData.size,
-             <d3.ContainerElement>this.context.node());
-          if (IsBucketsEncountred) {
-            aBucketIsEncountred = true;
-          }
+          this.setTooltipPositionForSwimlane(swimlane, key, i, swimlaneMapData.size, <d3.ContainerElement>this.context.node());
           i++;
         });
-        if (!aBucketIsEncountred) {
+        if (!this.aBucketIsEncountred) {
           this.histogramParams.swimlaneXTooltip.isShown = false;
           this.verticalTooltipLine.style('display', 'none');
+        } else {
+          if (this.hoveredBucketKey !== previousHoveredBucketKey && this.hoveredBucketKey !== null) {
+            this.histogramParams.hoveredBucketEvent.next(this.hoveredBucketKey);
+          }
         }
       })
       .on('mouseout', () => {
@@ -263,11 +266,10 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
   }
 
   protected setTooltipPositionForSwimlane(data: Array<HistogramData>, key: string, indexOfKey: number, numberOfSwimlane: number,
-    container: d3.ContainerElement): boolean {
+    container: d3.ContainerElement): void {
     const xy = d3.mouse(container);
     let dx, dy, startPosition, endPosition, middlePosition;
     const tooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
-    let aBucketIsEncountred = false;
     for (let i = 0; i < data.length; i++) {
       startPosition = this.histogramParams.swimLaneLabelsWidth + this.swimlaneAxes.xDomain(data[i].key);
       endPosition = startPosition + this.swimlaneAxes.stepWidth * this.histogramParams.barWeight;
@@ -285,7 +287,8 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
         tooltip.yContent = data[i].value.toString();
         this.histogramParams.swimlaneXTooltip = tooltip;
         this.histogramParams.swimlaneTooltipsMap.set(key, tooltip);
-        aBucketIsEncountred = true;
+        this.aBucketIsEncountred = true;
+        this.hoveredBucketKey = data[i].key;
         break;
       } else {
         if (this.isBrushing) {
@@ -295,7 +298,6 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
         this.histogramParams.swimlaneTooltipsMap.set(key, hiddenTooltip);
       }
     }
-    return aBucketIsEncountred;
   }
 
   protected setTooltipXposition(xPosition: number, tooltip: Tooltip): number {

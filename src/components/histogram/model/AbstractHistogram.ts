@@ -41,6 +41,8 @@ export abstract class AbstractHistogram {
   protected yTicksAxis;
   protected yLabelsAxis;
 
+  protected hoveredBucketKey: Date | number;
+
   protected yDimension = 1;
   protected plottingCount = 0;
   protected minusSign = 1;
