@@ -94,6 +94,21 @@
   display: none;
 }
 
+.histogram__horizontal-axis__text {
+  display: none;
+}
+
+.histogram__horizontal-axis__line /* public */ /* Sets the horizontal lines style.*/
+{
+  stroke-opacity: 0.5;
+  stroke-width: 0.3px;
+  stroke-dasharray: 5
+}
+
+.histogram__horizontal-axis {
+  stroke-opacity: 0;
+}
+
 .histogram__only-axis text {
   display: none;
 }

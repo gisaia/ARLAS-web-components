@@ -28,6 +28,7 @@ export class HistogramParams {
   public showYTicks: boolean;
   public showXLabels: boolean;
   public showYLabels: boolean;
+  public showHorizontalLines: boolean;
   public ticksDateFormat: string;
   public xAxisPosition: Position;
 

@@ -94,6 +94,14 @@ export abstract class AbstractChart extends AbstractHistogram {
     if (!this.histogramParams.showYLabels) {
       this.yLabelsAxis.attr('class', 'histogram__labels-axis__hidden');
     }
+
+    if (this.histogramParams.showHorizontalLines) {
+      const horizontalAxes  = this.context.append('g')
+        .attr('class', 'histogram__horizontal-axis')
+        .call(this.chartAxes.yTicksAxis.tickSize(-this.chartDimensions.width));
+      horizontalAxes.selectAll('line').attr('class', 'histogram__horizontal-axis__line');
+      horizontalAxes.selectAll('text').attr('class', 'histogram__horizontal-axis__text');
+    }
   }
 
   protected showTooltips(data: Array<HistogramData>): void {

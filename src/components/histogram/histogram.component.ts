@@ -168,6 +168,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public showYLabels = true;
   /**
    * @Input
+   * @description Whether showing the horizontal dashed lines.
+   */
+  @Input() public showHorizontalLines = true;
+  /**
+   * @Input
    * @description The date format of ticks.
    * Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
    */
@@ -331,6 +336,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.isSmoothedCurve = this.isSmoothedCurve;
     this.histogram.histogramParams.multiselectable = this.multiselectable;
     this.histogram.histogramParams.paletteColors = this.paletteColors;
+    this.histogram.histogramParams.showHorizontalLines = this.showHorizontalLines;
     this.histogram.histogramParams.showXLabels = this.showXLabels;
     this.histogram.histogramParams.showXTicks = this.showXTicks;
     this.histogram.histogramParams.showYLabels = this.showYLabels;
