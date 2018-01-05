@@ -97,6 +97,7 @@ export abstract class AbstractHistogram {
     if (index > -1) {
       this.histogramParams.selectionListIntervalId.splice(index, 1);
     }
+    this.updateSelectionStyle(id);
     this.histogramParams.intervalSelectedMap.delete(id);
     const selectionListInterval = [];
     this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
@@ -169,6 +170,17 @@ export abstract class AbstractHistogram {
     if (this.histogramParams.xAxisPosition === Position.top) {
       this.minusSign = -1;
     }
+  }
+
+  protected updateSelectionStyle(id: string) {
+    const startEndValues = this.histogramParams.intervalSelectedMap.get(id);
+    this.dataDomain.forEach(bar => {
+      if (+bar.key >= +startEndValues.values.startvalue &&
+        +bar.key + this.histogramParams.barWeight * this.dataInterval <= +startEndValues.values.endvalue) {
+        this.selectedBars.delete(+bar.key);
+      }
+    });
+    this.applyStyleOnSelection();
   }
 
   protected initializeDescriptionValues(start: Date | number, end: Date | number) {
