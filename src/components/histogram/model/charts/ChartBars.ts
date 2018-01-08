@@ -88,7 +88,11 @@ export class ChartBars extends AbstractChart {
       return (this.chartDimensions.width) - 2 * xPosition + 25;
     } else {
       this.histogramParams.tooltip.isRightSide = false;
-      return 80;
+      if (!this.histogramParams.showYLabels) {
+        return 30;
+      } else {
+        return 80;
+      }
     }
   }
 
