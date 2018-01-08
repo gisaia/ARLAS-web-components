@@ -415,9 +415,10 @@ export abstract class AbstractHistogram {
     this.selectionBrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
+        this.isBrushing = true;
         const newStartValue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
         const newEndvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-        if ((!this.fromSetInterval) && this.isBrushing) {
+        if (!this.fromSetInterval) {
           this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
           this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.histogramParams.startValue = HistogramUtils.toString(this.selectionInterval.startvalue, this.histogramParams.chartType,
