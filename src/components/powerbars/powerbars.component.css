@@ -15,32 +15,10 @@
   padding-top:0;
 }
 
-.powerbar__powerbar--progression--measure {
-  float: left;
-  border-right: 1px solid black;
-  width: 20%;
-  height: 100%;
-}
-.powerbars__title {
-  padding: 3px;
-  text-align: center;
-  color: rgb(4, 55, 63);
-  font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.8em;
-  border-bottom: 1px solid rgb(209, 209, 209);
-}
-
-.powerbars__clearselection{
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  float: right;
-  cursor: pointer;
-  color: rgb(192, 192, 192)
-}
-
-.powerbars__powerbar--neutral-state, .powerbars__powerbar--selected-bar,
-.powerbars__powerbar--unselected-bar {
+.powerbars__powerbar--neutral-state, /*public*/ /*Sets all powerbars containers when none of them is selected. A powerbar container's width is 100% of the component's container.*/
+.powerbars__powerbar--selected-bar, /*public*/ /*Sets selected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+.powerbars__powerbar--unselected-bar /*public*/ /*Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+{
   margin-top: 3px;
 }
 
@@ -50,13 +28,16 @@
   cursor: pointer;
 }
 
-.powerbar__powerbar--progression--neutral-state, .powerbar__powerbar--progression--selected-bar,
-.powerbar__powerbar--progression--unselected-bar {
+.powerbar__powerbar--progression--neutral-state, /*public*/ /*Style of all powerbars when none of them is selected.*/
+.powerbar__powerbar--progression--selected-bar, /*public*/ /*Style of selected powerbars.*/
+.powerbar__powerbar--progression--unselected-bar /*public*/ /*Style of unselected powerbars.*/
+{
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.75em;
 }
 
-.powerbar__powerbar--term {
+.powerbar__powerbar--term /*public*/ /*Style of terms.*/
+{
   padding-left: 3px;
 }
 

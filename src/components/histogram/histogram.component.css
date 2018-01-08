@@ -11,7 +11,8 @@
     fill: black;
 }
 
-.histogram__description {
+.histogram__description /*public*/ /*Sets the description part that includes title and start/end values*/
+{
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 0.9em;
     line-height: 1.3;
@@ -24,7 +25,8 @@
     display: flex;
 }
 
-.histogram__description__title{
+.histogram__description__title /*public*/ /*Sets title's style*/
+{
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 1.0em;
     flex: 1 1 100%;
@@ -35,16 +37,42 @@
     z-index: 8000;
 }
 
-.histogram__description__startvalue {
+.histogram__description__startvalue /*public*/ /*Sets startvalue part style*/
+{
     flex: 1 1 100%;
     max-width: 30%;
 }
 
-.histogram__description__endvalue {
+.histogram__description__endvalue /*public*/ /*Sets endvalue part style*/{
     flex: 1 1 100%;
     max-width: 30%;
     text-align: right;
 }
+
+.histogram__description__startvalue--background, /*public*/ /*Sets startvalue background style*/
+.histogram__description__endvalue--background  /*public*/ /*Sets endvalue background style*/
+{
+    background: rgba(220, 220, 220, 0.8);
+}
+
+.histogram__ticks /*public*/ /*Sets the ticks style*/
+{
+  stroke: #757575;
+  stroke-width: 1px;
+}
+
+.histogram__axis /*public*/ /*Sets the axes style*/
+{
+  stroke: #757575;
+  stroke-width: 1px;
+}
+
+.tick text /*public*/ /*Sets the labels style*/
+{
+  fill: #BDBDBD;
+  font-size: 0.9em;
+}
+
 
 .histogram__no-chart__key, .histogram__no-chart__value {
   display: block;
@@ -52,11 +80,8 @@
   padding: 5px;
 }
 
-.histogram__description__startvalue--background, .histogram__description__endvalue--background {
-    background: rgba(220, 220, 220, 0.8);
-}
-
-.histogram__tooltip{
+.histogram__tooltip /*public*/ /*Sets the tooltip style*/
+{
   position: absolute;
   text-align: left;
   padding: 2px;
@@ -68,8 +93,10 @@
   color: white;
   z-index: 20000;
 }
-.histogram__remove{
-    position: absolute;
+
+.histogram__remove /*public*/ /*Sets the remove tooltip's style*/
+{
+  position: absolute;
   text-align: left;
   padding: 2px;
   font: 12px sans-serif;
@@ -82,12 +109,6 @@
 
 .histogram__tooltip-content {
   display: block;
-}
-
-.histogram__tooltip__circle{
-  fill: darkslategrey;
-  opacity: 0;
-  border-radius: 5px;
 }
 
 .histogram__ticks-axis text {
@@ -137,14 +158,62 @@
   display: none;
 }
 
-.histogram__swimlane-height--tick {
+.brush .selection /*public*/ /*Sets the brush selection style*/
+{
+  opacity: 0.6;
+}
+
+.histogram__brush--handles /*public*/ /*Sets the brush handles style*/
+{
+  stroke: #868686;
+  fill: #868686;
+  opacity: 1;
+  z-index: 30000;
+}
+
+.histogram__chart--area /*public*/ /*Sets the curve style*/
+{
+  fill: #FFC107;
+  fill-opacity: 1;
+  stroke: #C49D28;
+  stroke-width: 1px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--bar__fullyselected /*public*/ /*Sets the fully selected bars style*/
+{
+  fill: #FFC107;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--bar__partlyselected /*public*/ /*Sets the partly selected bars style*/
+{
+  fill: #FFC107;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--bar /*public*/ /*Sets the unselected selected bars style*/
+{
+  fill-opacity: 0.3;
+  stroke-opacity: 0.1;
+}
+
+.histogram__swimlane-height--tick /*public*/ /*Sets the horizontal tick on each bar bar in the case of fixedHeight swimlanes*/
+{
   stroke-width: 1px;
   stroke: #fff;
   fill: none;
   opacity: 1;
 }
 
-.histogram__swimlane--vertical-tooltip-line {
+.histogram__swimlane--vertical-tooltip-line /*public*/ /*Sets the vertical line that's shown when hovering bars in swimlane*/
+{
   stroke-width: 2px;
   stroke: #000;
   fill: none;
@@ -152,13 +221,6 @@
 
 .selection {
   opacity: 0.6;
-}
-
-.histogram__brush--handles {
-  stroke: #868686;
-  fill: #868686;
-  opacity: 1;
-  z-index: 30000;
 }
 
 
