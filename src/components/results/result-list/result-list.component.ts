@@ -68,10 +68,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public tableWidth: number = null;
 
-   /**
-   * @Input
-   * @description When the `last - n` line is reached, more data is requested.
-   */
+  /**
+  * @Input
+  * @description When the `last - n` line is reached, more data is requested.
+  */
   @Input() public nLastLines = 5;
 
   /**
@@ -124,18 +124,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Input() public defautMode: ModeEnum;
 
   @Input() public isBodyHidden: boolean;
-
   /**
    * @Input
    * @description Whether the sort on the geometry is activated.
    */
   @Input() public isGeoSortActived = false;
-
-
   /**
    * @Input
    * @description A fieldName-fieldValue map of fields to filter.
    */
+
   @Input() public filtersMap: Map<string, string | number | Date>;
 
   /**
@@ -241,11 +239,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   // Set the table width and height (tbody height)
   public ngOnInit() {
-    if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
-      this.hasGridMode = true;
+    if (this.fieldsConfiguration !== undefined) {
+      if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
+        this.hasGridMode = true;
+      }
+      this.setTableWidth();
+      this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
     }
-    this.setTableWidth();
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
