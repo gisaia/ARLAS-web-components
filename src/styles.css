@@ -34,7 +34,8 @@
 }
 
 .histogram__area .histogram__chart--bar {
-  fill-opacity: 0.3;
+  fill: rgb(140, 140, 140);
+  fill-opacity: 1;
   stroke-opacity: 0.1;
 }
 
