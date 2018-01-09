@@ -171,11 +171,20 @@
   z-index: 30000;
 }
 
-.histogram__chart--area /*public*/ /*Sets the curve style*/
+.histogram__chart--selected--area /*public*/ /*Sets the style of the area's selected parts*/
 {
   fill: #FFC107;
   fill-opacity: 1;
   stroke: #C49D28;
+  stroke-width: 1px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--unselected--area /*public*/ /*Sets the style of the area's unselected parts*/
+{
+  fill: rgb(167, 166, 161);
+  fill-opacity: 1;
+  stroke: rgb(220, 220, 220);
   stroke-width: 1px;
   stroke-opacity: 1;
 }

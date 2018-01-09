@@ -185,6 +185,20 @@ export class HistogramUtils {
     }
   }
 
+  public static generateUID(): string {
+    return ((new Date()).getUTCMilliseconds() + Math.random()).toString();
+  }
+
+  public static getIntervalGUID(start: Date | number, end: Date | number): string {
+    let guid;
+    if ((typeof (<Date>start).getMonth === 'function')) {
+      guid = (<Date>start).getTime().toString() + (<Date>end).getTime().toString();
+    } else {
+      guid = start.toString() + end.toString();
+    }
+    return guid;
+  }
+
   private static round(value, precision): number {
     let multiplier;
     if (precision === 1) {
