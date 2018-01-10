@@ -30,6 +30,7 @@ export abstract class AbstractHistogram {
   protected brushHandlesHeight: number = null;
   protected brushHandles;
   protected isBrushing = false;
+  protected isBrushed = false;
   protected hasSelectionExceededData = null;
   protected selectedBars = new Set<number>();
   protected fromSetInterval = false;
@@ -115,12 +116,7 @@ export abstract class AbstractHistogram {
         v.endvalue = new Date(+v.endvalue);
       }
       const finalPosition = this.getIntervalMiddlePositon(axes, +v.startvalue, +v.endvalue);
-      let guid;
-      if ((typeof (<Date>v.startvalue).getMonth === 'function')) {
-        guid = (<Date>v.startvalue).getTime().toString() + (<Date>v.endvalue).getTime().toString();
-      } else {
-        guid = v.startvalue.toString() + v.endvalue.toString();
-      }
+      const guid = HistogramUtils.getIntervalGUID(v.startvalue, v.endvalue);
       this.histogramParams.intervalSelectedMap.set(guid,
         {
           values: { startvalue: v.startvalue, endvalue: v.endvalue },
@@ -308,6 +304,8 @@ export abstract class AbstractHistogram {
       .on('mouseover', () => this.isBrushing = true)
       .on('mouseout', () => this.isBrushing = false);
 
+
+
     this.brushContext.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
     this.handleOnBrushingEvent(chartAxes);
     this.handleEndOfBrushingEvent(chartAxes);
@@ -344,24 +342,28 @@ export abstract class AbstractHistogram {
 
   protected onSelectionDoubleClick(axes: ChartAxes | SwimlaneAxes) {
     this.brushContext.on('dblclick', () => {
-      const finalPosition = this.getIntervalMiddlePositon(axes, +this.selectionInterval.startvalue, +this.selectionInterval.endvalue);
-      let guid;
-      if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
-        const startMilliString = (<Date>this.selectionInterval.startvalue).getTime().toString();
-        const start = startMilliString.substring(0, startMilliString.length - 3);
-        const endMilliString = (<Date>this.selectionInterval.endvalue).getTime().toString();
-        const end = endMilliString.substring(0, endMilliString.length - 3);
-        guid = start + '000' + end + '000';
-      } else {
-        guid = this.selectionInterval.startvalue.toString() + this.selectionInterval.endvalue.toString();
-      }
-      this.histogramParams.intervalSelectedMap.set(guid,
-        {
-          values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
-          x_position: finalPosition
-        });
-      if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
-        this.histogramParams.selectionListIntervalId.push(guid);
+      if (this.isBrushed) {
+        const finalPosition = this.getIntervalMiddlePositon(axes, +this.selectionInterval.startvalue, +this.selectionInterval.endvalue);
+        let guid;
+        if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
+          const startMilliString = (<Date>this.selectionInterval.startvalue).getTime().toString();
+          const start = startMilliString.substring(0, startMilliString.length - 3);
+          const endMilliString = (<Date>this.selectionInterval.endvalue).getTime().toString();
+          const end = endMilliString.substring(0, endMilliString.length - 3);
+          guid = start + '000' + end + '000';
+        } else {
+          guid = this.selectionInterval.startvalue.toString() + this.selectionInterval.endvalue.toString();
+        }
+        if (finalPosition.toString() !== 'NaN') {
+          this.histogramParams.intervalSelectedMap.set(guid,
+            {
+              values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
+              x_position: finalPosition
+            });
+          if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
+            this.histogramParams.selectionListIntervalId.push(guid);
+          }
+        }
       }
     });
   }
@@ -402,6 +404,7 @@ export abstract class AbstractHistogram {
     }
     this.selectionBrush.on('start', () => {
       const selection = d3.event.selection;
+      this.isBrushed = false;
       this.translateBrushHandles(selection, chartAxes);
     });
   }
@@ -449,6 +452,7 @@ export abstract class AbstractHistogram {
         }
         this.histogramParams.showTitle = true;
         this.isBrushing = false;
+        this.isBrushed = true;
       } else {
         this.translateBrushHandles(null, chartAxes);
       }
