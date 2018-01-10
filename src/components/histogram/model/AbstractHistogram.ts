@@ -73,7 +73,8 @@ export abstract class AbstractHistogram {
         this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
       const data = this.dataDomain;
       if (data !== null) {
-        if (HistogramUtils.isSelectionBeyondDataDomain(selectedInputValues, <Array<{ key: number, value: number }>>data)) {
+        if (HistogramUtils.isSelectionBeyondDataDomain(selectedInputValues, <Array<{ key: number, value: number }>>data,
+           this.histogramParams.intervalSelectedMap)) {
           this.hasSelectionExceededData = true;
           this.plot(this.histogramParams.data);
         } else {
@@ -222,6 +223,15 @@ export abstract class AbstractHistogram {
       dataKeyUnionSelectedValues.push(d.key);
     });
 
+    this.histogramParams.intervalSelectedMap.forEach(values => {
+      if (selectedStartValue > values.values.startvalue) {
+        selectedStartValue = values.values.startvalue;
+      }
+      if (selectedEndValue < values.values.endvalue) {
+        selectedEndValue = values.values.endvalue;
+      }
+    });
+
     dataKeyUnionSelectedValues.push(selectedStartValue);
     dataKeyUnionSelectedValues.push(selectedEndValue);
     if (this.histogramParams.dataType === DataType.time) {
@@ -361,6 +371,10 @@ export abstract class AbstractHistogram {
           if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
             this.histogramParams.selectionListIntervalId.push(guid);
           }
+          // ### Emits the selected interval
+          const selectionListInterval = [];
+          this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
+          this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
         }
       }
     });
@@ -443,7 +457,10 @@ export abstract class AbstractHistogram {
           const selectionListInterval = [];
           this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
           this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
-          if (!HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain) && this.hasSelectionExceededData) {
+
+          const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
+            this.histogramParams.intervalSelectedMap);
+          if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
             this.plot(this.histogramParams.data);
             this.hasSelectionExceededData = false;
           }

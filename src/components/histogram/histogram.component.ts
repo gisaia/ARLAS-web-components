@@ -268,7 +268,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           break;
         }
       }
-
       this.setHistogramParameters();
     }
 

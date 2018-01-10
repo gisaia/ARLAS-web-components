@@ -41,6 +41,14 @@ export class ChartArea extends AbstractChart {
     super.removeSelectInterval(id);
     this.selectedIntervals.get(id).rect.remove();
     this.selectedIntervals.delete(id);
+    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
+      this.histogramParams.intervalSelectedMap);
+    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
+      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+      this.hasSelectionExceededData = false;
+    } else if (isSelectionBeyondDataDomain) {
+      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+    }
   }
 
   protected plotChart(data: Array<HistogramData>): void {
@@ -126,6 +134,10 @@ export class ChartArea extends AbstractChart {
         if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
           this.histogramParams.selectionListIntervalId.push(guid);
         }
+        // ### Emits the selected interval
+        const selectionListInterval = [];
+        this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
+        this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
 
         if (!this.selectedIntervals.has(guid)) {
           const rect = this.getAppendedRectangle(this.selectionInterval.startvalue, this.selectionInterval.endvalue);

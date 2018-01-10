@@ -85,14 +85,6 @@ export class HistogramDemoComponent implements OnInit {
     }
   }
 
-  public setAreaSelection() {
-    this.areaSelection = { startvalue: 1500, endvalue: 1540 };
-  }
-
-  public setAreaSelectionFarther() {
-    this.areaSelection = { startvalue: 1550, endvalue: 1600 };
-  }
-
   private showData() {
     this.showDefaultGraph(this);
     this.showCurvedTimeline(this);

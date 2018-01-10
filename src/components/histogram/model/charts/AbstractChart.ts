@@ -41,6 +41,17 @@ export abstract class AbstractChart extends AbstractHistogram {
     }
   }
 
+  public removeSelectInterval(id: string) {
+    super.removeSelectInterval(id);
+    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
+      this.histogramParams.intervalSelectedMap);
+    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
+      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+      this.hasSelectionExceededData = false;
+    } else if (isSelectionBeyondDataDomain) {
+      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+    }
+  }
 
   protected initializeChartDimensions(): void {
     super.initializeChartDimensions();

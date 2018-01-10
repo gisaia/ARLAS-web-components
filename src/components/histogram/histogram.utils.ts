@@ -75,9 +75,23 @@ export interface Tooltip {
 export class HistogramUtils {
 
   public static isSelectionBeyondDataDomain(selectedInputValues: SelectedInputValues,
-     inputData: Array<{ key: number, value: number }>): boolean {
+     inputData: Array<{ key: number, value: number }>,
+     intervalSelectedMap: Map<string, { values: SelectedOutputValues, x_position: number }>): boolean {
+
+    let min = selectedInputValues.startvalue;
+    let max = selectedInputValues.endvalue;
+
+    intervalSelectedMap.forEach(values => {
+        if (min > values.values.startvalue) {
+          min = values.values.startvalue;
+        }
+
+        if (max < values.values.endvalue) {
+          max = values.values.endvalue;
+        }
+      });
     if (inputData.length !== 0) {
-      return +selectedInputValues.startvalue < inputData[0].key || +selectedInputValues.endvalue > inputData[inputData.length - 1].key;
+      return +min < inputData[0].key || +max > inputData[inputData.length - 1].key;
     } else {
       return true;
     }
