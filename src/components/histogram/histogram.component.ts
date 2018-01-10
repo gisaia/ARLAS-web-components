@@ -3,7 +3,8 @@ import {
   ViewContainerRef, ElementRef, OnChanges, SimpleChanges, AfterViewChecked
 } from '@angular/core';
 
-import { ChartType, DataType, DateUnit, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode, HistogramUtils } from './histogram.utils';
+import { ChartType, DataType, DateUnit, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
+  HistogramUtils } from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';

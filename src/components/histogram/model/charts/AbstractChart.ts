@@ -163,7 +163,7 @@ export abstract class AbstractChart extends AbstractHistogram {
 
   protected getIntervalMiddlePositon(chartAxes: ChartAxes, startvalue: number, endvalue: number): number {
     const keys = this.getSelectedBars(startvalue, endvalue);
-    return this.histogramParams.margin.left + chartAxes.xDomain(startvalue) + 1/2 *
+    return this.histogramParams.margin.left + chartAxes.xDomain(startvalue) + 1 / 2 *
      (chartAxes.xDomain(endvalue) - chartAxes.xDomain(startvalue)) - 24 / 2;
   }
 

@@ -304,8 +304,6 @@ export abstract class AbstractHistogram {
       .on('mouseover', () => this.isBrushing = true)
       .on('mouseout', () => this.isBrushing = false);
 
-
-
     this.brushContext.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
     this.handleOnBrushingEvent(chartAxes);
     this.handleEndOfBrushingEvent(chartAxes);
@@ -316,7 +314,7 @@ export abstract class AbstractHistogram {
 
     barsContext.filter((d) => +d.key >= this.selectionInterval.startvalue
       && +d.key + this.histogramParams.barWeight * this.dataInterval <= this.selectionInterval.endvalue)
-      .attr('class', 'histogram__chart--bar__fullyselected');
+      .attr('class', 'histogram__chart--bar__currentselection');
 
     barsContext.filter((d) => (+d.key < this.selectionInterval.startvalue || +d.key > this.selectionInterval.endvalue)
       && (!this.selectedBars.has(+d.key)))

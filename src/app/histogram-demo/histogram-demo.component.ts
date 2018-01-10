@@ -27,6 +27,7 @@ export class HistogramDemoComponent implements OnInit {
   public selectedNumericValues: SelectedOutputValues = { startvalue: null, endvalue: null };
   public selectValues: SelectedInputValues;
   public selectValuesSwimlane: SelectedInputValues;
+  public areaSelection: SelectedInputValues;
   public intervalListSelection4: SelectedOutputValues[] = [];
   public intervalListSelection3: SelectedOutputValues[] = [];
   public intervalListSelection2: SelectedOutputValues[] = [];
@@ -82,6 +83,14 @@ export class HistogramDemoComponent implements OnInit {
       event.pop();
       this.intervalListSelection2 = event;
     }
+  }
+
+  public setAreaSelection() {
+    this.areaSelection = { startvalue: 1500, endvalue: 1540 };
+  }
+
+  public setAreaSelectionFarther() {
+    this.areaSelection = { startvalue: 1550, endvalue: 1600 };
   }
 
   private showData() {
@@ -158,6 +167,7 @@ export class HistogramDemoComponent implements OnInit {
       });
     });
   }
+
 
   private sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

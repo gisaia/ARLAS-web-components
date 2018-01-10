@@ -171,9 +171,18 @@
   z-index: 30000;
 }
 
-.histogram__chart--selected--area /*public*/ /*Sets the style of the area's selected parts*/
+.histogram__chart--fixed-selected--area /*public*/ /*Sets the style of the area's selected parts*/
 {
   fill: #FFC107;
+  fill-opacity: 1;
+  stroke: #C49D28;
+  stroke-width: 1px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--current-selected--area /*public*/ /*Sets the style of the area's selected parts*/
+{
+  fill: rgb(155, 116, 0);
   fill-opacity: 1;
   stroke: #C49D28;
   stroke-width: 1px;
@@ -189,9 +198,18 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__fullyselected /*public*/ /*Sets the fully selected bars style*/
+.histogram__chart--bar__fullyselected /*public*/ /*Sets the fixed selected bars style*/
 {
   fill: #FFC107;
+  fill-opacity: 1;
+  stroke: none;
+  stroke-width: 0.5px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--bar__currentselection /*public*/ /*Sets the currently selected bars style*/
+{
+  fill: rgb(191, 143, 0);
   fill-opacity: 1;
   stroke: none;
   stroke-width: 0.5px;
