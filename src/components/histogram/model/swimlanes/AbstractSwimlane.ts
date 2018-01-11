@@ -67,6 +67,18 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     }
   }
 
+  public removeSelectInterval(id: string) {
+    super.removeSelectInterval(id);
+    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
+      this.histogramParams.intervalSelectedMap);
+    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
+      this.plot(<Map<string, Array<{key: number, value: number}>>>this.histogramParams.data);
+      this.hasSelectionExceededData = false;
+    } else if (isSelectionBeyondDataDomain) {
+      this.plot(<Map<string, Array<{key: number, value: number}>>>this.histogramParams.data);
+    }
+  }
+
   public truncateLabels() {
     if (this.labelsContext !== undefined) {
       this.labelsContext.selectAll('text').each(() => {

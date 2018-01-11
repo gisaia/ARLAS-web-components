@@ -27,6 +27,7 @@ export class HistogramDemoComponent implements OnInit {
   public selectedNumericValues: SelectedOutputValues = { startvalue: null, endvalue: null };
   public selectValues: SelectedInputValues;
   public selectValuesSwimlane: SelectedInputValues;
+  public areaSelection: SelectedInputValues;
   public intervalListSelection4: SelectedOutputValues[] = [];
   public intervalListSelection3: SelectedOutputValues[] = [];
   public intervalListSelection2: SelectedOutputValues[] = [];
@@ -158,6 +159,7 @@ export class HistogramDemoComponent implements OnInit {
       });
     });
   }
+
 
   private sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

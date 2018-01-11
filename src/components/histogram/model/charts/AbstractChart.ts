@@ -41,6 +41,17 @@ export abstract class AbstractChart extends AbstractHistogram {
     }
   }
 
+  public removeSelectInterval(id: string) {
+    super.removeSelectInterval(id);
+    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
+      this.histogramParams.intervalSelectedMap);
+    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
+      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+      this.hasSelectionExceededData = false;
+    } else if (isSelectionBeyondDataDomain) {
+      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+    }
+  }
 
   protected initializeChartDimensions(): void {
     super.initializeChartDimensions();
@@ -163,11 +174,8 @@ export abstract class AbstractChart extends AbstractHistogram {
 
   protected getIntervalMiddlePositon(chartAxes: ChartAxes, startvalue: number, endvalue: number): number {
     const keys = this.getSelectedBars(startvalue, endvalue);
-    const lastKey = keys.sort((a, b) => { if (a > b) { return a; } })[keys.length - 1];
-    const firstKey = keys.sort((a, b) => { if (a > b) { return a; } })[0];
-    const firstPosition = chartAxes.xDomain(firstKey);
-    const lastPosition = chartAxes.xDomain(lastKey);
-    return (firstPosition + lastPosition) / 2 + this.histogramParams.margin.left;
+    return this.histogramParams.margin.left + chartAxes.xDomain(startvalue) + 1 / 2 *
+     (chartAxes.xDomain(endvalue) - chartAxes.xDomain(startvalue)) - 24 / 2;
   }
 
   protected getSelectedBars(startvalue: number, endvalue: number): Array<number> {
