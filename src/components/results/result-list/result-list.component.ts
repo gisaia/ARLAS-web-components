@@ -239,7 +239,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   // Set the table width and height (tbody height)
   public ngOnInit() {
-    if (this.fieldsConfiguration !== undefined) {
+    if (this.fieldsConfiguration !== undefined && this.fieldsConfiguration !== null) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
         this.hasGridMode = true;
       }

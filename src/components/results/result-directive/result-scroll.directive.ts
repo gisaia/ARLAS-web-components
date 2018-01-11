@@ -25,43 +25,45 @@ export class ResultScrollDirective implements OnChanges {
   constructor(private el: ElementRef) { }
 
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes['rowItemList'] ) {
+    if (changes['rowItemList']) {
       this.moreDataCallsCounter = 0;
       this.lastScrollTop = 0;
       this.lastDataSize = 0;
       this.el.nativeElement.scrollTop = 0;
     }
-    if (changes['resultMode'] ) {
+    if (changes['resultMode']) {
       this.scrollTo();
 
     }
   }
 
   public scrollTo() {
-    if (this.resultMode === ModeEnum.grid) {
-      this.nbScrolledLines = Math.round(this.top / this.height * this.rowItemList.length);
-      if ( this.nbScrolledLines % this.nbGridColumns !== 0 ) {
-        this.nbScrolledLines = Math.max(this.nbScrolledLines - this.nbScrolledLines % this.nbGridColumns, 0);
+    if (this.rowItemList) {
+      if (this.resultMode === ModeEnum.grid) {
+        this.nbScrolledLines = Math.round(this.top / this.height * this.rowItemList.length);
+        if (this.nbScrolledLines % this.nbGridColumns !== 0) {
+          this.nbScrolledLines = Math.max(this.nbScrolledLines - this.nbScrolledLines % this.nbGridColumns, 0);
+        }
+      } else {
+        this.nbScrolledLines = Math.round(this.top / this.height * this.rowItemList.length);
       }
-    } else {
-      this.nbScrolledLines = Math.round(this.top / this.height * this.rowItemList.length);
+      this.el.nativeElement.scrollTop = 0;
+      this.isChangedScroll = true;
     }
-    this.el.nativeElement.scrollTop = 0;
-    this.isChangedScroll = true;
   }
 
   // When scrolling, the position of the scroll bar is calculated
   // Ask for more data when the scroll bar :
-    // - reaches for the "nLastLines" last lines and it is scrolling down only
-    // - when data size increased of 'searchSize'
+  // - reaches for the "nLastLines" last lines and it is scrolling down only
+  // - when data size increased of 'searchSize'
   @HostListener('scroll', ['$event'])
   public onScroll(event) {
     this.tbodyHeight = this.el.nativeElement.offsetHeight;
     const scrollTop = this.el.nativeElement.scrollTop;
     const scrollHeight = this.el.nativeElement.scrollHeight;
     const scrollDown = scrollHeight - scrollTop;
-    const nLastLines = this.nLastLines / ( (this.nbGridColumns - 1 ) * this.resultMode + 1);
-    const dataLength = this.rowItemList.length / ( (this.nbGridColumns - 1 ) * this.resultMode + 1);
+    const nLastLines = this.nLastLines / ((this.nbGridColumns - 1) * this.resultMode + 1);
+    const dataLength = this.rowItemList.length / ((this.nbGridColumns - 1) * this.resultMode + 1);
     const scrollTopTrigger = scrollHeight * (1 - nLastLines / dataLength - this.tbodyHeight / scrollHeight);
 
     if (this.isChangedScroll) {
