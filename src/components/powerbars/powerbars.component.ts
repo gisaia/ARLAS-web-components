@@ -10,16 +10,16 @@ import { PowerBar } from './model/powerbar';
   templateUrl: './powerbars.component.html',
   styleUrls: ['./powerbars.component.css']
 })
-  /**
-   * - The component displays an array of [term, count] as bars sorted decreasingly (inputData). The bars length representing the count.
-   * - The array of [term, count] is transformed to an array of `PowerBar` object called `powerBarsList` .
-   * - When a PowerBar is selected, it is displayed in the top of the list. Moreover, this PowerBar has to be displayed
-   * even when the inputData changes and this PowerBar is no more in it.
-   * - Therefore; selected PowerBar objects are stored in a second Set : `selectedPowerbarsList`.
-   * - To keep the input and output of the component simple, the selected PowerBars are emitted as
-   * an array of terms : `selectedPowerbarsTerms` via the `selectedPowerBarEvent` Subject.
-   * - And `selectedPowerbarsTerms` can be set from the exterior as an input.
-   */
+/**
+ * - The component displays an array of [term, count] as bars sorted decreasingly (inputData). The bars length representing the count.
+ * - The array of [term, count] is transformed to an array of `PowerBar` object called `powerBarsList` .
+ * - When a PowerBar is selected, it is displayed in the top of the list. Moreover, this PowerBar has to be displayed
+ * even when the inputData changes and this PowerBar is no more in it.
+ * - Therefore; selected PowerBar objects are stored in a second Set : `selectedPowerbarsList`.
+ * - To keep the input and output of the component simple, the selected PowerBars are emitted as
+ * an array of terms : `selectedPowerbarsTerms` via the `selectedPowerBarEvent` Subject.
+ * - And `selectedPowerbarsTerms` can be set from the exterior as an input.
+ */
 export class PowerbarsComponent implements OnChanges {
 
 
@@ -64,7 +64,7 @@ export class PowerbarsComponent implements OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.inputData) {
-      if (this.inputData !== undefined) {
+      if (this.inputData !== undefined && this.inputData !== null) {
         this.populatePowerbars();
         this.populateSelectedPowerbars();
         this.calculateAllPowerBarsProgression();
@@ -74,7 +74,7 @@ export class PowerbarsComponent implements OnChanges {
       }
     }
 
-    if (changes.selectedPowerbarsTerms && this.selectedPowerbarsTerms !== undefined) {
+    if (changes.selectedPowerbarsTerms && this.selectedPowerbarsTerms !== undefined && this.selectedPowerbarsTerms !== null) {
       this.selectedPowerbarsList = new Set();
       this.setSelectedPowerbars(this.selectedPowerbarsTerms);
     }
@@ -139,7 +139,7 @@ export class PowerbarsComponent implements OnChanges {
   }
 
   private populateSelectedPowerbars() {
-    this.selectedPowerbarsList.forEach( selectedPowerBar => {
+    this.selectedPowerbarsList.forEach(selectedPowerBar => {
       selectedPowerBar.count = 0;
     });
     if (this.selectedPowerbarsTerms !== undefined && this.selectedPowerbarsTerms.size > 0) {
@@ -194,7 +194,7 @@ export class PowerbarsComponent implements OnChanges {
     const selectedPowerbarsArray = Array.from(this.selectedPowerbarsList);
     selectedPowerbarsArray.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
     this.selectedPowerbarsList = new Set<PowerBar>();
-      selectedPowerbarsArray.forEach(powerBar => {
+    selectedPowerbarsArray.forEach(powerBar => {
       this.selectedPowerbarsList.add(powerBar);
     });
   }
