@@ -4,19 +4,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
-import { HistogramComponent } from '../components/histogram/histogram.component';
-import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
-import { PowerbarsComponent } from '../components/powerbars/powerbars.component';
-
-import { ResultListComponent } from '../components/results/result-list/result-list.component';
-import { ResultFilterComponent } from '../components/results/result-filter/result-filter.component';
-import { ResultItemComponent } from '../components/results/result-item/result-item.component';
-import { ResultDetailedItemComponent } from '../components/results/result-detailed-item/result-detailed-item.component';
-
-import { ResultScrollDirective } from '../components/results/result-directive/result-scroll.directive';
 
 import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
+import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
+import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 
 import { MatChipsModule, MatIconModule, MatSidenavModule, MatSlideToggleModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +17,8 @@ import { ResultsModule } from '../components/results/results.module';
 import { ResultGridTileComponent } from '../components/results/result-grid-tile/result-grid-tile.component';
 import { MapglModule } from '../components/mapgl/mapgl.module';
 import { PowerbarsModule } from '../components/powerbars/powerbars.module';
-import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
+import { DonutModule } from '../components/donut/donut.module';
+import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +26,8 @@ import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.componen
     HistogramDemoComponent,
     ResultsDemoComponent,
     MapglDemoComponent,
-    PowerbarsDemoComponent
+    PowerbarsDemoComponent,
+    DonutDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -44,6 +38,7 @@ import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.componen
     FormsModule,
     MapglModule,
     HistogramModule,
+    DonutModule,
     ResultsModule,
     PowerbarsModule,
     MatSlideToggleModule,
