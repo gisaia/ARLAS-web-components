@@ -1,5 +1,9 @@
-<div style="width: 100%; height:100%">
-  <div style="width: 100%; height:100%">
-    <svg id="svgix" class="histogram__chart"></svg>
+<div class="donut__container" [ngClass]="'customizedCssClass'">
+  <svg id="svgix"></svg>
+  <div class="donut__tooltip" *ngIf="tooltip.isShown && !tooltip.isRightSide" [style.left.px]="tooltip.xPosition" [style.top.px]="tooltip.yPosition">
+    <span >{{tooltip.xContent}}</span>
+  </div>
+  <div class="donut__tooltip" *ngIf="tooltip.isShown && tooltip.isRightSide" [style.right.px]="tooltip.xPosition" [style.top.px]="tooltip.yPosition">
+    <span >{{tooltip.xContent}}</span>
   </div>
 </div>

@@ -58,33 +58,52 @@ export class DonutDemoComponent implements OnInit {
       // this.donutData = buildHierarchy(csv);
       this.donutData = {
         name: 'root',
+        ringName: 'root',
         children : [
           {
             name: 'sentinelle',
+            ringName: 'satellites',
             children : [
               {
                 name: 'sentinelle1',
-                size: 10
+                ringName: 'mission',
+                size: 100
               },
               {
                 name: 'sentinelle2',
+                ringName: 'mission',
                 size: 130
               }
             ]
           },
           {
             name: 'SPOT',
+            ringName: 'satellites',
             children : [
               {
                 name: 'SPOT5',
+                ringName: 'mission',
                 size: 30
               },
               {
                 name: 'SPOT6',
-                size: 50
+                ringName: 'mission',
+                children : [
+                  {
+                    name: 'SPOT61',
+                    ringName: 'missionspecial6',
+                    size: 10
+                  },
+                  {
+                    name: 'SPOT62',
+                    ringName: 'missionspecial6',
+                    size: 130
+                  }
+                ]
               },
               {
                 name: 'SPOT7',
+                ringName: 'mission',
                 size: 60
               }
             ]
