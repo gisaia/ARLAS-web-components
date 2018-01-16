@@ -1,5 +1,7 @@
-import { ChartDimensions, ChartAxes, SwimlaneAxes, SelectedInputValues, SelectedOutputValues, HistogramUtils,
-         ChartType, DataType, DateUnit, MarginModel, HistogramData, Position } from '../histogram.utils';
+import {
+  ChartDimensions, ChartAxes, SwimlaneAxes, SelectedInputValues, SelectedOutputValues, HistogramUtils,
+  ChartType, DataType, DateUnit, MarginModel, HistogramData, Position
+} from '../histogram.utils';
 import { Subject } from 'rxjs/Subject';
 import * as d3 from 'd3';
 import { HistogramParams } from './HistogramParams';
@@ -31,6 +33,7 @@ export abstract class AbstractHistogram {
   protected brushHandles;
   protected isBrushing = false;
   protected isBrushed = false;
+
   protected hasSelectionExceededData = null;
   protected selectedBars = new Set<number>();
   protected fromSetInterval = false;
@@ -74,7 +77,7 @@ export abstract class AbstractHistogram {
       const data = this.dataDomain;
       if (data !== null) {
         if (HistogramUtils.isSelectionBeyondDataDomain(selectedInputValues, <Array<{ key: number, value: number }>>data,
-           this.histogramParams.intervalSelectedMap)) {
+          this.histogramParams.intervalSelectedMap)) {
           this.hasSelectionExceededData = true;
           this.plot(this.histogramParams.data);
         } else {
@@ -246,7 +249,7 @@ export abstract class AbstractHistogram {
 
   protected drawChartAxes(chartAxes: ChartAxes | SwimlaneAxes, leftOffset: number): void {
     const marginTopBottom = this.chartDimensions.margin.top * this.histogramParams.xAxisPosition +
-     this.chartDimensions.margin.bottom * (1 - this.histogramParams.xAxisPosition);
+      this.chartDimensions.margin.bottom * (1 - this.histogramParams.xAxisPosition);
     this.context = this.chartDimensions.svg.append('g')
       .attr('class', 'context')
       .attr('transform', 'translate(' + this.chartDimensions.margin.left + ',' + marginTopBottom + ')');
@@ -350,31 +353,25 @@ export abstract class AbstractHistogram {
 
   protected onSelectionDoubleClick(axes: ChartAxes | SwimlaneAxes) {
     this.brushContext.on('dblclick', () => {
-      if (this.isBrushed) {
-        const finalPosition = this.getIntervalMiddlePositon(axes, +this.selectionInterval.startvalue, +this.selectionInterval.endvalue);
-        let guid;
-        if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
-          const startMilliString = (<Date>this.selectionInterval.startvalue).getTime().toString();
-          const start = startMilliString.substring(0, startMilliString.length - 3);
-          const endMilliString = (<Date>this.selectionInterval.endvalue).getTime().toString();
-          const end = endMilliString.substring(0, endMilliString.length - 3);
-          guid = start + '000' + end + '000';
-        } else {
-          guid = this.selectionInterval.startvalue.toString() + this.selectionInterval.endvalue.toString();
-        }
-        if (finalPosition.toString() !== 'NaN') {
-          this.histogramParams.intervalSelectedMap.set(guid,
-            {
-              values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
-              x_position: finalPosition
-            });
-          if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
-            this.histogramParams.selectionListIntervalId.push(guid);
-          }
-          // ### Emits the selected interval
-          const selectionListInterval = [];
-          this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
-          this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
+      const finalPosition = this.getIntervalMiddlePositon(axes, +this.selectionInterval.startvalue, +this.selectionInterval.endvalue);
+      let guid;
+      if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
+        const startMilliString = (<Date>this.selectionInterval.startvalue).getTime().toString();
+        const start = startMilliString.substring(0, startMilliString.length - 3);
+        const endMilliString = (<Date>this.selectionInterval.endvalue).getTime().toString();
+        const end = endMilliString.substring(0, endMilliString.length - 3);
+        guid = start + '000' + end + '000';
+      } else {
+        guid = this.selectionInterval.startvalue.toString() + this.selectionInterval.endvalue.toString();
+      }
+      if (finalPosition.toString() !== 'NaN') {
+        this.histogramParams.intervalSelectedMap.set(guid,
+          {
+            values: { startvalue: this.selectionInterval.startvalue, endvalue: this.selectionInterval.endvalue },
+            x_position: finalPosition
+          });
+        if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
+          this.histogramParams.selectionListIntervalId.push(guid);
         }
       }
     });
@@ -430,9 +427,9 @@ export abstract class AbstractHistogram {
         this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         this.histogramParams.startValue = 'From ' + HistogramUtils.toString(this.selectionInterval.startvalue,
           this.histogramParams.chartType,
-        this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
+          this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
         this.histogramParams.endValue = 'To ' + HistogramUtils.toString(this.selectionInterval.endvalue, this.histogramParams.chartType,
-        this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
+          this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
         this.histogramParams.showTitle = false;
         this.applyStyleOnSelection();
         this.translateBrushHandles(selection, chartAxes);
@@ -444,16 +441,15 @@ export abstract class AbstractHistogram {
     this.selectionBrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
-        this.isBrushing = true;
         const newStartValue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
         const newEndvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-        if (!this.fromSetInterval) {
+        if (!this.fromSetInterval && this.isBrushing) {
           this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
           this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
           this.histogramParams.startValue = HistogramUtils.toString(this.selectionInterval.startvalue, this.histogramParams.chartType,
-          this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
+            this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
           this.histogramParams.endValue = HistogramUtils.toString(this.selectionInterval.endvalue, this.histogramParams.chartType,
-          this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
+            this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
           const selectionListInterval = [];
           this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
           this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
