@@ -553,34 +553,34 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         geohashList = bboxes(Math.min(this.south, this.north),
           -180,
           Math.max(this.south, this.north),
-          180, Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+          180, Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
       } else if (this.west < -180 && this.east < 180) {
         const geohashList_1: Array<string> = bboxes(Math.min(this.south, this.north),
           Math.min(-180, this.west + 360),
           Math.max(this.south, this.north),
-          Math.max(-180, this.west + 360), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+          Math.max(-180, this.west + 360), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
         const geohashList_2: Array<string> = bboxes(Math.min(this.south, this.north),
           Math.min(this.east, 180),
           Math.max(this.south, this.north),
-          Math.max(this.east, 180), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+          Math.max(this.east, 180), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
         geohashList = geohashList_1.concat(geohashList_2);
 
       } else if (this.east > 180 && this.west > -180) {
         const geohashList_1: Array<string> = bboxes(Math.min(this.south, this.north),
           Math.min(180, this.east - 360),
           Math.max(this.south, this.north),
-          Math.max(180, this.east - 360), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+          Math.max(180, this.east - 360), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
 
         const geohashList_2: Array<string> = bboxes(Math.min(this.south, this.north),
           Math.min(this.west, -180),
           Math.max(this.south, this.north),
-          Math.max(this.west, -180), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+          Math.max(this.west, -180), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
         geohashList = geohashList_1.concat(geohashList_2);
       } else {
         geohashList = bboxes(Math.min(this.south, this.north),
           Math.min(this.east, this.west),
           Math.max(this.south, this.north),
-          Math.max(this.east, this.west), Math.max(this.getPrecisionFromZoom(this.zoom) - 1, 1));
+          Math.max(this.east, this.west), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
       }
 
 
@@ -786,17 +786,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
-  private getPrecisionFromZoom(zoom: number): number {
+  private getGeohashLevelFromZoom(zoom: number): number {
     const zoomToPrecisionClusterObject = {};
     const zoomToPrecisionCluster = this.zoomToPrecisionCluster;
     zoomToPrecisionCluster.forEach(triplet => {
       zoomToPrecisionClusterObject[triplet[0]] = [triplet[1], triplet[2]];
     });
     if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][0] !== undefined) {
-      return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][0];
+      return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1];
     } else {
-      return this.maxPrecision[0];
-
+      return this.maxPrecision[1];
     }
   }
 }
