@@ -3,7 +3,6 @@ import { MarginModel } from '../histogram/histogram.utils';
 
 export interface DonutDimensions {
   svg: d3.Selection< d3.BaseType, any, d3.BaseType, any>;
-  margin: MarginModel;
   width: number;
   height: number;
   radius: number;

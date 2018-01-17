@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+import { setTimeout } from 'timers';
 
 
 @Component({
@@ -10,109 +11,88 @@ import * as d3 from 'd3';
 export class DonutDemoComponent implements OnInit {
 
   public donutData = null;
+  public selectedNodes;
 
   constructor() { }
 
   public ngOnInit() {
-    function buildHierarchy(csv) {
-      const root = {'name': 'root', 'children': []};
-      for (let i = 0; i < csv.length; i++) {
-        const sequence = csv[i][0];
-        const size = +csv[i][1];
-        if (isNaN(size)) { // e.g. if this is a header row
-          continue;
+    this.donutData = {
+      name: 'root',
+      ringName: 'root',
+      children : [
+        {
+          name: 'sentinelle',
+          ringName: 'satellites',
+          children : [
+            {
+              name: 'sentinelle1',
+              ringName: 'mission',
+              size: 100
+            },
+            {
+              name: 'sentinelle2',
+              ringName: 'mission',
+              size: 130
+            }
+          ]
+        },
+        {
+          name: 'SPOT',
+          ringName: 'satellites',
+          children : [
+            {
+              name: 'SPOT5',
+              ringName: 'mission',
+              size: 30
+            },
+            {
+              name: 'SPOT6',
+              ringName: 'mission',
+              children : [
+                {
+                  name: 'FR1',
+                  ringName: 'emetteur',
+                  size: 10
+                },
+                {
+                  name: 'FR2',
+                  ringName: 'emetteur',
+                  size: 130
+                }
+              ]
+            },
+            {
+              name: 'SPOT7',
+              ringName: 'mission',
+              children : [
+                {
+                  name: 'FR1',
+                  ringName: 'emetteur',
+                  size: 20
+                },
+                {
+                  name: 'FR2',
+                  ringName: 'emetteur',
+                  size: 110
+                },
+                {
+                  name: 'FR3',
+                  ringName: 'emetteur',
+                  size: 110
+                }
+              ]
+            }
+          ]
         }
-        const parts = sequence.split('-');
-        let currentNode = root;
-        for (let j = 0; j < parts.length; j++) {
-          const children = currentNode['children'];
-          const nodeName = parts[j];
-          let childNode;
-          if (j + 1 < parts.length) {
-       // Not yet at the end of the sequence; move down the tree.
-       let foundChild = false;
-       for (let k = 0; k < children.length; k++) {
-         if (children[k]['name'] === nodeName) {
-           childNode = children[k];
-           foundChild = true;
-           break;
-         }
-       }
-      // If we don't already have a child node for this branch, create it.
-       if (!foundChild) {
-         childNode = {'name': nodeName, 'children': []};
-         children.push(childNode);
-       }
-       currentNode = childNode;
-          } else {
-       // Reached the end of the sequence; create a leaf node.
-       childNode = {'name': nodeName, 'size': size};
-       children.push(childNode);
-          }
-        }
-      }
-      return root;
-    }
-    d3.text('assets/visit-sequences.csv', (text) => {
-      const csv = d3.csvParseRows(text);
-      // this.donutData = buildHierarchy(csv);
-      this.donutData = {
-        name: 'root',
-        ringName: 'root',
-        children : [
-          {
-            name: 'sentinelle',
-            ringName: 'satellites',
-            children : [
-              {
-                name: 'sentinelle1',
-                ringName: 'mission',
-                size: 100
-              },
-              {
-                name: 'sentinelle2',
-                ringName: 'mission',
-                size: 130
-              }
-            ]
-          },
-          {
-            name: 'SPOT',
-            ringName: 'satellites',
-            children : [
-              {
-                name: 'SPOT5',
-                ringName: 'mission',
-                size: 30
-              },
-              {
-                name: 'SPOT6',
-                ringName: 'mission',
-                children : [
-                  {
-                    name: 'SPOT61',
-                    ringName: 'missionspecial6',
-                    size: 10
-                  },
-                  {
-                    name: 'SPOT62',
-                    ringName: 'missionspecial6',
-                    size: 130
-                  }
-                ]
-              },
-              {
-                name: 'SPOT7',
-                ringName: 'mission',
-                size: 60
-              }
-            ]
-          }
 
-        ]
-      }
+      ]
+    };
 
-    });
+    setTimeout(() => {
+      this.selectedNodes = [[{ringName: 'mission', name: 'SPOT5'}, {ringName: 'satellites', name: 'SPOT'}]];
+    }, 3000);
+
+
   }
 
 }

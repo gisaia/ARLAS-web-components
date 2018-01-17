@@ -19,11 +19,18 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
   @Input() public donutData: DonutArc;
 
   /**
+   * @Input : angular
+   * @description Data tree to plot in the donut.
+   */
+  @Input() public selectedArcsList: Array<Array<{ringName: string, name: string}>>;
+
+  /**
    * @Output : angular
    * @description Emits the selected node that is positioned as the last element of the set.
    * If you go backwards on the set, you encounter the select node's parents in the right order.
    */
-  @Output() public selectedNodesEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public selectedNodesEvent: Subject<Array<Array<{ringName: string, name: string}>>> =
+    new Subject<Array<Array<{ringName: string, name: string}>>>();
   @Output() public hoveredNodesEvent: Subject<Map<string, string>> = new Subject<Map<string, string>>();
 
 
@@ -33,12 +40,9 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
   private donutNodes: any;
   private donutContext: any;
   private svgNode: any;
-  private margin: MarginModel = { top: 4, right: 10, bottom: 20, left: 60 };
   private arc: d3.Arc<any, d3.DefaultArcObject>;
   private x: d3.ScaleLinear<number, number>;
   private y: d3.ScalePower<number, number>;
-  private donutPath: string;
-  private donutPathSet: Set<string>;
   private selectedNode: d3.HierarchyRectangularNode<any>;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
@@ -55,6 +59,11 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
     if (changes.donutData && this.donutData !== undefined && this.donutData !== null) {
       this.plot();
     }
+
+    if (changes.selectedArcsList && this.selectedArcsList !== undefined && this.selectedArcsList !== null) {
+      const node = this.getNode(this.selectedArcsList[0]);
+      this.selectNode(node, 750);
+    }
   }
 
   public getHexColorFromString(text: string): string {
@@ -69,6 +78,36 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
     return colorHex;
   }
 
+  private getNode(nodePath: Array<{ringName: string, name: string}>): d3.HierarchyRectangularNode<any> {
+    let count = 0;
+    nodePath.reverse();
+    let nodeToSelect = null;
+    for (let i = 0; i < this.donutNodes.length; i++) {
+      if (this.donutNodes[i].data.name === nodePath[count].name &&
+        this.donutNodes[i].data.ringName === nodePath[count].ringName) {
+          nodeToSelect = this.donutNodes[i];
+          break;
+      }
+    }
+    count++;
+    while (count < nodePath.length && nodeToSelect !== null ) {
+      const children = nodeToSelect.children;
+      for (let i = 0; i < children.length; i++) {
+        if (children[i].data.name === nodePath[count].name &&
+          children[i].data.ringName === nodePath[count].ringName) {
+            nodeToSelect = children[i];
+            break;
+        } else {
+          if (i === children.length - 1) {
+            nodeToSelect = null;
+          }
+        }
+      }
+      count++;
+    }
+    return nodeToSelect;
+  }
+
   private plot() {
     if (this.donutContext) {
       this.donutContext.remove();
@@ -80,7 +119,6 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
   }
 
   private initializeDonutDimensions(): void {
-    const margin = this.margin;
     const width = this.el.nativeElement.childNodes[0].offsetWidth;
     const height = this.el.nativeElement.childNodes[0].offsetHeight;
     const radius = Math.min(width, height) / 2;
@@ -88,7 +126,7 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
       .attr('class', 'donut__svg')
       .attr('width', width)
       .attr('height', height);
-    this.donutDimensions = { svg, margin, width, height, radius };
+    this.donutDimensions = { svg, width, height, radius };
   }
 
   private createDonutArcs() {
@@ -107,6 +145,7 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
       .sort((a, b) => b.value - a.value);
     const partition = d3.partition();
     this.donutNodes = partition(root).descendants();
+
     this.donutNodes.forEach(d => {
       d.startAngle = d.x0;
       d.endAngle = d.x1;
@@ -129,8 +168,8 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
       .attr('d', this.arc)
       .on('click', (d) => {
         this.selectNode(d, 750);
-        this.donutPath = this.getPath(d);
-        this.emitSelectedNode();
+        this.selectedArcsList = [this.getNodePathAsArray(d)];
+        this.selectedNodesEvent.next(this.selectedArcsList);
         this.selectedNode = d;
       })
       .on('mouseover', (d) =>  this.onMouseOver(d))
@@ -155,26 +194,30 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
       .attrTween('d', (d) => (() => this.arc(d)));
   }
 
-  private getPath(n: d3.HierarchyRectangularNode<any>): string {
-    let path = n.data.name;
+  private getNodePathAsArray(n: d3.HierarchyRectangularNode<any>): Array<{ringName: string, name: string}> {
+    const nodePathAsArray = new Array<{ringName: string, name: string}>();
+    if (n.depth > 0) {
+      nodePathAsArray.push({ringName: n.data.ringName, name: n.data.name});
+    }
     if (n.parent && n.parent.parent) {
       while (n.parent.parent) {
         n = n.parent;
-        path = n.data.name + ' > ' + path;
+        if (n.depth > 0) {
+          nodePathAsArray.push({ringName: n.data.ringName, name: n.data.name});
+        }
       }
     }
+    return nodePathAsArray;
+  }
+
+  private getNodePathAsString(n: d3.HierarchyRectangularNode<any>): string {
+    const nodePathAsArray = this.getNodePathAsArray(n);
+    let path = '';
+    nodePathAsArray.forEach(node => {
+      path = node.name + ' > ' + path;
+    });
     return path;
   }
-
-  private emitSelectedNode(): void {
-    const hierarchyNodes = this.donutPath.split('>');
-    this.donutPathSet = new Set<string>();
-    hierarchyNodes.forEach(nodeName => {
-      this.donutPathSet.add(nodeName.trim());
-    });
-    this.selectedNodesEvent.next(this.donutPathSet);
-  }
-
 
   private resizeDonut(e: Event): void {
     this.plot();
@@ -188,7 +231,9 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
     const sequenceArray = d.ancestors().reverse();
     sequenceArray.shift();
     // Fade all the arcs.
-    d3.selectAll('path').style('opacity', 0.4);
+
+    const opacity = (d.depth > 0) ? 0.4 : 1;
+    d3.selectAll('path').style('opacity', opacity);
     // Then highlight only those that are an ancestor of the current arc.
     this.donutContext
       .selectAll('path')
@@ -212,7 +257,7 @@ export class DonutComponent implements OnInit, OnChanges, ColorBuilder {
 
   private showTooltip(d: d3.HierarchyRectangularNode<any>): void {
     this.tooltip.isShown = true;
-    this.tooltip.xContent = this.getPath(d) + ' (' + d.value + ')';
+    this.tooltip.xContent = this.getNodePathAsString(d) + ' (' + d.value + ')';
   }
 
   private setTooltipPosition(d: d3.HierarchyRectangularNode<any>) {
