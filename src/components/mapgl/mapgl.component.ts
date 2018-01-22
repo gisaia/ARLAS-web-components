@@ -792,8 +792,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     zoomToPrecisionCluster.forEach(triplet => {
       zoomToPrecisionClusterObject[triplet[0]] = [triplet[1], triplet[2]];
     });
-    if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][0] !== undefined) {
-      return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1];
+    if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1] !== undefined) {
+      if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1] !== undefined) {
+        return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1];
+      } else {
+        return this.maxPrecision[1];
+      }
     } else {
       return this.maxPrecision[1];
     }
