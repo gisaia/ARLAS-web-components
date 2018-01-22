@@ -3,9 +3,9 @@
                               [style.max-width.px]="field.width"
                               [style.min-width.px]="field.width" >
       <div *ngIf="field.isIdField" class="checkbox">
-    <mat-icon [hidden]=!rowItem.isChecked||rowItem.isindeterminated  (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box</mat-icon>
-    <mat-icon [hidden]=rowItem.isChecked||rowItem.isindeterminated (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
-    <mat-icon [hidden]=!rowItem.isindeterminated (click)="determinateItem()" class="primary resultitem__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
+    <mat-icon *ngIf="rowItem.isChecked && !rowItem.isindeterminated"  (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box</mat-icon>
+    <mat-icon *ngIf="!rowItem.isChecked && !rowItem.isindeterminated" (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
+    <mat-icon *ngIf="rowItem.isindeterminated" (click)="determinateItem()" class="primary resultitem__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
 
       </div>
     </td>
