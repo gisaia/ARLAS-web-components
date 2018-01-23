@@ -4,42 +4,37 @@ import { element } from 'protractor';
 import { Subject } from 'rxjs/Subject';
 import { PowerBar } from './model/powerbar';
 
+/**
+ * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
+ * A bar progression represents the term's occurence count.
+ */
 
 @Component({
   selector: 'arlas-powerbars',
   templateUrl: './powerbars.component.html',
   styleUrls: ['./powerbars.component.css']
 })
-/**
- * - The component displays an array of [term, count] as bars sorted decreasingly (inputData). The bars length representing the count.
- * - The array of [term, count] is transformed to an array of `PowerBar` object called `powerBarsList` .
- * - When a PowerBar is selected, it is displayed in the top of the list. Moreover, this PowerBar has to be displayed
- * even when the inputData changes and this PowerBar is no more in it.
- * - Therefore; selected PowerBar objects are stored in a second Set : `selectedPowerbarsList`.
- * - To keep the input and output of the component simple, the selected PowerBars are emitted as
- * an array of terms : `selectedPowerbarsTerms` via the `selectedPowerBarEvent` Subject.
- * - And `selectedPowerbarsTerms` can be set from the exterior as an input.
- */
+
 export class PowerbarsComponent implements OnChanges {
 
 
   /**
-   * @Input
+   * @Input : Angular
    * @description List of powerbars
    */
   @Input() public inputData: Array<[string, number]>;
   /**
-   * @Input
+   * @Input : Angular
    * @description Css class name to use to customize a specific powerbar's style.
    */
   @Input() public customizedCssClass;
   /**
-   * @Input
+   * @Input : Angular
    * @description Term's list of powerbars to select
    */
   @Input() public selectedPowerbarsTerms = new Set<string>();
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the list of selected powerbars terms
    */
   @Output() public selectedPowerBarEvent = new Subject<Set<string>>();
@@ -80,6 +75,9 @@ export class PowerbarsComponent implements OnChanges {
     }
   }
 
+  /**
+   * @description Select or deselect a PowerBar and emits the terms list of selected bars
+   */
   // Select or deselect a PowerBar from the view
   public clickOnPowerbar(powerBar: PowerBar): void {
     if (this.selectedPowerbarsTerms.has(powerBar.term)) {
@@ -97,10 +95,9 @@ export class PowerbarsComponent implements OnChanges {
   }
 
   /**
+   * @description Set selected powerbars from outside of the component
    * @param selectedPowerbars selects the powerbars whose terms are passed in the parameter
    */
-
-  // Set selected powerbars from the exterior of the component
   public setSelectedPowerbars(selectedPowerbars: Set<string>) {
     selectedPowerbars.forEach(powerbarTerm => {
       const powerBar = this.getPowerbarByTerm(powerbarTerm);

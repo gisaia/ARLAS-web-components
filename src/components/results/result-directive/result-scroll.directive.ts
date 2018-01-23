@@ -55,7 +55,7 @@ export class ResultScrollDirective implements OnChanges {
   // When scrolling, the position of the scroll bar is calculated
   // Ask for more data when the scroll bar :
   // - reaches for the "nLastLines" last lines and it is scrolling down only
-  // - when data size increased of 'searchSize'
+  // - when data size increased of 'searchSize' step
   @HostListener('scroll', ['$event'])
   public onScroll(event) {
     this.tbodyHeight = this.el.nativeElement.offsetHeight;

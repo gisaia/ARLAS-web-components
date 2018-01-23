@@ -18,7 +18,11 @@ import { MatButtonToggleChange } from '@angular/material';
 import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
 
-
+/**
+ * ResultList component allows to structure data in a filterable and sortable table.
+ * Items can be represented as rows or grids and are multi-selectable.
+ * For both list and grid modes, each item has detailed data that can be displayed in a togglable space.
+ */
 
 @Component({
   selector: 'arlas-result-list',
@@ -26,16 +30,45 @@ import { OnChanges } from '@angular/core/core';
   styleUrls: ['./result-list.component.css']
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges {
-
+  /**
+   * @constant
+   */
   public GEO_DISTANCE = 'geodistance';
+  /**
+   * @constant
+   */
   public GEOSORT = 'Geo distance sort';
+  /**
+   * @constant
+   */
   public SORT_DESCENDING = 'click for descending sort';
+  /**
+   * @constant
+   */
   public SORT_ASCENDING = 'click for ascending sort';
+  /**
+   * @constant
+   */
   public FILTER_ON = 'Filter on';
+  /**
+   * @constant
+   */
   public CHECK_INBETWEEN = 'Check in between';
+  /**
+   * @constant
+   */
   public CHECK_ALL = 'Check all visible items';
+  /**
+   * @constant
+   */
   public GLOBAL_ACTIONS = 'Global actions';
+  /**
+   * @constant
+   */
   public GRID_MODE = 'Grid mode';
+  /**
+   * @constant
+   */
   public LIST_MODE = 'List mode';
 
   // columnName is the shown name
@@ -43,147 +76,147 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   // dataType (degree, percentage, etc)
   // includes an ID field. It will be the id of each item
   /**
-   * @Input
+   * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
    */
   @Input() public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string }>;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid
    */
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description A configuration object that sets id field, title field and urls
    * to images && thumbnails
    */
   @Input() public fieldsConfiguration: FieldsConfiguration;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description The table width. If not specified, the tableWidth value is
    * equal to container width.
    */
   @Input() public tableWidth: number = null;
 
   /**
-  * @Input
+   * @Input : Angular
   * @description When the `last - n` line is reached, more data is requested.
   */
   @Input() public nLastLines = 5;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Number of new rows added each time the `last - n` line is reached.
    */
   @Input() public searchSize;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Height of the detail grid div (Grid Mode).
    */
   @Input() public detailedGridHeight = 250;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Number of grid columns (Grid Mode).
    */
   @Input() public nbGridColumns = 3;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description List of actions to apply on the selected items.
    */
   @Input() public globalActionsList = new Array<Action>();
 
   /**
-   * @Input
+   * @Input : Angular
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
   @Input() public detailedDataRetriever: DetailedDataRetriever = null;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description List of items ids that are in a indeterminated status.
    */
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
   /**
-   * @Input
+   * @Input : Angular
    * @description List of items ids to be highlighted.
    */
   @Input() public highlightItems: Set<string> = new Set<string>();
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Mode of representation : `list` or `grid`.
    */
   @Input() public defautMode: ModeEnum;
 
   @Input() public isBodyHidden: boolean;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether the sort on the geometry is activated.
    */
   @Input() public isGeoSortActived = false;
   /**
-   * @Input
+   * @Input : Angular
    * @description A fieldName-fieldValue map of fields to filter.
    */
 
   @Input() public filtersMap: Map<string, string | number | Date>;
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
   new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of geo-sorting data.
    */
   @Output() public geoSortEvent: Subject<string> = new Subject<string>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the list of items identifiers whose checkboxes are selected.
    */
   @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits one item identifier that is hovered, selected or clicked on it
    * for consultation purposes.
    */
   @Output() public consultedItemEvent: Subject<ElementIdentifier> = new Subject<ElementIdentifier>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the filtred fields map (fieldName-fieldValue map).
    */
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the request of more data to load. The emited number is the number
    * of times this event has been emitted.
    */
   @Output() public moreDataEvent: Subject<number> = new Subject<number>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of applying the specified action on the specified item.
    */
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
   new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of applying the specified globalb action on the selected items.
    */
   @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
@@ -231,13 +264,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
   }
 
-  // when it's called for more data, an animated loading div is shown
-  public askForMoreData(moreDataCallsCounter: number) {
-    this.moreDataEvent.next(moreDataCallsCounter);
-    this.isMoreDataRequested = true;
-  }
-
-  // Set the table width and height (tbody height)
   public ngOnInit() {
     if (this.fieldsConfiguration !== undefined && this.fieldsConfiguration !== null) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
@@ -290,9 +316,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
-
-  // ngDoCheck is triggered both when the instance of an object has changed or when new elements are
-  // pushed in an Array
   public ngDoCheck() {
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
     const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
@@ -310,22 +333,42 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
-  // Emits which action is applied on which item/product
+  /**
+   * @description Emits the event of asking for more items to fetch
+   * @param moreDataCallsCounter Counts the event's emission occurence
+   */
+   // when it's called for more data, an animated loading div is shown
+  public askForMoreData(moreDataCallsCounter: number) {
+    this.moreDataEvent.next(moreDataCallsCounter);
+    this.isMoreDataRequested = true;
+  }
+
+  /**
+   * @description Emits which action to apply on which item/product
+   */
   public triggerActionOnItem(actionOnItem: { action: Action, elementidentifier: ElementIdentifier }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
+  /**
+   * @description Sets and emits the action to apply to all selected items
+   */
   public setGlobalAction(action: Action) {
     this.globalActionEvent.next(action);
   }
 
+  /**
+   * @description Sets and emits the [fieldName, filterValue] map of filtered fields
+   */
   // Emits a map of only filtered fields
   public setFilters(filtersMap: Map<string, string | number | Date>): void {
     this.filtersMap = filtersMap;
     this.setFiltersEvent.next(this.filtersMap);
   }
 
-  // Emits a list of item/product identifiers
+  /**
+   * @description Sets and emits the identifiers list of selected items
+   */
   public setSelectedItems(selectedItems: Set<string>) {
     this.selectedItems = selectedItems;
     if (selectedItems.size !== this.items.length) {
@@ -336,8 +379,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.selectedItemsEvent.next(Array.from(this.selectedItems));
   }
 
-
-  // Emits the column to sort on and the sort direction
+  /**
+   * @description Emits the column to sort on and the sort direction
+   */
   public sort(sortedColumn: Column): void {
     this.isGeoSortActived = false;
     if (sortedColumn.sortDirection === SortEnum.none) {
@@ -356,6 +400,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.sortColumnEvent.next(this.sortedColumn);
   }
 
+  /**
+   * @description Emits the request event of geo-sorting
+   */
   public geoSort(column: Column): void {
     this.isGeoSortActived = true;
     this.columns.forEach(column => {
@@ -366,7 +413,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.geoSortEvent.next(this.GEO_DISTANCE);
   }
 
-  // Emits the identifier of the hovered item/product
+  /**
+   * @description Sets and emits the hovered item's identifier
+   */
   public setConsultedItem(identifier: string) {
     const elementidentifier: ElementIdentifier = {
       idFieldName: this.fieldsConfiguration.idFieldName,
@@ -375,10 +424,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.consultedItemEvent.next(elementidentifier);
   }
 
+  /**
+   * @description Sets the border style of rows
+   */
   public setBorderStyle(borderStyle): void {
     this.borderStyle = borderStyle;
   }
 
+  /**
+   * @description Sets the selected grid item
+   */
   public setSelectedGridItem(item: Item) {
     this.selectedGridItem = item;
     if (this.detailedGridCounter === 0) {
@@ -387,6 +442,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 - this.detailedGridHeight;
   }
 
+  /**
+   * @description Sets the display style according to the mode
+   */
   public whichMode(toggleChangeEvent: MatButtonToggleChange) {
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
@@ -399,6 +457,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
   }
 
+  /**
+   * @description Selects all the items
+   */
   public selectAllItems() {
     this.allItemsChecked = !this.allItemsChecked;
     this.selectedItems = new Set<string>();
@@ -415,7 +476,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.setSelectedItems(this.selectedItems);
   }
 
-
+  /**
+   * @description Selects all the items between the farest and nearest selected items
+   */
   public selectInBetween() {
     const sortedItemsPositions = Array.from(this.selectedItemsPositions).sort((a: number, b: number) => a - b);
     if (sortedItemsPositions.length !== 0) {
@@ -431,6 +494,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
+  /**
+   * @description Sets the positions list of the selected items
+   */
   public setItemsPositionsList(item: Item) {
     if (item.isChecked) {
       this.selectedItemsPositions.add(item.position);
