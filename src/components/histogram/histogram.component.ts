@@ -3,8 +3,10 @@ import {
   ViewContainerRef, ElementRef, OnChanges, SimpleChanges, AfterViewChecked
 } from '@angular/core';
 
-import { ChartType, DataType, DateUnit, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
-  HistogramUtils } from './histogram.utils';
+import {
+  ChartType, DataType, DateUnit, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
+  HistogramUtils
+} from './histogram.utils';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
@@ -22,6 +24,9 @@ import { ChartOneDimension } from './model/charts/ChartOneDimension';
 import { AbstractSwimlane } from './model/swimlanes/AbstractSwimlane';
 import { SwimlaneCircles } from './model/swimlanes/SwimlaneCircles';
 import { SwimlaneBars } from './model/swimlanes/SwimlaneBars';
+import * as histogramJsonSchema from './histogram.schema.json';
+import * as swimlaneJsonSchema from './swimlane.schema.json';
+
 
 @Component({
   selector: 'arlas-histogram',
@@ -238,25 +243,34 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       });
   }
 
+  public static getHistogramJsonSchema(): Object {
+    return histogramJsonSchema;
+  }
+
+  public static getSwimlaneJsonSchema(): Object {
+    return swimlaneJsonSchema;
+  }
+
+
   public ngOnChanges(changes: SimpleChanges): void {
 
     if (this.histogram !== undefined) {
       this.histogram.histogramParams.histogramNode = this.viewContainerRef.element.nativeElement;
     } else {
       switch (this.chartType) {
-        case ChartType.area : {
+        case ChartType.area: {
           this.histogram = new ChartArea();
           break;
         }
-        case ChartType.bars : {
+        case ChartType.bars: {
           this.histogram = new ChartBars();
           break;
         }
-        case ChartType.oneDimension : {
+        case ChartType.oneDimension: {
           this.histogram = new ChartOneDimension();
           break;
         }
-        case ChartType.swimlane : {
+        case ChartType.swimlane: {
           if (this.swimlaneMode === SwimlaneMode.circles) {
             this.histogram = new SwimlaneCircles();
           } else {
@@ -264,7 +278,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           }
           break;
         }
-        default : {
+        default: {
           break;
         }
       }
@@ -288,7 +302,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (changes.intervalListSelection && this.isHistogramSelectable && this.histogram !== undefined) {
       if (changes.intervalListSelection.currentValue) {
         this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
-          this.histogram.redrawSelectedIntervals();
+        this.histogram.redrawSelectedIntervals();
       }
     }
   }

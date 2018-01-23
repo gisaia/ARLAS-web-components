@@ -3,6 +3,7 @@ import { log } from 'util';
 import { element } from 'protractor';
 import { Subject } from 'rxjs/Subject';
 import { PowerBar } from './model/powerbar';
+import * as powerbarsJsonSchema from './powerbars.schema.json';
 
 
 @Component({
@@ -61,6 +62,10 @@ export class PowerbarsComponent implements OnChanges {
   public NEUTRAL_STATE = 'neutral-state';
 
   constructor() { }
+
+  public static getPowerbarsJsonSchema(): Object {
+    return powerbarsJsonSchema;
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.inputData) {
