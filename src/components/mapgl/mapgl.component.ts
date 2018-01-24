@@ -27,6 +27,10 @@ export enum drawType {
   CIRCLE
 }
 
+/**
+ * Mapgl Component allows to display and select geometrical data on a map.
+ */
+
 @Component({
   selector: 'arlas-mapgl',
   templateUrl: './mapgl.component.html',
@@ -59,126 +63,126 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private showAllFeature = false;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Style of the map
    */
   @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
   /**
-   * @Input
+   * @Input : Angular
    * @description Font name of clusters labels.
    */
   @Input() public fontClusterlabel = 'Roboto Regular';
   /**
-   * @Input
+   * @Input : Angular
    * @description Size of clusters labels
    */
   @Input() public sizeClusterlabel = 12;
   /**
-   * @Input
+   * @Input : Angular
    * @description Zoom of the map when it's initialized
    */
   @Input() public initZoom = 2;
   /**
-   * @Input
+   * @Input : Angular
    * @description Coordinates of the map's centre.
    */
   @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
   /**
-   * @Input
+   * @Input : Angular
    * @description Geometry type of clusters : Rectangles or Circles.
    */
   @Input() public drawType: drawType;
   /**
-   * @Input
+   * @Input : Angular
    * @description Path to the count property in clusters features.
    */
   @Input() public countPath = 'point_count';
   /**
-   * @Input
+   * @Input : Angular
    * @description Path to the normalized count property in clusters features.
    */
   @Input() public countNormalizePath = 'point_count_normalize';
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of geobox.
    */
   @Input() public paintRuleGeoBox: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of feature's fill.
    * @example paintRuleGeoBox = {line-color: '#AAAAAA', line-opacity: 0.2}
    */
   @Input() public paintRuleFeatureFill: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of feature's lines.
    */
   @Input() public paintRuleFeatureLine: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of circular clusters.
    */
   @Input() public paintRuleClusterCircle: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of rectangular clusters lines.
    */
   @Input() public paintRuleClusterLineRectangle: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of rectangular clusters fill.
    */
   @Input() public paintRuleClusterFillRectangle: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Sets the style of ponctual features.
    */
   @Input() public paintRuleFeatureCirclePoint: Object = {};
   /**
-   * @Input
+   * @Input : Angular
    * @description Margin applied to the map extent. Data is loaded in all this extent
    */
   @Input() public margePanForLoad: number;
   /**
-   * @Input
+   * @Input : Angular
    * @description Margin applied to the map extent.
    * Before loading data, the components checks first if there are features  already loaded in this extent.
    */
   @Input() public margePanForTest: number;
   /**
-   * @Input
+   * @Input : Angular
    * @description The data displayed on map.
    */
   @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
   /**
-   * @Input
+   * @Input : Angular
    * @description The geobox feature.
    */
   @Input() public geoboxdata: { type: string, features: Array<any> } = this.emptyData;
   /**
-   * @Input
+   * @Input : Angular
    * @description the field name of ids.
    */
   @Input() public idFeatureField: string;
   /**
-   * @Input
+   * @Input : Angular
    * @description Bounds that the view map fits. It's an array of two corners. Each corner is an lat-long position :
    * For example : boundsToFit = [[30.51, -54.3],[30.57, -54.2]]
    */
   @Input() public boundsToFit: Array<Array<number>>;
   /**
-   * @Input
+   * @Input : Angular
    * @description The padding added in the top-left and bottom-right corners of a map container that shouldn't be accounted
    * for when setting the view to fit bounds.
    */
   @Input() public fitBoundsOffSet: Array<number> = [0, 0];
   /**
-   * @Input
+   * @Input : Angular
    * @description The maximum zoom level so that the bounds fit the map view.
    */
   @Input() public fitBoundsMaxZoom = 22;
   /**
-   * @Input
+   * @Input : Angular
    * @description Feature to highlight.
    */
   @Input() public featureToHightLight: {
@@ -186,48 +190,48 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     elementidentifier: ElementIdentifier
   };
   /**
-   * @Input
+   * @Input : Angular
    * @description List of feature to select.
    */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
   /**
-   * @Input
+   * @Input : Angular
    * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
    */
   @Input() public zoomToPrecisionCluster: Array<Array<number>>;
   /**
-   * @Input
+   * @Input : Angular
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
    */
   @Input() private maxPrecision: Array<number>;
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of whether redraw the tile.
    */
 
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of removing the geobox.
    */
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits an event at the end of drawing a geobox.
    */
   @Output() public onChangeBbox: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of moving the map.
    */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of clicking on a feature.
    */
   @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the event of hovering feature.
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
@@ -640,11 +644,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
+  /**
+   * @description Displays the geobox
+   */
   public addGeoBox() {
     this.map.getCanvas().style.cursor = 'crosshair';
     this.isDrawingBbox = true;
   }
 
+  /**
+   * @description Removes the geobox
+   */
   public removeGeoBox() {
 
     this.map.getCanvas().style.cursor = '';

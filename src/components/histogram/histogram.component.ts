@@ -28,6 +28,13 @@ import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
 
 
+/**
+ * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
+ * Charts can be represented as bars or areas.
+ * Swimlanes can be represented as bars or circles.
+ * For both modes, data can be multi-selected using a selection brush.
+ */
+
 @Component({
   selector: 'arlas-histogram',
   templateUrl: './histogram.component.html',
@@ -37,7 +44,7 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
 export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Data to plot in the chart.
    */
   @Input() public data: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>;
@@ -47,7 +54,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    */
   @Input() public dataType: DataType = DataType.numeric;
   /**
-   * @Input
+   * @Input : Angular
    * @description The unity of data key when it represents `time`.
    */
   @Input() public dateUnit: DateUnit = DateUnit.millisecond;
@@ -56,177 +63,177 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    */
   @Input() public dataUnit = '';
   /**
-   * @Input
+   * @Input : Angular
    * @description The date format of the start/end values.
    *  Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
    */
   @Input() public valuesDateFormat: string = null;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether the chart is selectable.
    */
   @Input() public isHistogramSelectable = true;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether the selection is multiple.
    */
   @Input() public multiselectable = false;
   /**
-   * @Input
+   * @Input : Angular
    * @description A single interval that selects data.
    */
   @Input() public intervalSelection: SelectedInputValues;
   /**
-   * @Input
+   * @Input : Angular
    * @description A list of intervals that select data.
    */
   @Input() public intervalListSelection: SelectedInputValues[];
   /**
-   * @Input
+   * @Input : Angular
    * @description Top position of the remove-selection-button.
    */
   @Input() public topOffsetRemoveInterval = 40;
   /**
-   * @Input
+   * @Input : Angular
    * @description leftOffsetRemoveInterval.
    */
   @Input() public leftOffsetRemoveInterval = 18;
   /**
-   * @Input
+   * @Input : Angular
    * @description A 0 to 1 weight of the brush height. It controls the brush handles height.
    */
   @Input() public brushHandlesHeightWeight = 1 / 2;
   /**
-   * @Input
+   * @Input : Angular
    * @description Chart's representation type.
    */
   @Input() public chartType: ChartType = ChartType.area;
   /**
-   * @Input
+   * @Input : Angular
    * @description Chart's title.
    */
   @Input() public chartTitle = '';
   /**
-   * @Input
+   * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
    */
   @Input() public chartWidth: number = null;
   /**
-   * @Input
+   * @Input : Angular
    * @description Chart's height. If not specified, the chart takes the component's container height.
    */
   @Input() public chartHeight: number = null;
   /**
-   * @Input
+   * @Input : Angular
    * @description Css class name to use to customize a specific `arlas-histogram` component.
    */
   @Input() public customizedCssClass = '';
 
   /**
-   * @Input
+   * @Input : Angular
    * @description The xAxis positon : above or below the chart.
    */
   @Input() public xAxisPosition: Position = Position.bottom;
   /**
-   * @Input
+   * @Input : Angular
    * @description The start/end values positon : above or below the chart.
    */
   @Input() public descriptionPosition: Position = Position.bottom;
   /**
-   * @Input
+   * @Input : Angular
    * @description Number of ticks in the X axis.
    */
   @Input() public xTicks = 5;
   /**
-   * @Input
+   * @Input : Angular
    * @description Number of ticks in the Y axis.
    */
   @Input() public yTicks = 5;
   /**
-   * @Input
+   * @Input : Angular
    * @description Number of labels in the X axis.
    */
   @Input() public xLabels = 5;
   /**
-   * @Input
+   * @Input : Angular
    * @description Number of labels in the Y axis.
    */
   @Input() public yLabels = 5;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether showing the X axis ticks.
    */
   @Input() public showXTicks = true;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether showing the Y axis ticks.
    */
   @Input() public showYTicks = true;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether showing the X axis labels.
    */
   @Input() public showXLabels = true;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether showing the Y axis labels.
    */
   @Input() public showYLabels = true;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether showing the horizontal dashed lines.
    */
   @Input() public showHorizontalLines = true;
   /**
-   * @Input
+   * @Input : Angular
    * @description The date format of ticks.
    * Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
    */
   @Input() public ticksDateFormat: string = null;
   /**
-   * @Input
+   * @Input : Angular
    * @description Whether the curve of an `area` chart is smoothed.
    */
   @Input() public isSmoothedCurve = true;
 
   /**
-   * @Input
+   * @Input : Angular
    * @description Weight applied to bars width. ]0,1].
    */
   @Input() public barWeight = 0.6;
   /**
-   * @Input
+   * @Input : Angular
    * @description Either a hex string color or a color name (in English) or a saturation interval.
    */
   @Input() public paletteColors: [number, number] | string = null;
   /**
-   * @Input
+   * @Input : Angular
    * @description The swimlane representation mode.
    */
   @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
   /**
-   * @Input
+   * @Input : Angular
    * @description The width of swimlane labels space.
    */
   @Input() public swimLaneLabelsWidth = null;
   /**
-   * @Input
+   * @Input : Angular
    * @description The radius of swimlane bars borders.
    */
   @Input() public swimlaneBorderRadius = 3;
   /**
-   * @Input
+   * @Input : Angular
    * @description The height of a single lane. If not specified, a lane height is the chartHeight devided by the number of lanes.
    */
   @Input() public swimlaneHeight: number = null;
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the list of selected intervals.
    */
   @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
 
   /**
-   * @Output
+   * @Output : Angular
    * @description Emits the hovered bucket key (key as in HistogramData).
    */
   @Output() public hoveredBucketEvent: Subject<Date | number> = new Subject<Date | number>();
@@ -317,22 +324,37 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
   }
 
+  /**
+   * @description Plots the histogram
+   */
   public plotHistogram(inputData: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>): void {
     this.histogram.plot(inputData);
   }
 
+  /**
+   * @description Resizes the histogram on windows resize event
+   */
   public resizeHistogram(e: Event): void {
     this.histogram.resize();
   }
 
+  /**
+   * @description Removes the selected interval
+   */
   public removeSelectInterval(id: string) {
     this.histogram.removeSelectInterval(id);
   }
 
+  /**
+   * @description Displays the "Remove" tooltip
+   */
   public overRemove(e) {
     this.histogram.overRemove(e);
   }
 
+  /**
+   * @description Hides the "Remove" tooltip
+   */
   public leaveRemove() {
     this.histogram.leaveRemove();
   }
