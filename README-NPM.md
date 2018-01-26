@@ -115,7 +115,7 @@ A component to structure data in a filterable, sortable, selectable table.
 | --------------  |  ----------------------------------------------------------------- | --------------------------- | ------------------- |
 | **fieldsList**  | `Array<{columnName: string, fieldName: string, dataType: string}>` | - **columnName** is the shown name. -**fieldName** is the real field name that's hidden. **dataType** (degree, percentage, etc). It includes an ID field. It will be the id of each item | Mandatory  |
 | **idFieldName** | `string`                                                           | - Name of the id field | Mandatory  |
-| **rowItemList** | ```Array<Map<string, string | number | Date>>```                   | - It's a list of fieldName-fieldValue map | Mandatory  |
+| **rowItemList** | `Array<Map<string, string | number | Date>>`                       | - It's a list of fieldName-fieldValue map | Mandatory  |
 | **tableWidth**  | `number`                                                           | - The table width. If not specified, the tableWidth value is equal to container width | Optional |
 | **detailedDataRetriever** | `DetailedDataRetriever`                                  | - A detailed-data retriever object that implements DetailedDataRetriever interface | Mandatory  |
 | **searchSize**   | `number`                                                          | - Number of new rows added after each moreDataEvent | Mandatory  |
