@@ -12,7 +12,6 @@ import { element } from 'protractor';
 import { DoCheck, IterableDiffers } from '@angular/core';
 import { PitchToggle, ControlButton } from './mapgl.component.control';
 import { Observable } from 'rxjs/Observable';
-import { MapDataEvent } from "mapbox-gl";
 
 export interface OnMoveResult {
   zoom: number;
