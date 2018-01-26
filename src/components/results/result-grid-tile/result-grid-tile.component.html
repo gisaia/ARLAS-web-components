@@ -1,12 +1,12 @@
 <div class="resultgrid" (click)="setClickedOnItem()">
-  <div class="resultgrid--container-hover-{{gridTile.ishighLight}}">
+  <div class="resultgrid--container-highlight-{{gridTile.ishighLight}}" color="primary">
        <mat-icon *ngIf="gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</mat-icon>
        <mat-icon *ngIf="!gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
        <mat-icon *ngIf="gridTile.isindeterminated" (click)="determinateItem()" class="primary resultgrid__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
     <div matTooltip="{{SHOW_IMAGE}}"  class="resultgrid__img" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'">
 
     </div>
-    <div class="resultgrid__title-hover-{{gridTile.ishighLight}}">
+    <div class="resultgrid__title-highlight-{{gridTile.ishighLight}}">
       <span> {{gridTile.title}} </span>
     </div>
   </div>
