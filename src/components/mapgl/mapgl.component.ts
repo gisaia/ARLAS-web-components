@@ -237,7 +237,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
-  public isloaded = false;
 
   constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -545,23 +544,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
-
-
-
     });
-
-    this.map.on('render', () => {
-      this.isloaded = true;
-      if (this.map.loaded()) {
-        this.isloaded = false;
-      }
-    });
-
     const moveend = Observable
       .fromEvent(this.map, 'moveend')
-      .skipWhile(x => this.isloaded)
       .debounceTime(750);
-
 
     moveend.subscribe(e => {
       this.west = this.map.getBounds().getWest();
