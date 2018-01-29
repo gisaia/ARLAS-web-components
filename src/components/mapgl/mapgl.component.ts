@@ -11,6 +11,7 @@ import { paddedBounds, xyz } from './mapgl.component.util';
 import { element } from 'protractor';
 import { DoCheck, IterableDiffers } from '@angular/core';
 import { PitchToggle, ControlButton } from './mapgl.component.control';
+import { Observable } from 'rxjs/Observable';
 
 export interface OnMoveResult {
   zoom: number;
@@ -235,6 +236,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Emits the event of hovering feature.
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+
 
   constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -542,11 +544,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
-
-
-
     });
-    this.map.on('moveend', () => {
+    const moveend = Observable
+      .fromEvent(this.map, 'moveend')
+      .debounceTime(750);
+
+    moveend.subscribe(e => {
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
       this.east = this.map.getBounds().getEast();
