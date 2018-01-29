@@ -3,7 +3,7 @@
 }
 .resultlist__header--columns /*public*/ /*Sets columns names style.*/
 {
-  color: #043b53;
+
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   text-align: left;
@@ -29,10 +29,6 @@
   color: gray;
 }
 
-.resultlist__header--columns__geosort--icon--active {
-  color: #043b53;
-}
-
 .resultlist {
   height: 100%;
   width: 100%;
@@ -43,12 +39,13 @@
   border-collapse: collapse;
 }
 
-.resultgrid--checkbox__count, /*public*/ /*Sets the number of selected items style*/
-.resultgrid--checkbox /*public*/ /*Sets the select-all-items checkbox container style.*/
+.resultgrid--checkbox__count /*public*/ /*Sets the number of selected items style*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.7em;
   font-weight: bold;
+  float:left;
+  padding: 4px 10px 0 5px;
 }
 
 .resultlist__moredata /*public*/ /*Sets the moredata-loading-div style*/
@@ -111,32 +108,11 @@
 {
   width:28%;
   float:left;
-  padding-left: 2px;
-  color: #043b53;
+  padding-top: 10px;
 }
 
 .resultlist__tools--select-all {
-  margin-top: 8px;
   float: left;
-  width: 30%;
-}
-.selectAll__icon_check /*public*/ /*Sets the select-all-items checkbox icon style.*/
-{
-  margin-top: 8px;
-  float: left;
-  font-size: 30px;
-  width: 30px;
-  height: 30px;
-  color:#043B53;
-}
-
-/*.selectBetween__icon*/ /*public*/ /*Sets the select-in-between icon style.*/
-
-.resultgrid--checkbox__count {
-  float:left;
-  margin-top:8px;
-  padding-top: 4px;
-  width: 15%;
 }
 
 .resultlist__tools--select-between /*public*/ /*Sets the select-in-between container style.*/
@@ -144,7 +120,6 @@
   float: left;
 }
 
-.resultlist__tools--mode, /*public*/ /*Sets the choose-mode-toggle-button container style.*/
 .resultlist__tools--actions /*public*/ /*Sets the actions button container style.*/
 {
   width:35%;
@@ -152,7 +127,10 @@
   text-align: right;
 }
 
-.resultlist__tools--mode {
+.resultlist__tools--mode /*public*/ /*Sets the choose-mode-toggle-button container style.*/
+{
+  width:35%;
+  float:right;
   text-align: right;
 }
 
@@ -191,6 +169,7 @@ tbody {
 
 ::-webkit-scrollbar-track
 {
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
 	background-color: #F5F5F5;
 }
@@ -201,7 +180,9 @@ tbody {
 }
 
 .selectBetween__icon{
-  color:#043b53;
-  -webkit-transform: rotate(-90deg);
   cursor: pointer
+}
+
+.selectAll__icon_check{
+  cursor: pointer;
 }

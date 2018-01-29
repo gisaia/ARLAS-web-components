@@ -23,12 +23,11 @@
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
-  margin: 3px 6px 3px 0;
-  background-color: #043b53;
-  padding: 10px 15px;
-  display: inline-block;
-  color: white;
+  margin: 3px;
+  padding: 5px 10px;
   cursor: pointer;
+  color:white;
+  background-color: #607D8B;
 }
 
 

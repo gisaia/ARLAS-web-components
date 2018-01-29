@@ -28,7 +28,7 @@
         </th>
       </ng-container>
     </tr>
-    <tr class="resultlist__filter">
+    <tr class="resultlist__filter" *ngIf="this.displayFilters">
       <ng-container *ngFor="let column of columns">
         <td [style.width.px]="column.width" *ngIf="column.isIdField">
           <span class="resultlist__header--columns--hidden"></span>
@@ -49,10 +49,8 @@
       <td [colSpan]="columns?.length" [style.width.px]="tableWidth">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
-            <div class="resultgrid--checkbox">
-                <mat-icon *ngIf="allItemsChecked" (click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box</mat-icon>
-                <mat-icon *ngIf="!allItemsChecked"(click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
-            </div>
+              <mat-icon *ngIf="allItemsChecked" (click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box</mat-icon>
+              <mat-icon *ngIf="!allItemsChecked"(click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
@@ -64,7 +62,7 @@
 
         </div>
         <div class="resultlist__tools--actions">
-          <button matTooltip="{{GLOBAL_ACTIONS}}" mat-icon-button [matMenuTriggerFor]="menu">
+          <button matTooltip="{{GLOBAL_ACTIONS}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
             <mat-icon>menu</mat-icon>
           </button>
           <mat-menu #menu="matMenu">

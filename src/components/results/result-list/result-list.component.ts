@@ -157,6 +157,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Input() public defautMode: ModeEnum;
 
   @Input() public isBodyHidden: boolean;
+
+  /**
+   * @Input : Angular
+   * @description Whether filters on list are displayed.
+   */
+  @Input() public displayFilters = true;
+
   /**
    * @Input : Angular
    * @description Whether the sort on the geometry is activated.

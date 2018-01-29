@@ -120,6 +120,7 @@ A component to structure data in a filterable, sortable, selectable table.
 | **detailedDataRetriever** | `DetailedDataRetriever`                                  | - A detailed-data retriever object that implements DetailedDataRetriever interface | Mandatory  |
 | **searchSize**   | `number`                                                          | - Number of new rows added after each moreDataEvent | Mandatory  |
 | **nLastLines**  | `number`                                                           | - When the scrollbar achieves this lines, more data is called | Optional. Default value is 5.  |
+| **displayFilters** | `boolean` | - Whether the filters are displayed or not | **Default** : `true` |
 
 ### Outputs : 
 
