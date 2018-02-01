@@ -3,6 +3,8 @@ import { Observable, Subject } from 'rxjs/Rx';
 import * as d3 from 'd3';
 import { DonutDimensions, DonutArc, DonutUtils, DonutNode } from './donut.utils';
 import { MarginModel, Tooltip } from '../histogram/histogram.utils';
+import * as donutJsonSchema from './donut.schema.json';
+
 
 @Component({
   selector: 'arlas-donut',
@@ -12,38 +14,48 @@ import { MarginModel, Tooltip } from '../histogram/histogram.utils';
 })
 export class DonutComponent implements OnInit, OnChanges {
   /**
-   * @Input : angular
+   * @Input : Angular
    * @description Data tree to plot in the donut.
    */
   @Input() public donutData: DonutArc;
 
   /**
-   * @Input : angular
+   * @Input : Angular
    * @description Sets the opacity of non-hovered or non-selected nodes.
    */
   @Input() public opacity = 0.4;
 
+  /**
+   * @Input : Angular
+   * @description Css class name to use to customize a specific powerbar's style.
+   */
+  @Input() public customizedCssClass;
 
   /**
-   * @Input : angular
+   * @Input : Angular
    * @description List of selected nodes.
    */
   @Input() public selectedArcsList: Array<Array<{ringName: string, name: string}>> =
   new Array<Array<{ringName: string, name: string}>>();
 
   /**
-   * @Input : angular
+   * @Input : Angular
    * @description Whether the donut is multi-selectable.
    */
-  @Input() public multiselectable = false;
+  @Input() public multiselectable = true;
 
   /**
-   * @Output : angular
-   * @description Emits the selected node that is positioned as the last element of the set.
-   * If you go backwards on the set, you encounter the select node's parents in the right order.
+   * @Output : Angular
+   * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
   @Output() public selectedNodesEvent: Subject<Array<Array<{ringName: string, name: string}>>> =
     new Subject<Array<Array<{ringName: string, name: string}>>>();
+
+  /**
+   * @Output : Angular
+   * @description Emits the hovered node and the path to it's parents.
+   * The key of the map is the node's name and the value is its color on the donut
+   */
   @Output() public hoveredNodesEvent: Subject<Map<string, string>> = new Subject<Map<string, string>>();
 
 
@@ -85,9 +97,11 @@ export class DonutComponent implements OnInit, OnChanges {
       }
     }
 
-    if (changes.selectedArcsList && this.selectedArcsList !== undefined && this.selectedArcsList !== null) {
+    if (changes.selectedArcsList && this.selectedArcsList !== undefined && this.selectedArcsList !== null
+      && this.donutNodes !== undefined) {
       if (this.multiselectable) {
         this.deselectAll();
+        this.removeUnExistingNodes();
         this.reapplySelection();
         this.styleNodes();
       } else {
@@ -103,6 +117,16 @@ export class DonutComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * @returns Json schema of the donut component for configuration
+   */
+  public static getDonutJsonSchema(): Object {
+    return donutJsonSchema;
+  }
+
+  /**
+   * @description Plots the donut
+   */
   private plot(): void {
     if (this.donutContext) {
       this.donutContext.remove();
@@ -113,6 +137,9 @@ export class DonutComponent implements OnInit, OnChanges {
     this.plotDonut();
   }
 
+  /**
+   * @description Creates donuts arcs
+   */
   private createDonutArcs(): void {
     this.x = d3.scaleLinear().range([0, 2 * Math.PI]);
     this.y = d3.scaleSqrt().range([0, this.donutDimensions.radius]);
@@ -123,6 +150,9 @@ export class DonutComponent implements OnInit, OnChanges {
       .outerRadius((d) => Math.max(0, this.y(d.outerRadius)));
   }
 
+  /**
+   * @description Inialize donuts dimensions
+   */
   private initializeDonutDimensions(): void {
     const width = this.el.nativeElement.childNodes[0].offsetWidth;
     const height = this.el.nativeElement.childNodes[0].offsetHeight;
@@ -134,6 +164,9 @@ export class DonutComponent implements OnInit, OnChanges {
     this.donutDimensions = { svg, width, height, radius };
   }
 
+  /**
+   * @description Transforms input data to d3 nodes
+   */
   private structureDataToNodes(): void {
     const root: d3.HierarchyNode<any> = d3.hierarchy(this.donutData)
       .sum((d) => d.size)
@@ -149,6 +182,9 @@ export class DonutComponent implements OnInit, OnChanges {
     });
   }
 
+  /**
+   * @description Draws the donuts arcs
+   */
   private plotDonut(): void {
     this.donutContext = this.donutDimensions.svg
       .append('g')
@@ -170,26 +206,17 @@ export class DonutComponent implements OnInit, OnChanges {
 
   private onClick(clickedNode: DonutNode): void {
     if (this.multiselectable) {
-      if (clickedNode.depth > 0) {
-        this.donutNodes[0].isSelected = false;
+      this.removeHigherNodes(clickedNode);
+      this.donutNodes[0].isSelected = false;
+      if (clickedNode.depth > 0 && !clickedNode.data.isOther) {
         if (!clickedNode.isSelected) {
-          clickedNode.isSelected = true;
-          this.selectedArcsList.push(DonutUtils.getNodePathAsArray(clickedNode));
+          this.addSelectedNode(clickedNode);
         } else {
-          clickedNode.isSelected = false;
-          let nodeIndex = null;
-          for (let i = 0; i < this.selectedArcsList.length; i++) {
-            const node = DonutUtils.getNode(this.selectedArcsList[i], this.donutNodes);
-            if (node === clickedNode) {
-              nodeIndex = i;
-              break;
-            }
-          }
-          this.selectedArcsList.splice(nodeIndex, 1);
+          this.removeSelectedNode(clickedNode);
         }
         this.styleNodes();
         this.selectedNodesEvent.next(this.selectedArcsList);
-      } else {
+      } else if (clickedNode.depth === 0) {
         if (!clickedNode.isSelected && this.selectedArcsList.length > 0) {
           clickedNode.isSelected = true;
           this.selectedArcsList = [];
@@ -199,7 +226,7 @@ export class DonutComponent implements OnInit, OnChanges {
         }
       }
     } else {
-      if (clickedNode.depth > 0) {
+      if (clickedNode.depth > 0 && !clickedNode.data.isOther) {
         this.donutNodes[0].isSelected = false;
 
         if (!clickedNode.isSelected) {
@@ -218,7 +245,7 @@ export class DonutComponent implements OnInit, OnChanges {
           this.tweenNode(this.donutNodes[0], 750);
         }
         this.selectedNodesEvent.next(this.selectedArcsList);
-      } else {
+      } else  if (clickedNode.depth === 0) {
         if (!clickedNode.isSelected && this.selectedArcsList.length > 0) {
           clickedNode.isSelected = true;
           this.selectedArcsList = [];
@@ -231,21 +258,139 @@ export class DonutComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * @param clickedNode The selected node on the donut
+   * @description Add the selected node to selectedArcsList
+   */
+  private addSelectedNode(clickedNode: DonutNode): void  {
+    let hasSelectedChild = false;
+    if (clickedNode.children !== undefined) {
+      clickedNode.children.every(child => {
+        hasSelectedChild = (<DonutNode>child).isSelected;
+        return !(<DonutNode>child).isSelected;
+      });
+    }
+    if (!hasSelectedChild) {
+      clickedNode.isSelected = true;
+      this.selectedArcsList.push(DonutUtils.getNodePathAsArray(clickedNode));
+    }
+  }
+
+  /**
+   * @param clickedNode The unselected node from the donut
+   * @description Removes the selected node from selectedArcsList
+   */
+  private removeSelectedNode(clickedNode: DonutNode): void {
+    clickedNode.isSelected = false;
+    let nodeIndex = null;
+    let nodeAsPath;
+    for (let i = 0; i < this.selectedArcsList.length; i++) {
+      const node = DonutUtils.getNode(this.selectedArcsList[i], this.donutNodes);
+      if (node === clickedNode) {
+        nodeIndex = i;
+        nodeAsPath = this.selectedArcsList[i];
+        break;
+      }
+    }
+    this.selectedArcsList.splice(nodeIndex, 1);
+    this.removeAllSimilarNodesOfSameRing(nodeAsPath);
+  }
+
+  /**
+   * @param clickedNode The selected/unselected node of the donut
+   * @description Removes from selectArcsList all the parent nodes of the clicked node that are selected
+  */
+  private removeHigherNodes(clickedNode: DonutNode): void {
+    const nodeAsArray = DonutUtils.getNodePathAsArray(clickedNode);
+    const listOfHigherNodesToRemove = [];
+    while (nodeAsArray.length > 1) {
+      nodeAsArray.shift();
+      const higherNode = DonutUtils.getNode(nodeAsArray, this.donutNodes);
+      this.selectedArcsList.forEach(selectedArc => {
+        if (selectedArc.length === nodeAsArray.length) {
+          const selectedNode = DonutUtils.getNode(selectedArc, this.donutNodes);
+          if (higherNode === selectedNode) {
+            listOfHigherNodesToRemove.push(this.selectedArcsList.indexOf(selectedArc));
+          }
+        }
+      });
+    }
+    for (let i = 0; i < listOfHigherNodesToRemove.length; i++) {
+      this.selectedArcsList.splice(listOfHigherNodesToRemove[i] - i, 1);
+    }
+  }
+
+  /**
+   * @description Removes the unexisting nodes in the donut from the selectedArcsList
+   */
+  private removeUnExistingNodes(): void {
+     const listUnExistingNodesToRemove = [];
+     this.selectedArcsList.forEach(arc => {
+       if (DonutUtils.getNode(arc, this.donutNodes) === null) {
+         listUnExistingNodesToRemove.push(this.selectedArcsList.indexOf(arc));
+       }
+     });
+     for (let i = 0; i < listUnExistingNodesToRemove.length; i++) {
+       this.selectedArcsList.splice(listUnExistingNodesToRemove[i] - i, 1);
+     }
+  }
+
+  /**
+   * @param selectedArc Path from the selected arc to the ultimate parent (as an array)
+   * @description REMOVES ALL THE NODES OF SAME RING HAVING THE SAME VALUE FROM THE SELECTEDARCSLIST,
+   * ONLY IF THERE IS A DIFFERENT VALUE ALREADY SELECTED ON THIS RING
+   */
+  private removeAllSimilarNodesOfSameRing(selectedArc: Array<{ringName: string, name: string}>): void {
+    const listNodesToRemove = [];
+    let removeAll = false;
+    for (let i = 0; i < this.selectedArcsList.length; i++) {
+      const arc = this.selectedArcsList[i];
+      if (arc.length === selectedArc.length && arc[0].ringName === selectedArc[0].ringName && arc[0].name !== selectedArc[0].name) {
+        removeAll = true;
+        break;
+      }
+    }
+
+    if (removeAll) {
+      for (let i = 0; i < this.selectedArcsList.length; i++) {
+        const arc = this.selectedArcsList[i];
+        if (arc.length === selectedArc.length && arc[0].ringName === selectedArc[0].ringName && arc[0].name === selectedArc[0].name) {
+          listNodesToRemove.push(i);
+        }
+      }
+    }
+    for (let i  = 0; i < listNodesToRemove.length; i++) {
+      this.selectedArcsList.splice(listNodesToRemove[i] - i, 1);
+    }
+  }
+
+  /**
+   * @description Set isSelected attribute to false for all the donut's nodes
+   */
   private deselectAll(): void {
     this.donutNodes.forEach(node => {
       node.isSelected = false;
     });
   }
 
+  /**
+   * @description Set isSelected attribute to true giving the selectedArcsList
+   */
   private reapplySelection (): void {
     this.selectedArcsList.forEach ((nodePath) => {
-      DonutUtils.getNode(nodePath, this.donutNodes).isSelected = true;
+      const node = DonutUtils.getNode(nodePath, this.donutNodes);
+      if (node !== null) {
+        node.isSelected = true;
+      }
     });
   }
 
+  /**
+   * @description Styles the nodes according to their states
+   */
   private styleNodes(): void {
     if (this.selectedArcsList.length > 0) {
-      this.donutContext.selectAll('path').style('opacity', this.opacity).style('stroke-width', '0.4px');
+      this.donutContext.selectAll('path').style('opacity', this.opacity).style('stroke-width', '0px');
       this.donutNodes.forEach(node => {
         if (node.isSelected) {
           const nodeAncestors = node.ancestors().reverse();
@@ -253,14 +398,19 @@ export class DonutComponent implements OnInit, OnChanges {
             .selectAll('path')
             .filter((n) => nodeAncestors.indexOf(n) >= 0)
             .style('opacity', 1)
-            .style('stroke-width', '2px');
+            .style('stroke-width', '0.5px');
         }
       });
     } else {
-      this.donutContext.selectAll('path').style('opacity', 1).style('stroke-width', '0.4px');
+      this.donutContext.selectAll('path').style('opacity', 1).style('stroke-width', '0px');
     }
   }
 
+  /**
+   * @param node Clicked on node
+   * @param duration Duration of the animation
+   * @description Apply animation after clicking on the node.
+   */
   private tweenNode(node: DonutNode, duration: number): void {
     this.donutContext.transition()
       .duration(duration)
@@ -274,6 +424,9 @@ export class DonutComponent implements OnInit, OnChanges {
       .attrTween('d', (d) => (() => this.arc(d)));
   }
 
+  /**
+   * @description Resizes donut on window resize event.
+   */
   private resizeDonut(e: Event): void {
     this.plot();
     this.reapplySelection();
@@ -285,7 +438,7 @@ export class DonutComponent implements OnInit, OnChanges {
     const hoveredNodeAncestors = <Array<DonutNode>>hoveredNode.ancestors().reverse();
     hoveredNodeAncestors.shift();
     if (this.multiselectable) {
-      if (this.selectedArcsList.length === 0 && hoveredNode.depth > 0) {
+      if (this.selectedArcsList.length === 0 && hoveredNode.depth > 0 && !hoveredNode.data.isOther) {
         this.donutContext.selectAll('path').style('opacity', this.opacity);
       }
     } else {

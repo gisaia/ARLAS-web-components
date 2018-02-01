@@ -13,9 +13,9 @@ export interface DonutArc {
   name: string;
   id: string;
   ringName: string;
-  isOther: false;
+  isOther: boolean;
   size?: number;
-  children: Array<DonutArc>;
+  children?: Array<DonutArc>;
 }
 
 export interface DonutNode extends d3.HierarchyRectangularNode<any> {
@@ -59,7 +59,11 @@ export class DonutUtils {
 
   public static getNodeColor(d: DonutNode): string {
     if (d.depth > 0) {
-      return this.getHexColorFromString(d.data.name + ':' + d.data.ringName);
+      if (d.data.isOther) {
+        return '#aaa';
+      } else {
+        return this.getHexColorFromString(d.data.name + ':' + d.data.ringName);
+      }
     } else {
       return '#fff';
     }

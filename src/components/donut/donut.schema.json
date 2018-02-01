@@ -5,9 +5,17 @@
   "type": "object",
   "$id": "donut.schema.json",
   "properties": {
+      "customizedCssClass":{
+          "description": "Css class name to use to customize a specific powerbar's style.",
+          "type":"string"
+      },
       "opacity":{
           "description": "Opacity of unselected/unhovered arcs",
           "type":"number"
+      },
+      "multiselectable":{
+          "description": "Whether the donut is multi-selectable",
+          "type":"boolean"
       }
   }
 }

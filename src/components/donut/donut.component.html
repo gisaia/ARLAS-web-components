@@ -1,4 +1,4 @@
-<div class="donut__container" [ngClass]="'customizedCssClass'">
+<div class="donut__container" [ngClass]="customizedCssClass">
   <svg id="svgix"></svg>
   <div class="donut__tooltip" *ngIf="tooltip.isShown && !tooltip.isRightSide" [style.left.px]="tooltip.xPosition" [style.top.px]="tooltip.yPosition">
     <span >{{tooltip.xContent}}</span>
