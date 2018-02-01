@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "Donut input configuration",
+  "description": "The Configuration input of donut",
+  "type": "object",
+  "$id": "donut.schema.json",
+  "properties": {
+      "opacity":{
+          "description": "Opacity of unselected/unhovered arcs",
+          "type":"number"
+      }
+  }
+}
