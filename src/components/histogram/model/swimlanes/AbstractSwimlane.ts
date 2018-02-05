@@ -81,8 +81,8 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
 
   public truncateLabels() {
     if (this.labelsContext !== undefined) {
-      this.labelsContext.selectAll('text').each(() => {
-        const self = d3.select(this.labelsContext.selectAll('text').node());
+      (this.labelsContext.selectAll('text')).nodes().forEach((textNode) => {
+        const self = d3.select(textNode);
         let textLength = self.node().getComputedTextLength();
         let text = self.text();
         while (textLength > (this.histogramParams.swimLaneLabelsWidth) && text.length > 0) {
