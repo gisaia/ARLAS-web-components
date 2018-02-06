@@ -1,6 +1,6 @@
 import {
   Component, OnInit, Input, Output, ViewEncapsulation,
-  ViewContainerRef, ElementRef, OnChanges, SimpleChanges, AfterViewChecked
+  ViewContainerRef, ElementRef, OnChanges, SimpleChanges, AfterViewChecked, ViewChild
 } from '@angular/core';
 
 import {
@@ -27,7 +27,6 @@ import { SwimlaneBars } from './model/swimlanes/SwimlaneBars';
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
 
-
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
  * Charts can be represented as bars or areas.
@@ -42,6 +41,9 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
   encapsulation: ViewEncapsulation.None
 })
 export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
+
+  @ViewChild('left', {read: ElementRef}) public lt: ElementRef;
+  @ViewChild('right', {read: ElementRef}) public rt: ElementRef;
 
   /**
    * @Input : Angular
@@ -321,6 +323,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ngAfterViewChecked() {
     if (this.chartType === ChartType.swimlane) {
       (<AbstractSwimlane>this.histogram).truncateLabels();
+    }
+    if (this.rt !==  undefined && this.lt !== undefined) {
+      this.histogram.histogramParams.rightBrushElement = this.rt;
+      this.histogram.histogramParams.leftBrushElement = this.lt;
     }
   }
 

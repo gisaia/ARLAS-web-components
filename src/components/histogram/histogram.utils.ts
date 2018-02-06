@@ -70,6 +70,7 @@ export interface Tooltip {
   yPosition: number;
   xContent: string;
   yContent: string;
+  width?: number;
 }
 
 export class HistogramUtils {
