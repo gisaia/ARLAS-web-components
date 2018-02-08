@@ -8,8 +8,27 @@
     </div>
   </div>
 
-  <div [style.display]="histogram.histogramParams.displaySvg">
+  <div [style.display]="histogram.histogramParams.displaySvg" style="position:relative">
     <svg id="svgix" class="histogram__chart" [style.width.px]="histogram.histogramParams.chartWidth" [style.height.px]="histogram.histogramParams.chartHeight"></svg>
+    <div *ngIf="histogram.isBrushing">
+      <div #left [style.visibility]="histogram.histogramParams.displayHorizontal" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--left"
+        [style.left.px]="histogram.histogramParams.brushLeftTooltip.xPosition"   [style.top.px]="histogram.histogramParams.brushLeftTooltip.yPosition">
+        {{histogram.histogramParams.brushLeftTooltip.xContent}}
+      </div>
+      <div #right [style.visibility]="histogram.histogramParams.displayHorizontal" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--right"
+        [style.right.px]="histogram.histogramParams.brushRightTooltip.xPosition"   [style.top.px]="histogram.histogramParams.brushRightTooltip.yPosition">
+        {{histogram.histogramParams.brushRightTooltip.xContent}}
+      </div>
+
+      <div #leftvertical [style.visibility]="histogram.histogramParams.displayVertical" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--left__rotation histogram__brush-tooltip__vertical--left"
+        [style.left.px]="histogram.histogramParams.brushLeftTooltip.xPosition"   [style.bottom.px]="histogram.histogramParams.brushRightTooltip.yPosition" [style.width.px]="histogram.histogramParams.brushLeftTooltip.width">
+        {{histogram.histogramParams.brushLeftTooltip.xContent}}
+      </div>
+      <div #rightvertical [style.visibility]="histogram.histogramParams.displayVertical" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--right__rotation histogram__brush-tooltip__vertical--right"
+        [style.left.px]="histogram.histogramParams.brushRightTooltip.xPosition"   [style.bottom.px]="histogram.histogramParams.brushRightTooltip.yPosition" [style.width.px]="histogram.histogramParams.brushRightTooltip.width">
+        {{histogram.histogramParams.brushRightTooltip.xContent}}
+      </div>
+    </div>
   </div>
   <div *ngIf="histogram.histogramParams.dataLength === 1" class="histogram__no-chart" [style.width.px]="histogram.histogramParams.chartWidth" [style.height.px]="histogram.histogramParams.chartHeight">
     <span class="histogram__no-chart__key">{{histogram.histogramParams.startValue}}</span>
@@ -53,6 +72,7 @@
         </div>
     </div>
   </div>
+
   <div *ngFor="let id of histogram.histogramParams.selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="histogram.histogramParams.topOffsetRemoveInterval"
     [style.left.px]="histogram.histogramParams.intervalSelectedMap.get(id)?.x_position">
     <svg on-mouseover='overRemove($event)' on-mouseleave='leaveRemove($event)' fill="#043b53" height="24" viewBox="0 0 24 24"

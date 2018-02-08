@@ -94,6 +94,35 @@
   z-index: 20000;
 }
 
+.histogram__brush-tooltip /*public*/ /*Sets all the brush tooltips styles*/
+{
+  font: 0.7em sans-serif;
+  text-align: center;
+  position: absolute;
+  padding: 2px;
+  background: white;
+  pointer-events: none;
+  color: #000;
+  z-index: 20000;
+}
+
+.histogram__brush-tooltip__horizontal--left, /*public*/ /*Sets the horizontal left brush tooltip style*/
+.histogram__brush-tooltip__horizontal--right, /*public*/ /*Sets the horizontal right brush tooltip style*/
+.histogram__brush-tooltip__vertical--left, /*public*/ /*Sets the vertical left brush tooltip style*/
+.histogram__brush-tooltip__vertical--right /*public*/ /*Sets the vertical right brush tooltip style*/
+{
+
+}
+
+.histogram__brush-tooltip__vertical--left__rotation {
+  transform: rotate(-90deg);
+  transform-origin: bottom right;
+}
+
+.histogram__brush-tooltip__vertical--right__rotation {
+  transform: rotate(90deg);
+  transform-origin: bottom left;}
+
 .histogram__remove /*public*/ /*Sets the remove tooltip's style*/
 {
   position: absolute;

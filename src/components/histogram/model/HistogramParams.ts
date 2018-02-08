@@ -72,6 +72,10 @@ export class HistogramParams {
 
   public margin: MarginModel = { top: 4, right: 10, bottom: 20, left: 60 };
   public tooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
+  public brushLeftTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
+  public brushRightTooltip: Tooltip = { isShown: false, isRightSide: false, xPosition: 0, yPosition: 0, xContent: '', yContent: '' };
+  public rightBrushElement;
+  public leftBrushElement;
 
   public displaySvg = 'none';
   public dataLength = 0;
@@ -91,4 +95,6 @@ export class HistogramParams {
   // ######################### Parameters set in the component ########################
   public hasDataChanged = false;
   public uid: string;
+  public displayHorizontal = 'hidden';
+  public displayVertical = 'hidden';
 }

@@ -9,6 +9,7 @@ import { HistogramParams } from './HistogramParams';
 export abstract class AbstractHistogram {
 
   public histogramParams: HistogramParams;
+  public isBrushing = false;
 
   /** Contexts */
   protected context: any;
@@ -21,7 +22,6 @@ export abstract class AbstractHistogram {
   protected isWidthFixed = false;
   protected isHeightFixed = false;
 
-
   /** Data */
   protected dataDomain: Array<{ key: number, value: number }>;
   protected dataInterval: number;
@@ -31,7 +31,6 @@ export abstract class AbstractHistogram {
   protected selectionInterval: SelectedOutputValues = { startvalue: null, endvalue: null };
   protected brushHandlesHeight: number = null;
   protected brushHandles;
-  protected isBrushing = false;
   protected isBrushed = false;
 
   protected hasSelectionExceededData = null;
@@ -204,7 +203,6 @@ export abstract class AbstractHistogram {
     }
   }
 
-
   protected initializeChartHeight(): void {
     if (this.histogramParams.chartHeight === null) {
       this.histogramParams.chartHeight = this.histogramParams.el.nativeElement.childNodes[0].offsetHeight;
@@ -313,9 +311,7 @@ export abstract class AbstractHistogram {
       .attr('stroke', '#000')
       .attr('cursor', 'ew-resize')
       .style('z-index', '30000')
-      .attr('d', brushResizePath)
-      .on('mouseover', () => this.isBrushing = true)
-      .on('mouseout', () => this.isBrushing = false);
+      .attr('d', brushResizePath);
 
     this.brushContext.call((this.selectionBrush).move, [selectionBrushStart, selectionBrushEnd]);
     this.handleOnBrushingEvent(chartAxes);
@@ -387,6 +383,73 @@ export abstract class AbstractHistogram {
     });
   }
 
+  protected setBrushTooltipsPositions() {
+    this.histogramParams.brushLeftTooltip.xContent = this.histogramParams.startValue;
+    this.histogramParams.brushRightTooltip.xContent = this.histogramParams.endValue;
+
+    const leftPosition = this.getAxes().xDomain(this.selectionInterval.startvalue);
+    const rightPosition = this.getAxes().xDomain(this.selectionInterval.endvalue);
+
+    if (this.histogramParams.leftBrushElement !== undefined && this.histogramParams.rightBrushElement !== undefined) {
+      const leftOffset = this.histogramParams.leftBrushElement.nativeElement.offsetWidth;
+      const rightOffset = this.histogramParams.rightBrushElement.nativeElement.offsetWidth;
+      if (leftOffset !== 0 && rightOffset !== 0) {
+        if (leftPosition + leftOffset + 5 > rightPosition - rightOffset) {
+          this.histogramParams.displayHorizontal = 'hidden';
+          this.histogramParams.displayVertical = 'visible';
+          this.setVerticalTooltipsWidth();
+          this.setBrushVerticalTooltipsXPositions(leftPosition, rightPosition);
+          this.setBrushVerticalTooltipsYPositions(leftPosition, rightPosition);
+        } else {
+          this.histogramParams.displayHorizontal = 'visible';
+          this.histogramParams.displayVertical = 'hidden';
+          this.setBrushHorizontalTooltipsXPositions(leftPosition, rightPosition);
+          this.setBrushHorizontalTooltipsYPositions(leftPosition, rightPosition);
+        }
+      } else {
+        this.histogramParams.displayHorizontal = 'hidden';
+        this.histogramParams.displayVertical = 'hidden';
+      }
+    } else {
+      this.histogramParams.displayHorizontal = 'hidden';
+      this.histogramParams.displayVertical = 'hidden';
+    }
+  }
+
+  protected setVerticalTooltipsWidth() {
+    this.histogramParams.brushLeftTooltip.width = this.chartDimensions.height;
+    this.histogramParams.brushRightTooltip.width = this.chartDimensions.height;
+  }
+
+  protected setBrushVerticalTooltipsXPositions(leftPosition: number, rightPosition: number) {
+    this.histogramParams.brushLeftTooltip.xPosition =  - this.chartDimensions.height + this.histogramParams.margin.left + leftPosition;
+    this.histogramParams.brushRightTooltip.xPosition = this.histogramParams.margin.left  + rightPosition;
+  }
+
+  protected setBrushVerticalTooltipsYPositions(leftPosition: number, rightPosition: number) {
+    if (this.histogramParams.xAxisPosition === Position.bottom) {
+      this.histogramParams.brushLeftTooltip.yPosition = this.chartDimensions.height + this.histogramParams.margin.bottom + 6;
+    } else {
+      this.histogramParams.brushLeftTooltip.yPosition = this.chartDimensions.height + this.histogramParams.margin.bottom -
+        this.histogramParams.margin.top - 6;
+    }
+    this.histogramParams.brushRightTooltip.yPosition = this.histogramParams.brushLeftTooltip.yPosition;
+  }
+
+  protected setBrushHorizontalTooltipsXPositions(leftPosition: number, rightPosition: number) {
+    this.histogramParams.brushLeftTooltip.xPosition = leftPosition + this.histogramParams.margin.left;
+    this.histogramParams.brushRightTooltip.xPosition = this.histogramParams.margin.right + this.chartDimensions.width - rightPosition;
+  }
+
+  protected setBrushHorizontalTooltipsYPositions(leftPosition: number, rightPosition: number) {
+    if (this.histogramParams.xAxisPosition === Position.bottom) {
+      this.histogramParams.brushLeftTooltip.yPosition = this.chartDimensions.height + 10;
+    } else {
+      this.histogramParams.brushLeftTooltip.yPosition = -3;
+    }
+    this.histogramParams.brushRightTooltip.yPosition = this.histogramParams.brushLeftTooltip.yPosition;
+  }
+
   protected abstract applyStyleOnSelection();
   protected abstract setDataInterval(data: Array<HistogramData> | Map<string, Array<HistogramData>>): void;
   protected abstract getAxes(): ChartAxes | SwimlaneAxes;
@@ -425,12 +488,13 @@ export abstract class AbstractHistogram {
       if (selection !== null) {
         this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
         this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
-        this.histogramParams.startValue = 'From ' + HistogramUtils.toString(this.selectionInterval.startvalue,
+        this.histogramParams.startValue = HistogramUtils.toString(this.selectionInterval.startvalue,
           this.histogramParams.chartType,
           this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
-        this.histogramParams.endValue = 'To ' + HistogramUtils.toString(this.selectionInterval.endvalue, this.histogramParams.chartType,
+        this.histogramParams.endValue = HistogramUtils.toString(this.selectionInterval.endvalue, this.histogramParams.chartType,
           this.histogramParams.dataType, this.histogramParams.valuesDateFormat);
         this.histogramParams.showTitle = false;
+        this.setBrushTooltipsPositions();
         this.applyStyleOnSelection();
         this.translateBrushHandles(selection, chartAxes);
       }
@@ -441,8 +505,6 @@ export abstract class AbstractHistogram {
     this.selectionBrush.on('end', (datum: any, index: number) => {
       const selection = d3.event.selection;
       if (selection !== null) {
-        const newStartValue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
-        const newEndvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
         if (!this.fromSetInterval && this.isBrushing) {
           this.selectionInterval.startvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[0];
           this.selectionInterval.endvalue = selection.map(chartAxes.xDomain.invert, chartAxes.xDomain)[1];
