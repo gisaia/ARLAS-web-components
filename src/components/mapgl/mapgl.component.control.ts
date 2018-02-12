@@ -50,28 +50,20 @@ export class PitchToggle {
     }
 }
 
-
 export class ControlButton {
-
     public map: any;
     public btn: HTMLButtonElement;
     public container: HTMLDivElement;
     public icon;
     public name;
-    constructor(name: string, icon: string) {
-        this.icon = icon;
+    constructor(name: string) {
         this.name = name;
     }
     public onAdd(map) {
         this.map = map;
         this.btn = document.createElement('button');
-        this.btn.className = 'mapboxgl-ctrl-icon mapboxgl-ctrl-' + this.name;
-        this.btn.style.backgroundImage = this.icon;
-        this.btn.style.backgroundRepeat = 'no-repeat';
-        this.btn.style.backgroundPosition = '3px 4px';
+        this.btn.className = 'mapboxgl-ctrl-icon map__controls__icons map__controls__icons--' + this.name;
         this.btn.type = 'button';
-        this.btn['aria-label'] = 'Add Geobox';
-
         this.container = document.createElement('div');
         this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group mapboxgl-ctrl-group-' + this.name;
         this.container.appendChild(this.btn);

@@ -1,16 +1,18 @@
 import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
+import { Map, Point } from 'mapbox-gl/dist/mapbox-gl';
+import { StyleGroup, Style } from './model/mapLayers';
 export function paddedBounds(npad: number, spad: number, epad: number,
-    wpad: number, map: mapboxgl.Map, SW, NE) {
+    wpad: number, map: Map, SW, NE) {
     const topRight = map.project(NE);
     const bottomLeft = map.project(SW);
     const scale = 1;
     const SWtopoint = map.project(SW);
-    const SWpoint = new mapboxgl.Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
-    const SWworld = new mapboxgl.Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);
+    const SWpoint = new Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
+    const SWworld = new Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);
     const swWorld = map.unproject(SWworld);
     const NEtopoint = map.project(NE);
-    const NEpoint = new mapboxgl.Point(((NEtopoint.x - bottomLeft.x) * scale) + epad, ((NEtopoint.y - topRight.y) * scale) - npad);
-    const NEworld = new mapboxgl.Point(NEpoint.x / scale + bottomLeft.x, NEpoint.y / scale + topRight.y);
+    const NEpoint = new Point(((NEtopoint.x - bottomLeft.x) * scale) + epad, ((NEtopoint.y - topRight.y) * scale) - npad);
+    const NEworld = new Point(NEpoint.x / scale + bottomLeft.x, NEpoint.y / scale + topRight.y);
     const neWorld = map.unproject(NEworld);
     return [swWorld, neWorld];
 }
@@ -53,7 +55,40 @@ export function getTiles(bounds: Array<Array<number>>, zoom: number): Array<{ x:
         }
     }
     return tiles;
+}
 
+export function getDefaultStyleGroup(styleGroups: Array<StyleGroup>): StyleGroup {
+  let defaultStyleGroup: StyleGroup;
+  if (styleGroups !== undefined) {
+    for (let i = 0; i < styleGroups.length; i++) {
+      if (styleGroups[i].isDefault) {
+        defaultStyleGroup = styleGroups[i];
+        break;
+      }
+    }
+    // if there is no default style group
+    if (styleGroups.length > 0 && defaultStyleGroup === undefined) {
+      defaultStyleGroup = styleGroups[0];
+    }
+  }
+  return defaultStyleGroup;
+}
+
+export function getDefaultStyle(styles: Array<Style>) {
+  let defaultStyle: Style;
+  if (styles !== undefined) {
+    for (let i = 0; i < styles.length; i++) {
+      if (styles[i].isDefault) {
+        defaultStyle = styles[i];
+        break;
+      }
+    }
+    // if there is no default style
+    if (styles.length > 0 && defaultStyle === undefined) {
+      defaultStyle = styles[0];
+    }
+  }
+  return defaultStyle;
 }
 
 

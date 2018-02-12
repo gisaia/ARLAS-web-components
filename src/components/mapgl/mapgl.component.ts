@@ -1,17 +1,21 @@
-import { ElementIdentifier } from '../results/utils/results.utils';
-import { bboxes } from 'ngeohash';
 import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
-  SimpleChanges, EventEmitter, OnChanges
+  SimpleChanges, EventEmitter, OnChanges, IterableDiffers, ViewEncapsulation
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
+import { MatSelect, MatOption, MatCard } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
-import * as tinycolor from 'tinycolor2';
-import { paddedBounds, xyz } from './mapgl.component.util';
-import { element } from 'protractor';
-import { DoCheck, IterableDiffers } from '@angular/core';
-import { PitchToggle, ControlButton } from './mapgl.component.control';
 import { Observable } from 'rxjs/Observable';
+
+import { Map as ArlasMap, NavigationControl, Layer } from 'mapbox-gl/dist/mapbox-gl';
+import { bboxes } from 'ngeohash';
+
+import { PitchToggle, ControlButton } from './mapgl.component.control';
+import { paddedBounds, xyz, getDefaultStyleGroup, getDefaultStyle } from './mapgl.component.util';
+import { MapLayers, StyleGroup, Style } from './model/mapLayers';
+
+import { ElementIdentifier } from '../results/utils/results.utils';
+
 
 export interface OnMoveResult {
   zoom: number;
@@ -23,11 +27,6 @@ export interface OnMoveResult {
   geohash: Array<string>;
 }
 
-export enum drawType {
-  RECTANGLE,
-  CIRCLE
-}
-
 /**
  * Mapgl Component allows to display and select geometrical data on a map.
  */
@@ -35,7 +34,8 @@ export enum drawType {
 @Component({
   selector: 'arlas-mapgl',
   templateUrl: './mapgl.component.html',
-  styleUrls: ['./mapgl.component.css']
+  styleUrls: ['./mapgl.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
@@ -51,33 +51,26 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private south: number;
   private zoom: number;
   private isDrawingBbox = false;
-  private isCircle = false;
-  private isGeoHash = false;
   private start: mapboxgl.Point;
   private canvas: HTMLElement;
   private box: HTMLElement;
   private current: mapboxgl.Point;
   private startlngLat: any;
   private endlngLat: any;
-  private maxCountValue = 0;
-  private cluster: any;
-  private showAllFeature = false;
 
+  private DATA_SOURCE = 'data_source';
+  private GEOBOX_SOURCE = 'geobox';
+
+  /**
+   * @Input : Angular
+   * @description List of mapgl layers
+   */
+  @Input() public mapLayers: MapLayers;
   /**
    * @Input : Angular
    * @description Style of the map
    */
   @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
-  /**
-   * @Input : Angular
-   * @description Font name of clusters labels.
-   */
-  @Input() public fontClusterlabel = 'Roboto Regular';
-  /**
-   * @Input : Angular
-   * @description Size of clusters labels
-   */
-  @Input() public sizeClusterlabel = 12;
   /**
    * @Input : Angular
    * @description Zoom of the map when it's initialized
@@ -90,64 +83,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
   /**
    * @Input : Angular
-   * @description Geometry type of clusters : Rectangles or Circles.
-   */
-  @Input() public drawType: drawType;
-  /**
-   * @Input : Angular
-   * @description Path to the count property in clusters features.
-   */
-  @Input() public countPath = 'point_count';
-  /**
-   * @Input : Angular
-   * @description Path to the normalized count property in clusters features.
-   */
-  @Input() public countNormalizePath = 'point_count_normalize';
-  /**
-   * @Input : Angular
-   * @description Sets the style of geobox.
-   */
-  @Input() public paintRuleGeoBox: Object = {};
-  /**
-   * @Input : Angular
-   * @description Sets the style of feature's fill.
-   * @example paintRuleGeoBox = {line-color: '#AAAAAA', line-opacity: 0.2}
-   */
-  @Input() public paintRuleFeatureFill: Object = {};
-  /**
-   * @Input : Angular
-   * @description Sets the style of feature's lines.
-   */
-  @Input() public paintRuleFeatureLine: Object = {};
-  /**
-   * @Input : Angular
-   * @description Sets the style of circular clusters.
-   */
-  @Input() public paintRuleClusterCircle: Object = {};
-  /**
-   * @Input : Angular
-   * @description Sets the style of rectangular clusters lines.
-   */
-  @Input() public paintRuleClusterLineRectangle: Object = {};
-  /**
-   * @Input : Angular
-   * @description Sets the style of rectangular clusters fill.
-   */
-  @Input() public paintRuleClusterFillRectangle: Object = {};
-  /**
-   * @Input : Angular
-   * @description Sets the style of ponctual features.
-   */
-  @Input() public paintRuleFeatureCirclePoint: Object = {};
-  /**
-   * @Input : Angular
-   * @description Margin applied to the map extent. Data is loaded in all this extent
+   * @description Margin applied to the map extent. Data is loaded in all this extent.
    */
   @Input() public margePanForLoad: number;
   /**
    * @Input : Angular
    * @description Margin applied to the map extent.
-   * Before loading data, the components checks first if there are features  already loaded in this extent.
+   * Before loading data, the components checks first if there are features already loaded in this extent.
    */
   @Input() public margePanForTest: number;
   /**
@@ -237,33 +179,42 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
+  public showLayersList = false;
+  public selectedStyleGroup: StyleGroup;
+  public selectedStyle: Style;
+
+  private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
+  private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
+
+  private layersMap = new Map<string, Layer>();
+  private styleGroupsMap = new Map<string, StyleGroup>();
+  private stylesMap = new Map<string, Style>();
 
   constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
-        if (this.map.getSource('geobox') !== undefined) {
-          this.map.getSource('geobox').setData(this.geoboxdata);
+        if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
+          this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
       }
     });
   }
 
-  public ngOnInit() {
+  public ngOnInit() {}
 
-  }
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
-      if (this.map.getSource('cluster') !== undefined) {
+
+      if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
         if (changes['geojsondata'] !== undefined) {
           this.geojsondata = changes['geojsondata'].currentValue;
-          this.map.getSource('cluster').setData(this.geojsondata);
-          this.maxCountValue = 0;
+          this.map.getSource(this.DATA_SOURCE).setData(this.geojsondata);
         }
       }
-      if (this.map.getSource('geobox') !== undefined) {
+      if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
         if (changes['geoboxdata'] !== undefined) {
-          this.map.getSource('geobox').setData(this.geoboxdata);
+          this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -288,40 +239,25 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngAfterViewInit() {
-    this.map = new mapboxgl.Map({
+    this.map = new ArlasMap({
       container: 'mapgl',
       style: this.style,
       center: this.initCenter,
       zoom: this.initZoom,
       renderWorldCopies: true
     });
-    const nav = new mapboxgl.NavigationControl();
-    this.map.addControl(nav, 'top-right');
+    const layerSwitcherButton = new ControlButton('layersswitcher');
+    const navigationControllButtons = new NavigationControl();
+    const addGeoBoxButton = new ControlButton('addgeobox');
+    const removeBoxButton = new ControlButton('removegeobox');
+    this.map.addControl(layerSwitcherButton, 'top-right');
+    this.map.addControl(navigationControllButtons, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
-    const addGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHhtbG5zPSJ' +
-      'odHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+' +
-      'IDxnPiAgPHRpdGxlPmJhY2tncm91bmQ8L3RpdGxlPiAgPHJlY3QgZmlsbD0ibm9uZSIgaWQ9ImNhbnZhc19iY' +
-      'WNrZ3JvdW5kIiBoZWlnaHQ9Ij' +
-      'QwMiIgd2lkdGg9IjU4MiIgeT0iLTEiIHg9Ii0xIi8+IDwvZz4gPGc+ICA8dGl0bGU+TGF5ZXIgMTwvd' +
-      'Gl0bGU+ICA8cGF0aCBpZD0ic3ZnXzEiIG' +
-      'ZpbGw9Im5vbmUiIGQ9Im0wLDBsMjQsMGwwLDI0bC0yNCwwbDAsLTI0eiIvPiAgPHBhdGggaWQ9InN2Z' +
-      '18yIiAgc3R5bGU9J2ZpbGw6IzMzMzMzMz' +
-      'snIGQ9Im0yMSwzbC0xOCwwYy0xLjExLDAgLTIsMC44OSAtMiwybDAsMTJjMCwxLjEgMC44OSwyIDIsMmw1LD' +
-      'BsOCwwbDUsMGMxLjEsMCAxLjk5LC' +
-      '0wLjkgMS45OSwtMmwwLjAxLC0xMmMwLC0xLjExIC0wLjksLTIgLTIsLTJ6bTAsMTRsLTE4LDBsMCwtMT' +
-      'JsMTgsMGwwLDEyem0tNSwtN2wwLDJsL' +
-      'TMsMGwwLDNsLTIsMGwwLC0zbC0zLDBsMCwtMmwzLDBsMCwtM2wyLDBsMCwzbDMsMHoiLz4gPC9nPjwvc3ZnPg==)';
-    const removeGeoboxicon = 'url(data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB' +
-      '2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIg' +
-      'eG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4gICAgPHBhdGggZD0iTTYgMTljMCAxLjEuOSAyIDIgMmg4YzEuMSAwIDItLjkgMi0yVjdIN' +
-      'nYxMnpNMTkgNGgtMy41bC0xLTFoLTVsLTEgMUg1djJoMTRWNHoiLz4gICAgPHBhdGggZD0iTTAgMGgyNHYyNEgweiIgZml' +
-      'sbD0ibm9uZSIvPjwvc3ZnPg==)';
-
-
-    const addGeoBoxButton = new ControlButton('addgeobox', addGeoboxicon);
-    const removeBoxButton = new ControlButton('removegeobox', removeGeoboxicon);
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
+    layerSwitcherButton.btn.onclick = () => {
+      this.showLayersList = !this.showLayersList;
+    };
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
     };
@@ -336,205 +272,82 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
       // Add GeoBox Source
-      this.map.addSource('geobox', {
+      this.map.addSource(this.GEOBOX_SOURCE, {
         'type': 'geojson',
         'data': this.geoboxdata
       });
-      this.map.addSource('cluster', {
+      // Add Data_source
+      this.map.addSource(this.DATA_SOURCE, {
         'type': 'geojson',
         'data': this.geojsondata
       });
 
-      // Add GeoBox Lae-yer
-      this.map.addLayer({
-        'id': 'geobox',
-        'type': 'line',
-        'source': 'geobox',
-        'layout': {
-          'visibility': 'visible'
-        },
-        'paint': this.paintRuleGeoBox
-      });
-      if (this.drawType === drawType.RECTANGLE) {
-        this.map.addLayer({
-          'id': 'cluster',
-          'type': 'fill',
-          'source': 'cluster',
-          'layout': {
-            'visibility': 'visible'
-          },
-          'paint': this.paintRuleClusterFillRectangle,
-          'filter': ['==', '$type', 'Polygon'],
+      if (this.mapLayers !== null) {
+        this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
+        this.mapLayers.styleGroups.forEach(styleGroup => this.styleGroupsMap.set(styleGroup.id, styleGroup));
+        this.mapLayers.styleGroups.forEach(styleGroup => {
+          styleGroup.styles.forEach(style => this.stylesMap.set(style.id, style));
         });
 
-        this.map.addLayer({
-          'id': 'cluster-line',
-          'type': 'line',
-          'source': 'cluster',
-          'layout': {
-            'visibility': 'visible'
-          },
-          'paint': this.paintRuleClusterLineRectangle,
-          'filter': ['==', '$type', 'Polygon'],
-        });
-      } else {
-        this.map.addLayer({
-          'id': 'cluster',
-          'type': 'circle',
-          'source': 'cluster',
-          'layout': {
-            'visibility': 'visible'
-          },
-          'paint': this.paintRuleClusterCircle,
-          'filter': [
-            'all', [
-              'has',
-              this.countNormalizePath,
-            ], ['==', '$type', 'Point']
-          ]
+        this.addBaseLayers();
+
+        const defaultStyleGroup = getDefaultStyleGroup(this.mapLayers.styleGroups);
+        const defaultStyle = getDefaultStyle(defaultStyleGroup.styles);
+
+        if (defaultStyle !== undefined && defaultStyleGroup !== undefined) {
+          this.setSourceStyle(defaultStyleGroup.id, defaultStyle.id);
+          this.selectedStyleGroup = defaultStyleGroup;
+          this.selectedStyle = defaultStyle;
+        }
+
+        this.mapLayers.events.onClick.forEach(layerId => {
+          this.map.on('click', layerId, (e) => {
+            this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
+            if (e.features[0].properties.cluster_id !== undefined) {
+              const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
+              this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: expansionZoom });
+            } else {
+              const zoom = this.map.getZoom();
+              let newZoom: number;
+              if (zoom >= 0 && zoom < 3) {
+                newZoom = 4;
+              } else if (zoom >= 3 && zoom < 5) {
+                newZoom = 5;
+              } else if (zoom >= 5 && zoom < 7) {
+                newZoom = 7;
+              } else if (zoom >= 7 && zoom < 10) {
+                newZoom = 10;
+              } else if (zoom >= 10 && zoom < 11) {
+                newZoom = 11;
+              } else {
+                newZoom = 12;
+              }
+              this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom });
+
+            }
+          });
         });
 
-        this.map.addLayer({
-          'id': 'cluster-count',
-          'type': 'symbol',
-          'source': 'cluster',
-          'filter': [
-            'all', [
-              'has',
-              this.countPath,
-            ], ['==', '$type', 'Point']
-          ],
-          'layout': {
-            'text-field': '{' + this.countPath + '}',
-            'text-font': [this.fontClusterlabel],
-            'text-size': 12,
-            'visibility': 'visible'
-          }
+        this.mapLayers.events.onHover.forEach(layerId => {
+          this.map.on('mousemove', layerId, (e) => {
+            this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
+          });
+
+          this.map.on('mouseleave', layerId, (e) => {
+            this.onFeatureOver.next([]);
+          });
         });
       }
 
-
-      this.map.addLayer({
-        'id': 'features-line',
-        'type': 'line',
-        'source': 'cluster',
-        'filter': [
-          'all', ['!=', '$type', 'Point']
-        ],
-        'paint': this.paintRuleFeatureLine
-      });
-      this.map.addLayer({
-        'id': 'features-line-select',
-        'type': 'line',
-        'source': 'cluster',
-        'layout': {
-          'visibility': 'none'
-        },
-        'filter': [
-          'all', ['!=', '$type', 'Point']
-        ],
-        'paint': {
-          'line-color': this.paintRuleFeatureLine['line-color'],
-          'line-opacity': this.paintRuleFeatureLine['line-opacity'],
-          'line-width': 4
-        }
-      });
-      this.map.addLayer({
-        'id': 'features-fill-hover',
-        'type': 'fill',
-        'source': 'cluster',
-        'layout': {
-          'visibility': 'none'
-        },
-        'filter': [
-          'all', ['!=', '$type', 'Point']
-        ],
-        'paint': {
-          'fill-color': this.paintRuleFeatureFill['fill-color'],
-          'fill-opacity': 0.9,
-        }
-      });
-      this.map.addLayer({
-        'id': 'features-fill',
-        'type': 'fill',
-        'source': 'cluster',
-        'filter': [
-          'all', ['!=', '$type', 'Point']
-        ],
-        'paint': this.paintRuleFeatureFill
-      });
-
-
-      this.map.addLayer({
-        'id': 'features-point',
-        'type': 'circle',
-        'source': 'cluster',
-        'filter': [
-          'all', [
-            '!has',
-            this.countPath,
-          ], ['==', '$type', 'Point']
-        ],
-        'paint': this.paintRuleFeatureCirclePoint
-
-      });
-
-      this.map.on('click', 'features-point', (e) => {
-        this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
-      });
-
-      this.map.on('click', 'features-fill', (e) => {
-        this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
-      });
-
-      this.map.on('mousemove', 'features-fill', (e) => {
-        this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
-      });
-      this.map.on('mouseleave', 'features-fill', (e) => {
-        this.onFeatureOver.next([]);
-      });
-
-      this.map.on('mousemove', 'features-point', (e) => {
-        this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
-      });
-      this.map.on('mouseleave', 'features-point', (e) => {
-        this.onFeatureOver.next([]);
-      });
-
-
-      this.map.on('click', 'cluster', (e) => {
-        if (e.features[0].properties.cluster_id !== undefined) {
-          const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-          this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: expansionZoom });
-        } else {
-          const zoom = this.map.getZoom();
-          let newZoom: number;
-          if (zoom >= 0 && zoom < 3) {
-            newZoom = 4;
-          } else if (zoom >= 3 && zoom < 5) {
-            newZoom = 5;
-          } else if (zoom >= 5 && zoom < 7) {
-            newZoom = 7;
-          } else if (zoom >= 7 && zoom < 10) {
-            newZoom = 10;
-          } else if (zoom >= 10 && zoom < 11) {
-            newZoom = 11;
-          } else {
-            newZoom = 12;
-          }
-          this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom });
-
-        }
-      });
       this.map.showTileBoundaries = false;
-      this.map.on('mousemove', 'cluster', (e) => {
+      this.map.on('mousemove', this.DATA_SOURCE, (e) => {
         if (this.isDrawingBbox) {
           this.map.getCanvas().style.cursor = 'crosshair';
         } else {
           this.map.getCanvas().style.cursor = 'pointer';
         }
       });
-      this.map.on('mouseleave', 'cluster', (e) => {
+      this.map.on('mouseleave', this.DATA_SOURCE, (e) => {
         if (this.isDrawingBbox) {
           this.map.getCanvas().style.cursor = 'crosshair';
 
@@ -590,7 +403,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           Math.max(this.east, this.west), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
       }
 
-
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
         center: this.map.getCenter(),
@@ -623,15 +435,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.max(extendForTestdLatLng[0].lat, -90),
         Math.min(extendForTestdLatLng[1].lng, 180)
       ];
-      onMoveData.tiles = xyz([[onMoveData.extendForLoad[1],
-      onMoveData.extendForLoad[2]],
-      [onMoveData.extendForLoad[3],
-      onMoveData.extendForLoad[0]]], Math.ceil((this.zoom) - 1));
+      onMoveData.tiles = xyz([[onMoveData.extendForLoad[1], onMoveData.extendForLoad[2]],
+        [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
+        Math.ceil((this.zoom) - 1));
       this.onMove.next(onMoveData);
     });
     this.map.on('mousedown', (e) => {
       this.startlngLat = e.lngLat;
-
     });
     this.map.on('mouseup', (e) => {
       this.endlngLat = e.lngLat;
@@ -639,8 +449,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     this.redrawTile.subscribe(value => {
       if (value) {
-        if (this.map.getSource('cluster') !== undefined) {
-          this.map.getSource('cluster').setData(this.geojsondata);
+        if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
+          this.map.getSource(this.DATA_SOURCE).setData(this.geojsondata);
         }
       }
     });
@@ -659,12 +469,63 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Removes the geobox
    */
   public removeGeoBox() {
-
     this.map.getCanvas().style.cursor = '';
     this.geoboxdata.features = [];
     this.onRemoveBbox.next(true);
     this.isDrawingBbox = false;
+  }
 
+  /**
+   * @description Add layers of the style passed in parameters, to the data source
+   */
+  public setSourceStyle(styleGroupId: string, styleId: string): void {
+    this.removeAllLayers();
+    (this.stylesMap.get(styleId)).layerIds.forEach(layerId => {
+      const layer = this.layersMap.get(layerId);
+      if (layer !== undefined && layer.id === layerId) {
+        this.map.addLayer(layer);
+      } else {
+        throw new Error(this.STYLE_LAYER_ERROR);
+      }
+    });
+  }
+
+  /**
+   * @description Applies the default style of the chosen style group
+   */
+  public onStyleGroupChanged(selectedStyleGroup: StyleGroup) {
+    const defaultStyle = getDefaultStyle(selectedStyleGroup.styles);
+    if (defaultStyle !== undefined) {
+      this.selectedStyle = defaultStyle;
+      this.setSourceStyle(selectedStyleGroup.id, this.selectedStyle.id);
+    } else {
+      this.removeAllLayers();
+    }
+  }
+
+  private addBaseLayers() {
+    this.mapLayers.styleGroups.forEach(styleGroup => {
+      styleGroup.base.forEach(layerId => {
+        const layer = this.layersMap.get(layerId);
+        if (layer !== undefined && layer.id === layerId) {
+          this.map.addLayer(layer);
+        } else {
+          throw new Error(this.BASE_LAYER_ERROR);
+        }
+      });
+    });
+  }
+
+  private removeAllLayers() {
+    this.mapLayers.styleGroups.forEach(styleGroup => {
+      styleGroup.styles.forEach(style => {
+        style.layerIds.forEach(layerId => {
+          if (this.map.getLayer(layerId) !== undefined) {
+            this.map.removeLayer(layerId);
+          }
+        });
+      });
+    });
   }
 
   private highlightFeature(featureToHightLight: {
@@ -716,6 +577,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       e.clientY - rect.top - this.canvas.clientTop
     );
   }
+
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
     const rect = this.canvas.getBoundingClientRect();
@@ -742,6 +604,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.box.style.width = maxX - minX + 'px';
     this.box.style.height = maxY - minY + 'px';
   }
+
   private mouseup = (e) => {
     const rect = this.canvas.getBoundingClientRect();
     const f = new mapboxgl.Point(
@@ -791,7 +654,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
       this.geoboxdata.features.push(polygonGeojson);
       this.onChangeBbox.emit(this.geoboxdata.features);
-      this.map.getSource('geobox').setData(this.geoboxdata);
+      this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
       this.isDrawingBbox = false;
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
@@ -799,6 +662,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
+
   private getGeohashLevelFromZoom(zoom: number): number {
     const zoomToPrecisionClusterObject = {};
     const zoomToPrecisionCluster = this.zoomToPrecisionCluster;
