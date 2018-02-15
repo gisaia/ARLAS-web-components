@@ -6,7 +6,7 @@ mkdir target
 mkdir target/generated-docs
 
 ## GENERATE THE TYPESCRIPT DOCUMENTATION##
-docker run --rm -it -v `pwd`:/docs gisaia/typedocgen:0.0.2 generatedoc src/components
+docker run --rm -it -v `pwd`:/docs gisaia/typedocgen:0.0.4 generatedoc src/components
 
 ## GENERATE THE CSS DOCUMENTATION##
 echo "# Customize your components style" > style.md
