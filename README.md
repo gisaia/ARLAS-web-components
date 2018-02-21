@@ -1,5 +1,7 @@
 # ARLAS web components :
 
+![Build Status](https://img.shields.io/travis/gisaia/ARLAS-web-components/develop.svg?label=develop)
+
 ## About :
 ARLAS-web-components is an Angular library that provides a set of data analytics components :
 
