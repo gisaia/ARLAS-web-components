@@ -66,6 +66,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description List of mapgl layers
    */
   @Input() public mapLayers: MapLayers;
+
+  /**
+   * @Input : Angular
+   * @description Whether the layer switcher controll is displayed.
+   * If not, the map component uses the default style group and with its default style
+   */
+  @Input() public displayLayerSwitcher = false;
   /**
    * @Input : Angular
    * @description Style of the map
@@ -250,14 +257,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const navigationControllButtons = new NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
     const removeBoxButton = new ControlButton('removegeobox');
-    this.map.addControl(layerSwitcherButton, 'top-right');
+    if (this.displayLayerSwitcher) {
+      this.map.addControl(layerSwitcherButton, 'top-right');
+      layerSwitcherButton.btn.onclick = () => {
+        if (this.displayLayerSwitcher) {
+          this.showLayersList = !this.showLayersList;
+        }
+      };
+    }
     this.map.addControl(navigationControllButtons, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
-    layerSwitcherButton.btn.onclick = () => {
-      this.showLayersList = !this.showLayersList;
-    };
+
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
     };
@@ -288,6 +300,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.mapLayers.styleGroups.forEach(styleGroup => {
           styleGroup.styles.forEach(style => this.stylesMap.set(style.id, style));
         });
+
+        if (this.mapLayers.styleGroups.length === 1 && this.mapLayers.styleGroups[0].styles.length === 1 ) {
+          this.displayLayerSwitcher = false;
+        }
 
         this.addBaseLayers();
 
