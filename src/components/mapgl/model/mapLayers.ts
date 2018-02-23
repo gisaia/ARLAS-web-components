@@ -23,6 +23,7 @@ export interface Style {
 
 export interface LayerEvents {
   onHover: Set<string>;
-  onClick: Set<string>;
+  emitOnClick: Set<string>;
+  zoomOnClick: Set<string>;
 }
 

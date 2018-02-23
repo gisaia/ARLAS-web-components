@@ -316,9 +316,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.selectedStyle = defaultStyle;
         }
 
-        this.mapLayers.events.onClick.forEach(layerId => {
+        this.mapLayers.events.zoomOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
-            this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
             if (e.features[0].properties.cluster_id !== undefined) {
               const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
               this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: expansionZoom });
@@ -341,6 +340,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
               this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom });
 
             }
+          });
+        });
+
+        this.mapLayers.events.emitOnClick.forEach(layerId => {
+          this.map.on('click', layerId, (e) => {
+            this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
           });
         });
 
