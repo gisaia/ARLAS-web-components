@@ -1,3 +1,4 @@
+export { MapLayers } from './mapgl/model/mapLayers';
 export { PowerbarsComponent } from './powerbars/powerbars.component';
 export { PowerbarsModule } from './powerbars/powerbars.module';
 export { DateUnit, ChartType, DataType, Position } from './histogram/histogram.utils';
@@ -10,7 +11,7 @@ export { HistogramComponent } from './histogram/histogram.component';
 export { HistogramModule } from './histogram/histogram.module';
 export { DonutComponent } from './donut/donut.component';
 export { DonutModule } from './donut/donut.module';
-export { MapglComponent, drawType } from './mapgl/mapgl.component';
+export { MapglComponent } from './mapgl/mapgl.component';
 export { MapglModule } from './mapgl/mapgl.module';
 export { ResultListComponent } from './results/result-list/result-list.component';
 export { ResultItemComponent } from './results/result-item/result-item.component';
