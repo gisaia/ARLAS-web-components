@@ -16,6 +16,8 @@ import { MapLayers, StyleGroup, Style } from './model/mapLayers';
 
 import { ElementIdentifier } from '../results/utils/results.utils';
 
+import * as mapglJsonSchema from './mapgl.schema.json';
+
 
 export interface OnMoveResult {
   zoom: number;
@@ -206,6 +208,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     });
+  }
+
+  public static getMapglJsonSchema(): Object {
+    return mapglJsonSchema;
   }
 
   public ngOnInit() {}
