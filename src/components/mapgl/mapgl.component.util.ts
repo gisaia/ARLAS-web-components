@@ -1,18 +1,16 @@
-import mapboxgl from 'mapbox-gl/dist/mapbox-gl.js';
-import { Map, Point } from 'mapbox-gl/dist/mapbox-gl';
 import { StyleGroup, Style } from './model/mapLayers';
 export function paddedBounds(npad: number, spad: number, epad: number,
-    wpad: number, map: Map, SW, NE) {
+    wpad: number, map: mapboxgl.Map, SW, NE) {
     const topRight = map.project(NE);
     const bottomLeft = map.project(SW);
     const scale = 1;
     const SWtopoint = map.project(SW);
-    const SWpoint = new Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
-    const SWworld = new Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);
+    const SWpoint = new mapboxgl.Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
+    const SWworld = new mapboxgl.Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);
     const swWorld = map.unproject(SWworld);
     const NEtopoint = map.project(NE);
-    const NEpoint = new Point(((NEtopoint.x - bottomLeft.x) * scale) + epad, ((NEtopoint.y - topRight.y) * scale) - npad);
-    const NEworld = new Point(NEpoint.x / scale + bottomLeft.x, NEpoint.y / scale + topRight.y);
+    const NEpoint = new mapboxgl.Point(((NEtopoint.x - bottomLeft.x) * scale) + epad, ((NEtopoint.y - topRight.y) * scale) - npad);
+    const NEworld = new mapboxgl.Point(NEpoint.x / scale + bottomLeft.x, NEpoint.y / scale + topRight.y);
     const neWorld = map.unproject(NEworld);
     return [swWorld, neWorld];
 }
