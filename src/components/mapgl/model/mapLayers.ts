@@ -1,7 +1,5 @@
-import { Layer } from 'mapbox-gl/dist/mapbox-gl';
-
 export interface MapLayers {
-  layers: Array<Layer>;
+  layers: Array<mapboxgl.Layer>;
   styleGroups: Array<StyleGroup>;
   events: LayerEvents;
 }

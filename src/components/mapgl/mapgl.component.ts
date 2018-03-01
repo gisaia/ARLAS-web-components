@@ -7,7 +7,6 @@ import { MatSelect, MatOption, MatCard } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
 
-import { Map as ArlasMap, NavigationControl, Layer } from 'mapbox-gl/dist/mapbox-gl';
 import { bboxes } from 'ngeohash';
 
 import { PitchToggle, ControlButton } from './mapgl.component.control';
@@ -195,7 +194,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
 
-  private layersMap = new Map<string, Layer>();
+  private layersMap = new Map<string, mapboxgl.Layer>();
   private styleGroupsMap = new Map<string, StyleGroup>();
   private stylesMap = new Map<string, Style>();
 
@@ -252,7 +251,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngAfterViewInit() {
-    this.map = new ArlasMap({
+    this.map = new mapboxgl.Map({
       container: 'mapgl',
       style: this.style,
       center: this.initCenter,
@@ -260,7 +259,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true
     });
     const layerSwitcherButton = new ControlButton('layersswitcher');
-    const navigationControllButtons = new NavigationControl();
+    const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
     const removeBoxButton = new ControlButton('removegeobox');
     if (this.displayLayerSwitcher) {
