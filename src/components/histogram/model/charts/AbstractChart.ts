@@ -12,7 +12,7 @@ export abstract class AbstractChart extends AbstractHistogram {
     super.plot(inputData);
     this.dataDomain = inputData;
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
-      const data = HistogramUtils.parseDataKey(inputData, this.histogramParams.dataType, this.histogramParams.dateUnit);
+      const data = HistogramUtils.parseDataKey(inputData, this.histogramParams.dataType);
       this.histogramParams.dataLength = data.length;
       this.initializeDescriptionValues(data[0].key, data[data.length - 1].key);
       this.initializeChartDimensions();
@@ -180,8 +180,7 @@ export abstract class AbstractChart extends AbstractHistogram {
 
   protected getSelectedBars(startvalue: number, endvalue: number): Array<number> {
     const keys = new Array<number>();
-    const bars = HistogramUtils.parseDataKey(<Array<{key: number; value:  number}>>this.histogramParams.data,
-       this.histogramParams.dataType, this.histogramParams.dateUnit);
+    const bars = HistogramUtils.parseDataKey(<Array<{key: number; value: number}>>this.histogramParams.data, this.histogramParams.dataType);
     bars.forEach((d) => {
       if (+d.key >= startvalue
         && +d.key + this.histogramParams.barWeight * this.dataInterval <= +endvalue) {

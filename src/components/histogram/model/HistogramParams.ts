@@ -1,6 +1,6 @@
 import { ViewContainerRef, ElementRef } from '@angular/core';
 import { ChartDimensions, ChartAxes, SwimlaneAxes, SelectedInputValues, SelectedOutputValues, HistogramUtils,
-         ChartType, DataType, DateUnit, Position, Tooltip, MarginModel } from '../histogram.utils';
+         ChartType, DataType, Position, Tooltip, MarginModel } from '../histogram.utils';
 import { Subject } from 'rxjs/Subject';
 import { SwimlaneMode } from '../histogram.utils';
 
@@ -11,7 +11,6 @@ export class HistogramParams {
   public data: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>;
   public dataType: DataType;
   public dataUnit: string;
-  public dateUnit: DateUnit;
   public chartType: ChartType;
   public hoveredBucketEvent: Subject<Date | number>;
 
