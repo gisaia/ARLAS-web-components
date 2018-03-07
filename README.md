@@ -3,10 +3,7 @@
 ![Build Status](https://img.shields.io/travis/gisaia/ARLAS-web-components/develop.svg?label=develop)
 
 ## About :
-ARLAS-web-components is an Angular library that provides a set of data analytics components :
-
-- **MapComponent**.
-- **HistogramComponent**.
+ARLAS-web-components is an Angular library that provides a set of data analytics components.
 
 ## Prerequisites :
 
@@ -42,7 +39,7 @@ $ npm install arlas-web-component --save
 Clone project
 
 ```
-$ git clone https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components.git .
+$ git clone https://github.com/gisaia/ARLAS-web-components
 ```
 
 Move into the folder
@@ -61,7 +58,6 @@ Build the project with ngc and gulp :
 
 ```
 $ npm run build-release
-
 ```
 
 The build artifacts will be stored in the `dist/` directory. 
@@ -79,25 +75,35 @@ Navigate to [http://localhost:4200/](http://localhost:4200/). The app will autom
 ## Tests : 
 ### Running unit tests
 
-*****TODO*****
-
-### Running end-to-end tests
-
-*****TODO*****
-
-Before running the tests make sure you are serving the app via `ng serve`.
+```
+$ ng test
+```
 
 ## Documentation : 
-- Please find the documentation of all the components [here](src/components/components-documentation.md)
+- Please find the documentation of all the components [here](http://arlas.io/arlas-tech/current/classes/_histogram_histogram_component_.histogramcomponent/)
 
 ## Contributing :
 
 - Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
+# Versioning :
+
+We use our own versioning schema which looks like x.y.z where :
+
+- `x` : Incremented as soon as the `ARLAS Server API` changes
+- `y` : Incremented as soon as an `ARLAS-web-components` inputs or outputs change
+- `z` : Incremented as soon as the `ARLAS-web-components` implementation receives a fix
+
 # Authors :
+
 - Gisaia - initial work - [Gisaïa](http://gisaia.fr/) 
-- See also the list of [contributors](https://gitlab.com/GISAIA.ARLAS/ARLAS-web-components/graphs/develop) who participated in this project.
+
+See also the list of [contributors](https://github.com/gisaia/ARLAS-web-components/graphs/contributors) who participated in this project.
 
 # License : 
 
-- This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache License, Version 2.0 - see the [LICENSE.txt](https://github.com/gisaia/ARLAS-web-components/blob/develop/LICENSE.txt) file for details.
+
+# Acknowledgments : 
+
+This project has been initiated and is maintained by Gisaïa
