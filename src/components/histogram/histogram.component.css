@@ -200,25 +200,34 @@
   z-index: 30000;
 }
 
-.histogram__chart--fixed-selected--area /*public*/ /*Sets the style of the area's selected parts*/
+.histogram__chart--area__fixed-selection /*public*/ /*Sets the style of the area's selected parts*/
 {
-  fill: #FFC107;
+  fill: rgb(124, 182, 233);
   fill-opacity: 1;
-  stroke: #C49D28;
+  stroke: rgb(124, 182, 233);
   stroke-width: 1px;
   stroke-opacity: 1;
 }
 
-.histogram__chart--current-selected--area /*public*/ /*Sets the style of the area's selected parts*/
+.histogram__chart--area__current-selection /*public*/ /*Sets the style of the area's selected parts*/
 {
-  fill: rgb(155, 116, 0);
+  fill: rgb(32, 138, 237);
   fill-opacity: 1;
-  stroke: #C49D28;
+  stroke: rgb(32, 138, 237);
   stroke-width: 1px;
   stroke-opacity: 1;
 }
 
-.histogram__chart--unselected--area /*public*/ /*Sets the style of the area's unselected parts*/
+.histogram__chart--area__no-selection /*public*/ /*Sets the style of the chart area when there isn't any selected intervals*/
+{
+  fill: rgb(76, 124, 87);
+  fill-opacity: 1;
+  stroke: rgb(76, 124, 87);
+  stroke-width: 1px;
+  stroke-opacity: 1;
+}
+
+.histogram__chart--area__unselected-parts /*public*/ /*Sets the style of the area's unselected parts*/
 {
   fill: rgb(167, 166, 161);
   fill-opacity: 1;
@@ -227,37 +236,45 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__fullyselected /*public*/ /*Sets the fixed selected bars style*/
+.histogram__chart--bar__fixed-selection /*public*/ /*Sets the fixed selected bars style*/
 {
-  fill: #FFC107;
+  fill: rgb(124, 182, 233);
   fill-opacity: 1;
   stroke: none;
   stroke-width: 0.5px;
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__currentselection /*public*/ /*Sets the currently selected bars style*/
+.histogram__chart--bar__current-full-selection /*public*/ /*Sets the currently selected bars style*/
 {
-  fill: rgb(191, 143, 0);
+  fill: rgb(32, 138, 237);
   fill-opacity: 1;
   stroke: none;
   stroke-width: 0.5px;
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__partlyselected /*public*/ /*Sets the partly selected bars style*/
+.histogram__chart--bar__current-partial-selection /*public*/ /*Sets the partly selected bars style*/
 {
-  fill: #FFC107;
+  fill: rgb(59, 155, 238);
   fill-opacity: 1;
   stroke: none;
   stroke-width: 0.5px;
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar /*public*/ /*Sets the unselected selected bars style*/
+.histogram__chart--bar__unselect-parts /*public*/ /*Sets the unselected selected bars style*/
 {
   fill-opacity: 0.3;
   stroke-opacity: 0.1;
+}
+
+.histogram__chart--bar__no-selection /*public*/ /*Sets the unselected selected bars style*/
+{
+  fill: rgb(76, 124, 87);
+  fill-opacity: 1;
+  stroke: rgb(76, 124, 87);
+  stroke-opacity: 1;
 }
 
 .histogram__swimlane-height--tick /*public*/ /*Sets the horizontal tick on each bar bar in the case of fixedHeight swimlanes*/

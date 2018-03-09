@@ -48,13 +48,11 @@ export class HistogramDemoComponent implements OnInit {
       selectedValues.pop();
       this.intervalListSelection4 = selectedValues;
     }
-
   }
 
   public setSelectedNumericValues(selectedValues: Array<{ startvalue: Date, endvalue: Date }>) {
     this.selectedNumericValues.startvalue = selectedValues[0].startvalue;
     this.selectedNumericValues.endvalue = selectedValues[0].endvalue;
-
   }
 
   public valueChanged1(event) {
@@ -64,8 +62,8 @@ export class HistogramDemoComponent implements OnInit {
       event.pop();
       this.intervalListSelection1 = event;
     }
-
   }
+
   public valueChanged2(event) {
     if (event.length === 1) {
       this.intervalListSelection2 = [];
@@ -73,8 +71,8 @@ export class HistogramDemoComponent implements OnInit {
       event.pop();
       this.intervalListSelection2 = event;
     }
-
   }
+
   public valueChanged3(event) {
     if (event.length === 1) {
       this.intervalListSelection2 = [];
@@ -93,12 +91,11 @@ export class HistogramDemoComponent implements OnInit {
 
   }
 
-
-
   private setSelectedValues(component: HistogramDemoComponent, start, end) {
     const selectInputValues = { startvalue: start, endvalue: end };
     component.selectValues = selectInputValues;
   }
+
   private showDefaultGraph(component: HistogramDemoComponent) {
     d3.csv('assets/sp503.csv', this.stringToNumber, function (error, data) {
       if (error) { throw error; }
@@ -154,7 +151,6 @@ export class HistogramDemoComponent implements OnInit {
             this.selectValuesSwimlane = { startvalue: 1513262121, endvalue: 1665262121 };
           }, 5000);
         }, 5000);
-
       });
     });
   }
@@ -173,9 +169,5 @@ export class HistogramDemoComponent implements OnInit {
     d.value = +d.value / 1450;
     return d;
   }
-
-
-
-
 
 }

@@ -63,14 +63,6 @@ export class ChartOneDimension extends AbstractChart {
     super.drawChartAxes(chartAxes, leftOffset);
   }
 
-  protected addSelectionBrush(chartAxes: ChartAxes, leftOffset: number): void {
-    super.addSelectionBrush(chartAxes, leftOffset);
-    if (this.histogramParams.multiselectable) {
-      this.onSelectionDoubleClick(chartAxes);
-    }
-    this.applyStyleOnSelection();
-  }
-
   protected applyStyleOnSelection() {
     this.applyStyleOnSelectedBars(this.barsContext);
   }

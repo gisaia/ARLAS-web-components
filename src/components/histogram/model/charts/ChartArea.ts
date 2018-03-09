@@ -35,21 +35,16 @@ export class ChartArea extends AbstractChart {
       const rect = this.getAppendedRectangle(v.startvalue, v.endvalue);
       this.selectedIntervals.set(guid, {rect: rect, startEndValues: {startvalue : v.startvalue, endvalue: v.endvalue}});
     });
-  }
 
-  public removeSelectInterval(id: string) {
-    super.removeSelectInterval(id);
-    this.selectedIntervals.get(id).rect.remove();
-    this.selectedIntervals.delete(id);
-    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
-      this.histogramParams.intervalSelectedMap);
-    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
-      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
-      this.hasSelectionExceededData = false;
-    } else if (isSelectionBeyondDataDomain) {
-      this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+    if (this.context !== undefined) {
+      if (this.histogramParams.hasCurrentSelection) {
+        this.applyStyleOnSelection();
+      } else {
+        this.setNoSelectionStyle();
+      }
     }
   }
+
 
   protected plotChart(data: Array<HistogramData>): void {
     this.clipPathContext = this.context.append('defs').append('clipPath')
@@ -72,21 +67,27 @@ export class ChartArea extends AbstractChart {
       this.context.append('g').attr('class', 'histogram__area-data')
       .append('path')
       .datum(data)
-      .attr('class', 'histogram__chart--unselected--area')
+      .attr('class', 'histogram__chart--area__unselected-parts')
       .attr('d', area);
 
     const urlFixedSelection = 'url(#' + this.histogramParams.uid + ')';
     this.context.append('g').attr('class', 'histogram__area-data').attr('clip-path', urlFixedSelection)
       .append('path')
       .datum(data)
-      .attr('class', 'histogram__chart--fixed-selected--area')
+      .attr('class', 'histogram__chart--area__fixed-selection')
       .attr('d', area);
 
     const urlCurrentSelection = 'url(#' + this.histogramParams.uid + '-currentselection)';
     this.context.append('g').attr('class', 'histogram__area-data').attr('clip-path', urlCurrentSelection)
       .append('path')
       .datum(data)
-      .attr('class', 'histogram__chart--current-selected--area')
+      .attr('display', 'none')
+      .attr('class', 'histogram__chart--area__current-selection')
+      .attr('d', area);
+    this.context.append('g').attr('class', 'histogram__area-data')
+      .append('path')
+      .datum(data)
+      .attr('class', 'histogram__chart--area__no-selection')
       .attr('d', area);
   }
 
@@ -114,7 +115,7 @@ export class ChartArea extends AbstractChart {
 
   protected onSelectionDoubleClick (axes: ChartAxes): void {
     this.brushContext.on('dblclick', () => {
-      if (this.isBrushed) {
+      if (this.clickedOverBrushedArea) {
         const finalPosition = this.getIntervalMiddlePositon(axes, +this.selectionInterval.startvalue, +this.selectionInterval.endvalue);
         let guid;
         if ((typeof (<Date>this.selectionInterval.startvalue).getMonth === 'function')) {
@@ -134,10 +135,6 @@ export class ChartArea extends AbstractChart {
         if (this.histogramParams.selectionListIntervalId.indexOf(guid) < 0) {
           this.histogramParams.selectionListIntervalId.push(guid);
         }
-        // ### Emits the selected interval
-        const selectionListInterval = [];
-        this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
-        this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(this.selectionInterval));
 
         if (!this.selectedIntervals.has(guid)) {
           const rect = this.getAppendedRectangle(this.selectionInterval.startvalue, this.selectionInterval.endvalue);
@@ -155,9 +152,22 @@ export class ChartArea extends AbstractChart {
 
   protected onSelectionClick (): void {
     this.brushContext.on('click', () => {
-      if (!this.isBrushed && this.rectangleCurrentClipper !== null) {
+      if (!this.clickedOverBrushedArea && this.rectangleCurrentClipper !== null) {
         this.rectangleCurrentClipper.remove();
         this.rectangleCurrentClipper = null;
+        this.histogramParams.hasCurrentSelection = false;
+        if (this.selectedIntervals.size === 0 && !this.alreadyNoCurrentSelection) {
+          this.context.select('.histogram__chart--area__current-selection').attr('display', 'none');
+          this.context.select('.histogram__chart--area__no-selection').attr('display', 'block');
+          this.histogramParams.valuesListChangedEvent.next([]);
+          this.alreadyNoCurrentSelection = true;
+
+        } else if (!this.alreadyNoCurrentSelection) {
+          const selectionListInterval = [];
+          this.histogramParams.intervalSelectedMap.forEach((k, v) => selectionListInterval.push(k.values));
+          this.histogramParams.valuesListChangedEvent.next(selectionListInterval.concat(null));
+          this.alreadyNoCurrentSelection = true;
+        }
       }
     });
   }
@@ -167,18 +177,30 @@ export class ChartArea extends AbstractChart {
       1 / 2 * (chartAxes.xDomain(endvalue) - chartAxes.xDomain(startvalue)) - 24 / 2;
   }
 
-  protected updateSelectionStyle(id: string): void {}
+  protected updateSelectionStyle(id: string): void {
+    this.histogramParams.intervalSelectedMap.delete(id);
+    this.selectedIntervals.get(id).rect.remove();
+    this.selectedIntervals.delete(id);
+    if (this.selectedIntervals.size === 0 && !this.histogramParams.hasCurrentSelection) {
+      this.context.select('.histogram__chart--area__current-selection').attr('display', 'none');
+      this.context.select('.histogram__chart--area__no-selection').attr('display', 'block');
+    }
+  }
 
-  protected addSelectionBrush(chartAxes: ChartAxes, leftOffset: number): void {
-    super.addSelectionBrush(chartAxes, leftOffset);
-    this.applyStyleOnSelection();
-    this.onSelectionClick();
-    if (this.histogramParams.multiselectable) {
-      this.onSelectionDoubleClick(chartAxes);
+  protected setNoSelectionStyle() {
+    if (this.histogramParams.intervalSelectedMap.size === 0) {
+      this.context.select('.histogram__chart--area__current-selection').attr('display', 'none');
+      this.context.select('.histogram__chart--area__no-selection').attr('display', 'block');
+    } else {
+      this.context.select('.histogram__chart--area__current-selection').attr('display', 'none');
+      this.context.select('.histogram__chart--area__no-selection').attr('display', 'none');
     }
   }
 
   protected applyStyleOnSelection() {
+    this.context.select('.histogram__chart--area__current-selection').attr('display', 'block');
+    this.context.select('.histogram__chart--area__no-selection').attr('display', 'none');
+
     if (this.rectangleCurrentClipper === null) {
       this.rectangleCurrentClipper = this.currentClipPathContext.append('rect')
         .attr('id', 'clip-rect')

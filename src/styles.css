@@ -33,11 +33,32 @@
   stroke-opacity: 1;
 }
 
-.histogram__area .histogram__chart--bar {
-  fill: rgb(140, 140, 140);
+
+.histogram__area .histogram__chart--bar__fixed-selection {
+  fill-opacity: 1 ;
+  stroke-opacity: 0.1;
+}
+
+.histogram__area .histogram__chart--bar__current-partial-selection {
+  fill-opacity: 0.5 ;
+  stroke-opacity: 0.1;
+}
+
+.histogram__area .histogram__chart--bar__current-full-selection {
+  fill-opacity: 1 ;
+  stroke-opacity: 0.1;
+}
+
+.histogram__area .histogram__chart--bar__unselect-parts {
+  fill-opacity: 0.1 ;
+  stroke-opacity: 0.1;
+}
+
+.histogram__area .histogram__chart--bar__no-selection {
   fill-opacity: 1;
   stroke-opacity: 0.1;
 }
+
 
 .histogram__area .histogram__description__startvalue--background,
 .histogram__area .histogram__description__endvalue--background{
