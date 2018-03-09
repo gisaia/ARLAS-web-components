@@ -1,6 +1,6 @@
 import {
   ChartDimensions, ChartAxes, SwimlaneAxes, SelectedInputValues, SelectedOutputValues, HistogramUtils,
-  ChartType, DataType, DateUnit, MarginModel, HistogramData, Position
+  ChartType, DataType, MarginModel, HistogramData, Position
 } from '../histogram.utils';
 import { Subject } from 'rxjs/Subject';
 import * as d3 from 'd3';
@@ -63,8 +63,7 @@ export abstract class AbstractHistogram {
     const axes = this.getAxes();
     this.checkSelectedValuesValidity(selectedInputValues);
     this.fromSetInterval = true;
-    const parsedSelectedValues = HistogramUtils.parseSelectedValues(selectedInputValues,
-      this.histogramParams.dataType, this.histogramParams.dateUnit);
+    const parsedSelectedValues = HistogramUtils.parseSelectedValues(selectedInputValues, this.histogramParams.dataType);
     if (parsedSelectedValues.startvalue !== this.selectionInterval.startvalue ||
       parsedSelectedValues.endvalue !== this.selectionInterval.endvalue) {
       this.selectionInterval.startvalue = parsedSelectedValues.startvalue;

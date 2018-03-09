@@ -99,22 +99,18 @@ export class HistogramUtils {
   }
 
   public static parseDataKey(inputData: Array<{ key: number, value: number }>,
-    dataType: DataType, dateUnit: DateUnit): Array<HistogramData> {
+    dataType: DataType): Array<HistogramData> {
       if (dataType === DataType.time) {
-        return this.parseDataKeyToDate(inputData, dateUnit);
+        return this.parseDataKeyToDate(inputData);
       } else {
         return inputData;
       }
   }
 
-  public static parseSelectedValues(selectedValues: SelectedInputValues, dataType: DataType, dateUnit: DateUnit): SelectedOutputValues {
+  public static parseSelectedValues(selectedValues: SelectedInputValues, dataType: DataType): SelectedOutputValues {
     const parsedSelectedValues: SelectedOutputValues = { startvalue: null, endvalue: null };
     if (dataType === DataType.time) {
-      if (dateUnit === DateUnit.second && (typeof (<Date>selectedValues.startvalue).getMonth !== 'function')) {
-        const multiplier = 1000;
-        parsedSelectedValues.startvalue = new Date(<number>selectedValues.startvalue * multiplier);
-        parsedSelectedValues.endvalue = new Date(<number>selectedValues.endvalue * multiplier);
-      } else if ((typeof (<Date>selectedValues.startvalue).getMonth === 'function')) {
+      if ((typeof (<Date>selectedValues.startvalue).getMonth === 'function')) {
         parsedSelectedValues.startvalue = new Date(<Date>selectedValues.startvalue);
         parsedSelectedValues.endvalue = new Date(<Date>selectedValues.endvalue);
       } else {
@@ -128,21 +124,20 @@ export class HistogramUtils {
   }
 
   public static parseSwimlaneDataKey(swimlanesInputData: Map<string, Array<{ key: number, value: number }>>,
-    dataType: DataType, dateUnit: DateUnit): Map<string, Array<HistogramData>> {
+    dataType: DataType): Map<string, Array<HistogramData>> {
     const swimlaneParsedDataMap = new Map<string, Array<HistogramData>>();
     swimlanesInputData.forEach((swimlane, key) => {
       if (swimlane !== null && Array.isArray(swimlane) && swimlane.length > 0) {
-        swimlaneParsedDataMap.set(key, this.parseDataKey(swimlane, dataType, dateUnit));
+        swimlaneParsedDataMap.set(key, this.parseDataKey(swimlane, dataType));
       }
     });
     return swimlaneParsedDataMap;
   }
 
-  private static parseDataKeyToDate(inputData: Array<{ key: number, value: number }>, dateUnit: DateUnit) {
+  private static parseDataKeyToDate(inputData: Array<{ key: number, value: number }>) {
     const parsedData = new Array<HistogramData>();
-    const multiplier = (dateUnit === DateUnit.second) ? 1000 : 1;
     inputData.forEach(d => {
-      parsedData.push({ key: new Date(d.key * multiplier), value: d.value });
+      parsedData.push({ key: new Date(d.key), value: d.value });
     });
     return parsedData;
   }
@@ -223,10 +218,6 @@ export class HistogramUtils {
     }
     return Math.round(value * multiplier) / multiplier;
   }
-}
-
-export enum DateUnit {
-  second, millisecond
 }
 
 export enum SwimlaneMode {

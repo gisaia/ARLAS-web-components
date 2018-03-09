@@ -21,7 +21,7 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     let swimlanesMapData: Map<string, Array<HistogramData>> = null;
     if (inputData !== null && inputData.size > 0) {
       this.setSwimlaneMaxValue(inputData);
-      swimlanesMapData = HistogramUtils.parseSwimlaneDataKey(inputData, this.histogramParams.dataType, this.histogramParams.dateUnit);
+      swimlanesMapData = HistogramUtils.parseSwimlaneDataKey(inputData, this.histogramParams.dataType);
       this.nbSwimlanes = swimlanesMapData.size;
       this.setSwimlaneMinMaxValues(swimlanesMapData);
       this.initializeDescriptionValues(this.swimlaneIntervalBorders[0], this.swimlaneIntervalBorders[1]);

@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 
 import {
-  ChartType, DataType, DateUnit, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
+  ChartType, DataType, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
   HistogramUtils
 } from './histogram.utils';
 
@@ -55,11 +55,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description To be set to `time` when x axis represents dates and to `numeric` otherwise.
    */
   @Input() public dataType: DataType = DataType.numeric;
-  /**
-   * @Input : Angular
-   * @description The unity of data key when it represents `time`.
-   */
-  @Input() public dateUnit: DateUnit = DateUnit.millisecond;
   /**
    * @description Unity of data to add in the end of tooltip values.
    */
@@ -377,7 +372,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.data = this.data;
     this.histogram.histogramParams.dataType = this.dataType;
     this.histogram.histogramParams.dataUnit = this.dataUnit;
-    this.histogram.histogramParams.dateUnit = this.dateUnit;
     this.histogram.histogramParams.el = this.el;
     this.histogram.histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
     this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;

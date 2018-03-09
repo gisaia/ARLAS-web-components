@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import {
-  DateUnit, DataType, ChartType, HistogramData, SelectedOutputValues,
+  DataType, ChartType, HistogramData, SelectedOutputValues,
   SelectedInputValues, SwimlaneData, SwimlaneMode
 } from '../../components/histogram/histogram.utils';
 import * as d3 from 'd3';
@@ -19,7 +19,6 @@ export class HistogramDemoComponent implements OnInit {
   public oneDimensionHistogramData: Array<HistogramData>;
   public defaultHistogramData: Array<HistogramData>;
   public swimlaneHistogramData: Map<any, any>;
-  public dateUnit = DateUnit;
   public dataType = DataType;
   public swimlaneMode = SwimlaneMode;
   public chartType = ChartType;
