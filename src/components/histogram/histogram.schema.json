@@ -12,13 +12,6 @@
                 "time"
             ]
         },
-        "dataUnit": {
-            "description": "Unit of time in histogram",
-            "enum": [
-                "millisecond",
-                "second"
-            ]
-        },
         "isHistogramSelectable": {
             "description": "If you can select a period on histogram",
             "type": "boolean"

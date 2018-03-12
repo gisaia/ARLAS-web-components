@@ -51,6 +51,7 @@ export class HistogramParams {
   public intervalListSelection: SelectedInputValues[];
   public topOffsetRemoveInterval: number;
   public isHistogramSelectable;
+  public hasCurrentSelection = false;
 
   /** Swimlane */
   public swimlaneBorderRadius;
@@ -96,4 +97,5 @@ export class HistogramParams {
   public uid: string;
   public displayHorizontal = 'hidden';
   public displayVertical = 'hidden';
+
 }

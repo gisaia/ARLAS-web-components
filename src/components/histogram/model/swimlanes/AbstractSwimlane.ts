@@ -34,6 +34,7 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
       if (this.histogramParams.isHistogramSelectable) {
         this.addSelectionBrush(this.swimlaneAxes);
       }
+      this.onSelectionClick(this.swimlaneContextList);
       this.plottingCount++;
     } else {
       this.histogramParams.startValue = '';
@@ -67,18 +68,6 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     }
   }
 
-  public removeSelectInterval(id: string) {
-    super.removeSelectInterval(id);
-    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
-      this.histogramParams.intervalSelectedMap);
-    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
-      this.plot(<Map<string, Array<{key: number, value: number}>>>this.histogramParams.data);
-      this.hasSelectionExceededData = false;
-    } else if (isSelectionBeyondDataDomain) {
-      this.plot(<Map<string, Array<{key: number, value: number}>>>this.histogramParams.data);
-    }
-  }
-
   public truncateLabels() {
     if (this.labelsContext !== undefined) {
       (this.labelsContext.selectAll('text')).nodes().forEach((textNode) => {
@@ -91,6 +80,17 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
           textLength = self.node().getComputedTextLength();
         }
       });
+    }
+  }
+
+  protected replotOnSelectionBeyondDataDomain() {
+    const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
+      this.histogramParams.intervalSelectedMap);
+    if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
+      this.plot(<Map<string, Array<{key: number, value: number}>>>this.histogramParams.data);
+      this.hasSelectionExceededData = false;
+    } else if (isSelectionBeyondDataDomain) {
+      this.plot(<Map<string, Array<{key: number, value: number}>>>this.histogramParams.data);
     }
   }
 
@@ -118,7 +118,21 @@ export abstract class AbstractSwimlane extends AbstractHistogram {
     if (this.histogramParams.multiselectable) {
       this.onSelectionDoubleClick(swimlaneAxes);
     }
-    this.applyStyleOnSelection();
+    if (this.histogramParams.hasCurrentSelection) {
+      this.applyStyleOnSelection();
+    } else {
+      this.setNoSelectionStyle();
+    }
+  }
+
+  protected setNoSelectionStyle() {
+    if (this.histogramParams.intervalSelectedMap.size === 0) {
+      this.swimlaneContextList.forEach( barContext => barContext.attr('class', 'histogram__chart--bar__no-selection'));
+    } else {
+      this.swimlaneContextList.forEach( barContext => barContext.attr('class', 'histogram__chart--bar__unselect-parts'));
+      this.swimlaneContextList.forEach( barContext =>
+        barContext.filter((d) => this.selectedBars.has(+d.key)).attr('class', 'histogram__chart--bar__fixed-selection'));
+    }
   }
 
   protected getSelectedBars(startvalue: number, endvalue: number): Array<number> {

@@ -10,7 +10,7 @@ export abstract class AbstractChart extends AbstractHistogram {
 
   public plot(inputData: Array<{ key: number, value: number }>) {
     super.plot(inputData);
-    this.dataDomain = inputData;
+    this.dataDomain = HistogramUtils.parseDataKey(inputData, this.histogramParams.dataType);
     if (inputData !== null && Array.isArray(inputData) && inputData.length > 0) {
       const data = HistogramUtils.parseDataKey(inputData, this.histogramParams.dataType);
       this.histogramParams.dataLength = data.length;
@@ -23,6 +23,7 @@ export abstract class AbstractChart extends AbstractHistogram {
       if (this.histogramParams.isHistogramSelectable) {
         this.addSelectionBrush(this.chartAxes, 0);
       }
+      this.onSelectionClick([this.barsContext]);
       this.plottingCount++;
     } else {
       this.histogramParams.startValue = '';
@@ -35,14 +36,12 @@ export abstract class AbstractChart extends AbstractHistogram {
     if (this.isWidthFixed === false) {
       this.histogramParams.chartWidth = this.histogramParams.el.nativeElement.childNodes[0].offsetWidth;
     }
-
     if (this.isHeightFixed === false) {
       this.histogramParams.chartHeight = this.histogramParams.el.nativeElement.childNodes[0].offsetHeight;
     }
   }
 
-  public removeSelectInterval(id: string) {
-    super.removeSelectInterval(id);
+  public replotOnSelectionBeyondDataDomain() {
     const isSelectionBeyondDataDomain = HistogramUtils.isSelectionBeyondDataDomain(this.selectionInterval, this.dataDomain,
       this.histogramParams.intervalSelectedMap);
     if (!isSelectionBeyondDataDomain && this.hasSelectionExceededData) {
@@ -50,6 +49,18 @@ export abstract class AbstractChart extends AbstractHistogram {
       this.hasSelectionExceededData = false;
     } else if (isSelectionBeyondDataDomain) {
       this.plot(<Array<{key: number, value: number}>>this.histogramParams.data);
+    }
+  }
+
+  protected addSelectionBrush(chartAxes: ChartAxes, leftOffset: number): void {
+    super.addSelectionBrush(chartAxes, leftOffset);
+    if (this.histogramParams.multiselectable) {
+      this.onSelectionDoubleClick(chartAxes);
+    }
+    if (this.histogramParams.hasCurrentSelection) {
+      this.applyStyleOnSelection();
+    } else {
+      this.setNoSelectionStyle();
     }
   }
 
@@ -191,9 +202,17 @@ export abstract class AbstractChart extends AbstractHistogram {
     return keys;
   }
 
-
   protected getAxes() {
     return this.chartAxes;
+  }
+
+  protected setNoSelectionStyle() {
+    if (this.histogramParams.intervalSelectedMap.size === 0) {
+      this.barsContext.attr('class', 'histogram__chart--bar__no-selection');
+    } else {
+      this.barsContext.attr('class', 'histogram__chart--bar__unselect-parts');
+      this.barsContext.filter((d) => this.selectedBars.has(+d.key)).attr('class', 'histogram__chart--bar__fixed-selection');
+    }
   }
 
   protected abstract plotChart(data: Array<HistogramData>): void;
@@ -201,5 +220,4 @@ export abstract class AbstractChart extends AbstractHistogram {
   protected abstract getEndPosition(data: Array<HistogramData>, index: number): number;
   protected abstract setTooltipXposition(xPosition: number): number;
   protected abstract setTooltipYposition(yPosition: number): number;
-
 }

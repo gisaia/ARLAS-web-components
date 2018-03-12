@@ -62,14 +62,6 @@ export class ChartBars extends AbstractChart {
     this.drawYAxis(chartAxes);
   }
 
-  protected addSelectionBrush(chartAxes: ChartAxes, leftOffset: number): void {
-    super.addSelectionBrush(chartAxes, leftOffset);
-    if (this.histogramParams.multiselectable) {
-      this.onSelectionDoubleClick(chartAxes);
-    }
-    this.applyStyleOnSelection();
-  }
-
   protected applyStyleOnSelection() {
     this.applyStyleOnSelectedBars(this.barsContext);
   }
