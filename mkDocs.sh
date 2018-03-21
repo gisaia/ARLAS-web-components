@@ -66,7 +66,7 @@ do
   echo "| -------------- | ----------- |" >> style.md
 
   ## EXTRACT DOCUMENTATION FROM CSS
-  grep "@doc" $file | sort | awk -F "/\*( )+@doc" '{print "| `"$1"` | "$2" |"}' | sed 's|/\*||g'| sed 's|\*/||g' >> style.md
+  grep "@doc" $file | sort | awk -F "/\*( *)@doc" '{print "| `"$1"` | "$2" |"}' | sed 's|/\*||g'| sed 's|\*/||g' >> style.md
   echo "" >> style.md
 done
 
