@@ -33,7 +33,7 @@
     "leaflet": "^1.2.0",
     "leaflet-editable": "^1.1.0",
     "leaflet.path.drag": "^0.0.6",
-    "mapbox-gl": "^0.42.2",
+    "mapbox-gl": "^0.44.1",
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",
     "node": "^0.0.0",
