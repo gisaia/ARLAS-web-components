@@ -4,7 +4,7 @@
     position: absolute;
 
 }
-.boxdraw /*public*/ /*Sets the bbox style*/
+.boxdraw /* @doc Sets the bbox style*/
 {
     background: rgba(56,135,190,0.1);
     border: 2px solid #3887be;
@@ -15,7 +15,7 @@
     height: 0;
 }
 
-.map__layers-list--container /*public*/ /*Sets the style of layers switcher container*/
+.map__layers-list--container /* @doc Sets the style of layers switcher container*/
 {
   position: absolute;
   display: flex;

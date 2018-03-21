@@ -11,7 +11,7 @@
     fill: black;
 }
 
-.histogram__description /*public*/ /*Sets the description part that includes title and start/end values*/
+.histogram__description /* @doc Sets the description part that includes title and start/end values*/
 {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 0.9em;
@@ -25,7 +25,7 @@
     display: flex;
 }
 
-.histogram__description__title /*public*/ /*Sets title's style*/
+.histogram__description__title /* @doc Sets title's style*/
 {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 1.0em;
@@ -37,37 +37,37 @@
     z-index: 8000;
 }
 
-.histogram__description__startvalue /*public*/ /*Sets startvalue part style*/
+.histogram__description__startvalue /* @doc Sets startvalue part style*/
 {
     flex: 1 1 100%;
     max-width: 30%;
 }
 
-.histogram__description__endvalue /*public*/ /*Sets endvalue part style*/{
+.histogram__description__endvalue /* @doc Sets endvalue part style*/{
     flex: 1 1 100%;
     max-width: 30%;
     text-align: right;
 }
 
-.histogram__description__startvalue--background, /*public*/ /*Sets startvalue background style*/
-.histogram__description__endvalue--background  /*public*/ /*Sets endvalue background style*/
+.histogram__description__startvalue--background, /* @doc Sets startvalue background style*/
+.histogram__description__endvalue--background  /* @doc Sets endvalue background style*/
 {
     background: rgba(220, 220, 220, 0.8);
 }
 
-.histogram__ticks /*public*/ /*Sets the ticks style*/
+.histogram__ticks /* @doc Sets the ticks style*/
 {
   stroke: #757575;
   stroke-width: 1px;
 }
 
-.histogram__axis /*public*/ /*Sets the axes style*/
+.histogram__axis /* @doc Sets the axes style*/
 {
   stroke: #757575;
   stroke-width: 1px;
 }
 
-.tick text /*public*/ /*Sets the labels style*/
+.tick text /* @doc Sets the labels style*/
 {
   fill: #BDBDBD;
   font-size: 0.9em;
@@ -80,7 +80,7 @@
   padding: 5px;
 }
 
-.histogram__tooltip /*public*/ /*Sets the tooltip style*/
+.histogram__tooltip /* @doc Sets the tooltip style*/
 {
   position: absolute;
   text-align: left;
@@ -94,7 +94,7 @@
   z-index: 20000;
 }
 
-.histogram__brush-tooltip /*public*/ /*Sets all the brush tooltips styles*/
+.histogram__brush-tooltip /* @doc Sets all the brush tooltips styles*/
 {
   font: 0.7em sans-serif;
   text-align: center;
@@ -106,10 +106,10 @@
   z-index: 20000;
 }
 
-.histogram__brush-tooltip__horizontal--left, /*public*/ /*Sets the horizontal left brush tooltip style*/
-.histogram__brush-tooltip__horizontal--right, /*public*/ /*Sets the horizontal right brush tooltip style*/
-.histogram__brush-tooltip__vertical--left, /*public*/ /*Sets the vertical left brush tooltip style*/
-.histogram__brush-tooltip__vertical--right /*public*/ /*Sets the vertical right brush tooltip style*/
+.histogram__brush-tooltip__horizontal--left, /* @doc Sets the horizontal left brush tooltip style*/
+.histogram__brush-tooltip__horizontal--right, /* @doc Sets the horizontal right brush tooltip style*/
+.histogram__brush-tooltip__vertical--left, /* @doc Sets the vertical left brush tooltip style*/
+.histogram__brush-tooltip__vertical--right /* @doc Sets the vertical right brush tooltip style*/
 {
 
 }
@@ -123,7 +123,7 @@
   transform: rotate(90deg);
   transform-origin: bottom left;}
 
-.histogram__remove /*public*/ /*Sets the remove tooltip's style*/
+.histogram__remove /* @doc Sets the remove tooltip's style*/
 {
   position: absolute;
   text-align: left;
@@ -187,12 +187,12 @@
   display: none;
 }
 
-.brush .selection /*public*/ /*Sets the brush selection style*/
+.brush .selection /* @doc Sets the brush selection style*/
 {
   opacity: 0.6;
 }
 
-.histogram__brush--handles /*public*/ /*Sets the brush handles style*/
+.histogram__brush--handles /* @doc Sets the brush handles style*/
 {
   stroke: #868686;
   fill: #868686;
@@ -200,7 +200,7 @@
   z-index: 30000;
 }
 
-.histogram__chart--fixed-selected--area /*public*/ /*Sets the style of the area's selected parts*/
+.histogram__chart--fixed-selected--area /* @doc Sets the style of the area's selected parts*/
 {
   fill: #FFC107;
   fill-opacity: 1;
@@ -209,7 +209,7 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--current-selected--area /*public*/ /*Sets the style of the area's selected parts*/
+.histogram__chart--current-selected--area /* @doc Sets the style of the area's selected parts*/
 {
   fill: rgb(155, 116, 0);
   fill-opacity: 1;
@@ -218,7 +218,7 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--unselected--area /*public*/ /*Sets the style of the area's unselected parts*/
+.histogram__chart--unselected--area /* @doc Sets the style of the area's unselected parts*/
 {
   fill: rgb(167, 166, 161);
   fill-opacity: 1;
@@ -227,7 +227,7 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__fullyselected /*public*/ /*Sets the fixed selected bars style*/
+.histogram__chart--bar__fullyselected /* @doc Sets the fixed selected bars style*/
 {
   fill: #FFC107;
   fill-opacity: 1;
@@ -236,7 +236,7 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__currentselection /*public*/ /*Sets the currently selected bars style*/
+.histogram__chart--bar__currentselection /* @doc Sets the currently selected bars style*/
 {
   fill: rgb(191, 143, 0);
   fill-opacity: 1;
@@ -245,7 +245,7 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar__partlyselected /*public*/ /*Sets the partly selected bars style*/
+.histogram__chart--bar__partlyselected /* @doc Sets the partly selected bars style*/
 {
   fill: #FFC107;
   fill-opacity: 1;
@@ -254,13 +254,13 @@
   stroke-opacity: 1;
 }
 
-.histogram__chart--bar /*public*/ /*Sets the unselected selected bars style*/
+.histogram__chart--bar /* @doc Sets the unselected selected bars style*/
 {
   fill-opacity: 0.3;
   stroke-opacity: 0.1;
 }
 
-.histogram__swimlane-height--tick /*public*/ /*Sets the horizontal tick on each bar bar in the case of fixedHeight swimlanes*/
+.histogram__swimlane-height--tick /* @doc Sets the horizontal tick on each bar bar in the case of fixedHeight swimlanes*/
 {
   stroke-width: 1px;
   stroke: #fff;
@@ -268,7 +268,7 @@
   opacity: 1;
 }
 
-.histogram__swimlane--vertical-tooltip-line /*public*/ /*Sets the vertical line that's shown when hovering bars in swimlane*/
+.histogram__swimlane--vertical-tooltip-line /* @doc Sets the vertical line that's shown when hovering bars in swimlane*/
 {
   stroke-width: 2px;
   stroke: #000;
@@ -278,7 +278,3 @@
 .selection {
   opacity: 0.6;
 }
-
-
-
-

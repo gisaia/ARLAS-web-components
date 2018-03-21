@@ -13,6 +13,7 @@ echo "# Customize your components style" > style.md
 for file in $(find src/components -name '*.css')
 do
 
+  echo "" >> style.md
   ## ADD TITLE FOR EACH CSS FILE
   if  [[ $file == src/components/powerbars* ]]  ;
   then
@@ -60,20 +61,16 @@ do
   fi
 
   ## "DRAW" THE HEADER OF THE
+  echo "" >> style.md
   echo "| Css class name | Description |" >> style.md
   echo "| -------------- | ----------- |" >> style.md
 
   ## EXTRACT DOCUMENTATION FROM CSS
-  grep "/\\*public\\*/" $file | sort | awk -F "/\\*public\\*/" '{print "| `"$1"` | "$2" |"}' >> style.md
+  grep "@doc" $file | sort | awk -F "/\*( )+@doc" '{print "| `"$1"` | "$2" |"}' | sed 's|/\*||g'| sed 's|\*/||g' >> style.md
+  echo "" >> style.md
 done
 
-## REMOVE /* AND */ CARACHTERS
-sed 's|[/*]||g' style.md > style-intermediate.md
-sed 's|[,]||g' style-intermediate.md > target/generated-docs/style-your-components.md
-
-rm style.md
-rm style-intermediate.md
-
+mv style.md target/generated-docs/style-your-components.md
 ## MOVE ALL THE DOCUMENTATION TO THE 'generated-docs' FOLDER ##
 mv typedoc_docs/* target/generated-docs
 if [ -d ./docs ] ; then

@@ -19,7 +19,7 @@
   position: relative
 }
 
-.resultgrid__info-button /*public*/ /*Sets both show-details and show-image buttons style.*/
+.resultgrid__info-button /* @doc Sets both show-details and show-image buttons style.*/
 {
   position: absolute;
   top: 5px;

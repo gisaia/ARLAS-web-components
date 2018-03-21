@@ -1,4 +1,4 @@
-.resultdetaileditem /*public*/ /*Sets all texts style.*/
+.resultdetaileditem /* @doc Sets all texts style.*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.7em;
@@ -6,20 +6,20 @@
   vertical-align: middle;
 }
 
-/*'.{{group.name}}-item-detail*/ /*public*/ /*Sets a specific goup title style.*/
-/*'.{{detail.key}}-item-detail*/ /*public*/ /*Sets a specific detail key style.*/
+/*'.{{group.name}}-item-detail*/ /* @doc Sets a specific goup title style.*/
+/*'.{{detail.key}}-item-detail*/ /* @doc Sets a specific detail key style.*/
 
-.resultdetaileditem-key /*public*/ /*Sets key style. (key: value part)*/
+.resultdetaileditem-key /* @doc Sets key style. (key: value part)*/
 {
   font-weight: bold;
 }
 
-.resultdetaileditem-value /*public*/ /*Sets value style (key: value part)*/
+.resultdetaileditem-value /* @doc Sets value style (key: value part)*/
 {
   margin-right: 10px;;
 }
 
-.resultdetaileditem__actions /*public*/ /*Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/
+.resultdetaileditem__actions /* @doc Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
@@ -29,5 +29,3 @@
   color:white;
   background-color: #607D8B;
 }
-
-
