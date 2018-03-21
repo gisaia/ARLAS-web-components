@@ -1,7 +1,7 @@
 .resultlist__header {
   text-align: center;
 }
-.resultlist__header--columns /*public*/ /*Sets columns names style.*/
+.resultlist__header--columns /* @doc Sets columns names style.*/
 {
 
   font-family: "Roboto", "Helvetica Neue", sans-serif;
@@ -15,13 +15,13 @@
   float: right;
 }
 
-.resultlist__header--columns__sort--icon /*public*/ /*Sets the sort column icon style.*/
+.resultlist__header--columns__sort--icon /* @doc Sets the sort column icon style.*/
 {
   font-size:18px;
 }
 
-.resultlist__header--columns__geosort--icon, /*public*/ /*Sets the deactivated geosort icon style.*/
-.resultlist__header--columns__geosort--icon--active /*public*/ /*Sets the activated geosort icon style.*/
+.resultlist__header--columns__geosort--icon, /* @doc Sets the deactivated geosort icon style.*/
+.resultlist__header--columns__geosort--icon--active /* @doc Sets the activated geosort icon style.*/
 {
   font-size:14px;
   padding-top: 5px;
@@ -39,7 +39,7 @@
   border-collapse: collapse;
 }
 
-.resultgrid--checkbox__count /*public*/ /*Sets the number of selected items style*/
+.resultgrid--checkbox__count /* @doc Sets the number of selected items style*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.7em;
@@ -48,7 +48,7 @@
   padding: 4px 10px 0 5px;
 }
 
-.resultlist__moredata /*public*/ /*Sets the moredata-loading-div style*/
+.resultlist__moredata /* @doc Sets the moredata-loading-div style*/
 {
   width: 100%;
   height: 100px;
@@ -57,7 +57,7 @@
   background-color: white;
   opacity: 0.9;
 }
-.resultlist__body--item /*public*/ /*Sets a row border style. (list mode)*/
+.resultlist__body--item /* @doc Sets a row border style. (list mode)*/
 {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
@@ -72,20 +72,20 @@
   border-bottom: 1px dashed #e9ecef;
 }
 
-.resultlist__lastline /*public*/ /*Sets the last row border style. (list mode)*/
+.resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
 {
   border-top: 1px dashed #e9ecef;
   border-bottom: 0px solid #e9ecef;
 }
-.resultlist__body--detailed-item /*public*/ /*Sets the last row border style. (list mode)*/
+.resultlist__body--detailed-item /* @doc Sets the last row border style. (list mode)*/
 {
   border-top: 1px dashed #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
-.resultlist__header, /*public*/ /*Sets the header border style.*/
-.resultlist__filter, /*public*/ /*Sets the filters container border style.*/
-.resultlist__tools, /*public*/ /*Sets the border style of the tools list container (select-all, select-in-between, grid-list-mode, ...).*/
-.resultlist__grid-detail  /*public*/ /*Sets the detail grid border style.*/
+.resultlist__header, /* @doc Sets the header border style.*/
+.resultlist__filter, /* @doc Sets the filters container border style.*/
+.resultlist__tools, /* @doc Sets the border style of the tools list container (select-all, select-in-between, grid-list-mode, ...).*/
+.resultlist__grid-detail  /* @doc Sets the detail grid border style.*/
 {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
@@ -104,7 +104,7 @@
   margin: 0 auto;
 }
 
-.resultlist__tools--select /*public*/ /*Sets the selection tools style.*/
+.resultlist__tools--select /* @doc Sets the selection tools style.*/
 {
   width:28%;
   float:left;
@@ -115,19 +115,19 @@
   float: left;
 }
 
-.resultlist__tools--select-between /*public*/ /*Sets the select-in-between container style.*/
+.resultlist__tools--select-between /* @doc Sets the select-in-between container style.*/
 {
   float: left;
 }
 
-.resultlist__tools--actions /*public*/ /*Sets the actions button container style.*/
+.resultlist__tools--actions /* @doc Sets the actions button container style.*/
 {
   width:35%;
   float:left;
   text-align: right;
 }
 
-.resultlist__tools--mode /*public*/ /*Sets the choose-mode-toggle-button container style.*/
+.resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
 {
   width:35%;
   float:right;

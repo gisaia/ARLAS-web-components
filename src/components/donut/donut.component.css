@@ -4,7 +4,7 @@
   position: relative;
 }
 
-.donut__tooltip /* public */ /* Sets the tooltip style*/
+.donut__tooltip /*@doc  Sets the tooltip style*/
 {
   position: absolute;
   font-size: 0.8em;
@@ -15,7 +15,7 @@
   z-index: 1000;
 }
 
-.donut__arc /* public */ /* Sets arcs style*/
+.donut__arc /*  @doc  Sets arcs style*/
 {
   fill-rule: evenodd;
   stroke: #fff;
