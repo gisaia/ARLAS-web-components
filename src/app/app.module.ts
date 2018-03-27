@@ -1,4 +1,5 @@
 import { HttpModule } from '@angular/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -19,6 +20,12 @@ import { MapglModule } from '../components/mapgl/mapgl.module';
 import { PowerbarsModule } from '../components/powerbars/powerbars.module';
 import { DonutModule } from '../components/donut/donut.module';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -43,7 +50,15 @@ import { DonutDemoComponent } from './donut-demo/donut-demo.component';
     ResultsModule,
     PowerbarsModule,
     MatSlideToggleModule,
-    HttpModule
+    HttpModule,
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

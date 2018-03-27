@@ -6,20 +6,20 @@
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <mat-icon *ngIf="isGeoSortActived" matTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</mat-icon>
-          <mat-icon *ngIf="!isGeoSortActived" (click) = "geoSort(column)" matTooltip="{{GEOSORT}}" class="resultlist__header--columns__geosort--icon">gps_fixed</mat-icon>
+          <mat-icon *ngIf="isGeoSortActived" matTooltip="{{GEOSORT | translate}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</mat-icon>
+          <mat-icon *ngIf="!isGeoSortActived" (click) = "geoSort(column)" matTooltip="{{GEOSORT | translate}}" class="resultlist__header--columns__geosort--icon">gps_fixed</mat-icon>
           <span  class="resultlist__header--columns--hidden"></span>
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField"
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <span matTooltip="Sort on {{column.columnName}}">
-            <a (click) = "sort(column)">{{column.columnName}}{{column.dataType}}</a>
+          <span matTooltip="{{'Sort on'  | translate}} {{column.columnName | translate}}">
+            <a (click) = "sort(column)">{{column.columnName | translate}}{{column.dataType}}</a>
           </span>
           <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
-            <mat-icon matTooltip="{{SORT_DESCENDING}}" *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</mat-icon>
-            <mat-icon matTooltip="{{SORT_ASCENDING}}" *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</mat-icon>
+            <mat-icon matTooltip="{{SORT_DESCENDING | translate}}" *ngIf="column.sortDirection === SortEnum.asc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_more</mat-icon>
+            <mat-icon matTooltip="{{SORT_ASCENDING | translate}}" *ngIf="column.sortDirection === SortEnum.desc" (click) = "sort(column)" class="resultlist__header--columns__sort--icon">expand_less</mat-icon>
           </div>
         </th>
         <th *ngIf="column.isToggleField" class="resultlist__header--columns" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
@@ -34,7 +34,7 @@
           <span class="resultlist__header--columns--hidden"></span>
         </td>
         <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
-                           matTooltip="{{FILTER_ON}} {{column.columnName}}"
+                           matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
                            [style.width.px]="column.width"
                            [column]="column"
                            [filtersMap]="filtersMap"
@@ -56,28 +56,28 @@
             <span>{{selectedItems.size}}</span>
           </div>
           <div class="resultlist__tools--select-between">
-              <mat-icon matTooltip="{{CHECK_INBETWEEN}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
+              <mat-icon matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
           </div>
 
 
         </div>
         <div class="resultlist__tools--actions">
-          <button matTooltip="{{GLOBAL_ACTIONS}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
+          <button matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
             <mat-icon>menu</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
             <button  *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
-              <span>{{action.label}}</span>
+              <span>{{action.label | translate}}</span>
             </button>
           </mat-menu>
         </div>
 
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
           <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
-            <mat-button-toggle matTooltip="{{LIST_MODE}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
+            <mat-button-toggle matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
               <mat-icon>list</mat-icon>
             </mat-button-toggle>
-            <mat-button-toggle matTooltip="{{GRID_MODE}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
+            <mat-button-toggle matTooltip="{{GRID_MODE | translate}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
               <mat-icon>apps</mat-icon>
             </mat-button-toggle>
           </mat-button-toggle-group>

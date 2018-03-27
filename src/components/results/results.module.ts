@@ -10,12 +10,11 @@ import { ResultDetailedItemComponent } from './result-detailed-item/result-detai
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultScrollDirective } from './result-directive/result-scroll.directive';
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
-import { MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
-   MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule } from '@angular/material';
-
-
-
-
+import {
+  MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
+  MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule
+} from '@angular/material';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -29,12 +28,13 @@ import { MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
     MatMenuModule,
     MatTooltipModule,
     FormsModule,
-    LoadingModule
+    LoadingModule,
+    TranslateModule.forChild()
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
-   ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
+    ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
   exports: [ResultListComponent, ResultGridTileComponent,
-   ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
+    ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
 
 })
-export class ResultsModule {}
+export class ResultsModule { }

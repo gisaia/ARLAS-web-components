@@ -303,6 +303,14 @@
     tree-kill "^1.0.0"
     webpack-sources "^1.1.0"
 
+"@ngx-translate/core@^7.2.2":
+  version "7.2.2"
+  resolved "https://registry.yarnpkg.com/@ngx-translate/core/-/core-7.2.2.tgz#e70069d5ef8e837ea336e6890773786f5efb5de5"
+
+"@ngx-translate/http-loader@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@ngx-translate/http-loader/-/http-loader-2.0.1.tgz#aa67788e64bfa8652691a77b022b3b4031209113"
+
 "@schematics/angular@0.1.17":
   version "0.1.17"
   resolved "https://registry.yarnpkg.com/@schematics/angular/-/angular-0.1.17.tgz#084a7cbe2de6f94a856bd08d95c9d35ef8905e2b"
