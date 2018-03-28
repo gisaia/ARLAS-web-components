@@ -1,7 +1,7 @@
 <div class="graphs">
   <p class="graph__title">Default histogram</p>
   <div class="graphs_timeline">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [data]="defaultHistogramData" [multiselectable]="true"></arlas-histogram>
+    <arlas-histogram [id]="'a'" [customizedCssClass]="'histogram__area'" [data]="defaultHistogramData" [multiselectable]="true"></arlas-histogram>
   </div>
 </div>
 
@@ -14,7 +14,7 @@
   </div>
 
   <div class="graphs_onedimension">
-    <arlas-histogram [chartType]="chartType.oneDimension"
+    <arlas-histogram [id]="'b'" [chartType]="chartType.oneDimension"
                      [data]="oneDimensionHistogramData"
                      [paletteColors]="'#41d2b0'"
                      [customizedCssClass]="'histogram__area'"
@@ -32,7 +32,7 @@
     <span class ="graph__inputs"><b style="color:brown">swimlaneMode</b>: variableHeight</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [chartType]="chartType.swimlane"
+    <arlas-histogram [id]="'c'" [chartType]="chartType.swimlane"
                      [showXTicks]=true
                      [showYLabels]=false
                      [multiselectable]="true"
@@ -50,7 +50,22 @@
 
                      ></arlas-histogram>
   </div>
-</div> -->
+</div>
+
+<div class ="graph__inputs--wrapper">
+  <span class ="graph__inputs"><b>Selected start value</b>: {{selectedNumericValues.startvalue}}</span>
+  <span class ="graph__inputs"><b>Selected end value</b>: {{selectedNumericValues.endvalue}}</span>
+</div>
+<div class="graphs_bars">
+<arlas-histogram [id]="'d'" [chartType]="chartType.bars"
+                 [chartTitle]="'Chart title'"
+                 (valuesListChangedEvent)="setSelectedNumericValues($event)"
+                 [data]="barsHistogramData"
+                 [intervalSelection]="selectValues"
+                 [xAxisPosition]="0"
+                 [customizedCssClass]="'histogram__area'"
+                 [descriptionPosition]="0"></arlas-histogram>
+</div>
 
 <div class="graphs">
   <p class="graph__title">Swimlane - Fixed height</p>
@@ -62,7 +77,7 @@
     <span class ="graph__inputs"><b style="color:brown">swimlaneMode</b>: fixedHeight</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [chartType]="chartType.swimlane"
+    <arlas-histogram [id]="'e'" [chartType]="chartType.swimlane"
                      [showXTicks]=true
                      [showYLabels]=false
                      [multiselectable]="true"
@@ -91,7 +106,7 @@
     <span class ="graph__inputs"><b style="color:brown">swimlaneMode</b>: circles</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [chartType]="chartType.swimlane"
+    <arlas-histogram [id]="'f'"[chartType]="chartType.swimlane"
                      [showXTicks]=true
                      [showYLabels]=false
                      [multiselectable]="true"
@@ -111,7 +126,7 @@
   </div>
 </div>
 
-<div class="graphs">
+ <div class="graphs">
   <p class="graph__title">Bars histogram - Time scale</p>
   <div>
     <div class ="graph__inputs--wrapper">
@@ -124,7 +139,7 @@
     </div>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram  [customizedCssClass]="'histogram__area'"
+    <arlas-histogram [id]="'g'" [customizedCssClass]="'histogram__area'"
     [multiselectable]="true" [dataType]="dataType.time"
     [showXLabels]=true [showYLabels]=true
     [dataType]="dataType.time" [chartType]="chartType.bars"
@@ -149,7 +164,7 @@
     <span class ="graph__inputs"><b>Selected end value</b>: {{selectedNumericValues.endvalue}}</span>
   </div>
 <div class="graphs_bars">
-  <arlas-histogram [chartType]="chartType.bars"
+  <arlas-histogram [id]="'h'" [chartType]="chartType.bars"
                    [chartTitle]="'Chart title'"
                    (valuesListChangedEvent)="setSelectedNumericValues($event)"
                    [data]="barsHistogramData"
@@ -169,7 +184,7 @@
     <span class ="graph__inputs"><b>chartTitle</b>: Chart title</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'i'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" ></arlas-histogram>
   </div>
 
@@ -179,7 +194,7 @@
     <span class ="graph__inputs"><b>yLabels</b>: 2</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'j'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData"></arlas-histogram>
   </div>
 
@@ -190,7 +205,7 @@
   </div>
 
   <div class="graphs_timeline--controlledHeight">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [chartWidth]="800" [chartHeight]="100"
+    <arlas-histogram [id]="'k'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [chartWidth]="800" [chartHeight]="100"
              [data]="curvedTimelineData"></arlas-histogram>
   </div>
 
@@ -199,7 +214,7 @@
     <span class ="graph__inputs"><b>ticksDateFormat</b>: %B %Y (x-ticks labels format)</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'l'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [ticksDateFormat]="'%B %Y'"></arlas-histogram>
   </div>
 
@@ -208,7 +223,7 @@
     <span class ="graph__inputs"><b>valuesDateFormat</b>: %A %d %B %Y (tooltip date format)</span>
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [ticksDateFormat]="'%B %Y'"
+    <arlas-histogram [id]="'m'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'" [ticksDateFormat]="'%B %Y'"
              [data]="curvedTimelineData" [valuesDateFormat]="'%A %d %B %Y'"></arlas-histogram>
   </div>
 
@@ -220,7 +235,7 @@
 
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'n'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dataUnit]="'m²'" [isSmoothedCurve]=false></arlas-histogram>
   </div>
 </div>
@@ -241,7 +256,7 @@
       <span class ="graph__inputs"><b>Selected end value</b>: {{selectedNumericValues.endvalue}}</span>
     </div>
   <div class="graphs_bars">
-    <arlas-histogram [chartType]="chartType.bars"
+    <arlas-histogram [id]="'o'" [chartType]="chartType.bars"
                      [chartTitle]="'Chart title'"
                      (valuesListChangedEvent)="setSelectedNumericValues($event)"
                      [data]="barsHistogramData"
@@ -258,7 +273,7 @@
 
   </div>
   <div class="graphs_bars">
-    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [multiselectable]=true
+    <arlas-histogram [id]="'p'" [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [multiselectable]=true
               [data]="barsHistogramData" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
@@ -267,7 +282,7 @@
     <span class ="graph__inputs"><b>barsWeight</b>: 0.3</span>
   </div>
   <div class="graphs_bars">
-    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [barWeight]="0.3"
+    <arlas-histogram [id]="'q'" [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [barWeight]="0.3"
               [data]="barsHistogramData" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
@@ -279,7 +294,7 @@
     <span class ="graph__inputs"><b>yLabels</b>: 2</span>
   </div>
   <div class="graphs_bars">
-    <arlas-histogram  [xTicks]="2" [xLabels]="2" [yLabels]="2" [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
+    <arlas-histogram  [id]="'r'" [xTicks]="2" [xLabels]="2" [yLabels]="2" [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
               [data]="barsHistogramData" [xLabels]="6" [dataType]="dataType.numeric" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
@@ -290,7 +305,7 @@
   </div>
   <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xTicks = xLabels = 5, yTicks = yLabels = 2, showXTicks=false </p>
   <div class="graphs_bars">
-    <arlas-histogram [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'s'" [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
               [data]="barsHistogramData" [xLabels]="6" [showXTicks]=false [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 </div>

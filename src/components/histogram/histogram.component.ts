@@ -6,7 +6,7 @@ import {
 import {
   ChartType, DataType, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
   HistogramUtils
-} from './histogram.utils';
+} from 'arlas-d3';
 
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
@@ -15,15 +15,9 @@ import { NUMBER_TYPE } from '@angular/compiler/src/output/output_ast';
 import { element } from 'protractor';
 import { log } from 'util';
 
-import { HistogramParams } from './model/HistogramParams';
-import { AbstractHistogram } from './model/AbstractHistogram';
-import { ChartArea } from './model/charts/ChartArea';
-import { AbstractChart } from './model/charts/AbstractChart';
-import { ChartBars } from './model/charts/ChartBars';
-import { ChartOneDimension } from './model/charts/ChartOneDimension';
-import { AbstractSwimlane } from './model/swimlanes/AbstractSwimlane';
-import { SwimlaneCircles } from './model/swimlanes/SwimlaneCircles';
-import { SwimlaneBars } from './model/swimlanes/SwimlaneBars';
+import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
+  , AbstractSwimlane  } from 'arlas-d3';
+
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
 
@@ -223,6 +217,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description The height of a single lane. If not specified, a lane height is the chartHeight devided by the number of lanes.
    */
   @Input() public swimlaneHeight: number = null;
+
+  @Input() public id;
   /**
    * @Output : Angular
    * @description Emits the list of selected intervals.
@@ -259,7 +255,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ngOnChanges(changes: SimpleChanges): void {
 
     if (this.histogram !== undefined) {
-      this.histogram.histogramParams.histogramNode = this.viewContainerRef.element.nativeElement;
+      this.histogram.histogramParams.histogramNode = document.querySelector('#' + this.id).querySelector('svg');
     } else {
       switch (this.chartType) {
         case ChartType.area: {
@@ -320,8 +316,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       (<AbstractSwimlane>this.histogram).truncateLabels();
     }
     if (this.rt !==  undefined && this.lt !== undefined) {
-      this.histogram.histogramParams.rightBrushElement = this.rt;
-      this.histogram.histogramParams.leftBrushElement = this.lt;
+      this.histogram.histogramParams.rightBrushElement = this.rt.nativeElement;
+      this.histogram.histogramParams.leftBrushElement = this.lt.nativeElement;
     }
   }
 
@@ -362,7 +358,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   private setHistogramParameters() {
     this.histogram.histogramParams = new HistogramParams();
-    this.histogram.histogramParams.histogramNode = this.viewContainerRef.element.nativeElement;
     this.histogram.histogramParams.barWeight = this.barWeight;
     this.histogram.histogramParams.brushHandlesHeightWeight = this.brushHandlesHeightWeight;
     this.histogram.histogramParams.chartHeight = this.chartHeight;
@@ -372,7 +367,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.data = this.data;
     this.histogram.histogramParams.dataType = this.dataType;
     this.histogram.histogramParams.dataUnit = this.dataUnit;
-    this.histogram.histogramParams.el = this.el;
     this.histogram.histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
     this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
     this.histogram.histogramParams.intervalSelection = this.intervalSelection;
@@ -389,7 +383,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.topOffsetRemoveInterval = this.topOffsetRemoveInterval;
     this.histogram.histogramParams.valuesDateFormat = this.valuesDateFormat;
     this.histogram.histogramParams.valuesListChangedEvent = this.valuesListChangedEvent;
-    this.histogram.histogramParams.viewContainerRef = this.viewContainerRef;
     this.histogram.histogramParams.xAxisPosition = this.xAxisPosition;
     this.histogram.histogramParams.xLabels = this.xLabels;
     this.histogram.histogramParams.xTicks = this.xTicks;
@@ -400,5 +393,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.swimlaneBorderRadius = this.swimlaneBorderRadius;
     this.histogram.histogramParams.swimlaneMode = this.swimlaneMode;
     this.histogram.histogramParams.uid = HistogramUtils.generateUID();
+    this.histogram.histogramParams.id = this.id;
   }
 }

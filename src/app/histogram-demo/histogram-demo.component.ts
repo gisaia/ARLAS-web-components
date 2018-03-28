@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import {
-  DataType, ChartType, HistogramData, SelectedOutputValues,
-  SelectedInputValues, SwimlaneData, SwimlaneMode
-} from '../../components/histogram/histogram.utils';
+import { DataType, ChartType, SelectedOutputValues, SelectedInputValues, SwimlaneMode } from 'arlas-d3';
 import * as d3 from 'd3';
 import { setTimeout } from 'timers';
 
@@ -14,10 +11,10 @@ import { setTimeout } from 'timers';
   styleUrls: ['./histogram-demo.component.css']
 })
 export class HistogramDemoComponent implements OnInit {
-  public curvedTimelineData: Array<HistogramData>;
-  public barsHistogramData: Array<HistogramData>;
-  public oneDimensionHistogramData: Array<HistogramData>;
-  public defaultHistogramData: Array<HistogramData>;
+  public curvedTimelineData: Array<{key: Date | number, value: number}>;
+  public barsHistogramData: Array<Array<{key: Date | number, value: number}>>;
+  public oneDimensionHistogramData: Array<Array<{key: Date | number, value: number}>>;
+  public defaultHistogramData: Array<Array<{key: Date | number, value: number}>>;
   public swimlaneHistogramData: Map<any, any>;
   public dataType = DataType;
   public swimlaneMode = SwimlaneMode;
@@ -151,7 +148,7 @@ export class HistogramDemoComponent implements OnInit {
           this.swimlaneHistogramData.set('line2', data2);
           this.swimlaneHistogramData.set('line3', data2);
           setTimeout(() => {
-            this.selectValuesSwimlane = { startvalue: 1513262121, endvalue: 1665262121 };
+            this.selectValuesSwimlane = { startvalue: 1513262121000, endvalue: 1665262121000 };
           }, 5000);
         }, 5000);
 
