@@ -1,4 +1,4 @@
-<div class="histogram" [ngClass]="customizedCssClass">
+<div id="{{id}}" class="histogram" [ngClass]="customizedCssClass">
   <div *ngIf="descriptionPosition === 0" class="histogram__description" [style.width.px]="histogram.histogramParams.chartWidth-histogram.histogramParams.margin.left-histogram.histogramParams.margin.right"
     [style.margin-left.px]="histogram.histogramParams.margin.left" [style.margin-right.px]="histogram.histogramParams.margin.right">
     <div class="histogram__description--display">
