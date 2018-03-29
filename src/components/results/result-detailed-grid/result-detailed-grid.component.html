@@ -4,12 +4,12 @@
       <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5">
         <img src="{{gridTile.urlImage}}">
       </div>
-      <button matTooltip="{{SHOW_DETAILS}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+      <button matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
         <mat-icon>info_outline</mat-icon>
       </button>
     </div>
     <ng-template #detailShowed>
-      <button matTooltip="{{SHOW_IMAGE}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+      <button matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
         <mat-icon>image</mat-icon>
       </button>
       <div arlas-result-detailed-item class="resultgrid--detailed-item"
