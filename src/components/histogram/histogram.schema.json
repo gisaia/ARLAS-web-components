@@ -5,6 +5,10 @@
     "type": "object",
     "$id": "histogram.schema.json",
     "properties": {
+        "id": {
+            "description": "Identifier of the histogram",
+            "type": "string"
+        },
         "dataType": {
             "description": "Type of data in histogram",
             "enum": [
@@ -145,6 +149,6 @@
         }
     },
     "required": [
-        "chartWidth"
+        "id"
     ]
 }
