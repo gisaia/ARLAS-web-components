@@ -81,18 +81,13 @@ export class DonutComponent implements OnInit, OnChanges {
   public ngOnInit() { }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.donut !== undefined) {
-      this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
-      this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[1];
-    } else {
+    if (this.donut === undefined) {
       if (this.multiselectable) {
         this.donut = new MultiSelectionDonut();
       } else {
         this.donut = new OneSelectionDonut();
       }
       this.setDonutParameters();
-      this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
-      this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[1];
     }
 
     if (changes.donutData && this.donutData !== undefined && this.donutData !== null && this.donut !== undefined
@@ -124,5 +119,7 @@ export class DonutComponent implements OnInit, OnChanges {
     this.donut.donutParams.opacity = this.opacity;
     this.donut.donutParams.selectedArcsList = this.selectedArcsList;
     this.donut.donutParams.selectedNodesEvent = this.selectedNodesEvent;
+    this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
+    this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[1];
   }
 }
