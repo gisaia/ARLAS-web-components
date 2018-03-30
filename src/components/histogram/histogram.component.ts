@@ -254,9 +254,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   public ngOnChanges(changes: SimpleChanges): void {
 
-    if (this.histogram !== undefined) {
-      this.histogram.histogramParams.histogramNode = document.querySelector('#' + this.id).querySelector('svg');
-    } else {
+    if (this.histogram === undefined) {
       switch (this.chartType) {
         case ChartType.area: {
           this.histogram = new ChartArea();
@@ -332,7 +330,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Resizes the histogram on windows resize event
    */
   public resizeHistogram(e: Event): void {
-    this.histogram.resize();
+    this.histogram.resize(this.el.nativeElement.childNodes[0]);
   }
 
   /**
@@ -394,5 +392,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.swimlaneMode = this.swimlaneMode;
     this.histogram.histogramParams.uid = HistogramUtils.generateUID();
     this.histogram.histogramParams.id = this.id;
+    this.histogram.histogramParams.histogramContainer = this.el.nativeElement.childNodes[0];
+    this.histogram.histogramParams.svgNode = this.el.nativeElement.childNodes[0].querySelector('svg');
   }
 }
