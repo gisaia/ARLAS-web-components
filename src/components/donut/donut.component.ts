@@ -75,7 +75,9 @@ export class DonutComponent implements OnInit, OnChanges {
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
     Observable.fromEvent(window, 'resize')
       .debounceTime(500)
-      .subscribe((event: Event) => { this.donut.resizeDonut(event); });
+      .subscribe((event: Event) => {
+        this.donut.resize(this.el.nativeElement.childNodes[0]);
+      });
   }
 
   public ngOnInit() { }
