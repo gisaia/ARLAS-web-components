@@ -239,7 +239,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     Observable.fromEvent(window, 'resize')
       .debounceTime(500)
       .subscribe((event: Event) => {
-        this.resizeHistogram(event);
+        this.resizeHistogram();
       });
   }
 
@@ -329,8 +329,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   /**
    * @description Resizes the histogram on windows resize event
    */
-  public resizeHistogram(e: Event): void {
-    this.histogram.resize(this.el.nativeElement.childNodes[0]);
+  public resizeHistogram(): void {
+    if (this.histogram) {
+      this.histogram.resize(this.el.nativeElement.childNodes[0]);
+    }
   }
 
   /**
