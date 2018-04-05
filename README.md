@@ -1,6 +1,7 @@
 # ARLAS web components :
 
 [![Build Status](https://travis-ci.org/gisaia/ARLAS-web-components.svg?branch=develop)](https://travis-ci.org/gisaia/ARLAS-web-components)
+[![npm version](https://badge.fury.io/js/arlas-web-components.svg)](https://badge.fury.io/js/arlas-web-components)
 
 ## About :
 ARLAS-web-components is an Angular library that provides a set of data analytics components.
