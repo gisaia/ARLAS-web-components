@@ -37,7 +37,9 @@
   ],
   "angularCompilerOptions": {
     "genDir": "aot",
-    "skipMetadataEmit": true
+    "skipMetadataEmit": true,
+    "annotateForClosureCompiler": true,
+    "skipTemplateCodegen": true
   },
   "include": [
     "src/components/**/*"
@@ -48,9 +50,5 @@
     "src/app/**.ts",
     "src/components/**/*.spec.*",
     "e2e/"
-  ],
-  "angularCompilerOptions": {
-    "genDir": "dist",
-    "strictMetadataEmit": true
-  }
+  ]
 }
