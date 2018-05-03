@@ -3,13 +3,11 @@ import {
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs/Rx';
 import * as d3 from 'd3';
+import * as tinycolor from 'tinycolor2';
 import { DonutDimensions, DonutArc, DonutUtils, DonutNode } from 'arlas-d3';
-import { AbstractDonut } from 'arlas-d3';
+import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, ColorGenerator } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
-import { DonutParams } from 'arlas-d3';
-import { MultiSelectionDonut } from 'arlas-d3';
-import { OneSelectionDonut } from 'arlas-d3';
-
+import { ColorGeneratorImpl } from './donut.utils';
 
 @Component({
   selector: 'arlas-donut',
@@ -56,6 +54,19 @@ export class DonutComponent implements OnInit, OnChanges {
   @Input() public id;
 
   /**
+   * @Input : Angular
+   * @description List of [key, color] couples that associates a hex color to each key
+   */
+  @Input() public keysToColors: Array<Array<string>>;
+
+  /**
+   * @Input : Angular
+   * @description The percentage of highest values in saturation scale. For exemple, colorsSaturationWeight = 1/5,  means
+   * that colors saturation values will be between 0.8 and 1. Knowing that saturation scale is [0 - 1].
+   */
+  @Input() public colorsSaturationWeight = 1 / 2 ;
+
+  /**
    * @Output : Angular
    * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
@@ -71,6 +82,7 @@ export class DonutComponent implements OnInit, OnChanges {
 
 
   public donut: AbstractDonut;
+  private donutColorizer: ColorGeneratorImpl;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
     Observable.fromEvent(window, 'resize')
@@ -89,6 +101,7 @@ export class DonutComponent implements OnInit, OnChanges {
       } else {
         this.donut = new OneSelectionDonut();
       }
+      this.setDonutColorizer();
       this.setDonutParameters();
     }
 
@@ -110,8 +123,7 @@ export class DonutComponent implements OnInit, OnChanges {
     return donutJsonSchema;
   }
 
-
-  private setDonutParameters() {
+  private setDonutParameters(): void {
     this.donut.donutParams = new DonutParams();
     this.donut.donutParams.id = this.id;
     this.donut.donutParams.customizedCssClass = this.customizedCssClass;
@@ -123,5 +135,14 @@ export class DonutComponent implements OnInit, OnChanges {
     this.donut.donutParams.selectedNodesEvent = this.selectedNodesEvent;
     this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
     this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[1];
+    this.donut.donutParams.donutNodeColorizer = this.donutColorizer;
+  }
+
+  private setDonutColorizer(): void {
+      if (this.keysToColors) {
+        this.donutColorizer = new ColorGeneratorImpl();
+        this.donutColorizer.keysToColors = this.keysToColors;
+        this.donutColorizer.saturationWeight = this.colorsSaturationWeight;
+      }
   }
 }
