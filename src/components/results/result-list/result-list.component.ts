@@ -181,7 +181,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Emits the event of sorting data on the specified column.
    */
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
-  new Subject<{ fieldName: string, sortDirection: SortEnum }>();
+    new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 
   /**
    * @Output : Angular
@@ -220,7 +220,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Emits the event of applying the specified action on the specified item.
    */
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
-  new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
+    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
   /**
    * @Output : Angular
@@ -258,6 +258,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public borderStyle = 'solid';
   public displayListGrid = 'inline';
 
+  private debouncer = new Subject<ElementIdentifier>();
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
@@ -269,6 +270,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       .subscribe((event: Event) => {
         this.setTableHeight();
       });
+    // Add debounce on hover item list
+    this.debouncer.debounceTime(500).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
   }
 
   public ngOnInit() {
@@ -344,7 +347,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Emits the event of asking for more items to fetch
    * @param moreDataCallsCounter Counts the event's emission occurence
    */
-   // when it's called for more data, an animated loading div is shown
+  // when it's called for more data, an animated loading div is shown
   public askForMoreData(moreDataCallsCounter: number) {
     this.moreDataEvent.next(moreDataCallsCounter);
     this.isMoreDataRequested = true;
@@ -428,7 +431,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       idFieldName: this.fieldsConfiguration.idFieldName,
       idValue: identifier
     };
-    this.consultedItemEvent.next(elementidentifier);
+    this.debouncer.next(elementidentifier);
   }
 
   /**

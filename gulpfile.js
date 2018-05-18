@@ -77,7 +77,6 @@ gulp.task('build:release', function (done) {
         'build:copy-and-inline-js',
         'build:clean-dist-node_modules',
         'build:clean-dist-src',
-        'build:generatedoc',
         'build:copy-resources',
         done
     );

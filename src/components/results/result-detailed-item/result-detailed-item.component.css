@@ -29,3 +29,16 @@
   color:white;
   background-color: #607D8B;
 }
+
+.group-item-title{
+  font-weight: bold;
+  color: #322D90;
+  font-size: 1.1em;
+}
+
+
+
+.detail-item{
+  font-weight: bold;
+  color: red;
+}
