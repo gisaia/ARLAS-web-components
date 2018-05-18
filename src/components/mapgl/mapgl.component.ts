@@ -652,9 +652,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const endlng: number = this.endlngLat.lng;
       const startlat: number = this.startlngLat.lat;
       const endlat: number = this.endlngLat.lat;
-      let west = Math.min(startlng, endlng);
+      const west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
-      let east = Math.max(startlng, endlng);
+      const east = Math.max(startlng, endlng);
       const south = Math.min(startlat, endlat);
       const coordinates = [[
         [east, south],
@@ -663,12 +663,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         [west, south],
         [east, south],
       ]];
-      if (west < -180) {
-        west = west + 360;
-      }
-      if (east > 180) {
-        east = east - 360;
-      }
       const polygonGeojson = {
         type: 'Feature',
         properties: {
