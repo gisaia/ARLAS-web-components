@@ -2,13 +2,13 @@
 </td>
 <td class="resultdetaileditem" [colSpan]="detailColspan - 1">
   <span *ngFor="let group of rowItem.itemDetailedData">
-   <span class="{{group.group.toLowerCase().replace(' ','-')}}-item-detail">{{group.group | translate}}</span><br>
-  <span *ngFor="let detail of group.details" class="{{detail.key}}-item-detail">
+   <span class="group-item-title {{group.group.toLowerCase().replace(' ','-')}}-item-detail">{{group.group | translate}}</span><br>
+  <span *ngFor="let detail of group.details" class="detail-item {{detail.key}}-item-detail">
     <span class="resultdetaileditem-key">{{detail.key | translate}}</span> : <span class="resultdetaileditem-value">{{detail.value}}</span>
   </span><br> <br/>
 
   </span>
-  <button mat-raised-button *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="{{action.id}}-action resultdetaileditem__actions">
+  <button mat-raised-button *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" class="resultdetaileditem__actions {{action.id}}-action">
     {{action.label | translate}}
   </button>
 </td>
