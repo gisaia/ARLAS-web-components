@@ -20,6 +20,29 @@
       "multiselectable":{
           "description": "Whether the donut is multi-selectable",
           "type":"boolean"
+      },
+      "keysToColors" : {
+          "description": "List of [key, color] couples that associates a hex color to each key",
+          "type": "array",
+          "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 2,
+                "items": [
+                    {
+                        "description": "Key to which a color is associated",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Hex color associated to the key",
+                        "type": "string"
+                    }
+                ]
+            }
+      },
+      "colorsSaturationWeight": {
+          "description": "The percentage of highest values in saturation scale. For exemple, colorsSaturationWeight = 1/5,  means that colors saturation values will be between 0.8 and 1. Knowing that saturation scale is [0 - 1]",
+          "type": "number"
       }
   },
   "required": [
