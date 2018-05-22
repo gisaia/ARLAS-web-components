@@ -2,7 +2,6 @@ const gulp = require('gulp');
 const gulpClean = require('gulp-clean');
 const gulpRunSequence = require('run-sequence');
 const inlineResources = require('./tools/inline-resources');
-const compodoc = require('@compodoc/gulp-compodoc')
 
 const PROJECT_ROOT = process.cwd();
 
@@ -49,26 +48,12 @@ function cleanDistSrc() {
         .pipe(gulpClean(null));
 }
 
-
-function generatedoc() {
-    gulp.src('src/**/*.ts')
-        .pipe(compodoc({
-            title: 'ARLAS Web Components',
-            output: 'documentation',
-            tsconfig: 'tsconfig-build.json',
-             disablePrivateOrInternalSupport: true
-
-        }))
-}
-
-
 gulp.task('build:clean-dist-node_modules', cleanDistNodeModules);
 gulp.task('build:clean-dist-src', cleanDistSrc);
 gulp.task('build:copy-and-inline-resource', copyHtml);
 gulp.task('build:copy-and-inline-dts', copyDts);
 gulp.task('build:copy-and-inline-js', copyJS);
 gulp.task('build:copy-resources', ['copy-data']);
-gulp.task('build:generatedoc', generatedoc);
 gulp.task('build:release', function (done) {
     // Synchronously run those tasks.
     return gulpRunSequence(
