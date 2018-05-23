@@ -73,6 +73,7 @@ done
 mv style.md target/generated-docs/style-your-components.md
 ## MOVE ALL THE DOCUMENTATION TO THE 'generated-docs' FOLDER ##
 mv typedoc_docs/* target/generated-docs
+cp CHANGELOG.md target/generated-docs/CHANGELOG_ARLAS-web-components.md
 if [ -d ./docs ] ; then
     cp -r docs/* target/generated-docs
 fi
