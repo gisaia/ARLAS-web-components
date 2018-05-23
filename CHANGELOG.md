@@ -1,5 +1,17 @@
 # Change Log
 
+## [v6.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.0) (2018-05-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.1.2...v6.0.0)
+
+**New stuff:**
+
+- DONUT : Add an input that set the color of donut nodes [\#127](https://github.com/gisaia/ARLAS-web-components/issues/127) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)]
+
+**Fixed bugs:**
+
+- MAP/HISTOGRAM : An error is thrown when we draw a BBOX in Bering strait [\#87](https://github.com/gisaia/ARLAS-web-components/issues/87)
+
 ## [v5.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v5.1.2) (2018-05-21)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.1.1...v5.1.2)
