@@ -27,15 +27,18 @@ export class ItemComponent {
 
   public retrieveDetailedData(detailedDataRetriever: DetailedDataRetriever, item: Item) {
     if (detailedDataRetriever !== null && item.itemDetailedData.length === 0) {
-        this.retrievedDataEvent = detailedDataRetriever.getData(((String)(item.identifier)));
-        this.retrievedDataEvent.subscribe(value => {
-          item.actions = value.actions;
-          value.details.forEach((v, k) => {
-            const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();
-            v.forEach((value, key) => details.push({ key: key, value: value }));
-            item.itemDetailedData.push({ group: k, details: details });
-          });
+      this.retrievedDataEvent = detailedDataRetriever.getData(((String)(item.identifier)));
+      this.retrievedDataEvent.subscribe(value => {
+        item.actions = new Array<Action>();
+        value.actions.forEach(action => {
+          item.actions.push({ id: action.id, label: action.label, cssClass: action.cssClass });
         });
-      }
+        value.details.forEach((v, k) => {
+          const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();
+          v.forEach((value, key) => details.push({ key: key, value: value }));
+          item.itemDetailedData.push({ group: k, details: details });
+        });
+      });
+    }
   }
 }
