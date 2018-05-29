@@ -546,6 +546,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   private onAddItems(itemData: Map<string, string | number | Date>) {
     const item = new Item(this.columns, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
+    item.imageEnabled = true;
+    item.thumbnailEnabled = true;
     if (this.fieldsConfiguration.titleFieldName) {
       if (this.fieldsConfiguration.titleFieldName.indexOf(',') < 0) {
         item.title = <string>itemData.get(this.fieldsConfiguration.titleFieldName);
@@ -573,6 +575,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         }
       });
     }
+    if (this.fieldsConfiguration.imageEnabled) {
+      if (itemData.get('imageEnabled') === 'false') {
+        item.imageEnabled = false;
+      }
+    }
+    if (this.fieldsConfiguration.thumbnailEnabled) {
+      if (itemData.get('thumbnailEnabled') === 'false') {
+        item.thumbnailEnabled = false;
+      }
+    }
+
     item.position = this.items.length + 1;
     item.ishighLight = false;
     // When new data is loaded, check the one that were already checked +

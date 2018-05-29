@@ -2,7 +2,8 @@
   <div class="resultgrid--container">
     <div *ngIf="!isDetailedDataShowed; else detailShowed">
       <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5">
-        <img src="{{gridTile.urlImage}}">
+        <img *ngIf="gridTile.imageEnabled" src="{{gridTile.urlImage}}" onerror="this.onerror=null;this.src='./assets/no-view.png';">
+        <img *ngIf="!gridTile.imageEnabled" src="./assets/no-view.png">
       </div>
       <button matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
         <mat-icon>info_outline</mat-icon>

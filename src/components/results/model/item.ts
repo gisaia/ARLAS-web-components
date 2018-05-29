@@ -14,9 +14,17 @@ export class Item {
    */
   public urlImage: string;
   /**
+   * @description If image is enabled (to avoid 404 nott found)
+   */
+  public imageEnabled: boolean;
+  /**
    * @description Url that links the item's thumbnail.
    */
   public urlThumbnail: string;
+    /**
+   * @description If thumbnail is enabled (to avoid 404 nott found)
+   */
+  public thumbnailEnabled: boolean;
   /**
    * @description Item's title.
    */
