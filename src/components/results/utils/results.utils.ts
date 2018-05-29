@@ -17,4 +17,6 @@ export interface FieldsConfiguration {
   urlImageTemplate?: string;
   urlThumbnailTemplate?: string;
   titleFieldName?: string;
+  imageEnabled?: boolean;
+  thumbnailEnabled?: boolean;
 }

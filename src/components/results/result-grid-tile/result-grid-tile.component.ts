@@ -52,11 +52,13 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
    */
   @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
 
+  public errorImgUrl = './assets/no-view.png';
+
   constructor() {
     super();
   }
 
-  public ngOnInit() {}
+  public ngOnInit() { }
 
   // Update the list of the selected items
   public setSelectedItem() {
