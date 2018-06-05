@@ -16,6 +16,7 @@ export interface Style {
   id: string;
   name: string;
   layerIds: Set<string>;
+  drawType: drawType;
   isDefault?: boolean;
 }
 
@@ -23,5 +24,10 @@ export interface LayerEvents {
   onHover: Set<string>;
   emitOnClick: Set<string>;
   zoomOnClick: Set<string>;
+}
+
+export enum drawType {
+  RECTANGLE,
+  CIRCLE
 }
 

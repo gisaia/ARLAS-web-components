@@ -49,6 +49,11 @@
                       "description": "Name of the style.",
                       "type": "string"
                     },
+                    "drawType": {
+                      "description": "Type of geometry of the style.",
+                      "type": "string",
+                      "enum": ["RECTANGLE", "CIRCLE"]
+                    },
                     "layerIds": {
                       "description": "Ids list of layers that are added to the map when this style is chosen.",
                       "type": "array"
@@ -59,7 +64,7 @@
                     }
                   },
                   "required": [
-                    "id", "name", "layerIds"
+                    "id", "name","drawType", "layerIds"
                   ]
                 }
               }
