@@ -6,14 +6,13 @@
     <mat-select placeholder="Style Group" [(value)]="selectedStyleGroup" class="map__layers__stylegroups">
       <mat-option *ngFor="let styleGroup of mapLayers.styleGroups" [value]="styleGroup" (click)=onStyleGroupChanged(styleGroup)>
         {{ styleGroup.name }}
-
       </mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field *ngIf="selectedStyleGroup?.styles?.length > 1"class="map__layers__form-field">
     <mat-select placeholder="Style" [(value)]="selectedStyle" [disabled]="!selectedStyleGroup || !selectedStyleGroup.styles || selectedStyleGroup.styles.length === 0">
-      <mat-option *ngFor="let style of selectedStyleGroup?.styles" [value]="style" (click)="setSourceStyle(selectedStyleGroup.id, style.id)">
+      <mat-option *ngFor="let style of selectedStyleGroup?.styles" [value]="style" (click)="setSourceStyle(selectedStyleGroup.id, style)">
         {{ style.name }}
       </mat-option>
     </mat-select>

@@ -161,6 +161,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
 
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
+    /**
+   * @Output : Angular
+   * @description Emits the new Style.
+   */
+  @Output() public switchLayer: Subject<Style> = new Subject<Style>();
   /**
    * @Output : Angular
    * @description Emits the event of removing the geobox.
@@ -217,7 +222,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
-
       if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
         if (changes['geojsondata'] !== undefined) {
           this.geojsondata = changes['geojsondata'].currentValue;
@@ -316,7 +320,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         const defaultStyle = getDefaultStyle(defaultStyleGroup.styles);
 
         if (defaultStyle !== undefined && defaultStyleGroup !== undefined) {
-          this.setSourceStyle(defaultStyleGroup.id, defaultStyle.id);
+          this.setSourceStyle(defaultStyleGroup.id, defaultStyle);
           this.selectedStyleGroup = defaultStyleGroup;
           this.selectedStyle = defaultStyle;
         }
@@ -504,9 +508,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @description Add layers of the style passed in parameters, to the data source
    */
-  public setSourceStyle(styleGroupId: string, styleId: string): void {
+  public setSourceStyle(styleGroupId: string, style: Style): void {
+    this.switchLayer.next(style);
     this.removeAllLayers();
-    (this.stylesMap.get(styleId)).layerIds.forEach(layerId => {
+    (this.stylesMap.get(style.id)).layerIds.forEach(layerId => {
       const layer = this.layersMap.get(layerId);
       if (layer !== undefined && layer.id === layerId) {
         this.map.addLayer(layer);
@@ -523,7 +528,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const defaultStyle = getDefaultStyle(selectedStyleGroup.styles);
     if (defaultStyle !== undefined) {
       this.selectedStyle = defaultStyle;
-      this.setSourceStyle(selectedStyleGroup.id, this.selectedStyle.id);
+      this.setSourceStyle(selectedStyleGroup.id, this.selectedStyle);
     } else {
       this.removeAllLayers();
     }
