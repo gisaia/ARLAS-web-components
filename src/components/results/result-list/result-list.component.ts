@@ -333,9 +333,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setColumns();
     }
     if (itemChanges) {
-      const itemAdded: Array<string> = new Array<string>();
       itemChanges.forEachAddedItem(i => {
-        itemAdded.push(i.item.get(this.fieldsConfiguration.idFieldName));
         this.onAddItems(i.item);
       });
       this.setSelectedItems(this.selectedItems);
@@ -557,7 +555,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
           item.title = item.title + ' ' + itemData.get(field);
         });
       }
-      item.title = item.title.trim();
+      if (item.title) {
+        item.title = item.title.trim();
+      }
     }
     if (this.fieldsConfiguration.urlImageTemplate) {
       item.urlImage = this.fieldsConfiguration.urlImageTemplate;
