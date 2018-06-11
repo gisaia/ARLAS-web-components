@@ -557,7 +557,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
           item.title = item.title + ' ' + itemData.get(field);
         });
       }
-      item.title = item.title.trim();
+      if (item.title) {
+        item.title = item.title.trim();
+      }
     }
     if (this.fieldsConfiguration.urlImageTemplate) {
       item.urlImage = this.fieldsConfiguration.urlImageTemplate;
