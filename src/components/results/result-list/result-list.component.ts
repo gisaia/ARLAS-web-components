@@ -333,9 +333,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setColumns();
     }
     if (itemChanges) {
-      const itemAdded: Array<string> = new Array<string>();
       itemChanges.forEachAddedItem(i => {
-        itemAdded.push(i.item.get(this.fieldsConfiguration.idFieldName));
         this.onAddItems(i.item);
       });
       this.setSelectedItems(this.selectedItems);
