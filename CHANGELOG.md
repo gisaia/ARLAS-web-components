@@ -1,16 +1,39 @@
 # Change Log
 
+## [v7.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.0.0) (2018-06-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v6.0.1...v7.0.0)
+
+**Breaking changes:**
+
+- Add an output to the MapComponent for the map switch layer controller [\#136](https://github.com/gisaia/ARLAS-web-components/issues/136) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- DONUT : Add an input that set the color of donut nodes [\#127](https://github.com/gisaia/ARLAS-web-components/issues/127) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)]
+
+**New stuff:**
+
+- Add map layer switcher output [\#138](https://github.com/gisaia/ARLAS-web-components/pull/138) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- Result-list component : trim undefined value [\#139](https://github.com/gisaia/ARLAS-web-components/issues/139)
+- Fix/139 resultlist trim [\#140](https://github.com/gisaia/ARLAS-web-components/pull/140) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+**Miscellaneous:**
+
+- COMPONENTS: review documentation [\#90](https://github.com/gisaia/ARLAS-web-components/issues/90) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)] [[documentation](https://github.com/gisaia/ARLAS-web-components/labels/documentation)]
+
 ## [v6.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.1) (2018-05-29)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v6.0.0...v6.0.1)
 
+**New stuff:**
+
+- Add no view image [\#134](https://github.com/gisaia/ARLAS-web-components/pull/134) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Add css in action item [\#133](https://github.com/gisaia/ARLAS-web-components/pull/133) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v6.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.0) (2018-05-23)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.1.2...v6.0.0)
-
-**New stuff:**
-
-- DONUT : Add an input that set the color of donut nodes [\#127](https://github.com/gisaia/ARLAS-web-components/issues/127) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)]
 
 **Fixed bugs:**
 
