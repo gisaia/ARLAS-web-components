@@ -605,19 +605,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.columns = new Array<Column>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
+    // id column is the first one and has a pre fixed width
+    // It is the column where checkboxes are put
+    const idColumn = new Column('', this.fieldsConfiguration.idFieldName, '');
+    idColumn.isIdField = true;
+    idColumn.width = checkboxColumnWidth;
+    this.columns.unshift(idColumn);
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
-      if (field.fieldName === this.fieldsConfiguration.idFieldName) {
-        // id column is the first one and has a pre fixed width
-        // It is the column where checkboxes are put
-        column.isIdField = true;
-        column.width = checkboxColumnWidth;
-        this.columns.unshift(column);
-      } else {
-        // The other columns have the same width which is the table width (without the id column) divided by the nuber of fields.
-        column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / (this.fieldsList.length - 1);
-        this.columns.push(column);
-      }
+      column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+      this.columns.push(column);
     });
     // add a column for toggle icon
     const toggleColumn = new Column('', 'toggle', '');
