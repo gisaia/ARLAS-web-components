@@ -9,10 +9,11 @@
 
       </div>
     </td>
-    <td *ngIf="!field.isIdField && !field.isToggleField" class="resultitem__cell"
+    <td *ngIf="!field.isIdField && !field.isToggleField" class="resultitem__cell resultitem__cell__{{field.fieldName}}"
                               [style.max-width.px]="field.width"
                               [style.min-width.px]="field.width">
-      <label class="resultitem__cell--label">{{rowItem.itemData.get(field.fieldName)}}{{field.dataType}}</label>
+      <label class="resultitem__cell--label resultitem__cell--label__{{field.fieldName}}  resultitem__cell--label__{{rowItem.itemData.get(field.fieldName)}}">
+        {{rowItem.itemData.get(field.fieldName)}}{{field.dataType}}</label>
     </td>
     <td *ngIf="field.isToggleField" class="resultitem__cell"
                               [style.max-width.px]="field.width"
