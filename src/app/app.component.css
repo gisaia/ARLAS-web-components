@@ -22,3 +22,9 @@
 #graph {
   height: 100%;
 }
+
+
+.donut-container{
+    height: 600px;
+    padding: 20px;
+  }

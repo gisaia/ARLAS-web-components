@@ -15,8 +15,73 @@ export class MapglDemoComponent implements OnInit {
     'features': []
   };
 
-  constructor(private http: Http) {}
+  public mapLayers = {
+    layers: [],
+    events: {
+      zoomOnClick: [],
+      emitOnClick: [],
+      onHover: []
+    },
+    styleGroups: [
+      {
+        id: 'distribution',
+        name: 'Distribution',
+        base: [
 
-  public ngOnInit() { }
+
+        ],
+        styles: [
+          {
+            id: 'heat-distrib',
+            name: 'Heats',
+            layerIds: [
+            ],
+            isDefault: false,
+            drawType: 'CIRCLE'
+          },
+          {
+            id: 'fill',
+            name: 'Rectangle',
+            layerIds: [
+            ],
+            isDefault: true,
+            drawType: 'RECTANGLE'
+          }
+        ]
+      },
+      {
+        id: 'accuracy',
+        name: 'Accuracy',
+        base: [
+
+
+        ],
+        styles: [
+          {
+            id: 'heat-acc',
+            name: 'Heats',
+            layerIds: [
+            ],
+            isDefault: false,
+            drawType: 'CIRCLE'
+          },
+          {
+            id: 'fill-precision',
+            name: 'Rectangle',
+            layerIds: [
+            ],
+            isDefault: true,
+            drawType: 'RECTANGLE'
+          }
+        ]
+      }
+    ]
+  };
+
+  constructor(private http: Http) {
+  }
+
+  public ngOnInit() {
+  }
 
 }

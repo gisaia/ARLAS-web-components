@@ -208,3 +208,6 @@ margin-top: 0px!important;
 .mapboxgl-ctrl-group-addgeobox {
     border-radius: 4px 4px 0px 0px!important;;
 }
+.donut{
+  height: 500px !important;
+}
