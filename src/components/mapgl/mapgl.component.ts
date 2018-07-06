@@ -193,15 +193,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
   public showLayersList = false;
-  public selectedStyleGroup: StyleGroup;
-  public selectedStyle: Style;
-
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
-
   private layersMap = new Map<string, mapboxgl.Layer>();
-  private styleGroupsMap = new Map<string, StyleGroup>();
-  private stylesMap = new Map<string, Style>();
 
   constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -305,25 +299,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
-        this.mapLayers.styleGroups.forEach(styleGroup => this.styleGroupsMap.set(styleGroup.id, styleGroup));
-        this.mapLayers.styleGroups.forEach(styleGroup => {
-          styleGroup.styles.forEach(style => this.stylesMap.set(style.id, style));
-        });
-
-        if (this.mapLayers.styleGroups.length === 1 && this.mapLayers.styleGroups[0].styles.length === 1 ) {
-          this.displayLayerSwitcher = false;
-        }
-
         this.addBaseLayers();
-
-        const defaultStyleGroup = getDefaultStyleGroup(this.mapLayers.styleGroups);
-        const defaultStyle = getDefaultStyle(defaultStyleGroup.styles);
-
-        if (defaultStyle !== undefined && defaultStyleGroup !== undefined) {
-          this.setSourceStyle(defaultStyleGroup.id, defaultStyle);
-          this.selectedStyleGroup = defaultStyleGroup;
-          this.selectedStyle = defaultStyle;
-        }
+        this.addStylesLayers();
 
         this.mapLayers.events.zoomOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
@@ -505,46 +482,55 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.isDrawingBbox = false;
   }
 
-  /**
-   * @description Add layers of the style passed in parameters, to the data source
-   */
-  public setSourceStyle(styleGroupId: string, style: Style): void {
-    this.switchLayer.next(style);
+  public onChangeStyle(styleGroupId: string, selectedStyle: Style) {
+    this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
+      styleGroup.selectedStyle = selectedStyle;
+    });
     this.removeAllLayers();
-    (this.stylesMap.get(style.id)).layerIds.forEach(layerId => {
-      const layer = this.layersMap.get(layerId);
-      if (layer !== undefined && layer.id === layerId) {
-        this.map.addLayer(layer);
-      } else {
-        throw new Error(this.STYLE_LAYER_ERROR);
-      }
+    if (selectedStyle.drawType !== undefined) {
+      this.switchLayer.next(selectedStyle);
+    }
+    this.mapLayers.styleGroups.forEach(styleGroup => {
+      styleGroup.selectedStyle.layerIds.forEach(layerId => {
+        this.addLayer(layerId);
+      });
     });
   }
 
   /**
-   * @description Applies the default style of the chosen style group
+   * @description Add base layers of each style group
    */
-  public onStyleGroupChanged(selectedStyleGroup: StyleGroup) {
-    const defaultStyle = getDefaultStyle(selectedStyleGroup.styles);
-    if (defaultStyle !== undefined) {
-      this.selectedStyle = defaultStyle;
-      this.setSourceStyle(selectedStyleGroup.id, this.selectedStyle);
-    } else {
-      this.removeAllLayers();
-    }
-  }
-
   private addBaseLayers() {
     this.mapLayers.styleGroups.forEach(styleGroup => {
       styleGroup.base.forEach(layerId => {
-        const layer = this.layersMap.get(layerId);
+        this.addLayer(layerId);
+      });
+    });
+  }
+
+  /**
+   * @description Add layers of the selected style of each style group
+   */
+  private addStylesLayers() {
+    this.mapLayers.styleGroups.forEach(styleGroup => {
+      const style = getDefaultStyle(styleGroup.styles);
+      styleGroup.selectedStyle = style;
+      if (style.drawType !== undefined) {
+        this.switchLayer.next(style);
+      }
+      style.layerIds.forEach(layerId => {
+        this.addLayer(layerId);
+      });
+    });
+  }
+
+  private addLayer(layerId: string): void {
+    const layer = this.layersMap.get(layerId);
         if (layer !== undefined && layer.id === layerId) {
           this.map.addLayer(layer);
         } else {
           throw new Error(this.BASE_LAYER_ERROR);
         }
-      });
-    });
   }
 
   private removeAllLayers() {

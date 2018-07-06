@@ -4,6 +4,7 @@
     position: absolute;
 
 }
+
 .boxdraw /* @doc Sets the bbox style*/
 {
     background: rgba(56,135,190,0.1);
@@ -27,6 +28,43 @@
   box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
 }
 
+.map__layers-stylegroup-name /* @doc Sets the style of Style group name*/
+{
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 1em;
+  color: #000;
+  display: block;
+}
+
+.map__layers-radio-group /* @doc Sets the style of the radio-group*/
+{
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.map__layers-radio-button /* @doc Sets the style of the radio-button*/
+{
+  padding: 1px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 0.9em;
+}
+
+.map__layers-radio-button .mat-radio-label{
+  margin: 0
+}
+
+.map__layers-radio-button .mat-radio-outer-circle{
+  height: 15px;
+  width: 15px;
+}
+
+.map__layers-radio-button .mat-radio-inner-circle{
+  height: 15px;
+  width: 15px;
+}
+.map__layers-radio-button .mat-radio-label-content {
+  padding-left: 2px;
+}
 .map__controls__icons
 {
   background-repeat: no-repeat;
@@ -48,14 +86,4 @@
 .map__controls__icons--layersswitcher
 {
   background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M0 0h24v24H0z' fill='none'/><path d='M11.99 18.54l-7.37-5.73L3 14.07l9 7 9-7-1.63-1.27-7.38 5.74zM12 16l7.36-5.73L21 9l-9-7-9 7 1.63 1.27L12 16z'/></svg>");
-}
-
-.map__layers-style {
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 0.75em;
-  color: grey;
-}
-
-.map__layers__form-field {
-  width: 150px;
 }

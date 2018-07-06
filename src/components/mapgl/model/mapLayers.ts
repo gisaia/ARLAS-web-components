@@ -10,13 +10,14 @@ export interface StyleGroup {
   base: Set<string>;
   isDefault?: boolean;
   styles: Array<Style>;
+  selectedStyle?: Style;
 }
 
 export interface Style {
   id: string;
   name: string;
   layerIds: Set<string>;
-  drawType: drawType;
+  drawType?: drawType;
   isDefault?: boolean;
 }
 
