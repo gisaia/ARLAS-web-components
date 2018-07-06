@@ -76,7 +76,7 @@ export class ResultsDemoComponent implements OnInit {
         }
         this.count++;
       }
-    }, 3000);
+    }, 1000);
   }
 
   public updateData() {
@@ -92,7 +92,7 @@ export class ResultsDemoComponent implements OnInit {
             map.set('id', (i + 10) + 'd' );
             this.data.push(map);
       }
-    }, 3000);
+    }, 1000);
   }
 
   public addData() {
@@ -157,7 +157,7 @@ export class ResultsDemoComponent implements OnInit {
         }
         this.count++;
       }
-    }, 3000);
+    }, 1000);
   }
 
 }

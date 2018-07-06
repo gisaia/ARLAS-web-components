@@ -11,7 +11,7 @@ import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 
-import { MatChipsModule, MatIconModule, MatSidenavModule, MatSlideToggleModule, MatSelectModule } from '@angular/material';
+import { MatChipsModule, MatIconModule, MatSidenavModule, MatSlideToggleModule, MatSelectModule, MatTabsModule } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
@@ -22,10 +22,21 @@ import { DonutModule } from '../components/donut/donut.module';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { RouterModule, Routes } from '@angular/router';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
+const routes: Routes = [
+  { path: '', component: MapglDemoComponent },
+  { path: 'histogram', component: HistogramDemoComponent },
+  { path: 'donut', component: DonutDemoComponent },
+  { path: 'map', component: MapglDemoComponent },
+  { path: 'powerbars', component: PowerbarsDemoComponent },
+  { path: 'list', component: ResultsDemoComponent },
+];
+
 
 @NgModule({
   declarations: [
@@ -43,11 +54,13 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatIconModule,
     MatSidenavModule,
     MatSelectModule,
+    MatTabsModule,
     FormsModule,
     MapglModule,
     HistogramModule,
     DonutModule,
     ResultsModule,
+    RouterModule.forRoot(routes),
     PowerbarsModule,
     MatSlideToggleModule,
     HttpModule,

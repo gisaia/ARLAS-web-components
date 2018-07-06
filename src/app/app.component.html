@@ -1,5 +1,20 @@
-<!--The whole content below can be removed with the new code.-->
-<div id="graph">
-  <arlas-histogram-demo></arlas-histogram-demo>
-</div>
+<mat-tab-group (focusChange)="selectedTab($event)" >
+  <mat-tab label="Map">
+  </mat-tab>
+  <mat-tab label="Donut">
+  </mat-tab>
+  <mat-tab label="Histogram">
+      <arlas-mapgl-demo></arlas-mapgl-demo>
+  </mat-tab>
+  <mat-tab label="PowerBars">
+  </mat-tab>
+  <mat-tab label="ResultList">
+  </mat-tab>
+</mat-tab-group>
+
+
+
+
+<router-outlet></router-outlet>
+
 
