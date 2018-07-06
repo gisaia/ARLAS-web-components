@@ -6,17 +6,12 @@ import { Http, Response } from '@angular/http';
 import { MatSelect, MatOption, MatCard } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Observable';
-
 import { bboxes } from 'ngeohash';
-
 import { PitchToggle, ControlButton } from './mapgl.component.control';
 import { paddedBounds, xyz, getDefaultStyleGroup, getDefaultStyle } from './mapgl.component.util';
 import { MapLayers, StyleGroup, Style } from './model/mapLayers';
-
 import { ElementIdentifier } from '../results/utils/results.utils';
-
 import * as mapglJsonSchema from './mapgl.schema.json';
-
 
 export interface OnMoveResult {
   zoom: number;
@@ -75,15 +70,40 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() public displayLayerSwitcher = false;
   /**
+ * @Input : Angular
+ * @description Whether the scale  is displayed.
+ */
+  @Input() public displayScale = true;
+  /**
+   * @Input : Angular
+   * @description Max width of the scale.
+   */
+  @Input() public maxWidthScale = 100;
+  /**
+   * @Input : Angular
+   * @description Max width of the scale.
+   */
+  @Input() public unitScale = 'metric';
+  /**
    * @Input : Angular
    * @description Style of the map
    */
-  @Input() public style = 'http://osm-liberty.lukasmartinelli.ch/style.json';
+  @Input() public style = 'https://openmaptiles.github.io/osm-bright-gl-style/style-cdn.json';
   /**
    * @Input : Angular
    * @description Zoom of the map when it's initialized
    */
   @Input() public initZoom = 2;
+  /**
+   * @Input : Angular
+   * @description Max zoom of the map
+   */
+  @Input() public maxZoom = 22;
+  /**
+   * @Input : Angular
+   * @description Min zoom of the map
+   */
+  @Input() public minZoom = 0;
   /**
    * @Input : Angular
    * @description Coordinates of the map's centre.
@@ -161,10 +181,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
 
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
-    /**
-   * @Output : Angular
-   * @description Emits the new Style.
-   */
+  /**
+ * @Output : Angular
+ * @description Emits the new Style.
+ */
   @Output() public switchLayer: Subject<Style> = new Subject<Style>();
   /**
    * @Output : Angular
@@ -212,7 +232,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     return mapglJsonSchema;
   }
 
-  public ngOnInit() {}
+  public ngOnInit() { }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
@@ -254,8 +274,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       style: this.style,
       center: this.initCenter,
       zoom: this.initZoom,
+      maxZoom: this.maxZoom,
+      minZoom: this.minZoom,
       renderWorldCopies: true
     });
+    if (this.displayScale) {
+      const scale = new mapboxgl.ScaleControl({
+        maxWidth: this.maxWidthScale,
+        unit: this.unitScale,
+
+      });
+      this.map.addControl(scale, 'bottom-right');
+    }
     const layerSwitcherButton = new ControlButton('layersswitcher');
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
@@ -443,7 +473,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.min(extendForTestdLatLng[1].lng, 180)
       ];
       onMoveData.tiles = xyz([[onMoveData.extendForLoad[1], onMoveData.extendForLoad[2]],
-        [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
+      [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
         Math.ceil((this.zoom) - 1));
       this.onMove.next(onMoveData);
     });
@@ -526,11 +556,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private addLayer(layerId: string): void {
     const layer = this.layersMap.get(layerId);
-        if (layer !== undefined && layer.id === layerId) {
-          this.map.addLayer(layer);
-        } else {
-          throw new Error(this.BASE_LAYER_ERROR);
-        }
+    if (layer !== undefined && layer.id === layerId) {
+      this.map.addLayer(layer);
+    } else {
+      throw new Error(this.BASE_LAYER_ERROR);
+    }
   }
 
   private removeAllLayers() {
