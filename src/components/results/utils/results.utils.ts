@@ -5,6 +5,7 @@ export interface Action {
   label: string;
   actionBus?: Subject<{ idFieldName: string, idValue: string }>;
   cssClass?: string;
+  tooltip?: string;
 }
 
 export interface ElementIdentifier {

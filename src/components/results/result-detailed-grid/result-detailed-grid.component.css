@@ -23,8 +23,22 @@
 {
   position: absolute;
   top: 5px;
+  right: 0px;
+  background-color: transparent;
+}
+.resultgrid__info-show-button{
+  top: 5px;
   right: 20px;
   background-color: #607D8B;
+  width: 25px;
+  height: 25px;
+}
+.resultgrid__info-close-button{
+  top: 5px;
+  right: 20px;
+  background-color: #607D8B;
+  width: 25px;
+  height: 25px;
 }
 
 ::-webkit-scrollbar
@@ -43,4 +57,17 @@
 ::-webkit-scrollbar-thumb
 {
 	background-color: #555;
+}
+
+.resultgrid__info_outline{
+  line-height: 7px;
+  font-size: 19px;
+}
+.resultgrid__close{
+  line-height: 8px;
+  font-size: 19px;
+}
+.resultgrid__image{
+  line-height: 7px;
+  font-size: 19px;
 }

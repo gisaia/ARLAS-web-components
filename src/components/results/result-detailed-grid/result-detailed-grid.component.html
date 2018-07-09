@@ -1,18 +1,30 @@
-<div class="resultgrid">
+<div class="resultgrid" *ngIf=isDetailShowed>
   <div class="resultgrid--container">
     <div *ngIf="!isDetailedDataShowed; else detailShowed">
       <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5">
         <img *ngIf="gridTile.imageEnabled" src="{{gridTile.urlImage}}" onerror="this.onerror=null;this.src='./assets/no-view.png';">
         <img *ngIf="!gridTile.imageEnabled" src="./assets/no-view.png">
       </div>
-      <button matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
-        <mat-icon>info_outline</mat-icon>
+      <div class="resultgrid__info-button">
+      <button matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+        <mat-icon class="resultgrid__info_outline">info_outline</mat-icon>
+      </button>
+      <button matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+          <mat-icon class="resultgrid__close">close</mat-icon>
       </button>
     </div>
+    </div>
     <ng-template #detailShowed>
-      <button matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
-        <mat-icon>image</mat-icon>
+        <div class="resultgrid__info-button">
+
+      <button matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+        <mat-icon class="resultgrid__image">image</mat-icon>
+
       </button>
+      <button matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+          <mat-icon class="resultgrid__close">close</mat-icon>
+      </button>
+    </div>
       <div arlas-result-detailed-item class="resultgrid--detailed-item"
                             [rowItem]="gridTile"
                             [idFieldName]="idFieldName"

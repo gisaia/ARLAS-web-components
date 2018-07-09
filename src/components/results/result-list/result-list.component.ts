@@ -156,8 +156,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public defautMode: ModeEnum;
 
+    /**
+   * @Input : Angular
+   * @description Whether the body table is hidden or not.
+   */
   @Input() public isBodyHidden: boolean;
-
   /**
    * @Input : Angular
    * @description Whether filters on list are displayed.
@@ -253,6 +256,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public resultMode: ModeEnum = this.defautMode;
   public allItemsChecked = false;
 
+  public isDetailledGridOpen = false;
+
+
   private detailedGridCounter = 0;
 
   public borderStyle = 'solid';
@@ -272,6 +278,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
     // Add debounce on hover item list
     this.debouncer.debounceTime(500).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+
   }
 
   public ngOnInit() {
@@ -299,6 +306,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
+      this.closeDetail(true);
     }
     if (changes['indeterminatedItems'] !== undefined) {
       this.indeterminatedItems.forEach(id => {
@@ -444,10 +452,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public setSelectedGridItem(item: Item) {
     this.selectedGridItem = item;
+    this.isDetailledGridOpen = true;
     if (this.detailedGridCounter === 0) {
       this.detailedGridCounter++;
     }
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 - this.detailedGridHeight;
+  }
+
+  public closeDetail(isClosed: boolean) {
+    if (isClosed) {
+      this.detailedGridCounter = 0;
+      this.isDetailledGridOpen = false;
+      this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
+    }
   }
 
   /**
@@ -539,8 +556,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.columns.push(toggleColumn);
   }
 
-
-
   private onAddItems(itemData: Map<string, string | number | Date>) {
     const item = new Item(this.columns, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
@@ -562,16 +577,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     if (this.fieldsConfiguration.urlImageTemplate) {
       item.urlImage = this.fieldsConfiguration.urlImageTemplate;
       this.fieldsConfiguration.urlImageTemplate.split('/').forEach(t => {
-        if (t.indexOf('{') >= 0) {
-          item.urlImage = item.urlImage.replace(t, itemData.get(t.slice(1, -1)).toString());
+        if (t.indexOf('{') >= 0 && t.indexOf('}') >= 0) {
+          const key: string = t.replace('{', '').replace('}', '');
+          item.urlImage = item.urlImage.replace(t, itemData.get(key).toString());
         }
       });
     }
     if (this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
       this.fieldsConfiguration.urlThumbnailTemplate.split('/').forEach(t => {
-        if (t.indexOf('{') >= 0) {
-          item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(t.slice(1, -1)).toString());
+        if (t.indexOf('{') >= 0 && t.indexOf('}') >= 0) {
+          const key: string = t.replace('{', '').replace('}', '');
+          item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
         }
       });
     }
