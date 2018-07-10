@@ -121,6 +121,16 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public customizedCssClass = '';
   /**
    * @Input : Angular
+   * @description Whether the histogram values start from zero or from the minimum of data
+   */
+  @Input() public yAxisStartsFromZero = true;
+  /**
+   * @Input : Angular
+   * @description Whether to add stripes in the histograms when yAxis starts from minimum of data
+   */
+  @Input() public showStripes = true;
+  /**
+   * @Input : Angular
    * @description The xAxis positon : above or below the chart.
    */
   @Input() public xAxisPosition: Position = Position.bottom;
@@ -400,5 +410,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.histogramContainer = this.el.nativeElement.childNodes[0];
     this.histogram.histogramParams.svgNode = this.el.nativeElement.childNodes[0].querySelector('svg');
     this.histogram.histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
+    this.histogram.histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
+    this.histogram.histogramParams.showStripes = this.showStripes;
   }
 }
