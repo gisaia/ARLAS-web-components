@@ -243,6 +243,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Emits the hovered bucket key (key as in HistogramData).
    */
   @Output() public hoveredBucketEvent: Subject<Date | number> = new Subject<Date | number>();
+  /**
+   * @Output : Angular
+   * @description Emits the hovered bucket key (key as in HistogramData).
+   */
+  @Output() public dataPlottedEvent: Subject<string> = new Subject<string>();
 
   public histogram: AbstractHistogram;
   public ChartType = ChartType;
@@ -301,6 +306,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.histogram.histogramParams.hasDataChanged = true;
       this.plotHistogram(this.data);
       this.histogram.histogramParams.hasDataChanged = false;
+      this.dataPlottedEvent.next('DATA_PLOTTED');
     }
 
     if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined && this.isHistogramSelectable) {
