@@ -29,6 +29,10 @@ export class Item {
    * @description Item's title.
    */
   public title: string;
+    /**
+   * @description Item's tooltip.
+   */
+  public tooltip: string;
   /**
    * @description The item's data is organized in this columns when represented in a table.
    */
@@ -72,6 +76,14 @@ export class Item {
    * @description The item position in a list of items.
    */
   public position: number;
+  /**
+   * @description The material grid icon.
+   */
+  public icon: string;
+  /**
+   * @description The css class for material grid icon.
+   */
+  public iconCssClass: string;
 
   constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
     this.columns = columns;

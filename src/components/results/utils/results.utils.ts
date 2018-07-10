@@ -17,7 +17,15 @@ export interface FieldsConfiguration {
   idFieldName: string;
   urlImageTemplate?: string;
   urlThumbnailTemplate?: string;
-  titleFieldName?: string;
+  titleFieldNames?: Array<Field>;
+  tooltipFieldNames?: Array<Field>;
   imageEnabled?: boolean;
   thumbnailEnabled?: boolean;
+  icon?: string;
+  iconCssClass?: string;
+}
+
+export interface Field {
+  fieldPath: string;
+  process?: string;
 }

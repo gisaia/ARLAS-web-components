@@ -156,10 +156,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public defautMode: ModeEnum;
 
-    /**
-   * @Input : Angular
-   * @description Whether the body table is hidden or not.
-   */
+  /**
+ * @Input : Angular
+ * @description Whether the body table is hidden or not.
+ */
   @Input() public isBodyHidden: boolean;
   /**
    * @Input : Angular
@@ -561,17 +561,30 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     item.imageEnabled = true;
     item.thumbnailEnabled = true;
-    if (this.fieldsConfiguration.titleFieldName) {
-      if (this.fieldsConfiguration.titleFieldName.indexOf(',') < 0) {
-        item.title = <string>itemData.get(this.fieldsConfiguration.titleFieldName);
-      } else {
-        item.title = '';
-        this.fieldsConfiguration.titleFieldName.split(',').forEach(field => {
-          item.title = item.title + ' ' + itemData.get(field);
-        });
-      }
+    if (this.fieldsConfiguration.titleFieldNames) {
+      item.title = this.fieldsConfiguration.titleFieldNames
+        .map(field => <string>itemData.get(field.fieldPath + '_title'))
+        .join(' ');
       if (item.title) {
         item.title = item.title.trim();
+      }
+    }
+    if (this.fieldsConfiguration.tooltipFieldNames) {
+      item.tooltip = this.fieldsConfiguration.tooltipFieldNames
+        .map(field => <string>itemData.get(field.fieldPath + '_tooltip'))
+        .join(' ');
+      if (item.tooltip) {
+        item.tooltip = item.tooltip.trim();
+      }
+    }
+
+    if (this.fieldsConfiguration.icon) {
+      item.icon = this.fieldsConfiguration.icon;
+    }
+    if (this.fieldsConfiguration.iconCssClass) {
+      item.iconCssClass = <string>itemData.get(this.fieldsConfiguration.iconCssClass);
+      if (item.iconCssClass) {
+        item.iconCssClass = item.iconCssClass.trim();
       }
     }
     if (this.fieldsConfiguration.urlImageTemplate) {
