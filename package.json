@@ -32,7 +32,7 @@
     "@types/mapbox-gl": "^0.39.5",
     "@types/supercluster": "^2.3.0",
     "@types/tinycolor2": "^1.4.0",
-    "arlas-d3": "4.0.*",
+    "arlas-d3": "4.1.*",
     "bootstrap": "^4.0.0-beta",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",

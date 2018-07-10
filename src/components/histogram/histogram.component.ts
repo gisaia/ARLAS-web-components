@@ -119,7 +119,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Css class name to use to customize a specific `arlas-histogram` component.
    */
   @Input() public customizedCssClass = '';
-
   /**
    * @Input : Angular
    * @description The xAxis positon : above or below the chart.
@@ -197,6 +196,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Either a hex string color or a color name (in English) or a saturation interval.
    */
   @Input() public paletteColors: [number, number] | string = null;
+   /**
+   * @Input : Angular
+   * @description Allows to include only selections that contain data in the histogram/swimlane
+   */
+  @Input() public displayOnlyIntervalsWithData = false;
   /**
    * @Input : Angular
    * @description The swimlane representation mode.
@@ -224,7 +228,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Emits the list of selected intervals.
    */
   @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
-
   /**
    * @Output : Angular
    * @description Emits the hovered bucket key (key as in HistogramData).
@@ -396,5 +399,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.id = this.id;
     this.histogram.histogramParams.histogramContainer = this.el.nativeElement.childNodes[0];
     this.histogram.histogramParams.svgNode = this.el.nativeElement.childNodes[0].querySelector('svg');
+    this.histogram.histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
   }
 }

@@ -31,6 +31,10 @@
             "description": "If you can select several period on histogram",
             "type": "boolean"
         },
+        "displayOnlyIntervalsWithData": {
+            "description": "If you can select several period on histogram",
+            "type": "boolean"
+        },
         "topOffsetRemoveInterval": {
             "description": "Top position of the remove-selection-button",
             "type": "number"
