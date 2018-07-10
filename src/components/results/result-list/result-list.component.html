@@ -85,10 +85,12 @@
 
       </td>
     </tr>
-    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null && resultMode==ModeEnum.grid">
+    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null 
+    && resultMode==ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
-          [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
+          [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)"
+          (closeDetail)=closeDetail($event)>
         </arlas-result-detailed-grid>
       </td>
     </tr>

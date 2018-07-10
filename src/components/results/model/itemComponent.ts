@@ -31,7 +31,13 @@ export class ItemComponent {
       this.retrievedDataEvent.subscribe(value => {
         item.actions = new Array<Action>();
         value.actions.forEach(action => {
-          item.actions.push({ id: action.id, label: action.label, cssClass: action.cssClass });
+          item.actions.push({
+            id: action.id,
+            label: action.label,
+            actionBus: action.actionBus,
+            cssClass: action.cssClass,
+            tooltip: action.tooltip
+          });
         });
         value.details.forEach((v, k) => {
           const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();

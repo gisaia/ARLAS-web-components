@@ -32,17 +32,16 @@ export class ResultDetailedItemComponent implements OnInit {
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{action: Action, elementidentifier: ElementIdentifier}> =
-    new Subject<{action: Action, elementidentifier: ElementIdentifier}>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
+    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
   constructor() { }
 
-  public ngOnInit() {
-  }
+  public ngOnInit() { }
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({action: action, elementidentifier: {idFieldName: this.idFieldName, idValue: this.rowItem.identifier}});
+    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
   }
 
 }
