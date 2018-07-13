@@ -1,24 +1,32 @@
 # Change Log
 
-## [v7.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.0) (2018-07-10)
+## [v7.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.1) (2018-07-13)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.1.0...v7.1.1)
+
+## [v7.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.0) (2018-07-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.0.0...v7.1.0)
 
 **New stuff:**
 
 - RESULTLIST : Add customs css class for cell [\#147](https://github.com/gisaia/ARLAS-web-components/issues/147) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- RESULTLIST: add tool tip on button in detail [\#146](https://github.com/gisaia/ARLAS-web-components/issues/146) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - MAP: add scale as option [\#145](https://github.com/gisaia/ARLAS-web-components/issues/145) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - MAP: Add max and min zoom of map in input [\#144](https://github.com/gisaia/ARLAS-web-components/issues/144) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Feature/improve result list [\#159](https://github.com/gisaia/ARLAS-web-components/pull/159) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 - Add maxZoom,minZoom,scale input [\#154](https://github.com/gisaia/ARLAS-web-components/pull/154) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 - Improve style resultlist cell data driven [\#148](https://github.com/gisaia/ARLAS-web-components/pull/148) ([mbarbet](https://github.com/mbarbet))
 
 **Fixed bugs:**
 
+- RESULTLIST : The detailled grid view is not updated [\#151](https://github.com/gisaia/ARLAS-web-components/issues/151)
 - MAP: The map should add the default/selected style of each styleGroup [\#150](https://github.com/gisaia/ARLAS-web-components/issues/150)
 - Fix \#150 : Display the slected styles of all stylegroups [\#152](https://github.com/gisaia/ARLAS-web-components/pull/152) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 **Miscellaneous:**
 
+- RESULTLIST : Improve thumbail grid url gestion  [\#149](https://github.com/gisaia/ARLAS-web-components/issues/149) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - RESULTLIST : wrap \<tbody\> with \<table\> [\#89](https://github.com/gisaia/ARLAS-web-components/issues/89) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - ALL : implement routing to different demos [\#82](https://github.com/gisaia/ARLAS-web-components/issues/82) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
 
