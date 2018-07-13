@@ -180,6 +180,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Input() public filtersMap: Map<string, string | number | Date>;
 
   /**
+   * @Input : Angular
+   * @description A  map of fieldName- Observable of array value for dropdown filter
+   */
+
+  @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
+
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */

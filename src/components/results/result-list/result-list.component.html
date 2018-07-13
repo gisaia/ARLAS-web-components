@@ -35,8 +35,9 @@
         </td>
         <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
                            matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
-                           [style.width.px]="column.width"
+                           [style.width.px]="column.width"                       
                            [column]="column"
+                           [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async"
                            [filtersMap]="filtersMap"
                            (setFiltersEvent)="setFilters($event)">
         </td>

@@ -30,6 +30,14 @@ export class Column {
    * @description Whether the cells of this column contains a toggle button.
    */
   public isToggleField = false;
+  /**
+   * @description Whether the filter search column has a dropdown.
+   */
+  public dropdown = false;
+    /**
+   * @description Size of the dropdown list.
+   */
+  public dropdownsize = 10;
 
   constructor(columnName: string, fieldName: string, dataType: string ) {
     this.columnName = columnName;
