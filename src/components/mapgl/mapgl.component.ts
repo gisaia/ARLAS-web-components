@@ -71,7 +71,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public displayLayerSwitcher = false;
   /**
  * @Input : Angular
- * @description Whether the scale  is displayed.
+ * @description Whether the scale is displayed.
  */
   @Input() public displayScale = true;
   /**
@@ -81,7 +81,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public maxWidthScale = 100;
   /**
    * @Input : Angular
-   * @description Max width of the scale.
+   * @description Unit of the scale.
    */
   @Input() public unitScale = 'metric';
   /**
@@ -106,7 +106,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public minZoom = 0;
   /**
    * @Input : Angular
-   * @description Coordinates of the map's centre.
+   * @description Coordinates of the map's centre when it's initialized.
    */
   @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
   /**

@@ -5,6 +5,18 @@
   "type": "object",
   "$id": "mapgl.schema.json",
   "properties": {
+    "displayScale": {
+      "description": "Whether the scale is displayed",
+      "type": "boolean"
+    },
+    "maxWidthScale": {
+      "description": "Max width of the scale in px. Default value is 100px.",
+      "type": "number"
+    },
+    "unitScale": {
+      "description": "Unit of the scale. Default value is 'metric'.",
+      "type": "string"
+    },
     "mapLayers": {
       "$id": "/properties/mapLayers",
       "type": "object",
@@ -106,6 +118,34 @@
     "style": {
       "description": "Url to the basemap style",
       "type": "string"
+    },
+    "initCenter": {
+      "description": "Coordinates of the map's centre when it's initialized.",
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": [
+        {
+            "description": "Longitude",
+            "type": "number"
+        },
+        {
+            "description": "Latitude",
+            "type": "number"
+        }
+      ]
+    },
+    "initZoom": {
+      "description": "Zoom of the map when it's initialized",
+      "type": "number"
+    },
+    "minZoom": {
+      "description": "Min zoom of the map",
+      "type": "number"
+    },
+    "maxZoom": {
+      "description": "Max zoom of the map",
+      "type": "number"
     },
     "margePanForLoad": {
       "description": "Margin applied to the map extent. Data is loaded in all this extent",
