@@ -12,7 +12,7 @@ import { ResultScrollDirective } from './result-directive/result-scroll.directiv
 import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
 import {
   MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
-  MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule
+  MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule
 } from '@angular/material';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 
@@ -26,6 +26,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
     MatGridListModule,
     MatCheckboxModule,
     MatMenuModule,
+    MatSelectModule,
     MatTooltipModule,
     FormsModule,
     LoadingModule,

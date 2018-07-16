@@ -2,6 +2,8 @@ import { Component, OnInit, SimpleChange } from '@angular/core';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 import { FieldsConfiguration, Action } from '../../components/results/utils/results.utils';
 import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
+import { Observable } from 'rxjs/Rx';
+
 
 @Component({
   selector: 'arlas-results-demo',
@@ -11,7 +13,8 @@ import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
 export class ResultsDemoComponent implements OnInit {
 
   public data: Array<Map<string, string | number | Date>>;
-  public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string }>;
+  public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string, dropdown?: boolean }>;
+  public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
   public fieldsConfiguration: FieldsConfiguration;
   public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
   public globalActionsList = new Array<Action>();
@@ -23,15 +26,22 @@ export class ResultsDemoComponent implements OnInit {
   public ngOnInit() {
     this.fieldsConfiguration = {
       idFieldName: 'id', urlImageTemplate:
-        'urlImage', urlThumbnailTemplate: 'urlImage', titleFieldName: 'source'
+        'urlImage', urlThumbnailTemplate: 'urlImage', titleFieldNames: [{ fieldPath: 'source', process: '' }]
     };
-    this.fieldsList = new Array<{ columnName: string, fieldName: string, dataType: string }>();
+    this.fieldsList = new Array<{ columnName: string, fieldName: string, dataType: string, dropdown?: boolean }>();
 
-    this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '' });
-    this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '' });
-    this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%' });
+    this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
+    this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', dropdown: true });
+    this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', dropdown: true });
     this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°' });
     this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
+
+
+    this.dropDownMapValues.set('source', Observable.from([['source_1', 'source_2', 'source_3']]));
+    this.dropDownMapValues.set('acquired', Observable.from([['acquired_1', 'acquired_2', 'acquired_3']]));
+    this.dropDownMapValues.set('cloud', Observable.from([['cloud_1', 'cloud_2', 'cloud_3']]));
+
+
 
     this.globalActionsList.push({ id: '1', label: 'Download', actionBus: null, tooltip: 'Download' });
     this.data = new Array<Map<string, string | number | Date>>();

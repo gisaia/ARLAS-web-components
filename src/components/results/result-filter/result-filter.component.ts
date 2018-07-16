@@ -2,6 +2,7 @@ import { DoCheck } from '@angular/core/core';
 import { Component, OnInit, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { Column } from '../model/column';
 import { Subject } from 'rxjs/Subject';
+import { MatSelectChange, MatOption } from '@angular/material';
 
 
 @Component({
@@ -21,19 +22,24 @@ export class ResultFilterComponent implements OnInit, OnChanges {
    * @description A map of columns to filter : key = column (or field) name & value = field value.
    * This components sets directly this map.
    */
-  @Input() public filtersMap: Map<string, string | number | Date>;
+  @Input() public filtersMap: Map<string, string | number | Date> = new Map<string, string | number | Date>();
   /**
    * @Input
    * @description The filter value.
    */
   @Input() public inputValue: string;
-
+  /**
+   * @Input
+   * @description The values of dropdown list.
+   */
+  @Input() public dropdownValues: Array<string> = new Array<string>();
   /**
    * @Input
    * @description Emits the map of filtered columns and the filters values (fieldName-fieldValue map).
    */
-
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+
+  public selected: Array<any> = new Array<any>();
 
   private iterableInputDiffer;
   private iterableColumnsDiffer;
@@ -49,9 +55,12 @@ export class ResultFilterComponent implements OnInit, OnChanges {
           if (changes['filtersMap'].currentValue.get(this.column.fieldName) !== undefined) {
             if (this.inputValue !== changes['filtersMap'].currentValue.get(this.column.fieldName)) {
               this.inputValue = changes['filtersMap'].currentValue.get(this.column.fieldName);
+              this.selected = new Array<any>();
+              this.inputValue.split(',').forEach(v => this.selected.push(v));
             }
           } else {
             this.inputValue = '';
+            this.selected = new Array<any>();
           }
         }
       }
@@ -65,7 +74,7 @@ export class ResultFilterComponent implements OnInit, OnChanges {
 
 
   // Update the map of the filtered fields. If a filter is empty, the correspondant field is removed from the map
-  private setFilter() {
+  public setFilter() {
     if (this.inputValue === undefined || this.inputValue === '' || this.inputValue === null) {
       if (this.filtersMap.has(this.column.fieldName)) {
         this.filtersMap.delete(this.column.fieldName);
@@ -77,4 +86,15 @@ export class ResultFilterComponent implements OnInit, OnChanges {
     }
   }
 
+  public selectionChange(event: MatSelectChange) {
+    if (event.value.length > 0) {
+      this.filtersMap.set(event.source.id, event.value.join(','));
+      this.setFiltersEvent.next(this.filtersMap);
+    } else {
+      if (this.filtersMap.has(event.source.id)) {
+        this.filtersMap.delete(event.source.id);
+        this.setFiltersEvent.next(this.filtersMap);
+      }
+    }
+  }
 }
