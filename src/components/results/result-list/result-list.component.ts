@@ -65,6 +65,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   /**
    * @constant
    */
+  public GEOSORT_ACTIONS = 'Geo sort actions';
+  /**
+   * @constant
+   */
   public GRID_MODE = 'Grid mode';
   /**
    * @constant
@@ -173,6 +177,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public isGeoSortActived = false;
   /**
+ * @Input : Angular
+ * @description Whether the auto sort on the geometry is activated.
+ */
+  @Input() public isAutoGeoSortActived = false;
+  /**
    * @Input : Angular
    * @description A fieldName-fieldValue map of fields to filter.
    */
@@ -198,6 +207,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Emits the event of geo-sorting data.
    */
   @Output() public geoSortEvent: Subject<string> = new Subject<string>();
+
+  /**
+ * @Output : Angular
+ * @description Emits the event of geo-sorting data.
+ */
+  @Output() public geoAutoSortEvent: Subject<boolean> = new Subject<boolean>();
 
   /**
    * @Output : Angular
@@ -265,13 +280,28 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public isDetailledGridOpen = false;
 
-
   private detailedGridCounter = 0;
 
   public borderStyle = 'solid';
   public displayListGrid = 'inline';
 
   private debouncer = new Subject<ElementIdentifier>();
+
+
+  public geoSortActions: Array<Action> = [
+    {
+      id: 'geosort',
+      label: 'Sort by geo distance'
+    },
+    {
+      id: 'auto-geosort',
+      label: 'Active auto geo distance sorting'
+    },
+    {
+      id: 'remove-auto-geosort',
+      label: 'Remove auto geo distance sorting'
+    }
+  ];
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
@@ -380,6 +410,24 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.globalActionEvent.next(action);
   }
 
+  public setGeoSortAction(action: Action) {
+    switch (action.id) {
+      case 'geosort':
+        this.geoSort();
+        break;
+      case 'auto-geosort':
+        this.isAutoGeoSortActived = true;
+        this.isGeoSortActived = true;
+        this.geoAutoSortEvent.next(this.isAutoGeoSortActived);
+        break;
+      case 'remove-auto-geosort':
+        this.isAutoGeoSortActived = false;
+        this.isGeoSortActived = false;
+        this.geoAutoSortEvent.next(this.isAutoGeoSortActived);
+        break;
+    }
+  }
+
   /**
    * @description Sets and emits the [fieldName, filterValue] map of filtered fields
    */
@@ -406,7 +454,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Emits the column to sort on and the sort direction
    */
   public sort(sortedColumn: Column): void {
-    this.isGeoSortActived = false;
+    if (!this.isAutoGeoSortActived) {
+      this.isGeoSortActived = false;
+    }
     if (sortedColumn.sortDirection === SortEnum.none) {
       sortedColumn.sortDirection = SortEnum.asc;
     } else if (sortedColumn.sortDirection === SortEnum.asc) {
@@ -426,7 +476,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   /**
    * @description Emits the request event of geo-sorting
    */
-  public geoSort(column: Column): void {
+  public geoSort(): void {
     this.isGeoSortActived = true;
     this.columns.forEach(column => {
       if (!column.isIdField) {
