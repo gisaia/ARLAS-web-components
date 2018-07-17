@@ -31,6 +31,10 @@
             "description": "If you can select several period on histogram",
             "type": "boolean"
         },
+        "displayOnlyIntervalsWithData": {
+            "description": "If you can select several period on histogram",
+            "type": "boolean"
+        },
         "topOffsetRemoveInterval": {
             "description": "Top position of the remove-selection-button",
             "type": "number"
@@ -78,8 +82,16 @@
             ]
         },
         "customizedCssClass": {
-            "description": " Css class name to use to customize a specific `arlas-histogram` component.",
+            "description": "Css class name to use to customize a specific `arlas-histogram` component.",
             "type": "string"
+        },
+        "yAxisStartsFromZero": {
+            "description": "Whether the histogram values start from zero or from the minimum of data.",
+            "type": "boolean"
+        },
+        "showStripes": {
+            "description": "Whether to add stripes in the histogram when yAxis starts from minimum of data.",
+            "type": "boolean"
         },
         "xAxisPosition": {
             "description": "The xAxis positon : above or below the chart.",

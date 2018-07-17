@@ -119,7 +119,16 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Css class name to use to customize a specific `arlas-histogram` component.
    */
   @Input() public customizedCssClass = '';
-
+  /**
+   * @Input : Angular
+   * @description Whether the histogram values start from zero or from the minimum of data
+   */
+  @Input() public yAxisStartsFromZero = true;
+  /**
+   * @Input : Angular
+   * @description Whether to add stripes in the histograms when yAxis starts from minimum of data
+   */
+  @Input() public showStripes = true;
   /**
    * @Input : Angular
    * @description The xAxis positon : above or below the chart.
@@ -197,6 +206,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Either a hex string color or a color name (in English) or a saturation interval.
    */
   @Input() public paletteColors: [number, number] | string = null;
+   /**
+   * @Input : Angular
+   * @description Allows to include only selections that contain data in the histogram/swimlane
+   */
+  @Input() public displayOnlyIntervalsWithData = false;
   /**
    * @Input : Angular
    * @description The swimlane representation mode.
@@ -224,12 +238,16 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Emits the list of selected intervals.
    */
   @Output() public valuesListChangedEvent: Subject<SelectedOutputValues[]> = new Subject<SelectedOutputValues[]>();
-
   /**
    * @Output : Angular
    * @description Emits the hovered bucket key (key as in HistogramData).
    */
   @Output() public hoveredBucketEvent: Subject<Date | number> = new Subject<Date | number>();
+  /**
+   * @Output : Angular
+   * @description Emits the hovered bucket key (key as in HistogramData).
+   */
+  @Output() public dataPlottedEvent: Subject<string> = new Subject<string>();
 
   public histogram: AbstractHistogram;
   public ChartType = ChartType;
@@ -288,6 +306,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.histogram.histogramParams.hasDataChanged = true;
       this.plotHistogram(this.data);
       this.histogram.histogramParams.hasDataChanged = false;
+      this.dataPlottedEvent.next('DATA_PLOTTED');
     }
 
     if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined && this.isHistogramSelectable) {
@@ -396,5 +415,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.id = this.id;
     this.histogram.histogramParams.histogramContainer = this.el.nativeElement.childNodes[0];
     this.histogram.histogramParams.svgNode = this.el.nativeElement.childNodes[0].querySelector('svg');
+    this.histogram.histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
+    this.histogram.histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
+    this.histogram.histogramParams.showStripes = this.showStripes;
   }
 }
