@@ -253,6 +253,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the event of applying the specified globalb action on the selected items.
+   */
+  @Output() public columnFilterChanged: Subject<Column> = new Subject<Column>();
+
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
@@ -585,6 +591,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     } else {
       this.selectedItemsPositions.delete(item.position);
     }
+  }
+
+  /**
+   * @description Emits the column when a filter is addedd
+   */
+  public columnChanged(colum: Column) {
+    this.columnFilterChanged.next(colum);
   }
 
   // Build the table's columns

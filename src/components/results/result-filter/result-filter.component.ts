@@ -34,10 +34,16 @@ export class ResultFilterComponent implements OnInit, OnChanges {
    */
   @Input() public dropdownValues: Array<string> = new Array<string>();
   /**
-   * @Input
+   * @Output
    * @description Emits the map of filtered columns and the filters values (fieldName-fieldValue map).
    */
   @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+
+  /**
+   * @Output
+   * @description Emits the column on change to notify the main component.
+   */
+  @Output() public columnChanged: Subject<Column> = new Subject<Column>();
 
   public selected: Array<any> = new Array<any>();
 
@@ -79,10 +85,12 @@ export class ResultFilterComponent implements OnInit, OnChanges {
       if (this.filtersMap.has(this.column.fieldName)) {
         this.filtersMap.delete(this.column.fieldName);
         this.setFiltersEvent.next(this.filtersMap);
+        this.columnChanged.next(this.column);
       }
     } else {
       this.filtersMap.set(this.column.fieldName, this.inputValue);
       this.setFiltersEvent.next(this.filtersMap);
+      this.columnChanged.next(this.column);
     }
   }
 
@@ -90,10 +98,12 @@ export class ResultFilterComponent implements OnInit, OnChanges {
     if (event.value.length > 0) {
       this.filtersMap.set(event.source.id, event.value.join(','));
       this.setFiltersEvent.next(this.filtersMap);
+      this.columnChanged.next(this.column);
     } else {
       if (this.filtersMap.has(event.source.id)) {
         this.filtersMap.delete(event.source.id);
         this.setFiltersEvent.next(this.filtersMap);
+        this.columnChanged.next(this.column);
       }
     }
   }
