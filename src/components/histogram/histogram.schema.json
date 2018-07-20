@@ -35,6 +35,10 @@
             "description": "If you can select several period on histogram",
             "type": "boolean"
         },
+        "applyOffsetOnAreaChart": {
+            "description": "Translates area chart by half data interval",
+            "type": "boolean"
+        },
         "topOffsetRemoveInterval": {
             "description": "Top position of the remove-selection-button",
             "type": "number"

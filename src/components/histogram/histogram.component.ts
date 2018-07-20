@@ -213,6 +213,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public displayOnlyIntervalsWithData = false;
   /**
    * @Input : Angular
+   * @description Translates area chart by half data interval
+   */
+  @Input() public applyOffsetOnAreaChart = true;
+  /**
+   * @Input : Angular
    * @description The swimlane representation mode.
    */
   @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
@@ -418,5 +423,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
     this.histogram.histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
     this.histogram.histogramParams.showStripes = this.showStripes;
+    this.histogram.histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
   }
 }
