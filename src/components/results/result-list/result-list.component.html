@@ -6,8 +6,21 @@
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
             class="resultlist__header--columns" >
-          <mat-icon *ngIf="isGeoSortActived" matTooltip="{{GEOSORT | translate}}" class="resultlist__header--columns__geosort--icon--active">gps_fixed</mat-icon>
-          <mat-icon *ngIf="!isGeoSortActived" (click) = "geoSort(column)" matTooltip="{{GEOSORT | translate}}" class="resultlist__header--columns__geosort--icon">gps_fixed</mat-icon>
+          <button matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" class="resultlist__header--columns__geosort-action-button">
+            <mat-icon *ngIf="isAutoGeoSortActived"  class="resultlist__header--columns__geosort--icon--active">gps_fixed</mat-icon>
+            <mat-icon *ngIf="!isAutoGeoSortActived" class="resultlist__header--columns__geosort--icon">gps_fixed</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button    mat-menu-item (click)="setGeoSortAction(geoSortActions[0])"  class="resultlist__header--columns__geosort-button">
+              <span>{{geoSortActions[0].label | translate}}</span>
+            </button>
+            <button  *ngIf="!isAutoGeoSortActived"  mat-menu-item (click)="setGeoSortAction(geoSortActions[1])"   class="resultlist__header--columns__geosort-auto-button">
+              <span>{{geoSortActions[1].label | translate}}</span>
+            </button>
+            <button *ngIf="isAutoGeoSortActived" mat-menu-item (click)="setGeoSortAction(geoSortActions[2])"  class="resultlist__header--columns__geosort-remove-button">
+              <span>{{geoSortActions[2].label | translate}}</span>
+            </button>
+          </mat-menu>
           <span  class="resultlist__header--columns--hidden"></span>
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField"
@@ -39,6 +52,7 @@
                            [column]="column"
                            [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async"
                            [filtersMap]="filtersMap"
+                           (columnChanged) ="columnChanged($event)"
                            (setFiltersEvent)="setFilters($event)">
         </td>
         <td *ngIf="column.isToggleField" [style.width.px]="column.width">
