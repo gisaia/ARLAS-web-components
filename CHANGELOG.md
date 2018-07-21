@@ -1,8 +1,24 @@
 # Change Log
 
+## [v7.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.2.0) (2018-07-20)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.1.1...v7.2.0)
+
+**New stuff:**
+
+- HISTOGRAMS : Add an output that is emitted at the end of plot [\#157](https://github.com/gisaia/ARLAS-web-components/issues/157) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- HISTOGRAMS : Add an option to start y axis from min of data [\#156](https://github.com/gisaia/ARLAS-web-components/issues/156) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- HISTOGRAMS : Display only selections containing data [\#155](https://github.com/gisaia/ARLAS-web-components/issues/155) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- Add option to translate area charts by half data interval [\#164](https://github.com/gisaia/ARLAS-web-components/pull/164) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+- Add dropdown in search list [\#160](https://github.com/gisaia/ARLAS-web-components/pull/160) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v7.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.1) (2018-07-13)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.1.0...v7.1.1)
+
+**New stuff:**
+
+- Update mapcomponent configuration schema [\#161](https://github.com/gisaia/ARLAS-web-components/pull/161) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v7.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.0) (2018-07-11)
 
