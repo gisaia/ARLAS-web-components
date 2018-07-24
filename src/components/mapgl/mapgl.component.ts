@@ -659,7 +659,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       e.clientY - rect.top - this.canvas.clientTop
     );
     // Capture xy coordinates
-    this.finish([[this.start, f], [e.lngLat]]);
+    if (this.start.x !== f.x && this.start.y !== f.y) {
+      this.finish([[this.start, f], [e.lngLat]]);
+    } else {
+      document.removeEventListener('mousemove', this.mousemove);
+      document.removeEventListener('mouseup', this.mouseup);
+      this.map.getCanvas().style.cursor = '';
+      this.isDrawingBbox = false;
+      this.map.dragPan.enable();
+      if (this.box) {
+        this.box.parentNode.removeChild(this.box);
+        this.box = undefined;
+      }
+    }
   }
 
   private finish(bbox?) {
