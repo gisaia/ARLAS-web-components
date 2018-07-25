@@ -1,6 +1,15 @@
 # Change Log
 
-## [v7.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.2.0) (2018-07-20)
+## [v7.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.0) (2018-07-25)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.2.0...v7.3.0)
+
+**Fixed bugs:**
+
+- MAP: Crash when null selection with geobox \(simple click instead of rectangle\) [\#125](https://github.com/gisaia/ARLAS-web-components/issues/125) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Improve draw bbox management [\#165](https://github.com/gisaia/ARLAS-web-components/pull/165) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
+## [v7.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.2.0) (2018-07-21)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.1.1...v7.2.0)
 
@@ -10,6 +19,7 @@
 - HISTOGRAMS : Add an option to start y axis from min of data [\#156](https://github.com/gisaia/ARLAS-web-components/issues/156) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 - HISTOGRAMS : Display only selections containing data [\#155](https://github.com/gisaia/ARLAS-web-components/issues/155) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 - Add option to translate area charts by half data interval [\#164](https://github.com/gisaia/ARLAS-web-components/pull/164) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+- Feature/auto geo sort list [\#163](https://github.com/gisaia/ARLAS-web-components/pull/163) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 - Add dropdown in search list [\#160](https://github.com/gisaia/ARLAS-web-components/pull/160) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v7.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.1) (2018-07-13)
