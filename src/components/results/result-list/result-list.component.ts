@@ -1,8 +1,4 @@
-import { identifierName } from '@angular/compiler/compiler';
-import {
-  Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef,
-  HostListener
-} from '@angular/core';
+import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef } from '@angular/core';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 
@@ -11,7 +7,6 @@ import { Item } from '../model/item';
 import { Action, ElementIdentifier, FieldsConfiguration } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Rx';
 import { ANIMATION_TYPES } from 'ngx-loading';
 import { MatButtonToggleChange } from '@angular/material';
@@ -425,6 +420,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.isAutoGeoSortActived = true;
         this.isGeoSortActived = true;
         this.geoAutoSortEvent.next(this.isAutoGeoSortActived);
+        this.geoSort();
         break;
       case 'remove-auto-geosort':
         this.isAutoGeoSortActived = false;
