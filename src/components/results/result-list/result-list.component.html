@@ -48,7 +48,7 @@
         </td>
         <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
                            matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
-                           [style.width.px]="column.width"                       
+                           [style.width.px]="column.width"
                            [column]="column"
                            [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async"
                            [filtersMap]="filtersMap"
@@ -100,7 +100,7 @@
 
       </td>
     </tr>
-    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null 
+    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null
     && resultMode==ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
