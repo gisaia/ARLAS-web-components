@@ -1,5 +1,9 @@
 # Change Log
 
+## [v7.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.1) (2018-07-27)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.3.0...v7.3.1)
+
 ## [v7.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.0) (2018-07-25)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.2.0...v7.3.0)
@@ -8,6 +12,10 @@
 
 - MAP: Crash when null selection with geobox \(simple click instead of rectangle\) [\#125](https://github.com/gisaia/ARLAS-web-components/issues/125) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Improve draw bbox management [\#165](https://github.com/gisaia/ARLAS-web-components/pull/165) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
+**Miscellaneous:**
+
+- RESULTLIST : fieldsList no longer needs to include idFieldName [\#143](https://github.com/gisaia/ARLAS-web-components/issues/143) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v7.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.2.0) (2018-07-21)
 
