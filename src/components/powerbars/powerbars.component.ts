@@ -105,10 +105,16 @@ export class PowerbarsComponent implements OnChanges {
    */
   public setSelectedPowerbars(selectedPowerbars: Set<string>) {
     selectedPowerbars.forEach(powerbarTerm => {
-      const powerBar = this.getPowerbarByTerm(powerbarTerm);
+      let powerBar = this.getPowerbarByTerm(powerbarTerm);
       if (powerBar !== null) {
         powerBar.isSelected = true;
         powerBar.classSuffix = 'selected-bar';
+        this.addSelectedPowerbarToList(powerBar);
+      } else {
+        powerBar = new PowerBar(powerbarTerm, 0);
+        powerBar.progression = 0;
+        powerBar.isSelected = true;
+        powerBar.classSuffix = 'selected-no-mounted-bar';
         this.addSelectedPowerbarToList(powerBar);
       }
     });

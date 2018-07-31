@@ -17,12 +17,16 @@
 .powerbars__powerbar--neutral-state, /* @doc Sets all powerbars containers when none of them is selected. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--selected-bar, /* @doc Sets selected powerbars containers. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--unselected-bar /* @doc Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+.powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/
 {
   margin-top: 3px;
 }
 
-.powerbars__powerbar--neutral-state:hover, .powerbars__powerbar--selected-bar:hover,
-.powerbars__powerbar--unselected-bar:hover {
+.powerbars__powerbar--neutral-state:hover, 
+.powerbars__powerbar--selected-bar:hover,
+.powerbars__powerbar--unselected-bar:hover 
+
+{
   opacity: .8;
   cursor: pointer;
 }
@@ -30,6 +34,8 @@
 .powerbar__powerbar--progression--neutral-state, /* @doc Style of all powerbars when none of them is selected.*/
 .powerbar__powerbar--progression--selected-bar, /* @doc Style of selected powerbars.*/
 .powerbar__powerbar--progression--unselected-bar /* @doc Style of unselected powerbars.*/
+.powerbars__powerbar--progression--selected-no-mounted-bar /* @doc Style of selected-no-mounted powerbars.*/
+
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.75em;
@@ -59,8 +65,18 @@
   font-weight: bold;
 }
 
+.powerbar__powerbar--progression--selected-no-mounted-bar{
+  background-color: rgb(62, 62, 62);
+  color: white;
+  font-weight: bold;
+}
+
 .powerbars__powerbar--selected-bar {
   background-color: rgb(124, 124, 124);
+
+}
+.powerbars__powerbar--selected-no-mounted-bar {
+  background-color: rgb(62, 62, 62);
 
 }
 
