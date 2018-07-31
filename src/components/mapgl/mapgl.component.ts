@@ -1,6 +1,6 @@
 import {
   Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
-  SimpleChanges, EventEmitter, OnChanges, IterableDiffers, ViewEncapsulation
+  SimpleChanges, EventEmitter, OnChanges, IterableDiffers, ViewEncapsulation, HostListener
 } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { MatSelect, MatOption, MatCard } from '@angular/material';
@@ -33,7 +33,6 @@ export interface OnMoveResult {
   styleUrls: ['./mapgl.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public map: any;
   private emptyData = {
@@ -216,6 +215,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
   private layersMap = new Map<string, mapboxgl.Layer>();
+
 
   constructor(private http: Http, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -525,6 +525,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.addLayer(layerId);
       });
     });
+  }
+
+
+  @HostListener('document:keydown', ['$event'])
+  public handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 'Escape' && this.isDrawingBbox) {
+      this.map.getCanvas().style.cursor = '';
+      this.isDrawingBbox = false;
+    }
   }
 
   /**
