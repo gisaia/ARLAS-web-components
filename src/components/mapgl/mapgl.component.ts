@@ -12,6 +12,7 @@ import { paddedBounds, xyz, getDefaultStyleGroup, getDefaultStyle } from './mapg
 import { MapLayers, StyleGroup, Style } from './model/mapLayers';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import * as mapglJsonSchema from './mapgl.schema.json';
+import { MapSource } from './model/mapSource';
 
 export interface OnMoveResult {
   zoom: number;
@@ -164,6 +165,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description List of feature to select.
    */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
+   /**
+   * @Input : Angular
+   * @description List of mapboxgl sources to add to the map.
+   */
+  @Input() public mapSources: Array<MapSource>;
   /**
    * @Input : Angular
    * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
@@ -326,6 +332,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'type': 'geojson',
         'data': this.geojsondata
       });
+
+      // Add sources defined as input in mapSources;
+      const mapSourcesMap = new Map<string, MapSource>();
+      if (this.mapSources) {
+        this.mapSources.forEach(mapSource => {
+          mapSourcesMap.set(mapSource.id, mapSource);
+        });
+        mapSourcesMap.forEach((mapSource, id) => {
+          this.map.addSource(id, mapSource.source);
+        });
+      }
 
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
