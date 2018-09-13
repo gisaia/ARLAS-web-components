@@ -1,4 +1,5 @@
 export { MapLayers } from './mapgl/model/mapLayers';
+export { MapSource } from './mapgl/model/mapSource';
 export { PowerbarsComponent } from './powerbars/powerbars.component';
 export { PowerbarsModule } from './powerbars/powerbars.module';
 export { ChartType, DataType, Position, DonutArc, SwimlaneMode } from 'arlas-d3';

@@ -115,6 +115,67 @@
       "description": "Field name of the identifier",
       "type": "string"
     },
+    "mapSources": {
+      "description": "List of mapboxgl sources to add to the map",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Id of the source.",
+            "type": "string"
+          },
+          "source": {
+            "description": "Mapboxgl source.",
+            "type": "object",
+            "properties": {
+              "type": {
+                "description": "Type of the source. Possible values : 'vector' | 'raster' | 'geojson' | 'image' | 'video' | 'canvas'",
+                "type": "string"
+              },
+              "minzoom": {
+                "description": "Minimum zoom to display the source layers",
+                "type": "integer"
+              },
+              "maxzoom": {
+                "description": "Maximum zoom to display the source layers",
+                "type": "integer"
+              },
+              "url": {
+                "description": "Url to the source (for `vector`, `raster`, `image`, `video` types).",
+                "type": "string"
+              },
+              "tiles" : {
+                "description": "List of tiles (for `vector` and `raster` types).",
+                "type": "array"
+              },
+              "coordinates": {
+                "description": "The 4 corners coordinates of the canvas/image/video, given as [longitude, latitude].",
+                "type": "array"
+              },
+              "data" : {
+                "description": "A geojson object or a url to a geojson file (for `geosjson` type).",
+                "type": "array"
+              },
+              "canvas":  {
+                "description": "Id of the canvas element (for `canvas` type)",
+                "type": "string"
+              },
+              "animate":  {
+                "description": "Whether the canvas source is animated (for `canvas` type)",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          }
+        },
+        "required": [
+          "id", "source"
+        ]
+      }
+    },
     "style": {
       "description": "Url to the basemap style",
       "type": "string"

@@ -36,7 +36,7 @@
     "bootstrap": "^4.0.0-beta",
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
-    "mapbox-gl": "^0.44.1",
+    "mapbox-gl": "^0.48.0",
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",
     "node": "^0.0.0",
