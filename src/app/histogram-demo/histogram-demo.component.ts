@@ -24,11 +24,7 @@ export class HistogramDemoComponent implements OnInit {
   public selectValues: SelectedInputValues;
   public selectValuesSwimlane: SelectedInputValues;
   public areaSelection: SelectedInputValues;
-  public intervalListSelection4: SelectedOutputValues[] = [];
-  public intervalListSelection3: SelectedOutputValues[] = [];
-  public intervalListSelection2: SelectedOutputValues[] = [];
-  public intervalListSelection1: SelectedOutputValues[] = [];
-
+  public intervalListSelection: SelectedOutputValues[] = [];
 
   constructor() { }
 
@@ -40,12 +36,11 @@ export class HistogramDemoComponent implements OnInit {
     this.selectedTimeValues.startvalue = selectedValues[0].startvalue;
     this.selectedTimeValues.endvalue = selectedValues[0].endvalue;
     if (selectedValues.length === 1) {
-      this.intervalListSelection4 = [];
+      this.intervalListSelection = [];
     } else {
       selectedValues.pop();
-      this.intervalListSelection4 = selectedValues;
+      this.intervalListSelection = selectedValues;
     }
-
   }
 
   public setSelectedNumericValues(selectedValues: Array<{ startvalue: Date, endvalue: Date }>) {
@@ -54,43 +49,13 @@ export class HistogramDemoComponent implements OnInit {
 
   }
 
-  public valueChanged1(event) {
-    if (event.length === 1) {
-      this.intervalListSelection1 = [];
-    } else {
-      event.pop();
-      this.intervalListSelection1 = event;
-    }
-
-  }
-  public valueChanged2(event) {
-    if (event.length === 1) {
-      this.intervalListSelection2 = [];
-    } else {
-      event.pop();
-      this.intervalListSelection2 = event;
-    }
-
-  }
-  public valueChanged3(event) {
-    if (event.length === 1) {
-      this.intervalListSelection2 = [];
-    } else {
-      event.pop();
-      this.intervalListSelection2 = event;
-    }
-  }
-
   private showData() {
     this.showDefaultGraph(this);
     this.showCurvedTimeline(this);
     this.showBarsHistogram(this);
     this.showOneDimensionHistogram(this);
     this.showSwimlaneHistogram(this);
-
   }
-
-
 
   private setSelectedValues(component: HistogramDemoComponent, start, end) {
     const selectInputValues = { startvalue: start, endvalue: end };
@@ -154,11 +119,6 @@ export class HistogramDemoComponent implements OnInit {
 
       });
     });
-  }
-
-
-  private sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   private stringToNumber(d) {
