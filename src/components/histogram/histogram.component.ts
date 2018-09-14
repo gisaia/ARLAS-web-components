@@ -11,15 +11,12 @@ import {
 import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
 
-import { NUMBER_TYPE } from '@angular/compiler/src/output/output_ast';
-import { element } from 'protractor';
-import { log } from 'util';
-
 import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
   , AbstractSwimlane  } from 'arlas-d3';
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
+import { AbstractChart } from 'arlas-d3/histograms/charts/AbstractChart';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
@@ -239,6 +236,16 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
   @Input() public id;
   /**
+   * @Input : Angular
+   * @description Term's list of powerbars to select
+   */
+  @Input() public selectedSwimlanes = new Set<string>();
+  /**
+   * @Output : Angular
+   * @description Emits the list of selected powerbars terms
+   */
+  @Output() public selectedSwimlanesEvent = new Subject<Set<string>>();
+  /**
    * @Output : Angular
    * @description Emits the list of selected intervals.
    */
@@ -317,15 +324,20 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined && this.isHistogramSelectable) {
       this.histogram.histogramParams.intervalSelection = this.intervalSelection;
       if (this.histogram.histogramParams.dataLength > 0) {
-        this.histogram.setSelectedInterval(this.intervalSelection);
+        (<AbstractChart>this.histogram).setSelectedInterval(this.intervalSelection);
       }
     }
 
     if (changes.intervalListSelection && this.isHistogramSelectable && this.histogram !== undefined) {
       if (changes.intervalListSelection.currentValue) {
         this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
-        this.histogram.redrawSelectedIntervals();
+        (<AbstractChart>this.histogram).redrawSelectedIntervals();
       }
+    }
+
+    if (changes.selectedSwimlanes && this.histogram !== undefined && this.chartType === ChartType.swimlane) {
+      this.histogram.histogramParams.selectedSwimlanes = this.selectedSwimlanes;
+      (<AbstractSwimlane>this.histogram).applyStyleOnSwimlanes();
     }
   }
 
@@ -363,21 +375,21 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Removes the selected interval
    */
   public removeSelectInterval(id: string) {
-    this.histogram.removeSelectInterval(id);
+    (<AbstractChart>this.histogram).removeSelectInterval(id);
   }
 
   /**
    * @description Displays the "Remove" tooltip
    */
   public overRemove(e) {
-    this.histogram.overRemove(e);
+    (<AbstractChart>this.histogram).overRemove(e);
   }
 
   /**
    * @description Hides the "Remove" tooltip
    */
   public leaveRemove() {
-    this.histogram.leaveRemove();
+    (<AbstractChart>this.histogram).leaveRemove();
   }
 
   private setHistogramParameters() {
@@ -424,5 +436,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
     this.histogram.histogramParams.showStripes = this.showStripes;
     this.histogram.histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
+    this.histogram.histogramParams.selectedSwimlanes = this.selectedSwimlanes;
+    this.histogram.histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
   }
 }

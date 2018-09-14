@@ -8,7 +8,6 @@
 .histogram text {
     font-size: 0.8em;
     fill-opacity: 1;
-    fill: black;
 }
 
 .histogram__description /* @doc Sets the description part that includes title and start/end values*/
@@ -273,6 +272,39 @@
   stroke-width: 2px;
   stroke: #000;
   fill: none;
+}
+
+.swimlane-label-unselected /* @doc Sets the unselected labels style of the swimlane*/
+{
+  fill: gray;
+}
+
+.swimlane-label-selected /* @doc Sets the selected labels style of the swimlane*/
+{
+  fill: #FF4081;
+}
+
+.swimlane-label-neutral /* @doc Sets all labels style of the swimlane when none of them are selected*/
+{
+  fill: black;
+}
+
+.swimlane-label-container-hovered /* @doc Sets the hovered label container style of the swimlane*/
+{
+  fill: #efefef;
+}
+
+.swimlane-label-container-neutral /* @doc Sets all labels containers style of the swimlane when none of them are selected*/
+{
+
+}
+.swimlane-label-container-selected /* @doc Sets the selected labels containers style of the swimlane*/
+{
+
+}
+.swimlane-label-container-unselected /* @doc Sets the unselected labels containers style of the swimlane*/
+{
+
 }
 
 .selection {
