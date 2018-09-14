@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-@import "../node_modules/font-awesome/css/font-awesome.min.css";
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 @import   '../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
@@ -85,6 +84,7 @@ a.arlas-map-control{
   font-family: 'Material Icons';
   font-style: normal;
   font-weight: 400;
+  font-display: auto;
   src: local('Material Icons'), local('MaterialIcons-Regular'), url('./assets/font/material-icons.woff2') format('woff2');
 }
 
