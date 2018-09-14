@@ -1,8 +1,33 @@
 # Change Log
 
+## [v7.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.4.0) (2018-09-14)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.3.1...v7.4.0)
+
+**Breaking changes:**
+
+- SWIMLANE : Remove brush selection & add the possibility to filter on terms [\#175](https://github.com/gisaia/ARLAS-web-components/issues/175) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+**New stuff:**
+
+- MAP : Add the possibility to define new sources as an input [\#172](https://github.com/gisaia/ARLAS-web-components/issues/172) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- MAP: Cancel geobox selection  [\#126](https://github.com/gisaia/ARLAS-web-components/issues/126) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Remove useless CSS file [\#177](https://github.com/gisaia/ARLAS-web-components/pull/177) ([sebbousquet](https://github.com/sebbousquet))
+- Add escape listener to cancel draw bbox [\#169](https://github.com/gisaia/ARLAS-web-components/pull/169) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- Selection disappear in powerbars [\#124](https://github.com/gisaia/ARLAS-web-components/issues/124) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Fix selection disappear powerbars [\#170](https://github.com/gisaia/ARLAS-web-components/pull/170) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v7.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.1) (2018-07-27)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.3.0...v7.3.1)
+
+**New stuff:**
+
+- RESULTLIST :  add the possibility to hide filter's input/dropdown of a sepcified column [\#167](https://github.com/gisaia/ARLAS-web-components/issues/167) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Apply geosort on geo-auto-sort activation [\#168](https://github.com/gisaia/ARLAS-web-components/pull/168) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v7.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.0) (2018-07-25)
 
