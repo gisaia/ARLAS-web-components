@@ -12,11 +12,10 @@ import { Subject } from 'rxjs/Subject';
 import { Observable } from 'rxjs/Rx';
 
 import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
-  , AbstractSwimlane  } from 'arlas-d3';
+  , AbstractSwimlane, AbstractChart  } from 'arlas-d3';
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
-import { AbstractChart } from 'arlas-d3/histograms/charts/AbstractChart';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
