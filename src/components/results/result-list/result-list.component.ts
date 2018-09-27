@@ -143,6 +143,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
+    /**
+   * @Input : Angular
+   * @description List of items ids that are in a selected status.
+   */
+  @Input() public selectedItems: Set<string> = new Set<string>();
+
   /**
    * @Input : Angular
    * @description List of items ids to be highlighted.
@@ -266,7 +272,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public ModeEnum = ModeEnum;
   public SortEnum = SortEnum;
 
-  public selectedItems: Set<string> = new Set<string>();
   public selectedGridItem: Item;
   private selectedItemsPositions = new Set<number>();
 
@@ -351,6 +356,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.items.forEach(item => {
           if (item.identifier === id && !this.selectedItems.has(id)) {
             item.isindeterminated = true;
+          }
+        });
+      });
+    }
+    if (changes['selectedItems'] !== undefined) {
+      this.selectedItems.forEach(id => {
+        this.items.forEach(item => {
+          if (item.identifier === id) {
+            item.isChecked = true;
           }
         });
       });
