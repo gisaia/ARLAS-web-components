@@ -143,10 +143,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
-    /**
-   * @Input : Angular
-   * @description List of items ids that are in a selected status.
-   */
+  /**
+ * @Input : Angular
+ * @description List of items ids that are in a selected status.
+ */
   @Input() public selectedItems: Set<string> = new Set<string>();
 
   /**
@@ -352,8 +352,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.closeDetail(true);
     }
     if (changes['indeterminatedItems'] !== undefined) {
+      this.items.forEach(item => {
+        item.isindeterminated = false;
       this.indeterminatedItems.forEach(id => {
-        this.items.forEach(item => {
           if (item.identifier === id && !this.selectedItems.has(id)) {
             item.isindeterminated = true;
           }
@@ -361,13 +362,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
     }
     if (changes['selectedItems'] !== undefined) {
+      this.items.forEach(item => {
+        item.isChecked = false;
       this.selectedItems.forEach(id => {
-        this.items.forEach(item => {
           if (item.identifier === id) {
             item.isChecked = true;
           }
         });
       });
+      this.setSelectedItems(this.selectedItems);
     }
     if (changes['highlightItems'] !== undefined) {
       if (this.highlightItems.size > 0) {
