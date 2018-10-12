@@ -46,7 +46,7 @@
         <td [style.width.px]="column.width" *ngIf="column.isIdField">
           <span class="resultlist__header--columns--hidden"></span>
         </td>
-        <td arlas-result-filter *ngIf="!column.isIdField && !column.isToggleField"
+        <td  arlas-result-filter class="resultlist__filter__{{column.columnName}}" *ngIf="!column.isIdField && !column.isToggleField"
                            matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
                            [style.width.px]="column.width"
                            [column]="column"
