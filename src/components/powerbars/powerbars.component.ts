@@ -134,7 +134,9 @@ export class PowerbarsComponent implements OnChanges {
     // add powerbar to selectedPowerbarsList
     this.removePowerbarFromSelected(powerBar);
     this.selectedPowerbarsList.add(powerBar);
-    this.sortSelectedPowerBars(this.powerBarsList[0].count);
+    if (this.powerBarsList.length > 0) {
+      this.sortSelectedPowerBars(this.powerBarsList[0].count);
+    }
   }
 
   private populatePowerbars(): void {
