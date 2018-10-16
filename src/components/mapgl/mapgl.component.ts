@@ -534,7 +534,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       styleGroup.selectedStyle = selectedStyle;
     });
     this.removeAllLayers();
-    if (selectedStyle.drawType !== undefined) {
+    if (selectedStyle.geomStrategy !== undefined) {
       this.switchLayer.next(selectedStyle);
     }
     this.mapLayers.styleGroups.forEach(styleGroup => {
@@ -571,7 +571,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.mapLayers.styleGroups.forEach(styleGroup => {
       const style = getDefaultStyle(styleGroup.styles);
       styleGroup.selectedStyle = style;
-      if (style.drawType !== undefined) {
+      if (style.geomStrategy !== undefined) {
         this.switchLayer.next(style);
       }
       style.layerIds.forEach(layerId => {
