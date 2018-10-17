@@ -1,5 +1,23 @@
 # Change Log
 
+## [v8.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.0) (2018-10-17)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.4.2...v8.0.0)
+
+**Breaking changes:**
+
+- Remove map draw type [\#186](https://github.com/gisaia/ARLAS-web-components/pull/186) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
+**New stuff:**
+
+- Add css class in \<td\> arlas-filter [\#182](https://github.com/gisaia/ARLAS-web-components/issues/182) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Add css class for column filter [\#184](https://github.com/gisaia/ARLAS-web-components/pull/184) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Add selected item as input [\#180](https://github.com/gisaia/ARLAS-web-components/pull/180) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- Fix powerbars no data [\#185](https://github.com/gisaia/ARLAS-web-components/pull/185) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v7.4.2](https://github.com/gisaia/ARLAS-web-components/tree/v7.4.2) (2018-09-25)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.4.1...v7.4.2)
