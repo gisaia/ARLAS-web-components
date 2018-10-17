@@ -61,11 +61,17 @@
                       "description": "Name of the style.",
                       "type": "string"
                     },
-                    "drawType": {
-                      "description": "Type of geometry of the style.",
-                      "type": "string",
-                      "enum": ["RECTANGLE", "CIRCLE"]
-                    },
+                    "geomStrategy": {
+                      "description": "Geometry method of representation for aggregate data",
+                      "enum": [
+                          "bbox",
+                          "centroid",
+                          "first",
+                          "last",
+                          "byDefault",
+                          "geohash"
+                      ]
+                  },
                     "layerIds": {
                       "description": "Ids list of layers that are added to the map when this style is chosen.",
                       "type": "array"

@@ -2,7 +2,7 @@ import { Component, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { MapLayers } from 'components/mapgl/model/mapLayers';
 import { Layer } from 'mapbox-gl/dist/mapbox-gl';
-import { StyleGroup } from '../../components/mapgl/model/mapLayers';
+import { StyleGroup, geomStrategy } from '../../components/mapgl/model/mapLayers';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -37,7 +37,7 @@ export class MapglDemoComponent implements OnInit {
             layerIds: [
             ],
             isDefault: false,
-            drawType: 'CIRCLE'
+            geomStrategy: 'centroid'
           },
           {
             id: 'fill',
@@ -45,7 +45,7 @@ export class MapglDemoComponent implements OnInit {
             layerIds: [
             ],
             isDefault: true,
-            drawType: 'RECTANGLE'
+            geomStrategy: 'geohash'
           }
         ]
       },
@@ -63,7 +63,7 @@ export class MapglDemoComponent implements OnInit {
             layerIds: [
             ],
             isDefault: false,
-            drawType: 'CIRCLE'
+            geomStrategy: 'centroid'
           },
           {
             id: 'fill-precision',
@@ -71,7 +71,7 @@ export class MapglDemoComponent implements OnInit {
             layerIds: [
             ],
             isDefault: true,
-            drawType: 'RECTANGLE'
+            geomStrategy: 'geohash'
           }
         ]
       }

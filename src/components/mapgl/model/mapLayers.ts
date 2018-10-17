@@ -17,7 +17,7 @@ export interface Style {
   id: string;
   name: string;
   layerIds: Set<string>;
-  drawType?: drawType;
+  geomStrategy?: geomStrategyEnum;
   isDefault?: boolean;
 }
 
@@ -27,8 +27,12 @@ export interface LayerEvents {
   zoomOnClick: Set<string>;
 }
 
-export enum drawType {
-  RECTANGLE,
-  CIRCLE
+export enum geomStrategyEnum {
+  bbox,
+  centroid,
+  first,
+  last,
+  byDefault,
+  geohash
 }
 
