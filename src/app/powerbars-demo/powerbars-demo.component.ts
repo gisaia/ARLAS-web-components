@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { setTimeout } from 'timers';
 
 @Component({
   selector: 'arlas-powerbars-demo',

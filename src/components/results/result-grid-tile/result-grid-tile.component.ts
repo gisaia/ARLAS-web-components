@@ -3,10 +3,7 @@ import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
-
-import { Observable } from 'rxjs/Rx';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'arlas-result-grid-tile',

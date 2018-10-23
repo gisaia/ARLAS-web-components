@@ -1,7 +1,7 @@
 import { Column } from './column';
 import { Action, FieldsConfiguration } from '../utils/results.utils';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 export class Item {
 

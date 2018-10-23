@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { DataType, ChartType, SelectedOutputValues, SelectedInputValues, SwimlaneMode } from 'arlas-d3';
-import * as d3 from 'd3';
-import { setTimeout } from 'timers';
 
 
 @Component({
@@ -50,76 +48,10 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private showData() {
-    this.showDefaultGraph(this);
-    this.showCurvedTimeline(this);
-    this.showBarsHistogram(this);
-    this.showOneDimensionHistogram(this);
-    this.showSwimlaneHistogram(this);
-  }
-
-  private setSelectedValues(component: HistogramDemoComponent, start, end) {
-    const selectInputValues = { startvalue: start, endvalue: end };
-    component.selectValues = selectInputValues;
-  }
-  private showDefaultGraph(component: HistogramDemoComponent) {
-    d3.csv('assets/sp503.csv', this.stringToNumber, function (error, data) {
-      if (error) { throw error; }
-      component.defaultHistogramData = data;
-    });
-  }
-
-  private showCurvedTimeline(component: HistogramDemoComponent) {
-    component.curvedTimelineData = [];
-    d3.csv('assets/sp500.csv', this.stringToNumber, function (error, data) {
-      if (error) { throw error; }
-      component.curvedTimelineData = [];
-      setTimeout(() => {
-        component.curvedTimelineData = data;
-      }, 3000);
-    });
-  }
-
-  private showBarsHistogram(component: HistogramDemoComponent) {
-    const _thisComponent = this;
-    d3.csv('assets/sp501.csv', this.stringToNumber, function (error, data) {
-      if (error) { throw error; }
-      _thisComponent.barsHistogramData = data;
-      _thisComponent.setSelectedValues(_thisComponent, 1992, 2060);
-    });
 
   }
 
-  private showOneDimensionHistogram(component: HistogramDemoComponent) {
-    const _thisComponent = this;
-    d3.csv('assets/sp501.csv', this.oneToZero, function (error, data) {
-      if (error) { throw error; }
-      _thisComponent.oneDimensionHistogramData = data;
-      _thisComponent.setSelectedValues(_thisComponent, 1992, 2060);
-    });
 
-  }
-
-  private showSwimlaneHistogram(component: HistogramDemoComponent) {
-    d3.csv('assets/swimlane.csv', this.stringToNumber, (error, data) => {
-      if (error) { throw error; }
-      d3.csv('assets/swimlane2.csv', this.stringToNumber, (error, data2) => {
-        if (error) { throw error; }
-        this.swimlaneHistogramData = new Map<any, any>();
-        this.swimlaneHistogramData.set('line1', data);
-        this.selectValuesSwimlane = undefined;
-        setTimeout(() => {
-          this.swimlaneHistogramData = new Map<any, any>();
-          this.swimlaneHistogramData.set('line1', data);
-          this.swimlaneHistogramData.set('line2', data2);
-          this.swimlaneHistogramData.set('line3', data2);
-          setTimeout(() => {
-            this.selectValuesSwimlane = { startvalue: 1513262121000, endvalue: 1665262121000 };
-          }, 5000);
-        }, 5000);
-
-      });
-    });
-  }
 
   private stringToNumber(d) {
     d.value = +d.value;

@@ -1,7 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import * as d3 from 'd3';
-import { setTimeout } from 'timers';
-
 
 @Component({
   selector: 'arlas-donut-demo',
@@ -19,10 +16,12 @@ export class DonutDemoComponent implements OnInit {
     this.donutData = {
       name: 'root',
       ringName: 'root',
+      size: 640,
       children : [
         {
           name: 'sentinelle',
           ringName: 'satellites',
+          size: 230,
           children : [
             {
               name: 'sentinelle1',
@@ -39,6 +38,7 @@ export class DonutDemoComponent implements OnInit {
         {
           name: 'SPOT',
           ringName: 'satellites',
+          size: 170,
           children : [
             {
               name: 'SPOT5',
@@ -47,6 +47,7 @@ export class DonutDemoComponent implements OnInit {
             },
             {
               name: 'SPOT6',
+              size: 140,
               ringName: 'mission',
               children : [
                 {
@@ -64,6 +65,7 @@ export class DonutDemoComponent implements OnInit {
             {
               name: 'SPOT7',
               ringName: 'mission',
+              size: 240,
               children : [
                 {
                   name: 'FR1',
@@ -93,10 +95,12 @@ export class DonutDemoComponent implements OnInit {
       this.donutData = {
         name: 'root',
         ringName: 'root',
+        size: 530,
         children : [
           {
             name: 'sentinelle',
             ringName: 'satellites',
+            size: 230,
             children : [
               {
                 name: 'sentinelle1',
@@ -112,6 +116,7 @@ export class DonutDemoComponent implements OnInit {
           },
           {
             name: 'SPOT',
+            size: 300,
             ringName: 'satellites',
             children : [
               {
@@ -121,6 +126,7 @@ export class DonutDemoComponent implements OnInit {
               },
               {
                 name: 'SPOT6',
+                size: 140,
                 ringName: 'mission',
                 children : [
                   {
@@ -137,6 +143,7 @@ export class DonutDemoComponent implements OnInit {
               },
               {
                 name: 'SPOT7',
+                size: 130,
                 ringName: 'mission',
                 children : [
                   {

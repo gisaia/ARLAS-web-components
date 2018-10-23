@@ -18,7 +18,7 @@
  */
 
 import { ColorGenerator } from 'arlas-d3';
-import * as tinycolor from 'tinycolor2';
+import { mix } from 'tinycolor2';
 
 export class ColorGeneratorImpl implements ColorGenerator {
   public keysToColors: Array<Array<string>>;
@@ -54,7 +54,7 @@ export class ColorGeneratorImpl implements ColorGenerator {
       // int to rgb
       let hex = (hash & 0x00FFFFFF).toString(16).toUpperCase();
       hex =  '00000'.substring(0, 6 - hex.length) + hex;
-      const color = tinycolor(hex);
+      const color = mix(hex, hex);
       color.saturate(color.toHsv().s * this.saturationWeight + ((1 - this.saturationWeight) * 100));
       return color.toHexString();
   }

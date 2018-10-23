@@ -1,8 +1,8 @@
-import { Component, OnInit, SimpleChange } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 import { FieldsConfiguration, Action } from '../../components/results/utils/results.utils';
 import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
-import { Observable } from 'rxjs/Rx';
+import { Observable, from } from 'rxjs';
 
 
 @Component({
@@ -37,9 +37,9 @@ export class ResultsDemoComponent implements OnInit {
     this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
 
-    this.dropDownMapValues.set('source', Observable.from([['source_1', 'source_2', 'source_3']]));
-    this.dropDownMapValues.set('acquired', Observable.from([['acquired_1', 'acquired_2', 'acquired_3']]));
-    this.dropDownMapValues.set('cloud', Observable.from([['cloud_1', 'cloud_2', 'cloud_3']]));
+    this.dropDownMapValues.set('source', from([['source_1', 'source_2', 'source_3']]));
+    this.dropDownMapValues.set('acquired', from([['acquired_1', 'acquired_2', 'acquired_3']]));
+    this.dropDownMapValues.set('cloud', from([['cloud_1', 'cloud_2', 'cloud_3']]));
 
 
 

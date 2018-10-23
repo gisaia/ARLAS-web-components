@@ -1,11 +1,9 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
-import { Observable } from 'rxjs/Rx';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: '[arlas-result-item]',

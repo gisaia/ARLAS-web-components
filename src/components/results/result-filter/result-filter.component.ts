@@ -1,7 +1,6 @@
-import { DoCheck } from '@angular/core/core';
 import { Component, OnInit, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { Column } from '../model/column';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { MatSelectChange, MatOption } from '@angular/material';
 
 

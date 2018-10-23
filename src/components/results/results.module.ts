@@ -9,12 +9,12 @@ import { ResultItemComponent } from './result-item/result-item.component';
 import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultScrollDirective } from './result-directive/result-scroll.directive';
-import { LoadingModule, ANIMATION_TYPES } from 'ngx-loading';
+import { LoadingModule } from 'ngx-loading';
 import {
   MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
   MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule
 } from '@angular/material';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -30,7 +30,7 @@ import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-transla
     MatTooltipModule,
     FormsModule,
     LoadingModule,
-    TranslateModule.forChild()
+    TranslateModule
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],

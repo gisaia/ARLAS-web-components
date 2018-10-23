@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, ElementRef, OnChanges, SimpleChanges 
 import { Action, ElementIdentifier } from '../utils/results.utils';
 
 import { Item } from '../model/item';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 
 @Component({

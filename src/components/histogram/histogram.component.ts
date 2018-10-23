@@ -8,8 +8,8 @@ import {
   HistogramUtils
 } from 'arlas-d3';
 
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Rx';
+import { Subject, fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
   , AbstractSwimlane, AbstractChart  } from 'arlas-d3';
@@ -265,8 +265,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public Array = Array;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
-    Observable.fromEvent(window, 'resize')
-      .debounceTime(500)
+    fromEvent(window, 'resize')
+      .pipe(debounceTime(500))
       .subscribe((event: Event) => {
         this.resizeHistogram();
       });

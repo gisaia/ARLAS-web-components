@@ -1,9 +1,8 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { Action, ElementIdentifier } from '../utils/results.utils';
-import { Column } from '../model/column';
 import { Item } from '../model/item';
 
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
