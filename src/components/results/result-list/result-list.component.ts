@@ -700,7 +700,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     item.ishighLight = false;
     // When new data is loaded, check the one that were already checked +
     // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
-    if (this.allItemsChecked) {
+    if (this.allItemsChecked && this.isMoreDataRequested) {
       item.isChecked = true;
       this.selectedItems.add(item.identifier);
     } else {
