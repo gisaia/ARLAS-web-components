@@ -1,5 +1,9 @@
 # Change Log
 
+## [v8.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.1) (2018-11-05)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v8.0.0...v8.0.1)
+
 ## [v8.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.0) (2018-10-17)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.4.2...v8.0.0)
