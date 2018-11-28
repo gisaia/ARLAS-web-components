@@ -1,11 +1,10 @@
 import {
   Component, OnInit, OnChanges, Input, Output, SimpleChanges, ViewContainerRef, ElementRef, ViewEncapsulation
 } from '@angular/core';
-import { Observable, Subject } from 'rxjs/Rx';
-import * as d3 from 'd3';
-import * as tinycolor from 'tinycolor2';
-import { DonutDimensions, DonutArc, DonutUtils, DonutNode } from 'arlas-d3';
-import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, ColorGenerator } from 'arlas-d3';
+import { Subject, fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { DonutArc} from 'arlas-d3';
+import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
 import { ColorGeneratorImpl } from './donut.utils';
 
@@ -85,8 +84,8 @@ export class DonutComponent implements OnInit, OnChanges {
   private donutColorizer: ColorGeneratorImpl;
 
   constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
-    Observable.fromEvent(window, 'resize')
-      .debounceTime(500)
+    fromEvent(window, 'resize')
+      .pipe(debounceTime(500))
       .subscribe((event: Event) => {
         this.donut.resize(this.el.nativeElement.childNodes[0]);
       });
@@ -134,7 +133,7 @@ export class DonutComponent implements OnInit, OnChanges {
     this.donut.donutParams.selectedArcsList = this.selectedArcsList;
     this.donut.donutParams.selectedNodesEvent = this.selectedNodesEvent;
     this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
-    this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[1];
+    this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[0];
     this.donut.donutParams.donutNodeColorizer = this.donutColorizer;
   }
 

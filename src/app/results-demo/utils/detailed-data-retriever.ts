@@ -1,6 +1,5 @@
 import { DetailedDataRetriever } from '../../../components/results/utils/detailed-data-retriever';
-import { Observable } from 'rxjs/Rx';
-import { Subject } from 'rxjs/Subject';
+import { Subject, Observable, from } from 'rxjs';
 import { Action } from 'components';
 
 
@@ -27,7 +26,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       { id: '3', label: 'WMTS', actionBus: null, tooltip: 'WMTS' });
 
 
-    return Observable.from(new Array({ details: detailsDataMap, actions: actionsList }));
+    return from(new Array({ details: detailsDataMap, actions: actionsList }));
 
   }
 }

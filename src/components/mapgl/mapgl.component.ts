@@ -1,17 +1,18 @@
 import {
-  Component, OnInit, Input, Output, KeyValueDiffers, AfterViewInit,
-  SimpleChanges, EventEmitter, OnChanges, IterableDiffers, ViewEncapsulation, HostListener
+  AfterViewInit, Component, EventEmitter,
+  HostListener, Input, IterableDiffers,
+  OnChanges, OnInit, Output, SimpleChanges,
+  ViewEncapsulation
 } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { MatSelect, MatOption, MatCard } from '@angular/material';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
+import { HttpClient } from '@angular/common/http';
 import { bboxes } from 'ngeohash';
-import { PitchToggle, ControlButton } from './mapgl.component.control';
-import { paddedBounds, xyz, getDefaultStyleGroup, getDefaultStyle } from './mapgl.component.util';
-import { MapLayers, StyleGroup, Style } from './model/mapLayers';
+import { Subject, fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
+import { ControlButton, PitchToggle } from './mapgl.component.control';
+import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
+import { MapLayers, Style } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 
 export interface OnMoveResult {
@@ -223,7 +224,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private layersMap = new Map<string, mapboxgl.Layer>();
 
 
-  constructor(private http: Http, private differs: IterableDiffers) {
+  constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
@@ -412,9 +413,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
     });
-    const moveend = Observable
-      .fromEvent(this.map, 'moveend')
-      .debounceTime(750);
+    const moveend = fromEvent(this.map, 'moveend')
+      .pipe(debounceTime(750));
 
     moveend.subscribe(e => {
       this.west = this.map.getBounds().getWest();

@@ -1,15 +1,13 @@
 <div id="mapgldemo" style="height:94%; width:100%">
-  <arlas-mapgl        
-  [style]="'https://openmaptiles.github.io/osm-bright-gl-style/style-cdn.json'"
+  <arlas-mapgl
+  [style]="'http://demo.arlas.io:82/styles/positron/style.json'"
    [geojsondata]="geojsondata" [margePanForLoad]=40 [margePanForTest]=2
-   [zoomToPrecisionCluster]="[]" 
-   [displayLayerSwitcher] =true  
-   [mapLayers]="mapLayers" 
+   [zoomToPrecisionCluster]="[]"
+   [displayLayerSwitcher] =true
+   [mapLayers]="mapLayers"
    [displayScale]=true
    [minZoom] = 10
    [maxZoom] = 28
-
    [maxPrecision]="[6,4]">
-
   </arlas-mapgl>
 </div>

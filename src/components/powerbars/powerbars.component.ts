@@ -1,7 +1,5 @@
 import { Component, OnChanges, Input, Output, SimpleChanges } from '@angular/core';
-import { log } from 'util';
-import { element } from 'protractor';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 

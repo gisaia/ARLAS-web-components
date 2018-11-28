@@ -1,4 +1,3 @@
-import { HttpModule } from '@angular/http';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -15,7 +14,6 @@ import { MatChipsModule, MatIconModule, MatSidenavModule, MatSlideToggleModule, 
 import { FormsModule } from '@angular/forms';
 import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
-import { ResultGridTileComponent } from '../components/results/result-grid-tile/result-grid-tile.component';
 import { MapglModule } from '../components/mapgl/mapgl.module';
 import { PowerbarsModule } from '../components/powerbars/powerbars.module';
 import { DonutModule } from '../components/donut/donut.module';
@@ -63,7 +61,6 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     PowerbarsModule,
     MatSlideToggleModule,
-    HttpModule,
     HttpClientModule,
     TranslateModule.forRoot({
       loader: {

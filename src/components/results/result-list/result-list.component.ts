@@ -6,8 +6,8 @@ import { Column } from '../model/column';
 import { Item } from '../model/item';
 import { Action, ElementIdentifier, FieldsConfiguration } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Rx';
+import { Observable, Subject, fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { ANIMATION_TYPES } from 'ngx-loading';
 import { MatButtonToggleChange } from '@angular/material';
 import { SimpleChanges } from '@angular/core';
@@ -314,13 +314,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     this.resultMode = this.defautMode;
     // Resize the table height on window resize
-    Observable.fromEvent(window, 'resize')
-      .debounceTime(500)
+    fromEvent(window, 'resize')
+      .pipe(debounceTime(500))
       .subscribe((event: Event) => {
         this.setTableHeight();
       });
     // Add debounce on hover item list
-    this.debouncer.debounceTime(500).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+    this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
 
   }
 

@@ -1,7 +1,6 @@
 
 import { Action } from '../utils/results.utils';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs';
 
 
 export interface DetailedDataRetriever {

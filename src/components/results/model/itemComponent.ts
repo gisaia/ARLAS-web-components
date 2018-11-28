@@ -1,10 +1,8 @@
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Item } from '../model/item';
 import { Action } from '../utils/results.utils';
+import { Subject, Observable } from 'rxjs';
 
-
-import { Observable } from 'rxjs/Rx';
-import { Subject } from 'rxjs/Subject';
 export class ItemComponent {
 
   /**
