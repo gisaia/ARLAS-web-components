@@ -1,8 +1,24 @@
 # Change Log
 
+## [v9.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.0.0) (2018-11-28)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v8.0.1...v9.0.0)
+
+**Breaking changes:**
+
+- Feature/angular6 [\#189](https://github.com/gisaia/ARLAS-web-components/pull/189) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)] ([mbarbet](https://github.com/mbarbet))
+
+**Miscellaneous:**
+
+- Update angular version to 6 [\#183](https://github.com/gisaia/ARLAS-web-components/issues/183) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
+
 ## [v8.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.1) (2018-11-05)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v8.0.0...v8.0.1)
+
+**Fixed bugs:**
+
+- Fix bug selectAll list [\#188](https://github.com/gisaia/ARLAS-web-components/pull/188) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v8.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.0) (2018-10-17)
 
