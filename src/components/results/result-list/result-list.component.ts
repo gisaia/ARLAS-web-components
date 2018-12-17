@@ -330,7 +330,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.hasGridMode = true;
       }
       this.setTableWidth();
-      this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
+      this.tbodyHeight = this.getOffSetHeight();
     }
   }
 
@@ -343,8 +343,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.resultMode = ModeEnum.list;
         this.displayListGrid = 'inline';
       }
-      this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
-        (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+      this.tbodyHeight = this.getOffSetHeight() - (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
     }
 
     if (changes['rowItemList'] !== undefined) {
@@ -354,7 +353,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     if (changes['indeterminatedItems'] !== undefined) {
       this.items.forEach(item => {
         item.isindeterminated = false;
-      this.indeterminatedItems.forEach(id => {
+        this.indeterminatedItems.forEach(id => {
           if (item.identifier === id && !this.selectedItems.has(id)) {
             item.isindeterminated = true;
           }
@@ -364,7 +363,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     if (changes['selectedItems'] !== undefined) {
       this.items.forEach(item => {
         item.isChecked = false;
-      this.selectedItems.forEach(id => {
+        this.selectedItems.forEach(id => {
           if (item.identifier === id) {
             item.isChecked = true;
           }
@@ -532,14 +531,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     if (this.detailedGridCounter === 0) {
       this.detailedGridCounter++;
     }
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 - this.detailedGridHeight;
+    this.tbodyHeight = this.getOffSetHeight() - this.detailedGridHeight;
   }
 
   public closeDetail(isClosed: boolean) {
     if (isClosed) {
       this.detailedGridCounter = 0;
       this.isDetailledGridOpen = false;
-      this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
+      this.tbodyHeight = this.getOffSetHeight();
     }
   }
 
@@ -554,8 +553,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.resultMode = ModeEnum.list;
       this.displayListGrid = 'inline';
     }
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - 85 - 50 -
-      (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+    this.tbodyHeight = this.getOffSetHeight() - (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
   }
 
   /**
@@ -730,4 +728,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
   }
 
+
+  private getOffSetHeight(): number {
+    if (!this.displayFilters) {
+      return this.el.nativeElement.parentElement.offsetHeight - 85;
+    } else {
+      return this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
+    }
+  }
 }
