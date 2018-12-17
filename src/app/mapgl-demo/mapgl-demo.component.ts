@@ -2,7 +2,7 @@ import { Component, OnInit, SimpleChanges, AfterViewInit } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { MapLayers } from 'components/mapgl/model/mapLayers';
 import { Layer } from 'mapbox-gl/dist/mapbox-gl';
-import { StyleGroup, geomStrategy } from '../../components/mapgl/model/mapLayers';
+import { StyleGroup } from '../../components/mapgl/model/mapLayers';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
