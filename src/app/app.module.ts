@@ -30,7 +30,6 @@ const routes: Routes = [
   { path: '', component: MapglDemoComponent },
   { path: 'histogram', component: HistogramDemoComponent },
   { path: 'donut', component: DonutDemoComponent },
-  { path: 'map', component: MapglDemoComponent },
   { path: 'powerbars', component: PowerbarsDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
 ];

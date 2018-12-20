@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild, Input } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Router } from '@angular/router';
 
@@ -7,32 +7,28 @@ import { Router } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  public activeLinkIndex = 0;
+  public navLinks = [
+    '/',
+    '/donut',
+    '/histogram',
+    '/powerbars',
+    '/list'
+  ];
+
   constructor(private translate: TranslateService, private router: Router) {
     this.translate.setDefaultLang('fr');
   }
 
   public selectedTab(e) {
-    switch (e.index) {
-      case 0:
-        this.router.navigateByUrl('/map');
-        break;
-      case 1:
-        this.router.navigateByUrl('/donut');
-        break;
-      case 2:
-        this.router.navigateByUrl('/histogram');
-        break;
-      case 3:
-        this.router.navigateByUrl('/powerbars');
-        break;
-      case 4:
-        this.router.navigateByUrl('/list');
-        break;
-      default:
-        console.log('material-design-mdtabs-with-router');
-        break;
-    }
+    this.router.navigateByUrl(this.navLinks[e.index]);
+  }
+
+  public ngOnInit(): void {
+    this.router.events.subscribe(() => {
+      this.activeLinkIndex = this.navLinks.indexOf(this.navLinks.find(tab => tab === this.router.url));
+    });
   }
 }
 
