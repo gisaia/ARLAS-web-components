@@ -1,16 +1,26 @@
 <div class="powerbars--wrapper" [ngClass]="customizedCssClass">
-      <div class="powerbars--container">
-          <div *ngIf="selectedPowerbarsList.size !== 0" class="powerbars--selectedbars">
-              <div *ngFor="let selectedPowerbar of selectedPowerbarsList" class="powerbars__powerbar--{{selectedPowerbar.classSuffix}}" (click)="clickOnPowerbar(selectedPowerbar)">
-                  <div class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"[style.width]="selectedPowerbar.progression+'%'" matTooltip="{{selectedPowerbar.count}}" [matTooltipPosition]="'after'">
-                        <span class="powerbar__powerbar--term powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">{{selectedPowerbar.term}}</span>
-                  </div>
-              </div>
-          </div>
-          <div *ngFor="let powerbar of powerBarsList" class="powerbars__powerbar--{{powerbar.classSuffix}}" (click)="clickOnPowerbar(powerbar)">
-              <div *ngIf="!powerbar.isSelected" class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"[style.width]="powerbar.progression+'%'" matTooltip="{{powerbar.count}}" [matTooltipPosition]="'after'">
-                  <span class="powerbar__powerbar--term powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term}}</span>
-              </div>
-          </div>
+  <div class="powerbars--search">
+    <form>
+      <mat-form-field class="powerbars-search-field">
+        <input #searchText matInput class="powerbars-search-input" (keyup)="onKeyUp(searchText)" name="search">
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="powerbars--container">
+    <div *ngIf="selectedPowerbarsList.size !== 0" class="powerbars--selectedbars">
+      <div *ngFor="let selectedPowerbar of selectedPowerbarsList" class="powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
+        (click)="clickOnPowerbar(selectedPowerbar)">
+        <div class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"
+          [style.width]="selectedPowerbar.progression+'%'" matTooltip="{{selectedPowerbar.count}}" [matTooltipPosition]="'after'">
+          <span class="powerbar__powerbar--term powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">{{selectedPowerbar.term}}</span>
+        </div>
       </div>
+    </div>
+    <div *ngFor="let powerbar of powerBarsList" class="powerbars__powerbar--{{powerbar.classSuffix}}" (click)="clickOnPowerbar(powerbar)">
+      <div *ngIf="!powerbar.isSelected" class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"
+        [style.width]="powerbar.progression+'%'" matTooltip="{{powerbar.count}}" [matTooltipPosition]="'after'">
+        <span class="powerbar__powerbar--term powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term}}</span>
+      </div>
+    </div>
+  </div>
 </div>

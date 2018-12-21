@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PowerbarsComponent } from './powerbars.component';
-import { MatCardModule, MatIconModule, MatTooltipModule } from '@angular/material';
+import { MatCardModule, MatIconModule, MatTooltipModule, MatInputModule } from '@angular/material';
 
 @NgModule({
   imports: [
     CommonModule,
     MatCardModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatInputModule
   ],
   declarations: [PowerbarsComponent],
   exports: [PowerbarsComponent]

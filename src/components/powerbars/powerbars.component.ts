@@ -38,6 +38,12 @@ export class PowerbarsComponent implements OnChanges {
    */
   @Output() public selectedPowerBarEvent = new Subject<Set<string>>();
 
+  /**
+   * @Output : Angular
+   * @description Emits searched term
+   */
+  @Output() public searchedTerm = new Subject<string>();
+
   public powerBarsList: Array<PowerBar>;
   public selectedPowerbarsList: Set<PowerBar> = new Set<PowerBar>();
 
@@ -54,7 +60,7 @@ export class PowerbarsComponent implements OnChanges {
    */
   public NEUTRAL_STATE = 'neutral-state';
 
-  constructor() { }
+  constructor() {}
 
   public static getPowerbarsJsonSchema(): Object {
     return powerbarsJsonSchema;
@@ -117,6 +123,10 @@ export class PowerbarsComponent implements OnChanges {
       }
     });
     this.unselectAllButNotSelectedBars();
+  }
+
+  public onKeyUp(searchText: any) {
+    this.searchedTerm.next(searchText);
   }
 
   private clearSelection(): void {
