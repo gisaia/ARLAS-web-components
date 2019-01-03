@@ -10,7 +10,10 @@ import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 
-import { MatChipsModule, MatIconModule, MatSidenavModule, MatSlideToggleModule, MatSelectModule, MatTabsModule } from '@angular/material';
+import {
+  MatChipsModule, MatIconModule, MatSidenavModule,
+  MatSlideToggleModule, MatSelectModule, MatTabsModule
+} from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
