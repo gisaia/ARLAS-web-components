@@ -12,7 +12,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle } from './mapgl.component.control';
 import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, Style } from './model/mapLayers';
+import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 
 export interface OnMoveResult {
@@ -87,9 +87,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public unitScale = 'metric';
   /**
    * @Input : Angular
-   * @description Style of the map
+   * @description Default style of the base map
    */
-  @Input() public style = 'https://openmaptiles.github.io/osm-bright-gl-style/style-cdn.json';
+  @Input() public defaultBasemapStyle = {name: 'Positron Style',
+   styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'};
+
+  /**
+   * @Input : Angular
+   * @description List of styles to apply to the base map
+   */
+  @Input() public basemapStyles = new Array<BasemapStyle>();
   /**
    * @Input : Angular
    * @description Zoom of the map when it's initialized
@@ -222,6 +229,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
   private layersMap = new Map<string, mapboxgl.Layer>();
+  public basemapStylesGroup: BasemapStylesGroup;
 
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
@@ -274,25 +282,39 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
-
+  public setBaseMapStyle(style: string) {
+    if (this.map) {
+      this.map.setStyle(style).once('styledata', () => {
+        this.addSourcesToMap(this.mapSources, this.map);
+        this.addBaseLayers();
+        this.addStylesLayers();
+      });
+    }
+  }
   public ngAfterViewInit() {
+    const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
     this.map = new mapboxgl.Map({
       container: 'mapgl',
-      style: this.style,
+      style: afterViewInitbasemapStyle.styleFile,
       center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
       minZoom: this.minZoom,
       renderWorldCopies: true
     });
+
+    /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
+    this.setBasemapStylesGroup(afterViewInitbasemapStyle);
+
+    /** Whether to display scale */
     if (this.displayScale) {
       const scale = new mapboxgl.ScaleControl({
         maxWidth: this.maxWidthScale,
         unit: this.unitScale,
-
       });
       this.map.addControl(scale, 'bottom-right');
     }
+
     const layerSwitcherButton = new ControlButton('layersswitcher');
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
@@ -300,9 +322,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.displayLayerSwitcher) {
       this.map.addControl(layerSwitcherButton, 'top-right');
       layerSwitcherButton.btn.onclick = () => {
-        if (this.displayLayerSwitcher) {
           this.showLayersList = !this.showLayersList;
-        }
       };
     }
     this.map.addControl(navigationControllButtons, 'top-right');
@@ -323,28 +343,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-      // Add GeoBox Source
-      this.map.addSource(this.GEOBOX_SOURCE, {
-        'type': 'geojson',
-        'data': this.geoboxdata
-      });
-      // Add Data_source
-      this.map.addSource(this.DATA_SOURCE, {
-        'type': 'geojson',
-        'data': this.geojsondata
-      });
-
-      // Add sources defined as input in mapSources;
-      const mapSourcesMap = new Map<string, MapSource>();
-      if (this.mapSources) {
-        this.mapSources.forEach(mapSource => {
-          mapSourcesMap.set(mapSource.id, mapSource);
-        });
-        mapSourcesMap.forEach((mapSource, id) => {
-          this.map.addSource(id, mapSource.source);
-        });
-      }
-
+      this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
         this.addBaseLayers();
@@ -544,12 +543,46 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
+  public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
+    this.setBaseMapStyle(selectedStyle.styleFile);
+    localStorage.setItem('arlas_last_base_map', JSON.stringify(selectedStyle));
+    this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
+  }
+
 
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape' && this.isDrawingBbox) {
       this.map.getCanvas().style.cursor = '';
       this.isDrawingBbox = false;
+    }
+  }
+
+
+  /**
+   * @description Add map sources
+   */
+  private addSourcesToMap(sources: Array<MapSource>, map: any) {
+    // Add GeoBox Source
+    map.addSource(this.GEOBOX_SOURCE, {
+      'type': 'geojson',
+      'data': this.geoboxdata
+    });
+    // Add Data_source
+    map.addSource(this.DATA_SOURCE, {
+      'type': 'geojson',
+      'data': this.geojsondata
+    });
+
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, MapSource>();
+    if (sources) {
+      sources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        map.addSource(id, mapSource.source);
+      });
     }
   }
 
@@ -569,8 +602,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   private addStylesLayers() {
     this.mapLayers.styleGroups.forEach(styleGroup => {
-      const style = getDefaultStyle(styleGroup.styles);
-      styleGroup.selectedStyle = style;
+      let style;
+      if (!styleGroup.selectedStyle) {
+        style = getDefaultStyle(styleGroup.styles);
+        styleGroup.selectedStyle = style;
+      } else {
+        style = styleGroup.selectedStyle;
+      }
       if (style.geomStrategy !== undefined) {
         this.switchLayer.next(style);
       }
@@ -578,6 +616,52 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.addLayer(layerId);
       });
     });
+  }
+
+  private getAllBasemapStyles(): Array<BasemapStyle> {
+    const allBasemapStyles = new Array<BasemapStyle>();
+    this.basemapStyles.forEach(b => allBasemapStyles.push(b));
+    /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
+    if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
+      allBasemapStyles.push(this.defaultBasemapStyle);
+    }
+    return allBasemapStyles;
+  }
+
+  /**
+   * @description returns the basemap style that is displayed when the map is loaded for the first time
+   */
+  private getAfterViewInitBasemapStyle(): BasemapStyle {
+    if (!this.defaultBasemapStyle) {
+      throw new Error('[defaultBasemapStyle] input is invalid.');
+    }
+    if (!this.basemapStyles) {
+      throw new Error('[basemapStyles] input is null or undefined.');
+    }
+    const allBasemapStyles = this.getAllBasemapStyles();
+    const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem('arlas_last_base_map'));
+    /** check if a basemap style is saved in local storage and that it exists in [allBasemapStyles] list */
+    if (localStorageBasemapStyle && allBasemapStyles.filter(b => b.name === localStorageBasemapStyle.name
+      && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
+        return localStorageBasemapStyle;
+    } else {
+      localStorage.setItem('arlas_last_base_map', JSON.stringify(this.defaultBasemapStyle));
+      return this.defaultBasemapStyle;
+    }
+  }
+
+  /**
+   * @param selectedBasemapStyle the selected basemap style
+   * @description This method sets the [basemapStylesGroup] object that includes the list of basemapStyles
+   * and which basemapStyle is selected.
+   */
+  private setBasemapStylesGroup(selectedBasemapStyle: BasemapStyle) {
+    const allBasemapStyles = this.getAllBasemapStyles();
+    /** basemapStylesGroup object includes the list of basemap styles and which one is selected */
+    this.basemapStylesGroup = {
+      basemapStyles: allBasemapStyles,
+      selectedBasemapStyle: selectedBasemapStyle
+    };
   }
 
   private addLayer(layerId: string): void {
