@@ -1,7 +1,7 @@
 <div id="mapgl"></div>
 
 <div *ngIf="showLayersList && displayLayerSwitcher" class="map__layers-list--container">
-  <div>
+  <div *ngIf="basemapStyles.length > 1">
     <span class="map__layers-stylegroup-name">{{'Basemaps' | translate}}</span>
     <mat-radio-group class="map__layers-radio-group" [value]="basemapStylesGroup.selectedBasemapStyle">
       <mat-radio-button class="map__layers-radio-button" [checked]="style.name == basemapStylesGroup.selectedBasemapStyle.name" (change)="onChangeBasemapStyle(style)" *ngFor="let style of basemapStyles" [value]="style">
@@ -10,8 +10,8 @@
     </mat-radio-group>
   </div>
   <div *ngFor="let styleGroup of mapLayers.styleGroups">
-    <span class="map__layers-stylegroup-name">{{ styleGroup.name }}</span>
-    <mat-radio-group class="map__layers-radio-group" [value]="styleGroup.selectedStyle">
+    <span *ngIf="styleGroup.styles.length > 1" class="map__layers-stylegroup-name">{{ styleGroup.name }}</span>
+    <mat-radio-group *ngIf="styleGroup.styles.length > 1" class="map__layers-radio-group" [value]="styleGroup.selectedStyle">
       <mat-radio-button class="map__layers-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id" (change)="onChangeStyle(styleGroup.id, style)" *ngFor="let style of styleGroup.styles" [value]="style">
         {{style.name}}
       </mat-radio-button>
