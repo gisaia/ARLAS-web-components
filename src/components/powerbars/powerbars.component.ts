@@ -22,6 +22,13 @@ export class PowerbarsComponent implements OnChanges {
    * @description List of powerbars
    */
   @Input() public inputData: Array<[string, number]>;
+
+  /**
+   * @Input : Angular
+   * @description Powerbar title
+   */
+  @Input() public powerbarTitle = '';
+
   /**
    * @Input : Angular
    * @description Css class name to use to customize a specific powerbar's style.
@@ -32,6 +39,13 @@ export class PowerbarsComponent implements OnChanges {
    * @description Term's list of powerbars to select
    */
   @Input() public selectedPowerbarsTerms = new Set<string>();
+
+  /**
+   * @Input : Angular
+   * @description Whether the filter filter is display
+   */
+  @Input() public displayFilterField = false;
+
   /**
    * @Output : Angular
    * @description Emits the list of selected powerbars terms
