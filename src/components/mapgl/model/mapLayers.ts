@@ -1,3 +1,13 @@
+export interface BasemapStyle {
+  name: string;
+  styleFile: string;
+}
+
+export interface BasemapStylesGroup {
+  basemapStyles: Array<BasemapStyle>;
+  selectedBasemapStyle: BasemapStyle;
+}
+
 export interface MapLayers {
   layers: Array<mapboxgl.Layer>;
   styleGroups: Array<StyleGroup>;

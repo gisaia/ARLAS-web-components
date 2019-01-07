@@ -182,9 +182,43 @@
         ]
       }
     },
-    "style": {
-      "description": "Url to the basemap style",
-      "type": "string"
+    "defaultBasemapStyle": {
+      "description": "Defines the name and url to the default basemap style.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "name of the style",
+          "type": "string"
+        },
+        "styleFile": {
+          "description": "url to basemap style",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name", "styleFile"
+      ]
+    },
+    "basemapStyles": {
+      "description": "List of basemaps styles",
+      "type": "array",
+      "items": {
+        "description": "Defines the name and url to the default basemap style.",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "name of the style",
+            "type": "string"
+          },
+          "styleFile": {
+            "description": "url to basemap style",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name", "styleFile"
+        ]
+      }
     },
     "initCenter": {
       "description": "Coordinates of the map's centre when it's initialized.",
