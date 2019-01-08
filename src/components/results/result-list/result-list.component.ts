@@ -69,6 +69,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @constant
    */
   public LIST_MODE = 'List mode';
+  /**
+   * @constant
+   */
+  public GEOSORT_BUTTON = 'Geo-sort';
 
   // columnName is the shown name
   // fieldName is the real field name that's hidden

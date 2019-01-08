@@ -186,3 +186,18 @@ tbody {
 .selectAll__icon_check{
   cursor: pointer;
 }
+
+.resultlist__tools--geosort-action-button{
+  max-width: 32px;
+}
+
+.resultlist__tools--geosort--icon--active{
+  position: relative;
+  margin-top: -6px;
+  margin-left: -8px;
+}
+.resultlist__tools--geosort--icon{
+  position: relative;
+  margin-top: -6px;
+  margin-left: -8px;
+}
