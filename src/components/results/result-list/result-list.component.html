@@ -60,12 +60,12 @@
               <mat-icon matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
           </div>
           <div class="resultlist__tools--geosort">
-          <button matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-button [matMenuTriggerFor]="menu" class="resultlist__tools--geosort-action-button">
+          <button matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-button [matMenuTriggerFor]="menugeo" class="resultlist__tools--geosort-action-button">
             <div *ngIf="isAutoGeoSortActived"  class="resultlist__tools--geosort--icon--active">{{GEOSORT_BUTTON | translate}}</div>
             <div *ngIf="!isAutoGeoSortActived" class="resultlist__tools--geosort--icon">{{GEOSORT_BUTTON | translate}}</div>
           </button>
         </div>
-          <mat-menu #menu="matMenu">
+          <mat-menu #menugeo="matMenu">
             <button    mat-menu-item (click)="setGeoSortAction(geoSortActions[0])"  class="resultlist__header--columns__geosort-button">
               <span>{{geoSortActions[0].label | translate}}</span>
             </button>
