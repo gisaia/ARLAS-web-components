@@ -284,10 +284,32 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
   public setBaseMapStyle(style: string) {
     if (this.map) {
-      this.map.setStyle(style).once('styledata', () => {
-        this.addSourcesToMap(this.mapSources, this.map);
-        this.addBaseLayers();
-        this.addStylesLayers();
+      const layers = (<mapboxgl.Map>this.map).getStyle().layers;
+      const sources = (<mapboxgl.Map>this.map).getStyle().sources;
+      const selectedBasemapLayersSet = new Set<string>();
+      this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe( (s: any) => {
+        if (s.layers) { s.layers.forEach(l => selectedBasemapLayersSet.add(l.id)); }
+        const layersToSave = new Array<mapboxgl.Layer>();
+        const sourcesToSave = new Array<MapSource>();
+        layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
+          layersToSave.push(l);
+          if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
+            sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
+          }
+        });
+        const sourcesToSaveSet = new Set<string>();
+        sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
+        if (this.mapSources) {
+          this.mapSources.forEach(mapSource => {
+            if (!sourcesToSaveSet.has(mapSource.id)) {
+              sourcesToSave.push(mapSource);
+            }
+          });
+        }
+        this.map.setStyle(style).once('styledata', () => {
+          this.addSourcesToMap(sourcesToSave, this.map);
+          layersToSave.forEach(l => this.map.addLayer(l));
+        });
       });
     }
   }
@@ -343,6 +365,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
+      // Add GeoBox Source
+    this.map.addSource(this.GEOBOX_SOURCE, {
+      'type': 'geojson',
+      'data': this.geoboxdata
+    });
+    // Add Data_source
+    this.map.addSource(this.DATA_SOURCE, {
+      'type': 'geojson',
+      'data': this.geojsondata
+    });
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
@@ -563,16 +595,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Add map sources
    */
   private addSourcesToMap(sources: Array<MapSource>, map: any) {
-    // Add GeoBox Source
-    map.addSource(this.GEOBOX_SOURCE, {
-      'type': 'geojson',
-      'data': this.geoboxdata
-    });
-    // Add Data_source
-    map.addSource(this.DATA_SOURCE, {
-      'type': 'geojson',
-      'data': this.geojsondata
-    });
+
 
     // Add sources defined as input in mapSources;
     const mapSourcesMap = new Map<string, MapSource>();
