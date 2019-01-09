@@ -1,5 +1,26 @@
 # Change Log
 
+## [v9.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.0) (2019-01-09)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.0.0...v9.1.0)
+
+**New stuff:**
+
+- MAP: Add basemap switcher button [\#194](https://github.com/gisaia/ARLAS-web-components/issues/194) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- POWERBARS: Add search filter in title zone [\#193](https://github.com/gisaia/ARLAS-web-components/issues/193) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- POWERBARS : customize bar color from term value [\#191](https://github.com/gisaia/ARLAS-web-components/issues/191) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Move geosort action [\#201](https://github.com/gisaia/ARLAS-web-components/pull/201) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Improve filter field in powerbars [\#200](https://github.com/gisaia/ARLAS-web-components/pull/200) ([sebbousquet](https://github.com/sebbousquet))
+- Add search field on top of powerbars [\#197](https://github.com/gisaia/ARLAS-web-components/pull/197) ([sebbousquet](https://github.com/sebbousquet))
+- Fix routing strategy in demo [\#196](https://github.com/gisaia/ARLAS-web-components/pull/196) ([sebbousquet](https://github.com/sebbousquet))
+- Custom css powerbars with term value [\#195](https://github.com/gisaia/ARLAS-web-components/pull/195) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- RESULTLIST : wrong tbody height if displayfilter is set to false [\#190](https://github.com/gisaia/ARLAS-web-components/issues/190) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Fix typo menu name [\#202](https://github.com/gisaia/ARLAS-web-components/pull/202) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Fix tbody list height if no filter [\#192](https://github.com/gisaia/ARLAS-web-components/pull/192) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v9.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.0.0) (2018-11-28)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v8.0.1...v9.0.0)
