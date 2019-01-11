@@ -195,13 +195,13 @@ export class PowerbarsComponent implements OnChanges {
     // calculate progression
     this.powerBarsList.forEach(powerBar => {
       powerBar.progression = powerBar.count / sum * 100;
-      if (powerBar.progression !== 0) {
+      if (powerBar.progression !== 0 && powerBar.progression !== 100 ) {
         powerBar.progression += 1;
       }
     });
     this.selectedPowerbarsList.forEach(selectedPowerBar => {
       selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
-      if (selectedPowerBar.progression !== 0) {
+      if (selectedPowerBar.progression !== 0 && selectedPowerBar.progression !== 100 ) {
         selectedPowerBar.progression += 1;
       }
     });
