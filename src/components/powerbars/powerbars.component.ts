@@ -146,6 +146,7 @@ export class PowerbarsComponent implements OnChanges {
   private clearSelection(): void {
     this.powerBarsList.forEach(powerBar => {
       powerBar.classSuffix = this.NEUTRAL_STATE;
+      powerBar.isSelected = false;
     });
   }
 
@@ -216,6 +217,7 @@ export class PowerbarsComponent implements OnChanges {
       this.powerBarsList.forEach(powerBar => {
         if (!this.selectedPowerbarsTerms.has(powerBar.term)) {
           powerBar.classSuffix = 'unselected-bar';
+          powerBar.isSelected = false;
         }
       });
     }
