@@ -1,12 +1,12 @@
-<div *ngIf="!displayFilterField" class="powerbarTitle">{{powerbarTitle}}</div>
+<div *ngIf="!displayFilterField" class="powerbarTitle">{{powerbarTitle | translate}}</div>
+<div class="powerbars--search" *ngIf="displayFilterField">
+  <form (keydown.enter)="$event.preventDefault()">
+    <mat-form-field class="powerbars-search-field">
+      <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle}}" matInput class="powerbars-search-input" (keyup)="onKeyUp(searchText.value)" name="search">
+    </mat-form-field>
+  </form>
+</div>
 <div class="powerbars--wrapper" [ngClass]="customizedCssClass">
-  <div class="powerbars--search" *ngIf="displayFilterField">
-    <form (keydown.enter)="$event.preventDefault()">
-      <mat-form-field class="powerbars-search-field">
-        <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle}}" matInput class="powerbars-search-input" (keyup)="onKeyUp(searchText.value)" name="search">
-      </mat-form-field>
-    </form>
-  </div>
   <div class="powerbars--container">
     <div *ngIf="selectedPowerbarsList.size !== 0" class="powerbars--selectedbars">
       <div *ngFor="let selectedPowerbar of selectedPowerbarsList" class="powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
