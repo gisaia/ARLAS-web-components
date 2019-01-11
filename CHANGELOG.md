@@ -1,5 +1,9 @@
 # Change Log
 
+## [v9.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.1) (2019-01-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.0...v9.1.1)
+
 ## [v9.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.0) (2019-01-09)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.0.0...v9.1.0)
@@ -17,6 +21,7 @@
 
 **Fixed bugs:**
 
+- Not all layers are added after setStyle [\#204](https://github.com/gisaia/ARLAS-web-components/issues/204) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - RESULTLIST : wrong tbody height if displayfilter is set to false [\#190](https://github.com/gisaia/ARLAS-web-components/issues/190) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Fix typo menu name [\#202](https://github.com/gisaia/ARLAS-web-components/pull/202) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 - Fix tbody list height if no filter [\#192](https://github.com/gisaia/ARLAS-web-components/pull/192) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
