@@ -1,8 +1,20 @@
 # Change Log
 
+## [v9.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.2) (2019-01-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.1...v9.1.2)
+
 ## [v9.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.1) (2019-01-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.0...v9.1.1)
+
+**New stuff:**
+
+- Improve powerbars layout [\#206](https://github.com/gisaia/ARLAS-web-components/pull/206) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- Fix: set isSelected to false when a powerbar is no longer selected [\#205](https://github.com/gisaia/ARLAS-web-components/issues/205) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
 ## [v9.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.0) (2019-01-09)
 
