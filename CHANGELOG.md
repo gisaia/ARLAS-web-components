@@ -1,8 +1,16 @@
 # Change Log
 
+## [v9.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.3) (2019-01-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.2...v9.1.3)
+
 ## [v9.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.2) (2019-01-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.1...v9.1.2)
+
+**Fixed bugs:**
+
+- Fix width full powerbars [\#207](https://github.com/gisaia/ARLAS-web-components/pull/207) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v9.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.1) (2019-01-11)
 
