@@ -604,7 +604,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         mapSourcesMap.set(mapSource.id, mapSource);
       });
       mapSourcesMap.forEach((mapSource, id) => {
-        map.addSource(id, mapSource.source);
+        if (map.getSource(id) === undefined) {
+          map.addSource(id, mapSource.source);
+        }
       });
     }
   }
