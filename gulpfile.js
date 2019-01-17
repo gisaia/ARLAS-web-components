@@ -3,22 +3,22 @@ const inlineResources = require('./tools/inline-resources');
 
 function copyHtml() {
     return gulp.src('src/components/**/*.html')
-        .pipe(gulp.dest('./dist')).on('end', copyAssets);
+        .pipe(gulp.dest('./dist/components')).on('end', copyAssets);
 }
 
 function copyDts() {
     return gulp.src('src/components/**/*.d.ts')
-        .pipe(gulp.dest('./dist')).on('end', copyAssets);
+        .pipe(gulp.dest('./dist/components')).on('end', copyAssets);
 }
 
 function copyJS() {
     return gulp.src('src/components/**/*.js')
-        .pipe(gulp.dest('./dist')).on('end', copyAssets);
+        .pipe(gulp.dest('./dist/components')).on('end', copyAssets);
 }
 
 function copyData() {
     return gulp.src('./src/components/**/*.json')
-      .pipe(gulp.dest('dist/'));
+      .pipe(gulp.dest('./dist/components'));
   };
 
 function copyAssets() {
@@ -27,7 +27,7 @@ function copyAssets() {
 }
 function copyScss() {
     return gulp.src('./src/components/**/*.{scss,css}')
-        .pipe(gulp.dest('./dist')).on('end', inlineResource);
+        .pipe(gulp.dest('./dist/components')).on('end', inlineResource);
 }
 
 function inlineResource() {
