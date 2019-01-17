@@ -1,6 +1,6 @@
 import { DetailedDataRetriever } from '../../../components/results/utils/detailed-data-retriever';
-import { Subject, Observable, from } from 'rxjs';
-import { Action } from 'components';
+import { Observable, from } from 'rxjs';
+import { Action } from 'components/results/utils/results.utils';
 
 
 export class DetailedDataRetrieverImp implements DetailedDataRetriever {
