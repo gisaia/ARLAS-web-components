@@ -24,6 +24,9 @@ import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
+import { GaugeComponent } from '../components/gauge/gauge.component';
+import { GaugeDemoComponent } from './gauge-demo/gauge-demo.component';
+import { GaugeModule } from '../components/gauge/gauge.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -35,6 +38,8 @@ const routes: Routes = [
   { path: 'donut', component: DonutDemoComponent },
   { path: 'powerbars', component: PowerbarsDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
+  { path: 'gauge', component: GaugeDemoComponent },
+
 ];
 
 
@@ -45,7 +50,8 @@ const routes: Routes = [
     ResultsDemoComponent,
     MapglDemoComponent,
     PowerbarsDemoComponent,
-    DonutDemoComponent
+    DonutDemoComponent,
+    GaugeDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -60,6 +66,7 @@ const routes: Routes = [
     HistogramModule,
     DonutModule,
     ResultsModule,
+    GaugeModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,
     MatSlideToggleModule,
