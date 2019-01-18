@@ -14,7 +14,8 @@ export class AppComponent implements OnInit {
     '/donut',
     '/histogram',
     '/powerbars',
-    '/list'
+    '/list',
+    '/gauge'
   ];
 
   constructor(private translate: TranslateService, private router: Router) {

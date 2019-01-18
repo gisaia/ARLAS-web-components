@@ -1,0 +1,20 @@
+.full-gauge{
+    fill-opacity:1;
+    fill:#00dde5;
+    stroke:black;
+    stroke-width: 0.8;
+}
+
+.part-gauge{
+    fill-opacity:1;
+    fill:#322d90;
+    stroke:black;
+    stroke-width: 0.8;
+}
+
+
+.cursor{
+    fill-opacity:1;
+    fill:white;
+    stroke:black;
+}
