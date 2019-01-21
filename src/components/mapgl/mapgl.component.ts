@@ -446,7 +446,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
-
     moveend.subscribe(e => {
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
@@ -525,6 +524,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.ceil((this.zoom) - 1));
       this.onMove.next(onMoveData);
     });
+    // Fit bounds on current bounds to emit init position in moveend bus
+    this.map.fitBounds(this.map.getBounds());
     this.map.on('mousedown', (e) => {
       this.startlngLat = e.lngLat;
     });
