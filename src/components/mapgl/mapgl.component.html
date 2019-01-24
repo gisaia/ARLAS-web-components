@@ -1,5 +1,8 @@
 <div id="mapgl"></div>
-
+<div class="current-coordinate" *ngIf="displayCurrentCoordinates">
+  <span class="lat"> Lat : {{currentLat}} </span>
+  <span class="lng"> Lng : {{currentLng}} </span>
+</div>
 <div *ngIf="showLayersList && displayLayerSwitcher" class="map__layers-list--container">
   <div *ngIf="basemapStyles.length > 1">
     <span class="map__layers-stylegroup-name">{{'Basemaps' | translate}}</span>
