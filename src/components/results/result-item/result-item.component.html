@@ -1,25 +1,38 @@
-  <ng-container *ngFor="let field of rowItem.columns;">
-    <td *ngIf="field.isIdField" class="resultitem__cell"
-                              [style.max-width.px]="field.width"
-                              [style.min-width.px]="field.width" >
-      <div *ngIf="field.isIdField" class="checkbox">
-    <mat-icon *ngIf="rowItem.isChecked && !rowItem.isindeterminated"  (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box</mat-icon>
-    <mat-icon *ngIf="!rowItem.isChecked && !rowItem.isindeterminated" (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
-    <mat-icon *ngIf="rowItem.isindeterminated" (click)="determinateItem()" class="primary resultitem__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
-
+  <ng-container *ngFor="let column of rowItem.columns;">
+    <!-- If the column corresponds to an id field, then we put the checkbox that enables to check the item-->
+    <td *ngIf="column.isIdField" class="resultitem__cell" [style.max-width.px]="column.width" [style.min-width.px]="column.width" >
+      <div class="checkbox">
+        <mat-icon *ngIf="rowItem.isChecked && !rowItem.isindeterminated"  (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box</mat-icon>
+        <mat-icon *ngIf="!rowItem.isChecked && !rowItem.isindeterminated" (click)="setSelectedItem()" class="primary resultitem__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
+        <mat-icon *ngIf="rowItem.isindeterminated" (click)="determinateItem()" class="primary resultitem__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
       </div>
     </td>
-    <td *ngIf="!field.isIdField && !field.isToggleField" class="resultitem__cell resultitem__cell__{{field.fieldName}}"
-                              [style.max-width.px]="field.width"
-                              [style.min-width.px]="field.width">
-      <label class="resultitem__cell--label resultitem__cell--label__{{field.fieldName}}  resultitem__cell--label__{{rowItem.itemData.get(field.fieldName)}}">
-        {{rowItem.itemData.get(field.fieldName)}}{{field.dataType}}</label>
+
+    <!-- If the column is not an id field nor a toggle, then we put the value of the corespondant field-->
+    <td *ngIf="!column.isIdField && !column.isToggleField" class="resultitem__cell resultitem__cell__{{column.fieldName}}"
+          [style.max-width.px]="column.width"
+          [style.min-width.px]="column.width">
+      <label *ngIf="(!useColorService || !column.useColorService || cellBackgroundStyle === undefined); else labelModeIsDefined" class="resultitem__cell--label resultitem__cell--label__{{column.fieldName}}  resultitem__cell--label__{{rowItem.itemData.get(column.fieldName)}}">
+        {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
+      </label>
+      <ng-template #labelModeIsDefined>
+        <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.filled && column.useColorService" class="resultitem__cell--label resultitem__cell--label__filled"
+          [style.background-color]="getColor(rowItem.itemData.get(column.fieldName))" [style.color]="getTextColor(getColor(rowItem.itemData.get(column.fieldName)))">
+          {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
+        </label>
+        <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.outlined && column.useColorService" class="resultitem__cell--label resultitem__cell--label__outlined"
+          [style.color]="getColor(rowItem.itemData.get(column.fieldName))" [style.border-color]="getColor(rowItem.itemData.get(column.fieldName))">
+          {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
+        </label>
+      </ng-template>
     </td>
-    <td *ngIf="field.isToggleField" class="resultitem__cell"
-                              [style.max-width.px]="field.width"
-                              [style.min-width.px]="field.width">
+
+    <!-- If the column is a toggle, then we put the + button that enables to fetch detailed data of the item-->
+    <td *ngIf="column.isToggleField" class="resultitem__cell" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
       <mat-icon matTooltip="{{SHOW_DETAILS | translate}}" class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</mat-icon>
-      <ng-template #cancel_toggle><mat-icon matTooltip="{{HIDE_DETAILS | translate}}" class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</mat-icon></ng-template>
+      <ng-template #cancel_toggle>
+        <mat-icon matTooltip="{{HIDE_DETAILS | translate}}" class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</mat-icon>
+      </ng-template>
     </td>
   </ng-container>
 

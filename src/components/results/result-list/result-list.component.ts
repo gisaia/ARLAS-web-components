@@ -12,6 +12,8 @@ import { ANIMATION_TYPES } from 'ngx-loading';
 import { MatButtonToggleChange } from '@angular/material';
 import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
+import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
+import { ArlasColorService } from '../../../services/color.generator.service';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -74,15 +76,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public GEOSORT_BUTTON = 'Geo-sort';
 
-  // columnName is the shown name
-  // fieldName is the real field name that's hidden
-  // dataType (degree, percentage, etc)
-  // includes an ID field. It will be the id of each item
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
+   * - fieldName : Name/path of the field to add to list
+   * - columnName : Name of the field that will be displayed on the list column
+   * - dataType : Unit of the field values if it exists (degree, percentage, etc)
+   * - useColorService : Whether to colorize values on cells of the list with a color generated from the field value
+   * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string }>;
+  @Input() public fieldsList: Array<{
+    fieldName: string,
+    columnName: string,
+    dataType: string,
+    useColorService?: boolean
+  }>;
 
   /**
    * @Input : Angular
@@ -201,6 +209,32 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
 
   /**
+   * @Input : Angular
+   * @description List of [key, color] couples that associates a hex color to each key
+   */
+  @Input() public keysToColors: Array<[string, string]>;
+
+  /**
+   * @Input : Angular
+   * @description Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a
+   * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
+   * Therefore saturation of generated colors will be within this tightened scale..
+   */
+  @Input() public colorsSaturationWeight = 1 / 2 ;
+
+  /**
+   * @Input : Angular
+   * @description Whether to allow colorizing cells and the grid tile of the list.
+   */
+  @Input() public useColorService = false;
+
+  /**
+   * @Input : Angular
+    * @description The way the cell will be colorized: filled or outlined
+   */
+  @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
+
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
@@ -313,7 +347,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   ];
 
-  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
+  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
+    private colorService: ArlasColorService) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     this.resultMode = this.defautMode;
@@ -325,7 +360,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
     // Add debounce on hover item list
     this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
-
   }
 
   public ngOnInit() {
@@ -629,6 +663,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+      column.useColorService = field.useColorService;
       this.columns.push(column);
     });
     // add a column for toggle icon
@@ -649,6 +684,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         .join(' ');
       if (item.title) {
         item.title = item.title.trim();
+        if (this.useColorService && this.fieldsConfiguration.iconColorFieldName) {
+          const colorFieldValue = <string>itemData.get(this.fieldsConfiguration.iconColorFieldName + '_title');
+          if (colorFieldValue) {
+            item.color = this.colorService.getColor(colorFieldValue, this.keysToColors, this.colorsSaturationWeight);
+          }
+        }
       }
     }
     if (this.fieldsConfiguration.tooltipFieldNames) {

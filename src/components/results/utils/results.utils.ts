@@ -23,6 +23,7 @@ export interface FieldsConfiguration {
   thumbnailEnabled?: boolean;
   icon?: string;
   iconCssClass?: string;
+  iconColorFieldName?: string;
 }
 
 export interface Field {
