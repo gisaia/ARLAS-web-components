@@ -341,7 +341,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   public ngOnInit() {
-
   }
 
   public ngAfterViewChecked() {
@@ -349,8 +348,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       (<AbstractSwimlane>this.histogram).truncateLabels();
     }
     if (this.rt !==  undefined && this.lt !== undefined) {
-      this.histogram.histogramParams.rightBrushElement = this.rt.nativeElement;
-      this.histogram.histogramParams.leftBrushElement = this.lt.nativeElement;
+      this.histogram.setHTMLElementsOfBrushCornerTooltips(this.rt.nativeElement, this.lt.nativeElement);
     }
   }
 

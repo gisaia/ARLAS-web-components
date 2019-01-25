@@ -12,7 +12,7 @@ export class HistogramDemoComponent implements OnInit {
   public curvedTimelineData: Array<{key: Date | number, value: number}>;
   public barsHistogramData: Array<Array<{key: Date | number, value: number}>>;
   public oneDimensionHistogramData: Array<Array<{key: Date | number, value: number}>>;
-  public defaultHistogramData: Array<Array<{key: Date | number, value: number}>>;
+  public defaultHistogramData: Array<{key: Date | number, value: number}>;
   public swimlaneHistogramData: Map<any, any>;
   public dataType = DataType;
   public swimlaneMode = SwimlaneMode;
@@ -48,7 +48,12 @@ export class HistogramDemoComponent implements OnInit {
   }
 
   private showData() {
-
+    this.defaultHistogramData = [
+      {value: 0,   key: 154660976000},
+      {value: 40,  key: 154709760000},
+      {value: 500, key: 154809760000},
+      {value: 120, key: 154909760000},
+      {value: 300, key: 155009760000}];
   }
 
 
