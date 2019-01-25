@@ -34,10 +34,14 @@ export class Column {
    * @description Whether the filter search column has a dropdown.
    */
   public dropdown = false;
-    /**
+  /**
    * @description Size of the dropdown list.
    */
   public dropdownsize = 10;
+  /**
+   * @description Whether to allow colorizing cells that are within this column
+   */
+  public useColorService = false;
 
   constructor(columnName: string, fieldName: string, dataType: string ) {
     this.columnName = columnName;

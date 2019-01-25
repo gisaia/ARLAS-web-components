@@ -30,3 +30,14 @@
   height: 15px;
   cursor: pointer;
 }
+
+.resultitem__cell--label__filled {
+  padding: 3px;
+  border-radius:2px;
+}
+
+.resultitem__cell--label__outlined {
+  padding: 3px;
+  border-radius:2px;
+  border : 1px solid;
+}

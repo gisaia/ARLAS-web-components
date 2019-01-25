@@ -15,10 +15,12 @@ import {
   MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    ColorGeneratorModule.forRoot(),
     MatIconModule,
     MatChipsModule,
     MatButtonToggleModule,
