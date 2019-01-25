@@ -84,6 +84,10 @@ export class Item {
    * @description The css class for material grid icon.
    */
   public iconCssClass: string;
+  /**
+   * @description color characterising the item
+   */
+  public color: string;
 
   constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
     this.columns = columns;

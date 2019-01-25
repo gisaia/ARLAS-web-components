@@ -4,6 +4,8 @@ import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 import { Subject } from 'rxjs';
+import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
+import { ArlasColorService } from '../../../services/color.generator.service';
 
 @Component({
   selector: '[arlas-result-item]',
@@ -14,6 +16,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
 
   public HIDE_DETAILS = 'Hide details';
   public SHOW_DETAILS = 'Show details';
+  public CellBackgroundStyleEnum = CellBackgroundStyleEnum;
 
   /**
    * @Input
@@ -32,6 +35,33 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * This component sets directly this list.
    */
   @Input() public selectedItems: Set<string>;
+
+  /**
+   * @Input : Angular
+   * @description List of [key, color] couples that associates a hex color to each key
+   */
+  @Input() public keysToColors: Array<[string, string]>;
+
+  /**
+   * @Input : Angular
+   * @description Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a
+   * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
+   * Therefore saturation of generated colors will be within this tightened scale.
+   */
+  @Input() public colorsSaturationWeight = 1 / 2 ;
+
+  /**
+   * @Input : Angular
+   * @description Whether to allow colorizing the cells of the item (the row) according to the terms displayed
+   */
+  @Input() public useColorService = false;
+
+  /**
+   * @Input : Angular
+   * @description The way the cell will be colorized: filled or outlined
+   */
+  @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
+
 
   /**
    * @Output
@@ -57,7 +87,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public borderStyle = 'solid';
   protected identifier: string;
 
-  constructor() {
+  constructor(public colorService: ArlasColorService) {
     super();
   }
 
@@ -93,6 +123,14 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
     this.selectedItemsEvent.next(this.selectedItems);
     this.selectedItemPositionEvent.next(this.rowItem);
+  }
+
+  public getColor(key: string): string {
+    return this.colorService.getColor(key, this.keysToColors, this.colorsSaturationWeight);
+  }
+
+  public getTextColor(key: string): string {
+    return this.colorService.getTextColor(key);
   }
 
 }

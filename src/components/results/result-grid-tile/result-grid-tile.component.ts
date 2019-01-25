@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output } from '@angular/core';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-
 import { Subject } from 'rxjs';
 
 @Component({

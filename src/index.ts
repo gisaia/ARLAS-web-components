@@ -6,6 +6,7 @@ export { PowerbarsModule } from './components/powerbars/powerbars.module';
 export { ChartType, DataType, Position, SimpleNode, TreeNode, SwimlaneMode } from 'arlas-d3';
 export { SortEnum } from './components/results/utils/enumerations/sortEnum';
 export { ModeEnum } from './components/results/utils/enumerations/modeEnum';
+export { CellBackgroundStyleEnum } from './components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { DetailedDataRetriever } from './components/results/utils/detailed-data-retriever';
 export { Action, ElementIdentifier, FieldsConfiguration } from './components/results/utils/results.utils';
 export { HistogramComponent } from './components/histogram/histogram.component';
