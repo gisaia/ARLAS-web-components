@@ -2,6 +2,7 @@ import { Component, OnChanges, Input, Output, SimpleChanges } from '@angular/cor
 import { Subject } from 'rxjs';
 import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
+import { ArlasColorService } from '../../services/color.generator.service';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -15,8 +16,6 @@ import * as powerbarsJsonSchema from './powerbars.schema.json';
 })
 
 export class PowerbarsComponent implements OnChanges {
-
-
   /**
    * @Input : Angular
    * @description List of powerbars
@@ -47,6 +46,26 @@ export class PowerbarsComponent implements OnChanges {
   @Input() public displayFilterField = false;
 
   /**
+   * @Input : Angular
+   * @description List of [key, color] couples that associates a hex color to each key
+   */
+  @Input() public keysToColors: Array<[string, string]>;
+
+  /**
+   * @Input : Angular
+   * @description Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a
+   * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
+   * Therefore saturation of generated colors will be within this tightened scale.
+   */
+  @Input() public colorsSaturationWeight ;
+
+   /**
+   * @Input : Angular
+   * @description Whether to allow colorizing the bar according to its term or not
+   */
+  @Input() public useColorService = false;
+
+  /**
    * @Output : Angular
    * @description Emits the list of selected powerbars terms
    */
@@ -74,7 +93,7 @@ export class PowerbarsComponent implements OnChanges {
    */
   public NEUTRAL_STATE = 'neutral-state';
 
-  constructor() {}
+  constructor(private colorService: ArlasColorService) {}
 
   public static getPowerbarsJsonSchema(): Object {
     return powerbarsJsonSchema;
@@ -127,6 +146,9 @@ export class PowerbarsComponent implements OnChanges {
       if (powerBar !== null) {
         powerBar.isSelected = true;
         powerBar.classSuffix = 'selected-bar';
+        if (this.useColorService) {
+          powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
+        }
         this.addSelectedPowerbarToList(powerBar);
       } else {
         powerBar = new PowerBar(powerbarTerm, 0);
@@ -167,6 +189,9 @@ export class PowerbarsComponent implements OnChanges {
     this.inputData.sort((a: [string, number], b: [string, number]) => b[1] - a[1]);
     this.inputData.forEach(powerbarElement => {
       const powerBar = new PowerBar(powerbarElement[0], powerbarElement[1]);
+      if (this.useColorService) {
+        powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
+      }
       this.powerBarsList.push(powerBar);
     });
   }

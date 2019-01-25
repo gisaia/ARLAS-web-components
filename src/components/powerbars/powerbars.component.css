@@ -22,9 +22,9 @@
   margin-top: 3px;
 }
 
-.powerbars__powerbar--neutral-state:hover, 
+.powerbars__powerbar--neutral-state:hover,
 .powerbars__powerbar--selected-bar:hover,
-.powerbars__powerbar--unselected-bar:hover 
+.powerbars__powerbar--unselected-bar:hover
 
 {
   opacity: .8;
