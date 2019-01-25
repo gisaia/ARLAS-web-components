@@ -14,72 +14,72 @@ export class DonutDemoComponent implements OnInit {
 
   public ngOnInit() {
     this.donutData = {
-      name: 'root',
-      ringName: 'root',
-      size: 640,
+      fieldValue: 'root',
+      fieldName: 'root',
+      size: 400,
       children : [
         {
-          name: 'sentinelle',
-          ringName: 'satellites',
+          fieldValue: 'sentinelle',
+          fieldName: 'satellites',
           size: 230,
           children : [
             {
-              name: 'sentinelle1',
-              ringName: 'mission',
+              fieldValue: 'sentinelle1',
+              fieldName: 'mission',
               size: 100
             },
             {
-              name: 'sentinelle2',
-              ringName: 'mission',
+              fieldValue: 'sentinelle2',
+              fieldName: 'mission',
               size: 130
             }
           ]
         },
         {
-          name: 'SPOT',
-          ringName: 'satellites',
+          fieldValue: 'SPOT',
+          fieldName: 'satellites',
           size: 170,
           children : [
             {
-              name: 'SPOT5',
-              ringName: 'mission',
+              fieldValue: 'SPOT5',
+              fieldName: 'mission',
               size: 30
             },
             {
-              name: 'SPOT6',
+              fieldValue: 'SPOT6',
               size: 140,
-              ringName: 'mission',
+              fieldName: 'mission',
               children : [
                 {
-                  name: 'FR1',
-                  ringName: 'emetteur',
+                  fieldValue: 'FR1',
+                  fieldName: 'emetteur',
                   size: 10
                 },
                 {
-                  name: 'FR2',
-                  ringName: 'emetteur',
+                  fieldValue: 'FR2',
+                  fieldName: 'emetteur',
                   size: 130
                 }
               ]
             },
             {
-              name: 'SPOT7',
-              ringName: 'mission',
+              fieldValue: 'SPOT7',
+              fieldName: 'mission',
               size: 240,
               children : [
                 {
-                  name: 'FR1',
-                  ringName: 'emetteur',
+                  fieldValue: 'FR1',
+                  fieldName: 'emetteur',
                   size: 20
                 },
                 {
-                  name: 'FR2',
-                  ringName: 'emetteur',
+                  fieldValue: 'FR2',
+                  fieldName: 'emetteur',
                   size: 110
                 },
                 {
-                  name: 'FR3',
-                  ringName: 'emetteur',
+                  fieldValue: 'FR3',
+                  fieldName: 'emetteur',
                   size: 110
                 }
               ]
@@ -91,74 +91,74 @@ export class DonutDemoComponent implements OnInit {
     };
 
     setTimeout(() => {
-      // this.selectedNodes = [[{ringName: 'mission', name: 'SPOT5'}, {ringName: 'satellites', name: 'SPOT'}]];
+      // this.selectedNodes = [[{fieldName: 'mission', fieldValue: 'SPOT5'}, {fieldName: 'satellites', fieldValue: 'SPOT'}]];
       this.donutData = {
-        name: 'root',
-        ringName: 'root',
+        fieldName: 'root',
+        fieldValue: 'root',
         size: 530,
         children : [
           {
-            name: 'sentinelle',
-            ringName: 'satellites',
+            fieldValue: 'sentinelle',
+            fieldName: 'satellites',
             size: 230,
             children : [
               {
-                name: 'sentinelle1',
-                ringName: 'mission',
+                fieldValue: 'sentinelle1',
+                fieldName: 'mission',
                 size: 100
               },
               {
-                name: 'sentinelle2',
-                ringName: 'mission',
+                fieldValue: 'sentinelle2',
+                fieldName: 'mission',
                 size: 130
               }
             ]
           },
           {
-            name: 'SPOT',
+            fieldValue: 'SPOT',
             size: 300,
-            ringName: 'satellites',
+            fieldName: 'satellites',
             children : [
               {
-                name: 'SPOT5',
-                ringName: 'mission',
+                fieldValue: 'SPOT5',
+                fieldName: 'mission',
                 size: 30
               },
               {
-                name: 'SPOT6',
+                fieldValue: 'SPOT6',
                 size: 140,
-                ringName: 'mission',
+                fieldName: 'mission',
                 children : [
                   {
-                    name: 'FR1',
-                    ringName: 'emetteur',
+                    fieldValue: 'FR1',
+                    fieldName: 'emetteur',
                     size: 10
                   },
                   {
-                    name: 'FR2',
-                    ringName: 'emetteur',
+                    fieldValue: 'FR2',
+                    fieldName: 'emetteur',
                     size: 130
                   }
                 ]
               },
               {
-                name: 'SPOT7',
+                fieldValue: 'SPOT7',
                 size: 130,
-                ringName: 'mission',
+                fieldName: 'mission',
                 children : [
                   {
-                    name: 'FR1',
-                    ringName: 'emetteur',
+                    fieldValue: 'FR1',
+                    fieldName: 'emetteur',
                     size: 20
                   },
                   {
-                    name: 'FR2',
-                    ringName: 'emetteur',
+                    fieldValue: 'FR2',
+                    fieldName: 'emetteur',
                     size: 50
                   },
                   {
-                    name: 'FR3',
-                    ringName: 'emetteur',
+                    fieldValue: 'FR3',
+                    fieldName: 'emetteur',
                     size: 60
                   }
                 ]
