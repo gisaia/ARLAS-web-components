@@ -11,22 +11,22 @@
   <div [style.display]="histogram.histogramParams.displaySvg" style="position:relative">
     <svg id="svgix" class="histogram__chart" [style.width.px]="histogram.histogramParams.chartWidth" [style.height.px]="histogram.histogramParams.chartHeight"></svg>
     <div *ngIf="histogram.isBrushing">
-      <div #left [style.visibility]="histogram.histogramParams.displayHorizontal" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--left"
-        [style.left.px]="histogram.histogramParams.brushLeftTooltip.xPosition"   [style.top.px]="histogram.histogramParams.brushLeftTooltip.yPosition">
-        {{histogram.histogramParams.brushLeftTooltip.xContent}}
+      <div #left [style.visibility]="histogram.brushCornerTooltips.horizontalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--left"
+        [style.left.px]="histogram.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.top.px]="histogram.brushCornerTooltips.leftCornerTooltip.yPosition">
+        {{histogram.brushCornerTooltips.leftCornerTooltip.content}}
       </div>
-      <div #right [style.visibility]="histogram.histogramParams.displayHorizontal" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--right"
-        [style.right.px]="histogram.histogramParams.brushRightTooltip.xPosition"   [style.top.px]="histogram.histogramParams.brushRightTooltip.yPosition">
-        {{histogram.histogramParams.brushRightTooltip.xContent}}
+      <div #right [style.visibility]="histogram.brushCornerTooltips.horizontalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--right"
+        [style.right.px]="histogram.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.top.px]="histogram.brushCornerTooltips.rightCornerTooltip.yPosition">
+        {{histogram.brushCornerTooltips.rightCornerTooltip.content}}
       </div>
 
-      <div #leftvertical [style.visibility]="histogram.histogramParams.displayVertical" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--left__rotation histogram__brush-tooltip__vertical--left"
-        [style.left.px]="histogram.histogramParams.brushLeftTooltip.xPosition"   [style.bottom.px]="histogram.histogramParams.brushRightTooltip.yPosition" [style.width.px]="histogram.histogramParams.brushLeftTooltip.width">
-        {{histogram.histogramParams.brushLeftTooltip.xContent}}
+      <div #leftvertical [style.visibility]="histogram.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--left__rotation histogram__brush-tooltip__vertical--left"
+        [style.left.px]="histogram.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.bottom.px]="histogram.brushCornerTooltips.leftCornerTooltip.yPosition" [style.width.px]="histogram.brushCornerTooltips.leftCornerTooltip.width">
+        {{histogram.brushCornerTooltips.leftCornerTooltip.content}}
       </div>
-      <div #rightvertical [style.visibility]="histogram.histogramParams.displayVertical" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--right__rotation histogram__brush-tooltip__vertical--right"
-        [style.left.px]="histogram.histogramParams.brushRightTooltip.xPosition"   [style.bottom.px]="histogram.histogramParams.brushRightTooltip.yPosition" [style.width.px]="histogram.histogramParams.brushRightTooltip.width">
-        {{histogram.histogramParams.brushRightTooltip.xContent}}
+      <div #rightvertical [style.visibility]="histogram.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--right__rotation histogram__brush-tooltip__vertical--right"
+        [style.left.px]="histogram.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.bottom.px]="histogram.brushCornerTooltips.rightCornerTooltip.yPosition" [style.width.px]="histogram.brushCornerTooltips.rightCornerTooltip.width">
+        {{histogram.brushCornerTooltips.rightCornerTooltip.content}}
       </div>
     </div>
   </div>
