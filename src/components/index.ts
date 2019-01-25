@@ -2,7 +2,7 @@ export { MapLayers } from './mapgl/model/mapLayers';
 export { MapSource } from './mapgl/model/mapSource';
 export { PowerbarsComponent } from './powerbars/powerbars.component';
 export { PowerbarsModule } from './powerbars/powerbars.module';
-export { ChartType, DataType, Position, DonutArc, SwimlaneMode } from 'arlas-d3';
+export { ChartType, DataType, Position, SimpleNode, TreeNode, SwimlaneMode } from 'arlas-d3';
 export { SortEnum } from './results/utils/enumerations/sortEnum';
 export { ModeEnum } from './results/utils/enumerations/modeEnum';
 export { DetailedDataRetriever } from './results/utils/detailed-data-retriever';

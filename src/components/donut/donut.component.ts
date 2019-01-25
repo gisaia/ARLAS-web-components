@@ -3,8 +3,7 @@ import {
 } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { DonutArc} from 'arlas-d3';
-import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams } from 'arlas-d3';
+import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
 import { ColorGeneratorImpl } from './donut.utils';
 
@@ -19,7 +18,7 @@ export class DonutComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description Data tree to plot in the donut.
    */
-  @Input() public donutData: DonutArc;
+  @Input() public donutData: TreeNode;
 
   /**
    * @Input : Angular
@@ -37,8 +36,7 @@ export class DonutComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description List of selected nodes.
    */
-  @Input() public selectedArcsList: Array<Array<{ ringName: string, name: string }>> =
-    new Array<Array<{ ringName: string, name: string }>>();
+  @Input() public selectedArcsList: Array<Array<SimpleNode>> = new Array<Array<SimpleNode>>();
 
   /**
    * @Input : Angular
@@ -69,8 +67,7 @@ export class DonutComponent implements OnInit, OnChanges {
    * @Output : Angular
    * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
-  @Output() public selectedNodesEvent: Subject<Array<Array<{ ringName: string, name: string }>>> =
-    new Subject<Array<Array<{ ringName: string, name: string }>>>();
+  @Output() public selectedNodesEvent: Subject<Array<Array<SimpleNode>>> = new Subject<Array<Array<SimpleNode>>>();
 
   /**
    * @Output : Angular
