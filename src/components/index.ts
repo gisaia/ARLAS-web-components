@@ -18,3 +18,5 @@ export { ResultItemComponent } from './results/result-item/result-item.component
 export { ResultDetailedItemComponent } from './results/result-detailed-item/result-detailed-item.component';
 export { ResultsModule } from './results/results.module';
 
+export { GaugeComponent } from './gauge/gauge.component';
+export { GaugeModule } from './gauge/gauge.module';
