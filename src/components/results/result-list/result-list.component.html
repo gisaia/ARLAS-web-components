@@ -1,5 +1,5 @@
 <table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
-  <thead>
+  <thead *ngIf=displayThead>
     <tr class="resultlist__header">
       <ng-container *ngFor="let column of columns">
         <th *ngIf="column.isIdField"
