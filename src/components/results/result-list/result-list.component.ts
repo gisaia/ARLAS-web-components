@@ -207,6 +207,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
 
   @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
+  /**
+   * @Input : Angular
+   * @description A  boolean to show or hide thead of table
+   */
+  @Input() public displayThead = true;
 
   /**
    * @Input : Angular
@@ -233,11 +238,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     * @description The way the cell will be colorized: filled or outlined
    */
   @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
-
+  /**
+   * @Input : Angular
+   * @description A  item to show detail
+   */
+  @Input() public selectedGridItem: Item;
   /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
+
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
     new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 
@@ -248,9 +258,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Output() public geoSortEvent: Subject<string> = new Subject<string>();
 
   /**
- * @Output : Angular
- * @description Emits the event of geo-sorting data.
- */
+   * @Output : Angular
+   * @description Emits the event of geo-sorting data.
+   */
   @Output() public geoAutoSortEvent: Subject<boolean> = new Subject<boolean>();
 
   /**
@@ -298,6 +308,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Output() public columnFilterChanged: Subject<Column> = new Subject<Column>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the event of clicking on a grid tile.
+   */
+  @Output() public clickOnTile: Subject<Item> = new Subject<Item>();
+
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
@@ -310,7 +326,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public ModeEnum = ModeEnum;
   public SortEnum = SortEnum;
 
-  public selectedGridItem: Item;
   private selectedItemsPositions = new Set<number>();
 
 
@@ -323,7 +338,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public allItemsChecked = false;
 
   public isDetailledGridOpen = false;
-
   private detailedGridCounter = 0;
 
   public borderStyle = 'solid';
@@ -570,6 +584,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.detailedGridCounter++;
     }
     this.tbodyHeight = this.getOffSetHeight() - this.detailedGridHeight;
+    this.clickOnTile.next(item);
   }
 
   public closeDetail(isClosed: boolean) {
