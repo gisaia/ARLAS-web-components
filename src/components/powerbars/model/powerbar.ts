@@ -1,8 +1,14 @@
+import { SimpleNode } from 'arlas-d3';
+
 export class PowerBar {
   /**
    * @description Powerbar term.
    */
   public term: string;
+  /**
+   * @description Powerbar parent node term.
+   */
+  public parentTerm: string;
   /**
    * @description Term's occurence.
    */
@@ -15,6 +21,11 @@ export class PowerBar {
    * @description Whether the powerbar is selected.
    */
   public isSelected = false;
+
+  /**
+   * @description Path from the powerbar to the parent nodes
+   */
+  public path: Array<SimpleNode>;
   /**
    * @description class name to apply to the powerbar : `neutral-state`, `selected-bar` or `unselected-bar`.
    */
@@ -24,8 +35,9 @@ export class PowerBar {
    */
   public color: string;
 
-  constructor(term: string, count: number) {
+  constructor(term: string, parentTerm: string, count: number) {
     this.term = term;
+    this.parentTerm = parentTerm;
     this.count = count;
   }
 }

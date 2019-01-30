@@ -83,5 +83,4 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
     return color.toHexString();
   }
 
-
 }
