@@ -221,7 +221,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
     this.removePowerbarFromSelected(powerBar);
     this.selectedPowerbarsList.add(powerBar);
     if (this.powerBarsList.length > 0) {
-      this.sortSelectedPowerBars(this.powerBarsList[0].count);
+      this.sortSelectedPowerBars();
     }
   }
 
@@ -270,16 +270,25 @@ export class PowerbarsComponent implements OnInit, OnChanges {
   }
 
   private calculateAllPowerBarsProgression() {
+    // TODO : Manage correctly when count == NaN
     let sum = 0;
     // calculate the sum
     this.powerBarsList.forEach(powerBar => {
+      if (powerBar.count.toString() === 'NaN') {
+        powerBar.count = 0;
+      }
       sum += powerBar.count;
     });
     this.selectedPowerbarsList.forEach(selectedPowerBar => {
+      if (selectedPowerBar.count.toString() === 'NaN') {
+        selectedPowerBar.count = 0;
+      }
       if (this.getPowerbar(selectedPowerBar.term, selectedPowerBar.parentTerm) === null) {
         sum += selectedPowerBar.count;
       }
     });
+
+    this.powerBarsList.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
 
     // calculate progression
     this.powerBarsList.forEach(powerBar => {
@@ -311,7 +320,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
   }
 
   // Sort the selected PowerBars decreasingly. And recalculate the progression of the bars in this array.
-  private sortSelectedPowerBars(maxPowerBarList: number) {
+  private sortSelectedPowerBars() {
     const selectedPowerbarsArray = Array.from(this.selectedPowerbarsList);
     selectedPowerbarsArray.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
     this.selectedPowerbarsList = new Set<PowerBar>();
