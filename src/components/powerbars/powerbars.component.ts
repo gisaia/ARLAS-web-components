@@ -256,6 +256,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
           const powerBar = new PowerBar(child.fieldValue, data.fieldValue, child.metricValue);
           currentPath.reverse();
           powerBar.path = currentPath;
+          if (this.useColorService) {
+            powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
+          }
           powerBarsList.push(powerBar);
         }
       });
