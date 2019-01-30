@@ -35,6 +35,10 @@
         "useColorService": {
           "description": "Whether to allow colorizing the bar according to its term or not using the ArlasColorService",
           "type": "boolean"
+        },
+        "displayFilter": {
+          "description": "Whether text input, to filter powerbars, is displayed",
+          "type": "boolean"
         }
     }
 }
