@@ -17,11 +17,11 @@
       </label>
       <ng-template #labelModeIsDefined>
         <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.filled && column.useColorService" class="resultitem__cell--label resultitem__cell--label__filled"
-          [style.background-color]="getColor(rowItem.itemData.get(column.fieldName))" [style.color]="getTextColor(getColor(rowItem.itemData.get(column.fieldName)))">
+          [style.background-color]="getColor(rowItem.itemData.get(column.fieldName).toString())" [style.color]="getTextColor(getColor(rowItem.itemData.get(column.fieldName).toString()))">
           {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
         </label>
         <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.outlined && column.useColorService" class="resultitem__cell--label resultitem__cell--label__outlined"
-          [style.color]="getColor(rowItem.itemData.get(column.fieldName))" [style.border-color]="getColor(rowItem.itemData.get(column.fieldName))">
+          [style.color]="getColor(rowItem.itemData.get(column.fieldName).toString())" [style.border-color]="getColor(rowItem.itemData.get(column.fieldName).toString())">
           {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
         </label>
       </ng-template>
