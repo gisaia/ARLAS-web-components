@@ -141,34 +141,25 @@ export class PowerbarsComponent implements OnInit, OnChanges {
   // Select or deselect a PowerBar from the view
   public clickOnPowerbar(powerBar: PowerBar): void {
     const selectedPaths = new Array();
-    if (this.selectedPaths) {
-      Object.assign(selectedPaths, this.selectedPaths);
-    }
     if (this.selectedPowerbarsTerms.has(powerBar.term)) {
       powerBar.isSelected = false;
       this.selectedPowerbarsTerms.delete(powerBar.term);
       this.selectedPowerbarsList.delete(powerBar);
       (this.selectedPowerbarsTerms.size === 0) ? this.clearSelection() : powerBar.classSuffix = this.UNSELECTED_BAR;
-      /** Remove The paths that contains the selected node */
-      const listOfPathsToRemove = [];
-      selectedPaths.forEach( path => {
-        if (path.length >= this.level) {
-          if (path[path.length - this.level].fieldValue === powerBar.term) {
-            listOfPathsToRemove.push(selectedPaths.indexOf(path));
-          }
-        }
-      });
-      for (let i = 0; i < listOfPathsToRemove.length; i++) {
-        selectedPaths.splice(listOfPathsToRemove[i] - i, 1);
-      }
-      // ##############################################
     } else {
+      if (this.selectedPaths) {
+        Object.assign(selectedPaths, this.selectedPaths);
+      }
       powerBar.isSelected = true;
       powerBar.classSuffix = this.SELECTED_BAR;
-      this.addSelectedPowerbarToList(powerBar);
+      this.selectedPowerbarsTerms.add(powerBar.term);
+      this.addSelectedPowerbarToList(powerBar, this.selectedPowerbarsList);
       this.unselectAllButNotSelectedBars();
-      selectedPaths.push(powerBar.path);
     }
+    this.selectedPowerbarsList.forEach(pb => {
+      selectedPaths.push(pb.path);
+    });
+    this.selectedPowerbarsList = this.sortSelectedPowerBars(this.selectedPowerbarsList);
     this.selectedPowerBarEvent.next(selectedPaths);
   }
 
@@ -177,8 +168,8 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    * @param selectedPaths selects the powerbars whose terms are in the selected paths
    */
   public setSelectedPowerbars(selectedPaths: Array<Array<{ fieldName: string, fieldValue: string }>>) {
-    this.selectedPowerbarsTerms = new Set();
-    this.selectedPowerbarsList = new Set();
+    const selectedPowerbarsTerms = new Set();
+    const selectedPowerbarsList = new Set();
     selectedPaths.forEach(path => {
       const currentPath = path.length <= this.level ? path : path.slice(path.length - this.level);
       let powerBar = currentPath.length > 1 ? this.getPowerbar(currentPath[0].fieldValue, currentPath[1].fieldValue) :
@@ -189,16 +180,19 @@ export class PowerbarsComponent implements OnInit, OnChanges {
         if (this.useColorService) {
           powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
         }
-        this.addSelectedPowerbarToList(powerBar);
       } else {
         powerBar = currentPath.length > 1 ? new PowerBar(currentPath[0].fieldValue, currentPath[1].fieldValue, 0) :
           new PowerBar(currentPath[0].fieldValue, 'root', 0);
+        powerBar.path = currentPath;
         powerBar.progression = 0;
         powerBar.isSelected = true;
         powerBar.classSuffix = this.SELECTED_NO_MOUNTED_BAR;
-        this.addSelectedPowerbarToList(powerBar);
       }
+      selectedPowerbarsTerms.add(powerBar.term);
+      this.addSelectedPowerbarToList(powerBar, selectedPowerbarsList);
     });
+    this.selectedPowerbarsTerms  = selectedPowerbarsTerms;
+    this.selectedPowerbarsList = this.sortSelectedPowerBars(selectedPowerbarsList);
     this.unselectAllButNotSelectedBars();
   }
 
@@ -213,16 +207,10 @@ export class PowerbarsComponent implements OnInit, OnChanges {
     });
   }
 
-  private addSelectedPowerbarToList(powerBar: PowerBar): void {
-    // add power bar to selectedPowerbarsTerms
-    this.selectedPowerbarsTerms.add(powerBar.term);
-
+  private addSelectedPowerbarToList(powerBar: PowerBar, selectedPowerbarsList: Set<PowerBar>): void {
     // add powerbar to selectedPowerbarsList
-    this.removePowerbarFromSelected(powerBar);
-    this.selectedPowerbarsList.add(powerBar);
-    if (this.powerBarsList.length > 0) {
-      this.sortSelectedPowerBars();
-    }
+    this.removePowerbarFromSelectedOnes(powerBar, selectedPowerbarsList);
+    selectedPowerbarsList.add(powerBar);
   }
 
   private populatePowerbars(): void {
@@ -323,24 +311,25 @@ export class PowerbarsComponent implements OnInit, OnChanges {
   }
 
   // Sort the selected PowerBars decreasingly. And recalculate the progression of the bars in this array.
-  private sortSelectedPowerBars() {
-    const selectedPowerbarsArray = Array.from(this.selectedPowerbarsList);
+  private sortSelectedPowerBars(selectedPowerbarsList: Set<PowerBar>): Set<PowerBar> {
+    const selectedPowerbarsArray = Array.from(selectedPowerbarsList);
     selectedPowerbarsArray.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
-    this.selectedPowerbarsList = new Set<PowerBar>();
+    const sortedSelectedPowerbarsList = new Set<PowerBar>();
     selectedPowerbarsArray.forEach(powerBar => {
-      this.selectedPowerbarsList.add(powerBar);
+      sortedSelectedPowerbarsList.add(powerBar);
     });
+    return sortedSelectedPowerbarsList;
   }
 
   // removes the powerbar that has the same term in selectedPowerbarsList but not the same instance
-  private removePowerbarFromSelected(powerBar: PowerBar) {
+  private removePowerbarFromSelectedOnes(powerBar: PowerBar, selectedPowerbarsList: Set<PowerBar>) {
     let powerbarToRemove;
-    this.selectedPowerbarsList.forEach(selectedPowerbar => {
+    selectedPowerbarsList.forEach(selectedPowerbar => {
       if (selectedPowerbar.term === powerBar.term) {
         powerbarToRemove = selectedPowerbar;
       }
     });
-    this.selectedPowerbarsList.delete(powerbarToRemove);
+    selectedPowerbarsList.delete(powerbarToRemove);
   }
 
   /**
