@@ -25,7 +25,7 @@
     "@types/d3-dsv": "1.0.33",
     "@types/mapbox-gl": "^0.39.5",
     "@types/tinycolor2": "^1.4.0",
-    "arlas-d3": "6.0.0-beta.1",
+    "arlas-d3": "6.0.*",
     "bootstrap": "^4.0.0-beta",
     "core-js": "^2.5.4",
     "d3-dsv": "^1.0.10",
@@ -40,7 +40,7 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.10.0",
+    "@angular-devkit/build-angular": "~0.13.0",
     "@angular-devkit/build-ng-packagr": "~0.10.0",
     "@angular/cli": "~7.0.2",
     "@angular/compiler-cli": "~7.0.0",
