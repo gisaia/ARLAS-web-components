@@ -798,13 +798,25 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   private setTableWidth() {
     if (this.tableWidth === null) {
-      this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+      const nativeElement = this.el.nativeElement;
+      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] ) {
+        this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+      }
     }
   }
 
   private setTableHeight() {
-    this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
+    const nativeElement = this.el.nativeElement;
+    if (nativeElement) {
+      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] &&
+        nativeElement.childNodes[0].childNodes && nativeElement.childNodes[0].childNodes.length > 1 &&
+        nativeElement.childNodes[0].childNodes[1]) {
+        this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
+      }
+      if (nativeElement.parentElement && nativeElement.parentElement.offsetHeight !== undefined && this.theadHeight !== undefined) {
+        this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
+      }
+    }
   }
 
 
