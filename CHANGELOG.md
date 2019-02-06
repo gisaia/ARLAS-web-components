@@ -1,8 +1,79 @@
 # Change Log
 
+## [v9.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0) (2019-02-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.5...v9.2.0)
+
+**Breaking changes:**
+
+- Change Donuts input format [\#230](https://github.com/gisaia/ARLAS-web-components/issues/230) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)]
+- Change powerbars inputs format [\#219](https://github.com/gisaia/ARLAS-web-components/issues/219) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Colorize powerbars/donuts/resultlist using the same color service [\#212](https://github.com/gisaia/ARLAS-web-components/issues/212) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)] [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**New stuff:**
+
+- HISTOGRAMS: Refactor brush tooltips according to v6.0.0 of arlas-d3 [\#229](https://github.com/gisaia/ARLAS-web-components/issues/229) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- Create a new component : y log axis \(logarithmic gauge\) [\#216](https://github.com/gisaia/ARLAS-web-components/issues/216)
+- Display coordinates of the mouse pointer [\#213](https://github.com/gisaia/ARLAS-web-components/issues/213) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Emit init position of the map on first loading [\#209](https://github.com/gisaia/ARLAS-web-components/issues/209) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- ResultList fix : Check existence of nativeElements parentNodes and childNodes [\#228](https://github.com/gisaia/ARLAS-web-components/pull/228) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+- Update powerbars demo inputs [\#226](https://github.com/gisaia/ARLAS-web-components/pull/226) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+- Fix construction of selected powerbars list [\#224](https://github.com/gisaia/ARLAS-web-components/pull/224) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+## [v9.2.0-beta.5](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.5) (2019-02-01)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.4...v9.2.0-beta.5)
+
+**Fixed bugs:**
+
+- Fix color of powerbars and update json schema [\#223](https://github.com/gisaia/ARLAS-web-components/pull/223) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+## [v9.2.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.4) (2019-01-30)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.3...v9.2.0-beta.4)
+
+**Fixed bugs:**
+
+- Fix color for result list : apply toString\(\) to itemData.get method [\#222](https://github.com/gisaia/ARLAS-web-components/pull/222) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+## [v9.2.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.3) (2019-01-30)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.2...v9.2.0-beta.3)
+
+**Fixed bugs:**
+
+- sort powerbar list [\#221](https://github.com/gisaia/ARLAS-web-components/pull/221) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+## [v9.2.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.2) (2019-01-30)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.1...v9.2.0-beta.2)
+
+## [v9.2.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.1) (2019-01-30)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.0...v9.2.0-beta.1)
+
+## [v9.2.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.0) (2019-01-25)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.3...v9.2.0-beta.0)
+
+**Breaking changes:**
+
+- Refactor Histogram and Donuts according to changes of arlas-d3@6.0.0 [\#215](https://github.com/gisaia/ARLAS-web-components/pull/215) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+**New stuff:**
+
+- Emit init value in moveend bus [\#210](https://github.com/gisaia/ARLAS-web-components/pull/210) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v9.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.3) (2019-01-16)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.2...v9.1.3)
+
+**Fixed bugs:**
+
+- Check if source exists before adding it [\#208](https://github.com/gisaia/ARLAS-web-components/pull/208) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v9.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.2) (2019-01-11)
 
