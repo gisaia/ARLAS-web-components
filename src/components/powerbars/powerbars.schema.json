@@ -8,6 +8,37 @@
         "customizedCssClass":{
             "description": "Css class name to use to customize a specific powerbar's style.",
             "type":"string"
+        },
+        "keysToColors" : {
+            "description": "List of [key, color] couples that associates a hex color to each key",
+            "type": "array",
+            "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "items": [
+                      {
+                          "description": "Key to which a color is associated",
+                          "type": "string"
+                      },
+                      {
+                          "description": "Hex color associated to the key",
+                          "type": "string"
+                      }
+                  ]
+            }
+        },
+        "colorsSaturationWeight": {
+            "description": "Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1]. Therefore all generated colors saturation will be within this scale.",
+            "type": "number"
+        },
+        "useColorService": {
+          "description": "Whether to allow colorizing the bar according to its term or not using the ArlasColorService",
+          "type": "boolean"
+        },
+        "displayFilter": {
+          "description": "Whether text input, to filter powerbars, is displayed",
+          "type": "boolean"
         }
     }
 }

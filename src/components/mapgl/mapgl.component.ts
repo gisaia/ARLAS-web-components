@@ -1,3 +1,22 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import {
   AfterViewInit, Component, EventEmitter,
   HostListener, Input, IterableDiffers,
@@ -77,6 +96,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public displayScale = true;
   /**
    * @Input : Angular
+   * @description Whether the coordinates are displayed.
+   */
+  @Input() public displayCurrentCoordinates = false;
+  /**
+   * @Input : Angular
    * @description Max width of the scale.
    */
   @Input() public maxWidthScale = 100;
@@ -89,8 +113,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Default style of the base map
    */
-  @Input() public defaultBasemapStyle = {name: 'Positron Style',
-   styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'};
+  @Input() public defaultBasemapStyle = {
+    name: 'Positron Style',
+    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+  };
 
   /**
    * @Input : Angular
@@ -173,10 +199,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description List of feature to select.
    */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
-   /**
-   * @Input : Angular
-   * @description List of mapboxgl sources to add to the map.
-   */
+  /**
+  * @Input : Angular
+  * @description List of mapboxgl sources to add to the map.
+  */
   @Input() public mapSources: Array<MapSource>;
   /**
    * @Input : Angular
@@ -231,6 +257,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private layersMap = new Map<string, mapboxgl.Layer>();
   public basemapStylesGroup: BasemapStylesGroup;
 
+  public currentLat: string;
+  public currentLng: string;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -287,7 +315,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const layers = (<mapboxgl.Map>this.map).getStyle().layers;
       const sources = (<mapboxgl.Map>this.map).getStyle().sources;
       const selectedBasemapLayersSet = new Set<string>();
-      this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe( (s: any) => {
+      this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe((s: any) => {
         if (s.layers) { s.layers.forEach(l => selectedBasemapLayersSet.add(l.id)); }
         const layersToSave = new Array<mapboxgl.Layer>();
         const sourcesToSave = new Array<MapSource>();
@@ -337,6 +365,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.addControl(scale, 'bottom-right');
     }
 
+    if (this.displayCurrentCoordinates) {
+      this.map.on('mousemove', (e) => {
+        this.currentLat = String(Math.round(e.lngLat.lat * 100000) / 100000);
+        this.currentLng = String(Math.round(e.lngLat.lng * 100000) / 100000);
+      });
+    }
     const layerSwitcherButton = new ControlButton('layersswitcher');
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
@@ -344,7 +378,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.displayLayerSwitcher) {
       this.map.addControl(layerSwitcherButton, 'top-right');
       layerSwitcherButton.btn.onclick = () => {
-          this.showLayersList = !this.showLayersList;
+        this.showLayersList = !this.showLayersList;
       };
     }
     this.map.addControl(navigationControllButtons, 'top-right');
@@ -366,15 +400,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
       // Add GeoBox Source
-    this.map.addSource(this.GEOBOX_SOURCE, {
-      'type': 'geojson',
-      'data': this.geoboxdata
-    });
-    // Add Data_source
-    this.map.addSource(this.DATA_SOURCE, {
-      'type': 'geojson',
-      'data': this.geojsondata
-    });
+      this.map.addSource(this.GEOBOX_SOURCE, {
+        'type': 'geojson',
+        'data': this.geoboxdata
+      });
+      // Add Data_source
+      this.map.addSource(this.DATA_SOURCE, {
+        'type': 'geojson',
+        'data': this.geojsondata
+      });
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
@@ -446,7 +480,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
-
     moveend.subscribe(e => {
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
@@ -525,6 +558,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.ceil((this.zoom) - 1));
       this.onMove.next(onMoveData);
     });
+    // Fit bounds on current bounds to emit init position in moveend bus
+    this.map.fitBounds(this.map.getBounds());
     this.map.on('mousedown', (e) => {
       this.startlngLat = e.lngLat;
     });
@@ -668,7 +703,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     /** check if a basemap style is saved in local storage and that it exists in [allBasemapStyles] list */
     if (localStorageBasemapStyle && allBasemapStyles.filter(b => b.name === localStorageBasemapStyle.name
       && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
-        return localStorageBasemapStyle;
+      return localStorageBasemapStyle;
     } else {
       localStorage.setItem('arlas_last_base_map', JSON.stringify(this.defaultBasemapStyle));
       return this.defaultBasemapStyle;

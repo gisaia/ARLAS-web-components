@@ -1,3 +1,22 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef } from '@angular/core';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
@@ -12,6 +31,8 @@ import { ANIMATION_TYPES } from 'ngx-loading';
 import { MatButtonToggleChange } from '@angular/material';
 import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
+import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
+import { ArlasColorService } from '../../../services/color.generator.service';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -74,15 +95,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public GEOSORT_BUTTON = 'Geo-sort';
 
-  // columnName is the shown name
-  // fieldName is the real field name that's hidden
-  // dataType (degree, percentage, etc)
-  // includes an ID field. It will be the id of each item
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
+   * - fieldName : Name/path of the field to add to list
+   * - columnName : Name of the field that will be displayed on the list column
+   * - dataType : Unit of the field values if it exists (degree, percentage, etc)
+   * - useColorService : Whether to colorize values on cells of the list with a color generated from the field value
+   * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string }>;
+  @Input() public fieldsList: Array<{
+    fieldName: string,
+    columnName: string,
+    dataType: string,
+    useColorService?: boolean
+  }>;
 
   /**
    * @Input : Angular
@@ -199,11 +226,47 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
 
   @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
+  /**
+   * @Input : Angular
+   * @description A  boolean to show or hide thead of table
+   */
+  @Input() public displayThead = true;
 
+  /**
+   * @Input : Angular
+   * @description List of [key, color] couples that associates a hex color to each key
+   */
+  @Input() public keysToColors: Array<[string, string]>;
+
+  /**
+   * @Input : Angular
+   * @description Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a
+   * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
+   * Therefore saturation of generated colors will be within this tightened scale..
+   */
+  @Input() public colorsSaturationWeight = 1 / 2 ;
+
+  /**
+   * @Input : Angular
+   * @description Whether to allow colorizing cells and the grid tile of the list.
+   */
+  @Input() public useColorService = false;
+
+  /**
+   * @Input : Angular
+    * @description The way the cell will be colorized: filled or outlined
+   */
+  @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
+  /**
+   * @Input : Angular
+   * @description A  item to show detail
+   */
+  @Input() public selectedGridItem: Item;
   /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
+
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
     new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 
@@ -214,9 +277,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Output() public geoSortEvent: Subject<string> = new Subject<string>();
 
   /**
- * @Output : Angular
- * @description Emits the event of geo-sorting data.
- */
+   * @Output : Angular
+   * @description Emits the event of geo-sorting data.
+   */
   @Output() public geoAutoSortEvent: Subject<boolean> = new Subject<boolean>();
 
   /**
@@ -264,6 +327,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Output() public columnFilterChanged: Subject<Column> = new Subject<Column>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the event of clicking on a grid tile.
+   */
+  @Output() public clickOnTile: Subject<Item> = new Subject<Item>();
+
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { fieldName: string, sortDirection: SortEnum };
@@ -276,7 +345,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public ModeEnum = ModeEnum;
   public SortEnum = SortEnum;
 
-  public selectedGridItem: Item;
   private selectedItemsPositions = new Set<number>();
 
 
@@ -289,7 +357,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public allItemsChecked = false;
 
   public isDetailledGridOpen = false;
-
   private detailedGridCounter = 0;
 
   public borderStyle = 'solid';
@@ -313,7 +380,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   ];
 
-  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef) {
+  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
+    private colorService: ArlasColorService) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     this.resultMode = this.defautMode;
@@ -325,7 +393,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
     // Add debounce on hover item list
     this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
-
   }
 
   public ngOnInit() {
@@ -536,6 +603,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.detailedGridCounter++;
     }
     this.tbodyHeight = this.getOffSetHeight() - this.detailedGridHeight;
+    this.clickOnTile.next(item);
   }
 
   public closeDetail(isClosed: boolean) {
@@ -629,6 +697,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+      column.useColorService = field.useColorService;
       this.columns.push(column);
     });
     // add a column for toggle icon
@@ -649,6 +718,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         .join(' ');
       if (item.title) {
         item.title = item.title.trim();
+        if (this.useColorService && this.fieldsConfiguration.iconColorFieldName) {
+          const colorFieldValue = <string>itemData.get(this.fieldsConfiguration.iconColorFieldName + '_title');
+          if (colorFieldValue) {
+            item.color = this.colorService.getColor(colorFieldValue, this.keysToColors, this.colorsSaturationWeight);
+          }
+        }
       }
     }
     if (this.fieldsConfiguration.tooltipFieldNames) {
@@ -723,13 +798,25 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   private setTableWidth() {
     if (this.tableWidth === null) {
-      this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+      const nativeElement = this.el.nativeElement;
+      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] ) {
+        this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+      }
     }
   }
 
   private setTableHeight() {
-    this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
-    this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
+    const nativeElement = this.el.nativeElement;
+    if (nativeElement) {
+      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] &&
+        nativeElement.childNodes[0].childNodes && nativeElement.childNodes[0].childNodes.length > 1 &&
+        nativeElement.childNodes[0].childNodes[1]) {
+        this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
+      }
+      if (nativeElement.parentElement && nativeElement.parentElement.offsetHeight !== undefined && this.theadHeight !== undefined) {
+        this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
+      }
+    }
   }
 
 

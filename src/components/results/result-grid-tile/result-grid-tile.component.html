@@ -1,12 +1,19 @@
-<div class="resultgrid" (click)="setClickedOnItem()">
-  <div class="resultgrid--container-highlight-{{gridTile.ishighLight}}" color="primary">
-       <mat-icon *ngIf="gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</mat-icon>
-       <mat-icon *ngIf="!gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
+<div class="resultgrid" >
+  <div class="resultgrid--container resultgrid--container-highlight-{{gridTile.ishighLight}}" color="primary"[style.border-color]="gridTile.color ? gridTile.color : 'none'">
+    <mat-icon *ngIf="gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</mat-icon>
+    <mat-icon *ngIf="!gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
        <mat-icon *ngIf="gridTile.isindeterminated" (click)="determinateItem()" class="primary resultgrid__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
-      <div  *ngIf="gridTile.thumbnailEnabled" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'"></div>
-      <div  *ngIf="!gridTile.thumbnailEnabled" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img" [style.background-image] = "'url('+errorImgUrl+')'"></div>
-    <div class="resultgrid__title-highlight-{{gridTile.ishighLight}}">
-      <mat-icon class="primary mat-icon material-icons resultgrid__icon_title  resultgrid__icon_title-{{gridTile.iconCssClass}}" matTooltip="{{gridTile.tooltip}}">{{gridTile.icon}}</mat-icon>
+      <div (click)="setClickedOnItem()"  *ngIf="gridTile.thumbnailEnabled" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img {{gridTile.iconCssClass}}" [style.background-image] = "'url(' + gridTile.urlThumbnail + ')'"></div>
+      <div  (click)="setClickedOnItem()"  *ngIf="!gridTile.thumbnailEnabled" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img {{gridTile.iconCssClass}}" [style.background-image] = "'url('+errorImgUrl+')'"></div>
+      <div class="resultgrid__title-highlight-{{gridTile.ishighLight}}">
+      <mat-icon *ngIf="gridTile.color; else colorNotDefined" class="primary mat-icon material-icons resultgrid__icon_title"
+        [style.color]="gridTile.color" matTooltip="{{gridTile.tooltip}}">{{gridTile.icon}}
+      </mat-icon>
+      <ng-template #colorNotDefined>
+        <mat-icon class="primary mat-icon material-icons resultgrid__icon_title  resultgrid__icon_title-{{gridTile.iconCssClass}}"
+          matTooltip="{{gridTile.tooltip}}">{{gridTile.icon}}
+        </mat-icon>
+      </ng-template>
       <span class="resultgrid__title  resultgrid__title-{{gridTile.iconCssClass}}" > {{gridTile.title}} </span>
     </div>
   </div>

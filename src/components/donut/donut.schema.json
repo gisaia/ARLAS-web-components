@@ -41,7 +41,7 @@
             }
       },
       "colorsSaturationWeight": {
-          "description": "The percentage of highest values in saturation scale. For exemple, colorsSaturationWeight = 1/5,  means that colors saturation values will be between 0.8 and 1. Knowing that saturation scale is [0 - 1]",
+          "description": "Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1]. Therefore all generated colors saturation will be within this scale.",
           "type": "number"
       }
   },

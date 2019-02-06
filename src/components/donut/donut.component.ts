@@ -1,12 +1,30 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import {
-  Component, OnInit, OnChanges, Input, Output, SimpleChanges, ViewContainerRef, ElementRef, ViewEncapsulation
+  Component, OnChanges, Input, Output, SimpleChanges, ViewContainerRef, ElementRef, ViewEncapsulation
 } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { DonutArc} from 'arlas-d3';
-import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams } from 'arlas-d3';
+import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
-import { ColorGeneratorImpl } from './donut.utils';
+import { ArlasColorService } from '../../services/color.generator.service';
 
 @Component({
   selector: 'arlas-donut',
@@ -14,12 +32,12 @@ import { ColorGeneratorImpl } from './donut.utils';
   styleUrls: ['./donut.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class DonutComponent implements OnInit, OnChanges {
+export class DonutComponent implements OnChanges {
   /**
    * @Input : Angular
    * @description Data tree to plot in the donut.
    */
-  @Input() public donutData: DonutArc;
+  @Input() public donutData: TreeNode;
 
   /**
    * @Input : Angular
@@ -37,8 +55,7 @@ export class DonutComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description List of selected nodes.
    */
-  @Input() public selectedArcsList: Array<Array<{ ringName: string, name: string }>> =
-    new Array<Array<{ ringName: string, name: string }>>();
+  @Input() public selectedArcsList: Array<Array<SimpleNode>> = new Array<Array<SimpleNode>>();
 
   /**
    * @Input : Angular
@@ -56,21 +73,22 @@ export class DonutComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<Array<string>>;
+  @Input() public keysToColors: Array<[string, string]>;
 
   /**
    * @Input : Angular
-   * @description The percentage of highest values in saturation scale. For exemple, colorsSaturationWeight = 1/5,  means
-   * that colors saturation values will be between 0.8 and 1. Knowing that saturation scale is [0 - 1].
+   * @description Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a
+   * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
+   * Therefore colors saturation of donuts arcs will be within this tightened scale..
    */
   @Input() public colorsSaturationWeight = 1 / 2 ;
+
 
   /**
    * @Output : Angular
    * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
-  @Output() public selectedNodesEvent: Subject<Array<Array<{ ringName: string, name: string }>>> =
-    new Subject<Array<Array<{ ringName: string, name: string }>>>();
+  @Output() public selectedNodesEvent: Subject<Array<Array<SimpleNode>>> = new Subject<Array<Array<SimpleNode>>>();
 
   /**
    * @Output : Angular
@@ -79,19 +97,15 @@ export class DonutComponent implements OnInit, OnChanges {
    */
   @Output() public hoveredNodesEvent: Subject<Map<string, string>> = new Subject<Map<string, string>>();
 
-
   public donut: AbstractDonut;
-  private donutColorizer: ColorGeneratorImpl;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
+  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef, private colorService: ArlasColorService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
         this.donut.resize(this.el.nativeElement.childNodes[0]);
-      });
+    });
   }
-
-  public ngOnInit() { }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.donut === undefined) {
@@ -100,7 +114,6 @@ export class DonutComponent implements OnInit, OnChanges {
       } else {
         this.donut = new OneSelectionDonut();
       }
-      this.setDonutColorizer();
       this.setDonutParameters();
     }
 
@@ -134,14 +147,8 @@ export class DonutComponent implements OnInit, OnChanges {
     this.donut.donutParams.selectedNodesEvent = this.selectedNodesEvent;
     this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
     this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[0];
-    this.donut.donutParams.donutNodeColorizer = this.donutColorizer;
-  }
-
-  private setDonutColorizer(): void {
-      if (this.keysToColors) {
-        this.donutColorizer = new ColorGeneratorImpl();
-        this.donutColorizer.keysToColors = this.keysToColors;
-        this.donutColorizer.saturationWeight = this.colorsSaturationWeight;
-      }
+    this.donut.donutParams.keysToColors = this.keysToColors;
+    this.donut.donutParams.colorsSaturationWeight = this.colorsSaturationWeight;
+    this.donut.donutParams.donutNodeColorizer = this.colorService;
   }
 }

@@ -1,5 +1,5 @@
 <table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
-  <thead>
+  <thead *ngIf=displayThead>
     <tr class="resultlist__header">
       <ng-container *ngFor="let column of columns">
         <th *ngIf="column.isIdField"
@@ -118,7 +118,7 @@
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
           <tr arlas-result-item class="resultlist__body--item-hover-{{rowItem.ishighLight}}" (mouseenter)="setConsultedItem(rowItem.identifier)" (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)"
-            [rowItem]="rowItem" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
+            [rowItem]="rowItem" [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle" [keysToColors]="keysToColors" [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
             (selectedItemPositionEvent)="setItemsPositionsList($event)" (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle">
           </tr>
           <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item" (mouseenter)="setConsultedItem(rowItem.identifier)"
