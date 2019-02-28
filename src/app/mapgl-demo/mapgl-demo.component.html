@@ -9,6 +9,9 @@
    [displayCurrentCoordinates]=true
    [minZoom] = 10
    [maxZoom] = 28
-   [maxPrecision]="[6,4]">
+   [maxPrecision]="[6,4]"
+   (onPolygonChange)="polygonChange($event)"
+   [drawOption]="drawOptions"
+   [drawData]="drawData">
   </arlas-mapgl>
 </div>

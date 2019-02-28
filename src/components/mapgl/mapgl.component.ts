@@ -33,6 +33,8 @@ import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+
 
 export interface OnMoveResult {
   zoom: number;
@@ -209,6 +211,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
    */
   @Input() public zoomToPrecisionCluster: Array<Array<number>>;
+
+  /**
+   * @Input : Angular
+   * @description Options object for draw tools : https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#options
+   */
+  @Input() public drawOption: any = {};
+
+  /**
+   * @Input : Angular
+   */
+  @Input() public drawData: { type: string, features: Array<any> } = this.emptyData;
+
   /**
    * @Input : Angular
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
@@ -251,6 +265,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
+  /**
+   * @Output : Angular
+   */
+  @Output() public onPolygonChange: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
+
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
@@ -290,6 +309,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
       }
+
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
         const canvas = this.map.getCanvasContainer();
@@ -353,6 +373,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true
     });
 
+
+    const draw = new MapboxDraw(this.drawOption);
+
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
 
@@ -385,6 +408,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
+    this.map.addControl(draw, 'top-right');
 
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
@@ -477,6 +501,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
+
+      this.map.on('draw.create', () => {
+        this.onChangePolygonDraw(draw);
+      });
+      this.map.on('draw.update', () => {
+        this.onChangePolygonDraw(draw);
+      });
+      this.map.on('draw.delete', () => {
+        this.onChangePolygonDraw(draw);
+      });
+
+      draw.set(this.drawData);
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -608,6 +644,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.addLayer(layerId);
       });
     });
+  }
+
+  public onChangePolygonDraw(draw: MapboxDraw) {
+    this.drawData = {
+      'type': 'FeatureCollection',
+      'features': draw.getAll().features
+    };
+    this.onPolygonChange.next(draw.getAll().features);
   }
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {

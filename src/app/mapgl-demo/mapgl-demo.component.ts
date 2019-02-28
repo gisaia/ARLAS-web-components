@@ -94,10 +94,43 @@ export class MapglDemoComponent implements OnInit {
     ]
   };
 
+  public drawOptions = {
+    displayControlsDefault: false,
+    controls: {
+      polygon: true,
+      trash: true
+    }
+  };
+
+  public drawData = {
+    type: 'FeatureCollection',
+    features: [{
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [[
+          [2.1461105346576232, 45.713131758298914],
+          [2.1316909789900365, 45.683877590124666],
+          [2.219581603993589, 45.677641116792245],
+          [2.220954895015012, 45.7073780492569],
+          [2.183189392086689, 45.73134792942284],
+          [2.1461105346576232, 45.713131758298914]
+        ]]
+      },
+      'properties': {
+        'name': 'Dinagat Islands'
+      }
+    }]
+  };
+
   constructor(private http: HttpClient) {
   }
 
   public ngOnInit() {
+  }
+
+  public polygonChange(event) {
+    console.log(event);
   }
 
 }
