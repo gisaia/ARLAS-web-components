@@ -58,6 +58,7 @@ export interface OnMoveResult {
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public map: any;
+  public draw: any;
   private emptyData = {
     'type': 'FeatureCollection',
     'features': []
@@ -374,7 +375,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
 
 
-    const draw = new MapboxDraw(this.drawOption);
+    this.draw = new MapboxDraw(this.drawOption);
 
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
@@ -408,7 +409,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
-    this.map.addControl(draw, 'top-right');
+    this.map.addControl(this.draw, 'top-right');
 
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
@@ -503,16 +504,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.canvas.addEventListener('mousedown', this.mousedown, true);
 
       this.map.on('draw.create', () => {
-        this.onChangePolygonDraw(draw);
+        this.onChangePolygonDraw();
       });
       this.map.on('draw.update', () => {
-        this.onChangePolygonDraw(draw);
+        this.onChangePolygonDraw();
       });
       this.map.on('draw.delete', () => {
-        this.onChangePolygonDraw(draw);
+        this.onChangePolygonDraw();
       });
 
-      draw.set(this.drawData);
+      this.draw.set(this.drawData);
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -646,12 +647,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
-  public onChangePolygonDraw(draw: MapboxDraw) {
+  public onChangePolygonDraw() {
     this.drawData = {
       'type': 'FeatureCollection',
-      'features': draw.getAll().features
+      'features': this.draw.getAll().features
     };
-    this.onPolygonChange.next(draw.getAll().features);
+    this.onPolygonChange.next(this.draw.getAll().features);
   }
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
@@ -660,6 +661,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
   }
 
+  /**
+   * Return the polygon geometry in WKT or GeoJson given thje mode
+   * @param mode : string
+   */
+  public getPolygon(mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = this.latLngToWKT(this.draw.getAll().features);
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': this.draw.getAll().features
+      };
+    }
+    return polygon;
+  }
 
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
@@ -669,6 +686,29 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+
+  private latLngToWKT(features) {
+    let wktType = 'POLYGON[###]';
+    if (features.length > 1) {
+      wktType = 'MULTIPOLYGON([###])';
+    }
+
+    let polygons = '';
+    features.forEach((feat, indexFeature) => {
+      const currentFeat: Array<any> = feat.geometry.coordinates;
+      polygons += (indexFeature === 0 ? '' : ',') + '((';
+      currentFeat[0].forEach((coord, index) => {
+        polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
+      });
+      polygons += '))';
+    });
+
+    let wkt = '';
+    if (polygons !== '') {
+      wkt = wktType.replace('[###]', polygons);
+    }
+    return wkt;
+  }
 
   /**
    * @description Add map sources

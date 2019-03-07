@@ -23,3 +23,9 @@
 a.arlas-map-control{
     background-color: green;
 }
+
+.polygon_button{
+  position: relative;
+  float: left;
+  z-index: 1;
+}

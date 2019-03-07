@@ -1,5 +1,7 @@
+<button class="polygon_button" (click)="getWKT()">WKT</button>
+<button class="polygon_button" (click)="getGeojson()">Geojson</button>
 <div id="mapgldemo" style="height:94%; width:100%">
-  <arlas-mapgl
+  <arlas-mapgl #demoMap
   [style]="'http://demo.arlas.io:82/styles/positron/style.json'"
    [geojsondata]="geojsondata" [margePanForLoad]=40 [margePanForTest]=2
    [zoomToPrecisionCluster]="[]"
@@ -7,7 +9,7 @@
    [mapLayers]="mapLayers"
    [displayScale]=true
    [displayCurrentCoordinates]=true
-   [minZoom] = 10
+   [minZoom] = 1
    [maxZoom] = 28
    [maxPrecision]="[6,4]"
    (onPolygonChange)="polygonChange($event)"
