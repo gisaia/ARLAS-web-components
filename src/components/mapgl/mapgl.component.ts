@@ -280,6 +280,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public currentLat: string;
   public currentLng: string;
 
+  // Polygon
+  private indexId = 0;
+  private customIds = new Map<number, string>();
+
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
@@ -503,7 +507,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
 
-      this.map.on('draw.create', () => {
+      this.map.on('draw.create', (e) => {
+        this.addCustomId(e.features[0].id);
         this.onChangePolygonDraw();
       });
       this.map.on('draw.update', () => {
@@ -513,7 +518,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.onChangePolygonDraw();
       });
 
-      this.draw.set(this.drawData);
+      const drawIds = this.draw.set(this.drawData);
+      drawIds.forEach(id => {
+        this.addCustomId(id);
+      });
+
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -662,10 +671,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
-   * Return the polygon geometry in WKT or GeoJson given thje mode
+   * Return the polygons geometry in WKT or GeoJson given the mode
    * @param mode : string
    */
-  public getPolygon(mode: 'wkt' | 'geojson') {
+  public getAllPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
       polygon = this.latLngToWKT(this.draw.getAll().features);
@@ -673,6 +682,36 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       polygon = {
         'type': 'FeatureCollection',
         'features': this.draw.getAll().features
+      };
+    }
+    return polygon;
+  }
+
+  /**
+   * Return the selected polygon geometry in WKT or GeoJson given the mode
+   * @param mode : string
+   */
+  public getSelectedPolygon(mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = this.latLngToWKT(this.draw.getSelected().features);
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': this.draw.getSelected().features
+      };
+    }
+    return polygon;
+  }
+
+  public getPolygonById(id: number, mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = this.latLngToWKT([this.draw.get(this.customIds.get(id))]);
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': [this.draw.get(this.customIds.get(id))]
       };
     }
     return polygon;
@@ -985,5 +1024,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     } else {
       return this.maxPrecision[1];
     }
+  }
+
+  private getNextFeatureId() {
+    return ++this.indexId;
+  }
+
+  private addCustomId(featureId: string) {
+    const id = this.getNextFeatureId();
+    this.draw.setFeatureProperty(featureId, 'arlas_id', id);
+    this.customIds.set(id, featureId);
   }
 }

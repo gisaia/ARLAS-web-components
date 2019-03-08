@@ -30,6 +30,9 @@ export class MapglDemoComponent {
 
   @ViewChild('demoMap') public mapComponent: MapglComponent;
 
+  public modeChoice = 'all';
+  public idToSelect: number;
+
   public geojsondata = {
     'type': 'FeatureCollection',
     'features': []
@@ -246,17 +249,37 @@ export class MapglDemoComponent {
     }]
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   public polygonChange(event) {
     console.log(event);
   }
 
   public getWKT() {
-    console.log(this.mapComponent.getPolygon('wkt'));
+    switch (this.modeChoice) {
+      case 'all':
+        console.log(this.mapComponent.getAllPolygon('wkt'));
+        break;
+      case 'selected':
+        console.log(this.mapComponent.getSelectedPolygon('wkt'));
+        break;
+      case 'id':
+        console.log(this.mapComponent.getPolygonById(this.idToSelect, 'wkt'));
+        break;
+    }
   }
 
   public getGeojson() {
-    console.log(JSON.stringify(this.mapComponent.getPolygon('geojson')));
+    switch (this.modeChoice) {
+      case 'all':
+        console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
+        break;
+      case 'selected':
+        console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
+        break;
+      case 'id':
+        console.log(JSON.stringify(this.mapComponent.getPolygonById(this.idToSelect, 'geojson')));
+        break;
+    }
   }
 }

@@ -1,5 +1,13 @@
-<button class="polygon_button" (click)="getWKT()">WKT</button>
-<button class="polygon_button" (click)="getGeojson()">Geojson</button>
+<div class="polygon_tools">
+  <button class="polygon_button" (click)="getWKT()">WKT</button>
+  <button class="polygon_button" (click)="getGeojson()">Geojson</button>
+  <mat-radio-group [(ngModel)]="modeChoice">
+    <mat-radio-button value="all">All</mat-radio-button>
+    <mat-radio-button value="selected">Selected</mat-radio-button>
+    <mat-radio-button value="id">By id</mat-radio-button>
+  </mat-radio-group>
+  <input type="number" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
+</div>
 <div id="mapgldemo" style="height:94%; width:100%">
   <arlas-mapgl #demoMap
   [style]="'http://demo.arlas.io:82/styles/positron/style.json'"
@@ -9,8 +17,8 @@
    [mapLayers]="mapLayers"
    [displayScale]=true
    [displayCurrentCoordinates]=true
-   [minZoom] = 1
-   [maxZoom] = 28
+   [minZoom]=1
+   [maxZoom]=28
    [maxPrecision]="[6,4]"
    (onPolygonChange)="polygonChange($event)"
    [drawOption]="drawOptions"

@@ -25,6 +25,9 @@ a.arlas-map-control{
 }
 
 .polygon_button{
+}
+
+.polygon_tools{
   position: relative;
   float: left;
   z-index: 1;
