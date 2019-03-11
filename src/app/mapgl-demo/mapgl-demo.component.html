@@ -1,12 +1,12 @@
-<div class="polygon_tools">
-  <button class="polygon_button" (click)="getWKT()">WKT</button>
-  <button class="polygon_button" (click)="getGeojson()">Geojson</button>
-  <mat-radio-group [(ngModel)]="modeChoice">
-    <mat-radio-button value="all">All</mat-radio-button>
-    <mat-radio-button value="selected">Selected</mat-radio-button>
-    <mat-radio-button value="id">By id</mat-radio-button>
+<div class="polygon-tools">
+  <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
+  <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
+  <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group" (change)="modeChange($event)">
+    <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
+    <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
+    <mat-radio-button class="polygon-radio" value="id">By id</mat-radio-button>
   </mat-radio-group>
-  <input type="number" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
+  <input type="number" class="polygon-input" (keyup)="onKeyUp($event)" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
 </div>
 <div id="mapgldemo" style="height:94%; width:100%">
   <arlas-mapgl #demoMap

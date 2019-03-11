@@ -24,11 +24,26 @@ a.arlas-map-control{
     background-color: green;
 }
 
-.polygon_button{
+.polygon-button{
 }
 
-.polygon_tools{
+.polygon-tools{
   position: relative;
   float: left;
   z-index: 1;
+  background: white;
+  padding: 5px;
+}
+
+.polygon-radio-group{
+  vertical-align: middle;
+}
+
+.polygon-radio{
+  margin-left: 3px;
+}
+
+.polygon-input{
+  vertical-align: middle;
+  margin-left: 5px;
 }
