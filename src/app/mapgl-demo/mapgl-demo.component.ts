@@ -524,27 +524,4 @@ export class MapglDemoComponent {
         break;
     }
   }
-
-  public modeChange(event) {
-    this.actionDisabled = false;
-    switch (event.value) {
-      case 'all':
-        break;
-      case 'selected':
-        break;
-      case 'id':
-        if (this.idToSelect === undefined || this.idToSelect === null) {
-          this.actionDisabled = true;
-        }
-        break;
-    }
-  }
-
-  public onKeyUp(event: KeyboardEvent) {
-    if (this.modeChoice === 'id' && this.idToSelect !== undefined && this.idToSelect !== null ) {
-      this.actionDisabled = false;
-    } else {
-      this.actionDisabled = true;
-    }
-  }
 }

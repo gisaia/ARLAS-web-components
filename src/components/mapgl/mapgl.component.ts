@@ -34,6 +34,7 @@ import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+import LimitVertexMode from './model/LimitVertexMode';
 
 
 export interface OnMoveResult {
@@ -226,6 +227,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * @Input : Angular
+   */
+  @Input() public drawPolygonVerticesLimit: number;
+
+  /**
+   * @Input : Angular
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
    */
   @Input() private maxPrecision: Array<number>;
@@ -281,6 +287,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public currentLng: string;
 
   // Polygon
+  private isDrawingPolygon = false;
+  public nbPolygonVertice = 0;
   private indexId = 0;
   private customIds = new Map<number, string>();
 
@@ -378,8 +386,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true
     });
 
+    const drawOptions = {
+      ...this.drawOption, ...{
+        modes: Object.assign({
+          limit_vertex: LimitVertexMode
+        }, MapboxDraw.modes)
+      }
+    };
 
-    this.draw = new MapboxDraw(this.drawOption);
+    this.draw = new MapboxDraw(drawOptions);
 
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
@@ -518,11 +533,36 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.onChangePolygonDraw();
       });
 
-      const drawIds = this.draw.set(this.drawData);
-      drawIds.forEach(id => {
-        this.addCustomId(id);
+      this.map.on('draw.modechange', (e) => {
+        if (e.mode === 'draw_polygon') {
+          this.isDrawingPolygon = true;
+        }
+        if (e.mode === 'simple_select') {
+          this.isDrawingPolygon = false;
+        }
+        if (e.mode === 'direct_select') {
+          if (this.drawPolygonVerticesLimit) {
+            this.draw.changeMode('limit_vertex', {
+              featureId: this.draw.getSelectedIds()[0],
+              maxVertexByPolygon: this.drawPolygonVerticesLimit,
+              selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
+            });
+          }
+        }
       });
 
+      this.map.on('click', () => {
+        if (this.isDrawingPolygon) {
+          this.nbPolygonVertice++;
+          if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
+            this.draw.changeMode('simple_select');
+            this.isDrawingPolygon = false;
+            this.nbPolygonVertice = 0;
+          }
+        } else {
+          this.nbPolygonVertice = 0;
+        }
+      });
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -657,10 +697,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public onChangePolygonDraw() {
-    this.drawData = {
-      'type': 'FeatureCollection',
-      'features': this.draw.getAll().features
-    };
     this.onPolygonChange.next(this.draw.getAll().features);
   }
 
@@ -725,7 +761,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-
   private latLngToWKT(features) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {
@@ -734,12 +769,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     let polygons = '';
     features.forEach((feat, indexFeature) => {
-      const currentFeat: Array<any> = feat.geometry.coordinates;
-      polygons += (indexFeature === 0 ? '' : ',') + '((';
-      currentFeat[0].forEach((coord, index) => {
-        polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
-      });
-      polygons += '))';
+      if (feat) {
+        const currentFeat: Array<any> = feat.geometry.coordinates;
+        polygons += (indexFeature === 0 ? '' : ',') + '((';
+        currentFeat[0].forEach((coord, index) => {
+          polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
+        });
+        polygons += '))';
+      }
     });
 
     let wkt = '';
@@ -1035,4 +1072,5 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.draw.setFeatureProperty(featureId, 'arlas_id', id);
     this.customIds.set(id, featureId);
   }
+
 }
