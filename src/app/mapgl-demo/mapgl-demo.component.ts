@@ -18,7 +18,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { MapglComponent } from '../../components/mapgl/mapgl.component';
 
 @Component({
@@ -26,7 +26,7 @@ import { MapglComponent } from '../../components/mapgl/mapgl.component';
   templateUrl: './mapgl-demo.component.html',
   styleUrls: ['./mapgl-demo.component.css']
 })
-export class MapglDemoComponent {
+export class MapglDemoComponent implements OnInit{
 
   @ViewChild('demoMap') public mapComponent: MapglComponent;
 
@@ -491,7 +491,13 @@ export class MapglDemoComponent {
     }]
   };
 
-  constructor(private http: HttpClient) { }
+  constructor() {}
+
+  public  ngOnInit(): void {
+    this.mapComponent.onPolygonError.subscribe(error => {
+      console.log(error);
+    });
+  }
 
   public polygonChange(event) {
     console.log(event);

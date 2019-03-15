@@ -277,6 +277,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onPolygonChange: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
 
+  @Output() public onPolygonError: EventEmitter<Object> = new EventEmitter<Object>();
+
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
@@ -531,6 +533,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.map.on('draw.delete', () => {
         this.onChangePolygonDraw();
+      });
+      this.map.on('draw.invalidGeometry', (e) => {
+        this.onPolygonError.next(e);
       });
 
       this.map.on('draw.modechange', (e) => {

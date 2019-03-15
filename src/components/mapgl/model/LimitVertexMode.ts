@@ -2,8 +2,16 @@ import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
 import createSupplementaryPoints from '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points';
 import doubleClickZoom from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
 import Constants from '@mapbox/mapbox-gl-draw/src/constants';
+import * as jsts from 'jsts/dist/jsts';
 
 const LimitVertexMode = MapboxDraw.modes.direct_select;
+
+LimitVertexMode.fireInvalidGeom = function() {
+  this.map.fire('draw.invalidGeometry', {
+    action: 'error',
+    features: this.getSelected().map(f => f.toGeoJSON())
+  });
+};
 
 LimitVertexMode.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
@@ -20,6 +28,34 @@ LimitVertexMode.toDisplayFeatures = function (state, geojson, push) {
   }
   this.fireActionable(state);
 };
+
+LimitVertexMode.onTouchEnd = LimitVertexMode.onMouseUp = function (state) {
+  if (state.dragMoving) {
+    const featureCoords = [...state.feature.coordinates[0]];
+    if (
+      featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
+      featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]
+    ) {
+      const coords = featureCoords;
+      coords.push(featureCoords[0]);
+    }
+
+    const reader = new jsts.io.GeoJSONReader();
+    const g = reader.read({
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Polygon',
+        'coordinates': [featureCoords]
+      }
+    });
+    if (! g.geometry.isValid()) {
+      this.fireInvalidGeom();
+    }
+    this.fireUpdate();
+  }
+  this.stopDragging(state);
+};
+
 
 LimitVertexMode.onSetup = function (opts) {
   const featureId = opts.featureId;
