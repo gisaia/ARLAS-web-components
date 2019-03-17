@@ -1,4 +1,5 @@
 <div class="polygon-tools">
+  <button (click)="switchToDrawMode()">DRAW</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
   <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group" >

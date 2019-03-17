@@ -274,9 +274,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * @Output : Angular
+   * @description Emit the event of updating the draw polygon
    */
   @Output() public onPolygonChange: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
 
+  /**
+   * @Output : Angular
+   * @description Emit the event of invalid geometry creation
+   */
   @Output() public onPolygonError: EventEmitter<Object> = new EventEmitter<Object>();
 
   public showLayersList = false;
@@ -756,6 +761,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
     }
     return polygon;
+  }
+
+  public switchToDrawMode() {
+    this.draw.changeMode('draw_polygon');
   }
 
   @HostListener('document:keydown', ['$event'])

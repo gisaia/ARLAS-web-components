@@ -26,7 +26,7 @@ import { MapglComponent } from '../../components/mapgl/mapgl.component';
   templateUrl: './mapgl-demo.component.html',
   styleUrls: ['./mapgl-demo.component.css']
 })
-export class MapglDemoComponent implements OnInit{
+export class MapglDemoComponent implements OnInit {
 
   @ViewChild('demoMap') public mapComponent: MapglComponent;
 
@@ -491,9 +491,9 @@ export class MapglDemoComponent implements OnInit{
     }]
   };
 
-  constructor() {}
+  constructor() { }
 
-  public  ngOnInit(): void {
+  public ngOnInit(): void {
     this.mapComponent.onPolygonError.subscribe(error => {
       console.log(error);
     });
@@ -529,5 +529,9 @@ export class MapglDemoComponent implements OnInit{
         console.log(JSON.stringify(this.mapComponent.getPolygonById(this.idToSelect, 'geojson')));
         break;
     }
+  }
+
+  public switchToDrawMode() {
+    this.mapComponent.switchToDrawMode();
   }
 }
