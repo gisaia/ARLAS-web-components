@@ -100,6 +100,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() public displayCurrentCoordinates = false;
   /**
+ * @Input : Angular
+ * @description Whether the coordinates should be wraped between -180 and 180.
+ */
+  @Input() public wrapLatLng = true;
+  /**
    * @Input : Angular
    * @description Max width of the scale.
    */
@@ -367,8 +372,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     if (this.displayCurrentCoordinates) {
       this.map.on('mousemove', (e) => {
-        this.currentLat = String(Math.round(e.lngLat.lat * 100000) / 100000);
-        this.currentLng = String(Math.round(e.lngLat.lng * 100000) / 100000);
+        let lngLat = e.lngLat;
+        if (this.wrapLatLng) {
+          lngLat = lngLat.wrap();
+        }
+        this.currentLng = String(Math.round(lngLat.lng * 100000) / 100000);
+        this.currentLat = String(Math.round(lngLat.lat * 100000) / 100000);
       });
     }
     const layerSwitcherButton = new ControlButton('layersswitcher');
