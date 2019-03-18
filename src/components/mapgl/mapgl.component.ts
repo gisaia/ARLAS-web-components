@@ -34,6 +34,7 @@ import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+import * as turf from '@turf/turf';
 import LimitVertexMode from './model/LimitVertexMode';
 
 
@@ -80,6 +81,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private DATA_SOURCE = 'data_source';
   private GEOBOX_SOURCE = 'geobox';
+  private POLYGON_LABEL_SOURCE = 'polygon_label';
 
   /**
    * @Input : Angular
@@ -298,6 +300,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public nbPolygonVertice = 0;
   private indexId = 0;
   private customIds = new Map<number, string>();
+  public polygonlabeldata: { type: string, features: Array<any> } = this.emptyData;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -327,6 +330,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
         if (changes['geoboxdata'] !== undefined) {
           this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
+        }
+      }
+      if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
+        if (changes['polygonlabeldata'] !== undefined) {
+          this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
         }
       }
 
@@ -460,6 +468,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'type': 'geojson',
         'data': this.geojsondata
       });
+      this.map.addSource(this.POLYGON_LABEL_SOURCE, {
+        'type': 'geojson',
+        'data': this.polygonlabeldata
+      });
+
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
@@ -708,6 +721,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public onChangePolygonDraw() {
     this.onPolygonChange.next(this.draw.getAll().features);
+    const centroides = new Array<any>();
+    this.draw.getAll().features.forEach(feature => {
+      const polygon = turf.polygon(feature.geometry.coordinates);
+      const centroid = turf.centroid(polygon);
+      centroid.properties.arlas_id = feature.properties.arlas_id;
+      centroides.push(centroid);
+    });
+    this.polygonlabeldata = {
+      type: 'FeatureCollection',
+      features: centroides
+    };
+    this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
   }
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {

@@ -6,10 +6,10 @@ import * as jsts from 'jsts/dist/jsts';
 
 const LimitVertexMode = MapboxDraw.modes.direct_select;
 
-LimitVertexMode.fireInvalidGeom = function() {
+LimitVertexMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
     action: 'error',
-    features: this.getSelected().map(f => f.toGeoJSON())
+    features: [feature]
   });
 };
 
@@ -39,17 +39,17 @@ LimitVertexMode.onTouchEnd = LimitVertexMode.onMouseUp = function (state) {
       const coords = featureCoords;
       coords.push(featureCoords[0]);
     }
-
-    const reader = new jsts.io.GeoJSONReader();
-    const g = reader.read({
+    const currentFeature = {
       'type': 'Feature',
       'geometry': {
         'type': 'Polygon',
         'coordinates': [featureCoords]
       }
-    });
-    if (! g.geometry.isValid()) {
-      this.fireInvalidGeom();
+    };
+    const reader = new jsts.io.GeoJSONReader();
+    const g = reader.read(currentFeature);
+    if (!g.geometry.isValid()) {
+      this.fireInvalidGeom(currentFeature);
     }
     this.fireUpdate();
   }

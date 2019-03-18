@@ -40,7 +40,21 @@ export class MapglDemoComponent implements OnInit {
   };
 
   public mapLayers = {
-    layers: [],
+    layers: [,
+      {
+        'id': 'polygon_label',
+        'type': 'symbol',
+        'source': 'polygon_label',
+        'layout': {
+          'text-field': '{arlas_id}',
+          'text-font': [
+            'Open Sans Bold'
+          ],
+          'text-size': 14,
+          'visibility': 'visible'
+        },
+        'filter': ['all', ['==', '$type', 'Point']],
+      }],
     events: {
       zoomOnClick: [],
       emitOnClick: [],
@@ -50,7 +64,9 @@ export class MapglDemoComponent implements OnInit {
       {
         id: 'distribution',
         name: 'Distribution',
-        base: [],
+        base: [
+          'polygon_label'
+        ],
         styles: [
           {
             id: 'heat-distrib',
@@ -328,19 +344,6 @@ export class MapglDemoComponent implements OnInit {
           'circle-radius': 5,
           'circle-color': '#404040'
         }
-      },
-      {
-        'id': 'polygon-label',
-        'type': 'symbol',
-        'layout': {
-          'text-field': '{user_arlas_id}',
-          'text-font': [
-            'Open Sans Bold'
-          ],
-          'text-size': 14,
-          'visibility': 'visible'
-        },
-        'filter': ['all', ['==', '$type', 'Polygon'], ['!=', 'mode', 'static']],
       }
     ]
   };
