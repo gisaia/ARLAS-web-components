@@ -332,11 +332,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
       }
-      if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-        if (changes['polygonlabeldata'] !== undefined) {
-          this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
-        }
-      }
 
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
