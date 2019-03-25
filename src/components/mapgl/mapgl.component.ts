@@ -235,6 +235,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @Input : Angular
    */
+  @Input() public drawEnable = false;
+
+  /**
+   * @Input : Angular
+   */
   @Input() public drawPolygonVerticesLimit: number;
 
   /**
@@ -447,7 +452,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
-    this.map.addControl(this.draw, 'top-right');
+    if ( this.drawEnable) {
+      this.map.addControl(this.draw, 'top-right');
+    }
 
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
