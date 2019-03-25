@@ -114,4 +114,14 @@
   bottom:26px;
 }
 
+.lat{
+  float: left;
+  width: 120px;
+}
+
+.lng{
+  float: left;
+  width: 130px;
+}
+
 
