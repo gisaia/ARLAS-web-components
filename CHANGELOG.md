@@ -1,5 +1,17 @@
 # Change Log
 
+## [v9.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.3.0) (2019-03-25)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/9.3.0-beta.0...v9.3.0)
+
+**New stuff:**
+
+- Beta/9.3.x [\#241](https://github.com/gisaia/ARLAS-web-components/pull/241) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
+
+## [9.3.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/9.3.0-beta.0) (2019-03-21)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.1...9.3.0-beta.0)
+
 ## [v9.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.1) (2019-02-06)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0...v9.2.1)
