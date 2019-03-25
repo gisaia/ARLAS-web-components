@@ -43,7 +43,8 @@
     "node": "^8.0.0",
     "rxjs": "~6.3.3",
     "rxjs-compat": "6.3.3",
-    "@turf/turf": "5.1.6",
+    "@turf/centroid": "5.1.5",
+    "@turf/helpers": "5.1.5",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

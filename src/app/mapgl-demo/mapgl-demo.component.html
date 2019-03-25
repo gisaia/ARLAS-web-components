@@ -1,4 +1,4 @@
-<div class="polygon-tools" *ngIf="this.drawEnable">
+<div class="polygon-tools" *ngIf="this.drawEnabled">
   <button (click)="switchToDrawMode()">DRAW</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
@@ -24,7 +24,7 @@
    (onPolygonChange)="polygonChange($event)"
    [drawOption]="drawOptions"
    [drawData]="drawData"
-   [drawEnable]="this.drawEnable"
+   [drawEnabled]="this.drawEnabled"
    [drawPolygonVerticesLimit]="5">
   </arlas-mapgl>
 </div>

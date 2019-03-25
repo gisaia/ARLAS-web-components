@@ -34,7 +34,8 @@ import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
-import * as turf from '@turf/turf';
+import * as helpers from '@turf/helpers';
+import * as centroid from '@turf/centroid';
 import LimitVertexMode from './model/LimitVertexMode';
 
 
@@ -229,16 +230,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * @Input : Angular
+   * @description Features drawn at component start
    */
   @Input() public drawData: { type: string, features: Array<any> } = this.emptyData;
 
   /**
    * @Input : Angular
+   * @description Whether the draw tools are activated
    */
-  @Input() public drawEnable = false;
+  @Input() public drawEnabled = false;
 
   /**
    * @Input : Angular
+   * @description Maximum number of vertices allowed for a polygon
    */
   @Input() public drawPolygonVerticesLimit: number;
 
@@ -452,7 +456,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
-    if ( this.drawEnable) {
+    if ( this.drawEnabled) {
       this.map.addControl(this.draw, 'top-right');
     }
 
@@ -734,10 +738,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.onPolygonChange.next(this.draw.getAll().features);
     const centroides = new Array<any>();
     this.draw.getAll().features.forEach(feature => {
-      const polygon = turf.polygon(feature.geometry.coordinates);
-      const centroid = turf.centroid(polygon);
-      centroid.properties.arlas_id = feature.properties.arlas_id;
-      centroides.push(centroid);
+      const poly = helpers.polygon(feature.geometry.coordinates);
+      const cent = centroid.default(poly);
+      cent.properties.arlas_id = feature.properties.arlas_id;
+      centroides.push(cent);
     });
     this.polygonlabeldata = {
       type: 'FeatureCollection',

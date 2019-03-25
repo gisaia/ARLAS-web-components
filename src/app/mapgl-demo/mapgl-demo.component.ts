@@ -33,7 +33,7 @@ export class MapglDemoComponent implements OnInit {
   public modeChoice = 'all';
   public idToSelect: number;
   public actionDisabled = false;
-  public drawEnable = false;
+  public drawEnabled = false;
 
   public geojsondata = {
     'type': 'FeatureCollection',
