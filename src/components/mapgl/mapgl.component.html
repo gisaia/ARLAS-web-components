@@ -1,7 +1,7 @@
 <div id="mapgl"></div>
 <div class="current-coordinate" *ngIf="displayCurrentCoordinates">
-  <span class="lat"> Lat : {{currentLat}} </span>
-  <span class="lng"> Lng : {{currentLng}} </span>
+  <span class="lat"> Lat : {{currentLat | number:'1.5-5'}} </span>
+  <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
 </div>
 <div *ngIf="showLayersList && displayLayerSwitcher" class="map__layers-list--container">
   <div *ngIf="basemapStyles.length > 1">

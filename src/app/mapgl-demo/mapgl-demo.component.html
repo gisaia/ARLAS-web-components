@@ -1,5 +1,16 @@
+<div class="polygon-tools" *ngIf="this.drawEnabled">
+  <button (click)="switchToDrawMode()">DRAW</button>
+  <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
+  <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
+  <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group" >
+    <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
+    <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
+    <mat-radio-button class="polygon-radio" value="id">By id</mat-radio-button>
+  </mat-radio-group>
+  <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
+</div>
 <div id="mapgldemo" style="height:94%; width:100%">
-  <arlas-mapgl
+  <arlas-mapgl #demoMap
   [style]="'http://demo.arlas.io:82/styles/positron/style.json'"
    [geojsondata]="geojsondata" [margePanForLoad]=40 [margePanForTest]=2
    [zoomToPrecisionCluster]="[]"
@@ -7,8 +18,13 @@
    [mapLayers]="mapLayers"
    [displayScale]=true
    [displayCurrentCoordinates]=true
-   [minZoom] = 10
-   [maxZoom] = 28
-   [maxPrecision]="[6,4]">
+   [minZoom]=1
+   [maxZoom]=28
+   [maxPrecision]="[6,4]"
+   (onPolygonChange)="polygonChange($event)"
+   [drawOption]="drawOptions"
+   [drawData]="drawData"
+   [drawEnabled]="this.drawEnabled"
+   [drawPolygonVerticesLimit]="5">
   </arlas-mapgl>
 </div>

@@ -36,11 +36,15 @@
     "core-js": "^2.5.4",
     "d3-dsv": "^1.0.10",
     "mapbox-gl": "^0.48.0",
+    "@mapbox/mapbox-gl-draw": "1.1.1",
+    "jsts": "2.0.3",
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",
     "node": "^8.0.0",
     "rxjs": "~6.3.3",
     "rxjs-compat": "6.3.3",
+    "@turf/centroid": "6.0.2",
+    "@turf/helpers": "6.1.4",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

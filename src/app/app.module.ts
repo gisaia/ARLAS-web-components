@@ -31,7 +31,7 @@ import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.componen
 
 import {
   MatChipsModule, MatIconModule, MatSidenavModule,
-  MatSlideToggleModule, MatSelectModule, MatTabsModule
+  MatSlideToggleModule, MatSelectModule, MatTabsModule, MatRadioModule
 } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { HistogramModule } from '../components/histogram/histogram.module';
@@ -79,6 +79,7 @@ const routes: Routes = [
     MatSidenavModule,
     MatSelectModule,
     MatTabsModule,
+    MatRadioModule,
     FormsModule,
     MapglModule,
     HistogramModule,

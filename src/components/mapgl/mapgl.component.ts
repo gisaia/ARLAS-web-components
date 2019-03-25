@@ -33,6 +33,11 @@ import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+import * as helpers from '@turf/helpers';
+import * as centroid from '@turf/centroid';
+import LimitVertexMode from './model/LimitVertexMode';
+
 
 export interface OnMoveResult {
   zoom: number;
@@ -56,6 +61,7 @@ export interface OnMoveResult {
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public map: any;
+  public draw: any;
   private emptyData = {
     'type': 'FeatureCollection',
     'features': []
@@ -76,6 +82,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private DATA_SOURCE = 'data_source';
   private GEOBOX_SOURCE = 'geobox';
+  private POLYGON_LABEL_SOURCE = 'polygon_label';
 
   /**
    * @Input : Angular
@@ -99,6 +106,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Whether the coordinates are displayed.
    */
   @Input() public displayCurrentCoordinates = false;
+  /**
+ * @Input : Angular
+ * @description Whether the coordinates should be wraped between -180 and 180.
+ */
+  @Input() public wrapLatLng = true;
   /**
    * @Input : Angular
    * @description Max width of the scale.
@@ -209,6 +221,31 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
    */
   @Input() public zoomToPrecisionCluster: Array<Array<number>>;
+
+  /**
+   * @Input : Angular
+   * @description Options object for draw tools : https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#options
+   */
+  @Input() public drawOption: any = {};
+
+  /**
+   * @Input : Angular
+   * @description Features drawn at component start
+   */
+  @Input() public drawData: { type: string, features: Array<any> } = this.emptyData;
+
+  /**
+   * @Input : Angular
+   * @description Whether the draw tools are activated
+   */
+  @Input() public drawEnabled = false;
+
+  /**
+   * @Input : Angular
+   * @description Maximum number of vertices allowed for a polygon
+   */
+  @Input() public drawPolygonVerticesLimit: number;
+
   /**
    * @Input : Angular
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
@@ -251,6 +288,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
 
+  /**
+   * @Output : Angular
+   * @description Emit the event of updating the draw polygon
+   */
+  @Output() public onPolygonChange: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
+
+  /**
+   * @Output : Angular
+   * @description Emit the event of invalid geometry creation
+   */
+  @Output() public onPolygonError: EventEmitter<Object> = new EventEmitter<Object>();
+
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
@@ -259,6 +308,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public currentLat: string;
   public currentLng: string;
+
+  // Polygon
+  private isDrawingPolygon = false;
+  public nbPolygonVertice = 0;
+  private indexId = 0;
+  private customIds = new Map<number, string>();
+  public polygonlabeldata: { type: string, features: Array<any> } = this.emptyData;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -290,6 +346,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
       }
+
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
         const canvas = this.map.getCanvasContainer();
@@ -353,6 +410,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true
     });
 
+    const drawOptions = {
+      ...this.drawOption, ...{
+        modes: Object.assign({
+          limit_vertex: LimitVertexMode
+        }, MapboxDraw.modes)
+      }
+    };
+
+    this.draw = new MapboxDraw(drawOptions);
+
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
 
@@ -367,8 +434,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     if (this.displayCurrentCoordinates) {
       this.map.on('mousemove', (e) => {
-        this.currentLat = String(Math.round(e.lngLat.lat * 100000) / 100000);
-        this.currentLng = String(Math.round(e.lngLat.lng * 100000) / 100000);
+        let lngLat = e.lngLat;
+        if (this.wrapLatLng) {
+          lngLat = lngLat.wrap();
+        }
+        this.currentLng = String(Math.round(lngLat.lng * 100000) / 100000);
+        this.currentLat = String(Math.round(lngLat.lat * 100000) / 100000);
       });
     }
     const layerSwitcherButton = new ControlButton('layersswitcher');
@@ -385,6 +456,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
+    if ( this.drawEnabled) {
+      this.map.addControl(this.draw, 'top-right');
+    }
 
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
@@ -409,6 +483,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'type': 'geojson',
         'data': this.geojsondata
       });
+      this.map.addSource(this.POLYGON_LABEL_SOURCE, {
+        'type': 'geojson',
+        'data': this.polygonlabeldata
+      });
+
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
@@ -477,6 +556,51 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
+
+      this.map.on('draw.create', (e) => {
+        this.addCustomId(e.features[0].id);
+        this.onChangePolygonDraw();
+      });
+      this.map.on('draw.update', () => {
+        this.onChangePolygonDraw();
+      });
+      this.map.on('draw.delete', () => {
+        this.onChangePolygonDraw();
+      });
+      this.map.on('draw.invalidGeometry', (e) => {
+        this.onPolygonError.next(e);
+      });
+
+      this.map.on('draw.modechange', (e) => {
+        if (e.mode === 'draw_polygon') {
+          this.isDrawingPolygon = true;
+        }
+        if (e.mode === 'simple_select') {
+          this.isDrawingPolygon = false;
+        }
+        if (e.mode === 'direct_select') {
+          if (this.drawPolygonVerticesLimit) {
+            this.draw.changeMode('limit_vertex', {
+              featureId: this.draw.getSelectedIds()[0],
+              maxVertexByPolygon: this.drawPolygonVerticesLimit,
+              selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
+            });
+          }
+        }
+      });
+
+      this.map.on('click', () => {
+        if (this.isDrawingPolygon) {
+          this.nbPolygonVertice++;
+          if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
+            this.draw.changeMode('simple_select');
+            this.isDrawingPolygon = false;
+            this.nbPolygonVertice = 0;
+          }
+        } else {
+          this.nbPolygonVertice = 0;
+        }
+      });
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -610,12 +734,78 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
+  public onChangePolygonDraw() {
+    this.onPolygonChange.next(this.draw.getAll().features);
+    const centroides = new Array<any>();
+    this.draw.getAll().features.forEach(feature => {
+      const poly = helpers.polygon(feature.geometry.coordinates);
+      const cent = centroid.default(poly);
+      cent.properties.arlas_id = feature.properties.arlas_id;
+      centroides.push(cent);
+    });
+    this.polygonlabeldata = {
+      type: 'FeatureCollection',
+      features: centroides
+    };
+    this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
+  }
+
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
     this.setBaseMapStyle(selectedStyle.styleFile);
     localStorage.setItem('arlas_last_base_map', JSON.stringify(selectedStyle));
     this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
   }
 
+  /**
+   * Return the polygons geometry in WKT or GeoJson given the mode
+   * @param mode : string
+   */
+  public getAllPolygon(mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = this.latLngToWKT(this.draw.getAll().features);
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': this.draw.getAll().features
+      };
+    }
+    return polygon;
+  }
+
+  /**
+   * Return the selected polygon geometry in WKT or GeoJson given the mode
+   * @param mode : string
+   */
+  public getSelectedPolygon(mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = this.latLngToWKT(this.draw.getSelected().features);
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': this.draw.getSelected().features
+      };
+    }
+    return polygon;
+  }
+
+  public getPolygonById(id: number, mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = this.latLngToWKT([this.draw.get(this.customIds.get(id))]);
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': [this.draw.get(this.customIds.get(id))]
+      };
+    }
+    return polygon;
+  }
+
+  public switchToDrawMode() {
+    this.draw.changeMode('draw_polygon');
+  }
 
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
@@ -625,6 +815,30 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  private latLngToWKT(features) {
+    let wktType = 'POLYGON[###]';
+    if (features.length > 1) {
+      wktType = 'MULTIPOLYGON([###])';
+    }
+
+    let polygons = '';
+    features.forEach((feat, indexFeature) => {
+      if (feat) {
+        const currentFeat: Array<any> = feat.geometry.coordinates;
+        polygons += (indexFeature === 0 ? '' : ',') + '((';
+        currentFeat[0].forEach((coord, index) => {
+          polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
+        });
+        polygons += '))';
+      }
+    });
+
+    let wkt = '';
+    if (polygons !== '') {
+      wkt = wktType.replace('[###]', polygons);
+    }
+    return wkt;
+  }
 
   /**
    * @description Add map sources
@@ -902,4 +1116,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       return this.maxPrecision[1];
     }
   }
+
+  private getNextFeatureId() {
+    return ++this.indexId;
+  }
+
+  private addCustomId(featureId: string) {
+    const id = this.getNextFeatureId();
+    this.draw.setFeatureProperty(featureId, 'arlas_id', id);
+    this.customIds.set(id, featureId);
+  }
+
 }
