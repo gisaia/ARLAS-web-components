@@ -602,7 +602,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.nbPolygonVertice = 0;
         }
       });
-      this.cleanStyleGroupsLocalStorage(this.mapLayers.styleGroups);
+      this.cleanLocalStorage(this.mapLayers.styleGroups);
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -900,9 +900,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private getAllBasemapStyles(): Array<BasemapStyle> {
     const allBasemapStyles = new Array<BasemapStyle>();
-    this.basemapStyles.forEach(b => allBasemapStyles.push(b));
-    /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
-    if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
+    if (this.basemapStyles) {
+      this.basemapStyles.forEach(b => allBasemapStyles.push(b));
+      /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
+      if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
+        allBasemapStyles.push(this.defaultBasemapStyle);
+      }
+    } else {
       allBasemapStyles.push(this.defaultBasemapStyle);
     }
     return allBasemapStyles;
@@ -914,9 +918,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private getAfterViewInitBasemapStyle(): BasemapStyle {
     if (!this.defaultBasemapStyle) {
       throw new Error('[defaultBasemapStyle] input is null or undefined.');
-    }
-    if (!this.basemapStyles) {
-      throw new Error('[basemapStyles] input is null or undefined.');
     }
     const allBasemapStyles = this.getAllBasemapStyles();
     const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
@@ -1158,7 +1159,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * Removes from localStorage the style groups that are not in the given `styleGroups` list anymore
    * @param styleGroups list of style groups
    */
-  private cleanStyleGroupsLocalStorage(styleGroups: Array<StyleGroup>): void {
+  private cleanLocalStorage(styleGroups: Array<StyleGroup>): void {
     const itemsToRemove = Object.keys(localStorage).filter(key => key.startsWith(this.LOCAL_STORAGE_STYLE_GROUP))
         .map(key => key.substring(this.LOCAL_STORAGE_STYLE_GROUP.length))
         .filter(sgId => !styleGroups.find(sg => sg.id === sgId));
