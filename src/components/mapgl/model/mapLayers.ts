@@ -28,9 +28,16 @@ export interface BasemapStylesGroup {
 }
 
 export interface MapLayers {
-  layers: Array<mapboxgl.Layer>;
+  layers: Array<Layer>;
   styleGroups: Array<StyleGroup>;
   events: LayerEvents;
+}
+
+export class Layer implements mapboxgl.Layer {
+  public id: string;
+  public 'show-on': ExternalEvent;
+
+  constructor() {}
 }
 
 export interface StyleGroup {
@@ -63,5 +70,10 @@ export enum geomStrategyEnum {
   last,
   byDefault,
   geohash
+}
+
+export enum ExternalEvent {
+  select = 'select',
+  hover = 'hover'
 }
 
