@@ -261,18 +261,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   /**
    * @Output : Angular
-   * @description Emits the new Style.
+   * @description Emits the new chosen Style that has the attribute `geomStrategy` set.
    * @deprecated
   */
   @Output() public switchLayer: Subject<Style> = new Subject<Style>();
 
   /**
    * @Output : Angular
-   * @description Emits all the StyleGroups of the map on style change.
+   * @description Emits all the StyleGroups of the map on style change. Each StyleGroup has its selected Style set.
   */
- @Output() public onStyleChanged : Subject<Array<StyleGroup>> = new Subject<Array<StyleGroup>>();
+ @Output() public onStyleChanged: Subject<Array<StyleGroup>> = new Subject<Array<StyleGroup>>();
 
- /**
+  /**
+   * @Output : Angular
+   * @description Emits true after the map is loaded and all sources & layers are added.
+  */
+ @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
+
+  /**
    * @Output : Angular
    * @description Emits the event of removing the geobox.
    */
@@ -610,6 +616,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
       });
       this.cleanLocalStorage(this.mapLayers.styleGroups);
+      this.onMapLoaded.next(true);
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
