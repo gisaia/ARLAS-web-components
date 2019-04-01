@@ -260,11 +260,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   /**
- * @Output : Angular
- * @description Emits the new Style.
- */
+   * @Output : Angular
+   * @description Emits the new Style.
+   * @deprecated
+  */
   @Output() public switchLayer: Subject<Style> = new Subject<Style>();
+
   /**
+   * @Output : Angular
+   * @description Emits all the StyleGroups of the map on style change.
+  */
+ @Output() public onStyleChanged : Subject<Array<StyleGroup>> = new Subject<Array<StyleGroup>>();
+
+ /**
    * @Output : Angular
    * @description Emits the event of removing the geobox.
    */
@@ -304,7 +312,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
-  private STYLE_LAYER_ERROR = 'The layers ids of your style were not met in the declared layers list.';
   private layersMap = new Map<string, mapboxgl.Layer>();
   public basemapStylesGroup: BasemapStylesGroup;
 
@@ -721,20 +728,26 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.isDrawingBbox = false;
   }
 
-  public onChangeStyle(styleGroupId: string, selectedStyle: Style) {
-    this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
-      styleGroup.selectedStyle = selectedStyle;
-    });
-    this.removeAllLayers();
-    if (selectedStyle.geomStrategy !== undefined) {
-      this.switchLayer.next(selectedStyle);
+  public onChangeStyle(styleGroupId: string, selectedStyleId: string) {
+    if (this.mapLayers && this.mapLayers.styleGroups) {
+      const selectedStyle: Style = this.getStyle(styleGroupId, selectedStyleId, this.mapLayers.styleGroups);
+      if (selectedStyle) {
+        this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
+          styleGroup.selectedStyle = selectedStyle;
+        });
+        this.removeAllLayers();
+        if (selectedStyle.geomStrategy !== undefined) {
+          this.switchLayer.next(selectedStyle);
+        }
+        this.mapLayers.styleGroups.forEach(styleGroup => {
+          localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
+          styleGroup.selectedStyle.layerIds.forEach(layerId => {
+            this.addLayer(layerId);
+          });
+        });
+        this.onStyleChanged.next(this.mapLayers.styleGroups);
+      }
     }
-    this.mapLayers.styleGroups.forEach(styleGroup => {
-      localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
-      styleGroup.selectedStyle.layerIds.forEach(layerId => {
-        this.addLayer(layerId);
-      });
-    });
   }
 
   public onChangePolygonDraw() {
