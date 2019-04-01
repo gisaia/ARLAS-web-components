@@ -31,7 +31,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle } from './mapgl.component.control';
 import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, Style, BasemapStyle, BasemapStylesGroup } from './model/mapLayers';
+import { MapLayers, Style, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -959,37 +959,41 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
-  private highlightFeature(featureToHightLight: {
-    isleaving: boolean,
-    elementidentifier: ElementIdentifier
-  }) {
-    if (this.map.getLayer('features-fill-hover') !== undefined) {
-      this.map.setLayoutProperty('features-fill-hover', 'visibility', 'visible');
-      if (!featureToHightLight.isleaving) {
-        this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
-          featureToHightLight.elementidentifier.idFieldName,
-          featureToHightLight.elementidentifier.idValue]]
-        );
-      } else {
-        this.map.setFilter('features-fill-hover', ['all', ['!=', '$type', 'Point'], ['==',
-          featureToHightLight.elementidentifier.idFieldName,
-          ' ']]);
-      }
+  private highlightFeature(featureToHightLight: {isleaving: boolean,  elementidentifier: ElementIdentifier}) {
+    if (featureToHightLight && featureToHightLight.elementidentifier) {
+      const visibilityFilter = ['==', featureToHightLight.elementidentifier.idFieldName, featureToHightLight.elementidentifier.idValue];
+      this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
     }
   }
 
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    if (this.map.getLayer('features-line-select') !== undefined) {
-      if (elementToSelect.length > 0) {
-        this.map.setLayoutProperty('features-line-select', 'visibility', 'visible');
-        const filter = elementToSelect.reduce(function (memo, element) {
-          memo.push(element.idValue);
-          return memo;
-        }, ['in', elementToSelect[0].idFieldName]);
-        this.map.setFilter('features-line-select', filter);
-      } else {
-        this.map.setLayoutProperty('features-line-select', 'visibility', 'none');
-      }
+    if (elementToSelect) {
+      const visibilityFilter = elementToSelect.length > 0 ?
+        elementToSelect.reduce((memo, element) => { memo.push(element.idValue); return memo; }
+        , ['in', elementToSelect[0].idFieldName]) : [];
+      this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
+    }
+  }
+
+  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent): void {
+    if (this.mapLayers && this.mapLayers.layers) {
+      this.mapLayers.layers.filter(layer => layer['show-on'] === visibilityEvent).forEach(layer => {
+        if (this.map.getLayer(layer.id) !== undefined) {
+          const layerFilter: Array<any> = ['all'];
+          if ((<mapboxgl.Layer>layer).filter) {
+            Object.assign(layerFilter, (<mapboxgl.Layer>layer).filter);
+          }
+          if (visibilityCondition) {
+            const condition = visibilityFilter;
+            layerFilter.push(condition);
+            this.map.setFilter(layer.id, layerFilter);
+            this.map.setLayoutProperty(layer.id, 'visibility', 'visible');
+          } else {
+            this.map.setFilter(layer.id, (<mapboxgl.Layer>layer).filter);
+            this.map.setLayoutProperty(layer.id, 'visibility', 'none');
+          }
+        }
+      });
     }
   }
 
