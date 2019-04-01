@@ -31,7 +31,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle } from './mapgl.component.control';
 import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, Style, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
+import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -83,6 +83,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private DATA_SOURCE = 'data_source';
   private GEOBOX_SOURCE = 'geobox';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
+  private LOCAL_STORAGE_STYLE_GROUP = 'ARLAS_SG-';
+  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
   /**
    * @Input : Angular
@@ -537,7 +539,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           });
         });
       }
-
       this.map.showTileBoundaries = false;
       this.map.on('mousemove', this.DATA_SOURCE, (e) => {
         if (this.isDrawingBbox) {
@@ -601,6 +602,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.nbPolygonVertice = 0;
         }
       });
+      this.cleanLocalStorage(this.mapLayers.styleGroups);
     });
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
@@ -728,6 +730,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.switchLayer.next(selectedStyle);
     }
     this.mapLayers.styleGroups.forEach(styleGroup => {
+      localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
       styleGroup.selectedStyle.layerIds.forEach(layerId => {
         this.addLayer(layerId);
       });
@@ -752,7 +755,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
     this.setBaseMapStyle(selectedStyle.styleFile);
-    localStorage.setItem('arlas_last_base_map', JSON.stringify(selectedStyle));
+    localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(selectedStyle));
     this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
   }
 
@@ -844,8 +847,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Add map sources
    */
   private addSourcesToMap(sources: Array<MapSource>, map: any) {
-
-
     // Add sources defined as input in mapSources;
     const mapSourcesMap = new Map<string, MapSource>();
     if (sources) {
@@ -877,9 +878,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private addStylesLayers() {
     this.mapLayers.styleGroups.forEach(styleGroup => {
       let style;
+      const localStorageSelectedStyleId = localStorage.getItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id);
+      if (localStorageSelectedStyleId) {
+        styleGroup.selectedStyle = this.getStyle(styleGroup.id, localStorageSelectedStyleId, this.mapLayers.styleGroups);
+      }
       if (!styleGroup.selectedStyle) {
         style = getDefaultStyle(styleGroup.styles);
         styleGroup.selectedStyle = style;
+        localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, style.id);
       } else {
         style = styleGroup.selectedStyle;
       }
@@ -894,9 +900,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private getAllBasemapStyles(): Array<BasemapStyle> {
     const allBasemapStyles = new Array<BasemapStyle>();
-    this.basemapStyles.forEach(b => allBasemapStyles.push(b));
-    /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
-    if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
+    if (this.basemapStyles) {
+      this.basemapStyles.forEach(b => allBasemapStyles.push(b));
+      /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
+      if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
+        allBasemapStyles.push(this.defaultBasemapStyle);
+      }
+    } else {
       allBasemapStyles.push(this.defaultBasemapStyle);
     }
     return allBasemapStyles;
@@ -907,19 +917,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   private getAfterViewInitBasemapStyle(): BasemapStyle {
     if (!this.defaultBasemapStyle) {
-      throw new Error('[defaultBasemapStyle] input is invalid.');
-    }
-    if (!this.basemapStyles) {
-      throw new Error('[basemapStyles] input is null or undefined.');
+      throw new Error('[defaultBasemapStyle] input is null or undefined.');
     }
     const allBasemapStyles = this.getAllBasemapStyles();
-    const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem('arlas_last_base_map'));
+    const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
     /** check if a basemap style is saved in local storage and that it exists in [allBasemapStyles] list */
     if (localStorageBasemapStyle && allBasemapStyles.filter(b => b.name === localStorageBasemapStyle.name
       && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
       return localStorageBasemapStyle;
     } else {
-      localStorage.setItem('arlas_last_base_map', JSON.stringify(this.defaultBasemapStyle));
+      localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(this.defaultBasemapStyle));
       return this.defaultBasemapStyle;
     }
   }
@@ -1131,4 +1138,33 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.customIds.set(id, featureId);
   }
 
+  /**
+   * Gets Style by `styleId` and `styleGroupId` from the given `styleGroups` list
+   * @param styleGroupId Id of the StyleGroup that contains the Style
+   * @param styleId Id of the Style
+   * @param styleGroups List of StyleGroups containing the style
+   */
+  private getStyle(styleGroupId: string, styleId: string, styleGroups: Array<StyleGroup>): Style {
+    let style;
+    if (styleGroups) {
+      const styleGroup: StyleGroup = styleGroups.find(sg => sg.id === styleGroupId);
+      if (styleGroup && styleGroup.styles) {
+        style = styleGroup.styles.find(s => s.id === styleId);
+      }
+    }
+    return style;
+  }
+
+  /**
+   * Removes from localStorage the style groups that are not in the given `styleGroups` list anymore
+   * @param styleGroups list of style groups
+   */
+  private cleanLocalStorage(styleGroups: Array<StyleGroup>): void {
+    const itemsToRemove = Object.keys(localStorage).filter(key => key.startsWith(this.LOCAL_STORAGE_STYLE_GROUP))
+        .map(key => key.substring(this.LOCAL_STORAGE_STYLE_GROUP.length))
+        .filter(sgId => !styleGroups.find(sg => sg.id === sgId));
+    itemsToRemove.forEach(sgId => {
+      localStorage.removeItem(this.LOCAL_STORAGE_STYLE_GROUP + sgId);
+    });
+  }
 }
