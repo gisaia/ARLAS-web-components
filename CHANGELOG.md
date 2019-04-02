@@ -1,5 +1,14 @@
 # Change Log
 
+## [v10.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.0) (2019-04-02)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.3.0...v10.0.0)
+
+**New stuff:**
+
+- Allow layers of type 'point' to be highlighted [\#187](https://github.com/gisaia/ARLAS-web-components/issues/187) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- save chosen styles in localStoreage [\#243](https://github.com/gisaia/ARLAS-web-components/pull/243) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
 ## [v9.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.3.0) (2019-03-25)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/9.3.0-beta.0...v9.3.0)
