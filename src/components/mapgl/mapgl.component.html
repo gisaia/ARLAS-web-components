@@ -4,7 +4,7 @@
   <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
 </div>
 <div *ngIf="showLayersList && displayLayerSwitcher" class="map__layers-list--container">
-  <div *ngIf="basemapStyles.length > 1">
+  <div *ngIf="basemapStyles && basemapStyles.length > 1">
     <span class="map__layers-stylegroup-name">{{'Basemaps' | translate}}</span>
     <mat-radio-group class="map__layers-radio-group" [value]="basemapStylesGroup.selectedBasemapStyle">
       <mat-radio-button class="map__layers-radio-button" [checked]="style.name == basemapStylesGroup.selectedBasemapStyle.name" (change)="onChangeBasemapStyle(style)" *ngFor="let style of basemapStyles" [value]="style">
@@ -15,7 +15,7 @@
   <div *ngFor="let styleGroup of mapLayers.styleGroups">
     <span *ngIf="styleGroup.styles.length > 1" class="map__layers-stylegroup-name">{{ styleGroup.name }}</span>
     <mat-radio-group *ngIf="styleGroup.styles.length > 1" class="map__layers-radio-group" [value]="styleGroup.selectedStyle">
-      <mat-radio-button class="map__layers-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id" (change)="onChangeStyle(styleGroup.id, style)" *ngFor="let style of styleGroup.styles" [value]="style">
+      <mat-radio-button class="map__layers-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id" (change)="onChangeStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
         {{style.name}}
       </mat-radio-button>
     </mat-radio-group>
