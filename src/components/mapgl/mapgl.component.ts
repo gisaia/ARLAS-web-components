@@ -270,13 +270,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Output : Angular
    * @description Emits all the StyleGroups of the map on style change. Each StyleGroup has its selected Style set.
   */
- @Output() public onStyleChanged: Subject<Array<StyleGroup>> = new Subject<Array<StyleGroup>>();
+  @Output() public onStyleChanged: Subject<Array<StyleGroup>> = new Subject<Array<StyleGroup>>();
 
   /**
    * @Output : Angular
    * @description Emits true after the map is loaded and all sources & layers are added.
   */
- @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
+  @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
 
   /**
    * @Output : Angular
@@ -330,6 +330,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private indexId = 0;
   private customIds = new Map<number, string>();
   public polygonlabeldata: { type: string, features: Array<any> } = this.emptyData;
+
+  public firstDrawLayer = '';
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -425,15 +427,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true
     });
 
-    const drawOptions = {
-      ...this.drawOption, ...{
-        modes: Object.assign({
-          limit_vertex: LimitVertexMode
-        }, MapboxDraw.modes)
-      }
-    };
 
-    this.draw = new MapboxDraw(drawOptions);
 
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
@@ -471,7 +465,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeBoxButton, 'top-right');
-    if ( this.drawEnabled) {
+    if (this.drawEnabled) {
+      const drawOptions = {
+        ...this.drawOption, ...{
+          modes: Object.assign({
+            limit_vertex: LimitVertexMode
+          }, MapboxDraw.modes)
+        }
+      };
+      this.draw = new MapboxDraw(drawOptions);
       this.map.addControl(this.draw, 'top-right');
     }
 
@@ -483,6 +485,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
+      if (this.drawEnabled) {
+        this.firstDrawLayer = this.map.getStyle().layers
+        .map(layer => layer.id)
+        .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
+      }
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
       this.east = this.map.getBounds().getEast();
@@ -570,51 +577,52 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
+      if (this.drawEnabled) {
+        this.map.on('draw.create', (e) => {
+          this.addCustomId(e.features[0].id);
+          this.onChangePolygonDraw();
+        });
+        this.map.on('draw.update', () => {
+          this.onChangePolygonDraw();
+        });
+        this.map.on('draw.delete', () => {
+          this.onChangePolygonDraw();
+        });
+        this.map.on('draw.invalidGeometry', (e) => {
+          this.onPolygonError.next(e);
+        });
 
-      this.map.on('draw.create', (e) => {
-        this.addCustomId(e.features[0].id);
-        this.onChangePolygonDraw();
-      });
-      this.map.on('draw.update', () => {
-        this.onChangePolygonDraw();
-      });
-      this.map.on('draw.delete', () => {
-        this.onChangePolygonDraw();
-      });
-      this.map.on('draw.invalidGeometry', (e) => {
-        this.onPolygonError.next(e);
-      });
-
-      this.map.on('draw.modechange', (e) => {
-        if (e.mode === 'draw_polygon') {
-          this.isDrawingPolygon = true;
-        }
-        if (e.mode === 'simple_select') {
-          this.isDrawingPolygon = false;
-        }
-        if (e.mode === 'direct_select') {
-          if (this.drawPolygonVerticesLimit) {
-            this.draw.changeMode('limit_vertex', {
-              featureId: this.draw.getSelectedIds()[0],
-              maxVertexByPolygon: this.drawPolygonVerticesLimit,
-              selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
-            });
+        this.map.on('draw.modechange', (e) => {
+          if (e.mode === 'draw_polygon') {
+            this.isDrawingPolygon = true;
           }
-        }
-      });
-
-      this.map.on('click', () => {
-        if (this.isDrawingPolygon) {
-          this.nbPolygonVertice++;
-          if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
-            this.draw.changeMode('simple_select');
+          if (e.mode === 'simple_select') {
             this.isDrawingPolygon = false;
+          }
+          if (e.mode === 'direct_select') {
+            if (this.drawPolygonVerticesLimit) {
+              this.draw.changeMode('limit_vertex', {
+                featureId: this.draw.getSelectedIds()[0],
+                maxVertexByPolygon: this.drawPolygonVerticesLimit,
+                selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
+              });
+            }
+          }
+        });
+
+        this.map.on('click', () => {
+          if (this.isDrawingPolygon) {
+            this.nbPolygonVertice++;
+            if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
+              this.draw.changeMode('simple_select');
+              this.isDrawingPolygon = false;
+              this.nbPolygonVertice = 0;
+            }
+          } else {
             this.nbPolygonVertice = 0;
           }
-        } else {
-          this.nbPolygonVertice = 0;
-        }
-      });
+        });
+      }
       this.cleanLocalStorage(this.mapLayers.styleGroups);
       this.onMapLoaded.next(true);
     });
@@ -968,7 +976,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private addLayer(layerId: string): void {
     const layer = this.layersMap.get(layerId);
     if (layer !== undefined && layer.id === layerId) {
-      this.map.addLayer(layer);
+      if (this.firstDrawLayer.length > 0) {
+        // draw layers must be on the top of the layers
+        this.map.addLayer(layer, this.firstDrawLayer);
+      } else {
+        this.map.addLayer(layer);
+      }
     } else {
       throw new Error(this.BASE_LAYER_ERROR);
     }
@@ -986,7 +999,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
-  private highlightFeature(featureToHightLight: {isleaving: boolean,  elementidentifier: ElementIdentifier}) {
+  private highlightFeature(featureToHightLight: { isleaving: boolean, elementidentifier: ElementIdentifier }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
       const visibilityFilter = ['==', featureToHightLight.elementidentifier.idFieldName, featureToHightLight.elementidentifier.idValue];
       this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
@@ -997,7 +1010,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     if (elementToSelect) {
       const visibilityFilter = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => { memo.push(element.idValue); return memo; }
-        , ['in', elementToSelect[0].idFieldName]) : [];
+          , ['in', elementToSelect[0].idFieldName]) : [];
       this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }
@@ -1181,8 +1194,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   private cleanLocalStorage(styleGroups: Array<StyleGroup>): void {
     const itemsToRemove = Object.keys(localStorage).filter(key => key.startsWith(this.LOCAL_STORAGE_STYLE_GROUP))
-        .map(key => key.substring(this.LOCAL_STORAGE_STYLE_GROUP.length))
-        .filter(sgId => !styleGroups.find(sg => sg.id === sgId));
+      .map(key => key.substring(this.LOCAL_STORAGE_STYLE_GROUP.length))
+      .filter(sgId => !styleGroups.find(sg => sg.id === sgId));
     itemsToRemove.forEach(sgId => {
       localStorage.removeItem(this.LOCAL_STORAGE_STYLE_GROUP + sgId);
     });
