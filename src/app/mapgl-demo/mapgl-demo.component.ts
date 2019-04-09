@@ -33,7 +33,7 @@ export class MapglDemoComponent implements OnInit {
   public modeChoice = 'all';
   public idToSelect: number;
   public actionDisabled = false;
-  public drawEnabled = false;
+  public drawEnabled = true;
 
   public geojsondata = {
     'type': 'FeatureCollection',
@@ -537,5 +537,13 @@ export class MapglDemoComponent implements OnInit {
 
   public switchToDrawMode() {
     this.mapComponent.switchToDrawMode();
+  }
+
+  public delete() {
+    this.mapComponent.deleteSelectedItem();
+  }
+
+  public polygonSelect(event) {
+    console.log(event);
   }
 }

@@ -316,6 +316,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onPolygonError: EventEmitter<Object> = new EventEmitter<Object>();
 
+  /**
+   * @Output : Angular
+   * @description Emit the event of selecting polygon
+   */
+  @Output() public onPolygonSelect: EventEmitter<any> = new EventEmitter<any>();
+
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private layersMap = new Map<string, mapboxgl.Layer>();
@@ -487,8 +493,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.on('load', () => {
       if (this.drawEnabled) {
         this.firstDrawLayer = this.map.getStyle().layers
-        .map(layer => layer.id)
-        .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
+          .map(layer => layer.id)
+          .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
       }
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
@@ -592,7 +598,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.onPolygonError.next(e);
         });
 
+        this.map.on('draw.selectionchange', (e) => {
+          if (e.features.length > 0) {
+            this.onPolygonSelect.emit(JSON.stringify({ edition: true }));
+          } else {
+            this.onPolygonSelect.emit(JSON.stringify({ edition: false }));
+          }
+        });
         this.map.on('draw.modechange', (e) => {
+
           if (e.mode === 'draw_polygon') {
             this.isDrawingPolygon = true;
           }
@@ -836,6 +850,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public switchToDrawMode() {
     this.draw.changeMode('draw_polygon');
+  }
+
+  public deleteSelectedItem() {
+    this.draw.trash();
   }
 
   @HostListener('document:keydown', ['$event'])
