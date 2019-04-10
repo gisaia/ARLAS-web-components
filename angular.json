@@ -23,7 +23,7 @@
             "styles": [
               "src/styles.css",
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
-              "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css"
+              "node_modules/@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw.css"
             ],
             "scripts": [
               "node_modules/mapbox-gl/dist/mapbox-gl.js"
@@ -79,7 +79,7 @@
             "styles": [
               "src/styles.css",
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
-              "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css"
+              "node_modules/@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw.css"
             ],
             "assets": [
               "src/assets",

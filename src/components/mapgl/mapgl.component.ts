@@ -33,7 +33,7 @@ import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
-import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw-unminified';
+import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
 import LimitVertexMode from './model/LimitVertexMode';
@@ -601,9 +601,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.map.on('draw.selectionchange', (e) => {
           if (e.features.length > 0) {
-            this.onPolygonSelect.emit(JSON.stringify({ edition: true }));
+            this.onPolygonSelect.emit({ edition: true });
           } else {
-            this.onPolygonSelect.emit(JSON.stringify({ edition: false }));
+            this.onPolygonSelect.emit({ edition: false });
           }
         });
         this.map.on('draw.modechange', (e) => {
