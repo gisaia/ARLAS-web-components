@@ -33,7 +33,7 @@ import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
-import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw-unminified';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
 import LimitVertexMode from './model/LimitVertexMode';
@@ -491,10 +491,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
+
       if (this.drawEnabled) {
-        this.firstDrawLayer = this.map.getStyle().layers
-          .map(layer => layer.id)
-          .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
+          this.firstDrawLayer = this.map.getStyle().layers
+            .map(layer => layer.id)
+            .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
       }
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
@@ -606,7 +607,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           }
         });
         this.map.on('draw.modechange', (e) => {
-
           if (e.mode === 'draw_polygon') {
             this.isDrawingPolygon = true;
           }

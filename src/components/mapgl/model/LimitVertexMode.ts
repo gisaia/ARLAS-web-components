@@ -1,10 +1,10 @@
-import * as MapboxDraw from '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw';
+import DirectSelect from '@mapbox/mapbox-gl-draw/src/modes/direct_select';
 import createSupplementaryPoints from '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points';
 import doubleClickZoom from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
 import Constants from '@mapbox/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts';
 
-const LimitVertexMode = MapboxDraw.modes.direct_select;
+const LimitVertexMode = DirectSelect;
 
 LimitVertexMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
