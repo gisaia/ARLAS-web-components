@@ -25,9 +25,6 @@
   vertical-align: middle;
 }
 
-/*'.{{group.name}}-item-detail*/ /* @doc Sets a specific goup title style.*/
-/*'.{{detail.key}}-item-detail*/ /* @doc Sets a specific detail key style.*/
-
 .resultdetaileditem-key /* @doc Sets key style. (key: value part)*/
 {
   font-weight: bold;
@@ -54,8 +51,6 @@
   color: #322D90;
   font-size: 1.1em;
 }
-
-
 
 .detail-item{
   font-weight: bold;

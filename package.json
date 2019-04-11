@@ -36,7 +36,7 @@
     "core-js": "^2.5.4",
     "d3-dsv": "^1.0.10",
     "mapbox-gl": "^0.48.0",
-    "@mapbox/mapbox-gl-draw": "1.1.1",
+    "@gisaia-team/mapbox-gl-draw": "1.1.2",
     "jsts": "2.0.3",
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",

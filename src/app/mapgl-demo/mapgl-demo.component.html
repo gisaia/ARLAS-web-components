@@ -1,5 +1,6 @@
 <div class="polygon-tools" *ngIf="this.drawEnabled">
   <button (click)="switchToDrawMode()">DRAW</button>
+  <button (click)="delete()">DELETE</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
   <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group" >
@@ -22,6 +23,7 @@
    [maxZoom]=28
    [maxPrecision]="[6,4]"
    (onPolygonChange)="polygonChange($event)"
+   (onPolygonSelect)="polygonSelect($event)"
    [drawOption]="drawOptions"
    [drawData]="drawData"
    [drawEnabled]="this.drawEnabled"
