@@ -1,5 +1,14 @@
 # Change Log
 
+## [v10.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.1) (2019-04-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.0...v10.0.1)
+
+**New stuff:**
+
+- Improve performance with draw tools [\#254](https://github.com/gisaia/ARLAS-web-components/pull/254) ([sebbousquet](https://github.com/sebbousquet))
+- Put draw layer on top [\#253](https://github.com/gisaia/ARLAS-web-components/pull/253) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v10.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.0) (2019-04-02)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.3.0...v10.0.0)
@@ -7,6 +16,7 @@
 **New stuff:**
 
 - Allow layers of type 'point' to be highlighted [\#187](https://github.com/gisaia/ARLAS-web-components/issues/187) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Emit new events : `onStyleChanged` & `onMapLoaded` [\#250](https://github.com/gisaia/ARLAS-web-components/pull/250) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 - save chosen styles in localStoreage [\#243](https://github.com/gisaia/ARLAS-web-components/pull/243) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v9.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.3.0) (2019-03-25)
