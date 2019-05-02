@@ -1040,8 +1040,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent): void {
-    if (this.mapLayers && this.mapLayers.layers) {
-      this.mapLayers.layers.filter(layer => layer['show-on'] === visibilityEvent).forEach(layer => {
+    if (this.mapLayers && this.mapLayers.externalEventLayers) {
+      this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.map.getLayer(layer.id) !== undefined) {
           const layerFilter: Array<any> = ['all'];
           if ((<mapboxgl.Layer>layer).filter) {
