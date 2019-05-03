@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MapglComponent } from '../../components/mapgl/mapgl.component';
 

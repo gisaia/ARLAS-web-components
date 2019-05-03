@@ -10,6 +10,7 @@
   </mat-radio-group>
   <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
 </div>
+<arlas-mapgl-import [mapComponent]="mapComponent"></arlas-mapgl-import>
 <div id="mapgldemo" style="height:94%; width:100%">
   <arlas-mapgl #demoMap
   [style]="'http://demo.arlas.io:82/styles/positron/style.json'"

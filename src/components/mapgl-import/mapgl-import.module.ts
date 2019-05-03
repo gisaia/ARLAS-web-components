@@ -19,23 +19,29 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule } from '@angular/material';
-import { MapglComponent } from './mapgl.component';
+import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
+import { MapglImportComponent, MapglImportDialogComponent } from './mapgl-import.component';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({
   imports: [
     CommonModule,
+    BrowserModule,
+    FormsModule,
     MatIconModule,
     MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
     MatSelectModule,
     MatRadioModule,
     TranslateModule
   ],
-  declarations: [MapglComponent],
-  exports: [MapglComponent]
+  declarations: [MapglImportComponent, MapglImportDialogComponent],
+  exports: [MapglImportComponent, MapglImportDialogComponent]
 })
-export class MapglModule {
+export class MapglImportModule {
 
 }
