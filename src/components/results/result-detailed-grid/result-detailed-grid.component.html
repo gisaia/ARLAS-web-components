@@ -6,10 +6,10 @@
         <img *ngIf="!gridTile.imageEnabled" src="./assets/no-view.png">
       </div>
       <div class="resultgrid__info-button">
-      <button matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+      <button id="show_details_gridmode_btn" matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
         <mat-icon class="resultgrid__info_outline">info_outline</mat-icon>
       </button>
-      <button matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+      <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
           <mat-icon class="resultgrid__close">close</mat-icon>
       </button>
     </div>
@@ -17,11 +17,11 @@
     <ng-template #detailShowed>
         <div class="resultgrid__info-button">
 
-      <button matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+      <button id="show_image_gridmode_btn" matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
         <mat-icon class="resultgrid__image">image</mat-icon>
 
       </button>
-      <button matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+      <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
           <mat-icon class="resultgrid__close">close</mat-icon>
       </button>
     </div>

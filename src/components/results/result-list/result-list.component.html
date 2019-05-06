@@ -57,33 +57,33 @@
             <span>{{selectedItems.size}}</span>
           </div>
           <div class="resultlist__tools--select-between">
-              <mat-icon matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
+              <mat-icon id="check_in_between_btn" matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
           </div>
           <div class="resultlist__tools--geosort">
-          <button matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-button [matMenuTriggerFor]="menugeo" class="resultlist__tools--geosort-action-button">
+          <button id="geosort_actions_btn" matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-button [matMenuTriggerFor]="menugeo" class="resultlist__tools--geosort-action-button">
             <div *ngIf="isAutoGeoSortActived"  class="resultlist__tools--geosort--icon--active">{{GEOSORT_BUTTON | translate}}</div>
             <div *ngIf="!isAutoGeoSortActived" class="resultlist__tools--geosort--icon">{{GEOSORT_BUTTON | translate}}</div>
           </button>
         </div>
           <mat-menu #menugeo="matMenu">
-            <button    mat-menu-item (click)="setGeoSortAction(geoSortActions[0])"  class="resultlist__header--columns__geosort-button">
+            <button    id="sort_by_dist_btn" mat-menu-item (click)="setGeoSortAction(geoSortActions[0])"  class="resultlist__header--columns__geosort-button">
               <span>{{geoSortActions[0].label | translate}}</span>
             </button>
-            <button  *ngIf="!isAutoGeoSortActived"  mat-menu-item (click)="setGeoSortAction(geoSortActions[1])"   class="resultlist__header--columns__geosort-auto-button">
+            <button  id="activate_auto_geosort_btn" *ngIf="!isAutoGeoSortActived"  mat-menu-item (click)="setGeoSortAction(geoSortActions[1])"   class="resultlist__header--columns__geosort-auto-button">
               <span>{{geoSortActions[1].label | translate}}</span>
             </button>
-            <button *ngIf="isAutoGeoSortActived" mat-menu-item (click)="setGeoSortAction(geoSortActions[2])"  class="resultlist__header--columns__geosort-remove-button">
+            <button id="remove_auto_geosort_btn" *ngIf="isAutoGeoSortActived" mat-menu-item (click)="setGeoSortAction(geoSortActions[2])"  class="resultlist__header--columns__geosort-remove-button">
               <span>{{geoSortActions[2].label | translate}}</span>
             </button>
           </mat-menu>
 
         </div>
         <div class="resultlist__tools--actions">
-          <button matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
+          <button id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
             <mat-icon>menu</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button  *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
+            <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
               <span>{{action.label | translate}}</span>
             </button>
           </mat-menu>
@@ -91,10 +91,10 @@
 
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
           <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
-            <mat-button-toggle matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
+            <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
               <mat-icon>list</mat-icon>
             </mat-button-toggle>
-            <mat-button-toggle matTooltip="{{GRID_MODE | translate}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
+            <mat-button-toggle id="grid_mode_btn" matTooltip="{{GRID_MODE | translate}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
               <mat-icon>apps</mat-icon>
             </mat-button-toggle>
           </mat-button-toggle-group>

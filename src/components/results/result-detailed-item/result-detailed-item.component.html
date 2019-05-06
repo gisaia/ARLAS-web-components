@@ -8,7 +8,7 @@
   </span><br> <br/>
 
   </span>
-  <button mat-raised-button *ngFor="let action of rowItem.actions" 
+  <button mat-raised-button *ngFor="let action of rowItem.actions"
   (click)="triggerActionOnItem(action)"  matTooltip="{{action.tooltip | translate}}"
   class="resultdetaileditem__actions {{action.id}}-action {{action.cssClass}}-action">
     {{action.label | translate}}
