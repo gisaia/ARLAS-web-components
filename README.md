@@ -6,82 +6,72 @@
 ## About :
 ARLAS-web-components is an Angular library that provides a set of data analytics components.
 
-## Prerequisites :
-
-[Node](https://nodejs.org/en/) version 8.0.0
-
-```
-$ sudo npm install n -g
-$ sudo n 8.0.0
-```
-[npm](https://github.com/npm/npm) version 5.2.0
-````
-$ npm install npm@5.2.0 -g
-````
-[Angular CLI](https://github.com/angular/angular-cli) version 1.2.0.
-```
-$ npm install -g @angular/cli@1.2.0
-```
-[webpack](https://webpack.js.org/) version 2.4.1
-```
-$ npm install -g webpack@2.4.1
-```
-[Gulp](http://gulpjs.com/) version 3.9.1
-```
-$ npm install -g gulp@3.9.1
-```
 ## Installing :
 
 To install this library in your npm Angular web app project add the dependency in your package.json :
-```
+
+```shell
 $ npm install arlas-web-component --save
 ```
-## Build :
-Clone project
 
-```
+## Documentation : 
+Please find the documentation of all the components [here](http://docs.arlas.io/arlas-tech/current/classes/_components_donut_donut_component_.donutcomponent/)
+
+## Build :
+
+To build the project you need to have installed
+- [Node](https://nodejs.org/en/) version >= 8.0.0 
+- [npm](https://github.com/npm/npm) version >= 5.2.0
+- [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2
+  ```
+  $ npm install -g @angular/cli@7.0.2
+  ```
+
+Then, clone the project
+
+```shell
 $ git clone https://github.com/gisaia/ARLAS-web-components
 ```
 
-Move into the folder
+Move to the folder
 
-```
+```shell
 $ cd ARLAS-web-components
 ```
 
-Get all project's dependencies
+Install all the project's dependencies
 
-```
+```shell
 $ npm install
 ```
 
-Build the project with ngc and gulp :
+Build the project with `ngc` and `gulp` :
 
-```
+```shell
 $ npm run build-release
 ```
 
-The build artifacts will be stored in the `dist/` directory. 
+The build artifacts will be generated in the `dist/` directory. 
 
 
 ## Run / Deployment : 
 
-To run the demo application of this library on dev server  :
+Check out the ARLAS web components by running the demo application of this library on a dev server  :
 
-```
+```shell
 $ ng serve 
 ```
-Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
+
+Navigate to [http://localhost:4200/](http://localhost:4200/).
+
+ The app will automatically reload if you change any of the source files.
 
 ## Tests : 
 ### Running unit tests
 
-```
+```shell
 $ ng test
 ```
-
-## Documentation : 
-- Please find the documentation of all the components [here](http://arlas.io/arlas-tech/current/classes/_histogram_histogram_component_.histogramcomponent/)
 
 ## Contributing :
 
@@ -91,9 +81,9 @@ $ ng test
 
 We use our own versioning schema which looks like x.y.z where :
 
-- `x` : Incremented as soon as the `ARLAS Server API` changes
-- `y` : Incremented as soon as an `ARLAS-web-components` inputs or outputs change
-- `z` : Incremented as soon as the `ARLAS-web-components` implementation receives a fix
+- `x` : Incremented as soon as the `ARLAS-server API` changes
+- `y` : Incremented as soon as an `ARLAS-web-components` inputs or outputs change.
+- `z` : Incremented as soon as the `ARLAS-web-components` implementation receives a fix or an enhancement.
 
 # Authors :
 
