@@ -19,7 +19,15 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
+import {
+  MatSelectModule,
+  MatRadioModule,
+  MatButtonModule,
+  MatIconModule,
+  MatDialogModule,
+  MatCheckboxModule,
+  MatProgressSpinnerModule
+} from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglImportComponent, MapglImportDialogComponent } from './mapgl-import.component';
 import { FormsModule } from '@angular/forms';
@@ -35,6 +43,7 @@ import { BrowserModule } from '@angular/platform-browser';
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
     MatRadioModule,
     TranslateModule

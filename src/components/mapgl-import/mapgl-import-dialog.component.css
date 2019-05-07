@@ -4,3 +4,8 @@
   align-items: center;
   height: 60px;
 }
+
+.import-error{
+  color: #f44336;
+  font-size: 75%;
+}

@@ -1,12 +1,15 @@
 <h1 mat-dialog-title>Import</h1>
 <div mat-dialog-content>
-  <input type="file" class="upload" (change)="onChange($event.target.files)">
+  <input type="file" class="upload" #fileInput (change)="onChange($event.target.files)">
   <div class="check-section">
     <mat-checkbox class="example-margin" [(ngModel)]="fitResult">Zoom to result</mat-checkbox>
-    <mat-checkbox class="example-margin" [(ngModel)]="closeAfter">Close after import</mat-checkbox>
+  </div>
+  <div *ngIf="errorNbFeatures" class="import-error">
+    Too much features to display on the map
   </div>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="onCancel()">Close</button>
-  <button mat-button [disabled]="!currentFile" (click)="import()">Import</button>
+  <button mat-button [disabled]="!currentFile || isRunning" (click)="import()">Import</button>
+  <mat-progress-spinner *ngIf="isRunning" [color]="'accent'" [diameter]="40" [mode]="'indeterminate'" ></mat-progress-spinner>
 </div>
