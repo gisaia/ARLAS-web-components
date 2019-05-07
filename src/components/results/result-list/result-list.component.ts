@@ -372,7 +372,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     },
     {
       id: 'auto-geosort',
-      label: 'Active auto geo distance sorting'
+      label: 'Activate auto geo distance sorting'
     },
     {
       id: 'remove-auto-geosort',

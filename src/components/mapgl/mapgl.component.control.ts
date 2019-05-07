@@ -83,6 +83,7 @@ export class ControlButton {
         this.btn = document.createElement('button');
         this.btn.className = 'mapboxgl-ctrl-icon map__controls__icons map__controls__icons--' + this.name;
         this.btn.type = 'button';
+        this.btn.id = 'layers_switcher_btn';
         this.container = document.createElement('div');
         this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group mapboxgl-ctrl-group-' + this.name;
         this.container.appendChild(this.btn);
