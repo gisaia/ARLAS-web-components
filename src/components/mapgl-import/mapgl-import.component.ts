@@ -24,6 +24,7 @@ export class MapglImportDialogComponent {
   public fitResult = false;
   public errorNbFeatures = false;
   public isRunning = false;
+  public maxFeatures = 100000;
 
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
 
@@ -54,7 +55,7 @@ export class MapglImportDialogComponent {
         }
 
         shp(evt.target.result).then(geojson => {
-          if (geojson.features.length >= 100000) {
+          if (geojson.features.length >= this.maxFeatures) {
             this.error.next('Too much features');
             this.errorNbFeatures = true;
             this.isRunning = false;
@@ -150,6 +151,7 @@ export class MapglImportDialogComponent {
 export class MapglImportComponent {
   @Input() public icon = 'get_app';
   @Input() public mapComponent: MapglComponent;
+  @Input() public maxFeatures: number;
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
 
@@ -161,6 +163,7 @@ export class MapglImportComponent {
   public openDialog() {
     this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
     this.dialogRef.componentInstance.mapComponent = this.mapComponent;
+    this.dialogRef.componentInstance.maxFeatures = this.maxFeatures;
 
     this.dialogRef.componentInstance.imported.subscribe(imp => {
       this.imported.next(imp);
