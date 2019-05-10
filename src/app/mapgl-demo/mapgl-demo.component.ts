@@ -40,7 +40,20 @@ export class MapglDemoComponent implements OnInit {
   };
 
   public mapLayers = {
-    layers: [,
+    layers: [
+      {
+        'id': 'polygon_imported',
+        'type': 'fill',
+        'source': 'polygon_imported',
+        'paint': {
+          'fill-color': 'rgba(153, 32, 228, 1)',
+          'fill-opacity': 0.4,
+          'fill-outline-color': 'rgba(0, 0, 0, 1)'
+        },
+        'layout': {
+          'visibility': 'visible'
+        }
+      },
       {
         'id': 'polygon_label',
         'type': 'symbol',
@@ -65,7 +78,8 @@ export class MapglDemoComponent implements OnInit {
         id: 'distribution',
         name: 'Distribution',
         base: [
-          'polygon_label'
+          'polygon_label',
+          'polygon_imported'
         ],
         styles: [
           {

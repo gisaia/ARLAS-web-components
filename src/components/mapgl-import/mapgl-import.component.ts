@@ -22,17 +22,24 @@ export class MapglImportDialogComponent {
   public currentFile: File;
   public mapComponent: MapglComponent;
   public fitResult = false;
-  public errorNbFeatures = false;
+  public displayError = false;
+  public errorMessage: string;
   public isRunning = false;
   public maxFeatures = 100000;
 
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
+  private emptyData = {
+    'type': 'FeatureCollection',
+    'features': []
+  };
 
-  constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) {
+    this.error.subscribe(message => this.errorMessage = message);
+  }
 
   public onChange(files: FileList) {
     this.currentFile = files.item(0);
-    this.errorNbFeatures = false;
+    this.displayError = false;
   }
 
   public onCancel() {
@@ -44,87 +51,63 @@ export class MapglImportDialogComponent {
     const reader: FileReader = new FileReader();
     reader.onload = (() => {
       return (evt) => {
-        // Clean layer and source of imported polygons
-        const importLayer = this.mapComponent.map.getLayer(this.SOURCE_NAME_POLYGON_IMPORTED);
-        const importSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED);
-        if (importLayer !== undefined) {
-          this.mapComponent.map.removeLayer(this.SOURCE_NAME_POLYGON_IMPORTED);
-        }
-        if (importSource !== undefined) {
-          this.mapComponent.map.removeSource(this.SOURCE_NAME_POLYGON_IMPORTED);
-        }
+        this.clearPolygons();
 
         shp(evt.target.result).then(geojson => {
-          if (geojson.features.length >= this.maxFeatures) {
-            this.error.next('Too much features');
-            this.errorNbFeatures = true;
-            this.isRunning = false;
-            this.fileInput.nativeElement.value = '';
-            this.currentFile = null;
-            return;
-          } else {
-            const centroides = new Array<any>();
-            const importedGeojson = {
-              type: 'FeatureCollection',
-              features: []
-            };
+          const centroides = new Array<any>();
+          const importedGeojson = {
+            type: 'FeatureCollection',
+            features: []
+          };
 
-            let index = 0;
-            geojson.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
-              .forEach((feature) => {
-                if (feature.geometry.type === 'MultiPolygon') {
-                  // Create a new Polygon feature for each polygon in the MultiPolygon
-                  // All properties of the MultiPolygon are copied in each feature created
-                  feature.geometry.coordinates.forEach(geom => {
-                    const newFeature = {
-                      type: 'Feature',
-                      geometry: {
-                        bbox: feature.geometry.bbox,
-                        coordinates: geom,
-                        type: 'Polygon'
-                      },
-                      properties: feature.properties
-                    };
-                    newFeature.properties.arlas_id = ++index;
-                    const cent = this.calcCentroid(newFeature);
-                    centroides.push(cent);
-                    importedGeojson.features.push(newFeature);
-                  });
-                } else {
-                  feature.properties.arlas_id = ++index;
-                  const cent = this.calcCentroid(feature);
+          let index = 0;
+          geojson.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
+            .forEach((feature) => {
+              if (feature.geometry.type === 'MultiPolygon') {
+                // Create a new Polygon feature for each polygon in the MultiPolygon
+                // All properties of the MultiPolygon are copied in each feature created
+                feature.geometry.coordinates.forEach(geom => {
+                  const newFeature = {
+                    type: 'Feature',
+                    geometry: {
+                      bbox: feature.geometry.bbox,
+                      coordinates: geom,
+                      type: 'Polygon'
+                    },
+                    properties: feature.properties
+                  };
+                  newFeature.properties.arlas_id = ++index;
+                  const cent = this.calcCentroid(newFeature);
                   centroides.push(cent);
-                  importedGeojson.features.push(feature);
-                }
+                  importedGeojson.features.push(newFeature);
+                });
+              } else {
+                feature.properties.arlas_id = ++index;
+                const cent = this.calcCentroid(feature);
+                centroides.push(cent);
+                importedGeojson.features.push(feature);
+              }
+            });
+
+          if (importedGeojson.features.length > this.maxFeatures) {
+            this.throwError('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + importedGeojson.features.length + ')');
+          } else {
+            if (importedGeojson.features.length > 0) {
+              this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedGeojson);
+              this.mapComponent.map.getSource('polygon_label').setData({
+                type: 'FeatureCollection',
+                features: centroides
               });
 
-            this.mapComponent.map.addSource(this.SOURCE_NAME_POLYGON_IMPORTED, {
-              'type': 'geojson',
-              'data': importedGeojson
-            });
-
-            this.mapComponent.map.addLayer({
-              'id': this.SOURCE_NAME_POLYGON_IMPORTED,
-              'type': 'fill',
-              'paint': {
-                'fill-color': 'rgba(153, 32, 228, 1)',
-                'fill-opacity': 0.4,
-                'fill-outline-color': 'rgba(0, 0, 0, 1)'
-              },
-              'source': this.SOURCE_NAME_POLYGON_IMPORTED
-            }, 'polygon_label');
-
-            this.mapComponent.map.getSource('polygon_label').setData({
-              type: 'FeatureCollection',
-              features: centroides
-            });
-
-            if (this.fitResult) {
-              this.mapComponent.map.fitBounds(extent(importedGeojson));
+              if (this.fitResult) {
+                this.mapComponent.map.fitBounds(extent(importedGeojson));
+              }
+              this.imported.next(importedGeojson);
+              this.isRunning = false;
+              this.dialogRef.close();
+            } else {
+              this.throwError('No polygon to display in "' + this.currentFile.name + '"');
             }
-            this.dialogRef.close();
-            this.imported.next(importedGeojson);
-            this.isRunning = false;
           }
         });
       };
@@ -133,11 +116,27 @@ export class MapglImportDialogComponent {
     reader.readAsArrayBuffer(this.currentFile);
   }
 
+  public clearPolygons() {
+    // Clean source of imported polygons
+    const importSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED);
+    if (importSource !== undefined) {
+      importSource.setData(this.emptyData);
+    }
+  }
+
   public calcCentroid(feature) {
     const poly = helpers.polygon(feature.geometry.coordinates);
     const cent = centroid.default(poly);
     cent.properties.arlas_id = feature.properties.arlas_id;
     return cent;
+  }
+
+  private throwError(errorMessage: string) {
+    this.error.next(errorMessage);
+    this.displayError = true;
+    this.isRunning = false;
+    this.fileInput.nativeElement.value = '';
+    this.currentFile = null;
   }
 }
 
@@ -151,7 +150,7 @@ export class MapglImportDialogComponent {
 export class MapglImportComponent {
   @Input() public icon = 'get_app';
   @Input() public mapComponent: MapglComponent;
-  @Input() public maxFeatures: number;
+  @Input() public maxFeatures?: number;
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
 
@@ -163,7 +162,9 @@ export class MapglImportComponent {
   public openDialog() {
     this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
     this.dialogRef.componentInstance.mapComponent = this.mapComponent;
-    this.dialogRef.componentInstance.maxFeatures = this.maxFeatures;
+    if (this.maxFeatures) {
+      this.dialogRef.componentInstance.maxFeatures = this.maxFeatures;
+    }
 
     this.dialogRef.componentInstance.imported.subscribe(imp => {
       this.imported.next(imp);

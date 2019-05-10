@@ -85,6 +85,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_STYLE_GROUP = 'ARLAS_SG-';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+  private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
 
   /**
    * @Input : Angular
@@ -521,6 +522,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.addSource(this.POLYGON_LABEL_SOURCE, {
         'type': 'geojson',
         'data': this.polygonlabeldata
+      });
+      this.map.addSource(this.SOURCE_NAME_POLYGON_IMPORTED, {
+        'type': 'geojson',
+        'data': this.emptyData
       });
 
       this.addSourcesToMap(this.mapSources, this.map);
