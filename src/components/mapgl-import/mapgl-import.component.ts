@@ -28,6 +28,7 @@ export class MapglImportDialogComponent {
   public maxFeatures = 100000;
 
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
+  private SOURCE_NAME_POLYGON_LABEL = 'polygon_label';
   private emptyData = {
     'type': 'FeatureCollection',
     'features': []
@@ -94,7 +95,7 @@ export class MapglImportDialogComponent {
           } else {
             if (importedGeojson.features.length > 0) {
               this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedGeojson);
-              this.mapComponent.map.getSource('polygon_label').setData({
+              this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
                 type: 'FeatureCollection',
                 features: centroides
               });
@@ -119,8 +120,12 @@ export class MapglImportDialogComponent {
   public clearPolygons() {
     // Clean source of imported polygons
     const importSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED);
+    const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
     if (importSource !== undefined) {
       importSource.setData(this.emptyData);
+    }
+    if (labelSource !== undefined) {
+      labelSource.setData(this.emptyData);
     }
   }
 

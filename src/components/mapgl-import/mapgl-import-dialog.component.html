@@ -1,14 +1,14 @@
-<h1 mat-dialog-title>Import</h1>
-<div mat-dialog-content>
-  <input type="file" class="upload" #fileInput (change)="onChange($event.target.files)">
-  <div class="check-section">
-    <mat-checkbox class="example-margin" [(ngModel)]="fitResult">Zoom to result</mat-checkbox>
+<h1 mat-dialog-title class="mapgl-import-title">Import</h1>
+<div mat-dialog-content class="mapgl-import-body">
+  <input type="file" class="mapgl-import-upload" #fileInput (change)="onChange($event.target.files)">
+  <div class="mapgl-import-section">
+    <mat-checkbox class="" [(ngModel)]="fitResult">Zoom to result</mat-checkbox>
   </div>
-  <div *ngIf="displayError" class="import-error">
+  <div *ngIf="displayError" class="mapgl-import-error">
     {{errorMessage}}
   </div>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions class="mapgl-import-actions">
   <button mat-button (click)="onCancel()">Close</button>
   <button mat-button [disabled]="!currentFile || isRunning" (click)="import()">Import</button>
   <mat-progress-spinner *ngIf="isRunning" [color]="'accent'" [diameter]="40" [mode]="'indeterminate'" ></mat-progress-spinner>
