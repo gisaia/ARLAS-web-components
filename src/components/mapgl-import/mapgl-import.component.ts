@@ -14,19 +14,55 @@ import { Subject } from 'rxjs';
 })
 
 export class MapglImportDialogComponent {
-  @Output() public imported = new Subject<any>();
-  @Output() public error = new Subject<any>();
+  public displayError = false;
+  public isRunning = false;
+  public fitResult = false;
+  public errorMessage: string;
+  public currentFile: File;
 
+  @Output() public file = new Subject<File>();
+  @Output() public importRun = new Subject<any>();
   @ViewChild('fileInput') public fileInput: ElementRef;
 
-  public currentFile: File;
-  public mapComponent: MapglComponent;
-  public fitResult = false;
-  public displayError = false;
-  public errorMessage: string;
-  public isRunning = false;
-  public maxFeatures = 100000;
+  constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
 
+  public onChange(files: FileList) {
+    this.file.next(files.item(0));
+    this.currentFile = files.item(0);
+    this.displayError = false;
+  }
+
+  public import() {
+    this.importRun.next({ fitResult: this.fitResult });
+  }
+
+  public onCancel() {
+    this.dialogRef.close();
+  }
+}
+
+
+@Component({
+  templateUrl: './mapgl-import.component.html',
+  selector: 'arlas-mapgl-import',
+  styleUrls: ['./mapgl-import.component.css']
+})
+
+export class MapglImportComponent {
+
+
+  @Input() public icon = 'get_app';
+  @Input() public mapComponent: MapglComponent;
+  @Input() public maxFeatures?: number;
+  @Input() public maxFileSize?: number;
+  @Output() public imported = new Subject<any>();
+  @Output() public error = new Subject<any>();
+  @ViewChild('importDialog') public importDialog: MapglImportDialogComponent;
+
+  public currentFile: File;
+  public dialogRef: MatDialogRef<MapglImportDialogComponent>;
+
+  private fitResult = false;
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
   private SOURCE_NAME_POLYGON_LABEL = 'polygon_label';
   private emptyData = {
@@ -34,21 +70,23 @@ export class MapglImportDialogComponent {
     'features': []
   };
 
-  constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) {
-    this.error.subscribe(message => this.errorMessage = message);
-  }
+  constructor(
+    public dialog: MatDialog
+  ) { }
 
-  public onChange(files: FileList) {
-    this.currentFile = files.item(0);
-    this.displayError = false;
-  }
-
-  public onCancel() {
-    this.dialogRef.close();
+  public openDialog() {
+    this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
+    this.dialogRef.componentInstance.file.subscribe((file: File) => {
+      this.currentFile = file;
+    });
+    this.dialogRef.componentInstance.importRun.subscribe(importOptions => {
+      this.fitResult = importOptions.fitResult;
+      this.import();
+    });
   }
 
   public import() {
-    this.isRunning = true;
+    this.dialogRef.componentInstance.isRunning = true;
     const reader: FileReader = new FileReader();
     reader.onload = (() => {
       return (evt) => {
@@ -90,7 +128,7 @@ export class MapglImportDialogComponent {
               }
             });
 
-          if (importedGeojson.features.length > this.maxFeatures) {
+          if (this.maxFeatures && importedGeojson.features.length > this.maxFeatures) {
             this.throwError('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + importedGeojson.features.length + ')');
           } else {
             if (importedGeojson.features.length > 0) {
@@ -104,7 +142,7 @@ export class MapglImportDialogComponent {
                 this.mapComponent.map.fitBounds(extent(importedGeojson));
               }
               this.imported.next(importedGeojson);
-              this.isRunning = false;
+              this.dialogRef.componentInstance.isRunning = false;
               this.dialogRef.close();
             } else {
               this.throwError('No polygon to display in "' + this.currentFile.name + '"');
@@ -114,7 +152,13 @@ export class MapglImportDialogComponent {
       };
     })();
 
-    reader.readAsArrayBuffer(this.currentFile);
+    if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
+      console.log(this.currentFile);
+      this.throwError('"' + this.currentFile.name +
+        '" is too large (Max: ' + this.formatBytes(this.maxFileSize) + ' - Currently ' + this.formatBytes(this.currentFile.size) + ')');
+    } else {
+      reader.readAsArrayBuffer(this.currentFile);
+    }
   }
 
   public clearPolygons() {
@@ -136,48 +180,26 @@ export class MapglImportDialogComponent {
     return cent;
   }
 
-  private throwError(errorMessage: string) {
-    this.error.next(errorMessage);
-    this.displayError = true;
-    this.isRunning = false;
-    this.fileInput.nativeElement.value = '';
-    this.currentFile = null;
-  }
-}
-
-
-@Component({
-  templateUrl: './mapgl-import.component.html',
-  selector: 'arlas-mapgl-import',
-  styleUrls: ['./mapgl-import.component.css']
-})
-
-export class MapglImportComponent {
-  @Input() public icon = 'get_app';
-  @Input() public mapComponent: MapglComponent;
-  @Input() public maxFeatures?: number;
-  @Output() public imported = new Subject<any>();
-  @Output() public error = new Subject<any>();
-
-  public dialogRef: MatDialogRef<MapglImportDialogComponent>;
-  constructor(
-    public dialog: MatDialog
-  ) { }
-
-  public openDialog() {
-    this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
-    this.dialogRef.componentInstance.mapComponent = this.mapComponent;
-    if (this.maxFeatures) {
-      this.dialogRef.componentInstance.maxFeatures = this.maxFeatures;
+  public formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) {
+      return '0 Bytes';
     }
 
-    this.dialogRef.componentInstance.imported.subscribe(imp => {
-      this.imported.next(imp);
-    });
-    this.dialogRef.componentInstance.error.subscribe(error => {
-      this.error.next(error);
-    });
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
 
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
+  private throwError(errorMessage: string) {
+    this.error.next(errorMessage);
+    this.dialogRef.componentInstance.displayError = true;
+    this.dialogRef.componentInstance.isRunning = false;
+    this.dialogRef.componentInstance.errorMessage = errorMessage;
+    this.dialogRef.componentInstance.fileInput.nativeElement.value = '';
+    this.dialogRef.componentInstance.currentFile = null;
+    this.currentFile = null;
+  }
 }
