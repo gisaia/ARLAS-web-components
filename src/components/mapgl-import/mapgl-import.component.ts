@@ -52,8 +52,10 @@ export class MapglImportDialogComponent {
 export class MapglImportComponent {
 
   @Input() public mapComponent: MapglComponent;
+  @Input() public maxVertexByPolygon: number;
   @Input() public maxFeatures?: number;
   @Input() public maxFileSize?: number;
+  @Input() public maxLoadingTime = 30;
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
   @ViewChild('importDialog') public importDialog: MapglImportDialogComponent;
@@ -61,6 +63,7 @@ export class MapglImportComponent {
   public currentFile: File;
   public dialogRef: MatDialogRef<MapglImportDialogComponent>;
 
+  private tooManyVertex = false;
   private fitResult = false;
   private jszip: JSZip;
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
@@ -73,6 +76,23 @@ export class MapglImportComponent {
   constructor(
     public dialog: MatDialog
   ) {
+  }
+
+  public promiseTimeout(ms, promise) {
+
+    // Create a promise that rejects in <ms> milliseconds
+    const timeout = new Promise((resolve, reject) => {
+      const id = setTimeout(() => {
+        clearTimeout(id);
+        reject('Loading time exceeded (' + ms + ' ms)');
+      }, ms);
+    });
+
+    // Returns a race between our timeout and the passed in promise
+    return Promise.race([
+      promise,
+      timeout
+    ]);
   }
 
   public openDialog() {
@@ -88,21 +108,29 @@ export class MapglImportComponent {
 
   public import() {
     this.dialogRef.componentInstance.isRunning = true;
-    const reader: FileReader = new FileReader();
     this.jszip = new JSZip();
-    reader.onload = (() => {
-      return (evt) => {
-        this.jszip.loadAsync(evt.target.result).then( zip => {
-          this.clearPolygons();
+    this.promiseTimeout(1000, this.readFile()).catch(error => this.throwError(error));
 
-          if (!(Object.keys(zip.files)
-            .map(fileName => fileName.split('.').pop().toLowerCase())
-            .filter(elem => elem === 'shp' || elem === 'shx' || elem === 'dbf').length >= 3)
-          ) {
-            this.throwError('Zip file must contain at least a `.shp`, `.shx` and `.dbf`');
+  }
 
-          } else {
-            shp(evt.target.result).then(geojson => {
+  public readFile() {
+    return new Promise((resolve, reject) => {
+      const reader: FileReader = new FileReader();
+      reader.onload = (() => {
+        return (evt) => {
+          this.jszip.loadAsync(evt.target.result).then(zip => {
+            this.clearPolygons();
+            const testArray = Object.keys(zip.files).map(fileName => fileName.split('.').pop().toLowerCase());
+            if (
+              !(testArray.filter(elem => elem === 'shp' || elem === 'shx' || elem === 'dbf').length >= 3) &&
+              !(testArray.filter(elem => elem === 'json').length === 1)
+            ) {
+              reject('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`');
+            } else {
+              return evt.target.result;
+            }
+          }).then(buffer => {
+            shp(buffer).then(geojson => {
               const centroides = new Array<any>();
               const importedGeojson = {
                 type: 'FeatureCollection',
@@ -137,9 +165,10 @@ export class MapglImportComponent {
                     importedGeojson.features.push(feature);
                   }
                 });
-
-              if (this.maxFeatures && importedGeojson.features.length > this.maxFeatures) {
-                this.throwError('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + importedGeojson.features.length + ')');
+              if (this.tooManyVertex) {
+                reject('Too many vertices in a polygon');
+              } else if (this.maxFeatures && importedGeojson.features.length > this.maxFeatures) {
+                reject('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + importedGeojson.features.length + ')');
               } else {
                 if (importedGeojson.features.length > 0) {
                   this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedGeojson);
@@ -154,29 +183,27 @@ export class MapglImportComponent {
                   this.imported.next(importedGeojson.features);
                   this.dialogRef.componentInstance.isRunning = false;
                   this.dialogRef.close();
+                  return;
                 } else {
-                  this.throwError('No polygon to display in "' + this.currentFile.name + '"');
+                  reject('No polygon to display in "' + this.currentFile.name + '"');
                 }
               }
-            });
-          }
+            }).then(() => resolve());
+          });
+        };
+      })();
 
-        });
-
-
-      };
-    })();
-
-    if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
-      this.throwError('"' + this.currentFile.name +
-        '" is too large (Max: ' + this.formatBytes(this.maxFileSize) + ' - Currently ' + this.formatBytes(this.currentFile.size) + ')');
-    } else {
-      if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
-        this.throwError('Only "zip" file is allowed');
+      if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
+        reject('"' + this.currentFile.name +
+          '" is too large (Max: ' + this.formatBytes(this.maxFileSize) + ' - Currently ' + this.formatBytes(this.currentFile.size) + ')');
       } else {
-        reader.readAsArrayBuffer(this.currentFile);
+        if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
+          reject('Only "zip" file is allowed');
+        } else {
+          reader.readAsArrayBuffer(this.currentFile);
+        }
       }
-    }
+    });
   }
 
   public clearPolygons() {
@@ -192,11 +219,15 @@ export class MapglImportComponent {
   }
 
   public calcCentroid(feature) {
+    if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length > this.maxVertexByPolygon) {
+      this.tooManyVertex = true;
+    }
     const poly = helpers.polygon(feature.geometry.coordinates);
     const cent = centroid.default(poly);
     cent.properties.arlas_id = feature.properties.arlas_id;
     return cent;
   }
+
 
   private throwError(errorMessage: string) {
     this.error.next(errorMessage);
