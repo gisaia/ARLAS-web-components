@@ -20,6 +20,7 @@
 export { ColorGeneratorLoader, AwcColorGeneratorLoader } from './components/componentsUtils';
 export { MapLayers } from './components/mapgl/model/mapLayers';
 export { MapSource } from './components/mapgl/model/mapSource';
+export { MapExtend } from './components/mapgl/mapgl.component.util';
 export { PowerbarsComponent } from './components/powerbars/powerbars.component';
 export { PowerbarsModule } from './components/powerbars/powerbars.module';
 export { ChartType, DataType, Position, SimpleNode, TreeNode, SwimlaneMode } from 'arlas-d3';

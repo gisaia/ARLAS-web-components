@@ -18,6 +18,7 @@
  */
 
 import { StyleGroup, Style } from './model/mapLayers';
+
 export function paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: mapboxgl.Map, SW, NE) {
     const topRight = map.project(NE);
@@ -133,4 +134,8 @@ function tiled(num: number): number {
     return Math.floor(num / 256);
 }
 
-
+export interface MapExtend {
+  bounds: number[][];
+  center: number[];
+  zoom: number;
+}
