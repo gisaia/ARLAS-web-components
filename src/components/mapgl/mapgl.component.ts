@@ -29,7 +29,7 @@ import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle } from './mapgl.component.control';
-import { getDefaultStyle, paddedBounds, xyz } from './mapgl.component.util';
+import { getDefaultStyle, paddedBounds, xyz, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
@@ -131,7 +131,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     name: 'Positron Style',
     styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
   };
-
   /**
    * @Input : Angular
    * @description List of styles to apply to the base map
@@ -253,11 +252,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
    */
   @Input() private maxPrecision: Array<number>;
+
   /**
    * @Output : Angular
    * @description Emits the event of whether redraw the tile.
    */
-
   @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
   /**
    * @Output : Angular
@@ -303,24 +302,26 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Emits the event of hovering feature.
    */
   @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
-
   /**
    * @Output : Angular
    * @description Emit the event of updating the draw polygon
    */
   @Output() public onPolygonChange: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
-
   /**
    * @Output : Angular
    * @description Emit the event of invalid geometry creation
    */
   @Output() public onPolygonError: EventEmitter<Object> = new EventEmitter<Object>();
-
   /**
    * @Output : Angular
    * @description Emit the event of selecting polygon
    */
   @Output() public onPolygonSelect: EventEmitter<any> = new EventEmitter<any>();
+  /**
+   * @Output :  Angular
+   * @description Emits the map extend on Tab close/refresh
+   */
+  @Output() public onMapClosed: EventEmitter<MapExtend> = new EventEmitter<MapExtend>();
 
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
@@ -421,6 +422,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
     }
   }
+
   public ngAfterViewInit() {
     const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
     this.map = new mapboxgl.Map({
@@ -433,7 +435,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true
     });
 
-
+    fromEvent(window, 'beforeunload').subscribe(() => {
+        const bounds = (<mapboxgl.Map>this.map).getBounds();
+        const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom()};
+        this.onMapClosed.next(mapExtend);
+      }
+    );
 
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
@@ -491,7 +498,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
-
       if (this.drawEnabled) {
           this.firstDrawLayer = this.map.getStyle().layers
             .map(layer => layer.id)
