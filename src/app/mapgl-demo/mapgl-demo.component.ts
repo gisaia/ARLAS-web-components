@@ -19,6 +19,7 @@
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MapglComponent } from '../../components/mapgl/mapgl.component';
+import { MapglImportComponent } from '../../components/mapgl-import/mapgl-import.component';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -28,6 +29,7 @@ import { MapglComponent } from '../../components/mapgl/mapgl.component';
 export class MapglDemoComponent implements OnInit {
 
   @ViewChild('demoMap') public mapComponent: MapglComponent;
+  @ViewChild('demoImportMap') public mapImportComponent: MapglImportComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;

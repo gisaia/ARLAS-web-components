@@ -31,7 +31,6 @@
     "@ngx-translate/http-loader": "^3.0.0",
     "@turf/centroid": "6.0.2",
     "@turf/helpers": "6.1.4",
-    "turf-extent": "1.0.4",
     "@types/d3-dsv": "1.0.33",
     "@types/mapbox-gl": "^0.39.5",
     "@types/tinycolor2": "^1.4.0",
@@ -40,6 +39,7 @@
     "core-js": "^2.5.4",
     "d3-dsv": "^1.0.10",
     "jsts": "2.0.3",
+    "jszip": "^3.2.1",
     "mapbox-gl": "^0.48.0",
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",
@@ -47,6 +47,8 @@
     "rxjs": "~6.3.3",
     "rxjs-compat": "6.3.3",
     "shpjs": "^3.4.3",
+    "stream": "0.0.2",
+    "turf-extent": "1.0.4",
     "zone.js": "^0.8.26"
   },
   "devDependencies": {

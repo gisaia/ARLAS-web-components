@@ -500,9 +500,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.boxZoom.disable();
     this.map.on('load', () => {
       if (this.drawEnabled) {
-          this.firstDrawLayer = this.map.getStyle().layers
-            .map(layer => layer.id)
-            .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
+        this.firstDrawLayer = this.map.getStyle().layers
+          .map(layer => layer.id)
+          .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
       }
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();

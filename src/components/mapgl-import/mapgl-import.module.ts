@@ -17,21 +17,13 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatSelectModule,
-  MatRadioModule,
-  MatButtonModule,
-  MatIconModule,
-  MatDialogModule,
-  MatCheckboxModule,
-  MatProgressSpinnerModule
-} from '@angular/material';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSelectModule } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglImportComponent, MapglImportDialogComponent } from './mapgl-import.component';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({
@@ -39,13 +31,11 @@ import { BrowserModule } from '@angular/platform-browser';
     CommonModule,
     BrowserModule,
     FormsModule,
-    MatIconModule,
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,
     MatProgressSpinnerModule,
     MatSelectModule,
-    MatRadioModule,
     TranslateModule
   ],
   declarations: [MapglImportComponent, MapglImportDialogComponent],
