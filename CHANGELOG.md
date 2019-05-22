@@ -1,5 +1,18 @@
 # Change Log
 
+## [v10.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.0) (2019-05-22)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.2...v10.1.0)
+
+**Breaking changes:**
+
+- Add "externalEventsLayers" to specify layers to show on external hover/select [\#252](https://github.com/gisaia/ARLAS-web-components/issues/252) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Miscellaneous:**
+
+- Update README.md  [\#260](https://github.com/gisaia/ARLAS-web-components/issues/260) [[documentation](https://github.com/gisaia/ARLAS-web-components/labels/documentation)]
+- MAP: Add an event that emits the map extend & zoom on window close/refresh [\#255](https://github.com/gisaia/ARLAS-web-components/issues/255) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v10.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.2) (2019-05-07)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.1...v10.0.2)
