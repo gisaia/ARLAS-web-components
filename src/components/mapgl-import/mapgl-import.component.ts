@@ -65,7 +65,6 @@ export class MapglImportComponent {
   public reader: FileReader;
 
   private tooManyVertex = false;
-  private timeoutReached = false;
   private fitResult = false;
   private jszip: JSZip;
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
@@ -77,8 +76,7 @@ export class MapglImportComponent {
 
   constructor(
     public dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   public promiseTimeout(ms, promise) {
 
@@ -115,7 +113,6 @@ export class MapglImportComponent {
       this.reader.abort();
       this.throwError(error);
     });
-
   }
 
   public readFile() {
@@ -127,27 +124,20 @@ export class MapglImportComponent {
       };
       reader.onerror = () => {
         reader.abort();
-        reject(new Error('Problem parsing input file.'));
-      };
-      reader.onprogress = () => {
-        if (this.timeoutReached) {
-          reader.abort();
-        }
+        reject(new Error('Problem parsing input file'));
       };
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
-        reject(new Error('"' + this.currentFile.name +
-          '" is too large (Max: ' + this.formatBytes(this.maxFileSize) + ' - Currently ' + this.formatBytes(this.currentFile.size) + ')'));
+        reject(new Error('File is too large'));
       } else {
         if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
-          reject(new Error('Only "zip" file is allowed'));
+          reject(new Error('Only `zip` file is allowed'));
         } else {
           reader.readAsArrayBuffer(this.currentFile);
         }
       }
     });
   }
-
 
   public processAll() {
     const fileReaderPromise = this.readFile();
@@ -202,9 +192,9 @@ export class MapglImportComponent {
     });
 
     return Promise.all([fileReaderPromise, zipLoaderPromise, shapeParserPromise, geojsonParserPromise])
-      .then(([a, b, c, geojsonReult]) => {
+      .then(([a, zipResult, c, geojsonResult]) => {
         this.clearPolygons();
-        const testArray = Object.keys(b.files).map(fileName => fileName.split('.').pop().toLowerCase());
+        const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
         if (
           !(testArray.filter(elem => elem === 'shp' || elem === 'shx' || elem === 'dbf').length >= 3) &&
           !(testArray.filter(elem => elem === 'json').length === 1)
@@ -212,28 +202,26 @@ export class MapglImportComponent {
           throw new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`');
         }
 
-
         if (this.tooManyVertex) {
           throw new Error('Too many vertices in a polygon');
-        } else if (this.maxFeatures && geojsonReult[0].features.length > this.maxFeatures) {
-          throw new Error('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + geojsonReult[0].features.length + ')');
+        } else if (this.maxFeatures && geojsonResult[0].features.length > this.maxFeatures) {
+          throw new Error('Too much features');
         } else {
-          if (geojsonReult[0].features.length > 0) {
+          if (geojsonResult[0].features.length > 0) {
             this.dialogRef.componentInstance.isRunning = false;
-            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(geojsonReult[0]);
+            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(geojsonResult[0]);
             this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
               type: 'FeatureCollection',
-              features: geojsonReult[1]
+              features: geojsonResult[1]
             });
 
             if (this.fitResult) {
-              this.mapComponent.map.fitBounds(extent(geojsonReult[0]));
+              this.mapComponent.map.fitBounds(extent(geojsonResult[0]));
             }
-            this.imported.next(geojsonReult[0].features);
+            this.imported.next(geojsonResult[0].features);
             this.dialogRef.close();
-
           } else {
-            throw new Error('No polygon to display in "' + this.currentFile.name + '"');
+            throw new Error('No polygon to display in this file');
           }
         }
       });
@@ -252,7 +240,7 @@ export class MapglImportComponent {
   }
 
   public calcCentroid(feature) {
-    if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length > this.maxVertexByPolygon) {
+    if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length - 1 > this.maxVertexByPolygon) {
       this.tooManyVertex = true;
     }
     const poly = helpers.polygon(feature.geometry.coordinates);
@@ -260,7 +248,6 @@ export class MapglImportComponent {
     cent.properties.arlas_id = feature.properties.arlas_id;
     return cent;
   }
-
 
   private throwError(error: Error) {
     this.dialogRef.componentInstance.displayError = true;

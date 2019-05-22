@@ -1,15 +1,16 @@
-<h1 mat-dialog-title class="mapgl-import-title">Import</h1>
+<h1 mat-dialog-title class="mapgl-import-title">{{ 'Import file' | translate}}</h1>
 <div mat-dialog-content class="mapgl-import-body">
   <input type="file" class="mapgl-import-upload" #fileInput (change)="onChange($event.target.files)">
   <div class="mapgl-import-section">
-    <mat-checkbox class="" [(ngModel)]="fitResult">Zoom to result</mat-checkbox>
+    <mat-checkbox class="" [(ngModel)]="fitResult">{{ 'Zoom to result' | translate}}</mat-checkbox>
   </div>
   <div *ngIf="displayError" class="mapgl-import-error">
-    {{errorMessage}}
+    {{ errorMessage | translate}}
   </div>
 </div>
 <div mat-dialog-actions class="mapgl-import-actions">
-  <button mat-button (click)="onCancel()">Close</button>
-  <button mat-button [disabled]="!currentFile || isRunning" (click)="import()">Import</button>
-  <mat-progress-spinner *ngIf="isRunning" [color]="'accent'" [diameter]="40" [mode]="'indeterminate'" ></mat-progress-spinner>
+  <button mat-button (click)="onCancel()">{{ 'Cancel' | translate}}</button>
+  <button mat-button [disabled]="!currentFile || isRunning" (click)="import()">{{ 'Import' | translate}}</button>
+  <mat-progress-spinner *ngIf="isRunning" [color]="'accent'" [diameter]="40" [mode]="'indeterminate'">
+  </mat-progress-spinner>
 </div>
