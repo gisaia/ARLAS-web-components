@@ -45,6 +45,8 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
 import { GaugeDemoComponent } from './gauge-demo/gauge-demo.component';
 import { GaugeModule } from '../components/gauge/gauge.module';
+import { MapglImportModule } from '../components/mapgl-import/mapgl-import.module';
+import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -82,6 +84,7 @@ const routes: Routes = [
     MatRadioModule,
     FormsModule,
     MapglModule,
+    MapglImportModule,
     HistogramModule,
     DonutModule,
     ResultsModule,
@@ -99,6 +102,7 @@ const routes: Routes = [
     })
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [MapglImportDialogComponent]
 })
 export class AppModule { }

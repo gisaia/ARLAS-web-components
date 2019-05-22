@@ -1,0 +1,15 @@
+.mapgl-import-section{
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.mapgl-import-error{
+  color: #f44336;
+  font-size: 75%;
+}
+
+.mapgl-import-upload:focus{
+  outline: none;
+}

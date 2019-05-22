@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MapglComponent } from '../../components/mapgl/mapgl.component';
+import { MapglImportComponent } from '../../components/mapgl-import/mapgl-import.component';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -29,11 +29,12 @@ import { MapglComponent } from '../../components/mapgl/mapgl.component';
 export class MapglDemoComponent implements OnInit {
 
   @ViewChild('demoMap') public mapComponent: MapglComponent;
+  @ViewChild('demoImportMap') public mapImportComponent: MapglImportComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;
   public actionDisabled = false;
-  public drawEnabled = true;
+  public drawEnabled = false;
 
   public geojsondata = {
     'type': 'FeatureCollection',
@@ -41,7 +42,20 @@ export class MapglDemoComponent implements OnInit {
   };
 
   public mapLayers = {
-    layers: [,
+    layers: [
+      {
+        'id': 'polygon_imported',
+        'type': 'fill',
+        'source': 'polygon_imported',
+        'paint': {
+          'fill-color': 'rgba(153, 32, 228, 1)',
+          'fill-opacity': 0.4,
+          'fill-outline-color': 'rgba(0, 0, 0, 1)'
+        },
+        'layout': {
+          'visibility': 'visible'
+        }
+      },
       {
         'id': 'polygon_label',
         'type': 'symbol',
@@ -66,7 +80,8 @@ export class MapglDemoComponent implements OnInit {
         id: 'distribution',
         name: 'Distribution',
         base: [
-          'polygon_label'
+          'polygon_label',
+          'polygon_imported'
         ],
         styles: [
           {

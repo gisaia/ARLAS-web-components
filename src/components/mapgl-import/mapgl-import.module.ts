@@ -17,25 +17,30 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule } from '@angular/material';
-import { MapglComponent } from './mapgl.component';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule, MatCheckboxModule, MatDialogModule, MatProgressSpinnerModule, MatSelectModule } from '@angular/material';
+import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
+import { MapglImportComponent, MapglImportDialogComponent } from './mapgl-import.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
-    MatIconModule,
+    BrowserModule,
+    FormsModule,
     MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
     MatSelectModule,
-    MatRadioModule,
     TranslateModule
   ],
-  declarations: [MapglComponent],
-  exports: [MapglComponent]
+  declarations: [MapglImportComponent, MapglImportDialogComponent],
+  exports: [MapglImportComponent, MapglImportDialogComponent]
 })
-export class MapglModule {
+export class MapglImportModule {
 
 }

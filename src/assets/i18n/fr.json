@@ -18,5 +18,17 @@
   "Cloud": "Nuage",
   "country": "Pays",
   "Click to show details": "Cliquer pour afficher le détail",
-  "Geo-sort": "Geo-tris"
+  "Geo-sort": "Geo-tris",
+  "Cancel": "Fermer",
+  "Import file": "Importer un fichier",
+  "Zoom to result": "Zoomer sur le résultat",
+  "Import": "Importer",
+  "Timeout": "Temps d'attente dépassé",
+  "Problem parsing input file": "Erreur dans le parcours du fichier d'entrée",
+  "Only `zip` file is allowed": "Seulement les fichiers `zip` sont acceptés",
+  "Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`": "Le fichier zip doit contenir au minimum un fichier `*.shp`, `*.shx` et `*.dbf` OU un fichier `*.json`",
+  "Too many vertices in a polygon": "Un polygone contient trop de sommets",
+  "No polygon to display in this file": "Aucun polygone à afficher",
+  "Too much features": "Le fichier contient trop d'elements",
+  "File is too large": "Le fichier est trop volumineux"
 }

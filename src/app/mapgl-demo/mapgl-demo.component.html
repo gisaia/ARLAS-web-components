@@ -10,7 +10,11 @@
   </mat-radio-group>
   <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
 </div>
+<button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
+  <mat-icon aria-label="Import polygon on your map" >get_app</mat-icon>
+</button>
 <div id="mapgldemo" style="height:94%; width:100%">
+  <arlas-mapgl-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="100000" [maxVertexByPolygon]="400" [maxLoadingTime]="1000"></arlas-mapgl-import>
   <arlas-mapgl #demoMap
   [style]="'http://demo.arlas.io:82/styles/positron/style.json'"
    [geojsondata]="geojsondata" [margePanForLoad]=40 [margePanForTest]=2
