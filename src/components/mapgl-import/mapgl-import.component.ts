@@ -55,15 +55,17 @@ export class MapglImportComponent {
   @Input() public maxVertexByPolygon: number;
   @Input() public maxFeatures?: number;
   @Input() public maxFileSize?: number;
-  @Input() public maxLoadingTime = 30;
+  @Input() public maxLoadingTime = 20000;
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
   @ViewChild('importDialog') public importDialog: MapglImportDialogComponent;
 
   public currentFile: File;
   public dialogRef: MatDialogRef<MapglImportDialogComponent>;
+  public reader: FileReader;
 
   private tooManyVertex = false;
+  private timeoutReached = false;
   private fitResult = false;
   private jszip: JSZip;
   private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
@@ -84,7 +86,7 @@ export class MapglImportComponent {
     const timeout = new Promise((resolve, reject) => {
       const id = setTimeout(() => {
         clearTimeout(id);
-        reject('Loading time exceeded (' + ms + ' ms)');
+        reject(new Error('Timeout'));
       }, ms);
     });
 
@@ -109,101 +111,132 @@ export class MapglImportComponent {
   public import() {
     this.dialogRef.componentInstance.isRunning = true;
     this.jszip = new JSZip();
-    this.promiseTimeout(1000, this.readFile()).catch(error => this.throwError(error));
+    this.promiseTimeout(this.maxLoadingTime, this.processAll()).catch(error => {
+      this.reader.abort();
+      this.throwError(error);
+    });
 
   }
 
   public readFile() {
     return new Promise((resolve, reject) => {
-      const reader: FileReader = new FileReader();
-      reader.onload = (() => {
-        return (evt) => {
-          this.jszip.loadAsync(evt.target.result).then(zip => {
-            this.clearPolygons();
-            const testArray = Object.keys(zip.files).map(fileName => fileName.split('.').pop().toLowerCase());
-            if (
-              !(testArray.filter(elem => elem === 'shp' || elem === 'shx' || elem === 'dbf').length >= 3) &&
-              !(testArray.filter(elem => elem === 'json').length === 1)
-            ) {
-              reject('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`');
-            } else {
-              return evt.target.result;
-            }
-          }).then(buffer => {
-            shp(buffer).then(geojson => {
-              const centroides = new Array<any>();
-              const importedGeojson = {
-                type: 'FeatureCollection',
-                features: []
-              };
-
-              let index = 0;
-              geojson.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
-                .forEach((feature) => {
-                  if (feature.geometry.type === 'MultiPolygon') {
-                    // Create a new Polygon feature for each polygon in the MultiPolygon
-                    // All properties of the MultiPolygon are copied in each feature created
-                    feature.geometry.coordinates.forEach(geom => {
-                      const newFeature = {
-                        type: 'Feature',
-                        geometry: {
-                          bbox: feature.geometry.bbox,
-                          coordinates: geom,
-                          type: 'Polygon'
-                        },
-                        properties: feature.properties
-                      };
-                      newFeature.properties.arlas_id = ++index;
-                      const cent = this.calcCentroid(newFeature);
-                      centroides.push(cent);
-                      importedGeojson.features.push(newFeature);
-                    });
-                  } else {
-                    feature.properties.arlas_id = ++index;
-                    const cent = this.calcCentroid(feature);
-                    centroides.push(cent);
-                    importedGeojson.features.push(feature);
-                  }
-                });
-              if (this.tooManyVertex) {
-                reject('Too many vertices in a polygon');
-              } else if (this.maxFeatures && importedGeojson.features.length > this.maxFeatures) {
-                reject('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + importedGeojson.features.length + ')');
-              } else {
-                if (importedGeojson.features.length > 0) {
-                  this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedGeojson);
-                  this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
-                    type: 'FeatureCollection',
-                    features: centroides
-                  });
-
-                  if (this.fitResult) {
-                    this.mapComponent.map.fitBounds(extent(importedGeojson));
-                  }
-                  this.imported.next(importedGeojson.features);
-                  this.dialogRef.componentInstance.isRunning = false;
-                  this.dialogRef.close();
-                  return;
-                } else {
-                  reject('No polygon to display in "' + this.currentFile.name + '"');
-                }
-              }
-            }).then(() => resolve());
-          });
-        };
-      })();
+      this.reader = new FileReader();
+      const reader = this.reader;
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = () => {
+        reader.abort();
+        reject(new Error('Problem parsing input file.'));
+      };
+      reader.onprogress = () => {
+        if (this.timeoutReached) {
+          reader.abort();
+        }
+      };
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
-        reject('"' + this.currentFile.name +
-          '" is too large (Max: ' + this.formatBytes(this.maxFileSize) + ' - Currently ' + this.formatBytes(this.currentFile.size) + ')');
+        reject(new Error('"' + this.currentFile.name +
+          '" is too large (Max: ' + this.formatBytes(this.maxFileSize) + ' - Currently ' + this.formatBytes(this.currentFile.size) + ')'));
       } else {
         if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
-          reject('Only "zip" file is allowed');
+          reject(new Error('Only "zip" file is allowed'));
         } else {
           reader.readAsArrayBuffer(this.currentFile);
         }
       }
     });
+  }
+
+
+  public processAll() {
+    const fileReaderPromise = this.readFile();
+
+    const zipLoaderPromise = fileReaderPromise.then(result => {
+      return this.jszip.loadAsync(result);
+    });
+
+    const shapeParserPromise = fileReaderPromise
+      .then(buffer => {
+        return shp(buffer);
+      });
+
+    const geojsonParserPromise = shapeParserPromise.then(geojson => {
+      return new Promise((resolve, reject) => {
+
+        const centroides = new Array<any>();
+        const importedGeojson = {
+          type: 'FeatureCollection',
+          features: []
+        };
+        let index = 0;
+        geojson.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
+          .forEach((feature) => {
+            if (feature.geometry.type === 'MultiPolygon') {
+              // Create a new Polygon feature for each polygon in the MultiPolygon
+              // All properties of the MultiPolygon are copied in each feature created
+              feature.geometry.coordinates.forEach(geom => {
+                const newFeature = {
+                  type: 'Feature',
+                  geometry: {
+                    bbox: feature.geometry.bbox,
+                    coordinates: geom,
+                    type: 'Polygon'
+                  },
+                  properties: feature.properties
+                };
+                newFeature.properties.arlas_id = ++index;
+                const cent = this.calcCentroid(newFeature);
+                centroides.push(cent);
+                importedGeojson.features.push(newFeature);
+              });
+            } else {
+              feature.properties.arlas_id = ++index;
+              const cent = this.calcCentroid(feature);
+              centroides.push(cent);
+              importedGeojson.features.push(feature);
+            }
+          });
+        resolve([importedGeojson, centroides]);
+      });
+    });
+
+    return Promise.all([fileReaderPromise, zipLoaderPromise, shapeParserPromise, geojsonParserPromise])
+      .then(([a, b, c, geojsonReult]) => {
+        this.clearPolygons();
+        const testArray = Object.keys(b.files).map(fileName => fileName.split('.').pop().toLowerCase());
+        if (
+          !(testArray.filter(elem => elem === 'shp' || elem === 'shx' || elem === 'dbf').length >= 3) &&
+          !(testArray.filter(elem => elem === 'json').length === 1)
+        ) {
+          throw new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`');
+        }
+
+
+        if (this.tooManyVertex) {
+          throw new Error('Too many vertices in a polygon');
+        } else if (this.maxFeatures && geojsonReult[0].features.length > this.maxFeatures) {
+          throw new Error('Too much features (Max: ' + this.maxFeatures + ' - Currently: ' + geojsonReult[0].features.length + ')');
+        } else {
+          if (geojsonReult[0].features.length > 0) {
+            this.dialogRef.componentInstance.isRunning = false;
+            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(geojsonReult[0]);
+            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
+              type: 'FeatureCollection',
+              features: geojsonReult[1]
+            });
+
+            if (this.fitResult) {
+              this.mapComponent.map.fitBounds(extent(geojsonReult[0]));
+            }
+            this.imported.next(geojsonReult[0].features);
+            this.dialogRef.close();
+
+          } else {
+            throw new Error('No polygon to display in "' + this.currentFile.name + '"');
+          }
+        }
+      });
   }
 
   public clearPolygons() {
@@ -229,14 +262,13 @@ export class MapglImportComponent {
   }
 
 
-  private throwError(errorMessage: string) {
-    this.error.next(errorMessage);
+  private throwError(error: Error) {
     this.dialogRef.componentInstance.displayError = true;
     this.dialogRef.componentInstance.isRunning = false;
-    this.dialogRef.componentInstance.errorMessage = errorMessage;
+    this.dialogRef.componentInstance.errorMessage = error.message;
     this.dialogRef.componentInstance.fileInput.nativeElement.value = '';
     this.dialogRef.componentInstance.currentFile = null;
-    this.currentFile = null;
+    this.error.next(error.message);
   }
 
   private formatBytes(bytes, decimals = 2) {
