@@ -1,5 +1,14 @@
 # Change Log
 
+## [v10.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.1) (2019-05-24)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.0...v10.1.1)
+
+**New stuff:**
+
+- Add transformRequest options [\#264](https://github.com/gisaia/ARLAS-web-components/pull/264) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
+- Add more detail in error message during shape import [\#263](https://github.com/gisaia/ARLAS-web-components/pull/263) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
+
 ## [v10.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.0) (2019-05-22)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.2...v10.1.0)
@@ -7,6 +16,10 @@
 **Breaking changes:**
 
 - Add "externalEventsLayers" to specify layers to show on external hover/select [\#252](https://github.com/gisaia/ARLAS-web-components/issues/252) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**New stuff:**
+
+- Feature/import shp [\#262](https://github.com/gisaia/ARLAS-web-components/pull/262) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
 
 **Miscellaneous:**
 
