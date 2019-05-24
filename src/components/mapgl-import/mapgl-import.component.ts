@@ -19,6 +19,7 @@ export class MapglImportDialogComponent {
   public isRunning = false;
   public fitResult = false;
   public errorMessage: string;
+  public errorThreshold: string;
   public currentFile: File;
 
   @Output() public file = new Subject<File>();
@@ -58,7 +59,6 @@ export class MapglImportComponent {
   @Input() public maxLoadingTime = 20000;
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
-  @ViewChild('importDialog') public importDialog: MapglImportDialogComponent;
 
   public currentFile: File;
   public dialogRef: MatDialogRef<MapglImportDialogComponent>;
@@ -76,7 +76,7 @@ export class MapglImportComponent {
 
   constructor(
     public dialog: MatDialog
-  ) {}
+  ) { }
 
   public promiseTimeout(ms, promise) {
 
@@ -253,6 +253,22 @@ export class MapglImportComponent {
     this.dialogRef.componentInstance.displayError = true;
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;
+    switch (this.dialogRef.componentInstance.errorMessage) {
+      case 'Too much features':
+        this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
+        break;
+      case 'Too many vertices in a polygon':
+        this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
+        break;
+      case 'File is too large':
+        this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
+        break;
+      case 'Timeout':
+        this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
+        break;
+      default:
+        this.dialogRef.componentInstance.errorThreshold = '';
+    }
     this.dialogRef.componentInstance.fileInput.nativeElement.value = '';
     this.dialogRef.componentInstance.currentFile = null;
     this.error.next(error.message);

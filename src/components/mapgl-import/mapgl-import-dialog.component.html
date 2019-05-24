@@ -5,7 +5,7 @@
     <mat-checkbox class="" [(ngModel)]="fitResult">{{ 'Zoom to result' | translate}}</mat-checkbox>
   </div>
   <div *ngIf="displayError" class="mapgl-import-error">
-    {{ errorMessage | translate}}
+    {{ errorMessage | translate}} <ng-container *ngIf="errorThreshold !== ''"> - (Max : {{errorThreshold}})</ng-container>
   </div>
 </div>
 <div mat-dialog-actions class="mapgl-import-actions">
