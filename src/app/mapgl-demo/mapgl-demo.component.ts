@@ -20,6 +20,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MapglComponent } from '../../components/mapgl/mapgl.component';
 import { MapglImportComponent } from '../../components/mapgl-import/mapgl-import.component';
+import * as mapboxgl from 'mapbox-gl';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -560,5 +561,13 @@ export class MapglDemoComponent implements OnInit {
 
   public polygonSelect(event) {
     console.log(event);
+  }
+
+  public transformRequest(url: string, resourceType: mapboxgl.ResourceType): mapboxgl.RequestParameters {
+    return {
+      url: url.replace('http', 'http'),
+      headers: { 'seb-header': true}
+    };
+
   }
 }

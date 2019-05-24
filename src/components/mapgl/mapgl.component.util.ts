@@ -18,6 +18,7 @@
  */
 
 import { StyleGroup, Style } from './model/mapLayers';
+import * as mapboxgl from 'mapbox-gl';
 
 export function paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: mapboxgl.Map, SW, NE) {

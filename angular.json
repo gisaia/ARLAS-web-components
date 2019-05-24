@@ -26,7 +26,7 @@
               "node_modules/@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw.css"
             ],
             "scripts": [
-              "node_modules/mapbox-gl/dist/mapbox-gl.js"
+
             ]
           },
           "configurations": {
@@ -74,7 +74,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "node_modules/mapbox-gl/dist/mapbox-gl.js"
+
             ],
             "styles": [
               "src/styles.css",

@@ -37,6 +37,7 @@ import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
 import LimitVertexMode from './model/LimitVertexMode';
+import * as mapboxgl from 'mapbox-gl';
 
 
 export interface OnMoveResult {
@@ -156,7 +157,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Coordinates of the map's centre when it's initialized.
    */
-  @Input() public initCenter = [2.1972656250000004, 45.706179285330855];
+  @Input() public initCenter: [number, number] = [2.1972656250000004, 45.706179285330855];
   /**
    * @Input : Angular
    * @description Margin applied to the map extent. Data is loaded in all this extent.
@@ -253,6 +254,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
    */
   @Input() private maxPrecision: Array<number>;
+
+  @Input() private transformRequest: (url: string, resourceType: mapboxgl.ResourceType) => mapboxgl.RequestParameters;
 
   /**
    * @Output : Angular
@@ -404,7 +407,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
           layersToSave.push(l);
           if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-            sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
+            sourcesToSave.push({ id: l.source.toString(), source: l.source });
           }
         });
         const sourcesToSaveSet = new Set<string>();
@@ -425,7 +428,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngAfterViewInit() {
+
     const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
+
     this.map = new mapboxgl.Map({
       container: 'mapgl',
       style: afterViewInitbasemapStyle.styleFile,
@@ -433,14 +438,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
       minZoom: this.minZoom,
-      renderWorldCopies: true
+      renderWorldCopies: true,
+      transformRequest: this.transformRequest
     });
 
     fromEvent(window, 'beforeunload').subscribe(() => {
-        const bounds = (<mapboxgl.Map>this.map).getBounds();
-        const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom()};
-        this.onMapClosed.next(mapExtend);
-      }
+      const bounds = (<mapboxgl.Map>this.map).getBounds();
+      const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
+      this.onMapClosed.next(mapExtend);
+    }
     );
 
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
