@@ -563,7 +563,7 @@ export class MapglDemoComponent implements OnInit {
     console.log(event);
   }
 
-  public transformRequest(url: string, resourceType: mapboxgl.ResourceType): mapboxgl.RequestParameters {
+  public transformRequest = (url: string, resourceType: string)  => {
     return {
       url: url.replace('http', 'http'),
       headers: { 'seb-header': true}
