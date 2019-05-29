@@ -1,8 +1,20 @@
 # Change Log
 
+## [v10.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.3) (2019-05-29)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.2...v10.1.3)
+
+**Fixed bugs:**
+
+- Fix version of @types/mapbox [\#268](https://github.com/gisaia/ARLAS-web-components/pull/268) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v10.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.2) (2019-05-24)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.1...v10.1.2)
+
+**Fixed bugs:**
+
+- Fix package release [\#266](https://github.com/gisaia/ARLAS-web-components/pull/266) ([mbarbet](https://github.com/mbarbet))
 
 ## [v10.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.1) (2019-05-24)
 
