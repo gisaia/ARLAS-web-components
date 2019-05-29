@@ -255,7 +255,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() private maxPrecision: Array<number>;
 
-  @Input() private transformRequest: (url: string, resourceType: mapboxgl.ResourceType) => mapboxgl.RequestParameters;
+  @Input() private transformRequest: Function;
 
   /**
    * @Output : Angular
@@ -407,7 +407,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
           layersToSave.push(l);
           if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-            sourcesToSave.push({ id: l.source.toString(), source: l.source });
+            sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
           }
         });
         const sourcesToSaveSet = new Set<string>();
