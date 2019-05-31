@@ -13,3 +13,7 @@
 .mapgl-import-upload:focus{
   outline: none;
 }
+
+.mapgl-import-radio-button{
+  padding-right: 10px;
+}

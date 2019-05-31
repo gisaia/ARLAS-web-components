@@ -21,6 +21,7 @@
     "@angular/platform-browser-dynamic": "~7.0.0",
     "@angular/router": "~7.0.0",
     "@gisaia-team/mapbox-gl-draw": "1.1.2",
+    "@mapbox/togeojson": "0.16.0",
     "@ngx-translate/core": "^10.0.0",
     "@ngx-translate/http-loader": "^3.0.0",
     "@turf/centroid": "6.0.2",

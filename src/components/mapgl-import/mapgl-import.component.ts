@@ -7,13 +7,13 @@ import * as JSZip from 'jszip';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { MapglComponent } from '../mapgl/mapgl.component';
 import { Subject } from 'rxjs';
+import * as toGeoJSON from '@mapbox/togeojson';
 
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',
   selector: 'arlas-mapgl-import-dialog',
   styleUrls: ['./mapgl-import-dialog.component.css']
 })
-
 export class MapglImportDialogComponent {
   public displayError = false;
   public isRunning = false;
@@ -21,6 +21,8 @@ export class MapglImportDialogComponent {
   public errorMessage: string;
   public errorThreshold: string;
   public currentFile: File;
+
+  public importType = 'shp';
 
   @Output() public file = new Subject<File>();
   @Output() public importRun = new Subject<any>();
@@ -35,7 +37,7 @@ export class MapglImportDialogComponent {
   }
 
   public import() {
-    this.importRun.next({ fitResult: this.fitResult });
+    this.importRun.next({ type: this.importType, fitResult: this.fitResult });
   }
 
   public onCancel() {
@@ -49,7 +51,6 @@ export class MapglImportDialogComponent {
   selector: 'arlas-mapgl-import',
   styleUrls: ['./mapgl-import.component.css']
 })
-
 export class MapglImportComponent {
 
   @Input() public mapComponent: MapglComponent;
@@ -102,20 +103,138 @@ export class MapglImportComponent {
     });
     this.dialogRef.componentInstance.importRun.subscribe(importOptions => {
       this.fitResult = importOptions.fitResult;
-      this.import();
+      this.import(importOptions.type);
     });
   }
 
-  public import() {
+  public import(importType: string) {
     this.dialogRef.componentInstance.isRunning = true;
+    this.tooManyVertex = false;
     this.jszip = new JSZip();
-    this.promiseTimeout(this.maxLoadingTime, this.processAll()).catch(error => {
-      this.reader.abort();
-      this.throwError(error);
+    if (importType === 'shp') {
+      this.promiseTimeout(this.maxLoadingTime, this.processAllShape()).catch(error => {
+        this.reader.abort();
+        this.throwError(error);
+      });
+    } else {
+      this.promiseTimeout(this.maxLoadingTime, this.processAllKml()).catch(error => {
+        this.reader.abort();
+        this.throwError(error);
+      });
+    }
+  }
+
+  /***************/
+  /***** KML *****/
+  /***************/
+  public readKmlFile() {
+    return new Promise<string>((resolve, reject) => {
+      this.reader = new FileReader();
+      const reader = this.reader;
+      reader.onload = () => {
+        resolve(reader.result.toString());
+      };
+      reader.onerror = () => {
+        reader.abort();
+        reject(new Error('Problem parsing input file'));
+      };
+
+      if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
+        reject(new Error('File is too large'));
+      } else {
+        if (this.currentFile.name.split('.').pop().toLowerCase() !== 'kml') {
+          reject(new Error('Only `kml` file is allowed'));
+        } else {
+
+          reader.readAsText(this.currentFile);
+        }
+      }
     });
   }
 
-  public readFile() {
+  public processAllKml() {
+    const readKmlFIle = this.readKmlFile();
+
+    const parseKml = readKmlFIle.then((file: string) => {
+      return new Promise((resolve, reject) => {
+
+        const geojson = toGeoJSON.kml((new DOMParser()).parseFromString(file, 'text/xml'));
+        resolve(geojson);
+      });
+    });
+
+    const geojsonParserPromise = parseKml.then((geojson: any) => {
+      return new Promise<{ geojson: any, centroides: any }>((resolve, reject) => {
+        const centroides = new Array<any>();
+        const importedGeojson = {
+          type: 'FeatureCollection',
+          features: []
+        };
+        let index = 0;
+        geojson.features.filter(feature => feature.geometry.type === 'Polygon'
+          || feature.geometry.type === 'GeometryCollection'
+          || feature.geometry.type === 'MultiGeometry')
+          .forEach((feature) => {
+            if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'MultiGeometry') {
+              // Create a new Polygon feature for each polygon in the MultiPolygon
+              // All properties of the MultiPolygon are copied in each feature created
+              feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
+                const newFeature = {
+                  type: 'Feature',
+                  geometry: {
+                    coordinates: geom.coordinates,
+                    type: 'Polygon'
+                  },
+                  properties: feature.properties
+                };
+                newFeature.properties.arlas_id = ++index;
+                const cent = this.calcCentroid(newFeature);
+                centroides.push(cent);
+                importedGeojson.features.push(newFeature);
+              });
+            } else {
+              feature.properties.arlas_id = ++index;
+              const cent = this.calcCentroid(feature);
+              centroides.push(cent);
+              importedGeojson.features.push(feature);
+            }
+          });
+        resolve({ geojson: importedGeojson, centroides: centroides });
+      });
+    });
+
+    return Promise.all<string, any, { geojson: any, centroides: any }>([readKmlFIle, parseKml, geojsonParserPromise])
+      .then(([file, geojson, importedResult]) => {
+        this.clearPolygons();
+        if (this.tooManyVertex) {
+          throw new Error('Too many vertices in a polygon');
+        } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
+          throw new Error('Too much features');
+        } else {
+          if (importedResult.geojson.features.length > 0) {
+            this.dialogRef.componentInstance.isRunning = false;
+            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedResult.geojson);
+            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
+              type: 'FeatureCollection',
+              features: importedResult.centroides
+            });
+
+            if (this.fitResult) {
+              this.mapComponent.map.fitBounds(extent(importedResult.geojson));
+            }
+            this.imported.next(importedResult.geojson.features);
+            this.dialogRef.close();
+          } else {
+            throw new Error('No polygon to display in this file');
+          }
+        }
+      });
+  }
+
+  /***************/
+  /**** SHAPE ****/
+  /***************/
+  public readZipFile() {
     return new Promise((resolve, reject) => {
       this.reader = new FileReader();
       const reader = this.reader;
@@ -139,8 +258,8 @@ export class MapglImportComponent {
     });
   }
 
-  public processAll() {
-    const fileReaderPromise = this.readFile();
+  public processAllShape() {
+    const fileReaderPromise = this.readZipFile();
 
     const zipLoaderPromise = fileReaderPromise.then(result => {
       return this.jszip.loadAsync(result);
@@ -152,7 +271,7 @@ export class MapglImportComponent {
       });
 
     const geojsonParserPromise = shapeParserPromise.then(geojson => {
-      return new Promise((resolve, reject) => {
+      return new Promise<{ geojson: any, centroides: any }>((resolve, reject) => {
 
         const centroides = new Array<any>();
         const importedGeojson = {
@@ -187,12 +306,12 @@ export class MapglImportComponent {
               importedGeojson.features.push(feature);
             }
           });
-        resolve([importedGeojson, centroides]);
+        resolve({ geojson: importedGeojson, centroides: centroides });
       });
     });
 
     return Promise.all([fileReaderPromise, zipLoaderPromise, shapeParserPromise, geojsonParserPromise])
-      .then(([a, zipResult, c, geojsonResult]) => {
+      .then(([a, zipResult, c, importedResult]) => {
         this.clearPolygons();
         const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
         if (
@@ -204,21 +323,21 @@ export class MapglImportComponent {
 
         if (this.tooManyVertex) {
           throw new Error('Too many vertices in a polygon');
-        } else if (this.maxFeatures && geojsonResult[0].features.length > this.maxFeatures) {
+        } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
           throw new Error('Too much features');
         } else {
-          if (geojsonResult[0].features.length > 0) {
+          if (importedResult.geojson.features.length > 0) {
             this.dialogRef.componentInstance.isRunning = false;
-            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(geojsonResult[0]);
+            this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedResult.geojson);
             this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
               type: 'FeatureCollection',
-              features: geojsonResult[1]
+              features: importedResult.centroides
             });
 
             if (this.fitResult) {
-              this.mapComponent.map.fitBounds(extent(geojsonResult[0]));
+              this.mapComponent.map.fitBounds(extent(importedResult.geojson));
             }
-            this.imported.next(geojsonResult[0].features);
+            this.imported.next(importedResult.geojson.features);
             this.dialogRef.close();
           } else {
             throw new Error('No polygon to display in this file');
@@ -227,6 +346,10 @@ export class MapglImportComponent {
       });
   }
 
+
+  /***************/
+  /**** TOOLS ****/
+  /***************/
   public clearPolygons() {
     // Clean source of imported polygons
     const importSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED);

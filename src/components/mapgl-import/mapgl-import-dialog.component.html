@@ -1,11 +1,20 @@
 <h1 mat-dialog-title class="mapgl-import-title">{{ 'Import file' | translate}}</h1>
 <div mat-dialog-content class="mapgl-import-body">
-  <input type="file" class="mapgl-import-upload" #fileInput (change)="onChange($event.target.files)">
+  <div>
+    <mat-radio-group class="mapgl-import-radio-group" [(ngModel)]="importType">
+      <mat-radio-button [value]="'shp'" class="mapgl-import-radio-button">{{ 'Shape' | translate}}</mat-radio-button>
+      <mat-radio-button [value]="'kml'" class="mapgl-import-radio-button">{{ 'KML' | translate}}</mat-radio-button>
+    </mat-radio-group>
+  </div>
+  <div>
+    <input type="file" class="mapgl-import-upload" #fileInput (change)="onChange($event.target.files)">
+  </div>
   <div class="mapgl-import-section">
     <mat-checkbox class="" [(ngModel)]="fitResult">{{ 'Zoom to result' | translate}}</mat-checkbox>
   </div>
   <div *ngIf="displayError" class="mapgl-import-error">
-    {{ errorMessage | translate}} <ng-container *ngIf="errorThreshold !== ''"> - (Max : {{errorThreshold}})</ng-container>
+    {{ errorMessage | translate}} <ng-container *ngIf="errorThreshold !== ''"> - (Max : {{errorThreshold}})
+    </ng-container>
   </div>
 </div>
 <div mat-dialog-actions class="mapgl-import-actions">
