@@ -128,11 +128,11 @@ export class MapglImportComponent {
   /***** KML *****/
   /***************/
   public readKmlFile() {
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<string | ArrayBuffer>((resolve, reject) => {
       this.reader = new FileReader();
       const reader = this.reader;
       reader.onload = () => {
-        resolve(reader.result.toString());
+        resolve(reader.result);
       };
       reader.onerror = () => {
         reader.abort();
@@ -142,22 +142,36 @@ export class MapglImportComponent {
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
         reject(new Error('File is too large'));
       } else {
-        if (this.currentFile.name.split('.').pop().toLowerCase() !== 'kml') {
-          reject(new Error('Only `kml` file is allowed'));
-        } else {
-
+        if (this.currentFile.name.split('.').pop().toLowerCase() === 'kml') {
           reader.readAsText(this.currentFile);
+        } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
+          reader.readAsArrayBuffer(this.currentFile);
+        } else {
+          reject(new Error('Only `kml` or `zip` file is allowed'));
         }
       }
     });
   }
 
   public processAllKml() {
-    const readKmlFIle = this.readKmlFile();
+    const readKmlFile = this.readKmlFile();
 
-    const parseKml = readKmlFIle.then((file: string) => {
+    let readKmzFile = readKmlFile;
+    if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
+      readKmzFile = readKmlFile.then(result => {
+        return new Promise<string>((resolve, reject) => {
+          this.jszip.loadAsync(result).then(kmzContent => {
+            const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === 'kml')[0];
+            this.jszip.file(kmlFile).async('string').then(function (data) {
+              resolve(data);
+            });
+          });
+        });
+      });
+    }
+
+    const parseKml = readKmzFile.then((file: string) => {
       return new Promise((resolve, reject) => {
-
         const geojson = toGeoJSON.kml((new DOMParser()).parseFromString(file, 'text/xml'));
         resolve(geojson);
       });
@@ -203,7 +217,7 @@ export class MapglImportComponent {
       });
     });
 
-    return Promise.all<string, any, { geojson: any, centroides: any }>([readKmlFIle, parseKml, geojsonParserPromise])
+    return Promise.all<string | ArrayBuffer, any, { geojson: any, centroides: any }>([readKmzFile, parseKml, geojsonParserPromise])
       .then(([file, geojson, importedResult]) => {
         this.clearPolygons();
         if (this.tooManyVertex) {
