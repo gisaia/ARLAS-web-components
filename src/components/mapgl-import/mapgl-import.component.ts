@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import { MapglComponent } from '../mapgl/mapgl.component';
 import { Subject } from 'rxjs';
 import * as toGeoJSON from '@mapbox/togeojson';
+import { parse } from 'wellknown';
 
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',
@@ -22,9 +23,14 @@ export class MapglImportDialogComponent implements OnInit {
   public errorThreshold: string;
   public currentFile: File;
 
-  public importType = 'shp';
+  public importType: string;
   public allowedFileExtension: string;
   public allowedImportType: string[];
+  public wktContent = '';
+
+  public SHP = 'shp';
+  public KML = 'kml';
+  public WKT = 'wkt';
 
   @Output() public file = new Subject<File>();
   @Output() public importRun = new Subject<any>();
@@ -33,30 +39,36 @@ export class MapglImportDialogComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
 
   public ngOnInit(): void {
-    if (this.allowedImportType.indexOf('shp') > -1) {
-      this.importType = 'shp';
+    if (this.allowedImportType.indexOf(this.SHP) > -1) {
+      this.importType = this.SHP;
+    } else if (this.allowedImportType.indexOf(this.KML) > -1) {
+      this.importType = this.KML;
     } else {
-      this.importType = 'kml';
+      this.importType = this.WKT;
     }
     this.changeType();
   }
 
-  public onChange(files: FileList) {
+  public onFileChange(files: FileList) {
     this.file.next(files.item(0));
     this.currentFile = files.item(0);
     this.displayError = false;
   }
 
+  public import() {
+    this.importRun.next({ type: this.importType, fitResult: this.fitResult, wktContent: this.wktContent });
+  }
+
+  public onTextChange() {
+
+  }
+
   public changeType() {
-    if (this.importType === 'shp') {
+    if (this.importType === this.SHP) {
       this.allowedFileExtension = '.zip';
     } else {
       this.allowedFileExtension = '.kml,.kmz';
     }
-  }
-
-  public import() {
-    this.importRun.next({ type: this.importType, fitResult: this.fitResult });
   }
 
   public onCancel() {
@@ -71,14 +83,9 @@ export class MapglImportDialogComponent implements OnInit {
 })
 export class MapglImportComponent {
 
-  @Input() public mapComponent: MapglComponent;
-  @Input() public maxVertexByPolygon: number;
-  @Input() public maxFeatures?: number;
-  @Input() public maxFileSize?: number;
-  @Input() public maxLoadingTime = 20000;
-  @Input() public allowedImportType = ['shp', 'kml'];
-  @Output() public imported = new Subject<any>();
-  @Output() public error = new Subject<any>();
+  public SHP = 'shp';
+  public KML = 'kml';
+  public WKT = 'wkt';
 
   public currentFile: File;
   public dialogRef: MatDialogRef<MapglImportDialogComponent>;
@@ -93,6 +100,15 @@ export class MapglImportComponent {
     'type': 'FeatureCollection',
     'features': []
   };
+
+  @Input() public mapComponent: MapglComponent;
+  @Input() public maxVertexByPolygon: number;
+  @Input() public maxFeatures?: number;
+  @Input() public maxFileSize?: number;
+  @Input() public maxLoadingTime = 20000;
+  @Input() public allowedImportType = [this.SHP, this.KML, this.WKT];
+  @Output() public imported = new Subject<any>();
+  @Output() public error = new Subject<any>();
 
   constructor(
     public dialog: MatDialog
@@ -123,25 +139,28 @@ export class MapglImportComponent {
     });
     this.dialogRef.componentInstance.importRun.subscribe(importOptions => {
       this.fitResult = importOptions.fitResult;
-      this.import(importOptions.type);
+      this.import(importOptions.type, importOptions.wktContent);
     });
   }
 
-  public import(importType: string) {
+  public import(importType: string, content?: string) {
     this.dialogRef.componentInstance.isRunning = true;
     this.tooManyVertex = false;
     this.jszip = new JSZip();
-    if (importType === 'shp') {
-      this.promiseTimeout(this.maxLoadingTime, this.processAllShape()).catch(error => {
-        this.reader.abort();
-        this.throwError(error);
-      });
-    } else {
-      this.promiseTimeout(this.maxLoadingTime, this.processAllKml()).catch(error => {
-        this.reader.abort();
-        this.throwError(error);
-      });
+    let processPromise: Promise<void>;
+    if (importType === this.SHP) {
+      processPromise = this.processAllShape();
+    } else if (importType === this.KML) {
+      processPromise = this.processAllKml();
+    } else if (importType === this.WKT) {
+      processPromise = this.processWKT(content);
     }
+    this.promiseTimeout(this.maxLoadingTime, processPromise).catch(error => {
+      if (importType !== this.WKT) {
+        this.reader.abort();
+      }
+      this.throwError(error);
+    });
   }
 
   /***************/
@@ -162,7 +181,7 @@ export class MapglImportComponent {
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
         reject(new Error('File is too large'));
       } else {
-        if (this.currentFile.name.split('.').pop().toLowerCase() === 'kml') {
+        if (this.currentFile.name.split('.').pop().toLowerCase() === this.KML) {
           reader.readAsText(this.currentFile);
         } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
           reader.readAsArrayBuffer(this.currentFile);
@@ -181,7 +200,7 @@ export class MapglImportComponent {
       readKmzFile = readKmlFile.then(result => {
         return new Promise<string>((resolve, reject) => {
           this.jszip.loadAsync(result).then(kmzContent => {
-            const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === 'kml')[0];
+            const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === this.KML)[0];
             this.jszip.file(kmlFile).async('string').then(function (data) {
               resolve(data);
             });
@@ -349,7 +368,7 @@ export class MapglImportComponent {
         this.clearPolygons();
         const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
         if (
-          !(testArray.filter(elem => elem === 'shp' || elem === 'shx' || elem === 'dbf').length >= 3) &&
+          !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
           !(testArray.filter(elem => elem === 'json').length === 1)
         ) {
           throw new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`');
@@ -380,6 +399,84 @@ export class MapglImportComponent {
       });
   }
 
+  /***************/
+  /****  WKT  ****/
+  /***************/
+  public processWKT(wkt: string) {
+    const wktParserPromise = new Promise<{ geojson: any, centroides: any }>((resolve, reject) => {
+      const geojsonWKT = parse(wkt);
+      const centroides = new Array<any>();
+      const importedGeojson = {
+        type: 'FeatureCollection',
+        features: []
+      };
+      let index = 0;
+      const feature = {
+        type: 'Feature',
+        geometry: geojsonWKT,
+        properties: { arlas_id: null }
+      };
+      if (feature.geometry.type === 'Polygon') {
+        feature.properties.arlas_id = ++index;
+        const cent = this.calcCentroid(feature);
+        centroides.push(cent);
+        importedGeojson.features.push(feature);
+      } else if (feature.geometry.type === 'MultiPolygon') {
+        feature.geometry.coordinates.forEach(geom => {
+          const newFeature = {
+            type: 'Feature',
+            geometry: {
+              coordinates: geom,
+              type: 'Polygon'
+            },
+            properties: feature.properties
+          };
+          newFeature.properties.arlas_id = ++index;
+          const cent = this.calcCentroid(newFeature);
+          centroides.push(cent);
+          importedGeojson.features.push(newFeature);
+        });
+      } else if (feature.geometry.type === 'GeometryCollection') {
+        feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
+          const newFeature = {
+            type: 'Feature',
+            geometry: geom,
+            properties: feature.properties
+          };
+          newFeature.properties.arlas_id = ++index;
+          const cent = this.calcCentroid(newFeature);
+          centroides.push(cent);
+          importedGeojson.features.push(newFeature);
+        });
+      }
+      resolve({ geojson: importedGeojson, centroides: centroides });
+    });
+
+    return Promise.all([wktParserPromise]).then(([importedResult]) => {
+      if (this.tooManyVertex) {
+        throw new Error('Too many vertices in a polygon');
+      } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
+        throw new Error('Too much features');
+      } else {
+        if (importedResult.geojson.features.length > 0) {
+          this.dialogRef.componentInstance.isRunning = false;
+          this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedResult.geojson);
+          this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
+            type: 'FeatureCollection',
+            features: importedResult.centroides
+          });
+
+          if (this.fitResult) {
+            this.mapComponent.map.fitBounds(extent(importedResult.geojson));
+          }
+          this.imported.next(importedResult.geojson.features);
+          this.dialogRef.close();
+        } else {
+          throw new Error('No polygon to display in this file');
+        }
+      }
+    });
+  }
 
   /***************/
   /**** TOOLS ****/
@@ -426,7 +523,9 @@ export class MapglImportComponent {
       default:
         this.dialogRef.componentInstance.errorThreshold = '';
     }
-    this.dialogRef.componentInstance.fileInput.nativeElement.value = '';
+    if (this.dialogRef.componentInstance.fileInput) {
+      this.dialogRef.componentInstance.fileInput.nativeElement.value = '';
+    }
     this.dialogRef.componentInstance.currentFile = null;
     this.error.next(error.message);
   }
