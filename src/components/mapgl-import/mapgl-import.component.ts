@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef, Output } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, Output, OnInit } from '@angular/core';
 import * as shp from 'shpjs/dist/shp';
 import * as extent from 'turf-extent';
 import * as helpers from '@turf/helpers';
@@ -14,7 +14,7 @@ import * as toGeoJSON from '@mapbox/togeojson';
   selector: 'arlas-mapgl-import-dialog',
   styleUrls: ['./mapgl-import-dialog.component.css']
 })
-export class MapglImportDialogComponent {
+export class MapglImportDialogComponent implements OnInit {
   public displayError = false;
   public isRunning = false;
   public fitResult = false;
@@ -23,6 +23,8 @@ export class MapglImportDialogComponent {
   public currentFile: File;
 
   public importType = 'shp';
+  public allowedFileExtension: string;
+  public allowedImportType: string[];
 
   @Output() public file = new Subject<File>();
   @Output() public importRun = new Subject<any>();
@@ -30,10 +32,27 @@ export class MapglImportDialogComponent {
 
   constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
 
+  public ngOnInit(): void {
+    if (this.allowedImportType.indexOf('shp') > -1) {
+      this.importType = 'shp';
+    } else {
+      this.importType = 'kml';
+    }
+    this.changeType();
+  }
+
   public onChange(files: FileList) {
     this.file.next(files.item(0));
     this.currentFile = files.item(0);
     this.displayError = false;
+  }
+
+  public changeType() {
+    if (this.importType === 'shp') {
+      this.allowedFileExtension = '.zip';
+    } else {
+      this.allowedFileExtension = '.kml,.kmz';
+    }
   }
 
   public import() {
@@ -44,7 +63,6 @@ export class MapglImportDialogComponent {
     this.dialogRef.close();
   }
 }
-
 
 @Component({
   templateUrl: './mapgl-import.component.html',
@@ -58,6 +76,7 @@ export class MapglImportComponent {
   @Input() public maxFeatures?: number;
   @Input() public maxFileSize?: number;
   @Input() public maxLoadingTime = 20000;
+  @Input() public allowedImportType = ['shp', 'kml'];
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
 
@@ -98,6 +117,7 @@ export class MapglImportComponent {
 
   public openDialog() {
     this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
+    this.dialogRef.componentInstance.allowedImportType = this.allowedImportType;
     this.dialogRef.componentInstance.file.subscribe((file: File) => {
       this.currentFile = file;
     });
