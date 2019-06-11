@@ -1,5 +1,13 @@
 # Change Log
 
+## [v10.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.4) (2019-06-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.3...v10.1.4)
+
+**New stuff:**
+
+- Import KML + WKT + GeoJSON [\#273](https://github.com/gisaia/ARLAS-web-components/pull/273) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
+
 ## [v10.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.3) (2019-05-29)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.2...v10.1.3)
