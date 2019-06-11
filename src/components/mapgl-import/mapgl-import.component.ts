@@ -9,6 +9,7 @@ import { MapglComponent } from '../mapgl/mapgl.component';
 import { Subject } from 'rxjs';
 import * as toGeoJSON from '@mapbox/togeojson';
 import { parse } from 'wellknown';
+import { valid, isFeature } from 'geojson-validation';
 
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',
@@ -297,51 +298,54 @@ export class MapglImportComponent {
     const parseJson = readJsonFile.then((fileContent: string) => {
       return new Promise<{ geojson: any, centroides: any }>((resolve, reject) => {
         const feature = JSON.parse(fileContent);
-        const centroides = new Array<any>();
-        const importedGeojson = {
-          type: 'FeatureCollection',
-          features: []
-        };
-        let index = 0;
-        console.log(feature);
-        if (feature.geometry && feature.geometry.type === 'Polygon') {
-          this.addFeature(feature, centroides, importedGeojson, ++index);
-        } else if (feature.geometry && feature.geometry.type === 'MultiPolygon') {
-          feature.geometry.coordinates.forEach(geom => {
-            const newFeature = {
-              type: 'Feature',
-              geometry: {
-                coordinates: geom,
-                type: 'Polygon'
-              },
-              properties: feature.properties
-            };
-            this.addFeature(newFeature, centroides, importedGeojson, ++index);
-          });
-        } else if (feature.type && feature.type === 'FeatureCollection') {
-          feature.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
-            .forEach((feature) => {
-              if (feature.geometry.type === 'MultiPolygon') {
-                // Create a new Polygon feature for each polygon in the MultiPolygon
-                // All properties of the MultiPolygon are copied in each feature created
-                feature.geometry.coordinates.forEach(geom => {
-                  const newFeature = {
-                    type: 'Feature',
-                    geometry: {
-                      bbox: feature.geometry.bbox,
-                      coordinates: geom,
-                      type: 'Polygon'
-                    },
-                    properties: feature.properties
-                  };
-                  this.addFeature(newFeature, centroides, importedGeojson, ++index);
-                });
-              } else {
-                this.addFeature(feature, centroides, importedGeojson, ++index);
-              }
+        if (valid(feature)) {
+          const centroides = new Array<any>();
+          const importedGeojson = {
+            type: 'FeatureCollection',
+            features: []
+          };
+          let index = 0;
+          if (feature.geometry && feature.geometry.type === 'Polygon') {
+            this.addFeature(feature, centroides, importedGeojson, ++index);
+          } else if (feature.geometry && feature.geometry.type === 'MultiPolygon') {
+            feature.geometry.coordinates.forEach(geom => {
+              const newFeature = {
+                type: 'Feature',
+                geometry: {
+                  coordinates: geom,
+                  type: 'Polygon'
+                },
+                properties: feature.properties
+              };
+              this.addFeature(newFeature, centroides, importedGeojson, ++index);
             });
+          } else if (feature.type && feature.type === 'FeatureCollection') {
+            feature.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
+              .forEach((feature) => {
+                if (feature.geometry.type === 'MultiPolygon') {
+                  // Create a new Polygon feature for each polygon in the MultiPolygon
+                  // All properties of the MultiPolygon are copied in each feature created
+                  feature.geometry.coordinates.forEach(geom => {
+                    const newFeature = {
+                      type: 'Feature',
+                      geometry: {
+                        bbox: feature.geometry.bbox,
+                        coordinates: geom,
+                        type: 'Polygon'
+                      },
+                      properties: feature.properties
+                    };
+                    this.addFeature(newFeature, centroides, importedGeojson, ++index);
+                  });
+                } else {
+                  this.addFeature(feature, centroides, importedGeojson, ++index);
+                }
+              });
+          }
+          resolve({ geojson: importedGeojson, centroides: centroides });
+        } else {
+          reject(new Error('Geometry is not valid'));
         }
-        resolve({ geojson: importedGeojson, centroides: centroides });
       });
     });
 
@@ -513,7 +517,6 @@ export class MapglImportComponent {
     const cent = this.calcCentroid(feature);
     centroides.push(cent);
     importedGeojson.features.push(feature);
-    console.log(importedGeojson.features);
   }
 
   public setImportedData(importedResult) {
@@ -552,7 +555,6 @@ export class MapglImportComponent {
   }
 
   private throwError(error: Error) {
-    console.log(error.stack);
     this.dialogRef.componentInstance.displayError = true;
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;

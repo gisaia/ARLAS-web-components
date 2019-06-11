@@ -30,5 +30,6 @@
   "Too many vertices in a polygon": "Too many vertices in a polygon",
   "No polygon to display in this file": "No polygon to display in this file",
   "Too much features": "Too much features",
-  "File is too large": "File is too large"
+  "File is too large": "File is too large",
+  "Paste your WKT": "Paste your WKT"
 }

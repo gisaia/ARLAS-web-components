@@ -30,5 +30,6 @@
   "Too many vertices in a polygon": "Un polygone contient trop de sommets",
   "No polygon to display in this file": "Aucun polygone à afficher",
   "Too much features": "Le fichier contient trop d'elements",
-  "File is too large": "Le fichier est trop volumineux"
+  "File is too large": "Le fichier est trop volumineux",
+  "Paste your WKT": "Coller ici votre WKT"
 }
