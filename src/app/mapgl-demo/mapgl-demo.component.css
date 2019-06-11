@@ -48,3 +48,8 @@ a.arlas-map-control{
   margin-left: 5px;
   width: 50px;
 }
+
+.mapgl-import-button{
+  position: absolute;
+  z-index: 2;
+}
