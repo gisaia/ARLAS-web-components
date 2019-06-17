@@ -364,7 +364,13 @@ export class MapglImportComponent {
       this.reader = new FileReader();
       const reader = this.reader;
       reader.onload = () => {
-        resolve(reader.result);
+        const resultToArray = new Uint8Array(<ArrayBuffer>reader.result);
+        if (resultToArray.length === 0) {
+          reader.abort();
+          reject(new Error('File is empty'));
+        } else {
+          resolve(reader.result);
+        }
       };
       reader.onerror = () => {
         reader.abort();
@@ -386,11 +392,24 @@ export class MapglImportComponent {
   public processAllShape() {
     const fileReaderPromise = this.readZipFile();
 
-    const zipLoaderPromise = fileReaderPromise.then(result => {
-      return this.jszip.loadAsync(result);
+    const zipLoaderPromise = fileReaderPromise.then(buffer => {
+      return new Promise<any>((resolve, reject) => {
+        this.jszip.loadAsync(buffer).then(zipResult => {
+          const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
+          if (
+            !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
+            !(testArray.filter(elem => elem === 'json').length === 1)
+          ) {
+            reject( new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`'));
+          } else {
+            resolve(buffer);
+          }
+        });
+      });
+
     });
 
-    const shapeParserPromise = fileReaderPromise
+    const shapeParserPromise = zipLoaderPromise
       .then(buffer => {
         return shp(buffer);
       });
@@ -430,15 +449,8 @@ export class MapglImportComponent {
     });
 
     return Promise.all([fileReaderPromise, zipLoaderPromise, shapeParserPromise, geojsonParserPromise])
-      .then(([a, zipResult, c, importedResult]) => {
+      .then(([a, b, c, importedResult]) => {
         this.clearPolygons();
-        const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
-        if (
-          !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
-          !(testArray.filter(elem => elem === 'json').length === 1)
-        ) {
-          throw new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`');
-        }
         this.setImportedData(importedResult);
       });
   }
