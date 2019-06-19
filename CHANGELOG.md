@@ -1,12 +1,22 @@
 # Change Log
 
+## [v10.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.5) (2019-06-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.4...v10.1.5)
+
 ## [v10.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.4) (2019-06-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.3...v10.1.4)
 
 **New stuff:**
 
+- Add a component to import geosjon [\#271](https://github.com/gisaia/ARLAS-web-components/issues/271) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Add a component to import WKT [\#270](https://github.com/gisaia/ARLAS-web-components/issues/270) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Import KML + WKT + GeoJSON [\#273](https://github.com/gisaia/ARLAS-web-components/pull/273) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
+
+**Miscellaneous:**
+
+- Add a component to import kml/kmz data [\#265](https://github.com/gisaia/ARLAS-web-components/issues/265) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v10.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.3) (2019-05-29)
 
