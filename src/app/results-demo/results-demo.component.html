@@ -1,21 +1,12 @@
-
 <mat-sidenav-container class="example-container">
   <mat-sidenav align="end" #sidenav class="example-sidenav">
     <button (click)="updateData()">New data</button>
     <div class="table-wrapper">
-          <arlas-result-list style="height:100%" [rowItemList]="data"
-                                                 [fieldsList]="fieldsList"
-                                                 [globalActionsList]="globalActionsList"
-                                                 [detailedDataRetriever]="detailedDataRetriever"
-                                                 [fieldsConfiguration]="fieldsConfiguration"
-                                                 [searchSize]="50"
-                                                 [nLastLines]="20"
-                                                 [defautMode]= "modeEnum.grid"
-                                                 [dropDownMapValues]= "dropDownMapValues"
-                                                 [displayFilters]="false"
-                                      
-                                                 (moreDataEvent)="addMoreData()"
-                                                 (setFiltersEvent)="setFilters($event)"></arlas-result-list>
+      <arlas-result-list style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
+        [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
+        [fieldsConfiguration]="fieldsConfiguration" [nbEndScrollItems]="20"
+        [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
+        (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)"></arlas-result-list>
     </div>
   </mat-sidenav>
 

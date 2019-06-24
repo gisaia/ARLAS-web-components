@@ -23,7 +23,7 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 import { Column } from '../model/column';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier, FieldsConfiguration } from '../utils/results.utils';
+import { Action, ElementIdentifier, FieldsConfiguration, PageQuery } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Observable, Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -33,6 +33,8 @@ import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { PageEnum } from '../utils/enumerations/pageEnum';
+import { PageOptions } from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -95,6 +97,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public GEOSORT_BUTTON = 'Geo-sort';
 
+  public COLUMN_ACTIONS_HEIGHT = 85;
+
+  public FILTERS_HEIGHT = 50;
+
+  public loadAnimationConfig = {
+    animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
+    backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
+  };
+
+  public upScrollReached = { maintainScrollPosition: true };
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
@@ -133,15 +145,20 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-  * @description When the `last - n` line is reached, more data is requested.
+  * @description The number of items left on the list/grid when scrolling up or down upon which loading new data is triggered.
+  *  When scrolling up or down, once there is `nbEndScrollItems` items left at the top or bottom of the list, previous/next data is loaded.
   */
-  @Input() public nLastLines = 5;
+  @Input() public nbEndScrollItems = 5;
 
   /**
    * @Input : Angular
-   * @description Number of new rows added each time the `last - n` line is reached.
+   * @description Options that manage pages.
+   * - `pageUp` corresponds to whether to emit an event asking for previous pages or not.
+
    */
-  @Input() public searchSize;
+  @Input() public pageOptions: PageOptions = {
+    pageUp: true
+  };
 
   /**
    * @Input : Angular
@@ -244,7 +261,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale..
    */
-  @Input() public colorsSaturationWeight = 1 / 2 ;
+  @Input() public colorsSaturationWeight = 1 / 2;
 
   /**
    * @Input : Angular
@@ -307,10 +324,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Output : Angular
-   * @description Emits the request of more data to load. The emited number is the number
-   * of times this event has been emitted.
+   * @description Emits the request of new page to load.
+   * The emited PageQuery contains the identifier reference from which the new page is loaded
+   * and whether it is the previous or the next page.
    */
-  @Output() public moreDataEvent: Subject<number> = new Subject<number>();
+  @Output() public paginationEvent: Subject<PageQuery> = new Subject<PageQuery>();
 
   /**
    * @Output : Angular
@@ -345,7 +363,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public tbodyHeight: number = null;
   public theadHeight: number = null;
 
-  public ANIMATION_TYPES = ANIMATION_TYPES;
   public ModeEnum = ModeEnum;
   public SortEnum = SortEnum;
 
@@ -355,7 +372,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
 
-  public isMoreDataRequested = false;
+  public isNextPageRequested = false;
+  public isPreviousPageRequested = false;
   public hasGridMode = false;
   public resultMode: ModeEnum = this.defautMode;
   public allItemsChecked = false;
@@ -423,6 +441,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
+      this.isPreviousPageRequested = false;
       this.closeDetail(true);
     }
     if (changes['indeterminatedItems'] !== undefined) {
@@ -470,22 +489,41 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setColumns();
     }
     if (itemChanges) {
+      let itemIndex = 0;
       itemChanges.forEachAddedItem(i => {
-        this.onAddItems(i.item);
+        this.onAddItems(i.item, this.isPreviousPageRequested, itemIndex);
+        itemIndex++;
       });
+      itemChanges.forEachRemovedItem(i => {
+        if (this.isNextPageRequested) {
+          this.items.splice(0, 1);
+        } else if (this.isPreviousPageRequested) {
+          this.items.splice(this.items.length - 1, 1);
+        }
+      });
+      if (this.isPreviousPageRequested) {
+        /**
+         * This variable is set and given as an input to the `ResultScrollDirective`.
+         * The objective of this input is to inform `ResultScrollDirective` that it should
+         * maintain the Scroll Position when Adding Content to the top of the list
+         */
+        this.upScrollReached = { maintainScrollPosition: true };
+      }
       this.setSelectedItems(this.selectedItems);
-      this.isMoreDataRequested = false;
+      this.isNextPageRequested = false;
+      this.isPreviousPageRequested = false;
     }
   }
 
   /**
-   * @description Emits the event of asking for more items to fetch
-   * @param moreDataCallsCounter Counts the event's emission occurence
+   * @description Emits the event of asking for next or previous page of items
+   * @param referenceIdentifier : item identifier used as reference to fetch the next/previous page
+   * @param whichPage : Whether to fetch the `next` or `previous` page
    */
-  // when it's called for more data, an animated loading div is shown
-  public askForMoreData(moreDataCallsCounter: number) {
-    this.moreDataEvent.next(moreDataCallsCounter);
-    this.isMoreDataRequested = true;
+  public paginate(itemData: Map<string, string | number | Date>, whichPage: PageEnum) {
+    this.paginationEvent.next({ reference: itemData, whichPage: whichPage });
+    this.isNextPageRequested = whichPage === PageEnum.next;
+    this.isPreviousPageRequested = whichPage === PageEnum.previous;
   }
 
   /**
@@ -722,7 +760,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.columns.push(toggleColumn);
   }
 
-  private onAddItems(itemData: Map<string, string | number | Date>) {
+  private onAddItems(itemData: Map<string, string | number | Date>, addOnTop: boolean, index: number) {
     const item = new Item(this.columns, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     item.imageEnabled = true;
@@ -792,7 +830,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     item.ishighLight = false;
     // When new data is loaded, check the one that were already checked +
     // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
-    if (this.allItemsChecked && this.isMoreDataRequested) {
+    if (this.allItemsChecked && (this.isNextPageRequested || this.isPreviousPageRequested)) {
       item.isChecked = true;
       this.selectedItems.add(item.identifier);
     } else {
@@ -805,16 +843,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         item.isindeterminated = false;
       }
     }
-    this.items.push(item);
+    if (addOnTop) {
+      this.items.splice(index, 0, item);
+    } else {
+      this.items.push(item);
+    }
   }
-
-
-
 
   private setTableWidth() {
     if (this.tableWidth === null) {
       const nativeElement = this.el.nativeElement;
-      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] ) {
+      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0]) {
         this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
       }
     }
@@ -834,12 +873,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
-
   private getOffSetHeight(): number {
     if (!this.displayFilters) {
-      return this.el.nativeElement.parentElement.offsetHeight - 85;
+      return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT;
     } else {
-      return this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
+      return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT - this.FILTERS_HEIGHT;
     }
   }
 }

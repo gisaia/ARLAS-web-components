@@ -19,7 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
-import { FieldsConfiguration, Action } from '../../components/results/utils/results.utils';
+import { FieldsConfiguration, Action, PageQuery } from '../../components/results/utils/results.utils';
 import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
 import { Observable, from } from 'rxjs';
 
@@ -83,7 +83,7 @@ export class ResultsDemoComponent implements OnInit {
     }
   }
 
-  public addMoreData() {
+  public addMoreData(page: PageQuery) {
     setTimeout(() => {
       if (this.count < 2) {
         for (let i = 50; i < 100; i++) {
@@ -98,7 +98,7 @@ export class ResultsDemoComponent implements OnInit {
         this.count++;
       } else {
         this.data = new Array<Map<string, string | number | Date>>();
-        for (let i = 50; i < 60; i++) {
+        for (let i = 50; i < 150; i++) {
           const map = new Map<string, string | number | Date>();
           map.set('source', 'SPOT' + (i + 1));
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
