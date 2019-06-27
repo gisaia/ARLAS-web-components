@@ -47,6 +47,12 @@ export class ResultDetailedItemComponent implements OnInit {
   @Input() public rowItem: Item;
 
   /**
+   * @Input
+   * @description Whether display group with no detail.
+   */
+  @Input() public showEmptyGroup = false;
+
+  /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
@@ -62,4 +68,7 @@ export class ResultDetailedItemComponent implements OnInit {
     this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
   }
 
+  public getGroups() {
+    return (this.showEmptyGroup) ? (this.rowItem.itemDetailedData) : (this.rowItem.itemDetailedData.filter(d => d.details.length > 0));
+  }
 }
