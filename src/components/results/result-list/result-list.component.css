@@ -211,12 +211,25 @@ tbody {
 }
 
 .resultlist__tools--geosort--icon--active{
-  position: relative;
+  position: absolute;
+  left:50px;
   margin-top: -6px;
-  margin-left: -8px;
+
 }
 .resultlist__tools--geosort--icon{
-  position: relative;
+  position: absolute;
+  left:50px;
   margin-top: -6px;
-  margin-left: -8px;
+}
+
+.resultgrid__clear{
+  font-size: 14px;
+  width:3px
+}
+
+
+.resultlist__tools--geosort{
+position: absolute;
+left: 50px;
+margin-top: -16px;
 }
