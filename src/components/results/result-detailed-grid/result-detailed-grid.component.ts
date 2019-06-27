@@ -60,9 +60,15 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
    */
   @Input() public isDetailShowed: boolean;
   /**
+   * @Input
+   * @description Whether display group with no detail.
+   */
+  @Input() public showEmptyGroup = false;
+  /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
+
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
     new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
   /**

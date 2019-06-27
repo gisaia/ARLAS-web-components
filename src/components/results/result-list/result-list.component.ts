@@ -263,10 +263,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public selectedGridItem: Item;
   /**
+   * @Input
+   * @description Whether display group with no detail.
+   */
+  @Input() public showEmptyGroup = false;
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
-
   @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
     new Subject<{ fieldName: string, sortDirection: SortEnum }>();
 

@@ -106,7 +106,7 @@
     && resultMode==ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
-          [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)"
+          [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]=showEmptyGroup
           (closeDetail)=closeDetail($event)>
         </arlas-result-detailed-grid>
       </td>
@@ -122,7 +122,7 @@
             (selectedItemPositionEvent)="setItemsPositionsList($event)" (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle">
           </tr>
           <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item" (mouseenter)="setConsultedItem(rowItem.identifier)"
-            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)" [detailColspan]="rowItem.columns.length" [rowItem]="rowItem"
+            (mouseleave)="setConsultedItem('leave-'+rowItem.identifier)" [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
             [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
           </tr>
         </ng-container>
