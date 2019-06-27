@@ -55,6 +55,7 @@
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
+              <mat-icon  *ngIf="selectedItems.size>0" id="clear_selection"  class="resultgrid__clear" (click)="clearSelection()">close</mat-icon>
           </div>
           <div class="resultlist__tools--select-between">
               <mat-icon id="check_in_between_btn" matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>

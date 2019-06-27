@@ -687,6 +687,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.columnFilterChanged.next(colum);
   }
 
+  /**
+   * @description Clear set of selection
+   */
+  public clearSelection() {
+    this.setSelectedItems(new Set());
+    this.items.forEach(item => {
+      item.isChecked = false;
+      item.isindeterminated = false;
+    });
+  }
+
   // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
