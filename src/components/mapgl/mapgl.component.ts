@@ -42,12 +42,17 @@ import * as mapboxgl from 'mapbox-gl';
 
 export interface OnMoveResult {
   zoom: number;
+  zoomStart: number;
   center: Array<number>;
+  centerWithOffset: Array<number>;
   extend: Array<number>;
+  extendWithOffset: Array<number>;
   extendForLoad: Array<number>;
   extendForTest: Array<number>;
   tiles: Array<{ x: number, y: number, z: number }>;
   geohash: Array<string>;
+  xMoveRatio: number;
+  yMoveRatio: number;
 }
 
 /**
@@ -253,9 +258,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description A couple of (max precision, max geohash-level) above which data is displayed as features
    */
-  @Input() private maxPrecision: Array<number>;
+  @Input() public maxPrecision: Array<number>;
+  /**
+   * @Input : Angular
+   * @description A callback run before the Map makes a request for an external URL, mapbox map option
+   */
+  @Input() public transformRequest: Function;
 
-  @Input() private transformRequest: Function;
+  /**
+   * @Input : Angular
+   * @description An object with noth,east,south,west properies which represent an offset in pixel
+   * Origin is top-left and x axe is west to east and y axe north to south.
+   */
+  @Input() public offset: { north: number, east: number, south: number, west: number } =
+    { north: 0, east: 0, south: 0, west: 0 };
 
   /**
    * @Output : Angular
@@ -343,6 +359,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public polygonlabeldata: { type: string, features: Array<any> } = this.emptyData;
 
   public firstDrawLayer = '';
+
+  // Drag start position
+  public dragStartY: number;
+  public dragStartX: number;
+
+  // Drag end position
+  public dragEndX: number;
+  public dragEndY: number;
+
+  // Moving ratio (using pixel)
+  public xMoveRatio = 0;
+  public yMoveRatio = 0;
+  public zoomStart: number;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
@@ -657,6 +686,29 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.cleanLocalStorage(this.mapLayers.styleGroups);
       this.onMapLoaded.next(true);
     });
+
+    const zoomstart = fromEvent(this.map, 'zoomstart')
+      .pipe(debounceTime(750));
+
+    zoomstart.subscribe(e => {
+      this.zoomStart = this.map.getZoom();
+    });
+
+    const dragstart = fromEvent(this.map, 'dragstart')
+      .pipe(debounceTime(750));
+    dragstart.subscribe(e => {
+      this.dragStartX = (<any>e).originalEvent.clientX;
+      this.dragStartY = (<any>e).originalEvent.clientY;
+    });
+    const dragend = fromEvent(this.map, 'dragend')
+      .pipe(debounceTime(750));
+      dragend.subscribe(e => {
+      this.dragEndX = (<any>e).originalEvent.clientX;
+      this.dragEndY = (<any>e).originalEvent.clientY;
+      this.xMoveRatio = Math.abs(this.dragEndX - this.dragStartX) / (<any>e).target._canvas.clientWidth;
+      this.yMoveRatio = Math.abs(this.dragEndY - this.dragStartY) / (<any>e).target._canvas.clientHeight;
+    });
+
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
     moveend.subscribe(e => {
@@ -699,38 +751,55 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           Math.max(this.south, this.north),
           Math.max(this.east, this.west), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
       }
+      const offsetPoint = new mapboxgl.Point((this.offset.east + this.offset.west) / 2, (this.offset.north + this.offset.south) / 2);
+      const centerOffsetPoint = this.map.project(this.map.getCenter()).add(offsetPoint);
+      const centerOffSetLatLng = this.map.unproject(centerOffsetPoint);
+
+      const southWest = this.map.getBounds()._sw;
+      const northEast = this.map.getBounds()._ne;
+      const bottomLeft = this.map.project(southWest);
+      const topRght = this.map.project(northEast);
+      const height = bottomLeft.y;
+      const width = topRght.x;
+
+      const bottomLeftOffset = bottomLeft.add(new mapboxgl.Point(this.offset.west, this.offset.south));
+      const topRghtOffset = topRght.add(new mapboxgl.Point(this.offset.east, this.offset.north));
+
+      const westOffset = this.map.unproject(bottomLeftOffset).wrap().lng;
+      const southOffset = this.map.unproject(bottomLeftOffset).wrap().lat;
+      const eastOffset = this.map.unproject(topRghtOffset).wrap().lng;
+      const northOffset = this.map.unproject(topRghtOffset).wrap().lat;
 
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
+        zoomStart: this.zoomStart,
         center: this.map.getCenter(),
+        centerWithOffset: [centerOffSetLatLng.lng, centerOffSetLatLng.lat],
+        extendWithOffset: [northOffset, westOffset, southOffset, eastOffset],
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
         extendForTest: [],
         tiles: [],
-        geohash: geohashList
+        geohash: geohashList,
+        xMoveRatio: this.xMoveRatio,
+        yMoveRatio: this.yMoveRatio
       };
 
-      const canvas = this.map.getCanvasContainer();
-      const positionInfo = canvas.getBoundingClientRect();
-      const height = positionInfo.height;
-      const width = positionInfo.width;
       const panLoad = this.margePanForLoad * Math.max(height, width) / 100;
       const panTest = this.margePanForTest * Math.max(height, width) / 100;
-      const extendForLoadLatLng = paddedBounds(panLoad, panLoad, panLoad, panLoad,
-        this.map, this.map.getBounds()._sw, this.map.getBounds()._ne);
-      const extendForTestdLatLng = paddedBounds(panTest, panTest, panTest, panTest,
-        this.map, this.map.getBounds()._sw, this.map.getBounds()._ne);
+      const extendForLoadLatLng = paddedBounds(panLoad, panLoad, panLoad, panLoad, this.map, southWest, northEast);
+      const extendForTestdLatLng = paddedBounds(panTest, panTest, panTest, panTest, this.map, southWest, northEast);
       onMoveData.extendForLoad = [
-        Math.min(extendForLoadLatLng[1].lat, 90),
-        Math.max(extendForLoadLatLng[0].lng, -180),
-        Math.max(extendForLoadLatLng[0].lat, -90),
-        Math.min(extendForLoadLatLng[1].lng, 180)
+        extendForLoadLatLng[1].lat,
+        extendForLoadLatLng[0].lng,
+        extendForLoadLatLng[0].lat,
+        extendForLoadLatLng[1].lng
       ];
       onMoveData.extendForTest = [
-        Math.min(extendForTestdLatLng[1].lat, 90),
-        Math.max(extendForTestdLatLng[0].lng, -180),
-        Math.max(extendForTestdLatLng[0].lat, -90),
-        Math.min(extendForTestdLatLng[1].lng, 180)
+        extendForTestdLatLng[1].lat,
+        extendForTestdLatLng[0].lng,
+        extendForTestdLatLng[0].lat,
+        extendForTestdLatLng[1].lng
       ];
       onMoveData.tiles = xyz([[onMoveData.extendForLoad[1], onMoveData.extendForLoad[2]],
       [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
