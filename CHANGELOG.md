@@ -1,8 +1,27 @@
 # Change Log
 
-## [v10.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.5) (2019-06-18)
+## [v10.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.2.0) (2019-07-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.5...v10.2.0)
+
+**New stuff:**
+
+- Add button to clear all selection [\#280](https://github.com/gisaia/ARLAS-web-components/issues/280) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Add properties to onMoveResult map [\#282](https://github.com/gisaia/ARLAS-web-components/pull/282) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+- Add button to clear list selection [\#281](https://github.com/gisaia/ARLAS-web-components/pull/281) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Add showEmptyGroup input in list [\#279](https://github.com/gisaia/ARLAS-web-components/pull/279) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+
+**Miscellaneous:**
+
+- Enhance detailled item layout [\#277](https://github.com/gisaia/ARLAS-web-components/issues/277) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+## [v10.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.5) (2019-06-19)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.4...v10.1.5)
+
+**Fixed bugs:**
+
+- Fix zip content validation [\#274](https://github.com/gisaia/ARLAS-web-components/pull/274) ([sebbousquet](https://github.com/sebbousquet))
 
 ## [v10.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.4) (2019-06-11)
 
