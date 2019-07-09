@@ -4,7 +4,7 @@
     <div class="table-wrapper">
       <arlas-result-list style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
         [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
-        [fieldsConfiguration]="fieldsConfiguration" [nbEndScrollItems]="20"
+        [fieldsConfiguration]="fieldsConfiguration" [nbLinesBeforeFetch]="20"
         [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
         (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)"></arlas-result-list>
     </div>

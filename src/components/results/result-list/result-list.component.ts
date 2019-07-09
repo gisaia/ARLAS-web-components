@@ -145,10 +145,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-  * @description The number of items left on the list/grid when scrolling up or down upon which loading new data is triggered.
-  *  When scrolling up or down, once there is `nbEndScrollItems` items left at the top or bottom of the list, previous/next data is loaded.
+   * @description The number of items left on the list/grid when scrolling up or down upon which loading new data is triggered.
+   * When scrolling up or down, once there is `nLastLines` items left at the top or bottom of the list, previous/next data is loaded.
+   * @deprecated nLastLines is deprecated and used only if `nbLinesBeforeFetch` is not set
   */
-  @Input() public nbEndScrollItems = 5;
+  @Input() public nLastLines = 5;
+
+  /**
+   * @Input : Angular
+   * @description The number of items left on the list/grid when scrolling up or down upon which loading new data is triggered.
+   * When scrolling up or down, once there is `nbLinesBeforeFetch` items left at the top or bottom of the list, previous/next
+   * data is loaded.
+  */
+  @Input() public nbLinesBeforeFetch;
 
   /**
    * @Input : Angular
@@ -157,7 +166,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
    */
   @Input() public pageOptions: PageOptions = {
-    pageUp: true
+    pageUp: false
   };
 
   /**
@@ -324,8 +333,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Output : Angular
-   * @description Emits the request of new page to load.
-   * The emited PageQuery contains the identifier reference from which the new page is loaded
+   * @description Emits the request of more data to load. The emitted number is the number of times this event has been emitted.
+   * @deprecated moreDataEvent can be replaced by `paginationEvent`
+   */
+  @Output() public moreDataEvent: Subject<number> = new Subject<number>();
+
+  /**
+   * @Output : Angular
+   * @description Emits the request of a new page to load.
+   * The emitted PageQuery contains the reference item from which the new page is loaded
    * and whether it is the previous or the next page.
    */
   @Output() public paginationEvent: Subject<PageQuery> = new Subject<PageQuery>();
@@ -513,6 +529,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.isNextPageRequested = false;
       this.isPreviousPageRequested = false;
     }
+  }
+
+  /**
+   * when it's called for more data, an animated loading div is shown
+   * @deprecated
+   *  */
+  public askForMoreData(moreDataCallsCounter: number) {
+    this.moreDataEvent.next(moreDataCallsCounter);
+    this.isNextPageRequested = true;
   }
 
   /**

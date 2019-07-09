@@ -117,7 +117,7 @@
       <ngx-loading [show]="isPreviousPageRequested" [config]="loadAnimationConfig"></ngx-loading>
   </div>
   <tbody arlasResultScroll *ngIf="!isBodyHidden" [style.height.px]="tbodyHeight" [upScrollReached]="upScrollReached" [pageOptions]="pageOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
-    [nbEndScrollItems]="nbEndScrollItems" [resultMode]="resultMode" (nextDataEvent)="paginate($event, 'next')" (previousDataEvent)="paginate($event, 'previous')">
+    [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [resultMode]="resultMode" (nextDataEvent)="paginate($event, 'next')" (previousDataEvent)="paginate($event, 'previous')" (moreDataEvent)="askForMoreData($event)">
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
