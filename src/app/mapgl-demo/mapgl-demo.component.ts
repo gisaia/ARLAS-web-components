@@ -576,7 +576,7 @@ export class MapglDemoComponent implements OnInit {
     console.log(event);
   }
 
-  public onAoiAchanged(event) {
+  public onAoiChanged(event) {
     console.log(event);
   }
 

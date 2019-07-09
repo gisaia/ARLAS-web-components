@@ -301,7 +301,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @Output : Angular
    * @description Emits the event of removing the geobox.
-   * @deprecated
+   * @deprecated as output
    */
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   /**
@@ -349,7 +349,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
  * @Output :  Angular
  * @description Emits the geojson of an aoi added to the map
  */
-  @Output() public onAoiAchanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
+  @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
 
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
@@ -381,11 +381,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public yMoveRatio = 0;
   public zoomStart: number;
 
+  public isDrawPolyonSelected = false;
+
   constructor(private http: HttpClient, private differs: IterableDiffers) {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
-        this.onAoiAchanged.next(this.geoboxdata);
+        this.onAoiChanged.next(this.geoboxdata);
         if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
           this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
@@ -657,9 +659,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.map.on('draw.selectionchange', (e) => {
           if (e.features.length > 0) {
             this.onPolygonSelect.emit({ edition: true });
+            this.isDrawPolyonSelected = true;
           } else {
             this.onPolygonSelect.emit({ edition: false });
-            this.onAoiAchanged.next(this.draw.getAll());
+            this.isDrawPolyonSelected = false;
+            this.onAoiChanged.next(this.draw.getAll());
           }
         });
         this.map.on('draw.modechange', (e) => {
@@ -950,8 +954,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public deleteSelectedItem() {
-    this.draw.trash();
-    this.onAoiAchanged.next(this.draw.getAll());
+    if (this.isDrawPolyonSelected) {
+      this.draw.trash();
+    } else {
+      this.draw.deleteAll();
+    }
+    this.onPolygonSelect.emit({ edition: false });
+    this.isDrawPolyonSelected = false;
+    this.onChangePolygonDraw();
+    this.onAoiChanged.next(this.draw.getAll());
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -1254,7 +1265,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
       this.geoboxdata.features.push(<helpers.Feature>polygonGeojson);
       this.onChangeBbox.emit(this.geoboxdata.features);
-      this.onAoiAchanged.next(this.geoboxdata);
+      this.onAoiChanged.next(this.geoboxdata);
       this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
       this.isDrawingBbox = false;
       if (this.box) {
