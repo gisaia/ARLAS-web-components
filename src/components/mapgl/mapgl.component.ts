@@ -38,6 +38,7 @@ import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
 import LimitVertexMode from './model/LimitVertexMode';
 import * as mapboxgl from 'mapbox-gl';
+import { FeatureCollection } from '@turf/helpers';
 
 
 export interface OnMoveResult {
@@ -68,7 +69,7 @@ export interface OnMoveResult {
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public map: any;
   public draw: any;
-  private emptyData = {
+  private emptyData: FeatureCollection = {
     'type': 'FeatureCollection',
     'features': []
   };
@@ -178,12 +179,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description The data displayed on map.
    */
-  @Input() public geojsondata: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public geojsondata: FeatureCollection = this.emptyData;
   /**
    * @Input : Angular
    * @description The geobox feature.
    */
-  @Input() public geoboxdata: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public geoboxdata: FeatureCollection = this.emptyData;
   /**
    * @Input : Angular
    * @description the field name of ids.
@@ -300,6 +301,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @Output : Angular
    * @description Emits the event of removing the geobox.
+   * @deprecated
    */
   @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
   /**
@@ -310,6 +312,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @Output : Angular
    * @description Emits the event of moving the map.
+   * @deprecated
    */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
   /**
@@ -342,6 +345,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Emits the map extend on Tab close/refresh
    */
   @Output() public onMapClosed: EventEmitter<MapExtend> = new EventEmitter<MapExtend>();
+  /**
+ * @Output :  Angular
+ * @description Emits the geojson of an aoi added to the map
+ */
+  @Output() public onAoiAchanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
 
   public showLayersList = false;
   private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
@@ -377,6 +385,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.onRemoveBbox.subscribe(value => {
       if (value) {
         this.geoboxdata = this.emptyData;
+        this.onAoiAchanged.next(this.geoboxdata);
         if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
           this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
         }
@@ -650,6 +659,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             this.onPolygonSelect.emit({ edition: true });
           } else {
             this.onPolygonSelect.emit({ edition: false });
+            this.onAoiAchanged.next(this.draw.getAll());
           }
         });
         this.map.on('draw.modechange', (e) => {
@@ -702,7 +712,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
     const dragend = fromEvent(this.map, 'dragend')
       .pipe(debounceTime(750));
-      dragend.subscribe(e => {
+    dragend.subscribe(e => {
       this.dragEndX = (<any>e).originalEvent.clientX;
       this.dragEndY = (<any>e).originalEvent.clientY;
       this.xMoveRatio = Math.abs(this.dragEndX - this.dragStartX) / (<any>e).target._canvas.clientWidth;
@@ -867,6 +877,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public onChangePolygonDraw() {
     this.onPolygonChange.next(this.draw.getAll().features);
+
     const centroides = new Array<any>();
     this.draw.getAll().features.forEach(feature => {
       const poly = helpers.polygon(feature.geometry.coordinates);
@@ -940,6 +951,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public deleteSelectedItem() {
     this.draw.trash();
+    this.onAoiAchanged.next(this.draw.getAll());
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -1228,17 +1240,21 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         [west, south],
         [east, south],
       ]];
+
+
       const polygonGeojson = {
         type: 'Feature',
         properties: {
+          type: 'bbox'
         },
         geometry: {
           type: 'Polygon',
           coordinates: coordinates
         }
       };
-      this.geoboxdata.features.push(polygonGeojson);
+      this.geoboxdata.features.push(<helpers.Feature>polygonGeojson);
       this.onChangeBbox.emit(this.geoboxdata.features);
+      this.onAoiAchanged.next(this.geoboxdata);
       this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
       this.isDrawingBbox = false;
       if (this.box) {
