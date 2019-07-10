@@ -106,7 +106,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
   };
 
-  public upScrollReached = { maintainScrollPosition: true };
+  public scrollOptions = { maintainScrollPosition: true};
+
+  @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
@@ -158,16 +160,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * data is loaded.
   */
   @Input() public nbLinesBeforeFetch;
-
-  /**
-   * @Input : Angular
-   * @description Options that manage pages.
-   * - `pageUp` corresponds to whether to emit an event asking for previous pages or not.
-
-   */
-  @Input() public pageOptions: PageOptions = {
-    pageUp: false
-  };
 
   /**
    * @Input : Angular
@@ -496,6 +488,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         });
       }
     }
+    if (changes['fetchState'] !== undefined) {
+      if (this.fetchState.endListUp) {
+        this.isPreviousPageRequested = false;
+      }
+      if (this.fetchState.endListDown) {
+        this.isNextPageRequested = false;
+      }
+    }
   }
 
   public ngDoCheck() {
@@ -517,13 +517,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
           this.items.splice(this.items.length - 1, 1);
         }
       });
+      /**
+       * This variable notifies the ResultScrollDirective whether the end of list is reached at top or bottom
+       */
       if (this.isPreviousPageRequested) {
         /**
          * This variable is set and given as an input to the `ResultScrollDirective`.
          * The objective of this input is to inform `ResultScrollDirective` that it should
          * maintain the Scroll Position when Adding Content to the top of the list
          */
-        this.upScrollReached = { maintainScrollPosition: true };
+        this.scrollOptions = { maintainScrollPosition: true};
       }
       this.setSelectedItems(this.selectedItems);
       this.isNextPageRequested = false;

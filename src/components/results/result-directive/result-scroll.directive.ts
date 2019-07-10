@@ -31,8 +31,8 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public nbLinesBeforeFetch: number;
   @Input() public nbGridColumns: number;
   @Input() public resultMode: ModeEnum;
-  @Input() public pageOptions: PageOptions;
-  @Input() public upScrollReached: { maintainScrollPosition: boolean };
+  @Input() public fetchState: { endListUp: true, endListDown: false };
+  @Input() public scrollOptions: { maintainScrollPosition: boolean };
   /**
    * @deprecated moreDataEvent is replaced with `nextDataEvent`.
    */
@@ -65,8 +65,8 @@ export class ResultScrollDirective implements OnChanges {
       this.adjustScrollToMode();
     }
 
-    if (changes['upScrollReached']) {
-      if (this.upScrollReached.maintainScrollPosition = true) {
+    if (changes['scrollOptions']) {
+      if (this.scrollOptions.maintainScrollPosition = true) {
         /**
          * Maintains the scroll position after loading rows in the top of the list
          */
@@ -115,7 +115,7 @@ export class ResultScrollDirective implements OnChanges {
        * from the previous scoll is different from the actual last identifer,
        * it means `nextDataEvent` still can be emitted
       **/
-      if (this.items.length > 0 && this.items[this.items.length - 1].identifier !== this.previousLastId) {
+      if (this.items.length > 0 && this.items[this.items.length - 1].identifier !== this.previousLastId && !this.fetchState.endListDown) {
         this.previousLastId = this.items[this.items.length - 1].identifier;
         this.previousFirstId = null;
         this.nextDataEvent.next(this.items[this.items.length - 1].itemData);
@@ -125,7 +125,7 @@ export class ResultScrollDirective implements OnChanges {
     }
     if (scrollTop <= upPositionTrigger && this.isScrollingUp(scrollTop)) {
       /** Same logic as the condition above but on the top of the list this time. */
-      if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && this.pageOptions.pageUp) {
+      if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && !this.fetchState.endListUp) {
         this.previousFirstId = this.items[0].identifier;
         this.previousLastId = null;
         this.previousScrollPosition = this.el.nativeElement.scrollHeight - this.el.nativeElement.scrollTop;
