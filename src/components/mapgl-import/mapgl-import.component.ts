@@ -261,7 +261,6 @@ export class MapglImportComponent {
 
     return Promise.all<string | ArrayBuffer, any, { geojson: any, centroides: any }>([readKmzFile, parseKml, geojsonParserPromise])
       .then(([file, geojson, importedResult]) => {
-        this.clearPolygons();
         this.setImportedData(importedResult);
       });
   }
@@ -351,7 +350,6 @@ export class MapglImportComponent {
 
     return Promise.all<string | ArrayBuffer, { geojson: any, centroides: any }>([readJsonFile, parseJson])
       .then(([fileContent, importedResult]) => {
-        this.clearPolygons();
         this.setImportedData(importedResult);
       });
   }
@@ -450,7 +448,6 @@ export class MapglImportComponent {
 
     return Promise.all([fileReaderPromise, zipLoaderPromise, shapeParserPromise, geojsonParserPromise])
       .then(([a, b, c, importedResult]) => {
-        this.clearPolygons();
         this.setImportedData(importedResult);
       });
   }
@@ -503,7 +500,6 @@ export class MapglImportComponent {
     });
 
     return Promise.all([wktParserPromise]).then(([importedResult]) => {
-      this.clearPolygons();
       this.setImportedData(importedResult);
     });
   }
@@ -517,6 +513,8 @@ export class MapglImportComponent {
     const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
     if (importSource !== undefined) {
       importSource.setData(this.emptyData);
+      this.mapComponent.onAoiChanged.next(<helpers.FeatureCollection>this.emptyData);
+
     }
     if (labelSource !== undefined) {
       labelSource.setData(this.emptyData);
@@ -549,6 +547,7 @@ export class MapglImportComponent {
           this.mapComponent.map.fitBounds(extent(importedResult.geojson));
         }
         this.imported.next(importedResult.geojson.features);
+        this.mapComponent.onAoiChanged.next(importedResult.geojson);
         this.dialogRef.close();
       } else {
         throw new Error('No polygon to display in this file');

@@ -39,6 +39,7 @@
    [drawData]="drawData"
    [drawEnabled]="this.drawEnabled"
    [drawPolygonVerticesLimit]="5"
-   [transformRequest]="transformRequest">
+   [transformRequest]="transformRequest"
+   (onAoiChanged)="onAoiChanged($event)">
   </arlas-mapgl>
 </div>
