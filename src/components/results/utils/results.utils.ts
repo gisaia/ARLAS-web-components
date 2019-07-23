@@ -51,10 +51,6 @@ export interface Field {
   process?: string;
 }
 
-export interface PageOptions {
-  pageUp: boolean;
-}
-
 export interface PageQuery {
   reference: Map<string, string | number | Date>;
   whichPage: PageEnum;

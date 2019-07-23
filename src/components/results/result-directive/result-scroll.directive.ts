@@ -21,7 +21,7 @@ import { Directive, Input, Output, HostListener, ElementRef, OnChanges, SimpleCh
 import { Subject } from 'rxjs';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { Item } from '../model/item';
-import { PageOptions } from '../utils/results.utils';
+
 @Directive({
   selector: '[arlasResultScroll]',
 })
@@ -32,7 +32,7 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public nbGridColumns: number;
   @Input() public resultMode: ModeEnum;
   @Input() public fetchState: { endListUp: true, endListDown: false };
-  @Input() public scrollOptions: { maintainScrollPosition: boolean };
+  @Input() public scrollOptions: { maintainScrollUpPosition: boolean, maintainScrollDownPosition: boolean, nbLines: number };
   /**
    * @deprecated moreDataEvent is replaced with `nextDataEvent`.
    */
@@ -48,7 +48,6 @@ export class ResultScrollDirective implements OnChanges {
   private nbScrolledLines;
   private top;
   private height;
-  private previousScrollPosition = 0;
   constructor(private el: ElementRef) { }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -66,11 +65,18 @@ export class ResultScrollDirective implements OnChanges {
     }
 
     if (changes['scrollOptions']) {
-      if (this.scrollOptions.maintainScrollPosition = true) {
+      if (this.scrollOptions.maintainScrollUpPosition === true && this.items) {
         /**
          * Maintains the scroll position after loading rows in the top of the list
          */
-        this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight - this.previousScrollPosition;
+        this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight * this.scrollOptions.nbLines / this.items.length;
+      }
+      if (this.scrollOptions.maintainScrollDownPosition === true && this.items) {
+        /**
+         * Maintains the scroll position after loading rows in the bottom of the list
+         */
+        this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight -
+        this.el.nativeElement.scrollHeight * this.scrollOptions.nbLines / this.items.length - this.tbodyHeight / 2;
       }
     }
   }
@@ -128,7 +134,6 @@ export class ResultScrollDirective implements OnChanges {
       if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && !this.fetchState.endListUp) {
         this.previousFirstId = this.items[0].identifier;
         this.previousLastId = null;
-        this.previousScrollPosition = this.el.nativeElement.scrollHeight - this.el.nativeElement.scrollTop;
         this.previousDataEvent.next(this.items[0].itemData);
       }
     }

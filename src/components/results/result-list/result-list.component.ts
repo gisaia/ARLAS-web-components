@@ -34,7 +34,6 @@ import { OnChanges } from '@angular/core/core';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { PageEnum } from '../utils/enumerations/pageEnum';
-import { PageOptions } from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -106,7 +105,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
   };
 
-  public scrollOptions = { maintainScrollPosition: true};
+  public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0};
 
   @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
@@ -127,7 +126,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-   * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid
+   * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid.
+   * @note In order to apply `selectInBetween` method properly, this list must be ascendingly sorted on the item identifier.
    */
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
@@ -372,10 +372,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public theadHeight: number = null;
 
   public ModeEnum = ModeEnum;
+  public PageEnum = PageEnum;
   public SortEnum = SortEnum;
-
-  private selectedItemsPositions = new Set<number>();
-
 
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
@@ -393,7 +391,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public displayListGrid = 'inline';
 
   private debouncer = new Subject<ElementIdentifier>();
-
 
   public geoSortActions: Array<Action> = [
     {
@@ -526,7 +523,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
          * The objective of this input is to inform `ResultScrollDirective` that it should
          * maintain the Scroll Position when Adding Content to the top of the list
          */
-        this.scrollOptions = { maintainScrollPosition: true};
+        this.scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: false, nbLines: itemIndex};
+      }
+      if (this.isNextPageRequested) {
+        /**
+         * This variable is set and given as an input to the `ResultScrollDirective`.
+         * The objective of this input is to inform `ResultScrollDirective` that it should
+         * maintain the Scroll Position when Adding Content to the bottom of the list
+         */
+        this.scrollOptions = { maintainScrollUpPosition: false, maintainScrollDownPosition: true, nbLines: itemIndex};
       }
       this.setSelectedItems(this.selectedItems);
       this.isNextPageRequested = false;
@@ -601,7 +606,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public setSelectedItems(selectedItems: Set<string>) {
     this.selectedItems = selectedItems;
-    if (selectedItems.size !== this.items.length) {
+    if (selectedItems.size < this.items.length) {
       this.allItemsChecked = false;
     } else if (this.items.length !== 0) {
       this.allItemsChecked = true;
@@ -704,14 +709,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public selectAllItems() {
     this.allItemsChecked = !this.allItemsChecked;
     this.selectedItems = new Set<string>();
-    this.selectedItemsPositions = new Set<number>();
-
     this.items.forEach(item => {
       item.isChecked = this.allItemsChecked;
       item.isindeterminated = false;
       if (this.allItemsChecked) {
         this.selectedItems.add(item.identifier);
-        this.selectedItemsPositions.add(item.position);
       }
     });
     this.setSelectedItems(this.selectedItems);
@@ -721,28 +723,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Selects all the items between the farest and nearest selected items
    */
   public selectInBetween() {
-    const sortedItemsPositions = Array.from(this.selectedItemsPositions).sort((a: number, b: number) => a - b);
-    if (sortedItemsPositions.length !== 0) {
-      for (let i = sortedItemsPositions[0]; i < sortedItemsPositions[sortedItemsPositions.length - 1]; i++) {
-        this.items[i].isChecked = true;
-        this.items[i].isindeterminated = false;
-        if (!this.selectedItems.has(this.items[i].identifier)) {
-          this.selectedItems.add(this.items[i].identifier);
-          this.selectedItemsPositions.add(this.items[i].position);
+    const selectedItemsList = Array.from(this.selectedItems).sort();
+    if (selectedItemsList.length > 0) {
+      const firstItem = selectedItemsList[0];
+      const lastItem = selectedItemsList[selectedItemsList.length - 1];
+      this.items.forEach(item => {
+        const compareToFirst = item.identifier.localeCompare(firstItem);
+        const compareToLast = item.identifier.localeCompare(lastItem);
+        if (compareToFirst >= 0 && compareToLast <= 0) {
+          item.isChecked = true;
+          item.isindeterminated = false;
+          this.selectedItems.add(item.identifier);
         }
-      }
-      this.setSelectedItems(this.selectedItems);
-    }
-  }
-
-  /**
-   * @description Sets the positions list of the selected items
-   */
-  public setItemsPositionsList(item: Item) {
-    if (item.isChecked) {
-      this.selectedItemsPositions.add(item.position);
-    } else {
-      this.selectedItemsPositions.delete(item.position);
+      });
     }
   }
 

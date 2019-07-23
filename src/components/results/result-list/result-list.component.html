@@ -116,8 +116,8 @@
   <div *ngIf="isPreviousPageRequested" class="resultlist__loading resultlist__top_loading"  [style.width.px]="tableWidth">
       <ngx-loading [show]="isPreviousPageRequested" [config]="loadAnimationConfig"></ngx-loading>
   </div>
-  <tbody arlasResultScroll *ngIf="!isBodyHidden" [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
-    [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState" [resultMode]="resultMode" (nextDataEvent)="paginate($event, 'next')" (previousDataEvent)="paginate($event, 'previous')" (moreDataEvent)="askForMoreData($event)">
+  <tbody arlasResultScroll *ngIf="!isBodyHidden" [style.overflow-anchor]="'none'" [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
+    [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState" [resultMode]="resultMode" (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)" (moreDataEvent)="askForMoreData($event)">
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
