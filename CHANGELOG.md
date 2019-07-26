@@ -1,6 +1,25 @@
 # Change Log
 
-## [v10.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.2.0) (2019-07-03)
+## [v11.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.0) (2019-07-26)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.2.0...v11.0.0)
+
+**Breaking changes:**
+
+- Remove 'searchSize' @input [\#292](https://github.com/gisaia/ARLAS-web-components/issues/292) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**New stuff:**
+
+- Emit added AOI in an @Output in form of Geojson [\#286](https://github.com/gisaia/ARLAS-web-components/issues/286) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Add an event when reaching the top of a scroll [\#275](https://github.com/gisaia/ARLAS-web-components/issues/275) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Miscellaneous:**
+
+- Deprecate 'askForMoreData' method [\#291](https://github.com/gisaia/ARLAS-web-components/issues/291) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Deprecate 'moreDataEvent' @output [\#290](https://github.com/gisaia/ARLAS-web-components/issues/290) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Deprecate 'nLastLines' @input [\#289](https://github.com/gisaia/ARLAS-web-components/issues/289) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+## [v10.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.2.0) (2019-07-04)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.5...v10.2.0)
 
@@ -13,6 +32,7 @@
 
 **Miscellaneous:**
 
+- Add properties to onMoveResult [\#283](https://github.com/gisaia/ARLAS-web-components/issues/283) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Enhance detailled item layout [\#277](https://github.com/gisaia/ARLAS-web-components/issues/277) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v10.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.5) (2019-06-19)
