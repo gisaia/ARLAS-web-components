@@ -23,7 +23,7 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 import { Column } from '../model/column';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier, FieldsConfiguration } from '../utils/results.utils';
+import { Action, ElementIdentifier, FieldsConfiguration, PageQuery } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Observable, Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -33,6 +33,7 @@ import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { PageEnum } from '../utils/enumerations/pageEnum';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -95,6 +96,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public GEOSORT_BUTTON = 'Geo-sort';
 
+  public COLUMN_ACTIONS_HEIGHT = 85;
+
+  public FILTERS_HEIGHT = 50;
+
+  public loadAnimationConfig = {
+    animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
+    backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
+  };
+
+  public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0};
+
+  @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
@@ -113,7 +126,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-   * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid
+   * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid.
+   * @note In order to apply `selectInBetween` method properly, this list must be ascendingly sorted on the item identifier.
    */
   @Input() public rowItemList: Array<Map<string, string | number | Date>>;
 
@@ -133,15 +147,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-  * @description When the `last - n` line is reached, more data is requested.
+   * @description The number of items left on the list/grid when scrolling up or down upon which loading new data is triggered.
+   * When scrolling up or down, once there is `nLastLines` items left at the top or bottom of the list, previous/next data is loaded.
+   * @deprecated nLastLines is deprecated and used only if `nbLinesBeforeFetch` is not set
   */
   @Input() public nLastLines = 5;
 
   /**
    * @Input : Angular
-   * @description Number of new rows added each time the `last - n` line is reached.
-   */
-  @Input() public searchSize;
+   * @description The number of items left on the list/grid when scrolling up or down upon which loading new data is triggered.
+   * When scrolling up or down, once there is `nbLinesBeforeFetch` items left at the top or bottom of the list, previous/next
+   * data is loaded.
+  */
+  @Input() public nbLinesBeforeFetch;
 
   /**
    * @Input : Angular
@@ -244,7 +262,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale..
    */
-  @Input() public colorsSaturationWeight = 1 / 2 ;
+  @Input() public colorsSaturationWeight = 1 / 2;
 
   /**
    * @Input : Angular
@@ -307,10 +325,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Output : Angular
-   * @description Emits the request of more data to load. The emited number is the number
-   * of times this event has been emitted.
+   * @description Emits the request of more data to load. The emitted number is the number of times this event has been emitted.
+   * @deprecated moreDataEvent can be replaced by `paginationEvent`
    */
   @Output() public moreDataEvent: Subject<number> = new Subject<number>();
+
+  /**
+   * @Output : Angular
+   * @description Emits the request of a new page to load.
+   * The emitted PageQuery contains the reference item from which the new page is loaded
+   * and whether it is the previous or the next page.
+   */
+  @Output() public paginationEvent: Subject<PageQuery> = new Subject<PageQuery>();
 
   /**
    * @Output : Angular
@@ -345,17 +371,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public tbodyHeight: number = null;
   public theadHeight: number = null;
 
-  public ANIMATION_TYPES = ANIMATION_TYPES;
   public ModeEnum = ModeEnum;
+  public PageEnum = PageEnum;
   public SortEnum = SortEnum;
-
-  private selectedItemsPositions = new Set<number>();
-
 
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
 
-  public isMoreDataRequested = false;
+  public isNextPageRequested = false;
+  public isPreviousPageRequested = false;
   public hasGridMode = false;
   public resultMode: ModeEnum = this.defautMode;
   public allItemsChecked = false;
@@ -367,7 +391,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public displayListGrid = 'inline';
 
   private debouncer = new Subject<ElementIdentifier>();
-
 
   public geoSortActions: Array<Action> = [
     {
@@ -423,6 +446,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
+      this.isPreviousPageRequested = false;
       this.closeDetail(true);
     }
     if (changes['indeterminatedItems'] !== undefined) {
@@ -461,6 +485,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         });
       }
     }
+    if (changes['fetchState'] !== undefined) {
+      if (this.fetchState.endListUp) {
+        this.isPreviousPageRequested = false;
+      }
+      if (this.fetchState.endListDown) {
+        this.isNextPageRequested = false;
+      }
+    }
   }
 
   public ngDoCheck() {
@@ -470,22 +502,61 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setColumns();
     }
     if (itemChanges) {
+      let itemIndex = 0;
       itemChanges.forEachAddedItem(i => {
-        this.onAddItems(i.item);
+        this.onAddItems(i.item, this.isPreviousPageRequested, itemIndex);
+        itemIndex++;
       });
+      itemChanges.forEachRemovedItem(i => {
+        if (this.isNextPageRequested) {
+          this.items.splice(0, 1);
+        } else if (this.isPreviousPageRequested) {
+          this.items.splice(this.items.length - 1, 1);
+        }
+      });
+      /**
+       * This variable notifies the ResultScrollDirective whether the end of list is reached at top or bottom
+       */
+      if (this.isPreviousPageRequested) {
+        /**
+         * This variable is set and given as an input to the `ResultScrollDirective`.
+         * The objective of this input is to inform `ResultScrollDirective` that it should
+         * maintain the Scroll Position when Adding Content to the top of the list
+         */
+        this.scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: false, nbLines: itemIndex};
+      }
+      if (this.isNextPageRequested) {
+        /**
+         * This variable is set and given as an input to the `ResultScrollDirective`.
+         * The objective of this input is to inform `ResultScrollDirective` that it should
+         * maintain the Scroll Position when Adding Content to the bottom of the list
+         */
+        this.scrollOptions = { maintainScrollUpPosition: false, maintainScrollDownPosition: true, nbLines: itemIndex};
+      }
       this.setSelectedItems(this.selectedItems);
-      this.isMoreDataRequested = false;
+      this.isNextPageRequested = false;
+      this.isPreviousPageRequested = false;
     }
   }
 
   /**
-   * @description Emits the event of asking for more items to fetch
-   * @param moreDataCallsCounter Counts the event's emission occurence
-   */
-  // when it's called for more data, an animated loading div is shown
+   * when it's called for more data, an animated loading div is shown
+   * @deprecated
+   *  */
   public askForMoreData(moreDataCallsCounter: number) {
     this.moreDataEvent.next(moreDataCallsCounter);
-    this.isMoreDataRequested = true;
+    this.isNextPageRequested = true;
+  }
+
+  /**
+   * @description Emits the event of asking for next or previous page of items
+   * @param referenceIdentifier : item identifier used as reference to fetch the next/previous page
+   * @param whichPage : Whether to fetch the `next` or `previous` page
+   */
+  public paginate(itemData: Map<string, string | number | Date>, whichPage: PageEnum) {
+    this.paginationEvent.next({ reference: itemData, whichPage: whichPage });
+    this.isNextPageRequested = whichPage === PageEnum.next;
+    this.isPreviousPageRequested = whichPage === PageEnum.previous;
   }
 
   /**
@@ -535,7 +606,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public setSelectedItems(selectedItems: Set<string>) {
     this.selectedItems = selectedItems;
-    if (selectedItems.size !== this.items.length) {
+    if (selectedItems.size < this.items.length) {
       this.allItemsChecked = false;
     } else if (this.items.length !== 0) {
       this.allItemsChecked = true;
@@ -638,14 +709,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public selectAllItems() {
     this.allItemsChecked = !this.allItemsChecked;
     this.selectedItems = new Set<string>();
-    this.selectedItemsPositions = new Set<number>();
-
     this.items.forEach(item => {
       item.isChecked = this.allItemsChecked;
       item.isindeterminated = false;
       if (this.allItemsChecked) {
         this.selectedItems.add(item.identifier);
-        this.selectedItemsPositions.add(item.position);
       }
     });
     this.setSelectedItems(this.selectedItems);
@@ -655,28 +723,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Selects all the items between the farest and nearest selected items
    */
   public selectInBetween() {
-    const sortedItemsPositions = Array.from(this.selectedItemsPositions).sort((a: number, b: number) => a - b);
-    if (sortedItemsPositions.length !== 0) {
-      for (let i = sortedItemsPositions[0]; i < sortedItemsPositions[sortedItemsPositions.length - 1]; i++) {
-        this.items[i].isChecked = true;
-        this.items[i].isindeterminated = false;
-        if (!this.selectedItems.has(this.items[i].identifier)) {
-          this.selectedItems.add(this.items[i].identifier);
-          this.selectedItemsPositions.add(this.items[i].position);
+    const selectedItemsList = Array.from(this.selectedItems).sort();
+    if (selectedItemsList.length > 0) {
+      const firstItem = selectedItemsList[0];
+      const lastItem = selectedItemsList[selectedItemsList.length - 1];
+      this.items.forEach(item => {
+        const compareToFirst = item.identifier.localeCompare(firstItem);
+        const compareToLast = item.identifier.localeCompare(lastItem);
+        if (compareToFirst >= 0 && compareToLast <= 0) {
+          item.isChecked = true;
+          item.isindeterminated = false;
+          this.selectedItems.add(item.identifier);
         }
-      }
-      this.setSelectedItems(this.selectedItems);
-    }
-  }
-
-  /**
-   * @description Sets the positions list of the selected items
-   */
-  public setItemsPositionsList(item: Item) {
-    if (item.isChecked) {
-      this.selectedItemsPositions.add(item.position);
-    } else {
-      this.selectedItemsPositions.delete(item.position);
+      });
     }
   }
 
@@ -722,7 +781,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.columns.push(toggleColumn);
   }
 
-  private onAddItems(itemData: Map<string, string | number | Date>) {
+  private onAddItems(itemData: Map<string, string | number | Date>, addOnTop: boolean, index: number) {
     const item = new Item(this.columns, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     item.imageEnabled = true;
@@ -792,7 +851,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     item.ishighLight = false;
     // When new data is loaded, check the one that were already checked +
     // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
-    if (this.allItemsChecked && this.isMoreDataRequested) {
+    if (this.allItemsChecked && (this.isNextPageRequested || this.isPreviousPageRequested)) {
       item.isChecked = true;
       this.selectedItems.add(item.identifier);
     } else {
@@ -805,16 +864,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         item.isindeterminated = false;
       }
     }
-    this.items.push(item);
+    if (addOnTop) {
+      this.items.splice(index, 0, item);
+    } else {
+      this.items.push(item);
+    }
   }
-
-
-
 
   private setTableWidth() {
     if (this.tableWidth === null) {
       const nativeElement = this.el.nativeElement;
-      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] ) {
+      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0]) {
         this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
       }
     }
@@ -834,12 +894,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
-
   private getOffSetHeight(): number {
     if (!this.displayFilters) {
-      return this.el.nativeElement.parentElement.offsetHeight - 85;
+      return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT;
     } else {
-      return this.el.nativeElement.parentElement.offsetHeight - 85 - 50;
+      return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT - this.FILTERS_HEIGHT;
     }
   }
 }

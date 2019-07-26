@@ -113,8 +113,11 @@
       </td>
     </tr>
   </thead>
-  <tbody arlasResultScroll *ngIf="!isBodyHidden" [style.height.px]="tbodyHeight" [rowItemList]="rowItemList" [searchSize]="searchSize" [nbGridColumns]="nbGridColumns"
-    [nLastLines]="nLastLines" [resultMode]="resultMode" (moreDataEvent)="askForMoreData($event)">
+  <div *ngIf="isPreviousPageRequested" class="resultlist__loading resultlist__top_loading"  [style.width.px]="tableWidth">
+      <ngx-loading [show]="isPreviousPageRequested" [config]="loadAnimationConfig"></ngx-loading>
+  </div>
+  <tbody arlasResultScroll *ngIf="!isBodyHidden" [style.overflow-anchor]="'none'" [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
+    [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState" [resultMode]="resultMode" (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)" (moreDataEvent)="askForMoreData($event)">
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
@@ -137,10 +140,10 @@
         </ng-template>
       </ng-container>
     </mat-grid-list>
+
   </tbody>
+  <div *ngIf="isNextPageRequested" class="resultlist__loading resultlist__bottom_loading" [style.width.px]="tableWidth">
+      <ngx-loading [show]="isNextPageRequested" [config]="loadAnimationConfig"></ngx-loading>
+  </div>
 </table>
-<div *ngIf="isMoreDataRequested" class="resultlist__moredata" [style.width.px]="tableWidth">
-  <ngx-loading [show]="isMoreDataRequested" [config]="{ animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
-                    backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff' }">
-  </ngx-loading>
-</div>
+

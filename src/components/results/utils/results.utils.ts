@@ -18,6 +18,7 @@
  */
 
 import { Subject } from 'rxjs';
+import { PageEnum } from './enumerations/pageEnum';
 
 export interface Action {
   id: string;
@@ -48,4 +49,9 @@ export interface FieldsConfiguration {
 export interface Field {
   fieldPath: string;
   process?: string;
+}
+
+export interface PageQuery {
+  reference: Map<string, string | number | Date>;
+  whichPage: PageEnum;
 }
