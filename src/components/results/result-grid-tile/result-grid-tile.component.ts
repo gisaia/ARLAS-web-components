@@ -58,6 +58,7 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   /**
    * @Output
    * @description Emits the selected/unselected item.
+   * @deprecated
    */
   @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
 
@@ -81,7 +82,6 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
     this.gridTile.isChecked = !this.gridTile.isChecked;
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in list mode
     this.selectedItemsEvent.next(this.selectedItems);
-    this.selectedItemPositionEvent.next(this.gridTile);
   }
 
   public determinateItem() {
@@ -90,7 +90,6 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
     this.selectedItems.add(this.gridTile.identifier);
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
     this.selectedItemsEvent.next(this.selectedItems);
-    this.selectedItemPositionEvent.next(this.gridTile);
   }
 
   public setClickedOnItem() {
