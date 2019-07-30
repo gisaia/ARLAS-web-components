@@ -1,8 +1,20 @@
 # Change Log
 
+## [v11.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.2) (2019-07-30)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.1...v11.0.2)
+
+**Fixed bugs:**
+
+- Fix SelectInBetween and SelectAll bugs [\#295](https://github.com/gisaia/ARLAS-web-components/pull/295) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
 ## [v11.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.1) (2019-07-26)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.0...v11.0.1)
+
+**Fixed bugs:**
+
+- Remove unused outputs and unexisting method in HTML file [\#294](https://github.com/gisaia/ARLAS-web-components/pull/294) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v11.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.0) (2019-07-26)
 
