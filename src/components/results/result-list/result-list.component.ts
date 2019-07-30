@@ -609,7 +609,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     if (selectedItems.size < this.items.length) {
       this.allItemsChecked = false;
     } else if (this.items.length !== 0) {
-      this.allItemsChecked = true;
+      this.allItemsChecked = this.items.filter(i => i.isChecked).length === this.items.length;
     }
     this.selectedItemsEvent.next(Array.from(this.selectedItems));
   }
@@ -723,14 +723,24 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Selects all the items between the farest and nearest selected items
    */
   public selectInBetween() {
-    const selectedItemsList = Array.from(this.selectedItems).sort();
+    const selectedItemsList = new Array();
+    this.items.forEach(i => {
+      if (this.selectedItems.has(i.identifier)) {
+        selectedItemsList.push(i);
+      }
+    });
     if (selectedItemsList.length > 0) {
       const firstItem = selectedItemsList[0];
       const lastItem = selectedItemsList[selectedItemsList.length - 1];
+      let inBetween = false;
       this.items.forEach(item => {
-        const compareToFirst = item.identifier.localeCompare(firstItem);
-        const compareToLast = item.identifier.localeCompare(lastItem);
-        if (compareToFirst >= 0 && compareToLast <= 0) {
+        if (item === firstItem) {
+          inBetween = true;
+        }
+        if (item === lastItem) {
+          inBetween = false;
+        }
+        if (inBetween) {
           item.isChecked = true;
           item.isindeterminated = false;
           this.selectedItems.add(item.identifier);
