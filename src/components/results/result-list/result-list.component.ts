@@ -746,6 +746,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
           this.selectedItems.add(item.identifier);
         }
       });
+      this.setSelectedItems(this.selectedItems);
     }
   }
 
