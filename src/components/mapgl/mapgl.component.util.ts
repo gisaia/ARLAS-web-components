@@ -28,11 +28,11 @@ export function paddedBounds(npad: number, spad: number, epad: number,
     const SWtopoint = map.project(SW);
     const SWpoint = new Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
     const SWworld = new Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);
-    const swWorld = map.unproject(SWworld).wrap();
+    const swWorld = map.unproject(SWworld);
     const NEtopoint = map.project(NE);
     const NEpoint = new Point(((NEtopoint.x - bottomLeft.x) * scale) + epad, ((NEtopoint.y - topRight.y) * scale) - npad);
     const NEworld = new Point(NEpoint.x / scale + bottomLeft.x, NEpoint.y / scale + topRight.y);
-    const neWorld = map.unproject(NEworld).wrap();
+    const neWorld = map.unproject(NEworld);
     return [swWorld, neWorld];
 }
 
