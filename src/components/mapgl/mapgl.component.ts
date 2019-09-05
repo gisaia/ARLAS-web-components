@@ -36,7 +36,8 @@ import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
-import LimitVertexMode from './model/LimitVertexMode';
+import LimitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
+import ValidGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
 import { FeatureCollection } from '@turf/helpers';
 
@@ -528,9 +529,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.drawEnabled) {
       const drawOptions = {
         ...this.drawOption, ...{
-          modes: Object.assign({
-            limit_vertex: LimitVertexMode
-          }, MapboxDraw.modes)
+          modes: Object.assign(
+            MapboxDraw.modes,
+            {
+              limit_vertex: LimitVertexDirectSelectMode,
+              draw_polygon: ValidGeomDrawPolygonMode
+            })
         }
       };
       this.draw = new MapboxDraw(drawOptions);
