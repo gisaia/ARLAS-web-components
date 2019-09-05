@@ -893,11 +893,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       cent.properties.arlas_id = feature.properties.arlas_id;
       centroides.push(cent);
     });
+
     this.polygonlabeldata = {
       type: 'FeatureCollection',
       features: centroides
     };
-    this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
+    this.draw.add(this.polygonlabeldata);
   }
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
