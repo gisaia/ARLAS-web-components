@@ -4,16 +4,17 @@ import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zo
 import Constants from '@gisaia-team/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts';
 
-const LimitVertexMode = DirectSelect;
+const LimitVertexDirectSelectMode = DirectSelect;
+const reader = new jsts.io.GeoJSONReader();
 
-LimitVertexMode.fireInvalidGeom = function (feature) {
+LimitVertexDirectSelectMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
     action: 'error',
     features: [feature]
   });
 };
 
-LimitVertexMode.toDisplayFeatures = function (state, geojson, push) {
+LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
     geojson.properties.active = Constants.activeStates.ACTIVE;
     push(geojson);
@@ -29,15 +30,16 @@ LimitVertexMode.toDisplayFeatures = function (state, geojson, push) {
   this.fireActionable(state);
 };
 
-LimitVertexMode.onTouchEnd = LimitVertexMode.onMouseUp = function (state) {
+LimitVertexDirectSelectMode.onTouchEnd = LimitVertexDirectSelectMode.onMouseUp = function (state) {
+
   if (state.dragMoving) {
     const featureCoords = [...state.feature.coordinates[0]];
+
     if (
       featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
       featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]
     ) {
-      const coords = featureCoords;
-      coords.push(featureCoords[0]);
+      featureCoords.push(featureCoords[0]);
     }
     const currentFeature = {
       'type': 'Feature',
@@ -46,7 +48,7 @@ LimitVertexMode.onTouchEnd = LimitVertexMode.onMouseUp = function (state) {
         'coordinates': [featureCoords]
       }
     };
-    const reader = new jsts.io.GeoJSONReader();
+
     const g = reader.read(currentFeature);
     if (!g.geometry.isValid()) {
       this.fireInvalidGeom(currentFeature);
@@ -57,7 +59,7 @@ LimitVertexMode.onTouchEnd = LimitVertexMode.onMouseUp = function (state) {
 };
 
 
-LimitVertexMode.onSetup = function (opts) {
+LimitVertexDirectSelectMode.onSetup = function (opts) {
   const featureId = opts.featureId;
   let maxVertexByPolygon = opts.maxVertexByPolygon;
   const feature = this.getFeature(featureId);
@@ -95,4 +97,4 @@ LimitVertexMode.onSetup = function (opts) {
   return state;
 };
 
-export default LimitVertexMode;
+export default LimitVertexDirectSelectMode;
