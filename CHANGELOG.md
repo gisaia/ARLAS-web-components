@@ -1,8 +1,24 @@
 # Change Log
 
+## [v11.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.1.0) (2019-09-05)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.3...v11.1.0)
+
+**New stuff:**
+
+- Add a method to add a polygon in draw mode [\#288](https://github.com/gisaia/ARLAS-web-components/issues/288) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- Validation of drawing geometry not work at first drawing [\#299](https://github.com/gisaia/ARLAS-web-components/issues/299) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v11.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.3) (2019-07-31)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.2...v11.0.3)
+
+**Fixed bugs:**
+
+- Emit 'selectedItemEvent' after in between selection [\#297](https://github.com/gisaia/ARLAS-web-components/pull/297) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v11.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.2) (2019-07-30)
 
