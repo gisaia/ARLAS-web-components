@@ -55,3 +55,17 @@ export interface PageQuery {
   reference: Map<string, string | number | Date>;
   whichPage: PageEnum;
 }
+
+export interface Attachment {
+  label?: string;
+  url: string;
+  type?: string;
+  description?: string;
+  icon?: string;
+}
+
+export interface AdditionalInfo {
+  details?: Map<string, Map<string, string>>;
+  actions?: Array<Action>;
+  attachments?: Array<Attachment>;
+}

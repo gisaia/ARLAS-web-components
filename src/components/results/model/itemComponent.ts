@@ -19,7 +19,7 @@
 
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Item } from '../model/item';
-import { Action } from '../utils/results.utils';
+import { Action, Attachment, AdditionalInfo } from '../utils/results.utils';
 import { Observable } from 'rxjs';
 
 export class ItemComponent {
@@ -27,7 +27,7 @@ export class ItemComponent {
   /**
    * @description Emits the retrieved detailed data.
    */
-  protected retrievedDataEvent: Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
+  protected retrievedDataEvent: Observable<AdditionalInfo>;
 
   public setSelectedItem(isChecked: Boolean, identifier: string, selectedItems: Set<string>) {
     isChecked = !isChecked;
@@ -42,12 +42,12 @@ export class ItemComponent {
     }
   }
 
-  public retrieveDetailedData(detailedDataRetriever: DetailedDataRetriever, item: Item) {
+  public retrieveAdditionalInfo(detailedDataRetriever: DetailedDataRetriever, item: Item) {
     if (detailedDataRetriever !== null && item.itemDetailedData.length === 0) {
       this.retrievedDataEvent = detailedDataRetriever.getData(((String)(item.identifier)));
-      this.retrievedDataEvent.subscribe(value => {
+      this.retrievedDataEvent.subscribe(additionalInfo => {
         item.actions = new Array<Action>();
-        value.actions.forEach(action => {
+        additionalInfo.actions.forEach(action => {
           item.actions.push({
             id: action.id,
             label: action.label,
@@ -56,11 +56,23 @@ export class ItemComponent {
             tooltip: action.tooltip
           });
         });
-        value.details.forEach((v, k) => {
+        additionalInfo.details.forEach((v, k) => {
           const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();
           v.forEach((value, key) => details.push({ key: key, value: value }));
           item.itemDetailedData.push({ group: k, details: details });
         });
+        if (additionalInfo.attachments) {
+          item.attachments = new Array<Attachment>();
+          additionalInfo.attachments.forEach(attachment => {
+            item.attachments.push({
+              label: attachment.label,
+              url: attachment.url,
+              type: attachment.type,
+              description: attachment.description,
+              icon: attachment.icon
+            });
+          });
+        }
       });
     }
   }

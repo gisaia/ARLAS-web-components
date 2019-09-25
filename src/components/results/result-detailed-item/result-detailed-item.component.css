@@ -23,6 +23,7 @@
   font-size: 0.7em;
   text-align: left;
   vertical-align: middle;
+  overflow-y: auto;
 }
 
 .resultdetaileditem-key /* @doc Sets key style. (key: value part)*/
@@ -52,6 +53,26 @@
   font-size: 1.1em;
 }
 
+.result-attachments-title /* @doc Sets the style of attachments section's title*/
+{
+  font-weight: bold;
+  color: #322D90;
+  font-size: 1.1em;
+}
+
+.result-attachments-list {
+  display: block;
+  max-width: 95%;
+}
+.result-attachment /* @doc Sets the style of the attachment in `li` tag */
+{
+  padding-right: 5px
+}
+
+.result-attachment-link /* @doc Sets the style of the attachment link in `a` tag*/
+{
+
+}
 .detail-item{
   font-weight: bold;
   color: red;

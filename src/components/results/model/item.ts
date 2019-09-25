@@ -18,7 +18,7 @@
  */
 
 import { Column } from './column';
-import { Action, FieldsConfiguration } from '../utils/results.utils';
+import { Action, FieldsConfiguration, Attachment } from '../utils/results.utils';
 
 export class Item {
 
@@ -69,6 +69,10 @@ export class Item {
     group: string,
     details: Array<{ key: string, value: string}>
   }>();
+  /**
+     * @description Links attached to the item.
+     */
+  public attachments: Array<Attachment>;
   /**
    * @description List of actions that can be applied to this item.
    */
