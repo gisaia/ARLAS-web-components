@@ -118,7 +118,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   // Detailed data is retrieved wheb the row is toggled for the first time
   public toggle() {
     if (this.rowItem.isDetailToggled === false) {
-      this.retrieveDetailedData(this.detailedDataRetriever, this.rowItem);
+      this.retrieveAdditionalInfo(this.detailedDataRetriever, this.rowItem);
       this.borderStyle = 'dashed';
     } else {
       this.borderStyle = 'solid';

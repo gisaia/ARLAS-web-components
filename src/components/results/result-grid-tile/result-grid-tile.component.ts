@@ -93,7 +93,7 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   }
 
   public setClickedOnItem() {
-    this.retrieveDetailedData(this.detailedDataRetriever, this.gridTile);
+    this.retrieveAdditionalInfo(this.detailedDataRetriever, this.gridTile);
     this.clickedOnItemEvent.next(this.gridTile);
 
   }

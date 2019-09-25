@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { Action } from '../utils/results.utils';
+import { AdditionalInfo } from '../utils/results.utils';
 import { Observable } from 'rxjs';
 
 
 export interface DetailedDataRetriever {
 
-  getData(identifier: string): Observable<{ details: Map<string, Map<string, string>>, actions: Array<Action> }>;
+  getData(identifier: string): Observable<AdditionalInfo>;
 
 }

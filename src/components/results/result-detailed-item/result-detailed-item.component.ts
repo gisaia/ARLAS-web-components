@@ -18,10 +18,11 @@
  */
 
 import { Component, OnInit, Input, Output } from '@angular/core';
-import { Action, ElementIdentifier } from '../utils/results.utils';
+import { Action, ElementIdentifier, Attachment } from '../utils/results.utils';
 import { Item } from '../model/item';
 
 import { Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
@@ -59,9 +60,9 @@ export class ResultDetailedItemComponent implements OnInit {
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
     new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
-  constructor() { }
+  constructor(private translate: TranslateService) { }
 
-  public ngOnInit() { }
+  public ngOnInit() {}
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {
@@ -70,5 +71,28 @@ export class ResultDetailedItemComponent implements OnInit {
 
   public getGroups() {
     return (this.showEmptyGroup) ? (this.rowItem.itemDetailedData) : (this.rowItem.itemDetailedData.filter(d => d.details.length > 0));
+  }
+
+  private getAttachmentUrl(url: string): string {
+    if (url && !url.startsWith('http')) {
+      return 'https://' + url;
+    }
+    return url;
+  }
+
+  private getAttachmentLabel(attachment: Attachment, index: number): string {
+    if (attachment.label && attachment.label.length > 0) {
+      return attachment.label;
+    } else {
+      return this.translate.instant('Link') + ' ' + index;
+    }
+  }
+
+  private getAttachmentDescription(attachment: Attachment): string {
+    if (attachment.description && attachment.description.length > 0) {
+      return attachment.description;
+    } else {
+      return attachment.url;
+    }
   }
 }

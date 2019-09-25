@@ -239,3 +239,7 @@ margin-top: 0px!important;
   margin-top: -29px !important;
 }
 
+.table-wrapper .result-attachment-label{
+  display: none !important;
+}
+
