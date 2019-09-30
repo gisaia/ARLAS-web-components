@@ -1,0 +1,20 @@
+<div>
+  <mat-form-field>
+    <mat-label>Select a getCapabilities file</mat-label>
+    <mat-select [(value)]="getCapaUrl">
+      <mat-option>None</mat-option>
+      <mat-option value="/assets/getCap_1.xml">GetCap 1</mat-option>
+      <mat-option value="/assets/getCap_2.xml">GetCap 2</mat-option>
+      <mat-option value="/assets/getCap_3.xml">GetCap 3</mat-option>
+      <mat-option value="/assets/getCap_4.xml">GetCap 4</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <p>You selected: {{selected}}</p>
+  <button mat-icon-button (click)="wmtsLayerMangerComponent.run()">
+    <mat-icon aria-label="Add WMTS">get_app</mat-icon>
+  </button>
+</div>
+<arlas-wmts-layer-manager #wmtsLayerManager [metadata]="metadata" [getCapaUrl]="getCapaUrl"></arlas-wmts-layer-manager>
+<div>{{ wmtsLayerMangerComponent.getTilesInfoBus | async | json }}</div>
+<div>{{ wmtsLayerMangerComponent.onError | async }}</div>

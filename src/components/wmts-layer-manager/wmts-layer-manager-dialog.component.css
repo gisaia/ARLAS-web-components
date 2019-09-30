@@ -1,0 +1,37 @@
+.wmts-layer-manager-metadata-list{
+    height: 48px !important;
+  }
+  .wmts-layer-manager-form{
+    padding-top: 16px !important;
+    display: flex;
+    flex-flow: wrap;
+    max-width: 440px;
+  }
+  
+  .wmts-layer-manager-preview{
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+  }
+  
+  .wmts-layer-manager-image{
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important;
+  }
+
+  .wmts-layer-manager-spinner{
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: block !important; 
+  }
+
+  .wmts-layer-manager-content{
+      max-height: 80vh !important;
+  }
+  
+  .wmts-layer-manager-field{
+      padding-right: 5px;
+      padding-left: 5px;
+
+  }

@@ -1,5 +1,6 @@
 import { MapglImportModule } from './components/mapgl-import/mapgl-import.module';
 import { MapglImportComponent } from './components/mapgl-import/mapgl-import.component';
+import { WmtsLayerManagerComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -49,3 +50,5 @@ export { ColorGeneratorModule } from './services/color.generator.module';
 export { ArlasColorService } from './services/color.generator.service';
 export { MapglImportModule } from './components/mapgl-import/mapgl-import.module';
 export { MapglImportComponent } from './components/mapgl-import/mapgl-import.component';
+export { WmtsLayerManagerModule } from './components/wmts-layer-manager/wmts-layer-manager.module';
+export { WmtsLayerManagerComponent } from './components/wmts-layer-manager/wmts-layer-manager.component';

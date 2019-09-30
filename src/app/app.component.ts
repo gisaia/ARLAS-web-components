@@ -34,7 +34,8 @@ export class AppComponent implements OnInit {
     '/histogram',
     '/powerbars',
     '/list',
-    '/gauge'
+    '/gauge',
+    '/wmts-layer-manager'
   ];
 
   constructor(private translate: TranslateService, private router: Router) {
