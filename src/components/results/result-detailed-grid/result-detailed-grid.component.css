@@ -90,3 +90,13 @@
   line-height: 7px;
   font-size: 19px;
 }
+
+.resultgrid-overlay{
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #555;
+  opacity: 0.5;
+}

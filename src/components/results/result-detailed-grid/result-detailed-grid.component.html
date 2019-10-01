@@ -1,8 +1,8 @@
 <div class="resultgrid" *ngIf=isDetailShowed>
   <div class="resultgrid--container">
     <div *ngIf="!isDetailedDataShowed; else detailShowed">
-      <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5">
-        <img *ngIf="gridTile.imageEnabled" src="{{gridTile.urlImage}}" onerror="this.onerror=null;this.src='./assets/no-view.png';">
+      <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5" >
+        <img *ngIf="gridTile.imageEnabled" (click)="showOverlay(gridTile.urlImage)" src="{{gridTile.urlImage}}" onerror="this.onerror=null;this.src='./assets/no-view.png';" style="cursor: pointer">
         <img *ngIf="!gridTile.imageEnabled" src="./assets/no-view.png">
       </div>
       <div class="resultgrid__info-button">
