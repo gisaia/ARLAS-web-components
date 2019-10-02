@@ -21,10 +21,21 @@ function copyJson() {
       .pipe(gulp.dest('./dist/components'));
   };
 
-function copyAssets() {
-    return gulp.src('./src/assets/**/*')
+function copyAssetsFonts() {
+    return gulp.src('./src/assets/font/*')
+        .pipe(gulp.dest('./dist/assets/font'));
+}
+
+function copyAssetsi18n() {
+    return gulp.src('./src/assets/i18n/*')
+        .pipe(gulp.dest('./dist/assets/i18n'));
+}
+
+function copyAssetsPng() {
+    return gulp.src('./src/assets/**/*.png')
         .pipe(gulp.dest('./dist/assets'));
 }
+
 function copyScss() {
     return gulp.src('./src/components/**/*.{scss,css}')
         .pipe(gulp.dest('./dist/components'));
@@ -39,7 +50,9 @@ gulp.task('build:copy-js', copyJS);
 gulp.task('build:copy-dts', copyDts);
 gulp.task('build:copy-html', copyHtml);
 gulp.task('build:copy-css', copyScss);
-gulp.task('build:copy-assets', copyAssets);
+gulp.task('build:copy-assets-font', copyAssetsFonts);
+gulp.task('build:copy-assets-i18n', copyAssetsi18n);
+gulp.task('build:copy-assets-png', copyAssetsPng);
 gulp.task('build:copy-json', copyJson);
 gulp.task('build:inline-resources', inlineResource);
 
@@ -49,7 +62,9 @@ gulp.task('default', gulp.series(
   'build:copy-dts',
   'build:copy-html',
   'build:copy-css',
-  'build:copy-assets',
+  'build:copy-assets-font',
+  'build:copy-assets-i18n',
+  'build:copy-assets-png',
   'build:copy-json',
   'build:inline-resources'
 ));
