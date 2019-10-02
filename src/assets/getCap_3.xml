@@ -1,0 +1,325 @@
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:inspire_common="http://inspire.ec.europa.eu/schemas/common/1.0" xmlns:inspire_vs="http://inspire.ec.europa.eu/schemas/inspire_vs_ows11/1.0" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd http://inspire.ec.europa.eu/schemas/inspire_vs_ows11/1.0 http://inspire.ec.europa.eu/schemas/inspire_vs/1.0/inspire_vs_ows_11.xsd">
+<ows:ServiceIdentification>
+<ows:Title>IDP PAAS OTF Ortho</ows:Title>
+<ows:ServiceType>OGC WMTS</ows:ServiceType>
+<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+<ows:Abstract>IDP PAAS OTF Ortho</ows:Abstract>
+<ows:Keywords>
+<ows:Keyword vocabulary="ISO">infoMapAccessService</ows:Keyword>
+<ows:Keyword>IDP</ows:Keyword>
+<ows:Keyword>PAAS</ows:Keyword>
+<ows:Keyword>OTF</ows:Keyword>
+<ows:Keyword>Ortho</ows:Keyword>
+</ows:Keywords>
+<ows:Profile>
+http://www.opengis.net/spec/wmts-simple/1.0/conf/simple-profile/CRS84
+</ows:Profile>
+<ows:Fees>Contact Us!</ows:Fees>
+<ows:AccessConstraints>Access Restricted</ows:AccessConstraints>
+</ows:ServiceIdentification>
+<ows:ServiceProvider>
+<ows:ProviderName>Airbus DS Intelligence</ows:ProviderName>
+<ows:ProviderSite xlink:href="http://www.geo-airbusds.com"/>
+<ows:ServiceContact>
+<ows:ContactInfo>
+<ows:Address>
+<ows:DeliveryPoint>5, rue des Satellites</ows:DeliveryPoint>
+<ows:City>Toulouse</ows:City>
+<ows:AdministrativeArea/>
+<ows:PostalCode>31030</ows:PostalCode>
+<ows:Country>France</ows:Country>
+<ows:ElectronicMailAddress>contact@geo-airbusds.com</ows:ElectronicMailAddress>
+</ows:Address>
+</ows:ContactInfo>
+</ows:ServiceContact>
+</ows:ServiceProvider>
+<ows:OperationsMetadata>
+<ows:Operation name="GetCapabilities">
+<ows:DCP>
+<ows:HTTP>
+<ows:Get xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b/1.0.0/WMTSCapabilities.xml">
+<ows:Constraint name="GetEncoding">
+<ows:AllowedValues>
+<ows:Value>RESTful</ows:Value>
+</ows:AllowedValues>
+</ows:Constraint>
+</ows:Get>
+<ows:Get xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b?">
+<ows:Constraint name="GetEncoding">
+<ows:AllowedValues>
+<ows:Value>KVP</ows:Value>
+</ows:AllowedValues>
+</ows:Constraint>
+</ows:Get>
+</ows:HTTP>
+</ows:DCP>
+</ows:Operation>
+<ows:Operation name="GetTile">
+<ows:DCP>
+<ows:HTTP>
+<ows:Get xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b/tiles/1.0.0">
+<ows:Constraint name="GetEncoding">
+<ows:AllowedValues>
+<ows:Value>RESTful</ows:Value>
+</ows:AllowedValues>
+</ows:Constraint>
+</ows:Get>
+<ows:Get xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b?">
+<ows:Constraint name="GetEncoding">
+<ows:AllowedValues>
+<ows:Value>KVP</ows:Value>
+</ows:AllowedValues>
+</ows:Constraint>
+</ows:Get>
+</ows:HTTP>
+</ows:DCP>
+</ows:Operation>
+<inspire_vs:ExtendedCapabilities>
+<inspire_common:ResourceLocator>
+<inspire_common:URL>
+https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b
+</inspire_common:URL>
+</inspire_common:ResourceLocator>
+<inspire_common:ResourceType>service</inspire_common:ResourceType>
+<inspire_common:TemporalReference>
+<inspire_common:DateOfLastRevision>2019-09-09</inspire_common:DateOfLastRevision>
+</inspire_common:TemporalReference>
+<inspire_common:Conformity>
+<inspire_common:Specification>
+<inspire_common:Title>-</inspire_common:Title>
+<inspire_common:DateOfLastRevision>2019-09-09</inspire_common:DateOfLastRevision>
+</inspire_common:Specification>
+<inspire_common:Degree>notEvaluated</inspire_common:Degree>
+</inspire_common:Conformity>
+<inspire_common:MetadataPointOfContact>
+<inspire_common:OrganisationName/>
+<inspire_common:EmailAddress/>
+</inspire_common:MetadataPointOfContact>
+<inspire_common:MetadataDate>0001-01-01</inspire_common:MetadataDate>
+<inspire_common:SpatialDataServiceType>view</inspire_common:SpatialDataServiceType>
+<inspire_common:MandatoryKeyword>
+<inspire_common:KeywordValue>infoMapAccessService</inspire_common:KeywordValue>
+</inspire_common:MandatoryKeyword>
+<inspire_common:SupportedLanguages>
+<inspire_common:DefaultLanguage>
+<inspire_common:Language>eng</inspire_common:Language>
+</inspire_common:DefaultLanguage>
+<inspire_common:SupportedLanguage>
+<inspire_common:Language>eng</inspire_common:Language>
+</inspire_common:SupportedLanguage>
+</inspire_common:SupportedLanguages>
+<inspire_common:ResponseLanguage>
+<inspire_common:Language/>
+</inspire_common:ResponseLanguage>
+</inspire_vs:ExtendedCapabilities>
+</ows:OperationsMetadata>
+<Contents>
+<Layer xmlns:ows="http://www.opengis.net/ows/1.1">
+<ows:Title>IDP PAAS On The Fly Ortho Imagery band VH</ows:Title>
+<ows:Abstract>IDP PAAS On The Fly Ortho Imagery</ows:Abstract>
+<ows:Identifier>default</ows:Identifier>
+<ows:Metadata xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b"/>
+<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::4326">
+<ows:LowerCorner>-22.492821 41.647377</ows:LowerCorner>
+<ows:UpperCorner>-20.430878 44.434235</ows:UpperCorner>
+</ows:BoundingBox>
+<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+<ows:LowerCorner>-2570798.0622260375 4636164.800515493</ows:LowerCorner>
+<ows:UpperCorner>-2324144.8081542146 4946396.4139886545</ows:UpperCorner>
+</ows:BoundingBox>
+<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+<ows:LowerCorner>41.647377 -22.492821</ows:LowerCorner>
+<ows:UpperCorner>44.434235 -20.430878</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<Style isDefault="true">
+<ows:Title>Default Style</ows:Title>
+<ows:Identifier>rgb</ows:Identifier>
+</Style>
+<Format>image/png</Format>
+<TileMatrixSetLink>
+<TileMatrixSet>EPSG4326</TileMatrixSet>
+</TileMatrixSetLink>
+<TileMatrixSetLink>
+<TileMatrixSet>EPSG3857</TileMatrixSet>
+</TileMatrixSetLink>
+<ResourceURL template="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b/tiles/1.0.0/default/{Style}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png" format="image/png" resourceType="tile"/>
+</Layer>
+<Layer xmlns:ows="http://www.opengis.net/ows/1.1">
+<ows:Title>IDP PAAS On The Fly Ortho Imagery band VV</ows:Title>
+<ows:Abstract>IDP PAAS On The Fly Ortho Imagery</ows:Abstract>
+<ows:Identifier>default</ows:Identifier>
+<ows:Metadata xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b"/>
+<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::4326">
+<ows:LowerCorner>-22.492821 41.647377</ows:LowerCorner>
+<ows:UpperCorner>-20.430878 44.434235</ows:UpperCorner>
+</ows:BoundingBox>
+<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+<ows:LowerCorner>-2570798.0622260375 4636164.800515493</ows:LowerCorner>
+<ows:UpperCorner>-2324144.8081542146 4946396.4139886545</ows:UpperCorner>
+</ows:BoundingBox>
+<ows:WGS84BoundingBox crs="urn:ogc:def:crs:OGC:2:84">
+<ows:LowerCorner>41.647377 -22.492821</ows:LowerCorner>
+<ows:UpperCorner>44.434235 -20.430878</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<Style isDefault="true">
+<ows:Title>Default Style</ows:Title>
+<ows:Identifier>rgb</ows:Identifier>
+</Style>
+<Format>image/png</Format>
+<TileMatrixSetLink>
+<TileMatrixSet>EPSG4326</TileMatrixSet>
+</TileMatrixSetLink>
+<TileMatrixSetLink>
+<TileMatrixSet>EPSG3857</TileMatrixSet>
+</TileMatrixSetLink>
+<ResourceURL template="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b/tiles/1.0.0/default/{Style}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png" format="image/png" resourceType="tile"/>
+</Layer>
+<TileMatrixSet xmlns:ows="http://www.opengis.net/ows/1.1">
+<ows:Title>WorldCRS84Quad (EPSG:4326)</ows:Title>
+<ows:Identifier>EPSG4326</ows:Identifier>
+<ows:BoundingBox crs="urn:ogc:def:crs:EPSG:6.3:4326">
+<ows:LowerCorner>-180.000000 -90.000000</ows:LowerCorner>
+<ows:UpperCorner>180.000000 90.000000</ows:UpperCorner>
+</ows:BoundingBox>
+<ows:SupportedCRS>urn:ogc:def:crs:EPSG:6.3:4326</ows:SupportedCRS>
+<WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleCRS84Quad</WellKnownScaleSet>
+<TileMatrix>
+<ows:Identifier>8</ows:Identifier>
+<ScaleDenominator>1091957.546931089</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>512</MatrixWidth>
+<MatrixHeight>256</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>9</ows:Identifier>
+<ScaleDenominator>545978.7734655447</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1024</MatrixWidth>
+<MatrixHeight>512</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>10</ows:Identifier>
+<ScaleDenominator>272989.3867327723</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2048</MatrixWidth>
+<MatrixHeight>1024</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>11</ows:Identifier>
+<ScaleDenominator>136494.6933663862</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>4096</MatrixWidth>
+<MatrixHeight>2048</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>12</ows:Identifier>
+<ScaleDenominator>68247.34668319309</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>8192</MatrixWidth>
+<MatrixHeight>4096</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>13</ows:Identifier>
+<ScaleDenominator>34123.67334159654</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>16384</MatrixWidth>
+<MatrixHeight>8192</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>14</ows:Identifier>
+<ScaleDenominator>17061.83667079827</ScaleDenominator>
+<TopLeftCorner>90.000000 -180.000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>32768</MatrixWidth>
+<MatrixHeight>16384</MatrixHeight>
+</TileMatrix>
+</TileMatrixSet>
+<TileMatrixSet xmlns:ows="http://www.opengis.net/ows/1.1">
+<ows:Title>Google Maps Compatible for the World</ows:Title>
+<ows:Identifier>EPSG3857</ows:Identifier>
+<ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+<ows:LowerCorner>-20037508.3427892 -20037508.3427892</ows:LowerCorner>
+<ows:UpperCorner>20037508.3427892 20037508.3427892</ows:UpperCorner>
+</ows:BoundingBox>
+<ows:SupportedCRS>urn:ogc:def:crs:EPSG::3857</ows:SupportedCRS>
+<WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GoogleMapsCompatible</WellKnownScaleSet>
+<TileMatrix>
+<ows:Identifier>8</ows:Identifier>
+<ScaleDenominator>2183915.093862179</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>256</MatrixWidth>
+<MatrixHeight>256</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>9</ows:Identifier>
+<ScaleDenominator>1091957.546931089</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>512</MatrixWidth>
+<MatrixHeight>512</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>10</ows:Identifier>
+<ScaleDenominator>545978.7734655447</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1024</MatrixWidth>
+<MatrixHeight>1024</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>11</ows:Identifier>
+<ScaleDenominator>272989.3867327723</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2048</MatrixWidth>
+<MatrixHeight>2048</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>12</ows:Identifier>
+<ScaleDenominator>136494.6933663862</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>4096</MatrixWidth>
+<MatrixHeight>4096</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>13</ows:Identifier>
+<ScaleDenominator>68247.34668319309</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>8192</MatrixWidth>
+<MatrixHeight>8192</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>14</ows:Identifier>
+<ScaleDenominator>34123.67334159654</ScaleDenominator>
+<TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>16384</MatrixWidth>
+<MatrixHeight>16384</MatrixHeight>
+</TileMatrix>
+</TileMatrixSet>
+</Contents>
+<ServiceMetadataURL xlink:href="https://sobloo.eu:443/api/v1/services/wmts/fa226bd2-5cbf-41ef-8950-5d0dc0ed875b/1.0.0/WMTSCapabilities.xml"/>
+</Capabilities>

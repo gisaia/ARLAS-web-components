@@ -47,6 +47,10 @@ import { GaugeDemoComponent } from './gauge-demo/gauge-demo.component';
 import { GaugeModule } from '../components/gauge/gauge.module';
 import { MapglImportModule } from '../components/mapgl-import/mapgl-import.module';
 import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import.component';
+import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
+import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
+import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
+import {MAT_DATE_LOCALE} from '@angular/material';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -59,6 +63,7 @@ const routes: Routes = [
   { path: 'powerbars', component: PowerbarsDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
   { path: 'gauge', component: GaugeDemoComponent },
+  { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent }
 
 ];
 
@@ -71,7 +76,8 @@ const routes: Routes = [
     MapglDemoComponent,
     PowerbarsDemoComponent,
     DonutDemoComponent,
-    GaugeDemoComponent
+    GaugeDemoComponent,
+    WmtsLayerManagerDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -91,6 +97,7 @@ const routes: Routes = [
     GaugeModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,
+    WmtsLayerManagerModule,
     MatSlideToggleModule,
     HttpClientModule,
     TranslateModule.forRoot({
@@ -101,8 +108,8 @@ const routes: Routes = [
       }
     })
   ],
-  providers: [],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
   bootstrap: [AppComponent],
-  entryComponents: [MapglImportDialogComponent]
+  entryComponents: [MapglImportDialogComponent, WmtsLayerManagertDialogComponent]
 })
 export class AppModule { }

@@ -1,0 +1,63 @@
+<h2 mat-dialog-title class="wmts-layer-manager-title">{{'Layers and style' | translate}}</h2>
+<mat-dialog-content class="wmts-layer-manager-content">
+    <mat-card class="wmts-layer-manager-metadata-card" *ngIf="metadata">
+        <div class="wmts-layer-manager-metadata">
+            <mat-list>
+                <h3 mat-subheader>{{'Informations' | translate}}</h3>
+                <mat-list-item class="wmts-layer-manager-metadata-list" *ngFor="let item of metadata | keyvalue">
+                    <h4 mat-line class="wmts-layer-manager-metadata-title">{{item.key}}</h4>
+                    <p mat-line class="wmts-layer-manager-metadata-value"> {{item.value}} </p>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </mat-card>
+    <form class="wmts-layer-manager-form" [formGroup]="formGroup">
+        <mat-form-field class="wmts-layer-manager-field">
+            <mat-select [(value)]="layer" placeholder="{{'Choose layer'| translate}}..." (selectionChange)="selectionChange($event)"
+                formControlName="layer">
+                <mat-option *ngFor="let layer of layers" [value]="layer">
+                    {{layer}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="wmts-layer-manager-field">
+            <mat-select placeholder="{{'Choose style'| translate}}..." [(value)]="style" formControlName="style">
+                <mat-option *ngFor="let style of styles" [value]="style">
+                    {{style}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div *ngFor="let dimension of dimensions">
+            <div *ngIf="dimension.identifier==='time'">
+                <mat-form-field class="wmts-layer-manager-field">
+                    <input matInput autocomplete="off" [matDatepicker]="picker" placeholder="{{'Choose date'| translate}}" formControlName={{dimension.identifier}}
+                        [max]=dimension.endDate [min]=dimension.startDate>
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>
+            </div>
+            <div *ngIf="dimension.identifier !=='time'">
+                <mat-form-field class="wmts-layer-manager-field">
+                    <mat-select formControlName={{dimension.identifier}} placeholder="{{'Choose' | translate}} {{dimension.identifier}}">
+                        <mat-option *ngFor="let v of dimension.values" [value]="v">
+                            {{v}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+    <div *ngIf="launchPreview" class="wmts-layer-manager-preview" style="height: 256px;">
+        <img class="wmts-layer-manager-image" [src]="imageToShow" alt="Preview of WMTS service" *ngIf="imageToShow&&!isImageLoading&&!showError">
+        <mat-progress-spinner class="wmts-layer-manager-spinner" *ngIf="isImageLoading" [diameter]="128" [strokeWidth]="2" mode="indeterminate"></mat-progress-spinner>
+    </div>
+    <div class="wmts-layer-manager-error" *ngIf="launchPreview && showError">
+        <span>{{'Unable to preview this style for this layer'| translate}}</span>
+    </div>
+</mat-dialog-content>
+
+<div mat-dialog-actions>
+    <button mat-raised-button class="wmts-layer-manager-preview-button" [disabled]="style==undefined||layer==undefined" (click)="clickOnPreview()">{{'Preview'| translate}}</button>
+    <button mat-raised-button class="wmts-layer-manager-view-button" [disabled]="style==undefined||layer==undefined" [mat-dialog-close]="formGroup.value"
+        cdkFocusInitial>{{'View' | translate}}</button>
+</div>
