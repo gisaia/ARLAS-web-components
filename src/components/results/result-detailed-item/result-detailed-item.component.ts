@@ -73,14 +73,14 @@ export class ResultDetailedItemComponent implements OnInit {
     return (this.showEmptyGroup) ? (this.rowItem.itemDetailedData) : (this.rowItem.itemDetailedData.filter(d => d.details.length > 0));
   }
 
-  private getAttachmentUrl(url: string): string {
+  public getAttachmentUrl(url: string): string {
     if (url && !url.startsWith('http')) {
       return 'https://' + url;
     }
     return url;
   }
 
-  private getAttachmentLabel(attachment: Attachment, index: number): string {
+  public getAttachmentLabel(attachment: Attachment, index: number): string {
     if (attachment.label && attachment.label.length > 0) {
       return attachment.label;
     } else {
@@ -88,7 +88,7 @@ export class ResultDetailedItemComponent implements OnInit {
     }
   }
 
-  private getAttachmentDescription(attachment: Attachment): string {
+  public getAttachmentDescription(attachment: Attachment): string {
     if (attachment.description && attachment.description.length > 0) {
       return attachment.description;
     } else {
