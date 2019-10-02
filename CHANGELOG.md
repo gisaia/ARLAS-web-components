@@ -1,6 +1,16 @@
 # Change Log
 
-## [v11.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.1.0) (2019-09-05)
+## [v11.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.2.0) (2019-10-02)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.1.0...v11.2.0)
+
+**New stuff:**
+
+- Add links part in detail of the list [\#309](https://github.com/gisaia/ARLAS-web-components/issues/309) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Add new component to manage style/layer WMTS [\#306](https://github.com/gisaia/ARLAS-web-components/issues/306)
+- Add WMTS layer style manager [\#311](https://github.com/gisaia/ARLAS-web-components/pull/311) ([mbarbet](https://github.com/mbarbet))
+
+## [v11.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.1.0) (2019-09-16)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.3...v11.1.0)
 
@@ -11,6 +21,7 @@
 **Fixed bugs:**
 
 - Validation of drawing geometry not work at first drawing [\#299](https://github.com/gisaia/ARLAS-web-components/issues/299) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Apply i18n in layer switcher menu [\#298](https://github.com/gisaia/ARLAS-web-components/issues/298) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v11.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.3) (2019-07-31)
 
