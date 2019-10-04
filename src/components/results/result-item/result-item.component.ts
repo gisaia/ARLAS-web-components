@@ -25,6 +25,7 @@ import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 
 @Component({
   selector: '[arlas-result-item]',
@@ -38,10 +39,20 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public CellBackgroundStyleEnum = CellBackgroundStyleEnum;
 
   /**
+   * @Input : Angular
+   * @description An input to customize the resultlist behaviour
+   */
+  @Input() public options: ResultListOptions;
+  /**
    * @Input
    * @description An object representing an Item .
    */
   @Input() public rowItem: Item;
+   /**
+   * @Input
+   * @description Name of the id field.
+   */
+  @Input() public idFieldName: string;
   /**
    * @Input
    * @description A detailed-data-retriever object that implements
@@ -82,11 +93,19 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
 
 
+  @Input() public tableWidth: number;
   /**
    * @Output
    * @description Emits the list of selected items in result-list.component.
    */
   @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+
+  /**
+   * @Output
+   * @description Emits the event of applying the specified action on the specified item.
+   */
+  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
+    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
   /**
    * @Output
@@ -149,6 +168,10 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
 
   public getTextColor(key: string): string {
     return this.colorService.getTextColor(key);
+  }
+
+  public triggerActionOnItem(action: Action) {
+    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
   }
 
 }

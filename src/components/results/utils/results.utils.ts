@@ -20,6 +20,17 @@
 import { Subject } from 'rxjs';
 import { PageEnum } from './enumerations/pageEnum';
 
+/**
+ * Enables customize the resultlist options/behaviours
+ */
+export interface ResultListOptions {
+  actions?: ActionsOptions;
+}
+
+export interface ActionsOptions {
+  showOnHover?: boolean;
+}
+
 export interface Action {
   id: string;
   label: string;

@@ -17,12 +17,15 @@
  * under the License.
  */
 
-import { AdditionalInfo } from '../utils/results.utils';
+import { AdditionalInfo, Action } from '../utils/results.utils';
 import { Observable } from 'rxjs';
+import { Item } from '../model/item';
 
 
 export interface DetailedDataRetriever {
 
   getData(identifier: string): Observable<AdditionalInfo>;
+
+  getActions(item: Item): Observable<Array<Action>>;
 
 }

@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef, ViewEncapsulation } from '@angular/core';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 import { Column } from '../model/column';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier, FieldsConfiguration, PageQuery } from '../utils/results.utils';
+import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Observable, Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -44,9 +44,17 @@ import { PageEnum } from '../utils/enumerations/pageEnum';
 @Component({
   selector: 'arlas-result-list',
   templateUrl: './result-list.component.html',
-  styleUrls: ['./result-list.component.css']
+  styleUrls: ['./result-list.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges {
+
+  private defaultOptions: ResultListOptions = {
+    actions : {
+      showOnHover: false
+    }
+  };
+
   /**
    * @constant
    */
@@ -106,6 +114,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   };
 
   public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0};
+
+  /**
+   * @Input : Angular
+   * @description An input to customize the resultlist
+   */
+  @Input() public options: ResultListOptions = this.defaultOptions;
 
   @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
@@ -171,7 +185,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Input : Angular
    * @description Number of grid columns (Grid Mode).
    */
-  @Input() public nbGridColumns = 3;
+  @Input() public nbGridColumns = 4;
 
   /**
    * @Input : Angular
@@ -662,6 +676,23 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   /**
+   * @description called on hovering an item : its sets the items actions + emits the item's identifier
+   * @param item hovered item
+   */
+  public onEnterItem(item: Item): void {
+    this.setItemActions(item);
+    this.setConsultedItem(item.identifier);
+  }
+
+  /**
+   * @description called on leaving an item : emits the item's identifier
+   * @param item item previously hovered
+   */
+  public onLeaveItem(item: Item): void {
+    this.setConsultedItem('leave-' + item.identifier);
+  }
+
+  /**
    * @description Sets the border style of rows
    */
   public setBorderStyle(borderStyle): void {
@@ -766,6 +797,27 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       item.isChecked = false;
       item.isindeterminated = false;
     });
+  }
+
+  /**
+   * @description set the list of actions of an item
+   * @param item
+   */
+  public setItemActions(item: Item): void {
+    if (item && (!item.actions || (item.actions && item.actions.length === 0))) {
+      item.actions = new Array<Action>();
+      this.detailedDataRetriever.getActions(item).subscribe(actions => {
+        actions.forEach(action => {
+          item.actions.push({
+            id: action.id,
+            label: action.label,
+            actionBus: action.actionBus,
+            cssClass: action.cssClass,
+            tooltip: action.tooltip
+          });
+        });
+      });
+    }
   }
 
   // Build the table's columns
