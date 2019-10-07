@@ -22,6 +22,7 @@ import { Action, ElementIdentifier } from '../utils/results.utils';
 
 import { Item } from '../model/item';
 import { Subject } from 'rxjs';
+import { FullScreenViewer } from 'iv-viewer';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
   public SHOW_DETAILS = 'Show details';
   public SHOW_IMAGE = 'Show image';
   public CLOSE_DETAILS = 'Close details';
+  private fullScreenViewer = new FullScreenViewer();
 
   /**
    * @Input
@@ -101,4 +103,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
+  public showOverlay(url) {
+    this.fullScreenViewer.show(url);
+  }
 }
