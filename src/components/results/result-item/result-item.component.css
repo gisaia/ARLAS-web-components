@@ -31,7 +31,8 @@
 .resultitem__cell__toggle--icon /* @doc Sets the toggle icon style.*/
 {
   font-size:18px;
-  margin-right: 5px;
+  width: 18px;
+  height: 18px;
   display: block;
   cursor: pointer;
 }

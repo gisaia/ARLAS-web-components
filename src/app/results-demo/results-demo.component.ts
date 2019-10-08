@@ -39,11 +39,14 @@ export class ResultsDemoComponent implements OnInit {
   public globalActionsList = new Array<Action>();
   public count = 0;
   public modeEnum = ModeEnum;
-  public options: ResultListOptions = { actions: { showOnHover: true } };
+  public options: ResultListOptions = new ResultListOptions();
 
   constructor() { }
 
   public ngOnInit() {
+    this.options.showActionsOnhover = true;
+    this.options.hideDetailIconName = 'keyboard_arrow_up';
+    this.options.showDetailIconName = 'keyboard_arrow_down';
     this.fieldsConfiguration = {
       idFieldName: 'id', urlImageTemplate:
         'urlImage', urlThumbnailTemplate: 'urlImage', titleFieldNames: [{ fieldPath: 'source', process: '' }]
