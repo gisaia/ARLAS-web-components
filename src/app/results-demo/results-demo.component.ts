@@ -19,7 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
-import { FieldsConfiguration, Action, PageQuery } from '../../components/results/utils/results.utils';
+import { FieldsConfiguration, Action, PageQuery, ResultListOptions } from '../../components/results/utils/results.utils';
 import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
 import { Observable, from } from 'rxjs';
 
@@ -39,6 +39,7 @@ export class ResultsDemoComponent implements OnInit {
   public globalActionsList = new Array<Action>();
   public count = 0;
   public modeEnum = ModeEnum;
+  public options: ResultListOptions = { actions: { showOnHover: true } };
 
   constructor() { }
 

@@ -22,6 +22,7 @@ import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs';
+import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 
 @Component({
   selector: 'arlas-result-grid-tile',
@@ -48,6 +49,26 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
    * DetailedDataRetriever interface.
    */
   @Input() public detailedDataRetriever: DetailedDataRetriever;
+
+  /**
+   * @Input : Angular
+   * @description An input to customize the resultlist behaviour
+   */
+  @Input() public options: ResultListOptions;
+
+  /**
+  * @Input
+  * @description Name of the id field.
+  */
+  @Input() public idFieldName: string;
+
+  /**
+   * @Output
+   * @description Emits the event of applying the specified action on the specified item.
+   */
+  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
+    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
+
 
   /**
    * @Output
@@ -95,6 +116,23 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public setClickedOnItem() {
     this.retrieveAdditionalInfo(this.detailedDataRetriever, this.gridTile);
     this.clickedOnItemEvent.next(this.gridTile);
+  }
 
+  public getBackgroundImage(): string {
+    if (this.gridTile.thumbnailEnabled) {
+      return 'url(' + this.gridTile.urlThumbnail + ')';
+    } else {
+      return 'url(' + this.errorImgUrl + ')';
+    }
+  }
+
+  public triggerActionOnItem(event: Event, action: Action) {
+    this.actionOnItemEvent.next(
+      {
+        action: action,
+        elementidentifier: { idFieldName: this.idFieldName, idValue: this.gridTile.identifier }
+      }
+    );
+    event.stopPropagation();
   }
 }

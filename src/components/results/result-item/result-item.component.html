@@ -28,12 +28,20 @@
     </td>
 
     <!-- If the column is a toggle, then we put the + button that enables to fetch detailed data of the item-->
-    <td *ngIf="column.isToggleField" class="resultitem__cell" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
+    <td *ngIf="column.isToggleField" class="resultitem__cell toggle" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
+      <div *ngIf="options.actions.showOnHover" [style.width.px]="tableWidth -35" class="list_actions_hover">
+        <button *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" matTooltip="{{action.tooltip | translate}}"
+          class="resultitem-list__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
+          {{action.label | translate}}
+        </button>
+      </div>
       <mat-icon matTooltip="{{SHOW_DETAILS | translate}}" class="resultitem__cell__toggle--icon" *ngIf="!rowItem.isDetailToggled; else cancel_toggle" (click) = "toggle()">add_circle_outline</mat-icon>
       <ng-template #cancel_toggle>
         <mat-icon matTooltip="{{HIDE_DETAILS | translate}}" class="resultitem__cell__toggle--icon" (click) = "toggle()">remove_circle_outline</mat-icon>
       </ng-template>
     </td>
+
   </ng-container>
+
 
 

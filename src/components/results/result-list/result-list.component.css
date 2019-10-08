@@ -94,12 +94,17 @@
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
   background-color: rgba(0,0,0,0.075);
+  position: relative;
 }
 .resultlist__body--item-hover-false {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
+  position: relative;
 }
 
+tr:hover td.resultitem__cell.toggle .list_actions_hover {
+  display: inline;
+}
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
 {
   border-top: 1px dashed #e9ecef;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-.table-wrapper{
+.table-wrapper {
   width: 500px;
   height: 100%;
   overflow: hidden;
@@ -41,5 +41,9 @@
   overflow: hidden;
 }
 
-
-
+.resultdetaileditem__actions {
+  min-width: 0;
+  border-radius: 50%;
+  border: none;
+  background-color: darkblue;
+}
