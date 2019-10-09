@@ -183,7 +183,7 @@
       }
     },
     "defaultBasemapStyle": {
-      "description": "Defines the name and url to the default basemap style.",
+      "description": "Defines the name and default basemap style.",
       "type": "object",
       "properties": {
         "name": {
@@ -191,8 +191,8 @@
           "type": "string"
         },
         "styleFile": {
-          "description": "url to basemap style",
-          "type": "string"
+          "description": "url to basemap style or a `mapboxgl.Style`",
+          "type": ["string", "object"]
         }
       },
       "required": [
@@ -203,7 +203,7 @@
       "description": "List of basemaps styles",
       "type": "array",
       "items": {
-        "description": "Defines the name and url to the default basemap style.",
+        "description": "Defines the name and the basemap style.",
         "type": "object",
         "properties": {
           "name": {
@@ -211,8 +211,8 @@
             "type": "string"
           },
           "styleFile": {
-            "description": "url to basemap style",
-            "type": "string"
+            "description": "url to basemap style or a `mapboxgl.Style`",
+            "type": ["string","object"]
           }
         },
         "required": [
