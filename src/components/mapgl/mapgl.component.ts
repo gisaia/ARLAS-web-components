@@ -136,7 +136,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Default style of the base map
    */
-  @Input() public defaultBasemapStyle = {
+  @Input() public defaultBasemapStyle: BasemapStyle = {
     name: 'Positron Style',
     styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
   };
