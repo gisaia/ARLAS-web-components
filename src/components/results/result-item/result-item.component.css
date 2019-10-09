@@ -92,9 +92,12 @@
   border: 1px solid white;
 }
 
-.list_actions_hover {
+.list_actions {
+  display: none;
   position: absolute;
   right: 35px;
-  display: none;
+  top: 0;
+  height: 100%;
+  width: max-content;
 }
 
