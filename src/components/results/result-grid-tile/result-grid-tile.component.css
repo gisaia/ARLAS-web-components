@@ -84,6 +84,7 @@
   height: 15px;
   color:white;
   cursor: pointer;
+  z-index: 5;
 }
 
 .resultgrid__img /* @doc Sets the image style.*/
