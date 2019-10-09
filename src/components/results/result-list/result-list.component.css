@@ -102,7 +102,7 @@
   position: relative;
 }
 
-tr:hover td.resultitem__cell.toggle .list_actions_hover {
+tr:hover td.resultitem__cell.toggle .list_actions {
   display: inline;
 }
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/

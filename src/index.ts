@@ -31,8 +31,7 @@ export { SortEnum } from './components/results/utils/enumerations/sortEnum';
 export { ModeEnum } from './components/results/utils/enumerations/modeEnum';
 export { CellBackgroundStyleEnum } from './components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { DetailedDataRetriever } from './components/results/utils/detailed-data-retriever';
-export { Action, ElementIdentifier, FieldsConfiguration, ResultListOptions,
-   ActionsOptions } from './components/results/utils/results.utils';
+export { Action, ElementIdentifier, FieldsConfiguration, ResultListOptions } from './components/results/utils/results.utils';
 export { Item } from './components/results/model/item';
 export { Column } from './components/results/model/column';
 export { HistogramComponent } from './components/histogram/histogram.component';

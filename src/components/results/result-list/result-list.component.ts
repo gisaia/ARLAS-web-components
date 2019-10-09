@@ -49,12 +49,6 @@ import { PageEnum } from '../utils/enumerations/pageEnum';
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
-  private defaultOptions: ResultListOptions = {
-    actions : {
-      showOnHover: false
-    }
-  };
-
   /**
    * @constant
    */
@@ -119,7 +113,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Input : Angular
    * @description An input to customize the resultlist
    */
-  @Input() public options: ResultListOptions = this.defaultOptions;
+  @Input() public options: ResultListOptions;
 
   @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
@@ -437,6 +431,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   public ngOnInit() {
+    this.options =  Object.assign(new ResultListOptions(), this.options);
     if (this.fieldsConfiguration !== undefined && this.fieldsConfiguration !== null) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
         this.hasGridMode = true;
@@ -444,6 +439,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setTableWidth();
       this.tbodyHeight = this.getOffSetHeight();
     }
+
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

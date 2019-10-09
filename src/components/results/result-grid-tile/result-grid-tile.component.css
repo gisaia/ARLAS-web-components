@@ -41,7 +41,7 @@
 .resultitem-grid__actions:active {
   border: 1px solid white;
 }
-.grid_actions_hover {
+.grid_actions {
   flex-direction: row-reverse;
   display: none;
   flex-wrap: wrap-reverse;
@@ -52,7 +52,7 @@
   margin-top: 2px;
 }
 
-.resultgrid__img:hover .grid_actions_hover {
+.resultgrid__img:hover .grid_actions {
   display: flex;
   justify-content: space-between;
 }

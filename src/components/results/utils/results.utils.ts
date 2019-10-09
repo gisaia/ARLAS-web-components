@@ -23,12 +23,12 @@ import { PageEnum } from './enumerations/pageEnum';
 /**
  * Enables customize the resultlist options/behaviours
  */
-export interface ResultListOptions {
-  actions?: ActionsOptions;
-}
+export class ResultListOptions {
+  public showActionsOnhover = false;
+  public showDetailIconName = 'add_circle_outline';
+  public hideDetailIconName = 'remove_circle_outline';
 
-export interface ActionsOptions {
-  showOnHover?: boolean;
+  constructor() {}
 }
 
 export interface Action {
