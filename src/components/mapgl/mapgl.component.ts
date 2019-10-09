@@ -898,7 +898,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       type: 'FeatureCollection',
       features: centroides
     };
-    this.draw.add(this.polygonlabeldata);
+    this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
   }
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
@@ -956,6 +956,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public switchToDrawMode() {
     this.draw.changeMode('draw_polygon');
+    this.isDrawingPolygon = true;
   }
 
   public deleteSelectedItem() {
