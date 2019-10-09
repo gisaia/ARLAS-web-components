@@ -36,6 +36,60 @@ export class MapglDemoComponent implements OnInit {
   public idToSelect: number;
   public actionDisabled = false;
   public drawEnabled = true;
+  public defaultBasemapStyle =        {
+    name: 'Positron Style',
+    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+  };
+  public  basemapStyles = [
+    {
+    name: 'Positron Style',
+    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+  },
+    {
+      'name': 'OSM',
+      'styleFile': {
+        'version': 8,
+        'sources': {
+        'raster-tiles': {
+        'type': 'raster',
+        'tiles': ['http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+        'tileSize': 256,
+        'attribution': ''
+        }
+        },
+        'layers': [{
+        'id': 'simple-tiles',
+        'type': 'raster',
+        'source': 'raster-tiles',
+        'minzoom': 0,
+        'maxzoom': 22
+        }]
+        }
+    },
+    {
+      'name': 'Stamen',
+      'styleFile': {
+        'version': 8,
+        'sources': {
+        'raster-tiles': {
+        'type': 'raster',
+        'tiles': ['https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg'],
+        'tileSize': 256,
+        'attribution': ''
+        }
+        },
+        'layers': [{
+        'id': 'simple-tiles',
+        'type': 'raster',
+        'source': 'raster-tiles',
+        'minzoom': 0,
+        'maxzoom': 22
+        }]
+        }
+    }
+  ];
 
   public geojsondata = {
     'type': 'FeatureCollection',
@@ -68,20 +122,6 @@ export class MapglDemoComponent implements OnInit {
           'line-color': '#FC9F28',
           'line-opacity': 1
         }
-      },
-      {
-        'id': 'polygon_label',
-        'type': 'symbol',
-        'source': 'polygon_label',
-        'layout': {
-          'text-field': '{arlas_id}',
-          'text-font': [
-            'Open Sans Bold'
-          ],
-          'text-size': 14,
-          'visibility': 'visible'
-        },
-        'filter': ['all', ['==', '$type', 'Point']],
       }],
     events: {
       zoomOnClick: [],
@@ -93,7 +133,6 @@ export class MapglDemoComponent implements OnInit {
         id: 'distribution',
         name: 'Distribution',
         base: [
-          'polygon_label',
           'polygon_imported',
           'geobox'
         ],
@@ -583,7 +622,6 @@ export class MapglDemoComponent implements OnInit {
   public transformRequest = (url: string, resourceType: string) => {
     return {
       url: url.replace('http', 'http'),
-      headers: { 'seb-header': true }
     };
 
   }

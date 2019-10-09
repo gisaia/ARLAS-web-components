@@ -436,36 +436,42 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
-  public setBaseMapStyle(style: string) {
+  public setBaseMapStyle(style: string | mapboxgl.Style) {
     if (this.map) {
-      const layers = (<mapboxgl.Map>this.map).getStyle().layers;
-      const sources = (<mapboxgl.Map>this.map).getStyle().sources;
-      const selectedBasemapLayersSet = new Set<string>();
-      this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe((s: any) => {
-        if (s.layers) { s.layers.forEach(l => selectedBasemapLayersSet.add(l.id)); }
-        const layersToSave = new Array<mapboxgl.Layer>();
-        const sourcesToSave = new Array<MapSource>();
-        layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
-          layersToSave.push(l);
-          if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-            sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
-          }
-        });
-        const sourcesToSaveSet = new Set<string>();
-        sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
-        if (this.mapSources) {
-          this.mapSources.forEach(mapSource => {
-            if (!sourcesToSaveSet.has(mapSource.id)) {
-              sourcesToSave.push(mapSource);
-            }
-          });
+      if (typeof this.basemapStylesGroup.selectedBasemapStyle.styleFile === 'string') {
+        this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe((s: any) => this.setStyle(s, style));
+      } else {
+        this.setStyle(this.basemapStylesGroup.selectedBasemapStyle.styleFile, style);
+      }
+    }
+  }
+
+  public setStyle(s: mapboxgl.Style, style: string | mapboxgl.Style) {
+    const selectedBasemapLayersSet = new Set<string>();
+    const layers = (<mapboxgl.Map>this.map).getStyle().layers;
+    const sources = (<mapboxgl.Map>this.map).getStyle().sources;
+    if (s.layers) { s.layers.forEach(l => selectedBasemapLayersSet.add(l.id)); }
+    const layersToSave = new Array<mapboxgl.Layer>();
+    const sourcesToSave = new Array<MapSource>();
+    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
+      layersToSave.push(l);
+      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
+        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
+      }
+    });
+    const sourcesToSaveSet = new Set<string>();
+    sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
+    if (this.mapSources) {
+      this.mapSources.forEach(mapSource => {
+        if (!sourcesToSaveSet.has(mapSource.id)) {
+          sourcesToSave.push(mapSource);
         }
-        this.map.setStyle(style).once('styledata', () => {
-          this.addSourcesToMap(sourcesToSave, this.map);
-          layersToSave.forEach(l => this.map.addLayer(l));
-        });
       });
     }
+    this.map.setStyle(style).once('styledata', () => {
+      this.addSourcesToMap(sourcesToSave, this.map);
+      layersToSave.forEach(l => this.map.addLayer(l));
+    });
   }
 
   public ngAfterViewInit() {
@@ -482,7 +488,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       renderWorldCopies: true,
       transformRequest: this.transformRequest
     });
-
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
