@@ -1,8 +1,27 @@
 # Change Log
 
+## [v11.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.0) (2019-10-09)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.2.1...v11.3.0)
+
+**New stuff:**
+
+- Add a button to show the entire quicklook [\#308](https://github.com/gisaia/ARLAS-web-components/issues/308) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+-  Access to action buttons without to show detail [\#307](https://github.com/gisaia/ARLAS-web-components/issues/307) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Enable style object in map style [\#320](https://github.com/gisaia/ARLAS-web-components/pull/320) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+- Make show/hide icons customizable [\#318](https://github.com/gisaia/ARLAS-web-components/pull/318) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+**Fixed bugs:**
+
+- Draw tool : the limit of number of points not works [\#315](https://github.com/gisaia/ARLAS-web-components/issues/315) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v11.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.2.1) (2019-10-02)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.2.0...v11.2.1)
+
+**Fixed bugs:**
+
+- HotFix method accessiblity [\#314](https://github.com/gisaia/ARLAS-web-components/pull/314) ([mbarbet](https://github.com/mbarbet))
 
 ## [v11.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.2.0) (2019-10-02)
 
