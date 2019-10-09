@@ -19,7 +19,7 @@
 
 export interface BasemapStyle {
   name: string;
-  styleFile: string;
+  styleFile: string | mapboxgl.Style;
 }
 
 export interface BasemapStylesGroup {

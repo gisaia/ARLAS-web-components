@@ -3,7 +3,7 @@
   <button (click)="delete()">DELETE</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
   <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
-  <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group" >
+  <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group">
     <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
     <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
     <mat-radio-button class="polygon-radio" value="id">By id</mat-radio-button>
@@ -11,35 +11,16 @@
   <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
 </div>
 <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
-  <mat-icon aria-label="Import polygon on your map" >get_app</mat-icon>
+  <mat-icon aria-label="Import polygon on your map">get_app</mat-icon>
 </button>
 <div id="mapgldemo" style="height:94%; width:100%">
-  <arlas-mapgl-import #demoImportMap
-    [mapComponent]="mapComponent"
-    [maxFeatures]="1000"
-    [maxVertexByPolygon]="400"
-    [maxLoadingTime]="10000"
-    [maxFileSize]="1050000"
-    [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']">
+  <arlas-mapgl-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="400" [maxLoadingTime]="10000"
+    [maxFileSize]="1050000" [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']">
   </arlas-mapgl-import>
-  <arlas-mapgl #demoMap
-  [style]="'http://demo.arlas.io:82/styles/positron/style.json'"
-   [geojsondata]="geojsondata" [margePanForLoad]=40 [margePanForTest]=2
-   [zoomToPrecisionCluster]="[]"
-   [displayLayerSwitcher] =true
-   [mapLayers]="mapLayers"
-   [displayScale]=true
-   [displayCurrentCoordinates]=true
-   [minZoom]=1
-   [maxZoom]=28
-   [maxPrecision]="[6,4]"
-   (onPolygonChange)="polygonChange($event)"
-   (onPolygonSelect)="polygonSelect($event)"
-   [drawOption]="drawOptions"
-   [drawData]="drawData"
-   [drawEnabled]="this.drawEnabled"
-   [drawPolygonVerticesLimit]="5"
-   [transformRequest]="transformRequest"
-   (onAoiChanged)="onAoiChanged($event)">
+  <arlas-mapgl #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles" [geojsondata]="geojsondata"
+    [margePanForLoad]=40 [margePanForTest]=2 [zoomToPrecisionCluster]="[]" [displayLayerSwitcher]=true [mapLayers]="mapLayers"
+    [displayScale]=true [displayCurrentCoordinates]=true [minZoom]=1 [maxZoom]=28 [maxPrecision]="[6,4]" (onPolygonChange)="polygonChange($event)"
+    (onPolygonSelect)="polygonSelect($event)" [drawOption]="drawOptions" [drawData]="drawData" [drawEnabled]="this.drawEnabled"
+    [drawPolygonVerticesLimit]="5" [transformRequest]="transformRequest" (onAoiChanged)="onAoiChanged($event)">
   </arlas-mapgl>
 </div>
