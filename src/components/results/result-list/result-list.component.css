@@ -181,13 +181,13 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   margin-top: 5px;
 }
 
-thead tr {
+.resultlist__thead__tr {
   display: block;
   position: relative;
   width: 100%;
 }
 
-tbody {
+.resultlist__tbody {
   display: block;
   overflow-y: auto;
   overflow-x: hidden;

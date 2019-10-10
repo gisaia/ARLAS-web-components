@@ -1,6 +1,6 @@
 <table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
   <thead *ngIf=displayThead>
-    <tr class="resultlist__header">
+    <tr class="resultlist__header resultlist__thead__tr">
       <ng-container *ngFor="let column of columns">
         <th *ngIf="column.isIdField"
             [style.max-width.px]="column.width"
@@ -27,7 +27,7 @@
         </th>
       </ng-container>
     </tr>
-    <tr class="resultlist__filter" *ngIf="this.displayFilters">
+    <tr class="resultlist__filter resultlist__thead__tr" *ngIf="this.displayFilters">
       <ng-container *ngFor="let column of columns">
         <td [style.width.px]="column.width" *ngIf="column.isIdField">
           <span class="resultlist__header--columns--hidden"></span>
@@ -46,7 +46,7 @@
         </td>
       </ng-container>
     </tr>
-    <tr class="resultlist__tools">
+    <tr class="resultlist__tools resultlist__thead__tr">
       <td [style.width.px]="tableWidth">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
@@ -103,7 +103,7 @@
 
       </td>
     </tr>
-    <tr class="resultlist__grid-detail" *ngIf="selectedGridItem != null
+    <tr class="resultlist__grid-detail resultlist__thead__tr" *ngIf="selectedGridItem != null
     && resultMode==ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
@@ -116,7 +116,7 @@
   <div *ngIf="isPreviousPageRequested" class="resultlist__loading resultlist__top_loading"  [style.width.px]="tableWidth">
       <ngx-loading [show]="isPreviousPageRequested" [config]="loadAnimationConfig"></ngx-loading>
   </div>
-  <tbody arlasResultScroll *ngIf="!isBodyHidden" [style.overflow-anchor]="'none'" [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
+  <tbody class="resultlist__tbody" arlasResultScroll *ngIf="!isBodyHidden" [style.overflow-anchor]="'none'" [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
     [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState" [resultMode]="resultMode" (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)" (moreDataEvent)="askForMoreData($event)">
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
