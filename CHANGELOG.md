@@ -1,5 +1,13 @@
 # Change Log
 
+## [v11.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.1) (2019-10-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.3.0...v11.3.1)
+
+**New stuff:**
+
+- Authorize raster-tile source as basemap [\#316](https://github.com/gisaia/ARLAS-web-components/issues/316) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v11.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.0) (2019-10-09)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.2.1...v11.3.0)
