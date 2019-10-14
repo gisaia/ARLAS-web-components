@@ -7,7 +7,7 @@ import { WmtsLayerManagerComponent } from 'components/wmts-layer-manager/wmts-la
   styleUrls: ['./wmts-layer-manager-demo.component.css']
 })
 export class WmtsLayerManagerDemoComponent implements OnInit {
-  @ViewChild('wmtsLayerManager') public wmtsLayerMangerComponent: WmtsLayerManagerComponent;
+  @ViewChild('wmtsLayerManager', { static: true }) public wmtsLayerMangerComponent: WmtsLayerManagerComponent;
 
   public getCapaUrl = '/assets/getCap_1.xml';
   public metadata = new Map<string, string>();

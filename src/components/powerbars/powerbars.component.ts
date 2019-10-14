@@ -187,8 +187,8 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    * @param selectedPaths selects the powerbars whose terms are in the selected paths
    */
   public setSelectedPowerbars(selectedPaths: Array<Array<{ fieldName: string, fieldValue: string }>>) {
-    const selectedPowerbarsTerms = new Set();
-    const selectedPowerbarsList = new Set();
+    const selectedPowerbarsTerms = new Set<string>();
+    const selectedPowerbarsList = new Set<PowerBar>();
     selectedPaths.forEach(path => {
       const currentPath = path.length <= this.level ? path : path.slice(path.length - this.level);
       let powerBar = currentPath.length > 1 ? this.getPowerbar(currentPath[0].fieldValue, currentPath[1].fieldValue) :
