@@ -101,7 +101,6 @@ export class MapglImportComponent {
   private tooManyVertex = false;
   private fitResult = false;
   private jszip: JSZip;
-  private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
   private SOURCE_NAME_POLYGON_LABEL = 'polygon_label';
   private emptyData = {
     'type': 'FeatureCollection',
@@ -398,7 +397,7 @@ export class MapglImportComponent {
             !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
             !(testArray.filter(elem => elem === 'json').length === 1)
           ) {
-            reject( new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`'));
+            reject(new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`'));
           } else {
             resolve(buffer);
           }
@@ -509,13 +508,8 @@ export class MapglImportComponent {
   /***************/
   public clearPolygons() {
     // Clean source of imported polygons
-    const importSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED);
     const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
-    if (importSource !== undefined) {
-      importSource.setData(this.emptyData);
-      this.mapComponent.onAoiChanged.next(<helpers.FeatureCollection>this.emptyData);
-
-    }
+    this.mapComponent.onAoiChanged.next(<helpers.FeatureCollection>this.emptyData);
     if (labelSource !== undefined) {
       labelSource.setData(this.emptyData);
     }
@@ -537,14 +531,11 @@ export class MapglImportComponent {
     } else {
       if (importedResult.geojson.features.length > 0) {
         this.dialogRef.componentInstance.isRunning = false;
-        this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_IMPORTED).setData(importedResult.geojson);
-        this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL).setData({
-          type: 'FeatureCollection',
-          features: importedResult.centroides
-        });
-
         if (this.fitResult) {
           this.mapComponent.map.fitBounds(extent(importedResult.geojson));
+        }
+        if (this.mapComponent.drawData.features.length > 0) {
+          this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
         }
         this.imported.next(importedResult.geojson.features);
         this.mapComponent.onAoiChanged.next(importedResult.geojson);

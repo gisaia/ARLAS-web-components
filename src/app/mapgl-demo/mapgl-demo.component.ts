@@ -571,6 +571,10 @@ export class MapglDemoComponent implements OnInit {
     });
   }
 
+  public onPolygonError(event) {
+    console.log(event);
+  }
+
   public polygonChange(event) {
     console.log(event);
   }

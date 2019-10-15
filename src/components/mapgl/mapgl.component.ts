@@ -89,11 +89,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private endlngLat: any;
 
   private DATA_SOURCE = 'data_source';
-  private GEOBOX_SOURCE = 'geobox';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_STYLE_GROUP = 'ARLAS_SG-';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
-  private SOURCE_NAME_POLYGON_IMPORTED = 'polygon_imported';
 
   /**
    * @Input : Angular
@@ -180,12 +178,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description The data displayed on map.
    */
-  @Input() public geojsondata: FeatureCollection = this.emptyData;
-  /**
-   * @Input : Angular
-   * @description The geobox feature.
-   */
-  @Input() public geoboxdata: FeatureCollection = this.emptyData;
+  @Input() public geojsondata: FeatureCollection = Object.assign({}, this.emptyData);
   /**
    * @Input : Angular
    * @description the field name of ids.
@@ -242,13 +235,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Features drawn at component start
    */
-  @Input() public drawData: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public drawData: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
 
   /**
    * @Input : Angular
    * @description Whether the draw tools are activated
    */
-  @Input() public drawEnabled = false;
+  @Input() public drawButtonEnabled = false;
 
   /**
    * @Input : Angular
@@ -299,17 +292,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   */
   @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
 
-  /**
-   * @Output : Angular
-   * @description Emits the event of removing the geobox.
-   * @deprecated as output
-   */
-  @Output() public onRemoveBbox: Subject<boolean> = new Subject<boolean>();
-  /**
-   * @Output : Angular
-   * @description Emits an event at the end of drawing a geobox.
-   */
-  @Output() public onChangeBbox: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
   /**
    * @Output : Angular
    * @description Emits the event of moving the map.
@@ -365,7 +347,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public nbPolygonVertice = 0;
   private indexId = 0;
   private customIds = new Map<number, string>();
-  public polygonlabeldata: { type: string, features: Array<any> } = this.emptyData;
+  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
 
   public firstDrawLayer = '';
 
@@ -385,15 +367,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public isDrawPolyonSelected = false;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
-    this.onRemoveBbox.subscribe(value => {
-      if (value) {
-        this.geoboxdata = this.emptyData;
-        this.onAoiChanged.next(this.geoboxdata);
-        if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
-          this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
-        }
-      }
-    });
+
   }
 
   public static getMapglJsonSchema(): Object {
@@ -410,12 +384,25 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.map.getSource(this.DATA_SOURCE).setData(this.geojsondata);
         }
       }
-      if (this.map.getSource(this.GEOBOX_SOURCE) !== undefined) {
-        if (changes['geoboxdata'] !== undefined) {
-          this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
+      if (changes['drawData'] !== undefined) {
+        this.drawData = changes['drawData'].currentValue;
+        const centroides = new Array();
+        this.drawData.features.forEach(feature => {
+          const poly = helpers.polygon(feature.geometry.coordinates);
+          const cent = centroid.default(poly);
+          cent.properties.arlas_id = feature.properties.arlas_id;
+          centroides.push(cent);
+        });
+        this.polygonlabeldata = {
+          type: 'FeatureCollection',
+          features: centroides
+        };
+        this.draw.deleteAll();
+        this.draw.add(this.drawData);
+        if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
+          this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
         }
       }
-
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
         const canvas = this.map.getCanvasContainer();
@@ -520,7 +507,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const layerSwitcherButton = new ControlButton('layersswitcher');
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
-    const removeBoxButton = new ControlButton('removegeobox');
+    const removeAoisButton = new ControlButton('removeaois');
     if (this.displayLayerSwitcher) {
       this.map.addControl(layerSwitcherButton, 'top-right');
       layerSwitcherButton.btn.onclick = () => {
@@ -530,45 +517,39 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(navigationControllButtons, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
-    this.map.addControl(removeBoxButton, 'top-right');
-    if (this.drawEnabled) {
-      const drawOptions = {
-        ...this.drawOption, ...{
-          modes: Object.assign(
-            MapboxDraw.modes,
-            {
-              limit_vertex: LimitVertexDirectSelectMode,
-              draw_polygon: ValidGeomDrawPolygonMode
-            })
-        }
-      };
-      this.draw = new MapboxDraw(drawOptions);
+    this.map.addControl(removeAoisButton, 'top-right');
+    const drawOptions = {
+      ...this.drawOption, ...{
+        modes: Object.assign(
+          MapboxDraw.modes,
+          {
+            limit_vertex: LimitVertexDirectSelectMode,
+            draw_polygon: ValidGeomDrawPolygonMode
+          })
+      }
+    };
+    this.draw = new MapboxDraw(drawOptions);
+    if (this.drawButtonEnabled) {
       this.map.addControl(this.draw, 'top-right');
     }
 
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
     };
-    removeBoxButton.btn.onclick = () => {
-      this.removeGeoBox();
+    removeAoisButton.btn.onclick = () => {
+      this.removeAois();
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
-      if (this.drawEnabled) {
-        this.firstDrawLayer = this.map.getStyle().layers
-          .map(layer => layer.id)
-          .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
-      }
+      this.firstDrawLayer = this.map.getStyle().layers
+        .map(layer => layer.id)
+        .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-      // Add GeoBox Source
-      this.map.addSource(this.GEOBOX_SOURCE, {
-        'type': 'geojson',
-        'data': this.geoboxdata
-      });
+
       // Add Data_source
       this.map.addSource(this.DATA_SOURCE, {
         'type': 'geojson',
@@ -578,11 +559,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         'type': 'geojson',
         'data': this.polygonlabeldata
       });
-      this.map.addSource(this.SOURCE_NAME_POLYGON_IMPORTED, {
-        'type': 'geojson',
-        'data': this.emptyData
-      });
-
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
@@ -650,62 +626,74 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
-      if (this.drawEnabled) {
-        this.map.on('draw.create', (e) => {
-          this.addCustomId(e.features[0].id);
-          this.onChangePolygonDraw();
-        });
-        this.map.on('draw.update', () => {
-          this.onChangePolygonDraw();
-        });
-        this.map.on('draw.delete', () => {
-          this.onChangePolygonDraw();
-        });
-        this.map.on('draw.invalidGeometry', (e) => {
-          this.onPolygonError.next(e);
-        });
+      this.map.on('draw.create', (e) => {
+        this.addCustomId(e.features[0].id);
+        this.onChangePolygonDraw();
+      });
+      this.map.on('draw.update', () => {
+        this.onChangePolygonDraw();
+      });
+      this.map.on('draw.delete', () => {
+        this.onChangePolygonDraw();
+        this.onAoiChanged.next(
+          {
+            'type': 'FeatureCollection',
+            'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
+          });
+      });
+      this.map.on('draw.invalidGeometry', (e) => {
+        this.onPolygonError.next(e);
+      });
 
-        this.map.on('draw.selectionchange', (e) => {
-          if (e.features.length > 0) {
-            this.onPolygonSelect.emit({ edition: true });
-            this.isDrawPolyonSelected = true;
-          } else {
-            this.onPolygonSelect.emit({ edition: false });
-            this.isDrawPolyonSelected = false;
-            this.onAoiChanged.next(this.draw.getAll());
+      this.map.on('draw.selectionchange', (e) => {
+        if (e.features.length > 0) {
+          this.onPolygonSelect.emit({ edition: true });
+          this.isDrawPolyonSelected = true;
+        } else {
+          this.onPolygonSelect.emit({ edition: false });
+          this.isDrawPolyonSelected = false;
+          this.onAoiChanged.next(
+            {
+              'type': 'FeatureCollection',
+              'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
+            });
+        }
+      });
+      this.map.on('draw.modechange', (e) => {
+        if (e.mode === 'draw_polygon') {
+          this.isDrawingPolygon = true;
+        }
+        if (e.mode === 'simple_select') {
+          this.isDrawingPolygon = false;
+        }
+        if (e.mode === 'direct_select') {
+          if (this.drawPolygonVerticesLimit) {
+            this.draw.changeMode('limit_vertex', {
+              featureId: this.draw.getSelectedIds()[0],
+              maxVertexByPolygon: this.drawPolygonVerticesLimit,
+              selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
+            });
           }
-        });
-        this.map.on('draw.modechange', (e) => {
-          if (e.mode === 'draw_polygon') {
-            this.isDrawingPolygon = true;
-          }
-          if (e.mode === 'simple_select') {
-            this.isDrawingPolygon = false;
-          }
-          if (e.mode === 'direct_select') {
-            if (this.drawPolygonVerticesLimit) {
-              this.draw.changeMode('limit_vertex', {
-                featureId: this.draw.getSelectedIds()[0],
-                maxVertexByPolygon: this.drawPolygonVerticesLimit,
-                selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
+        }
+      });
+
+      this.map.on('click', () => {
+        if (this.isDrawingPolygon) {
+          this.nbPolygonVertice++;
+          if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
+            this.draw.changeMode('simple_select');
+            this.onAoiChanged.next(
+              {
+                'type': 'FeatureCollection',
+                'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
               });
-            }
-          }
-        });
-
-        this.map.on('click', () => {
-          if (this.isDrawingPolygon) {
-            this.nbPolygonVertice++;
-            if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
-              this.draw.changeMode('simple_select');
-              this.isDrawingPolygon = false;
-              this.nbPolygonVertice = 0;
-            }
-          } else {
+            this.isDrawingPolygon = false;
             this.nbPolygonVertice = 0;
           }
-        });
-      }
+        } else {
+          this.nbPolygonVertice = 0;
+        }
+      });
       this.cleanLocalStorage(this.mapLayers.styleGroups);
       this.onMapLoaded.next(true);
     });
@@ -813,16 +801,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const extendForLoadLatLng = paddedBounds(panLoad, panLoad, panLoad, panLoad, this.map, southWest, northEast);
       const extendForTestdLatLng = paddedBounds(panTest, panTest, panTest, panTest, this.map, southWest, northEast);
       onMoveData.extendForLoad = [
-        extendForLoadLatLng[1].lat,
-        extendForLoadLatLng[0].lng,
-        extendForLoadLatLng[0].lat,
-        extendForLoadLatLng[1].lng
+        Math.min(extendForLoadLatLng[1].lat, 90),
+        Math.max(extendForLoadLatLng[0].lng, -180),
+        Math.max(extendForLoadLatLng[0].lat, -90),
+        Math.min(extendForLoadLatLng[1].lng, 180)
       ];
       onMoveData.extendForTest = [
-        extendForTestdLatLng[1].lat,
-        extendForTestdLatLng[0].lng,
-        extendForTestdLatLng[0].lat,
-        extendForTestdLatLng[1].lng
+        Math.min(extendForTestdLatLng[1].lat, 90),
+        Math.max(extendForTestdLatLng[0].lng, -180),
+        Math.max(extendForTestdLatLng[0].lat, -90),
+        Math.min(extendForTestdLatLng[1].lng, 180)
       ];
       onMoveData.tiles = xyz([[onMoveData.extendForLoad[1], onMoveData.extendForLoad[2]],
       [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
@@ -857,13 +845,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
-   * @description Removes the geobox
+   * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
-  public removeGeoBox() {
+  public removeAois() {
     this.map.getCanvas().style.cursor = '';
-    this.geoboxdata.features = [];
-    this.onRemoveBbox.next(true);
     this.isDrawingBbox = false;
+    this.deleteSelectedItem();
   }
 
   public onChangeStyle(styleGroupId: string, selectedStyleId: string) {
@@ -1262,22 +1249,26 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         [west, south],
         [east, south],
       ]];
-
-
       const polygonGeojson = {
         type: 'Feature',
         properties: {
-          type: 'bbox'
+          source: 'bbox'
         },
         geometry: {
           type: 'Polygon',
           coordinates: coordinates
         }
       };
-      this.geoboxdata.features.push(<helpers.Feature>polygonGeojson);
-      this.onChangeBbox.emit(this.geoboxdata.features);
-      this.onAoiChanged.next(this.geoboxdata);
-      this.map.getSource(this.GEOBOX_SOURCE).setData(this.geoboxdata);
+      const geoboxdata = Object.assign({}, this.emptyData);
+      geoboxdata.features = [];
+      if (this.drawData.features.length > 0) {
+        this.drawData.features.forEach(df => geoboxdata.features.push(df));
+      }
+      geoboxdata.features.push(<any>polygonGeojson);
+      /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
+      this.draw.deleteAll();
+      this.draw.add(geoboxdata);
+      this.onAoiChanged.next(geoboxdata);
       this.isDrawingBbox = false;
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
