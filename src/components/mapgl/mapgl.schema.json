@@ -9,6 +9,10 @@
       "description": "Whether the scale is displayed",
       "type": "boolean"
     },
+    "displayLayerSwitcher":{
+      "description": "Whether the layer switcher controll is displayed. If not, the map component uses the default style group and with its default style.",
+      "type": "boolean"
+    },
     "maxWidthScale": {
       "description": "Max width of the scale in px. Default value is 100px.",
       "type": "number"
@@ -255,6 +259,13 @@
     "margePanForTest": {
       "description": "Margin applied to the map extent. Before loading data, the components checks first if there are features already loaded in this extent.",
       "type": "number"
+    },
+    "drawButtonEnabled": {
+      "description": "Whether the draw tools are activated.",
+      "type": "boolean"
+    },
+    "drawPolygonVerticesLimit": {
+      "description": "Maximum number of vertices allowed when drawing a polygon."
     }
   },
   "required": [
