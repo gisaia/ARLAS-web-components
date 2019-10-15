@@ -178,7 +178,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description The data displayed on map.
    */
-  @Input() public geojsondata: FeatureCollection = this.emptyData;
+  @Input() public geojsondata: FeatureCollection = Object.assign({}, this.emptyData);
   /**
    * @Input : Angular
    * @description the field name of ids.
@@ -235,7 +235,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Features drawn at component start
    */
-  @Input() public drawData: { type: string, features: Array<any> } = this.emptyData;
+  @Input() public drawData: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
 
   /**
    * @Input : Angular
@@ -347,7 +347,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public nbPolygonVertice = 0;
   private indexId = 0;
   private customIds = new Map<number, string>();
-  public polygonlabeldata: { type: string, features: Array<any> } = this.emptyData;
+  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
 
   public firstDrawLayer = '';
 
@@ -507,7 +507,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const layerSwitcherButton = new ControlButton('layersswitcher');
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
-    const removeBoxButton = new ControlButton('removegeobox');
+    const removeAoisButton = new ControlButton('removeaois');
     if (this.displayLayerSwitcher) {
       this.map.addControl(layerSwitcherButton, 'top-right');
       layerSwitcherButton.btn.onclick = () => {
@@ -517,7 +517,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(navigationControllButtons, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
-    this.map.addControl(removeBoxButton, 'top-right');
+    this.map.addControl(removeAoisButton, 'top-right');
     const drawOptions = {
       ...this.drawOption, ...{
         modes: Object.assign(
@@ -536,8 +536,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
     };
-    removeBoxButton.btn.onclick = () => {
-      this.removeGeoBox();
+    removeAoisButton.btn.onclick = () => {
+      this.removeAois();
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
@@ -845,13 +845,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
-   * @description Removes the geobox
+   * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
-  public removeGeoBox() {
+  public removeAois() {
     this.map.getCanvas().style.cursor = '';
     this.isDrawingBbox = false;
-    this.onAoiChanged.next(this.emptyData);
-    this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.emptyData);
+    this.deleteSelectedItem();
   }
 
   public onChangeStyle(styleGroupId: string, selectedStyleId: string) {
@@ -1260,12 +1259,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           coordinates: coordinates
         }
       };
-      const geoboxdata = this.emptyData;
+      const geoboxdata = Object.assign({}, this.emptyData);
       geoboxdata.features = [];
       if (this.drawData.features.length > 0) {
         this.drawData.features.forEach(df => geoboxdata.features.push(df));
       }
       geoboxdata.features.push(<any>polygonGeojson);
+      /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
+      this.draw.deleteAll();
+      this.draw.add(geoboxdata);
       this.onAoiChanged.next(geoboxdata);
       this.isDrawingBbox = false;
       if (this.box) {
