@@ -1,5 +1,13 @@
 # Change Log
 
+## [v11.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.0) (2019-10-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.3.1...v11.4.0)
+
+**Breaking changes:**
+
+- Remove BBOX output/input [\#300](https://github.com/gisaia/ARLAS-web-components/issues/300) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v11.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.1) (2019-10-10)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.3.0...v11.3.1)
