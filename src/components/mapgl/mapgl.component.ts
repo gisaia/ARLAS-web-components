@@ -28,7 +28,7 @@ import { bboxes } from 'ngeohash';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
-import { ControlButton, PitchToggle } from './mapgl.component.control';
+import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { getDefaultStyle, paddedBounds, xyz, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
@@ -365,6 +365,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public zoomStart: number;
 
   public isDrawPolyonSelected = false;
+  private drawSelectionChanged = false;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
 
@@ -397,8 +398,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           type: 'FeatureCollection',
           features: centroides
         };
-        this.draw.deleteAll();
-        this.draw.add(this.drawData);
+        if (!this.drawSelectionChanged) {
+          this.draw.deleteAll();
+          this.draw.add(this.drawData);
+        }
+        this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
           this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
         }
@@ -528,11 +532,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           })
       }
     };
-    this.draw = new MapboxDraw(drawOptions);
-    if (this.drawButtonEnabled) {
-      this.map.addControl(this.draw, 'top-right');
-    }
-
+    const drawControl = new DrawControl(drawOptions, this.drawButtonEnabled);
+    this.map.addControl(drawControl, 'top-right');
+    this.draw = drawControl.mapboxDraw;
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
     };
@@ -646,6 +648,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
 
       this.map.on('draw.selectionchange', (e) => {
+        this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.onPolygonSelect.emit({ edition: true });
           this.isDrawPolyonSelected = true;
@@ -667,12 +670,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.isDrawingPolygon = false;
         }
         if (e.mode === 'direct_select') {
-          if (this.drawPolygonVerticesLimit) {
-            this.draw.changeMode('limit_vertex', {
-              featureId: this.draw.getSelectedIds()[0],
-              maxVertexByPolygon: this.drawPolygonVerticesLimit,
-              selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
-            });
+          const selectedFeatures = this.draw.getSelected().features;
+          const selectedIds = this.draw.getSelectedIds();
+          if (selectedFeatures && selectedIds && selectedIds.length > 0) {
+            if (selectedFeatures[0].properties.source === 'bbox') {
+              this.draw.changeMode('simple_select', {
+                featureIds: [selectedIds[0]]
+              });
+            } else if (this.drawPolygonVerticesLimit) {
+              this.draw.changeMode('limit_vertex', {
+                featureId: selectedIds[0],
+                maxVertexByPolygon: this.drawPolygonVerticesLimit,
+                selectedCoordPaths: selectedFeatures[0].geometry.coordinates
+              });
+            }
           }
         }
       });
