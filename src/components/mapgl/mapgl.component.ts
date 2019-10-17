@@ -365,6 +365,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public zoomStart: number;
 
   public isDrawPolyonSelected = false;
+  private drawSelectionChanged = false;
 
   constructor(private http: HttpClient, private differs: IterableDiffers) {
 
@@ -397,8 +398,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           type: 'FeatureCollection',
           features: centroides
         };
-        this.draw.deleteAll();
-        this.draw.add(this.drawData);
+        if (!this.drawSelectionChanged) {
+          this.draw.deleteAll();
+          this.draw.add(this.drawData);
+        }
+        this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
           this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
         }
@@ -644,6 +648,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
 
       this.map.on('draw.selectionchange', (e) => {
+        this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.onPolygonSelect.emit({ edition: true });
           this.isDrawPolyonSelected = true;
@@ -665,10 +670,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.isDrawingPolygon = false;
         }
         if (e.mode === 'direct_select') {
-          const selectedFeature = this.draw.getSelected();
+          const selectedFeatures = this.draw.getSelected().features;
           const selectedIds = this.draw.getSelectedIds();
-          if (selectedFeature && selectedFeature.features && selectedIds && selectedIds.length > 0) {
-            if (this.draw.getSelected().features[0].properties.source === 'bbox') {
+          if (selectedFeatures && selectedIds && selectedIds.length > 0) {
+            if (selectedFeatures[0].properties.source === 'bbox') {
               this.draw.changeMode('simple_select', {
                 featureIds: [selectedIds[0]]
               });
@@ -676,7 +681,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
               this.draw.changeMode('limit_vertex', {
                 featureId: selectedIds[0],
                 maxVertexByPolygon: this.drawPolygonVerticesLimit,
-                selectedCoordPaths: this.draw.getSelected().features[0].geometry.coordinates
+                selectedCoordPaths: selectedFeatures[0].geometry.coordinates
               });
             }
           }
