@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
+
 export class PitchToggle {
     public bearing: number;
     public pitch: number;
@@ -68,7 +70,26 @@ export class PitchToggle {
         this.map = undefined;
     }
 }
+export class DrawControl {
+  public mapboxDraw: MapboxDraw;
+  public enabled: boolean;
+  constructor(drawOptions: any, enabled: boolean) {
+    this.mapboxDraw = new MapboxDraw(drawOptions);
+    this.enabled = enabled;
+  }
 
+  public onAdd(map) {
+    const controlContainer = this.mapboxDraw.onAdd(map);
+    if (!this.enabled) {
+      controlContainer.className += ' draw-control-disabled';
+    }
+    return controlContainer;
+  }
+
+  public onRemove(map) {
+    return this.mapboxDraw.onRemove(map);
+  }
+}
 export class ControlButton {
     public map: any;
     public btn: HTMLButtonElement;
