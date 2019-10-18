@@ -50,8 +50,6 @@ ValidGeomDrawPolygonMode.onStop = function (state) {
         features: [state.polygon.toGeoJSON()]
       });
     }
-
-
   } else {
     this.deleteFeature([state.polygon.id], { silent: true });
     this.changeMode(Constants.modes.SIMPLE_SELECT, {}, { silent: true });

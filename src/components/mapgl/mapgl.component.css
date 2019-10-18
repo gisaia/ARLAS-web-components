@@ -128,4 +128,13 @@
   display: none;
 }
 
+.invalid-geo-toast {
+  background-color: #c50626;
+  color: white;
+}
+
+
+.invalid-geo-toast .mat-simple-snackbar-action {
+  color: white;
+}
 

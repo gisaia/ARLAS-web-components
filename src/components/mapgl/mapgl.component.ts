@@ -40,6 +40,8 @@ import LimitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import ValidGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
 import { FeatureCollection } from '@turf/helpers';
+import { MatSnackBar } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 
 
 export interface OnMoveResult {
@@ -369,8 +371,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public isDrawPolyonSelected = false;
   private drawSelectionChanged = false;
 
-  constructor(private http: HttpClient, private differs: IterableDiffers) {
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService ) {
 
+  }
+
+  public openInvalidGeometrySnackBar() {
+    this._snackBar.open(this.translate.instant('Invalid geometry'), this.translate.instant('Ok'), {
+      duration: 1 * 1000,
+      verticalPosition: 'top',
+      panelClass: 'invalid-geo-toast'
+    });
   }
 
   public static getMapglJsonSchema(): Object {
@@ -673,6 +683,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           currentFeature.properties = this.savedEditFeature.properties;
           this.draw.add(currentFeature);
         }
+        this.openInvalidGeometrySnackBar();
         this.onPolygonError.next(e);
       });
 
