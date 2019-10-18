@@ -14,6 +14,12 @@ LimitVertexDirectSelectMode.fireInvalidGeom = function (feature) {
   });
 };
 
+LimitVertexDirectSelectMode.fireInitialFeature = function (feature) {
+  this.map.fire('draw.edit.saveInitialFeature', {
+    feature: feature
+  });
+};
+
 LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
     geojson.properties.active = Constants.activeStates.ACTIVE;
@@ -31,10 +37,8 @@ LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) 
 };
 
 LimitVertexDirectSelectMode.onTouchEnd = LimitVertexDirectSelectMode.onMouseUp = function (state) {
-
   if (state.dragMoving) {
     const featureCoords = [...state.feature.coordinates[0]];
-
     if (
       featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
       featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]
@@ -48,12 +52,12 @@ LimitVertexDirectSelectMode.onTouchEnd = LimitVertexDirectSelectMode.onMouseUp =
         'coordinates': [featureCoords]
       }
     };
-
     const g = reader.read(currentFeature);
     if (!g.geometry.isValid()) {
       this.fireInvalidGeom(currentFeature);
+    } else {
+      this.fireUpdate();
     }
-    this.fireUpdate();
   }
   this.stopDragging(state);
 };
@@ -63,7 +67,7 @@ LimitVertexDirectSelectMode.onSetup = function (opts) {
   const featureId = opts.featureId;
   let maxVertexByPolygon = opts.maxVertexByPolygon;
   const feature = this.getFeature(featureId);
-
+  this.fireInitialFeature(feature);
   if (!feature) {
     throw new Error('You must provide a featureId to enter direct_select mode');
   }
