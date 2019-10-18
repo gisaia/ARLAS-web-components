@@ -44,11 +44,13 @@ ValidGeomDrawPolygonMode.onStop = function (state) {
     const g = reader.read(currentFeature);
     if (!g.geometry.isValid()) {
       this.fireInvalidGeom(state.polygon);
+      this.deleteFeature([state.polygon.id], { silent: true });
+    } else {
+      this.map.fire(Constants.events.CREATE, {
+        features: [state.polygon.toGeoJSON()]
+      });
     }
 
-    this.map.fire(Constants.events.CREATE, {
-      features: [state.polygon.toGeoJSON()]
-    });
 
   } else {
     this.deleteFeature([state.polygon.id], { silent: true });
