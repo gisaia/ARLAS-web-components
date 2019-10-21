@@ -40,6 +40,8 @@ import LimitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import ValidGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
 import { FeatureCollection } from '@turf/helpers';
+import { MatSnackBar } from '@angular/material';
+import { TranslateService } from '@ngx-translate/core';
 
 
 export interface OnMoveResult {
@@ -92,6 +94,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_STYLE_GROUP = 'ARLAS_SG-';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+
+  private savedEditFeature = null;
 
   /**
    * @Input : Angular
@@ -367,8 +371,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public isDrawPolyonSelected = false;
   private drawSelectionChanged = false;
 
-  constructor(private http: HttpClient, private differs: IterableDiffers) {
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService ) {
 
+  }
+
+  public openInvalidGeometrySnackBar() {
+    this._snackBar.open(this.translate.instant('Invalid geometry'), this.translate.instant('Ok'), {
+      duration: 1 * 1000,
+      verticalPosition: 'top',
+      panelClass: 'invalid-geo-toast'
+    });
   }
 
   public static getMapglJsonSchema(): Object {
@@ -632,7 +644,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.addCustomId(e.features[0].id);
         this.onChangePolygonDraw();
       });
-      this.map.on('draw.update', () => {
+      this.map.on('draw.update', (e) => {
+        if (e) {
+          const features = e.features;
+          if (features && features.length > 0) {
+            this.savedEditFeature = Object.assign({}, features[0]);
+            this.savedEditFeature.coordinates = [[]];
+            features[0].geometry.coordinates[0].forEach(f => this.savedEditFeature.coordinates[0].push(f));
+          }
+        }
         this.onChangePolygonDraw();
       });
       this.map.on('draw.delete', () => {
@@ -644,7 +664,33 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           });
       });
       this.map.on('draw.invalidGeometry', (e) => {
+        if ( this.savedEditFeature) {
+          const featureCoords = this.savedEditFeature.coordinates[0].slice();
+          if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
+              featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
+              featureCoords.push(featureCoords[0]);
+          }
+          const currentFeature = {
+              id: '',
+              type: 'Feature',
+              geometry: {
+                  'type': 'Polygon',
+                  'coordinates': [featureCoords]
+              },
+              properties: {}
+          };
+          currentFeature.id = this.savedEditFeature.id;
+          currentFeature.properties = this.savedEditFeature.properties;
+          this.draw.add(currentFeature);
+        }
+        this.openInvalidGeometrySnackBar();
         this.onPolygonError.next(e);
+      });
+
+      this.map.on('draw.edit.saveInitialFeature', (edition) => {
+        this.savedEditFeature = Object.assign({}, edition.feature);
+        this.savedEditFeature.coordinates = [[]];
+        edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
       this.map.on('draw.selectionchange', (e) => {
@@ -653,6 +699,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.onPolygonSelect.emit({ edition: true });
           this.isDrawPolyonSelected = true;
         } else {
+          this.savedEditFeature = null;
           this.onPolygonSelect.emit({ edition: false });
           this.isDrawPolyonSelected = false;
           this.onAoiChanged.next(

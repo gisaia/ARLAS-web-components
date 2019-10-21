@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
 import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule } from '@angular/material';
 import { MapglComponent } from './mapgl.component';
 import { TranslateModule } from '@ngx-translate/core';
-
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   imports: [
@@ -31,7 +31,8 @@ import { TranslateModule } from '@ngx-translate/core';
     MatButtonModule,
     MatSelectModule,
     MatRadioModule,
-    TranslateModule
+    TranslateModule,
+    MatSnackBarModule
   ],
   declarations: [MapglComponent],
   exports: [MapglComponent]
