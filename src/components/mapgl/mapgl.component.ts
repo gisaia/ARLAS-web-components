@@ -70,6 +70,9 @@ export interface OnMoveResult {
   encapsulation: ViewEncapsulation.None
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
+
+  public FINISH_DRAWING = 'Double click to finish drawing';
+  public VALIDATE_DRAWING = 'Deselect the polygon to launch the filter'
   public map: any;
   public draw: any;
   private emptyData: FeatureCollection = {
@@ -369,7 +372,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public zoomStart: number;
 
   public isDrawPolyonSelected = false;
+  public drawClickCounter = 0;
+  public showValidatePolygonTooltip = false;
   private drawSelectionChanged = false;
+  private finishDrawTooltip: HTMLElement;
+  private validateDrawTooltip: HTMLElement;
+
+
 
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService ) {
 
@@ -495,9 +504,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
       this.onMapClosed.next(mapExtend);
-    }
-    );
+    });
 
+    this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
+    this.validateDrawTooltip = document.getElementById('polygon-validate-draw-tooltip');
+    fromEvent<MouseEvent>(window, 'mousemove').subscribe((e) => {
+      const x = e.clientX;
+      const y = e.clientY;
+      this.finishDrawTooltip.style.top = (y + 20) + 'px';
+      this.finishDrawTooltip.style.left = (x + 20) + 'px';
+      this.validateDrawTooltip.style.top = (y + 20) + 'px';
+      this.validateDrawTooltip.style.left = (x + 20) + 'px';
+    });
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
 
@@ -643,6 +661,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.on('draw.create', (e) => {
         this.addCustomId(e.features[0].id);
         this.onChangePolygonDraw();
+        this.showValidatePolygonTooltip = true;
       });
       this.map.on('draw.update', (e) => {
         if (e) {
@@ -662,6 +681,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             'type': 'FeatureCollection',
             'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
           });
+      });
+      this.map.on('draw.onClick', () => {
+        this.drawClickCounter++;
+      });
+
+      this.map.on('draw.onStop', () => {
+        this.drawClickCounter = 0;
       });
       this.map.on('draw.invalidGeometry', (e) => {
         if ( this.savedEditFeature) {
@@ -699,13 +725,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.onPolygonSelect.emit({ edition: true });
           this.isDrawPolyonSelected = true;
         } else {
+          this.showValidatePolygonTooltip = false;
           this.savedEditFeature = null;
           this.onPolygonSelect.emit({ edition: false });
           this.isDrawPolyonSelected = false;
           this.onAoiChanged.next(
             {
               'type': 'FeatureCollection',
-              'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
+              'features': this.draw.getAll().features.filter(fc => {
+                const coordinates = fc.geometry.coordinates;
+                return fc.geometry.type === 'Polygon' && coordinates && coordinates[0] !== (null && undefined)
+                  && coordinates[0][0] !== (null && undefined);
+              })
             });
         }
       });
@@ -743,7 +774,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             this.onAoiChanged.next(
               {
                 'type': 'FeatureCollection',
-                'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
+                'features': this.draw.getAll().features.filter(fc => {
+                  const coordinates = fc.geometry.coordinates;
+                  return fc.geometry.type === 'Polygon' && coordinates && coordinates[0] !== (null && undefined)
+                    && coordinates[0][0] !== (null && undefined);
+                })
               });
             this.isDrawingPolygon = false;
             this.nbPolygonVertice = 0;
