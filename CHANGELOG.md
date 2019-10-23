@@ -1,5 +1,13 @@
 # Change Log
 
+## [v11.4.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.1) (2019-10-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.0...v11.4.1)
+
+**Fixed bugs:**
+
+- Fix bugs in draw mode [\#325](https://github.com/gisaia/ARLAS-web-components/pull/325) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
 ## [v11.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.0) (2019-10-16)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.3.1...v11.4.0)
