@@ -22,12 +22,17 @@ ValidGeomDrawPolygonMode.fireOnStop = function () {
   this.map.fire('draw.onStop', 'draw end');
 };
 
+ValidGeomDrawPolygonMode.clickOnVertex = function(state) {
+  return this.changeMode(Constants.modes.SIMPLE_SELECT, {});
+};
+
 ValidGeomDrawPolygonMode.onTap = ValidGeomDrawPolygonMode.onClick = function(state, e) {
-  this.fireOnClick();
   if (CommonSelectors.isVertex(e)) {
     return this.clickOnVertex(state, e);
+  } else {
+    this.fireOnClick();
+    return this.clickAnywhere(state, e);
   }
-  return this.clickAnywhere(state, e);
 };
 
 ValidGeomDrawPolygonMode.onStop = function (state) {
