@@ -70,6 +70,8 @@ export interface OnMoveResult {
   encapsulation: ViewEncapsulation.None
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
+
+  public FINISH_DRAWING = 'Double click to finish drawing';
   public map: any;
   public draw: any;
   private emptyData: FeatureCollection = {
@@ -369,7 +371,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public zoomStart: number;
 
   public isDrawPolyonSelected = false;
+  public drawClickCounter = 0;
   private drawSelectionChanged = false;
+  private finishDrawTooltip: HTMLElement;
 
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService ) {
 
@@ -377,7 +381,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public openInvalidGeometrySnackBar() {
     this._snackBar.open(this.translate.instant('Invalid geometry'), this.translate.instant('Ok'), {
-      duration: 1 * 1000,
+      duration: 3 * 1000,
       verticalPosition: 'top',
       panelClass: 'invalid-geo-toast'
     });
@@ -495,9 +499,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
       this.onMapClosed.next(mapExtend);
-    }
-    );
+    });
 
+    this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
     /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
     this.setBasemapStylesGroup(afterViewInitbasemapStyle);
 
@@ -643,7 +647,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.on('draw.create', (e) => {
         this.addCustomId(e.features[0].id);
         this.onChangePolygonDraw();
+        this.onAoiChanged.next(
+          {
+            'type': 'FeatureCollection',
+            'features': this.draw.getAll().features.filter(fc => {
+              const coordinates = fc.geometry.coordinates;
+              return fc.geometry.type === 'Polygon' && coordinates && coordinates[0] !== (null && undefined)
+                && coordinates[0][0] !== (null && undefined);
+            })
+          });
       });
+
       this.map.on('draw.update', (e) => {
         if (e) {
           const features = e.features;
@@ -663,6 +677,26 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
           });
       });
+
+      const mouseMoveForDraw = (e: MouseEvent) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        this.finishDrawTooltip.style.top = (y + 20) + 'px';
+        this.finishDrawTooltip.style.left = (x + 20) + 'px';
+      };
+
+      this.map.on('draw.onClick', () => {
+        if (this.drawClickCounter === 0) {
+          window.addEventListener('mousemove', mouseMoveForDraw);
+        }
+        this.drawClickCounter++;
+      });
+
+      this.map.on('draw.onStop', () => {
+        window.removeEventListener('mousemove', mouseMoveForDraw);
+        this.drawClickCounter = 0;
+      });
+
       this.map.on('draw.invalidGeometry', (e) => {
         if ( this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
@@ -705,7 +739,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.onAoiChanged.next(
             {
               'type': 'FeatureCollection',
-              'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
+              'features': this.draw.getAll().features.filter(fc => {
+                const coordinates = fc.geometry.coordinates;
+                return fc.geometry.type === 'Polygon' && coordinates && coordinates[0] !== (null && undefined)
+                  && coordinates[0][0] !== (null && undefined);
+              })
             });
         }
       });
@@ -740,11 +778,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.nbPolygonVertice++;
           if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
             this.draw.changeMode('simple_select');
-            this.onAoiChanged.next(
-              {
-                'type': 'FeatureCollection',
-                'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
-              });
             this.isDrawingPolygon = false;
             this.nbPolygonVertice = 0;
           }
