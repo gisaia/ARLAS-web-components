@@ -29,7 +29,7 @@
                 <mat-select [(ngModel)]="selectedClusterStyle"
                   (selectionChange)="emitStyle(clusterStyleGroup.id, selectedClusterStyle.id)">
                   <mat-option *ngFor="let style of clusterStyleGroup?.styles" [value]="style"
-                    [hidden]="style?.isHidden">
+                    [hidden]="!style?.isAvailable">
                     {{style.name | translate}}
                   </mat-option>
                 </mat-select>

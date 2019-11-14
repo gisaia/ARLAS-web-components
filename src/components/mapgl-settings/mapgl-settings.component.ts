@@ -162,8 +162,8 @@ export class MapglSettingsDialogComponent implements OnInit {
           this.logStylesError(this.CONSTANTS.CLUSTER);
         }
         if (this.clusterStyleGroup.selectedStyle) {
-          if (this.clusterStyleGroup.selectedStyle.isHidden) {
-            this.selectedClusterStyle = this.clusterStyleGroup.styles.filter(s => !s.isHidden)[0];
+          if (!this.clusterStyleGroup.selectedStyle.isAvailable) {
+            this.selectedClusterStyle = this.clusterStyleGroup.styles.filter(s => s.isAvailable)[0];
           } else {
             this.selectedClusterStyle = this.clusterStyleGroup.selectedStyle;
           }
@@ -223,13 +223,13 @@ export class MapglSettingsDialogComponent implements OnInit {
 
   public applyClusterStyles() {
     this.clusterStyleGroup.styles.forEach(style => {
-      style.isHidden = false;
+      style.isAvailable = true;
     });
     this.clusterStyleGroup.styles.forEach(style => {
       this.hideIrrelevantStyle(style, [this.selectedCluster]);
     });
-    if (this.clusterStyleGroup.selectedStyle.isHidden) {
-      this.selectedClusterStyle = this.clusterStyleGroup.styles.filter(s => !s.isHidden)[0];
+    if (!this.clusterStyleGroup.selectedStyle.isAvailable) {
+      this.selectedClusterStyle = this.clusterStyleGroup.styles.filter(s => s.isAvailable)[0];
     }
   }
 
@@ -307,9 +307,9 @@ export class MapglSettingsDialogComponent implements OnInit {
     if (style.geometries) {
       const selectedGeometriesSet = new Set(selectedGeometries.map(selectedGeometry => selectedGeometry.path));
       const intersection = style.geometries.filter(g => selectedGeometriesSet.has(g));
-      style.isHidden = intersection.length === 0;
+      style.isAvailable = !(intersection.length === 0);
     } else {
-      style.isHidden = false;
+      style.isAvailable = true;
     }
   }
 

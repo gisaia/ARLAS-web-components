@@ -50,7 +50,7 @@ export interface Style {
   geometries?: Array<string>;
   geomStrategy?: geomStrategyEnum;
   isDefault?: boolean;
-  isHidden?: boolean;
+  isAvailable?: boolean;
 }
 
 export interface LayerEvents {
