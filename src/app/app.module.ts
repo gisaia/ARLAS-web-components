@@ -51,6 +51,8 @@ import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
 import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
 import {MAT_DATE_LOCALE} from '@angular/material';
+import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
+import { MapglSettingsComponent, MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -91,6 +93,7 @@ const routes: Routes = [
     FormsModule,
     MapglModule,
     MapglImportModule,
+    MapglSettingsModule,
     HistogramModule,
     DonutModule,
     ResultsModule,
@@ -110,6 +113,6 @@ const routes: Routes = [
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
   bootstrap: [AppComponent],
-  entryComponents: [MapglImportDialogComponent, WmtsLayerManagertDialogComponent]
+  entryComponents: [MapglImportDialogComponent, WmtsLayerManagertDialogComponent, MapglSettingsDialogComponent]
 })
 export class AppModule { }

@@ -278,7 +278,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Output : Angular
    * @description Emits the event of whether redraw the tile.
    */
-  @Output() public redrawTile: Subject<boolean> = new Subject<boolean>();
+  @Input() public redrawTile: Subject<boolean> = new Subject<boolean>();
   /**
    * @Output : Angular
    * @description Emits the new chosen Style that has the attribute `geomStrategy` set.

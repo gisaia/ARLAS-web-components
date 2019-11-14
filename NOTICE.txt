@@ -6,7 +6,7 @@ ARLAS-web-components embeds the following components and their dependencies :
 
 + Angular
     - Angular               (The MIT License - https://angular.io/)
-    - Angular Matrial       (The MIT License - https://material.angular.io/)
+    - Angular Material       (The MIT License - https://material.angular.io/)
 
 + Geo Tools
     - mapboxgl              (Copyright (c) 2016, Mapbox - https://github.com/mapbox/mapbox-gl-js)
