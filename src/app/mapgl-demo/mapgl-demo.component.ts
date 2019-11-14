@@ -20,7 +20,10 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { MapglComponent } from '../../components/mapgl/mapgl.component';
 import { MapglImportComponent } from '../../components/mapgl-import/mapgl-import.component';
-import * as mapboxgl from 'mapbox-gl';
+import { MapglSettingsComponent,
+  MapSettingsService,
+  GeometrySelectModel,
+  OperationSelectModel } from '../../components/mapgl-settings/mapgl-settings.component';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -31,63 +34,64 @@ export class MapglDemoComponent implements OnInit {
 
   @ViewChild('demoMap') public mapComponent: MapglComponent;
   @ViewChild('demoImportMap') public mapImportComponent: MapglImportComponent;
+  @ViewChild('mapSettings') public mapSettings: MapglSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;
   public actionDisabled = false;
   public drawEnabled = true;
-  public defaultBasemapStyle =        {
+  public defaultBasemapStyle = {
     name: 'Positron Style',
     styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
   };
-  public  basemapStyles = [
+  public basemapStyles = [
     {
-    name: 'Positron Style',
-    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
-  },
+      name: 'Positron Style',
+      styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+    },
     {
       'name': 'OSM',
       'styleFile': {
         'version': 8,
         'sources': {
-        'raster-tiles': {
-        'type': 'raster',
-        'tiles': ['http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-        'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'],
-        'tileSize': 256,
-        'attribution': ''
-        }
+          'raster-tiles': {
+            'type': 'raster',
+            'tiles': ['http://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'http://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'http://c.tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            'tileSize': 256,
+            'attribution': ''
+          }
         },
         'layers': [{
-        'id': 'simple-tiles',
-        'type': 'raster',
-        'source': 'raster-tiles',
-        'minzoom': 0,
-        'maxzoom': 22
+          'id': 'simple-tiles',
+          'type': 'raster',
+          'source': 'raster-tiles',
+          'minzoom': 0,
+          'maxzoom': 22
         }]
-        }
+      }
     },
     {
       'name': 'Stamen',
       'styleFile': {
         'version': 8,
         'sources': {
-        'raster-tiles': {
-        'type': 'raster',
-        'tiles': ['https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg'],
-        'tileSize': 256,
-        'attribution': ''
-        }
+          'raster-tiles': {
+            'type': 'raster',
+            'tiles': ['https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg'],
+            'tileSize': 256,
+            'attribution': ''
+          }
         },
         'layers': [{
-        'id': 'simple-tiles',
-        'type': 'raster',
-        'source': 'raster-tiles',
-        'minzoom': 0,
-        'maxzoom': 22
+          'id': 'simple-tiles',
+          'type': 'raster',
+          'source': 'raster-tiles',
+          'minzoom': 0,
+          'maxzoom': 22
         }]
-        }
+      }
     }
   ];
 
@@ -129,6 +133,110 @@ export class MapglDemoComponent implements OnInit {
       onHover: []
     },
     styleGroups: [
+      {
+        id: 'point-0',
+        name: 'Distribution',
+        base: [
+          'polygon_imported',
+          'geobox'
+        ],
+        styles: [
+          {
+            id: 'heat-distrib',
+            name: 'Heats',
+            layerIds: [
+            ],
+            isDefault: false,
+            geomStrategy: 'centroid'
+          },
+          {
+            id: 'fill',
+            name: 'Rectangle',
+            layerIds: [
+            ],
+            isDefault: true,
+            geomStrategy: 'geohash'
+          }
+        ]
+      },
+      {
+        id: 'point-1',
+        name: 'Distribution',
+        base: [
+          'polygon_imported',
+          'geobox'
+        ],
+        styles: [
+          {
+            id: 'heat-distrib',
+            name: 'Heats',
+            layerIds: [
+            ],
+            isDefault: false,
+            geomStrategy: 'centroid'
+          },
+          {
+            id: 'fill',
+            name: 'Rectangle',
+            layerIds: [
+            ],
+            isDefault: true,
+            geomStrategy: 'geohash'
+          }
+        ]
+      },
+      {
+        id: 'point-2',
+        name: 'Distribution',
+        base: [
+          'polygon_imported',
+          'geobox'
+        ],
+        styles: [
+          {
+            id: 'heat-distrib',
+            name: 'Heats',
+            layerIds: [
+            ],
+            isDefault: false,
+            geomStrategy: 'centroid'
+          },
+          {
+            id: 'fill',
+            name: 'Rectangle',
+            layerIds: [
+            ],
+            isDefault: true,
+            geomStrategy: 'geohash'
+          }
+        ]
+      },
+      {
+        id: 'point-3',
+        name: 'Distribution',
+        base: [
+          'polygon_imported',
+          'geobox'
+        ],
+        styles: [
+          {
+            id: 'heat-distrib',
+            name: 'Heats',
+            layerIds: [
+            ],
+            isDefault: false,
+            geomStrategy: 'centroid'
+          },
+          {
+            id: 'fill',
+            name: 'Rectangle',
+            layerIds: [
+            ],
+            isDefault: true,
+            geomStrategy: 'geohash'
+          }
+        ]
+      },
       {
         id: 'distribution',
         name: 'Distribution',
@@ -627,6 +735,86 @@ export class MapglDemoComponent implements OnInit {
     return {
       url: url.replace('http', 'http'),
     };
+  }
 
+  public openSettings() {
+    this.mapSettings.openDialog(new MapSettings());
+  }
+}
+
+export class MapSettings implements MapSettingsService {
+  public getClusterGeometries(): Array<GeometrySelectModel> {
+    const clusterDisplayGeometries = new Array<GeometrySelectModel>();
+    for (let i = 0; i < 5; i++) {
+      clusterDisplayGeometries.push({
+        path: 'point-' + i,
+        selected: i === 1
+      });
+    }
+    return clusterDisplayGeometries;
+  }
+
+  public getAllGeometries(): Array<GeometrySelectModel> {
+    const allDisplayGeometries = new Array<GeometrySelectModel>();
+    for (let i = 0; i < 8; i++) {
+      if (i < 5) {
+        allDisplayGeometries.push({
+          path: 'point-' + i,
+          selected: i === 1
+        });
+      } else {
+        allDisplayGeometries.push({
+          path: 'geometry-' + (i - 4),
+          selected: i === 5 || i === 7
+        });
+      }
+    }
+    return allDisplayGeometries;
+  }
+
+  public getFilterGeometries(): Array<GeometrySelectModel> {
+    const filterGeometries = new Array<GeometrySelectModel>();
+    for (let i = 0; i < 8; i++) {
+      if (i < 5) {
+        filterGeometries.push({
+          path: 'point-' + i,
+          selected: i === 3
+        });
+      } else {
+        filterGeometries.push({
+          path: 'geometry-' + (i - 4),
+          selected: false
+        });
+      }
+    }
+    return filterGeometries;
+  }
+  public getOperations(): Array<OperationSelectModel> {
+    return [
+      {
+        operation: 'within',
+        selected: true
+      },
+      {
+        operation: 'notwithin',
+        selected: false
+      },
+      {
+        operation: 'intersects',
+        selected: false
+      },
+      {
+        operation: 'notintersects',
+        selected: false
+      }
+    ];
+  }
+
+  public hasFeaturesMode(): boolean {
+    return true;
+  }
+
+  public hasTopologyMode(): boolean {
+    return false;
   }
 }

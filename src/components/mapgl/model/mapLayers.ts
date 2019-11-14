@@ -47,8 +47,10 @@ export interface Style {
   id: string;
   name: string;
   layerIds: Set<string>;
+  geometries?: Array<string>;
   geomStrategy?: geomStrategyEnum;
   isDefault?: boolean;
+  isHidden?: boolean;
 }
 
 export interface LayerEvents {
