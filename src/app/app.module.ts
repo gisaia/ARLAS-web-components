@@ -38,7 +38,6 @@ import { HistogramModule } from '../components/histogram/histogram.module';
 import { ResultsModule } from '../components/results/results.module';
 import { MapglModule } from '../components/mapgl/mapgl.module';
 import { PowerbarsModule } from '../components/powerbars/powerbars.module';
-import { MetricModule } from '../components/metric/metric.module';
 import { DonutModule } from '../components/donut/donut.module';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
@@ -51,10 +50,10 @@ import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import
 import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
 import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
-import {MAT_DATE_LOCALE} from '@angular/material';
+import { MAT_DATE_LOCALE } from '@angular/material';
 import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
-import { MapglSettingsComponent, MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
-import { MetricComponent } from '../components/metric/metric.component';
+import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
+import { MetricModule } from '../components/metric/metric.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -81,8 +80,7 @@ const routes: Routes = [
     PowerbarsDemoComponent,
     DonutDemoComponent,
     GaugeDemoComponent,
-    WmtsLayerManagerDemoComponent,
-    MetricComponent
+    WmtsLayerManagerDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -100,8 +98,8 @@ const routes: Routes = [
     HistogramModule,
     DonutModule,
     ResultsModule,
-    MetricModule,
     GaugeModule,
+    MetricModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,

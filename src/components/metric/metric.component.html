@@ -1,5 +1,8 @@
-<div class="arlas-card-container" [ngClass]="customizedCssClass">
-  <div class="arlas-card-before_value">{{beforeValue | translate}}</div>
-  <div class="arlas-card-value">{{getValue()}}</div>
-  <div class="arlas-card-after_value">{{afterValue | translate}}</div>
+<div class="arlas-metric-container" [ngClass]="customizedCssClass">
+  <div class="arlas-metric-title">{{beforeValue | translate}}</div>
+  <div class="arlas-metric-content">
+    <div class="arlas-metric-value">{{this.displayedValue}}</div>
+    <div class="arlas-metric-unit"></div>
+  </div>
+  <div class="arlas-metric-description">{{afterValue | translate}}</div>
 </div>

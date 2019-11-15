@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as metricJsonSchema from './metric.schema.json';
 
 @Component({
@@ -33,34 +33,45 @@ import * as metricJsonSchema from './metric.schema.json';
  * The phrase that will be represented in this card is : **Speed average : 25 km/h**
  *
  */
-export class MetricComponent implements OnInit {
+export class MetricComponent implements OnInit, OnChanges {
 
-  @Input() public beforeValue: string;
+
+  @Input() public beforeValue = '';
   @Input() public value: number;
-  @Input() public afterValue: string;
+  @Input() public afterValue = '';
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
-  public roundedValue = this.value;
-
-
+  @Input() public shortValue = false;
+  public displayedValue: string;
 
   constructor() { }
 
   public ngOnInit() {
-    this.roundedValue = this.getValue();
+    if (this.shortValue) {
+      this.displayedValue = this.intToString(Math.round(this.value));
+    } else {
+      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
+    }
+  }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes['value']) {
+      if (this.shortValue) {
+        this.displayedValue = this.intToString(Math.round(this.value));
+      } else {
+        this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
+      }
+    }
   }
 
   /**
    * @returns Json schema of the donut component for configuration
    */
-  public static getDonutJsonSchema(): Object {
+  public static getMetricJsonSchema(): Object {
     return metricJsonSchema;
   }
 
-  public getValue() {
-    return MetricComponent.round(this.value, this.valuePrecision);
-  }
+
 
   public static round(value, precision): number {
     let multiplier;
@@ -70,6 +81,27 @@ export class MetricComponent implements OnInit {
       multiplier = Math.pow(10, precision * 10 || 0);
       return +(Math.round(value * multiplier) / multiplier).toFixed(precision);
     }
+  }
+
+  private intToString(value: number): string {
+    let newValue = value.toString();
+    if (value >= 1000) {
+      const suffixes = ['', 'k', 'M', 'b', 't'];
+      const suffixNum = Math.floor(('' + value).length / 3);
+      let shortValue: number;
+      for (let precision = 3; precision >= 1; precision--) {
+        shortValue = parseFloat((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value)
+          .toPrecision(precision));
+        const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
+        if (dotLessShortValue.length <= 2) { break; }
+      }
+      let shortNum = shortValue.toString();
+      if (shortValue % 1 !== 0) {
+        shortNum = shortValue.toFixed(1);
+      }
+      newValue = shortNum + suffixes[suffixNum];
+    }
+    return newValue.toString();
   }
 
 }
