@@ -26,6 +26,8 @@ export { MapSource } from './components/mapgl/model/mapSource';
 export { MapExtend } from './components/mapgl/mapgl.component.util';
 export { PowerbarsComponent } from './components/powerbars/powerbars.component';
 export { PowerbarsModule } from './components/powerbars/powerbars.module';
+export { MetricComponent } from './components/metric/metric.component';
+export { MetricModule } from './components/metric/metric.module';
 export { ChartType, DataType, Position, SimpleNode, TreeNode, SwimlaneMode } from 'arlas-d3';
 export { SortEnum } from './components/results/utils/enumerations/sortEnum';
 export { ModeEnum } from './components/results/utils/enumerations/modeEnum';
