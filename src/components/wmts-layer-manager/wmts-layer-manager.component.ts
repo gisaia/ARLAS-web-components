@@ -17,16 +17,14 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, SimpleChanges, OnChanges } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { map, catchError, filter, scan } from 'rxjs/operators';
-import { xyz } from '../mapgl/mapgl.component.util';
-import { MatDialogRef, MatDialog } from '@angular/material';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { FormGroup, FormControl } from '@angular/forms';
-import { timeout, retry } from 'rxjs/operators';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatDialog, MatDialogRef } from '@angular/material';
 import moment from 'moment';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { retry, timeout } from 'rxjs/operators';
+import { xyz } from '../mapgl/mapgl.component.util';
 
 export interface GetTilesInfo {
   url: string;

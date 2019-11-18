@@ -51,8 +51,8 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
 })
 export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
-  @ViewChild('left', {read: ElementRef}) public lt: ElementRef;
-  @ViewChild('right', {read: ElementRef}) public rt: ElementRef;
+  @ViewChild('left', { read: ElementRef, static: false }) public lt: ElementRef;
+  @ViewChild('right', { read: ElementRef, static: false }) public rt: ElementRef;
 
   /**
    * @Input : Angular

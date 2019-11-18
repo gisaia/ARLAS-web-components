@@ -32,9 +32,9 @@ import { MapglSettingsComponent,
 })
 export class MapglDemoComponent implements OnInit {
 
-  @ViewChild('demoMap') public mapComponent: MapglComponent;
-  @ViewChild('demoImportMap') public mapImportComponent: MapglImportComponent;
-  @ViewChild('mapSettings') public mapSettings: MapglSettingsComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: MapglComponent;
+  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
+  @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;
@@ -101,32 +101,7 @@ export class MapglDemoComponent implements OnInit {
   };
 
   public mapLayers = {
-    layers: [
-      {
-        'id': 'polygon_imported',
-        'type': 'fill',
-        'source': 'polygon_imported',
-        'paint': {
-          'fill-color': 'rgba(153, 32, 228, 1)',
-          'fill-opacity': 0.4,
-          'fill-outline-color': 'rgba(0, 0, 0, 1)'
-        },
-        'layout': {
-          'visibility': 'visible'
-        }
-      },
-      {
-        'id': 'geobox',
-        'type': 'line',
-        'source': 'geobox',
-        'layout': {
-          'visibility': 'visible'
-        },
-        'paint': {
-          'line-color': '#FC9F28',
-          'line-opacity': 1
-        }
-      }],
+    layers: [],
     events: {
       zoomOnClick: [],
       emitOnClick: [],
@@ -137,8 +112,6 @@ export class MapglDemoComponent implements OnInit {
         id: 'point-0',
         name: 'Distribution',
         base: [
-          'polygon_imported',
-          'geobox'
         ],
         styles: [
           {
@@ -163,8 +136,6 @@ export class MapglDemoComponent implements OnInit {
         id: 'point-1',
         name: 'Distribution',
         base: [
-          'polygon_imported',
-          'geobox'
         ],
         styles: [
           {
@@ -189,8 +160,6 @@ export class MapglDemoComponent implements OnInit {
         id: 'point-2',
         name: 'Distribution',
         base: [
-          'polygon_imported',
-          'geobox'
         ],
         styles: [
           {
@@ -215,8 +184,6 @@ export class MapglDemoComponent implements OnInit {
         id: 'point-3',
         name: 'Distribution',
         base: [
-          'polygon_imported',
-          'geobox'
         ],
         styles: [
           {
@@ -241,8 +208,6 @@ export class MapglDemoComponent implements OnInit {
         id: 'distribution',
         name: 'Distribution',
         base: [
-          'polygon_imported',
-          'geobox'
         ],
         styles: [
           {
