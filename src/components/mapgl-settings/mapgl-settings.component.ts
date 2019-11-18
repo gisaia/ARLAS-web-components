@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, SimpleChanges, OnChanges, ChangeDetec
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { StyleGroup, Style, BasemapStyle, BasemapStylesGroup } from '../../components/mapgl/model/mapLayers';
+import { StyleGroup, Style, BasemapStyle, BasemapStylesGroup, geomStrategyEnum } from '../../components/mapgl/model/mapLayers';
 import { DomSanitizer } from '@angular/platform-browser';
 import { MatIconRegistry } from '@angular/material';
 
@@ -10,6 +10,7 @@ import { MatIconRegistry } from '@angular/material';
 export interface RenderedGeometries {
   mode: string;
   geometries: string[];
+  selectedStyleGroups: Array<StyleGroup>;
 }
 
 export interface GeometrySelectModel {
@@ -121,7 +122,11 @@ export class MapglSettingsDialogComponent implements OnInit {
   /** Variables binded with HTML, set inside this dialog */
   public clusterStyleGroup: StyleGroup;
   public featuresStyleGroups: Array<StyleGroup>;
-  public topologyStyleGroup: Array<StyleGroup>;
+  public topologyStyleGroups: Array<StyleGroup>;
+
+  public emittedClusterStyleGroup: StyleGroup;
+  public emittedFeaturesStyleGroups: Array<StyleGroup>;
+  public emittedTopologyStyleGroups: Array<StyleGroup>;
 
   public selectedCluster: GeometrySelectModel;
   public selectedFeatures: Array<GeometrySelectModel>;
@@ -145,6 +150,7 @@ export class MapglSettingsDialogComponent implements OnInit {
   public ngOnInit() {
     if (this.styleGroups) {
       this.clusterStyleGroup = this.styleGroups.filter(sg => sg.id === this.CONSTANTS.CLUSTER)[0];
+      this.emittedClusterStyleGroup = Object.assign({}, this.clusterStyleGroup);
     }
     /** Populate the cluster geometries to render */
     if (this.clusterGeometries) {
@@ -185,6 +191,10 @@ export class MapglSettingsDialogComponent implements OnInit {
         if (!this.featuresStyleGroups) {
           this.logStylesError(this.CONSTANTS.FEATURES);
         }
+        this.emittedFeaturesStyleGroups = [];
+        this.featuresStyleGroups.forEach(sg => {
+          this.emittedFeaturesStyleGroups.push(Object.assign({}, sg));
+        });
       } else if (this.hasTopologyMode) {
         this.topologyGeoControl.setValue(this.allGeometries);
         this.selectedTopology = this.allGeometries.filter(g => g.selected);
@@ -192,10 +202,14 @@ export class MapglSettingsDialogComponent implements OnInit {
           this.logSelectedGeometryError(this.CONSTANTS.TOPOLOGY, this.allGeometries);
         }
         const selectedTopologySet = new Set(this.selectedTopology.map(sf => sf.path));
-        this.topologyStyleGroup = this.styleGroups.filter(sg => selectedTopologySet.has(sg.id));
-        if (!this.topologyStyleGroup) {
+        this.topologyStyleGroups = this.styleGroups.filter(sg => selectedTopologySet.has(sg.id));
+        if (!this.topologyStyleGroups) {
           this.logStylesError(this.CONSTANTS.TOPOLOGY);
         }
+        this.emittedTopologyStyleGroups = [];
+        this.topologyStyleGroups.forEach(sg => {
+          this.emittedTopologyStyleGroups.push(Object.assign({}, sg));
+        });
       }
     }
     /** Populate the filters geometries to query */
@@ -240,16 +254,22 @@ export class MapglSettingsDialogComponent implements OnInit {
 
   public applyTopologyStyles() {
     const selectedTopologySet = new Set(this.selectedTopology.map(sf => sf.path));
-    this.topologyStyleGroup = this.styleGroups.filter(sg => selectedTopologySet.has(sg.id));
+    this.topologyStyleGroups = this.styleGroups.filter(sg => selectedTopologySet.has(sg.id));
   }
 
   /** Emits the geometries to render. Closes the dialog at the end */
   public emitRenderedGeometries() {
     const geosToDisplay = new Array<RenderedGeometries>();
-    geosToDisplay.push({ mode: this.CONSTANTS.CLUSTER, geometries: [this.clusterGeoControl.value.path] });
-    geosToDisplay.push({ mode: this.CONSTANTS.FEATURES, geometries: this.featuresGeoControl.value.map(g => g.path) });
+    geosToDisplay.push({ mode: this.CONSTANTS.CLUSTER, geometries: [this.clusterGeoControl.value.path],
+      selectedStyleGroups: [this.emittedClusterStyleGroup] });
+    if (this.hasFeatureMode) {
+      geosToDisplay.push({ mode: this.CONSTANTS.FEATURES, geometries: this.featuresGeoControl.value.map(g => g.path),
+        selectedStyleGroups: this.emittedFeaturesStyleGroups });
+    } else {
+      geosToDisplay.push({ mode: this.CONSTANTS.TOPOLOGY, geometries: this.topologyGeoControl.value.map(g => g.path),
+        selectedStyleGroups: this.emittedTopologyStyleGroups });
+    }
     this.renderedGeometriesEmitter.next(geosToDisplay);
-    this.emitStyle(this.clusterStyleGroup.id, this.selectedClusterStyle.id);
     this.dialogRef.close();
   }
 
@@ -268,6 +288,19 @@ export class MapglSettingsDialogComponent implements OnInit {
 
   /** Emits the selected style for a mode */
   public emitStyle(styleGroupId: string, selectedStyleId: string) {
+    if (styleGroupId === this.CONSTANTS.CLUSTER) {
+      this.emittedClusterStyleGroup.selectedStyle = this.emittedClusterStyleGroup.styles.find(s => s.id === selectedStyleId);
+    } else {
+      if (this.hasFeatureMode) {
+        const selectedSg = this.featuresStyleGroups.find(sg => sg.id === styleGroupId);
+        const selectedStyle = selectedSg.styles.find(s => s.id === selectedStyleId);
+        this.emittedFeaturesStyleGroups.find(sg => sg.id === styleGroupId).selectedStyle = selectedStyle;
+      } else {
+        const selectedSg = this.topologyStyleGroups.find(sg => sg.id === styleGroupId);
+        const selectedStyle = selectedSg.styles.find(s => s.id === selectedStyleId);
+        this.emittedTopologyStyleGroups.find(sg => sg.id === styleGroupId).selectedStyle = selectedStyle;
+      }
+    }
     this.styleEmitter.next({
       styleGroupId: styleGroupId,
       styleId: selectedStyleId

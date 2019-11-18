@@ -966,6 +966,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  public setStyleGroup(styleGroupId: string, selectedStyleId: string) {
+    if (this.mapLayers && this.mapLayers.styleGroups) {
+      const selectedStyle: Style = this.getStyle(styleGroupId, selectedStyleId, this.mapLayers.styleGroups);
+      if (selectedStyle) {
+        this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
+          styleGroup.selectedStyle = selectedStyle;
+        });
+        this.removeAllLayers();
+        this.mapLayers.styleGroups.forEach(styleGroup => {
+          localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
+          styleGroup.selectedStyle.layerIds.forEach(layerId => {
+            this.addLayer(layerId);
+          });
+        });
+      }
+    }
+  }
+
   public onChangePolygonDraw() {
     this.onPolygonChange.next(this.draw.getAll().features);
 
