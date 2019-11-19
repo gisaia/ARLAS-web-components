@@ -3,7 +3,7 @@
   "title": "Card input configuration",
   "description": "The Configuration input of Card",
   "type": "object",
-  "$id": "card.schema.json",
+  "$id": "metric.schema.json",
   "properties": {
       "customizedCssClass":{
           "description": "Css class name to use to customize a specific card's style.",
