@@ -325,6 +325,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
           break;
         }
         default: {
+          this.histogram = new ChartArea();
           break;
         }
       }
