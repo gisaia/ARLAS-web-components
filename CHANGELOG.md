@@ -1,8 +1,31 @@
 # Change Log
 
+## [v12.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.0.0) (2019-11-20)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.1...v12.0.0)
+
+**Breaking changes:**
+
+- redrawTile should be an Input instead of Output in MapComponent [\#330](https://github.com/gisaia/ARLAS-web-components/issues/330) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Update to angular 8.1 [\#284](https://github.com/gisaia/ARLAS-web-components/issues/284) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
+
+**New stuff:**
+
+- Add Metric component [\#334](https://github.com/gisaia/ARLAS-web-components/issues/334)
+- MapSettingsComponent : New component for configuring layers [\#332](https://github.com/gisaia/ARLAS-web-components/issues/332)
+- Add translate pipe to powerbars [\#328](https://github.com/gisaia/ARLAS-web-components/pull/328) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- Chartype should not be a mandatory input [\#329](https://github.com/gisaia/ARLAS-web-components/issues/329) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
 ## [v11.4.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.1) (2019-10-23)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.0...v11.4.1)
+
+**New stuff:**
+
+- Add tooltip when drawing a polygon that shows how to end drawing [\#327](https://github.com/gisaia/ARLAS-web-components/pull/327) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 **Fixed bugs:**
 
