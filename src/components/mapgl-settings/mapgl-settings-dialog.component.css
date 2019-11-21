@@ -1,7 +1,8 @@
-.map-settings-dialog .mat-dialog-container {
-  overflow: inherit !important;
-  position: relative !important;
+::ng-deep .map-settings-dialog .mat-dialog-container {
+  overflow: inherit;
+  position: relative;
 }
+
 .mapgl-settings-body {
   width: 800px;
   min-width: 100px;
