@@ -31,7 +31,8 @@ import { ResultScrollDirective } from './result-directive/result-scroll.directiv
 import { LoadingModule } from 'ngx-loading';
 import {
   MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
-  MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule
+  MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule,
+  MatSlideToggleModule
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
@@ -48,6 +49,7 @@ import { ColorGeneratorModule } from '../../services/color.generator.module';
     MatCheckboxModule,
     MatMenuModule,
     MatSelectModule,
+    MatSlideToggleModule,
     MatTooltipModule,
     FormsModule,
     LoadingModule,

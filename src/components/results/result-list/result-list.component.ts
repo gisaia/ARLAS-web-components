@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef, ViewEncapsulation, HostListener } from '@angular/core';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 
@@ -53,10 +53,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @constant
    */
   public GEO_DISTANCE = 'geodistance';
-  /**
-   * @constant
-   */
-  public GEOSORT = 'Geo distance sort';
+
   /**
    * @constant
    */
@@ -84,7 +81,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   /**
    * @constant
    */
-  public GEOSORT_ACTIONS = 'Geo sort actions';
+  public GEOSORT_ACTION = 'Geo sort action';
   /**
    * @constant
    */
@@ -107,7 +104,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
   };
 
-  public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0};
+  public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0 };
 
   /**
    * @Input : Angular
@@ -234,11 +231,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Whether the sort on the geometry is activated.
    */
   @Input() public isGeoSortActived = false;
-  /**
- * @Input : Angular
- * @description Whether the auto sort on the geometry is activated.
- */
-  @Input() public isAutoGeoSortActived = false;
+
   /**
    * @Input : Angular
    * @description A fieldName-fieldValue map of fields to filter.
@@ -397,23 +390,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public borderStyle = 'solid';
   public displayListGrid = 'inline';
+  public isShiftDown = false;
 
   private debouncer = new Subject<ElementIdentifier>();
-
-  public geoSortActions: Array<Action> = [
-    {
-      id: 'geosort',
-      label: 'Sort by geo distance'
-    },
-    {
-      id: 'auto-geosort',
-      label: 'Activate auto geo distance sorting'
-    },
-    {
-      id: 'remove-auto-geosort',
-      label: 'Remove auto geo distance sorting'
-    }
-  ];
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
     private colorService: ArlasColorService) {
@@ -430,8 +409,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
   }
 
+  @HostListener('document:keydown.shift', ['$event'])
+  public shiftDown(_) {
+    this.isShiftDown = true;
+  }
+
+  @HostListener('document:keyup.shift', ['$event'])
+  public shiftUp(event: KeyboardEvent) {
+    this.isShiftDown = false;
+  }
+
   public ngOnInit() {
-    this.options =  Object.assign(new ResultListOptions(), this.options);
+    this.options = Object.assign(new ResultListOptions(), this.options);
     if (this.fieldsConfiguration !== undefined && this.fieldsConfiguration !== null) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
         this.hasGridMode = true;
@@ -533,7 +522,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
          * The objective of this input is to inform `ResultScrollDirective` that it should
          * maintain the Scroll Position when Adding Content to the top of the list
          */
-        this.scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: false, nbLines: itemIndex};
+        this.scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: false, nbLines: itemIndex };
       }
       if (this.isNextPageRequested) {
         /**
@@ -541,7 +530,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
          * The objective of this input is to inform `ResultScrollDirective` that it should
          * maintain the Scroll Position when Adding Content to the bottom of the list
          */
-        this.scrollOptions = { maintainScrollUpPosition: false, maintainScrollDownPosition: true, nbLines: itemIndex};
+        this.scrollOptions = { maintainScrollUpPosition: false, maintainScrollDownPosition: true, nbLines: itemIndex };
       }
       this.setSelectedItems(this.selectedItems);
       this.isNextPageRequested = false;
@@ -583,23 +572,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.globalActionEvent.next(action);
   }
 
-  public setGeoSortAction(action: Action) {
-    switch (action.id) {
-      case 'geosort':
-        this.geoSort();
-        break;
-      case 'auto-geosort':
-        this.isAutoGeoSortActived = true;
-        this.isGeoSortActived = true;
-        this.geoAutoSortEvent.next(this.isAutoGeoSortActived);
-        this.geoSort();
-        break;
-      case 'remove-auto-geosort':
-        this.isAutoGeoSortActived = false;
-        this.isGeoSortActived = false;
-        this.geoAutoSortEvent.next(this.isAutoGeoSortActived);
-        break;
+  public setGeoSortAction() {
+    if (!this.isGeoSortActived) {
+      this.geoSort();
     }
+    this.isGeoSortActived = !this.isGeoSortActived;
+    this.geoAutoSortEvent.next(!this.isGeoSortActived);
   }
 
   /**
@@ -614,7 +592,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   /**
    * @description Sets and emits the identifiers list of selected items
    */
-  public setSelectedItems(selectedItems: Set<string>) {
+  public setSelectedItems(selectedItems: Set<string>, stopPropagation?: boolean) {
+    // remove all text selection on current document
+    // SB : Sometime blinking append, need to be deepened
+    document.getSelection().removeAllRanges();
     this.selectedItems = selectedItems;
     if (selectedItems.size < this.items.length) {
       this.allItemsChecked = false;
@@ -622,15 +603,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.allItemsChecked = this.items.filter(i => i.isChecked).length === this.items.length;
     }
     this.selectedItemsEvent.next(Array.from(this.selectedItems));
+    if (this.isShiftDown && this.selectedItems.size > 1 && !stopPropagation) {
+      this.selectInBetween();
+    }
   }
 
   /**
    * @description Emits the column to sort on and the sort direction
    */
   public sort(sortedColumn: Column): void {
-    if (!this.isAutoGeoSortActived) {
-      this.isGeoSortActived = false;
-    }
     if (sortedColumn.sortDirection === SortEnum.none) {
       sortedColumn.sortDirection = SortEnum.asc;
     } else if (sortedColumn.sortDirection === SortEnum.asc) {
@@ -773,7 +754,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
           this.selectedItems.add(item.identifier);
         }
       });
-      this.setSelectedItems(this.selectedItems);
+      this.setSelectedItems(this.selectedItems, true);
     }
   }
 

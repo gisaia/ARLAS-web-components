@@ -1,6 +1,5 @@
 {
   "Filter on": "Filtre on",
-  "Geo distance sort": "Geo distance sort",
   "click for descending sort": "click for descending sort",
   "click for ascending sort": "click for ascending sort",
   "Check in between": "Check in between",
@@ -19,6 +18,7 @@
   "country": "country",
   "Click to show details": "Click to show details",
   "Geo-sort": "Geo-sort",
+  "Geo sort action": "Geo sort : Order function of the distance to center of the map",
   "Cancel": "Cancel",
   "Import file": "Import file",
   "Zoom to result": "Zoom to result",

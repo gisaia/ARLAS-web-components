@@ -1,6 +1,5 @@
 {
   "Filter on": "Filtre sur",
-  "Geo distance sort": "Trier par distance",
   "click for descending sort": "Cliquer pour tri décroissant",
   "click for ascending sort": "Cliquer pour tri croissant",
   "Check in between": "Cocher l'intervalle",
@@ -19,6 +18,7 @@
   "country": "Pays",
   "Click to show details": "Cliquer pour afficher le détail",
   "Geo-sort": "Geo-tris",
+  "Geo sort action": "Geo tri : Tri par rapport à la distance au centre de la carte",
   "Cancel": "Fermer",
   "Import file": "Importer un fichier",
   "Zoom to result": "Zoomer sur le résultat",

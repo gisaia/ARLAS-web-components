@@ -39,15 +39,6 @@
   font-size:18px;
 }
 
-.resultlist__header--columns__geosort--icon, /* @doc Sets the deactivated geosort icon style.*/
-.resultlist__header--columns__geosort--icon--active /* @doc Sets the activated geosort icon style.*/
-{
-  font-size:14px;
-  padding-top: 5px;
-  padding-left: 2px;
-  color: gray;
-}
-
 .resultlist {
   height: 100%;
   width: 100%;
@@ -64,7 +55,7 @@
   font-size: 0.7em;
   font-weight: bold;
   float:left;
-  padding: 4px 10px 0 5px;
+  padding: 2px 0px 0 8px;
 }
 .resultlist__loading /* @doc Sets the loading-div style*/
 {
@@ -148,16 +139,10 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   float: left;
 }
 
-.resultlist__tools--select-between /* @doc Sets the select-in-between container style.*/
+.resultlist__tools--menu /* @doc Sets the menu button container style.*/
 {
-  float: left;
-}
-
-.resultlist__tools--actions /* @doc Sets the actions button container style.*/
-{
-  width:35%;
+  cursor: pointer;
   float:left;
-  text-align: right;
 }
 
 .resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
@@ -167,8 +152,9 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   text-align: right;
 }
 
-.resultlist__tools--actions {
-  text-align: center;
+.mat-button-toggle-label-content {
+  line-height: 38px !important;
+  padding: 0 8px !important;
 }
 
 .resultlist__grid-tile {
@@ -212,38 +198,22 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 	background-color: #555;
 }
 
-.selectBetween__icon{
+.select_between__icon{
   cursor: pointer
 }
 
-.selectAll__icon_check{
+.select_all__icon_check{
   cursor: pointer;
-}
-
-.resultlist__tools--geosort-action-button{
-  max-width: 32px;
-}
-
-.resultlist__tools--geosort--icon--active{
-  position: absolute;
-  left:50px;
-  margin-top: -6px;
-
-}
-.resultlist__tools--geosort--icon{
-  position: absolute;
-  left:50px;
-  margin-top: -6px;
 }
 
 .resultgrid__clear{
   font-size: 14px;
-  width:3px
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
 }
 
-
-.resultlist__tools--geosort{
-position: absolute;
-left: 50px;
-margin-top: -16px;
+.resultlist__tools--geosort--slide{
+  height: 22px;
+  margin-left: 5px;
 }

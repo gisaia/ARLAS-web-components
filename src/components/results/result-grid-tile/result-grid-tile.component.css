@@ -85,6 +85,7 @@
   color:white;
   cursor: pointer;
   z-index: 5;
+  user-select: none;
 }
 
 .resultgrid__img /* @doc Sets the image style.*/

@@ -1,6 +1,62 @@
 <table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
-  <thead *ngIf=displayThead>
-    <tr class="resultlist__header resultlist__thead__tr">
+  <thead *ngIf="displayThead">
+    <tr class="resultlist__filter resultlist__thead__tr" *ngIf="this.displayFilters">
+      <ng-container *ngFor="let column of columns">
+        <td [style.width.px]="column.width" *ngIf="column.isIdField">
+          <span class="resultlist__header--columns--hidden"></span>
+        </td>
+        <td  arlas-result-filter class="resultlist__filter__{{column.columnName}}" *ngIf="!column.isIdField && !column.isToggleField"
+                           matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
+                           [style.width.px]="column.width"
+                           [column]="column"
+                           [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async"
+                           [filtersMap]="filtersMap"
+                           (columnChanged) ="columnChanged($event)"
+                           (setFiltersEvent)="setFilters($event)">
+        </td>
+        <td *ngIf="column.isToggleField" [style.width.px]="column.width">
+          <span class="resultlist__header--columns--hidden"></span>
+        </td>
+      </ng-container>
+    </tr>
+    <tr class="resultlist__tools resultlist__thead__tr">
+      <td [style.width.px]="tableWidth">
+        <div class="resultlist__tools--select">
+          <div class="resultlist__tools--select-all">
+              <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [indeterminate]="!allItemsChecked && this.selectedItems.size > 0"></mat-checkbox>
+          </div>
+          <div class="resultgrid--checkbox__count">
+            <span>{{selectedItems.size}}</span>
+              <mat-icon  *ngIf="selectedItems.size>0" id="clear_selection"  class="resultgrid__clear" (click)="clearSelection()">close</mat-icon>
+          </div>
+          <div class="resultlist__tools--menu">
+              <mat-icon id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
+              <mat-menu #menu="matMenu">
+                <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
+                  <span>{{action.label | translate}}</span>
+                </button>
+              </mat-menu>
+          </div>
+          <div class="resultlist__tools--geosort">
+            <mat-slide-toggle class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()"></mat-slide-toggle>
+          </div>
+        </div>
+
+
+        <div *ngIf="hasGridMode" class="resultlist__tools--mode">
+          <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
+            <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
+              <mat-icon>list</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle id="grid_mode_btn" matTooltip="{{GRID_MODE | translate}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
+              <mat-icon>apps</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+
+      </td>
+    </tr>
+    <tr class="resultlist__header resultlist__thead__tr" *ngIf="resultMode !== ModeEnum.grid">
       <ng-container *ngFor="let column of columns">
         <th *ngIf="column.isIdField"
             [style.max-width.px]="column.width"
@@ -26,82 +82,6 @@
           </span>
         </th>
       </ng-container>
-    </tr>
-    <tr class="resultlist__filter resultlist__thead__tr" *ngIf="this.displayFilters">
-      <ng-container *ngFor="let column of columns">
-        <td [style.width.px]="column.width" *ngIf="column.isIdField">
-          <span class="resultlist__header--columns--hidden"></span>
-        </td>
-        <td  arlas-result-filter class="resultlist__filter__{{column.columnName}}" *ngIf="!column.isIdField && !column.isToggleField"
-                           matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
-                           [style.width.px]="column.width"
-                           [column]="column"
-                           [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async"
-                           [filtersMap]="filtersMap"
-                           (columnChanged) ="columnChanged($event)"
-                           (setFiltersEvent)="setFilters($event)">
-        </td>
-        <td *ngIf="column.isToggleField" [style.width.px]="column.width">
-          <span class="resultlist__header--columns--hidden"></span>
-        </td>
-      </ng-container>
-    </tr>
-    <tr class="resultlist__tools resultlist__thead__tr">
-      <td [style.width.px]="tableWidth">
-        <div class="resultlist__tools--select">
-          <div class="resultlist__tools--select-all">
-              <mat-icon *ngIf="allItemsChecked" (click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box</mat-icon>
-              <mat-icon *ngIf="!allItemsChecked"(click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
-          </div>
-          <div class="resultgrid--checkbox__count">
-            <span>{{selectedItems.size}}</span>
-              <mat-icon  *ngIf="selectedItems.size>0" id="clear_selection"  class="resultgrid__clear" (click)="clearSelection()">close</mat-icon>
-          </div>
-          <div class="resultlist__tools--select-between">
-              <mat-icon id="check_in_between_btn" matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
-          </div>
-          <div class="resultlist__tools--geosort">
-          <button id="geosort_actions_btn" matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-button [matMenuTriggerFor]="menugeo" class="resultlist__tools--geosort-action-button">
-            <div *ngIf="isAutoGeoSortActived"  class="resultlist__tools--geosort--icon--active">{{GEOSORT_BUTTON | translate}}</div>
-            <div *ngIf="!isAutoGeoSortActived" class="resultlist__tools--geosort--icon">{{GEOSORT_BUTTON | translate}}</div>
-          </button>
-        </div>
-          <mat-menu #menugeo="matMenu">
-            <button    id="sort_by_dist_btn" mat-menu-item (click)="setGeoSortAction(geoSortActions[0])"  class="resultlist__header--columns__geosort-button">
-              <span>{{geoSortActions[0].label | translate}}</span>
-            </button>
-            <button  id="activate_auto_geosort_btn" *ngIf="!isAutoGeoSortActived"  mat-menu-item (click)="setGeoSortAction(geoSortActions[1])"   class="resultlist__header--columns__geosort-auto-button">
-              <span>{{geoSortActions[1].label | translate}}</span>
-            </button>
-            <button id="remove_auto_geosort_btn" *ngIf="isAutoGeoSortActived" mat-menu-item (click)="setGeoSortAction(geoSortActions[2])"  class="resultlist__header--columns__geosort-remove-button">
-              <span>{{geoSortActions[2].label | translate}}</span>
-            </button>
-          </mat-menu>
-
-        </div>
-        <div class="resultlist__tools--actions">
-          <button id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
-              <span>{{action.label | translate}}</span>
-            </button>
-          </mat-menu>
-        </div>
-
-        <div *ngIf="hasGridMode" class="resultlist__tools--mode">
-          <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
-            <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
-              <mat-icon>list</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle id="grid_mode_btn" matTooltip="{{GRID_MODE | translate}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
-              <mat-icon>apps</mat-icon>
-            </mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
-
-      </td>
     </tr>
     <tr class="resultlist__grid-detail resultlist__thead__tr" *ngIf="selectedGridItem != null
     && resultMode==ModeEnum.grid && isDetailledGridOpen">
