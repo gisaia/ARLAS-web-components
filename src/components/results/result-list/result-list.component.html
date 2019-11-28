@@ -37,7 +37,7 @@
               </mat-menu>
           </div>
           <div class="resultlist__tools--geosort">
-            <mat-slide-toggle class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()"></mat-slide-toggle>
+            <mat-slide-toggle [disableRipple]="true" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
           </div>
         </div>
 

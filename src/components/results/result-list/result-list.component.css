@@ -131,7 +131,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 
 .resultlist__tools--select /* @doc Sets the selection tools style.*/
 {
-  width:28%;
+  width:40%;
   float:left;
   padding-top: 10px;
 }
@@ -148,7 +148,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 
 .resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
 {
-  width:35%;
+  width:30%;
   float:right;
   text-align: right;
 }
@@ -214,7 +214,26 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   cursor: pointer;
 }
 
+.resultlist__tools--geosort{
+  font-size: 14px;
+}
+
 .resultlist__tools--geosort--slide{
   height: 22px;
   margin-left: 5px;
+}
+
+.resultlist__tools--geosort .mat-slide-toggle-bar{
+  height: 10px;
+  width: 30px;
+}
+
+.resultlist__tools--geosort .mat-slide-toggle-thumb{
+  height: 15px;
+  width: 15px;
+}
+
+.resultlist__tools--geosort .mat-slide-toggle .mat-slide-toggle-ripple{
+  height: 35px;
+  width: 35px;
 }
