@@ -577,7 +577,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.geoSort();
     }
     this.isGeoSortActived = !this.isGeoSortActived;
-    this.geoAutoSortEvent.next(!this.isGeoSortActived);
+    this.geoAutoSortEvent.next(this.isGeoSortActived);
   }
 
   /**
@@ -596,6 +596,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     // remove all text selection on current document
     // SB : Sometime blinking append, need to be deepened
     document.getSelection().removeAllRanges();
+
     this.selectedItems = selectedItems;
     if (selectedItems.size < this.items.length) {
       this.allItemsChecked = false;

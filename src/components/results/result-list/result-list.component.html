@@ -27,7 +27,6 @@
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
-              <mat-icon  *ngIf="selectedItems.size>0" id="clear_selection"  class="resultgrid__clear" (click)="clearSelection()">close</mat-icon>
           </div>
           <div class="resultlist__tools--menu">
               <mat-icon id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
