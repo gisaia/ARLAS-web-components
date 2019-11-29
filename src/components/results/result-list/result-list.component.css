@@ -20,23 +20,22 @@
 .resultlist__header {
   text-align: center;
 }
+
 .resultlist__header--columns /* @doc Sets columns names style.*/
 {
-
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   text-align: left;
   vertical-align: middle;
-  cursor: pointer;
 }
 
 .resultlist__header--columns__sort {
   float: right;
 }
 
-.resultlist__header--columns__sort--icon /* @doc Sets the sort column icon style.*/
+.resultlist__header--columns__sort--icon/* @doc Sets the sort column icon style.*/
 {
-  font-size:18px;
+  font-size: 18px;
 }
 
 .resultlist {
@@ -54,10 +53,11 @@
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.7em;
   font-weight: bold;
-  float:left;
+  float: left;
   padding: 2px 0px 0 8px;
   min-width: 21px;
 }
+
 .resultlist__loading /* @doc Sets the loading-div style*/
 {
   width: 100%;
@@ -70,6 +70,7 @@
 
 .resultlist__top_loading /* @doc Sets the top-loading-div style*/
 {
+
 }
 
 .resultlist__bottom_loading /* @doc Sets the bottom-loading-div style*/
@@ -82,12 +83,14 @@
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
 }
+
 .resultlist__body--item-hover-true {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
-  background-color: rgba(0,0,0,0.075);
+  background-color: rgba(0, 0, 0, 0.075);
   position: relative;
 }
+
 .resultlist__body--item-hover-false {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
@@ -97,20 +100,26 @@
 tr:hover td.resultitem__cell.toggle .list_actions {
   display: inline;
 }
+
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
 {
   border-top: 1px dashed #e9ecef;
   border-bottom: 0px solid #e9ecef;
 }
+
 .resultlist__body--detailed-item /* @doc Sets the last row border style. (list mode)*/
 {
   border-top: 1px dashed #e9ecef;
   border-bottom: 1px solid #e9ecef;
 }
+
 .resultlist__header, /* @doc Sets the header border style.*/
+
 .resultlist__filter, /* @doc Sets the filters container border style.*/
+
 .resultlist__tools, /* @doc Sets the border style of the tools list container (select-all, select-in-between, grid-list-mode, ...).*/
-.resultlist__grid-detail  /* @doc Sets the detail grid border style.*/
+
+.resultlist__grid-detail /* @doc Sets the detail grid border style.*/
 {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px solid #e9ecef;
@@ -120,19 +129,20 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   display: block;
   margin-bottom: 3px;
 }
-.resultlist__grid-detail--td{
+
+.resultlist__grid-detail--td {
   padding-bottom: 0;
 }
 
-.resultlist__mode__groupedButton{
+.resultlist__mode__groupedButton {
   display: table;
   margin: 0 auto;
 }
 
 .resultlist__tools--select /* @doc Sets the selection tools style.*/
 {
-  width:40%;
-  float:left;
+  width: 40%;
+  float: left;
   padding-top: 10px;
 }
 
@@ -143,13 +153,13 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 .resultlist__tools--menu /* @doc Sets the menu button container style.*/
 {
   cursor: pointer;
-  float:left;
+  float: left;
 }
 
 .resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
 {
-  width:30%;
-  float:right;
+  width: 20%;
+  float: right;
   text-align: right;
 }
 
@@ -181,59 +191,93 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   width: 100%;
 }
 
-::-webkit-scrollbar
-{
-	width: 6px;
-	background-color: #F5F5F5;
+::-webkit-scrollbar {
+  width: 6px;
+  background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar-track
-{
-  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
 }
 
-::-webkit-scrollbar-thumb
-{
-	background-color: #555;
+::-webkit-scrollbar-thumb {
+  background-color: #555;
 }
 
-.select_between__icon{
+.select_between__icon {
   cursor: pointer
 }
 
-.select_all__icon_check{
+.select_all__icon_check {
   cursor: pointer;
 }
 
-.resultgrid__clear{
+.resultgrid__clear {
   font-size: 14px;
   width: 14px;
   height: 14px;
   cursor: pointer;
 }
 
-.resultlist__tools--geosort{
+.resultlist__tools--geosort {
   font-size: 14px;
 }
 
-.resultlist__tools--geosort--slide{
+.resultlist__tools--geosort--slide {
   height: 22px;
   margin-left: 5px;
 }
 
-.resultlist__tools--geosort .mat-slide-toggle-bar{
+.resultlist__tools--geosort .mat-slide-toggle-bar {
   height: 10px;
   width: 30px;
 }
 
-.resultlist__tools--geosort .mat-slide-toggle-thumb{
+.resultlist__tools--geosort .mat-slide-toggle-thumb {
   height: 15px;
   width: 15px;
 }
 
-.resultlist__tools--geosort .mat-slide-toggle .mat-slide-toggle-ripple{
+.resultlist__tools--geosort .mat-slide-toggle .mat-slide-toggle-ripple {
   height: 35px;
   width: 35px;
+}
+
+.resultlist__tools--sort {
+  float: left;
+  width: 39%;
+  padding-top: 10px;
+  font-size: 14px;
+}
+
+.resultlist__tools--sort-option {
+  line-height: 30px !important;
+  height: 30px !important;
+}
+
+.resultlist__tools--sort-option .mat-radio-button {
+  color: black;
+}
+
+.resultlist__tools--sort-option .mat-radio-button .mat-radio-container{
+  width: 15px;
+  height: 15px;
+}
+
+.resultlist__tools--sort-option .mat-radio-button .mat-radio-container .mat-radio-outer-circle{
+  height: 15px;
+  width: 15px;
+}
+
+.resultlist__tools--sort-option .mat-radio-button .mat-radio-container .mat-radio-inner-circle{
+  height: 15px;
+  width: 15px;
+}
+
+.resultlist__tools--sort-group .mat-optgroup-label {
+  line-height: 30px !important;
+  height: 30px !important;
+  margin-bottom: 0;
 }

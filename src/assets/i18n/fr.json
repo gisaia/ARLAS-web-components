@@ -7,7 +7,7 @@
   "Global actions": "Actions",
   "Grid mode": "Vue grille",
   "List mode": "Vue liste",
-  "Sort on": "Tri sur",
+  "Sort on": "Tri par",
   "Hide details": "Cacher le détail",
   "Show details": "Afficher le détail",
   "Close": "Fermer le détail",
@@ -31,5 +31,10 @@
   "No polygon to display in this file": "Aucun polygone à afficher",
   "Too much features": "Le fichier contient trop d'elements",
   "File is too large": "Le fichier est trop volumineux",
-  "Paste your WKT": "Coller ici votre WKT"
+  "Paste your WKT": "Coller ici votre WKT",
+  "Column": "Colonne",
+  "Direction": "Sens",
+  "ASC" : "Ascendent",
+  "DESC": "Descendent",
+  "None": "Aucune"
 }

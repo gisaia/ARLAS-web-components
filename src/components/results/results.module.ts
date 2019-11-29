@@ -32,7 +32,8 @@ import { LoadingModule } from 'ngx-loading';
 import {
   MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
   MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatRadioModule
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
@@ -51,6 +52,7 @@ import { ColorGeneratorModule } from '../../services/color.generator.module';
     MatSelectModule,
     MatSlideToggleModule,
     MatTooltipModule,
+    MatRadioModule,
     FormsModule,
     LoadingModule,
     TranslateModule

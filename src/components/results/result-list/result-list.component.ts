@@ -28,12 +28,13 @@ import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Observable, Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ANIMATION_TYPES } from 'ngx-loading';
-import { MatButtonToggleChange } from '@angular/material';
+import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
 import { SimpleChanges } from '@angular/core';
 import { OnChanges } from '@angular/core/core';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { PageEnum } from '../utils/enumerations/pageEnum';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -228,9 +229,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-   * @description Whether the sort on the geometry is activated.
+   * @description Whether the sort on the geometry is enalabled.
    */
-  @Input() public isGeoSortActived = false;
+  @Input() public isGeoSortEnabled = false;
 
   /**
    * @Input : Angular
@@ -366,7 +367,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
-  public sortedColumn: { fieldName: string, sortDirection: SortEnum };
+  public sortedColumn: { fieldName: string, sortDirection: SortEnum } = { fieldName: '', sortDirection: SortEnum.asc };
+  public lastSortedColumnName: Column;
+  public currentSortedColumn: Column;
+  public isGeoSortActivated = false;
 
   // Heights of table elements
   public tbodyHeight: number = null;
@@ -395,7 +399,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   private debouncer = new Subject<ElementIdentifier>();
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
-    private colorService: ArlasColorService) {
+    private colorService: ArlasColorService, public translate: TranslateService) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     this.resultMode = this.defautMode;
@@ -573,11 +577,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   public setGeoSortAction() {
-    if (!this.isGeoSortActived) {
+    if (!this.isGeoSortActivated) {
       this.geoSort();
     }
-    this.isGeoSortActived = !this.isGeoSortActived;
-    this.geoAutoSortEvent.next(this.isGeoSortActived);
+    this.isGeoSortActivated = !this.isGeoSortActivated;
+    this.geoAutoSortEvent.next(this.isGeoSortActivated);
   }
 
   /**
@@ -613,32 +617,51 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @description Emits the column to sort on and the sort direction
    */
   public sort(sortedColumn: Column): void {
-    if (sortedColumn.sortDirection === SortEnum.none) {
-      sortedColumn.sortDirection = SortEnum.asc;
-    } else if (sortedColumn.sortDirection === SortEnum.asc) {
-      sortedColumn.sortDirection = SortEnum.desc;
-    } else {
-      sortedColumn.sortDirection = SortEnum.asc;
-    }
-    this.sortedColumn = { fieldName: sortedColumn.fieldName, sortDirection: sortedColumn.sortDirection };
+    this.isGeoSortActivated = false;
+    sortedColumn.sortDirection = this.sortedColumn.sortDirection;
     this.columns.forEach(column => {
       if (column.fieldName !== sortedColumn.fieldName) {
         column.sortDirection = SortEnum.none;
       }
     });
     this.sortColumnEvent.next(this.sortedColumn);
+    // Reset direction to ASC after a clean
+    if (this.sortedColumn.sortDirection === SortEnum.none) {
+      this.sortedColumn.sortDirection = SortEnum.asc;
+    }
+  }
+
+  public setDirection(direction: string) {
+    this.sortedColumn.sortDirection = SortEnum[direction];
+    if (this.lastSortedColumnName) {
+      this.sort(this.lastSortedColumnName);
+    }
+  }
+
+  public setSortedColumn(event: MatSelectChange) {
+    if (event.value) {
+      this.lastSortedColumnName = event.value;
+      this.sortedColumn.fieldName = event.value.fieldName;
+      this.sort(event.value);
+    } else {
+      this.sortedColumn.sortDirection = SortEnum.none;
+      this.sort(this.lastSortedColumnName);
+    }
   }
 
   /**
    * @description Emits the request event of geo-sorting
    */
   public geoSort(): void {
-    this.isGeoSortActived = true;
     this.columns.forEach(column => {
       if (!column.isIdField) {
         column.sortDirection = SortEnum.none;
       }
     });
+    // Reset column filter when geo sort request
+    this.sortedColumn.fieldName = '';
+    this.currentSortedColumn = null;
+
     this.geoSortEvent.next(this.GEO_DISTANCE);
   }
 
