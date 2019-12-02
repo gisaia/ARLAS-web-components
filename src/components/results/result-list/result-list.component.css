@@ -141,8 +141,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 
 .resultlist__tools--select /* @doc Sets the selection tools style.*/
 {
-  width: 40%;
-  float: left;
+  flex: 1;
   padding-top: 10px;
 }
 
@@ -158,9 +157,9 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 
 .resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
 {
-  width: 20%;
-  float: right;
+  flex: 1;
   text-align: right;
+  max-width: 90px;
 }
 
 .mat-button-toggle-label-content {
@@ -246,8 +245,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 }
 
 .resultlist__tools--sort {
-  float: left;
-  width: 39%;
+  flex: 1;
   padding-top: 10px;
   font-size: 14px;
 }
@@ -280,4 +278,11 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   line-height: 30px !important;
   height: 30px !important;
   margin-bottom: 0;
+}
+
+.resultlist__tools--separator{
+  padding: 0 5px;
+  color: lightgray;
+  font-size: 24px;
+  font-weight: 100;
 }

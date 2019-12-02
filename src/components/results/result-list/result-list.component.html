@@ -20,7 +20,7 @@
       </ng-container>
     </tr>
     <tr class="resultlist__tools resultlist__thead__tr">
-      <td [style.width.px]="tableWidth">
+      <td [style.width.px]="tableWidth" style="display:flex;flex-direction: row;align-items: baseline;">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
               <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [indeterminate]="!allItemsChecked && this.selectedItems.size > 0"></mat-checkbox>
@@ -36,11 +36,11 @@
                 </button>
               </mat-menu>
           </div>
-          <div class="resultlist__tools--geosort">
-            <mat-slide-toggle [disabled]="!isGeoSortEnabled" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
+          <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort">
+            <mat-slide-toggle [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
           </div>
         </div>
-
+        <div class="resultlist__tools--separator">|</div>
         <div class="resultlist__tools--sort">
           <mat-select (selectionChange)=setSortedColumn($event) [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
               <mat-select-trigger>
@@ -66,7 +66,7 @@
               </mat-optgroup>
           </mat-select>
         </div>
-
+        <div class="resultlist__tools--separator">|</div>
         <div *ngIf="hasGridMode" class="resultlist__tools--mode">
           <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
             <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">

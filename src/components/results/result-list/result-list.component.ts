@@ -638,14 +638,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
-  public setSortedColumn(event: MatSelectChange) {
-    if (event.value) {
-      this.lastSortedColumnName = event.value;
-      this.sortedColumn.fieldName = event.value.fieldName;
-      this.sort(event.value);
+  public setSortedColumn(column: Column) {
+    if (column) {
+      this.lastSortedColumnName = column;
+      this.sortedColumn.fieldName = column.fieldName;
+      this.sort(column);
     } else {
       this.sortedColumn.sortDirection = SortEnum.none;
-      this.sort(this.lastSortedColumnName);
+      if (this.lastSortedColumnName) {
+        this.sort(this.lastSortedColumnName);
+      }
     }
   }
 
