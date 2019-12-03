@@ -42,10 +42,10 @@
         </div>
         <div class="resultlist__tools--separator">|</div>
         <div class="resultlist__tools--sort">
-          <mat-select (selectionChange)=setSortedColumn($event) [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
+          <mat-select [compareWith]="byFieldName" (selectionChange)=setSortedColumn($event) [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
               <mat-select-trigger>
                 <span *ngIf="this.sortedColumn && this.sortedColumn.fieldName !== ''">
-                  {{lastSortedColumnName.columnName | translate}} - {{SortEnum[sortedColumn.sortDirection].toUpperCase()}}
+                  {{lastSortedColumn.columnName | translate}} - {{SortEnum[sortedColumn.sortDirection].toUpperCase()}}
                 </span>
               </mat-select-trigger>
               <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>

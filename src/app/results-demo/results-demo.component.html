@@ -1,13 +1,14 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav align="end" #sidenav class="example-sidenav">
     <button (click)="updateData()">New data</button>
+    <button (click)="setSort()">Set cloud sort</button>
     <div class="table-wrapper">
-      <arlas-result-list style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
+      <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
         [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
         [fieldsConfiguration]="fieldsConfiguration" [nbLinesBeforeFetch]="20"
         [options]="options" [isGeoSortEnabled]="true"
         [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
-        (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)"></arlas-result-list>
+        (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)" [currentSortedColumn]="activeSort"></arlas-result-list>
     </div>
   </mat-sidenav>
 

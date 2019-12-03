@@ -17,11 +17,14 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 import { FieldsConfiguration, Action, PageQuery, ResultListOptions } from '../../components/results/utils/results.utils';
 import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
 import { Observable, from } from 'rxjs';
+import { ResultListComponent } from '../../components/results/result-list/result-list.component';
+import { Column } from 'components/results/model/column';
+import { SortEnum } from 'components/results/utils/enumerations/sortEnum';
 
 
 @Component({
@@ -30,6 +33,8 @@ import { Observable, from } from 'rxjs';
   styleUrls: ['./results-demo.component.css']
 })
 export class ResultsDemoComponent implements OnInit {
+
+  @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
 
   public data: Array<Map<string, string | number | Date>>;
   public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string, dropdown?: boolean }>;
@@ -40,6 +45,7 @@ export class ResultsDemoComponent implements OnInit {
   public count = 0;
   public modeEnum = ModeEnum;
   public options: ResultListOptions = new ResultListOptions();
+  public activeSort: Column;
 
   constructor() { }
 
@@ -195,6 +201,12 @@ export class ResultsDemoComponent implements OnInit {
         this.count++;
       }
     }, 1000);
+  }
+
+  public setSort() {
+    const column = new Column('Cloud', 'cloud', '%');
+    column.sortDirection = SortEnum.asc;
+    this.activeSort = column;
   }
 
 }

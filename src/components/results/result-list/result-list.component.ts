@@ -233,6 +233,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public isGeoSortEnabled = false;
 
+  @Input() public currentSortedColumn: Column;
+
   /**
    * @Input : Angular
    * @description A fieldName-fieldValue map of fields to filter.
@@ -368,8 +370,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { fieldName: string, sortDirection: SortEnum } = { fieldName: '', sortDirection: SortEnum.asc };
-  public lastSortedColumnName: Column;
-  public currentSortedColumn: Column;
+  public lastSortedColumn: Column;
+
   public isGeoSortActivated = false;
 
   // Heights of table elements
@@ -496,6 +498,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.isNextPageRequested = false;
       }
     }
+    if (changes['currentSortedColumn'] !== undefined && changes['currentSortedColumn'].firstChange === false) {
+      this.sortedColumn.fieldName = changes['currentSortedColumn'].currentValue.fieldName;
+      this.sortedColumn.sortDirection = changes['currentSortedColumn'].currentValue.sortDirection;
+      this.lastSortedColumn = changes['currentSortedColumn'].currentValue;
+    }
   }
 
   public ngDoCheck() {
@@ -616,15 +623,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   /**
    * @description Emits the column to sort on and the sort direction
    */
-  public sort(sortedColumn: Column): void {
+  public sort(paramSortedColumn: Column): void {
     this.isGeoSortActivated = false;
-    sortedColumn.sortDirection = this.sortedColumn.sortDirection;
+    paramSortedColumn.sortDirection = this.sortedColumn.sortDirection;
     this.columns.forEach(column => {
-      if (column.fieldName !== sortedColumn.fieldName) {
+      if (column.fieldName !== paramSortedColumn.fieldName) {
         column.sortDirection = SortEnum.none;
       }
     });
-    this.sortColumnEvent.next(this.sortedColumn);
+    this.sortColumnEvent.next(paramSortedColumn);
     // Reset direction to ASC after a clean
     if (this.sortedColumn.sortDirection === SortEnum.none) {
       this.sortedColumn.sortDirection = SortEnum.asc;
@@ -633,20 +640,20 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public setDirection(direction: string) {
     this.sortedColumn.sortDirection = SortEnum[direction];
-    if (this.lastSortedColumnName) {
-      this.sort(this.lastSortedColumnName);
+    if (this.lastSortedColumn) {
+      this.sort(this.lastSortedColumn);
     }
   }
 
-  public setSortedColumn(column: Column) {
-    if (column) {
-      this.lastSortedColumnName = column;
-      this.sortedColumn.fieldName = column.fieldName;
-      this.sort(column);
+  public setSortedColumn(event: MatSelectChange) {
+    if (event.value) {
+      this.lastSortedColumn = event.value;
+      this.sortedColumn.fieldName = event.value.fieldName;
+      this.sort(event.value);
     } else {
       this.sortedColumn.sortDirection = SortEnum.none;
-      if (this.lastSortedColumnName) {
-        this.sort(this.lastSortedColumnName);
+      if (this.lastSortedColumn) {
+        this.sort(this.lastSortedColumn);
       }
     }
   }
@@ -823,6 +830,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
+  public byFieldName(item1: Column, item2: Column) {
+    return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
+  }
+
   // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
@@ -837,7 +848,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.fieldsList.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
-      column.useColorService = field.useColorService;
+      column.useColorService = field.useColorService ? field.useColorService : false;
       this.columns.push(column);
     });
     // add a column for toggle icon
