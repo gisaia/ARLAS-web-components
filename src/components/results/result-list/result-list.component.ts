@@ -498,7 +498,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.isNextPageRequested = false;
       }
     }
-    if (changes['currentSortedColumn'] !== undefined && changes['currentSortedColumn'].firstChange === false) {
+    if (changes['currentSortedColumn'] !== undefined && changes['currentSortedColumn'].currentValue) {
       this.sortedColumn.fieldName = changes['currentSortedColumn'].currentValue.fieldName;
       this.sortedColumn.sortDirection = changes['currentSortedColumn'].currentValue.sortDirection;
       this.lastSortedColumn = changes['currentSortedColumn'].currentValue;
