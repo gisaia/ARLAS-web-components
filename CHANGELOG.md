@@ -1,5 +1,17 @@
 # Change Log
 
+## [v12.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.0) (2019-12-04)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.0.1...v12.1.0)
+
+**New stuff:**
+
+- Improve resultlist header section [\#346](https://github.com/gisaia/ARLAS-web-components/issues/346) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Miscellaneous:**
+
+- Custom method round seems to be useless [\#36](https://github.com/gisaia/ARLAS-web-components/issues/36) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
 ## [v12.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.0.1) (2019-11-21)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.0.0...v12.0.1)
@@ -7,6 +19,10 @@
 **New stuff:**
 
 - Update build target to `es6` [\#343](https://github.com/gisaia/ARLAS-web-components/issues/343)
+
+**Fixed bugs:**
+
+- Fix Mapsettings CSS [\#345](https://github.com/gisaia/ARLAS-web-components/issues/345)
 
 ## [v12.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.0.0) (2019-11-20)
 
