@@ -1,6 +1,5 @@
 {
   "Filter on": "Filtre on",
-  "Geo distance sort": "Geo distance sort",
   "click for descending sort": "click for descending sort",
   "click for ascending sort": "click for ascending sort",
   "Check in between": "Check in between",
@@ -19,6 +18,7 @@
   "country": "country",
   "Click to show details": "Click to show details",
   "Geo-sort": "Geo-sort",
+  "Geo sort action": "Sort according to the distance to the map center",
   "Cancel": "Cancel",
   "Import file": "Import file",
   "Zoom to result": "Zoom to result",
@@ -31,5 +31,9 @@
   "No polygon to display in this file": "No polygon to display in this file",
   "Too much features": "Too much features",
   "File is too large": "File is too large",
-  "Paste your WKT": "Paste your WKT"
+  "Paste your WKT": "Paste your WKT",
+  "Column": "Column",
+  "Direction": "Direction",
+  "ASC" : "Ascendant",
+  "DESC": "Descendant"
 }

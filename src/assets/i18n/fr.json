@@ -1,6 +1,5 @@
 {
   "Filter on": "Filtre sur",
-  "Geo distance sort": "Trier par distance",
   "click for descending sort": "Cliquer pour tri décroissant",
   "click for ascending sort": "Cliquer pour tri croissant",
   "Check in between": "Cocher l'intervalle",
@@ -8,7 +7,7 @@
   "Global actions": "Actions",
   "Grid mode": "Vue grille",
   "List mode": "Vue liste",
-  "Sort on": "Tri sur",
+  "Sort on": "Tri par",
   "Hide details": "Cacher le détail",
   "Show details": "Afficher le détail",
   "Close": "Fermer le détail",
@@ -18,7 +17,8 @@
   "Cloud": "Nuage",
   "country": "Pays",
   "Click to show details": "Cliquer pour afficher le détail",
-  "Geo-sort": "Geo-tris",
+  "Geo-sort": "Geo-tri",
+  "Geo sort action": "Tri par rapport à la distance au centre de la carte",
   "Cancel": "Fermer",
   "Import file": "Importer un fichier",
   "Zoom to result": "Zoomer sur le résultat",
@@ -31,5 +31,10 @@
   "No polygon to display in this file": "Aucun polygone à afficher",
   "Too much features": "Le fichier contient trop d'elements",
   "File is too large": "Le fichier est trop volumineux",
-  "Paste your WKT": "Coller ici votre WKT"
+  "Paste your WKT": "Coller ici votre WKT",
+  "Column": "Colonne",
+  "Direction": "Sens",
+  "ASC" : "Ascendent",
+  "DESC": "Descendent",
+  "None": "Aucune"
 }

@@ -32,9 +32,9 @@ import { MapglSettingsComponent,
 })
 export class MapglDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: false }) public mapComponent: MapglComponent;
-  @ViewChild('demoImportMap', { static: false }) public mapImportComponent: MapglImportComponent;
-  @ViewChild('mapSettings', { static: false }) public mapSettings: MapglSettingsComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: MapglComponent;
+  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
+  @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;

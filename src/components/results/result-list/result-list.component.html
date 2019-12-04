@@ -1,32 +1,5 @@
 <table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
-  <thead *ngIf=displayThead>
-    <tr class="resultlist__header resultlist__thead__tr">
-      <ng-container *ngFor="let column of columns">
-        <th *ngIf="column.isIdField"
-            [style.max-width.px]="column.width"
-            [style.min-width.px]="column.width"
-            class="resultlist__header--columns" >
-
-          <span  class="resultlist__header--columns--hidden"></span>
-        </th>
-        <th *ngIf="!column.isIdField && !column.isToggleField"
-            [style.max-width.px]="column.width"
-            [style.min-width.px]="column.width"
-            class="resultlist__header--columns" >
-          <span matTooltip="{{'Sort on'  | translate}} {{column.columnName | translate}}">
-            <a (click) = "sort(column)">{{column.columnName | translate}}{{column.dataType}}</a>
-          </span>
-          <div *ngIf="column.sortDirection !== SortEnum.none" class="resultlist__header--columns__sort">
-            <mat-icon matTooltip="{{SORT_DESCENDING | translate}}" *ngIf="column.sortDirection === SortEnum.asc" (click)="sort(column)" class="resultlist__header--columns__sort--icon">expand_more</mat-icon>
-            <mat-icon matTooltip="{{SORT_ASCENDING | translate}}" *ngIf="column.sortDirection === SortEnum.desc" (click)="sort(column)" class="resultlist__header--columns__sort--icon">expand_less</mat-icon>
-          </div>
-        </th>
-        <th *ngIf="column.isToggleField" class="resultlist__header--columns" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
-          <span class="resultlist__header--columns--hidden">
-          </span>
-        </th>
-      </ng-container>
-    </tr>
+  <thead *ngIf="displayThead">
     <tr class="resultlist__filter resultlist__thead__tr" *ngIf="this.displayFilters">
       <ng-container *ngFor="let column of columns">
         <td [style.width.px]="column.width" *ngIf="column.isIdField">
@@ -47,50 +20,54 @@
       </ng-container>
     </tr>
     <tr class="resultlist__tools resultlist__thead__tr">
-      <td [style.width.px]="tableWidth">
+      <td [style.width.px]="tableWidth" style="display:flex;flex-direction: row;align-items: baseline;">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
-              <mat-icon *ngIf="allItemsChecked" (click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box</mat-icon>
-              <mat-icon *ngIf="!allItemsChecked"(click)="selectAllItems()" class="primary selectAll__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
+              <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [indeterminate]="!allItemsChecked && this.selectedItems.size > 0"></mat-checkbox>
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
-              <mat-icon  *ngIf="selectedItems.size>0" id="clear_selection"  class="resultgrid__clear" (click)="clearSelection()">close</mat-icon>
           </div>
-          <div class="resultlist__tools--select-between">
-              <mat-icon id="check_in_between_btn" matTooltip="{{CHECK_INBETWEEN | translate}}"  (click)="selectInBetween()" class="primary selectBetween__icon mat-icon material-icons">vertical_align_center</mat-icon>
+          <div class="resultlist__tools--menu">
+              <mat-icon id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
+              <mat-menu #menu="matMenu">
+                <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
+                  <span>{{action.label | translate}}</span>
+                </button>
+              </mat-menu>
           </div>
-          <div class="resultlist__tools--geosort">
-          <button id="geosort_actions_btn" matTooltip="{{GEOSORT_ACTIONS | translate}}" mat-button [matMenuTriggerFor]="menugeo" class="resultlist__tools--geosort-action-button">
-            <div *ngIf="isAutoGeoSortActived"  class="resultlist__tools--geosort--icon--active">{{GEOSORT_BUTTON | translate}}</div>
-            <div *ngIf="!isAutoGeoSortActived" class="resultlist__tools--geosort--icon">{{GEOSORT_BUTTON | translate}}</div>
-          </button>
+          <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort" id="resultlist_geosort">
+            <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
+          </div>
         </div>
-          <mat-menu #menugeo="matMenu">
-            <button    id="sort_by_dist_btn" mat-menu-item (click)="setGeoSortAction(geoSortActions[0])"  class="resultlist__header--columns__geosort-button">
-              <span>{{geoSortActions[0].label | translate}}</span>
-            </button>
-            <button  id="activate_auto_geosort_btn" *ngIf="!isAutoGeoSortActived"  mat-menu-item (click)="setGeoSortAction(geoSortActions[1])"   class="resultlist__header--columns__geosort-auto-button">
-              <span>{{geoSortActions[1].label | translate}}</span>
-            </button>
-            <button id="remove_auto_geosort_btn" *ngIf="isAutoGeoSortActived" mat-menu-item (click)="setGeoSortAction(geoSortActions[2])"  class="resultlist__header--columns__geosort-remove-button">
-              <span>{{geoSortActions[2].label | translate}}</span>
-            </button>
-          </mat-menu>
-
+        <div class="resultlist__tools--separator">|</div>
+        <div class="resultlist__tools--sort" id="resultlist_sort">
+          <mat-select [compareWith]="byFieldName" (selectionChange)=setSortedColumn($event) [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
+              <mat-select-trigger>
+                <span *ngIf="this.sortedColumn && this.sortedColumn.fieldName !== ''">
+                  {{lastSortedColumn.columnName | translate}} - {{SortEnum[sortedColumn.sortDirection].toUpperCase()}}
+                </span>
+              </mat-select-trigger>
+              <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>
+              <mat-optgroup [label]="this.translate.instant('Column')" class="resultlist__tools--sort-group">
+                <ng-container *ngFor="let column of columns">
+                  <mat-option *ngIf="!column.isIdField && !column.isToggleField" [value]="column" class="resultlist__tools--sort-option">
+                      {{column.columnName | translate}}
+                  </mat-option>
+                </ng-container>
+              </mat-optgroup>
+              <mat-optgroup [label]="this.translate.instant('Direction')" class="resultlist__tools--sort-group">
+                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
+                  <mat-radio-button [value]="'asc'" [checked]="this.sortedColumn.sortDirection === SortEnum.asc" (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
+                </mat-option>
+                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
+                  <mat-radio-button [value]="'desc'" [checked]="this.sortedColumn.sortDirection === SortEnum.desc" (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
+                </mat-option>
+              </mat-optgroup>
+          </mat-select>
         </div>
-        <div class="resultlist__tools--actions">
-          <button id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
-              <span>{{action.label | translate}}</span>
-            </button>
-          </mat-menu>
-        </div>
-
-        <div *ngIf="hasGridMode" class="resultlist__tools--mode">
+        <div class="resultlist__tools--separator">|</div>
+        <div *ngIf="hasGridMode" class="resultlist__tools--mode" id="resultlist_mode">
           <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
             <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
               <mat-icon>list</mat-icon>
@@ -102,6 +79,29 @@
         </div>
 
       </td>
+    </tr>
+    <tr class="resultlist__header resultlist__thead__tr" *ngIf="resultMode !== ModeEnum.grid">
+      <ng-container *ngFor="let column of columns">
+        <th *ngIf="column.isIdField"
+            [style.max-width.px]="column.width"
+            [style.min-width.px]="column.width"
+            class="resultlist__header--columns" >
+
+          <span  class="resultlist__header--columns--hidden"></span>
+        </th>
+        <th *ngIf="!column.isIdField && !column.isToggleField"
+            [style.max-width.px]="column.width"
+            [style.min-width.px]="column.width"
+            class="resultlist__header--columns" >
+          <span>
+            {{column.columnName | translate}}{{column.dataType}}
+          </span>
+        </th>
+        <th *ngIf="column.isToggleField" class="resultlist__header--columns" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
+          <span class="resultlist__header--columns--hidden">
+          </span>
+        </th>
+      </ng-container>
     </tr>
     <tr class="resultlist__grid-detail resultlist__thead__tr" *ngIf="selectedGridItem != null
     && resultMode==ModeEnum.grid && isDetailledGridOpen">
