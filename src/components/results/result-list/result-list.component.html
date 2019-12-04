@@ -36,12 +36,12 @@
                 </button>
               </mat-menu>
           </div>
-          <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort">
-            <mat-slide-toggle [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
+          <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort" id="resultlist_geosort">
+            <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
           </div>
         </div>
         <div class="resultlist__tools--separator">|</div>
-        <div class="resultlist__tools--sort">
+        <div class="resultlist__tools--sort" id="resultlist_sort">
           <mat-select [compareWith]="byFieldName" (selectionChange)=setSortedColumn($event) [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
               <mat-select-trigger>
                 <span *ngIf="this.sortedColumn && this.sortedColumn.fieldName !== ''">
@@ -67,7 +67,7 @@
           </mat-select>
         </div>
         <div class="resultlist__tools--separator">|</div>
-        <div *ngIf="hasGridMode" class="resultlist__tools--mode">
+        <div *ngIf="hasGridMode" class="resultlist__tools--mode" id="resultlist_mode">
           <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
             <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
               <mat-icon>list</mat-icon>
