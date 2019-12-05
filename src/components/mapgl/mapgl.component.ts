@@ -375,7 +375,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService ) {
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {
 
   }
 
@@ -433,11 +433,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           offset: this.fitBoundsOffSet
         });
       }
-      if (changes['featureToHightLight'] !== undefined) {
+      if (changes['featureToHightLight'] !== undefined
+        && changes['featureToHightLight'].currentValue !== changes['featureToHightLight'].previousValue) {
         const featureToHightLight = changes['featureToHightLight'].currentValue;
         this.highlightFeature(featureToHightLight);
       }
-      if (changes['featuresToSelect'] !== undefined) {
+      if (changes['featuresToSelect'] !== undefined
+        && changes['featuresToSelect'].currentValue !== changes['featuresToSelect'].previousValue) {
         const featuresToSelect = changes['featuresToSelect'].currentValue;
         this.selectFeatures(featuresToSelect);
       }
@@ -698,20 +700,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
 
       this.map.on('draw.invalidGeometry', (e) => {
-        if ( this.savedEditFeature) {
+        if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
           if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
-              featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
-              featureCoords.push(featureCoords[0]);
+            featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
+            featureCoords.push(featureCoords[0]);
           }
           const currentFeature = {
-              id: '',
-              type: 'Feature',
-              geometry: {
-                  'type': 'Polygon',
-                  'coordinates': [featureCoords]
-              },
-              properties: {}
+            id: '',
+            type: 'Feature',
+            geometry: {
+              'type': 'Polygon',
+              'coordinates': [featureCoords]
+            },
+            properties: {}
           };
           currentFeature.id = this.savedEditFeature.id;
           currentFeature.properties = this.savedEditFeature.properties;
