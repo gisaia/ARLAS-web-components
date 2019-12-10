@@ -1,4 +1,4 @@
-<table [style.width.px]="tableWidth" class=" table-sm table-responsive table-hover resultlist">
+<table [style.width.px]="tableWidth" class="resultlist">
   <thead *ngIf="displayThead">
     <tr class="resultlist__filter resultlist__thead__tr" *ngIf="this.displayFilters">
       <ng-container *ngFor="let column of columns">
@@ -20,7 +20,7 @@
       </ng-container>
     </tr>
     <tr class="resultlist__tools resultlist__thead__tr">
-      <td [style.width.px]="tableWidth" style="display:flex;flex-direction: row;align-items: baseline;">
+      <td [style.width.px]="tableWidth" class="resultlist__tools__td">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
               <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [indeterminate]="!allItemsChecked && this.selectedItems.size > 0"></mat-checkbox>

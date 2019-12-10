@@ -96,7 +96,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   public GEOSORT_BUTTON = 'Geo-sort';
 
-  public COLUMN_ACTIONS_HEIGHT = 85;
+  public COLUMN_ACTIONS_HEIGHT = 55;
 
   public FILTERS_HEIGHT = 50;
 

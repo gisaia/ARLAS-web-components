@@ -1,7 +1,5 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav align="end" #sidenav class="example-sidenav">
-    <button (click)="updateData()">New data</button>
-    <button (click)="setSort()">Set cloud sort</button>
     <div class="table-wrapper">
       <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
         [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
@@ -10,7 +8,12 @@
         [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
         (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)" [currentSortedColumn]="activeSort"></arlas-result-list>
     </div>
+    <div class="example-actions">
+      <button mat-stroked-button (click)="updateData()">New data</button>
+      <button mat-stroked-button (click)="setSort()">Set cloud sort</button>
+    </div>
   </mat-sidenav>
+
 
   <div class="example-sidenav-content">
     <button type="button" mat-button (click)="sidenav.open()">

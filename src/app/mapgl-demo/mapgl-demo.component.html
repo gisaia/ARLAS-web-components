@@ -1,8 +1,8 @@
 <div class="polygon-tools" *ngIf="this.drawEnabled">
-  <button (click)="switchToDrawMode()">DRAW</button>
-  <button (click)="delete()">DELETE</button>
-  <button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
-  <button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
+  <button mat-raised-button (click)="switchToDrawMode()">DRAW</button>
+  <button mat-raised-button (click)="delete()">DELETE</button>
+  <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
+  <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
   <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group">
     <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
     <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
@@ -10,12 +10,14 @@
   </mat-radio-group>
   <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
 </div>
-<button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
-  <mat-icon aria-label="Import polygon on your map">get_app</mat-icon>
-</button>
-<button (click)="openSettings()"> Map settings
-
-</button>
+<div class="mapgl-options">
+  <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
+    <mat-icon aria-label="Import polygon on your map">get_app</mat-icon>
+  </button>
+  <button mat-icon-button (click)="openSettings()" class="mapgl-settings-button">
+    <mat-icon aria-label="Map settings">layers</mat-icon>
+  </button>
+</div>
 <div id="mapgldemo" style="height:94%; width:100%">
   <arlas-mapgl-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="400" [maxLoadingTime]="10000"
     [maxFileSize]="1050000" [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']">

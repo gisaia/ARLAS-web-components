@@ -48,6 +48,10 @@
   border-collapse: collapse;
 }
 
+.resultlist td{
+  padding: .3rem;
+}
+
 .resultgrid--checkbox__count /* @doc Sets the number of selected items style*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
@@ -285,4 +289,10 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   color: lightgray;
   font-size: 24px;
   font-weight: 100;
+}
+
+.resultlist__tools__td{
+  display:flex;
+  flex-direction: row;
+  align-items: baseline;
 }
