@@ -48,10 +48,10 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * @description An object representing an Item .
    */
   @Input() public rowItem: Item;
-   /**
-   * @Input
-   * @description Name of the id field.
-   */
+  /**
+  * @Input
+  * @description Name of the id field.
+  */
   @Input() public idFieldName: string;
   /**
    * @Input
@@ -78,7 +78,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale.
    */
-  @Input() public colorsSaturationWeight = 1 / 2 ;
+  @Input() public colorsSaturationWeight = 1 / 2;
 
   /**
    * @Input : Angular
@@ -163,11 +163,19 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public getColor(key: string): string {
-    return this.colorService.getColor(key, this.keysToColors, this.colorsSaturationWeight);
+    if (key !== undefined) {
+      return this.colorService.getColor(key.toString(), this.keysToColors, this.colorsSaturationWeight);
+    } else {
+      return '';
+    }
   }
 
   public getTextColor(key: string): string {
-    return this.colorService.getTextColor(key);
+    if (key !== undefined) {
+      return this.colorService.getTextColor(key.toString());
+    } else {
+      return '';
+    }
   }
 
   public triggerActionOnItem(action: Action) {
