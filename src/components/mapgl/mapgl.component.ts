@@ -1212,11 +1212,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private addLayer(layerId: string): void {
     const layer = this.layersMap.get(layerId);
     if (layer !== undefined && layer.id === layerId) {
-      if (this.firstDrawLayer.length > 0) {
-        // draw layers must be on the top of the layers
-        this.map.addLayer(layer, this.firstDrawLayer);
-      } else {
-        this.map.addLayer(layer);
+      /** Add the layer if it is not already added */
+      if (this.map.getLayer(layerId) === undefined) {
+        if (this.firstDrawLayer.length > 0) {
+          /** draw layers must be on the top of the layers */
+          this.map.addLayer(layer, this.firstDrawLayer);
+        } else {
+          this.map.addLayer(layer);
+        }
       }
     } else {
       throw new Error(this.BASE_LAYER_ERROR);
