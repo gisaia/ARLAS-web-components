@@ -341,7 +341,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
 
   public showLayersList = false;
-  private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private layersMap = new Map<string, mapboxgl.Layer>();
   public basemapStylesGroup: BasemapStylesGroup;
 
@@ -1222,7 +1221,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     } else {
-      throw new Error(this.BASE_LAYER_ERROR);
+      throw new Error('The layer `' + layerId + '` specified in `mapLayers.styleGroups` is not declared in `mapLayers.layers`');
     }
   }
 
