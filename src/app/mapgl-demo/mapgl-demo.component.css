@@ -49,7 +49,14 @@ a.arlas-map-control{
   width: 50px;
 }
 
-.mapgl-import-button{
-  position: absolute;
+.mapgl-import-button, .mapgl-settings-button{
+
+}
+
+.mapgl-options{
   z-index: 2;
+  float: left;
+  background-color: white;
+  position: relative;
+  padding: 3px;
 }

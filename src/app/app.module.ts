@@ -50,7 +50,7 @@ import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import
 import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
 import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
-import { MAT_DATE_LOCALE } from '@angular/material';
+import { MAT_DATE_LOCALE, MatButtonModule } from '@angular/material';
 import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
 import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
 import { MetricModule } from '../components/metric/metric.module';
@@ -85,6 +85,7 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    MatButtonModule,
     MatChipsModule,
     MatIconModule,
     MatSidenavModule,

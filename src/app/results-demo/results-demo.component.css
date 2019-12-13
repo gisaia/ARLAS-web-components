@@ -19,12 +19,12 @@
 
 .table-wrapper {
   width: 500px;
-  height: 100%;
+  height: calc(100% - 40px);
   overflow: hidden;
 }
 .example-container {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
@@ -46,4 +46,12 @@
   border-radius: 50%;
   border: none;
   background-color: darkblue;
+}
+
+.example-actions{
+  text-align: right;
+}
+
+.example-actions .mat-stroked-button{
+  margin: 2px;
 }
