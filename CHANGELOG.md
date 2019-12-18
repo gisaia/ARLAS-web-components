@@ -1,5 +1,13 @@
 # Change Log
 
+## [v12.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.3) (2019-12-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.2...v12.1.3)
+
+**Fixed bugs:**
+
+- Remove param type `string` from getColor method [\#358](https://github.com/gisaia/ARLAS-web-components/issues/358) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v12.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.2) (2019-12-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.1...v12.1.2)
