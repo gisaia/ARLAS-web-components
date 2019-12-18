@@ -341,7 +341,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
 
   public showLayersList = false;
-  private BASE_LAYER_ERROR = 'The layers ids of your base were not met in the declared layers list.';
   private layersMap = new Map<string, mapboxgl.Layer>();
   public basemapStylesGroup: BasemapStylesGroup;
 
@@ -1212,14 +1211,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private addLayer(layerId: string): void {
     const layer = this.layersMap.get(layerId);
     if (layer !== undefined && layer.id === layerId) {
-      if (this.firstDrawLayer.length > 0) {
-        // draw layers must be on the top of the layers
-        this.map.addLayer(layer, this.firstDrawLayer);
-      } else {
-        this.map.addLayer(layer);
+      /** Add the layer if it is not already added */
+      if (this.map.getLayer(layerId) === undefined) {
+        if (this.firstDrawLayer.length > 0) {
+          /** draw layers must be on the top of the layers */
+          this.map.addLayer(layer, this.firstDrawLayer);
+        } else {
+          this.map.addLayer(layer);
+        }
       }
     } else {
-      throw new Error(this.BASE_LAYER_ERROR);
+      throw new Error('The layer `' + layerId + '` specified in `mapLayers.styleGroups` is not declared in `mapLayers.layers`');
     }
   }
 
