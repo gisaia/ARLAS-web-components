@@ -50,8 +50,8 @@ export interface FieldsConfiguration {
   urlThumbnailTemplate?: string;
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
-  imageEnabled?: boolean;
-  thumbnailEnabled?: boolean;
+  imageFieldEnabled?: string;
+  thumbnailFieldEnabled?: string;
   icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
