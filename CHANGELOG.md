@@ -1,5 +1,18 @@
 # Change Log
 
+## [v12.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.1) (2019-12-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.0...v12.1.1)
+
+**New stuff:**
+
+- Optimize ngOnChange [\#276](https://github.com/gisaia/ARLAS-web-components/issues/276) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- remove and replace bootstrap css classes  [\#234](https://github.com/gisaia/ARLAS-web-components/issues/234) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
+
+**Miscellaneous:**
+
+- Color service send exception on none found value [\#350](https://github.com/gisaia/ARLAS-web-components/issues/350) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v12.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.0) (2019-12-04)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.0.1...v12.1.0)
