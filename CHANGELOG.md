@@ -1,5 +1,13 @@
 # Change Log
 
+## [v12.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.2) (2019-12-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.1...v12.1.2)
+
+**Fixed bugs:**
+
+- Manage layers ids conflicts [\#171](https://github.com/gisaia/ARLAS-web-components/issues/171) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v12.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.1) (2019-12-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.0...v12.1.1)
@@ -8,6 +16,10 @@
 
 - Optimize ngOnChange [\#276](https://github.com/gisaia/ARLAS-web-components/issues/276) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - remove and replace bootstrap css classes  [\#234](https://github.com/gisaia/ARLAS-web-components/issues/234) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
+
+**Fixed bugs:**
+
+- Topology mode styles are not displayed [\#356](https://github.com/gisaia/ARLAS-web-components/issues/356)
 
 **Miscellaneous:**
 
