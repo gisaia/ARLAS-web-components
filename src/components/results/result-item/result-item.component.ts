@@ -162,7 +162,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public getColor(key: string): string {
+  public getColor(key): string {
     if (key !== undefined) {
       return this.colorService.getColor(key.toString(), this.keysToColors, this.colorsSaturationWeight);
     } else {
