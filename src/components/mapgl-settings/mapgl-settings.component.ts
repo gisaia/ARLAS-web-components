@@ -326,12 +326,21 @@ export class MapglSettingsDialogComponent implements OnInit {
   public showFeaturesStyles(event: Event): void {
     this.showBasemapsStyle = false;
     this.showFeaturesStyle = true;
+    this.showTopologyStyle = false;
+    event.stopPropagation();
+  }
+
+  public showTopologyStyles(event: Event): void {
+    this.showBasemapsStyle = false;
+    this.showFeaturesStyle = false;
+    this.showTopologyStyle = true;
     event.stopPropagation();
   }
 
   public showBasemapsStyles(event: Event): void {
     this.showBasemapsStyle = true;
     this.showFeaturesStyle = false;
+    this.showTopologyStyle = false;
     event.stopPropagation();
   }
 

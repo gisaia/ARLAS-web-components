@@ -84,7 +84,7 @@
             </div>
             <div class="displayed-geo-select">
               <div class="styles-container">
-                <div class="styles-select" (click)="showFeaturesStyles($event)">
+                <div class="styles-select" (click)="showTopologyStyles($event)">
                   <span class="styles">{{'Topology styles' | translate}}</span>
                   <div class="mat-select-arrow select-arrow"></div>
                 </div>
@@ -154,6 +154,17 @@
 
 <div *ngIf="showFeaturesStyle" (click)="$event.stopPropagation()" class="styles-list">
   <div *ngFor="let styleGroup of featuresStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
+    <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
+    <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
+      <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
+        (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
+        {{style.name | translate}}
+      </mat-radio-button>
+    </mat-radio-group>
+  </div>
+</div>
+<div *ngIf="showTopologyStyle" (click)="$event.stopPropagation()" class="styles-list">
+  <div *ngFor="let styleGroup of topologyStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
     <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
     <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
       <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
