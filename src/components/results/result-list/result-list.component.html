@@ -58,10 +58,14 @@
               </mat-optgroup>
               <mat-optgroup [label]="this.translate.instant('Direction')" class="resultlist__tools--sort-group">
                 <mat-option [disabled]="true" class="resultlist__tools--sort-option">
-                  <mat-radio-button [value]="'asc'" [checked]="this.sortedColumn.sortDirection === SortEnum.asc" (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
+                  <mat-radio-group>
+                    <mat-radio-button [value]="'asc'" [checked]="this.sortedColumn.sortDirection === SortEnum.asc" (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
+                  </mat-radio-group>
                 </mat-option>
                 <mat-option [disabled]="true" class="resultlist__tools--sort-option">
-                  <mat-radio-button [value]="'desc'" [checked]="this.sortedColumn.sortDirection === SortEnum.desc" (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
+                  <mat-radio-group>
+                    <mat-radio-button [value]="'desc'" [checked]="this.sortedColumn.sortDirection === SortEnum.desc" (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
+                  </mat-radio-group>
                 </mat-option>
               </mat-optgroup>
           </mat-select>
