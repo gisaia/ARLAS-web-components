@@ -42,20 +42,22 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
-  public displayedValue: string;
+  public displayedValue = '0';
 
   constructor() { }
 
   public ngOnInit() {
-    if (this.shortValue) {
-      this.displayedValue = this.intToString(Math.round(this.value));
-    } else {
-      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
+    if (this.value) {
+      if (this.shortValue) {
+        this.displayedValue = this.intToString(Math.round(this.value));
+      } else {
+        this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
+      }
     }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value']) {
+    if (changes['value'] && this.value) {
       if (this.shortValue) {
         this.displayedValue = this.intToString(Math.round(this.value));
       } else {
