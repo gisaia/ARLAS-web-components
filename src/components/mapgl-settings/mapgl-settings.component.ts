@@ -320,7 +320,7 @@ export class MapglSettingsDialogComponent implements OnInit {
   }
 
   public hideAllStylesContainers(): void {
-    this.showFeaturesStyle = this.showBasemapsStyle = false;
+    this.showFeaturesStyle = this.showBasemapsStyle = this.showTopologyStyle = false;
   }
 
   public showFeaturesStyles(event: Event): void {
