@@ -1,5 +1,18 @@
 # Change Log
 
+## [v12.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.4) (2019-12-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.3...v12.1.4)
+
+**Fixed bugs:**
+
+- Topology styles list cannot be hidden when clicking outside of its container [\#365](https://github.com/gisaia/ARLAS-web-components/issues/365)
+
+**Miscellaneous:**
+
+- Replace Initialisation value \(NaN\) by 0 [\#362](https://github.com/gisaia/ARLAS-web-components/issues/362)
+- Remove yarn.lock [\#352](https://github.com/gisaia/ARLAS-web-components/issues/352) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
+
 ## [v12.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.3) (2019-12-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.2...v12.1.3)
