@@ -913,12 +913,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         }
       });
     }
-    if (this.fieldsConfiguration.imageFieldEnabled) {
+    if (this.fieldsConfiguration.imageFieldName) {
       if (itemData.get('imageEnabled') === 'false' || itemData.get('imageEnabled') === '') {
         item.imageEnabled = false;
       }
     }
-    if (this.fieldsConfiguration.thumbnailFieldEnabled) {
+    if (this.fieldsConfiguration.thumbnailFieldName) {
       if (itemData.get('thumbnailEnabled') === 'false' || itemData.get('thumbnailEnabled') === '') {
         item.thumbnailEnabled = false;
       }
