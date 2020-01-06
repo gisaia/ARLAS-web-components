@@ -1,5 +1,9 @@
 # Change Log
 
+## [v12.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.2.0) (2020-01-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.4...v12.2.0)
+
 ## [v12.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.4) (2019-12-23)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.3...v12.1.4)
@@ -7,6 +11,7 @@
 **Fixed bugs:**
 
 - Topology styles list cannot be hidden when clicking outside of its container [\#365](https://github.com/gisaia/ARLAS-web-components/issues/365)
+- Radio buttons for ASC and DESC sorts get deselected by other Radio buttons groups [\#364](https://github.com/gisaia/ARLAS-web-components/issues/364) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 **Miscellaneous:**
 
