@@ -877,7 +877,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         item.iconCssClass = item.iconCssClass.trim();
       }
     }
-    if (this.fieldsConfiguration.urlImageTemplate) {
+    item.imageEnabled = this.fieldsConfiguration.imageEnabled &&
+     !(itemData.get('imageEnabled') === 'false' || itemData.get('imageEnabled') === '');
+    item.thumbnailEnabled = this.fieldsConfiguration.thumbnailEnabled &&
+     !(itemData.get('thumbnailEnabled') === 'false' || itemData.get('thumbnailEnabled') === '');
+
+    if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
       item.urlImage = this.fieldsConfiguration.urlImageTemplate;
       this.fieldsConfiguration.urlImageTemplate.split('/').forEach(t => {
         if (t.indexOf('{') >= 0 && t.indexOf('}') >= 0) {
@@ -886,7 +891,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         }
       });
     }
-    if (this.fieldsConfiguration.urlThumbnailTemplate) {
+    if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
       this.fieldsConfiguration.urlThumbnailTemplate.split('/').forEach(t => {
         if (t.indexOf('{') >= 0 && t.indexOf('}') >= 0) {
@@ -895,17 +900,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         }
       });
     }
-    if (this.fieldsConfiguration.imageEnabled) {
-      if (itemData.get('imageEnabled') === 'false') {
-        item.imageEnabled = false;
-      }
-    }
-    if (this.fieldsConfiguration.thumbnailEnabled) {
-      if (itemData.get('thumbnailEnabled') === 'false') {
-        item.thumbnailEnabled = false;
-      }
-    }
-
     item.position = this.items.length + 1;
     item.ishighLight = false;
     // When new data is loaded, check the one that were already checked +
