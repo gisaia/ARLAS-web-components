@@ -851,12 +851,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         .join(' ');
       if (item.title) {
         item.title = item.title.trim();
-        if (this.useColorService && this.fieldsConfiguration.iconColorFieldName) {
-          const colorFieldValue = <string>itemData.get(this.fieldsConfiguration.iconColorFieldName + '_title');
-          if (colorFieldValue) {
-            item.color = this.colorService.getColor(colorFieldValue, this.keysToColors, this.colorsSaturationWeight);
-          }
-        }
+      }
+    }
+    if (this.useColorService && this.fieldsConfiguration.iconColorFieldName) {
+      const colorFieldValue = <string>itemData.get(this.fieldsConfiguration.iconColorFieldName + '_title');
+      if (colorFieldValue) {
+        item.color = this.colorService.getColor(colorFieldValue, this.keysToColors, this.colorsSaturationWeight);
       }
     }
     if (this.fieldsConfiguration.tooltipFieldNames) {
