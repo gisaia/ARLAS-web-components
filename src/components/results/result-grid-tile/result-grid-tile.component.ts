@@ -17,12 +17,13 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, ViewChild } from '@angular/core';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Subject } from 'rxjs';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import { MatTooltip } from '@angular/material';
 
 @Component({
   selector: 'arlas-result-grid-tile',
@@ -31,6 +32,9 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
 })
 export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public SHOW_IMAGE = 'Click to show details';
+
+  @ViewChild('cellTooltip', { static: true })
+  public cellTooltip: MatTooltip;
 
   /**
    * @Input
@@ -93,6 +97,22 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
 
   constructor() {
     super();
+  }
+
+  /**
+   * Hides the cell's tooltip when the mouse is over the attachements buttons
+   * @param event mouseover event
+   */
+  public hideCellTooltip(event: Event) {
+    event.stopPropagation();
+    this.cellTooltip.hide();
+  }
+
+  /**
+   * Shows the cell's tooltip when the mouse is over the tile
+   */
+  public showCellTooltip() {
+    this.cellTooltip.show();
   }
 
   public ngOnInit() { }

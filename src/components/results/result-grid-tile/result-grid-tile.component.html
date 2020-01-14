@@ -3,9 +3,9 @@
     <mat-icon *ngIf="gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</mat-icon>
     <mat-icon *ngIf="!gridTile.isChecked && !gridTile.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
        <mat-icon *ngIf="gridTile.isindeterminated" (click)="determinateItem()" class="primary resultgrid__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
-      <div (click)="setClickedOnItem()" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img {{gridTile.iconCssClass}}" [style.background-image] = "getBackgroundImage()">
+      <div (click)="setClickedOnItem()" (mouseover)="showCellTooltip()" #cellTooltip="matTooltip" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img {{gridTile.iconCssClass}}" [style.background-image] = "getBackgroundImage()">
         <div *ngIf="options.showActionsOnhover" class="grid_actions">
-          <button *ngFor="let action of gridTile.actions" (click)="triggerActionOnItem($event, action)" matTooltip="{{action.tooltip | translate}}"
+          <button *ngFor="let action of gridTile.actions" (mouseover)="hideCellTooltip($event)" (click)="triggerActionOnItem($event, action)" matTooltip="{{action.tooltip | translate}}"
             class="resultitem-grid__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
             {{action.label | translate}}
           </button>
