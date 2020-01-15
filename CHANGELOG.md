@@ -1,5 +1,15 @@
 # Change Log
 
+## [v11.5.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.5.0) (2020-01-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.1...v11.5.0)
+
+**Fixed bugs:**
+
+- \[Grid Mode\] Tooltips on tiles stay rendered when we hover actions buttons [\#374](https://github.com/gisaia/ARLAS-web-components/issues/374) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+- Set icon colors independently from title [\#377](https://github.com/gisaia/ARLAS-web-components/issues/377) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v11.4.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.1) (2019-10-23)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.0...v11.4.1)
