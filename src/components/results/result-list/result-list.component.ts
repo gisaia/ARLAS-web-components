@@ -496,10 +496,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       }
     }
     if (changes['fetchState'] !== undefined) {
-      if (this.fetchState.endListUp) {
+      if (this.fetchState && this.fetchState.endListUp) {
         this.isPreviousPageRequested = false;
       }
-      if (this.fetchState.endListDown) {
+      if (this.fetchState && this.fetchState.endListDown) {
         this.isNextPageRequested = false;
       }
     }
