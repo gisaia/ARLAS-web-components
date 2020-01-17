@@ -93,7 +93,6 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
    */
   @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
 
-  public errorImgUrl = './assets/no-view.png';
 
   constructor() {
     super();
@@ -136,14 +135,6 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public setClickedOnItem() {
     this.retrieveAdditionalInfo(this.detailedDataRetriever, this.gridTile);
     this.clickedOnItemEvent.next(this.gridTile);
-  }
-
-  public getBackgroundImage(): string {
-    if (this.gridTile.thumbnailEnabled) {
-      return 'url(' + this.gridTile.urlThumbnail + ')';
-    } else {
-      return 'url(' + this.errorImgUrl + ')';
-    }
   }
 
   public triggerActionOnItem(event: Event, action: Action) {

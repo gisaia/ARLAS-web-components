@@ -27,6 +27,8 @@ export class ResultListOptions {
   public showActionsOnhover = false;
   public showDetailIconName = 'add_circle_outline';
   public hideDetailIconName = 'remove_circle_outline';
+  public defautlImgUrl = './assets/no-view.png';
+
 
   constructor() {}
 }

@@ -37,6 +37,7 @@ import {
 } from '@angular/material';
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @NgModule({
   imports: [
@@ -54,6 +55,7 @@ import { ColorGeneratorModule } from '../../services/color.generator.module';
     MatTooltipModule,
     MatRadioModule,
     FormsModule,
+    LazyLoadImageModule,
     LoadingModule,
     TranslateModule
   ],
