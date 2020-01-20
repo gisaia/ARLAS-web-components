@@ -121,7 +121,8 @@ export class ResultScrollDirective implements OnChanges {
        * from the previous scoll is different from the actual last identifer,
        * it means `nextDataEvent` still can be emitted
       **/
-      if (this.items.length > 0 && this.items[this.items.length - 1].identifier !== this.previousLastId && !this.fetchState.endListDown) {
+      if (this.items.length > 0 && this.items[this.items.length - 1].identifier !== this.previousLastId && this.fetchState
+         && !this.fetchState.endListDown) {
         this.previousLastId = this.items[this.items.length - 1].identifier;
         this.previousFirstId = null;
         this.nextDataEvent.next(this.items[this.items.length - 1].itemData);
@@ -131,7 +132,7 @@ export class ResultScrollDirective implements OnChanges {
     }
     if (scrollTop <= upPositionTrigger && this.isScrollingUp(scrollTop)) {
       /** Same logic as the condition above but on the top of the list this time. */
-      if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && !this.fetchState.endListUp) {
+      if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && this.fetchState && !this.fetchState.endListUp) {
         this.previousFirstId = this.items[0].identifier;
         this.previousLastId = null;
         this.previousDataEvent.next(this.items[0].itemData);
