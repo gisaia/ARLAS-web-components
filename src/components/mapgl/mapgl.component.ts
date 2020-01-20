@@ -1374,7 +1374,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       };
       const geoboxdata = Object.assign({}, this.emptyData);
       geoboxdata.features = [];
-      if (this.drawData.features.length > 0) {
+      if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
         this.drawData.features.forEach(df => geoboxdata.features.push(df));
       }
       geoboxdata.features.push(<any>polygonGeojson);
@@ -1390,21 +1390,25 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+   /**
+   * @description Returns the geohash level accordinng to the zoom level and `zoomToPrecisionCluster` and `maxPrecision` Inputs.
+   * If one of `zoomToPrecisionCluster` or `maxPrecision` is not defined, then it returns 1.
+   * @param zoom zoom level
+   */
   private getGeohashLevelFromZoom(zoom: number): number {
     const zoomToPrecisionClusterObject = {};
-    const zoomToPrecisionCluster = this.zoomToPrecisionCluster;
-    zoomToPrecisionCluster.forEach(triplet => {
-      zoomToPrecisionClusterObject[triplet[0]] = [triplet[1], triplet[2]];
-    });
-    if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1] !== undefined) {
-      if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1] !== undefined) {
-        return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1];
+    if (this.zoomToPrecisionCluster) {
+      this.zoomToPrecisionCluster.forEach(triplet => {
+        zoomToPrecisionClusterObject[triplet[0]] = [triplet[1], triplet[2]];
+      });
+      if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1] !== undefined &&
+        zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1] !== undefined) {
+          return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1];
       } else {
-        return this.maxPrecision[1];
+        return (this.maxPrecision && this.maxPrecision.length === 2) ? this.maxPrecision[1] : 1;
       }
-    } else {
-      return this.maxPrecision[1];
     }
+    return 1;
   }
 
   private getNextFeatureId() {
