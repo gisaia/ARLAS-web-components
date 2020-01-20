@@ -31,7 +31,7 @@ export class Item {
    */
   public urlImage: string;
   /**
-   * @description If image is enabled (to avoid 404 nott found)
+   * @description If image is enabled (to avoid 404 not found)
    */
   public imageEnabled: boolean;
   /**
