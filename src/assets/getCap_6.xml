@@ -1,0 +1,512 @@
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd" version="1.0.0">
+<ows:ServiceIdentification>
+<ows:Title>
+Service tuilé de consultation (WMS, WMTS) des orthophotographies 2009/2018 du CRAIG
+</ows:Title>
+<ows:Abstract>
+Les tuiles ont été produites a partir des prises de vues en coproduction avec l'IGN pour 2013, 2016 et 2018 et TopoGeodis pour 2009/2010. Projet co-financé par l'Union européenne - fonds européen de développement régional FEDER - L'Europe s'engage en Auvergne-Rhône-Alpes.
+</ows:Abstract>
+<ows:KeywordList>
+<ows:Keyword vocabulary="GEMET">OrthoImagery</ows:Keyword>
+<ows:Keyword vocabulary="ISO">infoMapAccessService</ows:Keyword>
+<ows:Keyword vocabulary="ISO">imageryBaseMapsEarthCover</ows:Keyword>
+<ows:Keyword>Orthophotographie</ows:Keyword>
+<ows:Keyword>photo aérienne</ows:Keyword>
+<ows:Keyword>open data</ows:Keyword>
+<ows:Keyword>données ouvertes</ows:Keyword>
+<ows:Keyword>Auvergne</ows:Keyword>
+<ows:Keyword>OGC:WMS</ows:Keyword>
+<ows:Keyword>WMS 1.3.0</ows:Keyword>
+<ows:Keyword>WMTS 1.0.0</ows:Keyword>
+<ows:Keyword>Service d'accès aux cartes</ows:Keyword>
+<ows:Keyword>CRAIG</ows:Keyword>
+<ows:Keyword>tiles.craig.fr</ows:Keyword>
+<ows:Keyword>tiles.craig.fr/ortho/service</ows:Keyword>
+</ows:KeywordList>
+<ows:ServiceType>OGC WMTS</ows:ServiceType>
+<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+<ows:Fees>None</ows:Fees>
+<ows:AccessConstraints>
+Les tuiles sont disponibles en opendata sous licence ouverte
+</ows:AccessConstraints>
+</ows:ServiceIdentification>
+<ows:ServiceProvider>
+<ows:ProviderName>CRAIG</ows:ProviderName>
+<ows:ProviderSite xlink:href=""/>
+<ows:ServiceContact>
+<ows:IndividualName>Landry Breuil</ows:IndividualName>
+<ows:PositionName>Administrateur de donnees</ows:PositionName>
+<ows:ContactInfo>
+<ows:Phone>
+<ows:Voice/>
+<ows:Facsimile/>
+</ows:Phone>
+<ows:Address>
+<ows:DeliveryPoint>CRAIG</ows:DeliveryPoint>
+<ows:City>Aubiere</ows:City>
+<ows:PostalCode>63117</ows:PostalCode>
+<ows:Country>France</ows:Country>
+<ows:ElectronicMailAddress>admin@craig.fr</ows:ElectronicMailAddress>
+</ows:Address>
+</ows:ContactInfo>
+</ows:ServiceContact>
+</ows:ServiceProvider>
+<ows:OperationsMetadata>
+<ows:Operation name="GetCapabilities">
+<ows:DCP>
+<ows:HTTP>
+<ows:Get xlink:href="http://tiles.craig.fr/ortho/service?">
+<ows:Constraint name="GetEncoding">
+<ows:AllowedValues>
+<ows:Value>KVP</ows:Value>
+</ows:AllowedValues>
+</ows:Constraint>
+</ows:Get>
+</ows:HTTP>
+</ows:DCP>
+</ows:Operation>
+<ows:Operation name="GetTile">
+<ows:DCP>
+<ows:HTTP>
+<ows:Get xlink:href="http://tiles.craig.fr/ortho/service?">
+<ows:Constraint name="GetEncoding">
+<ows:AllowedValues>
+<ows:Value>KVP</ows:Value>
+</ows:AllowedValues>
+</ows:Constraint>
+</ows:Get>
+</ows:HTTP>
+</ows:DCP>
+</ows:Operation>
+</ows:OperationsMetadata>
+<Contents>
+<Layer>
+<ows:Title>Orthophotographie Ain/Isère CRAIG/IGN 2018</ows:Title>
+<ows:Abstract/>
+<ows:WGS84BoundingBox>
+<ows:LowerCorner>4.67938653928 44.6706341174</ows:LowerCorner>
+<ows:UpperCorner>6.4755026274 46.5317512402</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<ows:Identifier>ortho_2018</ows:Identifier>
+<Style>
+<ows:Identifier>default</ows:Identifier>
+</Style>
+<Format>image/png</Format>
+<TileMatrixSetLink>
+<TileMatrixSet>webmercator</TileMatrixSet>
+</TileMatrixSetLink>
+<TileMatrixSetLink>
+<TileMatrixSet>lambert93</TileMatrixSet>
+</TileMatrixSetLink>
+</Layer>
+<Layer>
+<ows:Title>Orthophotographie Auvergne CRAIG/IGN 2016</ows:Title>
+<ows:Abstract/>
+<ows:WGS84BoundingBox>
+<ows:LowerCorner>2.0129979451 44.5929120702</ows:LowerCorner>
+<ows:UpperCorner>4.82621511461 46.8215506177</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<ows:Identifier>ortho_2016</ows:Identifier>
+<Style>
+<ows:Identifier>default</ows:Identifier>
+</Style>
+<Format>image/jpeg</Format>
+<TileMatrixSetLink>
+<TileMatrixSet>webmercator</TileMatrixSet>
+</TileMatrixSetLink>
+<TileMatrixSetLink>
+<TileMatrixSet>lambert93</TileMatrixSet>
+</TileMatrixSetLink>
+</Layer>
+<Layer>
+<ows:Title>Orthophotographie Auvergne CRAIG/IGN 2013</ows:Title>
+<ows:Abstract/>
+<ows:WGS84BoundingBox>
+<ows:LowerCorner>-180.0 -85.0511287798</ows:LowerCorner>
+<ows:UpperCorner>180.0 85.0511287798</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<ows:Identifier>ortho_2013</ows:Identifier>
+<Style>
+<ows:Identifier>default</ows:Identifier>
+</Style>
+<Format>image/jpeg</Format>
+<TileMatrixSetLink>
+<TileMatrixSet>webmercator</TileMatrixSet>
+</TileMatrixSetLink>
+<TileMatrixSetLink>
+<TileMatrixSet>lambert93</TileMatrixSet>
+</TileMatrixSetLink>
+</Layer>
+<Layer>
+<ows:Title>
+Orthophotographie Auvergne CRAIG/TopoGEODIS 2009/2010
+</ows:Title>
+<ows:Abstract/>
+<ows:WGS84BoundingBox>
+<ows:LowerCorner>-180.0 -85.0511287798</ows:LowerCorner>
+<ows:UpperCorner>180.0 85.0511287798</ows:UpperCorner>
+</ows:WGS84BoundingBox>
+<ows:Identifier>ortho_2009</ows:Identifier>
+<Style>
+<ows:Identifier>default</ows:Identifier>
+</Style>
+<Format>image/jpeg</Format>
+<TileMatrixSetLink>
+<TileMatrixSet>webmercator</TileMatrixSet>
+</TileMatrixSetLink>
+<TileMatrixSetLink>
+<TileMatrixSet>lambert93</TileMatrixSet>
+</TileMatrixSetLink>
+</Layer>
+<TileMatrixSet>
+<ows:Identifier>webmercator</ows:Identifier>
+<ows:SupportedCRS>EPSG:3857</ows:SupportedCRS>
+<TileMatrix>
+<ows:Identifier>00</ows:Identifier>
+<ScaleDenominator>559082264.029</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>1</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>01</ows:Identifier>
+<ScaleDenominator>279541132.014</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2</MatrixWidth>
+<MatrixHeight>2</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>02</ows:Identifier>
+<ScaleDenominator>139770566.007</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>4</MatrixWidth>
+<MatrixHeight>4</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>03</ows:Identifier>
+<ScaleDenominator>69885283.0036</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>8</MatrixWidth>
+<MatrixHeight>8</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>04</ows:Identifier>
+<ScaleDenominator>34942641.5018</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>16</MatrixWidth>
+<MatrixHeight>16</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>05</ows:Identifier>
+<ScaleDenominator>17471320.7509</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>32</MatrixWidth>
+<MatrixHeight>32</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>06</ows:Identifier>
+<ScaleDenominator>8735660.37545</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>64</MatrixWidth>
+<MatrixHeight>64</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>07</ows:Identifier>
+<ScaleDenominator>4367830.18772</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>128</MatrixWidth>
+<MatrixHeight>128</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>08</ows:Identifier>
+<ScaleDenominator>2183915.09386</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>256</MatrixWidth>
+<MatrixHeight>256</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>09</ows:Identifier>
+<ScaleDenominator>1091957.54693</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>512</MatrixWidth>
+<MatrixHeight>512</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>10</ows:Identifier>
+<ScaleDenominator>545978.773466</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1024</MatrixWidth>
+<MatrixHeight>1024</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>11</ows:Identifier>
+<ScaleDenominator>272989.386733</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2048</MatrixWidth>
+<MatrixHeight>2048</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>12</ows:Identifier>
+<ScaleDenominator>136494.693366</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>4096</MatrixWidth>
+<MatrixHeight>4096</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>13</ows:Identifier>
+<ScaleDenominator>68247.3466832</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>8192</MatrixWidth>
+<MatrixHeight>8192</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>14</ows:Identifier>
+<ScaleDenominator>34123.6733416</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>16384</MatrixWidth>
+<MatrixHeight>16384</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>15</ows:Identifier>
+<ScaleDenominator>17061.8366708</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>32768</MatrixWidth>
+<MatrixHeight>32768</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>16</ows:Identifier>
+<ScaleDenominator>8530.9183354</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>65536</MatrixWidth>
+<MatrixHeight>65536</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>17</ows:Identifier>
+<ScaleDenominator>4265.4591677</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>131072</MatrixWidth>
+<MatrixHeight>131072</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>18</ows:Identifier>
+<ScaleDenominator>2132.72958385</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>262144</MatrixWidth>
+<MatrixHeight>262144</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>19</ows:Identifier>
+<ScaleDenominator>1066.36479192</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>524288</MatrixWidth>
+<MatrixHeight>524288</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>20</ows:Identifier>
+<ScaleDenominator>533.182395962</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1048576</MatrixWidth>
+<MatrixHeight>1048576</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>21</ows:Identifier>
+<ScaleDenominator>266.591197981</ScaleDenominator>
+<TopLeftCorner>-20037508.3428 20037508.3428</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2097152</MatrixWidth>
+<MatrixHeight>2097152</MatrixHeight>
+</TileMatrix>
+</TileMatrixSet>
+<TileMatrixSet>
+<ows:Identifier>lambert93</ows:Identifier>
+<ows:SupportedCRS>EPSG:2154</ows:SupportedCRS>
+<TileMatrix>
+<ows:Identifier>00</ows:Identifier>
+<ScaleDenominator>4838095.23807</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>5</MatrixWidth>
+<MatrixHeight>4</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>01</ows:Identifier>
+<ScaleDenominator>2419047.61904</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>10</MatrixWidth>
+<MatrixHeight>7</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>02</ows:Identifier>
+<ScaleDenominator>1209523.80952</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>20</MatrixWidth>
+<MatrixHeight>14</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>03</ows:Identifier>
+<ScaleDenominator>604761.904759</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>39</MatrixWidth>
+<MatrixHeight>28</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>04</ows:Identifier>
+<ScaleDenominator>302380.952379</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>78</MatrixWidth>
+<MatrixHeight>56</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>05</ows:Identifier>
+<ScaleDenominator>151190.47619</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>155</MatrixWidth>
+<MatrixHeight>111</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>06</ows:Identifier>
+<ScaleDenominator>75595.2380949</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>309</MatrixWidth>
+<MatrixHeight>221</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>07</ows:Identifier>
+<ScaleDenominator>37797.6190474</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>617</MatrixWidth>
+<MatrixHeight>441</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>08</ows:Identifier>
+<ScaleDenominator>18898.8095237</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1234</MatrixWidth>
+<MatrixHeight>882</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>09</ows:Identifier>
+<ScaleDenominator>9449.40476186</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2468</MatrixWidth>
+<MatrixHeight>1763</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>10</ows:Identifier>
+<ScaleDenominator>4724.70238093</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>4936</MatrixWidth>
+<MatrixHeight>3525</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>11</ows:Identifier>
+<ScaleDenominator>2362.35119046</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>9871</MatrixWidth>
+<MatrixHeight>7050</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>12</ows:Identifier>
+<ScaleDenominator>1181.17559523</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>19742</MatrixWidth>
+<MatrixHeight>14100</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>13</ows:Identifier>
+<ScaleDenominator>590.587797616</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>39484</MatrixWidth>
+<MatrixHeight>28199</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>14</ows:Identifier>
+<ScaleDenominator>295.293898808</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>78967</MatrixWidth>
+<MatrixHeight>56397</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>15</ows:Identifier>
+<ScaleDenominator>147.646949404</ScaleDenominator>
+<TopLeftCorner>-357823.2365 7230727.3772</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>157933</MatrixWidth>
+<MatrixHeight>112793</MatrixHeight>
+</TileMatrix>
+</TileMatrixSet>
+</Contents>
+</Capabilities>
