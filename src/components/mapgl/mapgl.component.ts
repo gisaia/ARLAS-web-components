@@ -42,6 +42,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { FeatureCollection } from '@turf/helpers';
 import { MatSnackBar } from '@angular/material';
 import { TranslateService } from '@ngx-translate/core';
+import { TransformRequestFunction } from 'mapbox-gl';
 
 
 export interface OnMoveResult {
@@ -264,7 +265,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-  @Input() public transformRequest: Function;
+  @Input() public transformRequest: TransformRequestFunction;
 
   /**
    * @Input : Angular
