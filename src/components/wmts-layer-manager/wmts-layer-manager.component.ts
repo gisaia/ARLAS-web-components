@@ -162,23 +162,23 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   * @description Format of getTile response
   * If getCapabilities does not contains this format, we send an error
    */
-  @Input() public format = 'image/png';
+  @Input() public format: string;
   /**
   * @Input : Angular
   * @description Supported CRS code of WMTS service
   */
-  @Input() public supportedCRSCode = '3857';
-    /**
-  * @Input : Angular
-  * @description String date Format for time input
-  */
+  @Input() public supportedCRSCode = new Array('3857', '900913');
+  /**
+* @Input : Angular
+* @description String date Format for time input
+*/
   @Input() public dateFormat = 'YYYY-MM-DDT00:00:00';
   /**
   * @Input : Angular
   * @description Value to use in TileMatrixSet
   * If this input is  provided, we use it and we dont search TileMatrixSet in getCapabilities
   */
-  @Input() public crsCode: string;
+  @Input() public tileMatrixSetIdenttifier: string;
   /**
    * @Output : Angular
    * @description Emit the information needed by a wmts client to view a product
@@ -255,12 +255,10 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
                 if (!this.errorInRun) {
                   // bounds[[west,south][east,north]]
                   const bounds = getTileInfo.bbox;
-                  const tiles = xyz([[bounds[0], bounds[1]], [bounds[2], bounds[3]]], getTileInfo.zoomMin)
-                    .filter(obj => obj.x >= 0 && obj.y >= 0);
                   const previewURL = getTileInfo.url
-                    .replace('{x}', tiles[0].x.toString())
-                   .replace('{y}', tiles[0].y.toString())
-                    .replace('{z}', tiles[0].z.toString());
+                    .replace('{x}', '0')
+                    .replace('{y}', '0')
+                    .replace('{z}', '0');
                   this.dialogRef.componentInstance.previewUrl(previewURL);
                 }
               });
@@ -271,7 +269,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
           }
         },
         error => {
-        this.isGetCapaLoading = false;
+          this.isGetCapaLoading = false;
           this.onError.next(error);
         });
   }
@@ -295,16 +293,21 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public getDimension(layerElement: Element): Array<Dimension> {
     const dimensionElements = layerElement.getElementsByTagName('Dimension');
     const allDimension: Array<Dimension> = Array.from(dimensionElements).map(e => {
+      const abstracts = e.getElementsByTagName('ows:Abstract');
+      let abstract;
+      if (abstracts && abstracts.length > 0) {
+        abstract = abstracts[0].textContent.replace(/\n/g, '');
+      }
       return {
         identifier: e.getElementsByTagName('ows:Identifier')[0].textContent.replace(/\n/g, ''),
-        abstract: e.getElementsByTagName('ows:Abstract')[0].textContent.replace(/\n/g, ''),
+        abstract: abstract,
         values: Array.from(e.getElementsByTagName('Value')).map(el => el.textContent.replace(/\n/g, ''))
       };
     });
     const timeDimension = allDimension.filter(r => r.identifier === 'time').map(r => {
       let startDate = null;
       let endDate = null;
-      if (r.abstract.indexOf('/') > 0) {
+      if (r.abstract && r.abstract.indexOf('/') > 0) {
         startDate = new Date(r.abstract.split('/')[0]);
         endDate = new Date(r.abstract.split('/')[1]);
         r.startDate = startDate;
@@ -319,14 +322,20 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public getFormat(xmlDoc: Document, layer: string): string {
     const layerElement = Array.from(xmlDoc.getElementsByTagName('Layer'))
       .filter(l => l.getElementsByTagName('ows:Identifier')[0].textContent.replace(/\n/g, '') === layer)[0];
-    const format = new Set(Array.from(layerElement.getElementsByTagName('Format'))
-      .filter(f => f.textContent === this.format).map(e => e.textContent));
-    if (format.has(this.format)) {
-      return this.format;
+    if (!this.format) {
+      const format = Array.from(layerElement.getElementsByTagName('Format'))
+        .map(e => e.textContent);
+      return format[0];
     } else {
-      const formatError = new Error(this.format.concat(' does not exist for layer ').concat(layer));
-      this.errorInRun = true;
-      this.onError.next(formatError);
+      const format = Array.from(layerElement.getElementsByTagName('Format'))
+        .filter(f => f.textContent === this.format).map(e => e.textContent);
+      if (new Set(format).has(this.format)) {
+        return this.format;
+      } else {
+        const formatError = new Error(this.format.concat(' does not exist for layer ').concat(layer));
+        this.errorInRun = true;
+        this.onError.next(formatError);
+      }
     }
   }
 
@@ -363,17 +372,29 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
     }
   }
 
-  public getTileMatrixSet(xmlDoc: Document): string {
-    if (this.crsCode === undefined) {
-      let tileMatrixSet = 'EPSG:'.concat(this.supportedCRSCode);
-      Array.from(xmlDoc.getElementsByTagName('ows:Identifier')).forEach(node => {
-        if (node.textContent.indexOf('EPSG') >= 0 && node.textContent.indexOf(this.supportedCRSCode)) {
-          tileMatrixSet = node.textContent;
-        }
-      });
-      return tileMatrixSet;
+  public getTileMatrixSet(xmlDoc: Document, layer: string): string {
+    if (this.tileMatrixSetIdenttifier === undefined) {
+      const layerElement = Array.from(xmlDoc.getElementsByTagName('Layer'))
+        .filter(l => l.getElementsByTagName('ows:Identifier')[0].textContent.replace(/\n/g, '') === layer)[0];
+      const tileMatrixSetForLayer = Array.from(layerElement
+        .getElementsByTagName('TileMatrixSetLink'))
+        .map(t => t.getElementsByTagName('TileMatrixSet'))
+        .map(t => t[0].textContent);
+      const tileMatrixSet = Array.from(xmlDoc.getElementsByTagName('TileMatrixSet'))
+        .filter(l => l.children.length > 0)
+        .filter(l => tileMatrixSetForLayer.indexOf(l.getElementsByTagName('ows:Identifier')[0].textContent.replace(/\n/g, '')) >= 0)
+        .filter(l => {
+          const codeArray = [];
+          this.supportedCRSCode.forEach(code => {
+            if (l.getElementsByTagName('ows:SupportedCRS')[0].textContent.replace(/\n/g, '').indexOf(code) >= 0) {
+              codeArray.push(code);
+            }
+          });
+          return codeArray.length > 0;
+        }).map(l => l.getElementsByTagName('ows:Identifier')[0].textContent.replace(/\n/g, ''));
+      return tileMatrixSet[0];
     } else {
-      return this.crsCode;
+      return this.tileMatrixSetIdenttifier;
     }
   }
 
@@ -418,7 +439,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
       baseURL = baseURL.substring(0, baseURL.length - 1);
     }
     const version = this.getVersion(xmlDoc);
-    const tileMatrixSet = this.getTileMatrixSet(xmlDoc);
+    const tileMatrixSet = this.getTileMatrixSet(xmlDoc, layer);
     const format = this.getFormat(xmlDoc, layer);
     let url = '';
     url = url.concat(baseURL)
@@ -427,7 +448,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
       .concat('REQUEST=GetTile&')
       .concat('VERSION=').concat(version).concat('&')
       .concat('LAYER=').concat(layer).concat('&')
-      .concat('STYLES=').concat(style).concat('&')
+      .concat('STYLE=').concat(style).concat('&')
       .concat('FORMAT=').concat(format).concat('&')
       .concat('TileMatrixSet=').concat(tileMatrixSet).concat('&')
       .concat('TileMatrix=').concat('{z}').concat('&')
