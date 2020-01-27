@@ -1,8 +1,47 @@
 # Change Log
 
+## [v12.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.3.0) (2020-01-27)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.5.0...v12.3.0)
+
+**New stuff:**
+
+- Update mapbox-gl-js to V1 [\#285](https://github.com/gisaia/ARLAS-web-components/issues/285) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- Grid mode : images and thumbnails are sometimes displayed when they shouldn't  [\#383](https://github.com/gisaia/ARLAS-web-components/issues/383) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Resultlist : Set icon colors independently from title [\#381](https://github.com/gisaia/ARLAS-web-components/issues/381) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Miscellaneous:**
+
+- Enhance the robustness of the component's code [\#382](https://github.com/gisaia/ARLAS-web-components/issues/382) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Check fetchState attribute definition [\#380](https://github.com/gisaia/ARLAS-web-components/issues/380) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- \[WMTS layer manager\] Fix bug and Enhance query building [\#369](https://github.com/gisaia/ARLAS-web-components/issues/369) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Optimize display of thumbnail with lazy loading [\#368](https://github.com/gisaia/ARLAS-web-components/issues/368) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+## [v11.5.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.5.0) (2020-01-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.2.0...v11.5.0)
+
+**Fixed bugs:**
+
+- Resultlist : Set icon colors independently from title [\#377](https://github.com/gisaia/ARLAS-web-components/issues/377) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- \[Grid Mode\] Tooltips on tiles stay rendered when we hover actions buttons [\#374](https://github.com/gisaia/ARLAS-web-components/issues/374) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Grid mode : images and thumbnails are sometimes displayed when they shouldn't [\#371](https://github.com/gisaia/ARLAS-web-components/issues/371) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Miscellaneous:**
+
+- Check fetchState attribute definition [\#379](https://github.com/gisaia/ARLAS-web-components/issues/379) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Enhance the robustness of the component's code [\#372](https://github.com/gisaia/ARLAS-web-components/issues/372) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v12.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.2.0) (2020-01-06)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.4...v12.2.0)
+
+**Breaking changes:**
+
+- FieldsConfiguration interface is different from the one used in ARLAS-web-contributors [\#360](https://github.com/gisaia/ARLAS-web-components/issues/360) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v12.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.4) (2019-12-23)
 
