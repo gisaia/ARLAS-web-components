@@ -56,6 +56,7 @@ export interface OnMoveResult {
   extendForTest: Array<number>;
   tiles: Array<{ x: number, y: number, z: number }>;
   geohash: Array<string>;
+  geohashForLoad: Array<string>;
   xMoveRatio: number;
   yMoveRatio: number;
 }
@@ -821,40 +822,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-      let geohashList = [];
-      if (this.west < -180 && this.east > 180) {
-        geohashList = bboxes(Math.min(this.south, this.north),
-          -180,
-          Math.max(this.south, this.north),
-          180, Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
-      } else if (this.west < -180 && this.east < 180) {
-        const geohashList_1: Array<string> = bboxes(Math.min(this.south, this.north),
-          Math.min(-180, this.west + 360),
-          Math.max(this.south, this.north),
-          Math.max(-180, this.west + 360), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
-        const geohashList_2: Array<string> = bboxes(Math.min(this.south, this.north),
-          Math.min(this.east, 180),
-          Math.max(this.south, this.north),
-          Math.max(this.east, 180), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
-        geohashList = geohashList_1.concat(geohashList_2);
-
-      } else if (this.east > 180 && this.west > -180) {
-        const geohashList_1: Array<string> = bboxes(Math.min(this.south, this.north),
-          Math.min(180, this.east - 360),
-          Math.max(this.south, this.north),
-          Math.max(180, this.east - 360), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
-
-        const geohashList_2: Array<string> = bboxes(Math.min(this.south, this.north),
-          Math.min(this.west, -180),
-          Math.max(this.south, this.north),
-          Math.max(this.west, -180), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
-        geohashList = geohashList_1.concat(geohashList_2);
-      } else {
-        geohashList = bboxes(Math.min(this.south, this.north),
-          Math.min(this.east, this.west),
-          Math.max(this.south, this.north),
-          Math.max(this.east, this.west), Math.max(this.getGeohashLevelFromZoom(this.zoom), 1));
-      }
+      const geohashList = this.bboxToGeohashList(this.west, this.south, this.east, this.north, this.zoom);
       const offsetPoint = new mapboxgl.Point((this.offset.east + this.offset.west) / 2, (this.offset.north + this.offset.south) / 2);
       const centerOffsetPoint = this.map.project(this.map.getCenter()).add(offsetPoint);
       const centerOffSetLatLng = this.map.unproject(centerOffsetPoint);
@@ -885,6 +853,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         extendForTest: [],
         tiles: [],
         geohash: geohashList,
+        geohashForLoad: [],
         xMoveRatio: this.xMoveRatio,
         yMoveRatio: this.yMoveRatio
       };
@@ -899,6 +868,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.max(extendForLoadLatLng[0].lat, -90),
         Math.min(extendForLoadLatLng[1].lng, 180)
       ];
+      const geohashForLoad = this.bboxToGeohashList(onMoveData.extendForLoad[1], onMoveData.extendForLoad[2],
+        onMoveData.extendForLoad[3], onMoveData.extendForLoad[0], this.zoom);
+      onMoveData.geohashForLoad = geohashForLoad;
       onMoveData.extendForTest = [
         Math.min(extendForTestdLatLng[1].lat, 90),
         Math.max(extendForTestdLatLng[0].lng, -180),
@@ -1123,6 +1095,52 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
       });
     }
+  }
+
+  /**
+   *
+   * @param west west longitude in EPSG4326
+   * @param south south latitude in EPSG4326
+   * @param east east longitude in EPSG4326
+   * @param north north latitude in EPSG4326
+   * @param zoom zoom level
+   */
+  private bboxToGeohashList(west: number, south: number, east: number, north: number, zoom: number): Array<string> {
+    let geohashList = [];
+    if (west < -180 && east > 180) {
+      geohashList = bboxes(Math.min(south, north),
+        -180,
+        Math.max(south, north),
+        180, Math.max(this.getGeohashLevelFromZoom(zoom), 1));
+    } else if (west < -180 && east < 180) {
+      const geohashList_1: Array<string> = bboxes(Math.min(south, north),
+        Math.min(-180, west + 360),
+        Math.max(south, north),
+        Math.max(-180, west + 360), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
+      const geohashList_2: Array<string> = bboxes(Math.min(south, north),
+        Math.min(east, 180),
+        Math.max(south, north),
+        Math.max(east, 180), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
+      geohashList = geohashList_1.concat(geohashList_2);
+
+    } else if (east > 180 && west > -180) {
+      const geohashList_1: Array<string> = bboxes(Math.min(south, north),
+        Math.min(180, east - 360),
+        Math.max(south, north),
+        Math.max(180, east - 360), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
+
+      const geohashList_2: Array<string> = bboxes(Math.min(south, north),
+        Math.min(west, -180),
+        Math.max(south, north),
+        Math.max(west, -180), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
+      geohashList = geohashList_1.concat(geohashList_2);
+    } else {
+      geohashList = bboxes(Math.min(south, north),
+        Math.min(east, west),
+        Math.max(south, north),
+        Math.max(east, west), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
+    }
+    return geohashList;
   }
 
   /**
