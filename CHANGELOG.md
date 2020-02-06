@@ -1,5 +1,13 @@
 # Change Log
 
+## [v12.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.4.0) (2020-02-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.3.0...v12.4.0)
+
+**Miscellaneous:**
+
+- Emit additional geohashes that are beyond the current extent of the map [\#391](https://github.com/gisaia/ARLAS-web-components/issues/391) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v12.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.3.0) (2020-01-27)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.5.0...v12.3.0)
