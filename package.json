@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/ng-packagr/package.schema.json",
-  "name": "arlas-web-components",
-  "version": "12.4.0",
+  "name": "@gisaia-team/arlas-web-components",
+  "version": "12.5.0-dev0",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
