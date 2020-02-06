@@ -20,14 +20,10 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import   '../node_modules/mapbox-gl/dist/mapbox-gl.css';
-
-.constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar{
-  background-color: rgb(255, 243, 137) !important;
-}
+@import '../node_modules/mapbox-gl/dist/mapbox-gl.css';
 
 body {
-  font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -40,7 +36,11 @@ body {
   box-sizing: border-box;
 }
 
-.histogram__area .histogram__chart--area{
+.constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar {
+  background-color: rgb(255, 243, 137) !important;
+}
+
+.histogram__area .histogram__chart--area {
   fill: #FFC107;
   fill-opacity: 1;
   stroke: #C49D28;
@@ -70,8 +70,7 @@ body {
   stroke-opacity: 0.1;
 }
 
-.histogram__area .histogram__description__startvalue--background,
-.histogram__area .histogram__description__endvalue--background{
+.histogram__area .histogram__description__startvalue--background, .histogram__area .histogram__description__endvalue--background {
   background-color: white;
 }
 
@@ -79,22 +78,21 @@ body {
   stroke: black;
 }
 
-.histogram__area .histogram__description__startvalue,
-.histogram__area .histogram__description__endvalue{
+.histogram__area .histogram__description__startvalue, .histogram__area .histogram__description__endvalue {
   color: #4CA3EB;
-  }
+}
 
-.histogram__area .histogram__ticks{
+.histogram__area .histogram__ticks {
   stroke: #757575;
   stroke-width: 1px;
 }
 
-.histogram__area .histogram__axis{
+.histogram__area .histogram__axis {
   stroke: #757575;
   stroke-width: 1px;
 }
 
-.histogram__area .tick text{
+.histogram__area .tick text {
   fill: #757575;
   font-size: 0.9em;
 }
@@ -104,13 +102,12 @@ body {
   fill: #757575;
 }
 
-
-a.arlas-map-control{
-    background-color: green;
+a.arlas-map-control {
+  background-color: green;
 }
 
 .one_dimension .histogram__axis {
-  stroke: white ;
+  stroke: white;
 }
 
 @font-face {
@@ -125,7 +122,8 @@ a.arlas-map-control{
   font-family: 'Material Icons';
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 24px;
+  /* Preferred icon size */
   display: inline-block;
   line-height: 1;
   text-transform: none;
@@ -133,15 +131,12 @@ a.arlas-map-control{
   word-wrap: normal;
   white-space: nowrap;
   direction: ltr;
-
   /* Support for all WebKit browsers. */
   -webkit-font-smoothing: antialiased;
   /* Support for Safari and Chrome. */
   text-rendering: optimizeLegibility;
-
   /* Support for Firefox. */
   -moz-osx-font-smoothing: grayscale;
-
   /* Support for IE. */
   font-feature-settings: 'liga';
 }
@@ -153,13 +148,14 @@ a.arlas-map-control{
   font-size: 0.8em;
   position: absolute;
   top: 50px!important;
-  right:15px!important;
+  right: 15px!important;
   z-index: 1000;
   height: 30px;
   padding-top: 5px;
   padding-left: 8px;
   padding-right: 8px;
 }
+
 .arlas-gl-circle-chip {
   display: none;
   background-color: #043B53;
@@ -168,13 +164,14 @@ a.arlas-map-control{
   font-size: 0.8em;
   position: absolute;
   top: 85px!important;
-  right:15px!important;
+  right: 15px!important;
   z-index: 1000;
   height: 30px;
   padding-top: 5px;
   padding-left: 8px;
   padding-right: 8px;
 }
+
 .arlas-gl-geohash-chip {
   display: none;
   background-color: #043B53;
@@ -183,7 +180,7 @@ a.arlas-map-control{
   font-size: 0.8em;
   position: absolute;
   top: 120px!important;
-  right:15px!important;
+  right: 15px!important;
   z-index: 1000;
   height: 30px;
   padding-top: 5px;
@@ -191,71 +188,70 @@ a.arlas-map-control{
   padding-right: 8px;
 }
 
-
-.arlas-gl-toggle{
+.arlas-gl-toggle {
   top: 85px!important;
-  right:15px!important;
+  right: 15px!important;
   z-index: 1000;
-    position: absolute;
-      color:#043B53;
-
-
+  position: absolute;
+  color: #043B53;
 }
+
 .boxdraw {
-    background: rgba(56,135,190,0.1);
-    border: 2px solid #3887be;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-}
-.mapboxgl-ctrl-compass{
-        border-bottom: 1px solid #ddd !important;
+  background: rgba(56, 135, 190, 0.1);
+  border: 2px solid #3887be;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
 }
 
+.mapboxgl-ctrl-compass {
+  border-bottom: 1px solid #ddd !important;
+}
 
-.mapboxgl-ctrl-pitch{
-        border-bottom: 1px solid #ddd !important;
+.mapboxgl-ctrl-pitch {
+  border-bottom: 1px solid #ddd !important;
 }
 
 .mapboxgl-ctrl-group {
-    border-radius: 4px 4px 0px 0px!important;
-    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0.1)!important;
-    overflow: hidden;
-    background: #fff;
+  border-radius: 4px 4px 0px 0px!important;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1)!important;
+  overflow: hidden;
+  background: #fff;
 }
 
 .mapboxgl-ctrl-group-pitch {
-margin-top: 0px!important;
-    border-radius: 0px 0px 4px 4px!important;;
-
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+  ;
 }
 
 .mapboxgl-ctrl-group-removeaois {
-    margin-top: 0px!important;
-    border-radius: 0px 0px 4px 4px!important;;
-    box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.1)!important;
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+  ;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1)!important;
 }
+
 .mapboxgl-ctrl-group-addgeobox {
-    border-radius: 4px 4px 0px 0px!important;;
+  border-radius: 4px 4px 0px 0px!important;
+  ;
 }
-.donut{
+
+.donut {
   height: 500px !important;
 }
 
-.resultlist__header--filters--dropdown{
+.resultlist__header--filters--dropdown {
   height: 36px !important;
   vertical-align: middle !important;
 }
 
-.mat-input-infix{
+.mat-input-infix {
   margin-top: -29px !important;
 }
 
-.table-wrapper .result-attachment-label{
+.table-wrapper .result-attachment-label {
   display: none !important;
 }
-
-
-
