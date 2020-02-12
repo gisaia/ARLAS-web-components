@@ -6,7 +6,7 @@
         <mat-icon svgIcon="map_style"></mat-icon> {{ 'Geometries and Styles' | translate}}
       </ng-template>
       <div class="displayed-geo-container" (click)="hideAllStylesContainers()">
-        <fieldset class="fieldset-geo">
+        <fieldset class="fieldset-geo" *ngIf="hasClusterMode">
           <legend class="displayed-geo-label">
             <mat-icon>bubble_chart</mat-icon>
             <span>{{'Clusters' | translate}}</span>
@@ -49,7 +49,7 @@
                 <mat-label>{{'Select the geometries to render' | translate}}</mat-label>
                 <mat-select multiple [formControl]="featuresGeoControl" [compareWith]="compareGeometries"
                   (selectionChange)="applyFeaturesStyles()" [(ngModel)]="selectedFeatures">
-                  <mat-option *ngFor="let geometry of allGeometries" [value]="geometry">
+                  <mat-option *ngFor="let geometry of featureGeometries" [value]="geometry">
                     {{ geometry.path | translate }}
                   </mat-option>
                 </mat-select>
@@ -76,7 +76,7 @@
                 <mat-label>{{'Select the geometries to render' | translate}}</mat-label>
                 <mat-select multiple [formControl]="topologyGeoControl" [compareWith]="compareGeometries"
                   (selectionChange)="applyTopologyStyles()" [(ngModel)]="selectedTopology">
-                  <mat-option *ngFor="let geometry of allGeometries" [value]="geometry">
+                  <mat-option *ngFor="let geometry of topologyGeometries" [value]="geometry">
                     {{ geometry.path | translate }}
                   </mat-option>
                 </mat-select>
