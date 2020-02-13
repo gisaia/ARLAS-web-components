@@ -29,11 +29,14 @@ export interface GeoQuery {
 
 export interface MapSettingsService {
   getAllGeometries(): Array<GeometrySelectModel>;
+  getFeatureGeometries(): Array<GeometrySelectModel>;
+  getTopologyGeometries(): Array<GeometrySelectModel>;
   getClusterGeometries(): Array<GeometrySelectModel>;
   getFilterGeometries(): Array<GeometrySelectModel>;
   getOperations(): Array<OperationSelectModel>;
   hasFeaturesMode(): boolean;
   hasTopologyMode(): boolean;
+  hasClusterMode(): boolean;
 }
 
 @Component({
@@ -113,12 +116,14 @@ export class MapglSettingsDialogComponent implements OnInit {
 
   /** Variables binded with HTML, set from the parent component of this dialog*/
   public clusterGeometries: Array<GeometrySelectModel>;
+  public featureGeometries: Array<GeometrySelectModel>;
+  public topologyGeometries: Array<GeometrySelectModel>;
   public allGeometries: Array<GeometrySelectModel>;
   public filterGeometries: Array<GeometrySelectModel>;
   public operations: Array<OperationSelectModel>;
   public hasFeatureMode = true;
   public hasTopologyMode = false;
-
+  public hasClusterMode = true;
   /** Variables binded with HTML, set inside this dialog */
   public clusterStyleGroup: StyleGroup;
   public featuresStyleGroups: Array<StyleGroup>;
@@ -153,21 +158,21 @@ export class MapglSettingsDialogComponent implements OnInit {
       this.emittedClusterStyleGroup = Object.assign({}, this.clusterStyleGroup);
     }
     /** Populate the cluster geometries to render */
-    if (this.clusterGeometries) {
+    if (this.clusterGeometries && this.hasClusterMode) {
       this.clusterGeoControl.setValue(this.clusterGeometries);
       this.selectedCluster = this.clusterGeometries.filter(g => g.selected)[0];
-      if (!this.selectedCluster) {
+      if (!this.selectedCluster && this.hasClusterMode) {
         this.logSelectedGeometryError(this.CONSTANTS.CLUSTER, this.clusterGeometries);
       }
       if (this.clusterStyleGroup) {
-        if (this.clusterStyleGroup.styles) {
+        if (this.clusterStyleGroup.styles && this.hasClusterMode) {
           this.clusterStyleGroup.styles.forEach(style => {
             this.hideIrrelevantStyle(style, [this.selectedCluster]);
           });
         } else {
           this.logStylesError(this.CONSTANTS.CLUSTER);
         }
-        if (this.clusterStyleGroup.selectedStyle) {
+        if (this.clusterStyleGroup.selectedStyle && this.hasClusterMode) {
           if (!this.clusterStyleGroup.selectedStyle.isAvailable) {
             this.selectedClusterStyle = this.clusterStyleGroup.styles.filter(s => s.isAvailable)[0];
           } else {
@@ -260,14 +265,20 @@ export class MapglSettingsDialogComponent implements OnInit {
   /** Emits the geometries to render. Closes the dialog at the end */
   public emitRenderedGeometries() {
     const geosToDisplay = new Array<RenderedGeometries>();
-    geosToDisplay.push({ mode: this.CONSTANTS.CLUSTER, geometries: [this.clusterGeoControl.value.path],
-      selectedStyleGroups: [this.emittedClusterStyleGroup] });
+    geosToDisplay.push({
+      mode: this.CONSTANTS.CLUSTER, geometries: [this.clusterGeoControl.value.path],
+      selectedStyleGroups: [this.emittedClusterStyleGroup]
+    });
     if (this.hasFeatureMode) {
-      geosToDisplay.push({ mode: this.CONSTANTS.FEATURES, geometries: this.featuresGeoControl.value.map(g => g.path),
-        selectedStyleGroups: this.emittedFeaturesStyleGroups });
+      geosToDisplay.push({
+        mode: this.CONSTANTS.FEATURES, geometries: this.featuresGeoControl.value.map(g => g.path),
+        selectedStyleGroups: this.emittedFeaturesStyleGroups
+      });
     } else {
-      geosToDisplay.push({ mode: this.CONSTANTS.TOPOLOGY, geometries: this.topologyGeoControl.value.map(g => g.path),
-        selectedStyleGroups: this.emittedTopologyStyleGroups });
+      geosToDisplay.push({
+        mode: this.CONSTANTS.TOPOLOGY, geometries: this.topologyGeoControl.value.map(g => g.path),
+        selectedStyleGroups: this.emittedTopologyStyleGroups
+      });
     }
     this.renderedGeometriesEmitter.next(geosToDisplay);
     this.dialogRef.close();
@@ -450,10 +461,15 @@ export class MapglSettingsComponent implements OnInit {
     this.dialogRef.componentInstance.basemapStylesGroup = this.basemapStylesGroup;
     this.dialogRef.componentInstance.clusterGeometries = mapSettingsService.getClusterGeometries();
     this.dialogRef.componentInstance.allGeometries = mapSettingsService.getAllGeometries();
+    this.dialogRef.componentInstance.featureGeometries = mapSettingsService.getFeatureGeometries();
+    this.dialogRef.componentInstance.topologyGeometries = mapSettingsService.getTopologyGeometries();
+
     this.dialogRef.componentInstance.filterGeometries = mapSettingsService.getFilterGeometries();
     this.dialogRef.componentInstance.operations = mapSettingsService.getOperations();
     this.dialogRef.componentInstance.hasFeatureMode = mapSettingsService.hasFeaturesMode();
     this.dialogRef.componentInstance.hasTopologyMode = mapSettingsService.hasTopologyMode();
+    this.dialogRef.componentInstance.hasClusterMode = mapSettingsService.hasClusterMode();
+
     this.dialogRef.componentInstance.renderedGeometriesEmitter = this.renderedGeometriesEmitter;
     this.dialogRef.componentInstance.geoQueryEmitter = this.geoQueryEmitter;
     this.dialogRef.componentInstance.styleEmitter = this.styleEmitter;
