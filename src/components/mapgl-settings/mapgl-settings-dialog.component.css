@@ -117,6 +117,7 @@ fieldset {
   height: 67.5px;
   cursor: pointer;
   margin: .25em 0;
+  position: relative;
 }
 
 .styles-select {
@@ -156,8 +157,8 @@ fieldset {
   min-width: 210px;
   position: absolute;
   z-index: 10;
-  left: 450px;
-  top: 260px;
+  left: 0;
+  top: -20px;
   max-height: 200px;
   overflow-y: overlay;
   background: white;
@@ -167,13 +168,21 @@ fieldset {
     0 1px 10px 0 rgba(0, 0, 0, 0.12);
 }
 
+.displayed-geo-select {
+  position: relative;
+}
+.mat-tab-body-content{
+  overflow: hidden !important;
+}
+
 .basemap-styles-list {
   min-width: 210px;
   position: absolute;
   z-index: 10;
-  left: 295px;
-  top: 395px;
-  max-height: 200px;
+  left: 0;
+  top: -35px;
+  max-height: 120px;
+  min-height: 100px;
   overflow-y: overlay;
   background: white;
   border-radius: 2px;
