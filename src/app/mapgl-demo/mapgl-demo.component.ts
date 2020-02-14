@@ -737,6 +737,42 @@ export class MapSettings implements MapSettingsService {
     return allDisplayGeometries;
   }
 
+  public getFeatureGeometries(): Array<GeometrySelectModel> {
+    const featuresGeometries = new Array<GeometrySelectModel>();
+    for (let i = 0; i < 8; i = i + 2) {
+      if (i < 5) {
+        featuresGeometries.push({
+          path: 'point-' + i,
+          selected: i === 1
+        });
+      } else {
+        featuresGeometries.push({
+          path: 'geometry-' + (i - 4),
+          selected: i === 5 || i === 7
+        });
+      }
+    }
+    return featuresGeometries;
+  }
+
+  public getTopologyGeometries(): Array<GeometrySelectModel> {
+    const topologyGeometries = new Array<GeometrySelectModel>();
+    for (let i = 0; i < 8; i = i + 3) {
+      if (i < 5) {
+        topologyGeometries.push({
+          path: 'point-' + i,
+          selected: i === 1
+        });
+      } else {
+        topologyGeometries.push({
+          path: 'geometry-' + (i - 4),
+          selected: i === 5 || i === 7
+        });
+      }
+    }
+    return topologyGeometries;
+  }
+
   public getFilterGeometries(): Array<GeometrySelectModel> {
     const filterGeometries = new Array<GeometrySelectModel>();
     for (let i = 0; i < 8; i++) {
@@ -780,6 +816,10 @@ export class MapSettings implements MapSettingsService {
   }
 
   public hasTopologyMode(): boolean {
-    return false;
+    return true;
+  }
+
+  public hasClusterMode(): boolean {
+    return true;
   }
 }
