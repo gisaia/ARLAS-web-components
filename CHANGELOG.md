@@ -1,5 +1,13 @@
 # Change Log
 
+## [v12.5.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.5.0) (2020-02-14)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.4.0...v12.5.0)
+
+**New stuff:**
+
+- Add properties for to better reprenset modes in map settings  [\#396](https://github.com/gisaia/ARLAS-web-components/issues/396)
+
 ## [v12.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.4.0) (2020-02-06)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.3.0...v12.4.0)
