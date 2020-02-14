@@ -62,6 +62,17 @@
                   <div class="mat-select-arrow select-arrow"></div>
                 </div>
               </div>
+              <div *ngIf="showFeaturesStyle" (click)="$event.stopPropagation()" class="styles-list">
+                <div *ngFor="let styleGroup of featuresStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
+                  <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
+                  <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
+                    <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
+                      (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
+                      {{style.name | translate}}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
             </div>
           </div>
         </fieldset>
@@ -89,6 +100,17 @@
                   <div class="mat-select-arrow select-arrow"></div>
                 </div>
               </div>
+              <div *ngIf="showTopologyStyle" (click)="$event.stopPropagation()" class="styles-list">
+                <div *ngFor="let styleGroup of topologyStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
+                  <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
+                  <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
+                    <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
+                      (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
+                      {{style.name | translate}}
+                    </mat-radio-button>
+                  </mat-radio-group>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -104,6 +126,16 @@
                 <div class="styles-select" (click)="showBasemapsStyles($event)">
                   <span class="styles">{{'Basemap styles' | translate}}</span>
                   <div class="mat-select-arrow select-arrow"></div>
+                </div>
+                <div *ngIf="showBasemapsStyle" (click)="$event.stopPropagation()" class="basemap-styles-list">
+                  <span class="stylegroup-name">{{'Basemaps' | translate}}</span>
+                  <mat-radio-group class="stylegroup-radio-group" [value]="basemapStylesGroup?.selectedBasemapStyle">
+                    <mat-radio-button class="stylegroup-radio-button"
+                      [checked]="style.name == basemapStylesGroup?.selectedBasemapStyle?.name" (change)="emitBasemapStyle(style)"
+                      *ngFor="let style of basemapStylesGroup?.basemapStyles" [value]="style">
+                      {{style.name | translate}}
+                    </mat-radio-button>
+                  </mat-radio-group>
                 </div>
               </div>
             </div>
@@ -152,35 +184,4 @@
   <button mat-button class="cancel-map-settings" (click)="onClose()">{{ 'Cancel' | translate}}</button>
 </div>
 
-<div *ngIf="showFeaturesStyle" (click)="$event.stopPropagation()" class="styles-list">
-  <div *ngFor="let styleGroup of featuresStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
-    <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
-    <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
-      <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
-        (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
-        {{style.name | translate}}
-      </mat-radio-button>
-    </mat-radio-group>
-  </div>
-</div>
-<div *ngIf="showTopologyStyle" (click)="$event.stopPropagation()" class="styles-list">
-  <div *ngFor="let styleGroup of topologyStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
-    <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
-    <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
-      <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
-        (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
-        {{style.name | translate}}
-      </mat-radio-button>
-    </mat-radio-group>
-  </div>
-</div>
-<div *ngIf="showBasemapsStyle" (click)="$event.stopPropagation()" class="basemap-styles-list">
-  <span class="stylegroup-name">{{'Basemaps' | translate}}</span>
-  <mat-radio-group class="stylegroup-radio-group" [value]="basemapStylesGroup?.selectedBasemapStyle">
-    <mat-radio-button class="stylegroup-radio-button"
-      [checked]="style.name == basemapStylesGroup?.selectedBasemapStyle?.name" (change)="emitBasemapStyle(style)"
-      *ngFor="let style of basemapStylesGroup?.basemapStyles" [value]="style">
-      {{style.name | translate}}
-    </mat-radio-button>
-  </mat-radio-group>
-</div>
+

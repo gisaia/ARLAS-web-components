@@ -110,13 +110,13 @@ export class MapglDemoComponent implements OnInit {
     styleGroups: [
       {
         id: 'point-0',
-        name: 'Distribution',
+        name: 'Point 0',
         base: [
         ],
         styles: [
           {
             id: 'heat-distrib',
-            name: 'Heats',
+            name: 'Path',
             layerIds: [
             ],
             isDefault: false,
@@ -124,7 +124,7 @@ export class MapglDemoComponent implements OnInit {
           },
           {
             id: 'fill',
-            name: 'Rectangle',
+            name: 'Dot',
             layerIds: [
             ],
             isDefault: true,
@@ -134,13 +134,13 @@ export class MapglDemoComponent implements OnInit {
       },
       {
         id: 'point-1',
-        name: 'Distribution',
+        name: 'Point 1',
         base: [
         ],
         styles: [
           {
             id: 'heat-distrib',
-            name: 'Heats',
+            name: 'Path',
             layerIds: [
             ],
             isDefault: false,
@@ -148,7 +148,7 @@ export class MapglDemoComponent implements OnInit {
           },
           {
             id: 'fill',
-            name: 'Rectangle',
+            name: 'Dot',
             layerIds: [
             ],
             isDefault: true,
@@ -158,7 +158,7 @@ export class MapglDemoComponent implements OnInit {
       },
       {
         id: 'point-2',
-        name: 'Distribution',
+        name: 'Point 2',
         base: [
         ],
         styles: [
@@ -182,7 +182,7 @@ export class MapglDemoComponent implements OnInit {
       },
       {
         id: 'point-3',
-        name: 'Distribution',
+        name: 'Point 3',
         base: [
         ],
         styles: [
@@ -820,6 +820,6 @@ export class MapSettings implements MapSettingsService {
   }
 
   public hasClusterMode(): boolean {
-    return true;
+    return false;
   }
 }
