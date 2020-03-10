@@ -7,7 +7,6 @@
       <div class="histogram__description__endvalue"><span *ngIf="histogram.histogramParams.dataLength > 1" class="histogram__description__endvalue--background">{{histogram.histogramParams.endValue}}</span></div>
     </div>
   </div>
-
   <div [style.display]="histogram.histogramParams.displaySvg" style="position:relative">
     <svg id="svgix" class="histogram__chart" [style.width.px]="histogram.histogramParams.chartWidth" [style.height.px]="histogram.histogramParams.chartHeight"></svg>
     <div *ngIf="histogram.isBrushing">
@@ -54,22 +53,24 @@
   </div>
   <div *ngIf="chartType === ChartType.swimlane">
     <div class="histogram__tooltip" *ngIf="histogram.histogramParams.swimlaneXTooltip.isShown && !histogram.histogramParams.swimlaneXTooltip.isRightSide"
-      [style.left.px]="histogram.histogramParams.swimlaneXTooltip.xPosition"   [style.top.px]="-20">
-      <span class="histogram__swimlane--tooltip-content">{{histogram.histogramParams.swimlaneXTooltip.xContent}}</span>
+      [style.left.px]="histogram.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
+      <span class="histogram__swimlane--tooltip-xcontent">{{histogram.histogramParams.swimlaneXTooltip.xContent}}</span>
     </div>
     <div class="histogram__tooltip" *ngIf="histogram.histogramParams.swimlaneXTooltip.isShown && histogram.histogramParams.swimlaneXTooltip.isRightSide"
-      [style.right.px]="histogram.histogramParams.swimlaneXTooltip.xPosition"   [style.top.px]="-20">
-      <span class="histogram__swimlane--tooltip-content">{{histogram.histogramParams.swimlaneXTooltip.xContent}}</span>
+      [style.right.px]="histogram.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
+      <span class="histogram__swimlane--tooltip-xcontent">{{histogram.histogramParams.swimlaneXTooltip.xContent}}</span>
     </div>
     <div *ngFor="let key of Array.from(histogram.histogramParams.swimlaneTooltipsMap.keys()); index as i">
       <div class="histogram__tooltip" *ngIf="(histogram.histogramParams.swimlaneTooltipsMap).get(key).isShown && !(histogram.histogramParams.swimlaneTooltipsMap).get(key).isRightSide"
         [style.left.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).xPosition"   [style.top.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).yPosition">
         <span class="histogram__swimlane--tooltip-content">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yContent}}</span>
+        <span class="histogram__swimlane--tooltip-additional_info">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yAdditonalInfo}}</span>
       </div>
       <div class="histogram__tooltip" *ngIf="(histogram.histogramParams.swimlaneTooltipsMap).get(key).isShown && (histogram.histogramParams.swimlaneTooltipsMap).get(key).isRightSide"
         [style.right.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).xPosition"  [style.top.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).yPosition">
         <span class="histogram__swimlane--tooltip-content">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yContent}}</span>
-        </div>
+        <span class="histogram__swimlane--tooltip-additional_info">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yAdditonalInfo}}</span>
+      </div>
     </div>
   </div>
 
@@ -80,5 +81,15 @@
       <path  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
       <path fill="white" d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
     </svg>
+  </div>
+  <div *ngIf="chartType === ChartType.swimlane">
+    <div>
+      <div class="swimlane_legend">
+        <div [style.width.px]="histogram.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_color" *ngFor="let b of histogram.histogramParams.legend" [style.background-color]="b.color"></div>
+      </div>
+      <div class="swimlane_legend">
+        <div [style.width.px]="histogram.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_value" *ngFor="let b of histogram.histogramParams.legend; index as i" >{{b.key}}</div>
+      </div>
+    </div>
   </div>
 </div>

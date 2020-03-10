@@ -35,6 +35,7 @@ import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimen
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
+import { HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions } from 'arlas-d3/histograms/utils/HistogramUtils';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
@@ -58,7 +59,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @Input : Angular
    * @description Data to plot in the chart.
    */
-  @Input() public data: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>;
+  @Input() public data: Array<HistogramData> | SwimlaneData;
   /**
    * @Input
    * @description To be set to `time` when x axis represents dates and to `numeric` otherwise.
@@ -233,9 +234,26 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public applyOffsetOnAreaChart = true;
   /**
    * @Input : Angular
-   * @description The swimlane representation mode.
+   * @description The swimlane mode.
+   * - `variableHeight` buckets height varies with the bucket's value
+   * - `fixedHeight` all the buckets have the same height. A level tick is plotted on the bucket to indicate
+   * the value level compared to other values.
+   * - `circles` buckets are represented with circles whose radius varies the bucket's value.
    */
   @Input() public swimlaneMode: SwimlaneMode = SwimlaneMode.variableHeight;
+  /**
+   * @Input : Angular
+   * @description The swimlane representation.
+   * - `column` representation focuses on terms of the same column; each term is compared to the sum of all terms values in the column.
+   * - `global` representation compares all the buckets values to the maximum value in the swimlane.
+   */
+  @Input() public swimlaneRepresentation: SwimlaneRepresentation = SwimlaneRepresentation.global;
+
+  /**
+   * @Input : Angular
+   * @description Graphical options to configure for the swimlane.
+  */
+  @Input() public swimlaneOptions: SwimlaneOptions;
   /**
    * @Input : Angular
    * @description The width of swimlane labels space.
@@ -333,7 +351,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     }
 
     if (changes.data && this.data !== undefined && this.histogram !== undefined) {
-      this.histogram.histogramParams.data = this.data;
+      if (Array.isArray(this.data)) {
+        this.histogram.histogramParams.histogramData = this.data;
+      } else {
+        this.histogram.histogramParams.swimlaneData = this.data;
+      }
       this.histogram.histogramParams.hasDataChanged = true;
       this.plotHistogram(this.data);
       this.histogram.histogramParams.hasDataChanged = false;
@@ -375,7 +397,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   /**
    * @description Plots the histogram
    */
-  public plotHistogram(inputData: Array<{ key: number, value: number }> | Map<string, Array<{ key: number, value: number }>>): void {
+  public plotHistogram(inputData: Array<HistogramData> | SwimlaneData): void {
     this.histogram.plot(inputData);
   }
 
@@ -417,7 +439,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.chartTitle = this.chartTitle;
     this.histogram.histogramParams.chartType = this.chartType;
     this.histogram.histogramParams.chartWidth = this.chartWidth;
-    this.histogram.histogramParams.data = this.data;
+    if (Array.isArray(this.data)) {
+      this.histogram.histogramParams.histogramData = this.data;
+    } else {
+      this.histogram.histogramParams.swimlaneData = this.data;
+    }
     this.histogram.histogramParams.dataType = this.dataType;
     this.histogram.histogramParams.dataUnit = this.dataUnit;
     this.histogram.histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
@@ -445,6 +471,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.swimlaneHeight = this.swimlaneHeight;
     this.histogram.histogramParams.swimlaneBorderRadius = this.swimlaneBorderRadius;
     this.histogram.histogramParams.swimlaneMode = this.swimlaneMode;
+    this.histogram.histogramParams.swimlaneOptions = this.swimlaneOptions;
+    this.histogram.histogramParams.swimlaneRepresentation = this.swimlaneRepresentation !== undefined ?
+      this.swimlaneRepresentation : SwimlaneRepresentation.global;
     this.histogram.histogramParams.uid = HistogramUtils.generateUID();
     this.histogram.histogramParams.id = this.id;
     this.histogram.histogramParams.histogramContainer = this.el.nativeElement.childNodes[0];

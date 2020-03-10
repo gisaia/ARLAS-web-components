@@ -218,6 +218,20 @@
   z-index: 30000;
 }
 
+.swimlane_legend_color, .swimlane_legend_value {
+  display: inline-block;
+  font-size: 0.7em;
+}
+
+.swimlane_legend_color {
+  height: 8px;
+}
+
+.swimlane_legend {
+  display: flex;
+  justify-content: center;
+}
+
 .histogram__chart--fixed-selected--area /* @doc Sets the style of the area's selected parts*/
 {
   fill: #FFC107;
@@ -276,14 +290,6 @@
 {
   fill-opacity: 0.3;
   stroke-opacity: 0.1;
-}
-
-.histogram__swimlane-height--tick /* @doc Sets the horizontal tick on each bar bar in the case of fixedHeight swimlanes*/
-{
-  stroke-width: 1px;
-  stroke: #fff;
-  fill: none;
-  opacity: 1;
 }
 
 .histogram__swimlane--vertical-tooltip-line /* @doc Sets the vertical line that's shown when hovering bars in swimlane*/
