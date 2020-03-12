@@ -98,6 +98,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public COLUMN_ACTIONS_HEIGHT = 55;
 
+  public COLUMN_NAME_HEIGHT = 10;
+
+
   public FILTERS_HEIGHT = 50;
 
   public loadAnimationConfig = {
@@ -968,9 +971,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   private getOffSetHeight(): number {
     if (!this.displayFilters) {
-      return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT;
+      if (this.resultMode === ModeEnum.grid) {
+        return this.el.nativeElement.parentElement.offsetHeight -
+          (this.COLUMN_ACTIONS_HEIGHT - this.COLUMN_NAME_HEIGHT);
+      } else {
+        return this.el.nativeElement.parentElement.offsetHeight -
+          (this.COLUMN_ACTIONS_HEIGHT + this.COLUMN_NAME_HEIGHT);
+      }
     } else {
-      return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT - this.FILTERS_HEIGHT;
+      if (this.resultMode === ModeEnum.grid) {
+        return this.el.nativeElement.parentElement.offsetHeight -
+          (this.COLUMN_ACTIONS_HEIGHT - this.COLUMN_NAME_HEIGHT) - this.FILTERS_HEIGHT;
+      } else {
+        return this.el.nativeElement.parentElement.offsetHeight -
+          (this.COLUMN_ACTIONS_HEIGHT + this.COLUMN_NAME_HEIGHT) - this.FILTERS_HEIGHT;
+      }
     }
   }
 }
