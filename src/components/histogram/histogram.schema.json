@@ -148,8 +148,8 @@
             "type": "boolean"
         },
         "paletteColors":{
-            "description": "Either a hex string color or a color name (in English) or a saturation interval.",
-            "type": "array"
+            "description": "Either a hex string color or a color name (in English) or a saturation interval [0, 100].",
+            "type": ["array", "string"]
         },
         "ticksDateFormat":{
             "description": "The date format of ticks.* Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).",
