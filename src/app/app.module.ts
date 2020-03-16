@@ -17,43 +17,45 @@
  * under the License.
  */
 
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-
-import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
-import { ResultsDemoComponent } from './results-demo/results-demo.component';
-import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
-import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
-
-import {
-  MatChipsModule, MatIconModule, MatSidenavModule,
-  MatSlideToggleModule, MatSelectModule, MatTabsModule, MatRadioModule
-} from '@angular/material';
-import { FormsModule } from '@angular/forms';
-import { HistogramModule } from '../components/histogram/histogram.module';
-import { ResultsModule } from '../components/results/results.module';
-import { MapglModule } from '../components/mapgl/mapgl.module';
-import { PowerbarsModule } from '../components/powerbars/powerbars.module';
-import { DonutModule } from '../components/donut/donut.module';
-import { DonutDemoComponent } from './donut-demo/donut-demo.component';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
-import { MapglImportModule } from '../components/mapgl-import/mapgl-import.module';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import.component';
 import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
-import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
-import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
-import { MAT_DATE_LOCALE, MatButtonModule } from '@angular/material';
-import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
+import { DonutModule } from '../components/donut/donut.module';
+import { HistogramModule } from '../components/histogram/histogram.module';
+import { MapglImportModule } from '../components/mapgl-import/mapgl-import.module';
 import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
+import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
+import { MapglModule } from '../components/mapgl/mapgl.module';
 import { MetricModule } from '../components/metric/metric.module';
+import { PowerbarsModule } from '../components/powerbars/powerbars.module';
+import { ResultsModule } from '../components/results/results.module';
+import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
+import { AppComponent } from './app.component';
+import { DonutDemoComponent } from './donut-demo/donut-demo.component';
+import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
+import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
+import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
+import { ResultsDemoComponent } from './results-demo/results-demo.component';
+import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
 import { MapglLegendModule } from '../components/mapgl-legend/mapgl-legend.module';
 import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgl-layer-icon.module';
+
+
+
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -68,7 +70,6 @@ const routes: Routes = [
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent }
 ];
 
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,19 +83,18 @@ const routes: Routes = [
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatButtonModule,
-    MatChipsModule,
-    MatIconModule,
-    MatSidenavModule,
-    MatSelectModule,
-    MatTabsModule,
-    MatRadioModule,
     FormsModule,
     MapglModule,
     MapglImportModule,
     MapglSettingsModule,
     MapglLegendModule,
     MapglLayerIconModule,
+    MatButtonModule,
+    MatIconModule,
+    MatRadioModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatTabsModule,
     HistogramModule,
     DonutModule,
     ResultsModule,
@@ -102,8 +102,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,
-    MatSlideToggleModule,
-      HttpClientModule,
+    HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

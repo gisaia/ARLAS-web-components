@@ -17,11 +17,10 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
-import { Column } from '../model/column';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
 import { Subject } from 'rxjs';
-import { MatSelectChange, MatOption } from '@angular/material';
-
+import { Column } from '../model/column';
 
 @Component({
   selector: '[arlas-result-filter]',

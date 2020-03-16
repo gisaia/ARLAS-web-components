@@ -17,31 +17,29 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, DoCheck, IterableDiffers, ElementRef, ViewEncapsulation, HostListener } from '@angular/core';
-import { SortEnum } from '../utils/enumerations/sortEnum';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
-
+import { Component, DoCheck, ElementRef, HostListener, Input, IterableDiffers, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { OnChanges, OnInit, Output } from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
+import { MatSelectChange } from '@angular/material/select';
+import { TranslateService } from '@ngx-translate/core';
+import { ANIMATION_TYPES } from 'ngx-loading';
+import { fromEvent, Observable, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { ArlasColorService } from '../../../services/color.generator.service';
 import { Column } from '../model/column';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Observable, Subject, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { ANIMATION_TYPES } from 'ngx-loading';
-import { MatButtonToggleChange, MatSelectChange } from '@angular/material';
-import { SimpleChanges } from '@angular/core';
-import { OnChanges } from '@angular/core/core';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
-import { ArlasColorService } from '../../../services/color.generator.service';
+import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
-import { TranslateService } from '@ngx-translate/core';
+import { SortEnum } from '../utils/enumerations/sortEnum';
+import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions } from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
  * Items can be represented as rows or grids and are multi-selectable.
  * For both list and grid modes, each item has detailed data that can be displayed in a togglable space.
  */
-
 @Component({
   selector: 'arlas-result-list',
   templateUrl: './result-list.component.html',

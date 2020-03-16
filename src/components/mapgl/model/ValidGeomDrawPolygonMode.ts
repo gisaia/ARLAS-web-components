@@ -2,7 +2,7 @@ import DrawPolygon from '@gisaia-team/mapbox-gl-draw/src/modes/draw_polygon';
 import CommonSelectors from '@gisaia-team/mapbox-gl-draw/src/lib/common_selectors';
 import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zoom';
 import Constants from '@gisaia-team/mapbox-gl-draw/src/constants';
-import * as jsts from 'jsts/dist/jsts';
+import * as jsts from 'jsts/dist/jsts.min';
 
 const ValidGeomDrawPolygonMode = DrawPolygon;
 const reader = new jsts.io.GeoJSONReader();

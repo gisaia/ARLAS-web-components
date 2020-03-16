@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { Directive, Input, Output, HostListener, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { Item } from '../model/item';
+import { ModeEnum } from '../utils/enumerations/modeEnum';
 
 @Directive({
   selector: '[arlasResultScroll]',

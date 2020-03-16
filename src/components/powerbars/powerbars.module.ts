@@ -17,13 +17,16 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PowerbarsComponent } from './powerbars.component';
-import { MatCardModule, MatIconModule, MatTooltipModule, MatInputModule } from '@angular/material';
+import { NgModule } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
+import { PowerbarsComponent } from './powerbars.component';
 
 @NgModule({
   imports: [
@@ -39,4 +42,4 @@ import { FormatNumberModule } from '../../pipes/format-number/format-number.modu
   declarations: [PowerbarsComponent],
   exports: [PowerbarsComponent]
 })
-export class PowerbarsModule {}
+export class PowerbarsModule { }

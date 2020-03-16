@@ -17,27 +17,31 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ResultListComponent } from './result-list/result-list.component';
-import { ResultGridTileComponent } from './result-grid-tile/result-grid-tile.component';
-import { ResultDetailedGridComponent } from './result-detailed-grid/result-detailed-grid.component';
-
-import { ResultItemComponent } from './result-item/result-item.component';
-import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
-import { ResultFilterComponent } from './result-filter/result-filter.component';
-import { ResultScrollDirective } from './result-directive/result-scroll.directive';
-import { LoadingModule } from 'ngx-loading';
-import {
-  MatIconModule, MatChipsModule, MatButtonToggleModule, MatButtonModule,
-  MatGridListModule, MatCheckboxModule, MatMenuModule, MatTooltipModule, MatSelectModule,
-  MatSlideToggleModule,
-  MatRadioModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { LoadingModule } from 'ngx-loading';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { ResultDetailedGridComponent } from './result-detailed-grid/result-detailed-grid.component';
+import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
+import { ResultScrollDirective } from './result-directive/result-scroll.directive';
+import { ResultFilterComponent } from './result-filter/result-filter.component';
+import { ResultGridTileComponent } from './result-grid-tile/result-grid-tile.component';
+import { ResultItemComponent } from './result-item/result-item.component';
+import { ResultListComponent } from './result-list/result-list.component';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 
 @NgModule({

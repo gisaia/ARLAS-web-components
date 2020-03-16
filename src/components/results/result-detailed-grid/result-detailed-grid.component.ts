@@ -17,13 +17,11 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
-import { Action, ElementIdentifier } from '../utils/results.utils';
-
-import { Item } from '../model/item';
-import { Subject } from 'rxjs';
+import { Component, ElementRef, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FullScreenViewer } from 'iv-viewer';
-
+import { Subject } from 'rxjs';
+import { Item } from '../model/item';
+import { Action, ElementIdentifier } from '../utils/results.utils';
 
 @Component({
   selector: 'arlas-result-detailed-grid',

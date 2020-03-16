@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Subject } from 'rxjs';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
-import { MatTooltip } from '@angular/material';
 
 @Component({
   selector: 'arlas-result-grid-tile',

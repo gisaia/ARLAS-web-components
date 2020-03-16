@@ -21,11 +21,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HistogramComponent } from './histogram.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
     CommonModule,
-    TranslateModule
+    TranslateModule,
+    MatTooltipModule
   ],
   declarations: [HistogramComponent],
   exports: [HistogramComponent]

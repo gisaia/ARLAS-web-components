@@ -39,7 +39,7 @@ import LimitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import ValidGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
 import { FeatureCollection } from '@turf/helpers';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction } from 'mapbox-gl';
 
