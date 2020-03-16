@@ -52,7 +52,9 @@ export interface OnMoveResult {
   centerWithOffset: Array<number>;
   extend: Array<number>;
   extendWithOffset: Array<number>;
+  rawExtendWithOffset: Array<number>;
   extendForLoad: Array<number>;
+  rawExtendForLoad: Array<number>;
   extendForTest: Array<number>;
   tiles: Array<{ x: number, y: number, z: number }>;
   geohash: Array<string>;
@@ -837,19 +839,29 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const bottomLeftOffset = bottomLeft.add(new mapboxgl.Point(this.offset.west, this.offset.south));
       const topRghtOffset = topRght.add(new mapboxgl.Point(this.offset.east, this.offset.north));
 
-      const westOffset = this.map.unproject(bottomLeftOffset).wrap().lng;
-      const southOffset = this.map.unproject(bottomLeftOffset).wrap().lat;
-      const eastOffset = this.map.unproject(topRghtOffset).wrap().lng;
-      const northOffset = this.map.unproject(topRghtOffset).wrap().lat;
+      const bottomLeftOffsetLatLng = this.map.unproject(bottomLeftOffset);
+      const topRghtOffsetLatLng = this.map.unproject(topRghtOffset);
+
+      const wrapWestOffset = bottomLeftOffsetLatLng.wrap().lng;
+      const wrapSouthOffset = bottomLeftOffsetLatLng.wrap().lat;
+      const wrapEastOffset = topRghtOffsetLatLng.wrap().lng;
+      const wrapNorthOffset = topRghtOffsetLatLng.wrap().lat;
+
+      const rawWestOffset = bottomLeftOffsetLatLng.lng;
+      const rawSouthOffset = bottomLeftOffsetLatLng.lat;
+      const rawEastOffset = topRghtOffsetLatLng.lng;
+      const rawNorthOffset = topRghtOffsetLatLng.lat;
 
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
         zoomStart: this.zoomStart,
         center: this.map.getCenter(),
         centerWithOffset: [centerOffSetLatLng.lng, centerOffSetLatLng.lat],
-        extendWithOffset: [northOffset, westOffset, southOffset, eastOffset],
+        extendWithOffset: [wrapNorthOffset, wrapWestOffset, wrapSouthOffset, wrapEastOffset],
+        rawExtendWithOffset: [rawNorthOffset, rawWestOffset, rawSouthOffset, rawEastOffset],
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
+        rawExtendForLoad: [],
         extendForTest: [],
         tiles: [],
         geohash: geohashList,
@@ -876,6 +888,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.max(extendForTestdLatLng[0].lng, -180),
         Math.max(extendForTestdLatLng[0].lat, -90),
         Math.min(extendForTestdLatLng[1].lng, 180)
+      ];
+      onMoveData.rawExtendForLoad = [
+        extendForTestdLatLng[1].lat,
+        extendForTestdLatLng[0].lng,
+        extendForTestdLatLng[0].lat,
+        extendForTestdLatLng[1].lng,
       ];
       onMoveData.tiles = xyz([[onMoveData.extendForLoad[1], onMoveData.extendForLoad[2]],
       [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
