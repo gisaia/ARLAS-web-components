@@ -1,11 +1,16 @@
 # Change Log
 
+## [v12.6.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.2) (2020-03-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.1...v12.6.2)
+
 ## [v12.6.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.1) (2020-03-23)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.0...v12.6.1)
 
 **Fixed bugs:**
 
+- Metric component doesn't update when the value is equal to 0 [\#406](https://github.com/gisaia/ARLAS-web-components/issues/406)
 - Wrong tbody heigth [\#402](https://github.com/gisaia/ARLAS-web-components/issues/402) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v12.6.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.0) (2020-03-12)
