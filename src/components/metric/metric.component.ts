@@ -57,7 +57,7 @@ export class MetricComponent implements OnInit, OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['value'] && this.value) {
+    if (changes['value']) {
       if (this.shortValue) {
         this.displayedValue = this.intToString(Math.round(this.value));
       } else {
