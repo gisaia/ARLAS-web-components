@@ -1,8 +1,21 @@
 # Change Log
 
+## [v12.6.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.1) (2020-03-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.0...v12.6.1)
+
+**Fixed bugs:**
+
+- Wrong tbody heigth [\#402](https://github.com/gisaia/ARLAS-web-components/issues/402) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v12.6.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.0) (2020-03-12)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.5.0...v12.6.0)
+
+**New stuff:**
+
+- Add swimlaneRepresentation input [\#400](https://github.com/gisaia/ARLAS-web-components/issues/400)
+- Add swimlaneOptions input to configure graphical aspects of the swimlane [\#399](https://github.com/gisaia/ARLAS-web-components/issues/399)
 
 ## [v12.5.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.5.0) (2020-02-14)
 
