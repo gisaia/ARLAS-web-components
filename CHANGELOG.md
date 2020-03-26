@@ -1,8 +1,20 @@
 # Change Log
 
+## [v12.6.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.3) (2020-03-26)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.2...v12.6.3)
+
+**Fixed bugs:**
+
+- Set metric value to '-' when it becomes undefined [\#410](https://github.com/gisaia/ARLAS-web-components/issues/410)
+
 ## [v12.6.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.2) (2020-03-23)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.1...v12.6.2)
+
+**Fixed bugs:**
+
+- Fix regression of introducing NAN in metric component [\#408](https://github.com/gisaia/ARLAS-web-components/issues/408)
 
 ## [v12.6.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.1) (2020-03-23)
 
