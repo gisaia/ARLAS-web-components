@@ -92,7 +92,7 @@ export class Item {
   /**
    * @description Whether to highlight the item.
    */
-  public ishighLight = false;
+  public ishighLight = undefined;
   /**
    * @description The item position in a list of items.
    */

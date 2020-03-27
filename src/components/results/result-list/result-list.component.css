@@ -95,6 +95,12 @@
   position: relative;
 }
 
+.resultlist__body--item-hover- {
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px dashed #e9ecef;
+  position: relative;
+}
+
 .resultlist__body--item-hover-false {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
