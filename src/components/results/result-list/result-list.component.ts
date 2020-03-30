@@ -489,7 +489,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         });
       } else {
         this.items.forEach(item => {
-          item.ishighLight = false;
+          item.ishighLight = undefined;
         });
       }
     }
@@ -923,7 +923,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
 
     item.position = this.items.length + 1;
-    item.ishighLight = false;
+    item.ishighLight = undefined;
     // When new data is loaded, check the one that were already checked +
     // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
     if (this.allItemsChecked && (this.isNextPageRequested || this.isPreviousPageRequested)) {
