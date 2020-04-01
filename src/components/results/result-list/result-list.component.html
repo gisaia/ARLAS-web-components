@@ -125,7 +125,7 @@
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
-          <tr arlas-result-item class="resultlist__body--item-hover-{{rowItem.ishighLight}}" [options]="options" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
+          <tr arlas-result-item id="{{rowItem.identifier}}" class="resultlist__body--item-hover-{{rowItem.ishighLight}}" [options]="options" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
             [idFieldName]="fieldsConfiguration.idFieldName" [tableWidth]="tableWidth" [rowItem]="rowItem" [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle" [keysToColors]="keysToColors" [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
             (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)">
           </tr>
@@ -137,7 +137,7 @@
         </ng-container>
         <ng-template #grid_mode>
           <mat-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile">
-            <arlas-result-grid-tile class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
+            <arlas-result-grid-tile  id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
               (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
             </arlas-result-grid-tile>
