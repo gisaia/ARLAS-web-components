@@ -114,6 +114,16 @@ export class ResultScrollDirective implements OnChanges {
     }
     this.top = scrollTop;
     this.height = scrollHeight;
+    if (this.previousFirstId) {
+        if (this.previousFirstId !== this.items[0].identifier || (this.fetchState && this.fetchState.endListDown)) {
+          this.previousFirstId = null;
+        }
+    }
+    if (this.previousLastId) {
+      if (this.previousLastId !== this.items[this.items.length - 1].identifier || (this.fetchState && this.fetchState.endListUp)) {
+        this.previousLastId = null;
+      }
+    }
     if (scrollTop >= downPositionTrigger && this.isScrollingDown(scrollTop)) {
       /** The following condition answers the question : when should I stop emitting `nextDataEvent` even if i reach the end of the scroll?
        * The answer is: when `nextDataEvent` is emitted and there is no new items loaded.
