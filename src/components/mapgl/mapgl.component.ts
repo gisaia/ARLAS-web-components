@@ -288,6 +288,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Emits the event of whether redraw the tile.
    */
   @Input() public redrawTile: Subject<boolean> = new Subject<boolean>();
+  @Input() public redrawSource: Subject<any> = new Subject<any>();
+
+
+  @Input() public dataSources: Set<string>;
   /**
    * @Output : Angular
    * @description Emits the new chosen Style that has the attribute `geomStrategy` set.
@@ -403,6 +407,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
+      if (changes['dataSources'] !== undefined) {
+
+      }
       if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
         if (changes['geojsondata'] !== undefined) {
           this.geojsondata = changes['geojsondata'].currentValue;
@@ -584,9 +591,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.zoom = this.map.getZoom();
 
       // Add Data_source
-      this.map.addSource(this.DATA_SOURCE, {
-        'type': 'geojson',
-        'data': this.geojsondata
+      this.dataSources.forEach(source => {
+        this.map.addSource({
+          type: 'geojson',
+          data: Object.assign({}, this.emptyData)
+        });
       });
       this.map.addSource(this.POLYGON_LABEL_SOURCE, {
         'type': 'geojson',
@@ -924,6 +933,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
           this.map.getSource(this.DATA_SOURCE).setData(this.geojsondata);
         }
+      }
+    });
+
+    this.redrawSource.subscribe(sd => {
+      if (this.map.getSource(sd.source) !== undefined) {
+        this.map.getSource(sd.source).setData({
+          'type': 'FeatureCollection',
+          'features': sd.data
+        });
       }
     });
 
