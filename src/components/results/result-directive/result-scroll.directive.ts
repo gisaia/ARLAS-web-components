@@ -33,14 +33,10 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public resultMode: ModeEnum;
   @Input() public fetchState: { endListUp: true, endListDown: false };
   @Input() public scrollOptions: { maintainScrollUpPosition: boolean, maintainScrollDownPosition: boolean, nbLines: number };
-  /**
-   * @deprecated moreDataEvent is replaced with `nextDataEvent`.
-   */
-  @Output() public moreDataEvent: Subject<number> = new Subject<number>();
+
   @Output() public nextDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
   @Output() public previousDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
   private lastScrollTop = 0;
-  private moreDataCallsCounter = 0;
   private previousFirstId: string = null;
   private previousLastId: string = null;
   private tbodyHeight;
@@ -54,7 +50,6 @@ export class ResultScrollDirective implements OnChanges {
     if (changes['items']) {
       /** New data is loaded : we reset all the variables */
       this.lastScrollTop = 0;
-      this.moreDataCallsCounter = 0;
       this.previousFirstId = null;
       this.previousLastId = null;
       /** Repositioning the scroll bar to the top*/
@@ -136,8 +131,6 @@ export class ResultScrollDirective implements OnChanges {
         this.previousLastId = this.items[this.items.length - 1].identifier;
         this.previousFirstId = null;
         this.nextDataEvent.next(this.items[this.items.length - 1].itemData);
-        this.moreDataCallsCounter++;
-        this.moreDataEvent.next(this.moreDataCallsCounter);
       }
     }
     if (scrollTop <= upPositionTrigger && this.isScrollingUp(scrollTop)) {
