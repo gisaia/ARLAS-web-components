@@ -1,5 +1,14 @@
 # Change Log
 
+## [v12.7.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.0) (2020-04-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.3...v12.7.0)
+
+**Miscellaneous:**
+
+- Add html id for a ResultItemComponent element [\#413](https://github.com/gisaia/ARLAS-web-components/issues/413) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Add a neutral state in isHighLight item [\#411](https://github.com/gisaia/ARLAS-web-components/issues/411) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v12.6.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.3) (2020-03-26)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.2...v12.6.3)
