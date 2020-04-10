@@ -553,23 +553,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   /**
-   * when it's called for more data, an animated loading div is shown
-   * @deprecated
-   *  */
-  public askForMoreData(moreDataCallsCounter: number) {
-    this.moreDataEvent.next(moreDataCallsCounter);
-    this.isNextPageRequested = true;
-  }
-
-  /**
    * @description Emits the event of asking for next or previous page of items
    * @param referenceIdentifier : item identifier used as reference to fetch the next/previous page
    * @param whichPage : Whether to fetch the `next` or `previous` page
    */
   public paginate(itemData: Map<string, string | number | Date>, whichPage: PageEnum) {
-    this.paginationEvent.next({ reference: itemData, whichPage: whichPage });
     this.isNextPageRequested = whichPage === PageEnum.next;
     this.isPreviousPageRequested = whichPage === PageEnum.previous;
+    this.paginationEvent.next({ reference: itemData, whichPage: whichPage });
+
   }
 
   /**
