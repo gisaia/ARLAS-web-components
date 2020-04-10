@@ -129,7 +129,7 @@ export class ResultScrollDirective implements OnChanges {
       if (this.items.length > 0 && this.items[this.items.length - 1].identifier !== this.previousLastId && this.fetchState
          && !this.fetchState.endListDown) {
         this.previousLastId = this.items[this.items.length - 1].identifier;
-        this.previousFirstId = null;
+        this.previousFirstId = this.items[0].identifier;
         this.nextDataEvent.next(this.items[this.items.length - 1].itemData);
       }
     }
@@ -137,7 +137,7 @@ export class ResultScrollDirective implements OnChanges {
       /** Same logic as the condition above but on the top of the list this time. */
       if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && this.fetchState && !this.fetchState.endListUp) {
         this.previousFirstId = this.items[0].identifier;
-        this.previousLastId = null;
+        this.previousLastId = this.items[this.items.length - 1].identifier;
         this.previousDataEvent.next(this.items[0].itemData);
       }
     }
