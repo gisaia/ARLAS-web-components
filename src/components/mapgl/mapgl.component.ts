@@ -284,13 +284,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     { north: 0, east: 0, south: 0, west: 0 };
 
   /**
-   * @Output : Angular
-   * @description Emits the event of whether redraw the tile.
+   * @Input : Angular
+   * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
-  @Input() public redrawTile: Subject<boolean> = new Subject<boolean>();
-  @Input() public redrawSource: Subject<any> = new Subject<any>();
+  @Input() public redrawSource: Subject<{source: string, data: helpers.Feature[]}> =
+     new Subject<{source: string, data: helpers.Feature[]}>();
 
-
+  /**
+   * @Input : Angular
+   * @description List of data sources names that should be added to the map. Sources should be of type `geojson`
+   */
   @Input() public dataSources: Set<string>;
   /**
    * @Output : Angular
@@ -407,15 +410,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
-      if (changes['dataSources'] !== undefined) {
-
-      }
-      if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
-        if (changes['geojsondata'] !== undefined) {
-          this.geojsondata = changes['geojsondata'].currentValue;
-          this.map.getSource(this.DATA_SOURCE).setData(this.geojsondata);
-        }
-      }
       if (changes['drawData'] !== undefined) {
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
@@ -592,7 +586,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
       // Add Data_source
       this.dataSources.forEach(source => {
-        this.map.addSource({
+        this.map.addSource(source, {
           type: 'geojson',
           data: Object.assign({}, this.emptyData)
         });
@@ -926,14 +920,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
     this.map.on('mouseup', (e) => {
       this.endlngLat = e.lngLat;
-    });
-
-    this.redrawTile.subscribe(value => {
-      if (value) {
-        if (this.map.getSource(this.DATA_SOURCE) !== undefined) {
-          this.map.getSource(this.DATA_SOURCE).setData(this.geojsondata);
-        }
-      }
     });
 
     this.redrawSource.subscribe(sd => {
