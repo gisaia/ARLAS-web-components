@@ -12,14 +12,6 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
-  <div *ngFor="let styleGroup of mapLayers.styleGroups">
-    <span *ngIf="styleGroup.styles.length > 1" class="map__layers-stylegroup-name">{{ styleGroup.name | translate}}</span>
-    <mat-radio-group *ngIf="styleGroup.styles.length > 1" class="map__layers-radio-group" [value]="styleGroup.selectedStyle">
-      <mat-radio-button class="map__layers-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id" (change)="onChangeStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
-        {{style.name | translate}}
-      </mat-radio-button>
-    </mat-radio-group>
-  </div>
 </div>
 <div *ngIf="visualisationsSets" class="map__visu-list--container">
   <div (click)="emitVisualisations(visu.key)" class="map__visu-container-{{visualisationsSets.status.get(visu.key)}}" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
