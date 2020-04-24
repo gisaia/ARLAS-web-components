@@ -19,17 +19,16 @@
 
 import {
   AfterViewInit, Component, EventEmitter,
-  HostListener, Input, IterableDiffers,
+  HostListener, Input,
   OnChanges, OnInit, Output, SimpleChanges,
   ViewEncapsulation
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { bboxes } from 'ngeohash';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
-import { getDefaultStyle, paddedBounds, xyz, MapExtend } from './mapgl.component.util';
+import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
@@ -56,12 +55,13 @@ export interface OnMoveResult {
   extendForLoad: Array<number>;
   rawExtendForLoad: Array<number>;
   extendForTest: Array<number>;
-  tiles: Array<{ x: number, y: number, z: number }>;
-  geohash: Array<string>;
-  geohashForLoad: Array<string>;
   xMoveRatio: number;
   yMoveRatio: number;
+  visibleLayers: Set<string>;
 }
+
+
+export const GEOJSON_SOURCE_TYPE = 'geojson';
 
 /**
  * Mapgl Component allows to display and select geometrical data on a map.
@@ -186,11 +186,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public margePanForTest: number;
   /**
    * @Input : Angular
-   * @description The data displayed on map.
-   */
-  @Input() public geojsondata: FeatureCollection = Object.assign({}, this.emptyData);
-  /**
-   * @Input : Angular
    * @description the field name of ids.
    */
   @Input() public idFeatureField: string;
@@ -229,11 +224,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   * @description List of mapboxgl sources to add to the map.
   */
   @Input() public mapSources: Array<MapSource>;
-  /**
-   * @Input : Angular
-   * @description List of triplet zoom-level-precision to associate a couple level-precision for each zoom.
-   */
-  @Input() public zoomToPrecisionCluster: Array<Array<number>>;
 
   /**
    * @Input : Angular
@@ -258,12 +248,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Maximum number of vertices allowed for a polygon
    */
   @Input() public drawPolygonVerticesLimit: number;
-
-  /**
-   * @Input : Angular
-   * @description A couple of (max precision, max geohash-level) above which data is displayed as features
-   */
-  @Input() public maxPrecision: Array<number>;
   /**
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
@@ -290,12 +274,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description List of data sources names that should be added to the map. Sources should be of type `geojson`
    */
   @Input() public dataSources: Set<string>;
-  /**
-   * @Output : Angular
-   * @description Emits the new chosen Style that has the attribute `geomStrategy` set.
-   * @deprecated
-  */
-  @Output() public switchLayer: Subject<Style> = new Subject<Style>();
+
+
+  @Input() public visualisationSetsConfig: {
+    visualisations: Map<string, Set<string>>,
+    default: Set<string>;
+  };
+
+  public visualisationsSets: {
+    visualisations: Map<string, Set<string>>,
+    status: Map<string, boolean>;
+  };
 
   /**
    * @Output : Angular
@@ -315,6 +304,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @deprecated
    */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
+
+  @Output() public visualisations: EventEmitter<Set<string>> = new EventEmitter();
   /**
    * @Output : Angular
    * @description Emits the event of clicking on a feature.
@@ -389,6 +380,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
+  public emitVisualisations(visu: string) {
+    const visuStatus = this.visualisationsSets.status.get(visu);
+    this.visualisationsSets.status.set(visu, !visuStatus);
+    const layers = new Set<string>();
+    this.visualisationsSets.visualisations.forEach((ls, v) => {
+      if (this.visualisationsSets.status.get(v)) {
+        ls.forEach(l => layers.add(l));
+      }
+    });
+    this.visualisations.emit(layers);
+  }
   public openInvalidGeometrySnackBar() {
     this._snackBar.open(this.translate.instant('Invalid geometry'), this.translate.instant('Ok'), {
       duration: 3 * 1000,
@@ -577,19 +579,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       // Add Data_source
       this.dataSources.forEach(source => {
         this.map.addSource(source, {
-          type: 'geojson',
+          type: GEOJSON_SOURCE_TYPE,
           data: Object.assign({}, this.emptyData)
         });
       });
       this.map.addSource(this.POLYGON_LABEL_SOURCE, {
-        'type': 'geojson',
+        'type': GEOJSON_SOURCE_TYPE,
         'data': this.polygonlabeldata
       });
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
         this.addBaseLayers();
-        this.addStylesLayers();
+        this.addVisuLayers();
 
         this.mapLayers.events.zoomOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
@@ -819,6 +821,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.yMoveRatio = Math.abs(this.dragEndY - this.dragStartY) / (<any>e).target._canvas.clientHeight;
     });
 
+    this.visualisationsSets = {
+      visualisations: new Map(),
+      status: new Map()
+    };
+    Object.keys(this.visualisationSetsConfig.visualisations).forEach(visu => {
+      this.visualisationsSets.visualisations.set(visu, this.visualisationSetsConfig.visualisations[visu]);
+      const selectedSets = new Set(this.visualisationSetsConfig.default);
+      this.visualisationsSets.status.set(visu, selectedSets.has(visu));
+    });
+
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
     moveend.subscribe(e => {
@@ -827,7 +839,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-      const geohashList = this.bboxToGeohashList(this.west, this.south, this.east, this.north, this.zoom);
       const offsetPoint = new mapboxgl.Point((this.offset.east + this.offset.west) / 2, (this.offset.north + this.offset.south) / 2);
       const centerOffsetPoint = this.map.project(this.map.getCenter()).add(offsetPoint);
       const centerOffSetLatLng = this.map.unproject(centerOffsetPoint);
@@ -854,7 +865,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const rawSouthOffset = bottomLeftOffsetLatLng.lat;
       const rawEastOffset = topRghtOffsetLatLng.lng;
       const rawNorthOffset = topRghtOffsetLatLng.lat;
-
+      const visibleLayers = new Set<string>();
+      this.visualisationsSets.status.forEach((b, vs) => {
+        if (b) {
+          this.visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
+        }
+      });
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
         zoomStart: this.zoomStart,
@@ -866,11 +882,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         extendForLoad: [],
         rawExtendForLoad: [],
         extendForTest: [],
-        tiles: [],
-        geohash: geohashList,
-        geohashForLoad: [],
         xMoveRatio: this.xMoveRatio,
-        yMoveRatio: this.yMoveRatio
+        yMoveRatio: this.yMoveRatio,
+        visibleLayers: visibleLayers
       };
 
       const panLoad = this.margePanForLoad * Math.max(height, width) / 100;
@@ -883,9 +897,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.max(extendForLoadLatLng[0].lat, -90),
         Math.min(extendForLoadLatLng[1].lng, 180)
       ];
-      const geohashForLoad = this.bboxToGeohashList(onMoveData.extendForLoad[1], onMoveData.extendForLoad[2],
-        onMoveData.extendForLoad[3], onMoveData.extendForLoad[0], this.zoom);
-      onMoveData.geohashForLoad = geohashForLoad;
       onMoveData.extendForTest = [
         Math.min(extendForTestdLatLng[1].lat, 90),
         Math.max(extendForTestdLatLng[0].lng, -180),
@@ -898,9 +909,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         extendForTestdLatLng[0].lat,
         extendForTestdLatLng[1].lng,
       ];
-      onMoveData.tiles = xyz([[onMoveData.extendForLoad[1], onMoveData.extendForLoad[2]],
-      [onMoveData.extendForLoad[3], onMoveData.extendForLoad[0]]],
-        Math.ceil((this.zoom) - 1));
       this.onMove.next(onMoveData);
     });
     // Fit bounds on current bounds to emit init position in moveend bus
@@ -940,27 +948,27 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.deleteSelectedItem();
   }
 
-  public onChangeStyle(styleGroupId: string, selectedStyleId: string) {
-    if (this.mapLayers && this.mapLayers.styleGroups) {
-      const selectedStyle: Style = this.getStyle(styleGroupId, selectedStyleId, this.mapLayers.styleGroups);
-      if (selectedStyle) {
-        this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
-          styleGroup.selectedStyle = selectedStyle;
-        });
-        this.removeAllLayers();
-        if (selectedStyle.geomStrategy !== undefined) {
-          this.switchLayer.next(selectedStyle);
-        }
-        this.mapLayers.styleGroups.forEach(styleGroup => {
-          localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
-          styleGroup.selectedStyle.layerIds.forEach(layerId => {
-            this.addLayer(layerId);
-          });
-        });
-        this.onStyleChanged.next(this.mapLayers.styleGroups);
-      }
-    }
-  }
+  // public onChangeStyle(styleGroupId: string, selectedStyleId: string) {
+  //   if (this.mapLayers && this.mapLayers.styleGroups) {
+  //     const selectedStyle: Style = this.getStyle(styleGroupId, selectedStyleId, this.mapLayers.styleGroups);
+  //     if (selectedStyle) {
+  //       this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
+  //         styleGroup.selectedStyle = selectedStyle;
+  //       });
+  //       this.removeAllLayers();
+  //       if (selectedStyle.geomStrategy !== undefined) {
+  //         this.switchLayer.next(selectedStyle);
+  //       }
+  //       this.mapLayers.styleGroups.forEach(styleGroup => {
+  //         localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
+  //         styleGroup.selectedStyle.layerIds.forEach(layerId => {
+  //           this.addLayer(layerId);
+  //         });
+  //       });
+  //       this.onStyleChanged.next(this.mapLayers.styleGroups);
+  //     }
+  //   }
+  // }
 
   public setStyleGroup(styleGroupId: string, selectedStyleId: string) {
     if (this.mapLayers && this.mapLayers.styleGroups) {
@@ -1120,52 +1128,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
-   *
-   * @param west west longitude in EPSG4326
-   * @param south south latitude in EPSG4326
-   * @param east east longitude in EPSG4326
-   * @param north north latitude in EPSG4326
-   * @param zoom zoom level
-   */
-  private bboxToGeohashList(west: number, south: number, east: number, north: number, zoom: number): Array<string> {
-    let geohashList = [];
-    if (west < -180 && east > 180) {
-      geohashList = bboxes(Math.min(south, north),
-        -180,
-        Math.max(south, north),
-        180, Math.max(this.getGeohashLevelFromZoom(zoom), 1));
-    } else if (west < -180 && east < 180) {
-      const geohashList_1: Array<string> = bboxes(Math.min(south, north),
-        Math.min(-180, west + 360),
-        Math.max(south, north),
-        Math.max(-180, west + 360), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
-      const geohashList_2: Array<string> = bboxes(Math.min(south, north),
-        Math.min(east, 180),
-        Math.max(south, north),
-        Math.max(east, 180), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
-      geohashList = geohashList_1.concat(geohashList_2);
-
-    } else if (east > 180 && west > -180) {
-      const geohashList_1: Array<string> = bboxes(Math.min(south, north),
-        Math.min(180, east - 360),
-        Math.max(south, north),
-        Math.max(180, east - 360), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
-
-      const geohashList_2: Array<string> = bboxes(Math.min(south, north),
-        Math.min(west, -180),
-        Math.max(south, north),
-        Math.max(west, -180), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
-      geohashList = geohashList_1.concat(geohashList_2);
-    } else {
-      geohashList = bboxes(Math.min(south, north),
-        Math.min(east, west),
-        Math.max(south, north),
-        Math.max(east, west), Math.max(this.getGeohashLevelFromZoom(zoom), 1));
-    }
-    return geohashList;
-  }
-
-  /**
    * @description Add base layers of each style group
    */
   private addBaseLayers() {
@@ -1176,31 +1138,36 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
+  private addVisuLayers() {
+    this.visualisationsSets.visualisations.forEach((ls, v) => {
+      ls.forEach(l => this.addLayer(l));
+    });
+  }
   /**
    * @description Add layers of the selected style of each style group
    */
-  private addStylesLayers() {
-    this.mapLayers.styleGroups.forEach(styleGroup => {
-      let style;
-      const localStorageSelectedStyleId = localStorage.getItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id);
-      if (localStorageSelectedStyleId) {
-        styleGroup.selectedStyle = this.getStyle(styleGroup.id, localStorageSelectedStyleId, this.mapLayers.styleGroups);
-      }
-      if (!styleGroup.selectedStyle) {
-        style = getDefaultStyle(styleGroup.styles);
-        styleGroup.selectedStyle = style;
-        localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, style.id);
-      } else {
-        style = styleGroup.selectedStyle;
-      }
-      if (style.geomStrategy !== undefined) {
-        this.switchLayer.next(style);
-      }
-      style.layerIds.forEach(layerId => {
-        this.addLayer(layerId);
-      });
-    });
-  }
+  // private addStylesLayers() {
+  //   this.mapLayers.styleGroups.forEach(styleGroup => {
+  //     let style;
+  //     const localStorageSelectedStyleId = localStorage.getItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id);
+  //     if (localStorageSelectedStyleId) {
+  //       styleGroup.selectedStyle = this.getStyle(styleGroup.id, localStorageSelectedStyleId, this.mapLayers.styleGroups);
+  //     }
+  //     if (!styleGroup.selectedStyle) {
+  //       style = getDefaultStyle(styleGroup.styles);
+  //       styleGroup.selectedStyle = style;
+  //       localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, style.id);
+  //     } else {
+  //       style = styleGroup.selectedStyle;
+  //     }
+  //     if (style.geomStrategy !== undefined) {
+  //       this.switchLayer.next(style);
+  //     }
+  //     style.layerIds.forEach(layerId => {
+  //       this.addLayer(layerId);
+  //     });
+  //   });
+  // }
 
   private getAllBasemapStyles(): Array<BasemapStyle> {
     const allBasemapStyles = new Array<BasemapStyle>();
@@ -1431,26 +1398,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-   /**
-   * @description Returns the geohash level accordinng to the zoom level and `zoomToPrecisionCluster` and `maxPrecision` Inputs.
-   * If one of `zoomToPrecisionCluster` or `maxPrecision` is not defined, then it returns 1.
-   * @param zoom zoom level
-   */
-  private getGeohashLevelFromZoom(zoom: number): number {
-    const zoomToPrecisionClusterObject = {};
-    if (this.zoomToPrecisionCluster) {
-      this.zoomToPrecisionCluster.forEach(triplet => {
-        zoomToPrecisionClusterObject[triplet[0]] = [triplet[1], triplet[2]];
-      });
-      if (zoomToPrecisionClusterObject[Math.ceil(zoom) - 1] !== undefined &&
-        zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1] !== undefined) {
-          return zoomToPrecisionClusterObject[Math.ceil(zoom) - 1][1];
-      } else {
-        return (this.maxPrecision && this.maxPrecision.length === 2) ? this.maxPrecision[1] : 1;
-      }
-    }
-    return 1;
-  }
 
   private getNextFeatureId() {
     return ++this.indexId;
