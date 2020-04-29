@@ -30,8 +30,8 @@
     </div>
   </div>
   <div *ngIf="histogram.histogramParams.dataLength === 1" class="histogram__no-chart" [style.width.px]="histogram.histogramParams.chartWidth" [style.height.px]="histogram.histogramParams.chartHeight">
-    <span class="histogram__no-chart__key">{{histogram.histogramParams.startValue}}</span>
-    <span class="histogram__no-chart__value">{{histogram.histogramParams.chartTitle}} : {{data[0].value}}</span>
+    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{histogram.histogramParams.startValue}} {{dataUnit}}</span>
+    <span class="histogram__no-chart__value">{{histogram.histogramParams.chartTitle | translate}} {{data[0].value}}</span>
   </div>
   <div *ngIf="descriptionPosition === 1" class="histogram__description" [style.width.px]="histogram.histogramParams.chartWidth-histogram.histogramParams.margin.left-histogram.histogramParams.margin.right"
     [style.margin-left.px]="histogram.histogramParams.margin.left" [style.margin-right.px]="histogram.histogramParams.margin.right">

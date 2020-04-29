@@ -122,6 +122,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public chartTitle = '';
   /**
    * @Input : Angular
+   * @description Chart's label for the x axis (Visible when there is one bucket on the histogram).
+   */
+  @Input() public chartXLabel = '';
+  /**
+   * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
    */
   @Input() public chartWidth: number = null;
@@ -432,6 +437,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   }
 
   private setHistogramParameters() {
+    if (!this.chartXLabel) {
+      this.chartXLabel = '';
+    }
+    if (!this.dataUnit) {
+      this.dataUnit = '';
+    }
     this.histogram.histogramParams = new HistogramParams();
     this.histogram.histogramParams.barWeight = this.barWeight;
     this.histogram.histogramParams.brushHandlesHeightWeight = this.brushHandlesHeightWeight;

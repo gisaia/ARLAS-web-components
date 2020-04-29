@@ -17,11 +17,12 @@
             ]
         },
         "dataUnit": {
-            "description": "Unit of time in histogram",
-            "enum": [
-                "millisecond",
-                "second"
-            ]
+            "description": "Unit of represented data on the histogram",
+            "type": "string"
+        },
+        "chartXLabel": {
+            "description": "Chart's label for the x axis (Visible when there is one bucket on the histogram).",
+            "type": "string"
         },
         "isHistogramSelectable": {
             "description": "If you can select a period on histogram",
