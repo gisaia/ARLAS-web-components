@@ -96,8 +96,10 @@ export class ControlButton {
     public container: HTMLDivElement;
     public icon;
     public name;
-    constructor(name: string) {
+    private tooltip;
+    constructor(name: string, tooltip?: string) {
         this.name = name;
+        this.tooltip = tooltip;
     }
     public onAdd(map) {
         this.map = map;
@@ -107,6 +109,7 @@ export class ControlButton {
         this.btn.id = 'layers_switcher_btn';
         this.container = document.createElement('div');
         this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group mapboxgl-ctrl-group-' + this.name;
+        this.container.setAttribute('title', this.tooltip);
         this.container.appendChild(this.btn);
         return this.container;
     }
