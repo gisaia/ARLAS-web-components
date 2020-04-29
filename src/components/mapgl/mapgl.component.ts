@@ -63,6 +63,10 @@ export interface OnMoveResult {
   yMoveRatio: number;
 }
 
+
+export const ZOOM_IN = 'Zoom in';
+export const ZOOM_OUT = 'Zoom out';
+export const RESET_BEARING = 'Reset bearing to north';
 /**
  * Mapgl Component allows to display and select geometrical data on a map.
  */
@@ -498,6 +502,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       maxZoom: this.maxZoom,
       minZoom: this.minZoom,
       renderWorldCopies: true,
+      locale: {
+        'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
+        'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
+        'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
+      },
       transformRequest: this.transformRequest
     });
     fromEvent(window, 'beforeunload').subscribe(() => {
