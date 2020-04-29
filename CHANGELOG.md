@@ -1,8 +1,16 @@
 # Change Log
 
+## [v12.7.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.2) (2020-04-29)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.1...v12.7.2)
+
 ## [v12.7.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.1) (2020-04-29)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.0...v12.7.1)
+
+**New stuff:**
+
+- add a new input to describe xlabel in case of one bucket [\#419](https://github.com/gisaia/ARLAS-web-components/issues/419) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 
 ## [v12.7.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.0) (2020-04-10)
 
