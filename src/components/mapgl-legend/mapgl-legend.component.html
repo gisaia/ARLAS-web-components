@@ -12,5 +12,10 @@
       <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + interpolatedColors.join(',') + ')'}"></div>
     </div>
   </div>
+  <div [hidden]="widthType !== PROPERTY_SELECTOR_SOURCE.interpolated">
+    <div class="interpolated-width-container">
+      <svg #width_svg></svg>
+    </div>
+  </div>
 
 </div>
