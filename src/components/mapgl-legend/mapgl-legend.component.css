@@ -1,0 +1,16 @@
+.manual-color-value {
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.interpolated-color-container {
+  height: 100%;
+}
+
+.interpolated-color-palette {
+  height: 5px;
+  border-radius: 2px;
+}

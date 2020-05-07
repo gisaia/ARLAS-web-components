@@ -17,28 +17,22 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule } from '@angular/material';
-import { MapglComponent } from './mapgl.component';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MapglLegendModule } from '../mapgl-legend/map-legend.module';
+import { MapglLegendComponent } from './mapgl-legend.component';
+
 
 @NgModule({
   imports: [
     CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatRadioModule,
-    TranslateModule,
-    MapglLegendModule,
-    MatSnackBarModule
+    BrowserModule,
+    TranslateModule
   ],
-  declarations: [MapglComponent],
-  exports: [MapglComponent]
+  declarations: [MapglLegendComponent],
+  exports: [MapglLegendComponent]
 })
-export class MapglModule {
+export class MapglLegendModule {
 
 }
