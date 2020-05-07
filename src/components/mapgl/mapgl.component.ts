@@ -1093,6 +1093,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  public getLayer(layerId: string): mapboxgl.Layer {
+    return this.layersMap.get(layerId);
+  }
+
   private latLngToWKT(features) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {

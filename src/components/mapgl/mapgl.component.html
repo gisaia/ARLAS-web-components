@@ -18,9 +18,10 @@
     <span class="visu-title">{{visu.key}}</span>
     <div>
       <ul class="visu-layers">
-        <li *ngFor="let l of visu.value">
-          {{l}}
-        </li>
+        <div *ngFor="let l of visu.value">
+          <li>{{l}}</li>
+          <arlas-mapgl-legend [layer]="getLayer(l)"></arlas-mapgl-legend>
+        </div>
       </ul>
     </div>
 
