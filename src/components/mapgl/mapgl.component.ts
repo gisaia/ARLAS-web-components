@@ -271,7 +271,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
   @Input() public redrawSource: Subject<{source: string, data: helpers.Feature[]}> =
-     new Subject<{source: string, data: helpers.Feature[]}>();
+    new Subject<{source: string, data: helpers.Feature[]}>();
+
+
+  @Input() public legendUpdater: Subject<Map<string, {minValue: string, maxValue: string}>> =
+    new Subject<Map<string, {minValue: string, maxValue: string}>>();
 
   /**
    * @Input : Angular
