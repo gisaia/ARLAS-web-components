@@ -14,3 +14,33 @@
   height: 5px;
   border-radius: 2px;
 }
+
+.interpolated-width-container {
+  height: 15px;
+}
+
+.width-legend-svg {
+  fill: #dadada !important;
+  stroke: #dadada !important;
+}
+.interpolated-radius-container {
+  height: 20px;
+}
+
+.legend-container {
+  display: block;
+  margin-top: 5px;
+}
+.legend-title {
+  text-align: center;
+  font-size: 0.75em;
+}
+
+.interpolated-values-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.interpolated-value {
+  font-size: 0.6em;
+}
