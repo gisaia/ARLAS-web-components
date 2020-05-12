@@ -6,6 +6,7 @@ import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { StyleFunction, Expression } from 'mapbox-gl';
+import { ColorLegend, PROPERTY_SELECTOR_SOURCE, Legend } from './legend';
 
 
 export const GET = 'get';
@@ -17,7 +18,7 @@ export const OTHER = 'other_color';
   templateUrl: './mapgl-legend.component.html',
   styleUrls: ['./mapgl-legend.component.css']
 })
-export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
+export class MapglLegendComponent extends ColorLegend implements OnInit, AfterViewInit, OnChanges {
 
   @Input() public layer: mapboxgl.Layer;
   @Input() public legendUpdater: Subject<Map<string, {minValue: string, maxValue: string}>> =
@@ -25,19 +26,15 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
-
-  public manualColors: Map<string, string> = new Map();
-  public interpolatedColors: Array<string> = new Array();
-
-  public colorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
-  public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
   private legendData: Map<string, {minValue: string, maxValue: string}> = new Map();
 
   private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
-  constructor(public translate: TranslateService, private el: ElementRef) { }
+  constructor(public translate: TranslateService, private el: ElementRef) {
+    super(translate);
+   }
 
   public ngOnInit() {
     this.legendUpdater.subscribe(legendData => {
@@ -66,64 +63,25 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        this.buildColorLegend(p['circle-color']);
+        this.buildColorLegend(p['circle-color'], this.legendData);
         this.buildCircleRadiusLegend(p['circle-radius']);
         break;
       }
       case 'line': {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        this.buildColorLegend(p['line-color']);
+        this.buildColorLegend(p['line-color'], this.legendData);
         this.buildLineWidthLegend(p['line-width']);
         break;
       }
       case 'fill': {
-        const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        this.buildColorLegend(p['fill-color']);
+        const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
+        this.buildColorLegend(p['fill-color'], this.legendData);
         break;
       }
       case 'heatmap': {
-        const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        this.buildColorLegend(p['heatmap-color']);
+        const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
+        this.buildColorLegend(p['heatmap-color'], this.legendData);
         break;
-      }
-    }
-  }
-
-  private buildColorLegend(color: string | StyleFunction | Expression): void {
-    if (typeof color === 'string') {
-      this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
-    } else if (Array.isArray(color)) {
-      if (color.length === 2) {
-        /** color = ["get", "field"]  ==> Generated or Provided */
-        // todo
-      } else if (color.length >= 3) {
-        if (color[0] === MATCH) {
-          /** color = ["match", ["get", "field"], .... ]**/
-          this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.manual;
-          const colorsLength = color.length - 2;
-          let hasDefaultColor = false;
-          if (colorsLength % 2 !== 0) {
-            hasDefaultColor = true;
-          }
-          for (let i = 2; i < color.length; i += 2) {
-            if (hasDefaultColor && i === colorsLength - 1) {
-              this.manualColors.set(this.translate.instant(OTHER), color[i]);
-            } else {
-              this.manualColors.set(this.translate.instant(color[i]), color[i + 1]);
-            }
-          }
-        } else if (color[0] === INTERPOLATE) {
-          this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
-          // todo throw exception if interpolation is not linear
-          const field = color[2][1];
-          this.colorLegend.title = field;
-          if (this.legendData && this.legendData.get(field)) {
-            this.colorLegend.minValue = this.legendData.get(field).minValue;
-            this.colorLegend.maxValue = this.legendData.get(field).maxValue;
-          }
-          this.interpolatedColors = color.filter((c, i) => i > 2 && i % 2 === 0);
-        }
       }
     }
   }
@@ -153,7 +111,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             });
           }
 
-          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, 300);
+          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, 210);
         }
       }
     }
@@ -183,7 +141,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, 300);
+          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, 210);
         }
       }
     }
@@ -248,20 +206,4 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
 
 export function getMax(data: Array<HistogramData>): number {
   return Math.max(...data.map(hd => +hd.value));
-}
-export enum PROPERTY_SELECTOR_SOURCE {
-  fix = 'Fix',
-  provided = 'Provided',
-  generated = 'Generated',
-  manual = 'Manual',
-  interpolated = 'Interpolated',
-  metric_on_field = 'Metric on field',
-  heatmap_density = 'Density'
-}
-
-export interface Legend {
-  type?: PROPERTY_SELECTOR_SOURCE;
-  title?: string;
-  minValue?: string;
-  maxValue?: string;
 }

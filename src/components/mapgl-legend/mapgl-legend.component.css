@@ -26,7 +26,9 @@
 .interpolated-radius-container {
   height: 20px;
 }
-
+.legend-wrapper {
+  width: 210px;
+}
 .legend-container {
   display: block;
   margin-top: 5px;
