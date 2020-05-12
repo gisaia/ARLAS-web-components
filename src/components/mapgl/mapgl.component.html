@@ -17,12 +17,14 @@
   <div (click)="emitVisualisations(visu.key)" class="map__visu-container-{{visualisationsSets.status.get(visu.key)}}" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
     <span class="visu-title">{{visu.key}}</span>
     <div>
-      <ul class="visu-layers">
-        <div *ngFor="let l of visu.value">
-          <li>{{l}}</li>
-          <arlas-mapgl-legend [layer]="getLayer(l)"[legendUpdater]="legendUpdater" ></arlas-mapgl-legend>
+        <div class="layer_wrapper" *ngFor="let l of visu.value">
+          <div class="layer_container">
+            <div class="layer_icon" ><arlas-mapgl-layer-icon [layer]="getLayer(l)"></arlas-mapgl-layer-icon></div>
+            <div class="layer_name">{{l}}</div>
+          </div>
+
+          <arlas-mapgl-legend [layer]="getLayer(l)" [legendUpdater]="legendUpdater" ></arlas-mapgl-legend>
         </div>
-      </ul>
     </div>
 
   </div>

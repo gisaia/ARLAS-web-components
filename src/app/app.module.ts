@@ -55,6 +55,7 @@ import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings
 import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
 import { MetricModule } from '../components/metric/metric.module';
 import { MapglLegendModule } from '../components/mapgl-legend/map-legend.module';
+import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgel-layer-icon.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -98,6 +99,7 @@ const routes: Routes = [
     MapglImportModule,
     MapglSettingsModule,
     MapglLegendModule,
+    MapglLayerIconModule,
     HistogramModule,
     DonutModule,
     ResultsModule,

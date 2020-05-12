@@ -1,9 +1,9 @@
-<div>
+<div class="legend-wrapper">
   <!-- COLOR SECTION -->
   <div *ngIf="colorLegend.type" class="legend-container">
     <div class="legend-title">{{colorLegend?.title | translate}}</div>
     <div *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual">
-      <div class="manual-color-container" *ngFor="let manualColor of manualColors | keyvalue">
+      <div class="manual-color-container" *ngFor="let manualColor of colorLegend.manualValues | keyvalue">
         <div class="manual-color">
           <div class="manual-color-value" [style.backgroundColor]="manualColor.value"></div>
           <div class="manual-color-key">{{manualColor.key}}</div>
@@ -12,7 +12,7 @@
     </div>
     <div *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated">
       <div class="interpolated-color-container">
-        <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + interpolatedColors.join(',') + ')'}"></div>
+        <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + colorLegend.interpolatedValues.join(',') + ')'}"></div>
       </div>
       <div class="interpolated-values-container">
         <div class="interpolated-value">{{colorLegend?.minValue | translate}}</div>
