@@ -78,9 +78,7 @@
   padding: 8px;
   cursor: pointer;
 }
-.map__visu-container-true:hover, .map__visu-container-false:hover {
-  background-color: #eaeaea;
-}
+
 .visu-title {
   font-weight: bold;
   padding: 3px
@@ -89,24 +87,6 @@
 .visu-layers {
     margin: 0;
     padding-left: 25px;
-}
-
-.layer_wrapper {
-  margin-bottom: 3px;
-  border-top: .4px #eaeaea solid;
-  margin-top: 3px;
-  padding-top: 5px;
-}
-.layer_container {
-  display: flex;
-}
-
-.layer_name{
-  font-size: 0.8em;
-}
-
-.layer_icon {
-  margin-right: 5px;
 }
 .map__layers-stylegroup-name /* @doc Sets the style of Style group name*/
  {

@@ -1,3 +1,43 @@
+.layer_wrapper {
+  margin-bottom: 3px;
+  border-top: .4px #eaeaea solid;
+  margin-top: 3px;
+  padding-top: 5px;
+}
+.layer_container {
+  display: flex;
+  position: relative;
+}
+.layer_detail {
+  position: absolute;
+}
+.detail_button {
+  background-color: #fff;
+  display: none;
+  height: 20px;
+  width: 20px;
+  position: relative;
+}
+.detail_icon {
+  color: #555;
+  font-size: 1.3em;
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  width: 20px;
+  height: 20px;
+}
+.layer_name{
+  font-size: 0.8em;
+}
+
+.layer_icon {
+  margin-right: 5px;
+}
+
+.layer_icon:hover .detail_button {
+  display: block;
+}
 .manual-color-value {
   width: 20px;
   height: 20px;

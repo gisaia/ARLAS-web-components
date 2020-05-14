@@ -28,6 +28,7 @@ export class MapglLegendComponent extends ColorLegend implements OnInit, AfterVi
 
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
+  public detail = false;
   private legendData: Map<string, {minValue: string, maxValue: string}> = new Map();
 
   private MAX_LINE_WIDTH = 10;
@@ -56,6 +57,12 @@ export class MapglLegendComponent extends ColorLegend implements OnInit, AfterVi
       }
     }
   }
+
+  public showDetail(event: Event) {
+    this.detail = !this.detail;
+    event.stopPropagation();
+  }
+
   private getLegends(): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
@@ -85,6 +92,8 @@ export class MapglLegendComponent extends ColorLegend implements OnInit, AfterVi
       }
     }
   }
+
+
 
   private buildLineWidthLegend(lineWidth: number | StyleFunction | Expression): void {
     if (Array.isArray(lineWidth)) {

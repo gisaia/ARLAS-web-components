@@ -35,7 +35,6 @@ import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgel-layer-icon.modu
     MatRadioModule,
     TranslateModule,
     MapglLegendModule,
-    MapglLayerIconModule,
     MatSnackBarModule
   ],
   declarations: [MapglComponent],
