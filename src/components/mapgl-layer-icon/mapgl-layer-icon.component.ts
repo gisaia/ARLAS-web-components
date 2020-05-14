@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
-import { ColorLegend, Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl-legend/legend';
+import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl-legend/mapgl-legend.component';
 import { TranslateService } from '@ngx-translate/core';
-import { curveLinear, area, line } from 'd3-shape';
-import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 
 @Component({
@@ -10,13 +8,14 @@ import { select } from 'd3-selection';
   templateUrl: './mapgl-layer-icon.component.html',
   styleUrls: ['./mapgl-layer-icon.component.css']
 })
-export class MapglLayerIconComponent extends ColorLegend implements OnInit, AfterViewInit, OnChanges {
+export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public layer: mapboxgl.Layer;
+  @Input() public colorLegend: Legend = {};
+  @Input() public widthLegend: Legend = {};
+  @Input() public radiusLegend: Legend = {};
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
-  constructor(public translate: TranslateService) {
-    super(translate);
-  }
+  constructor(public translate: TranslateService) { }
 
   public ngOnInit() {
   }
@@ -44,20 +43,17 @@ export class MapglLayerIconComponent extends ColorLegend implements OnInit, Afte
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        this.buildColorLegend(p['circle-color']);
         break;
       }
       case 'line': {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        this.buildColorLegend(p['line-color']);
         if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
-          drawFeatureLineIcon(this.layerIconElement.nativeElement,this.colorLegend)
+          drawFeatureLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }
         break;
       }
       case 'fill': {
         const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
-        this.buildColorLegend(p['fill-color']);
         if (source.startsWith('cluster')) {
           drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else {
@@ -67,7 +63,6 @@ export class MapglLayerIconComponent extends ColorLegend implements OnInit, Afte
       }
       case 'heatmap': {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        this.buildColorLegend(p['heatmap-color']);
         if (source.startsWith('cluster')) {
           drawClusterHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }

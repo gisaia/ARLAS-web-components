@@ -8,7 +8,7 @@
           <mat-icon class="detail_icon" *ngIf="detail">keyboard_arrow_up</mat-icon>
         </button>
       </div>
-      <arlas-mapgl-layer-icon [layer]="layer"></arlas-mapgl-layer-icon></div>
+      <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon></div>
     <div class="layer_name">{{layer?.id}}</div>
   </div>
   <div [hidden]="!detail" class="legend-wrapper">
