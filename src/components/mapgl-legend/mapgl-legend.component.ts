@@ -6,6 +6,8 @@ import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { StyleFunction, Expression } from 'mapbox-gl';
+import * as tinycolor from 'tinycolor2';
+
 
 
 export const GET = 'get';
@@ -20,14 +22,16 @@ export const OTHER = 'other_color';
 export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
 
   @Input() public layer: mapboxgl.Layer;
-  @Input() public legendUpdater: Subject<Map<string, {minValue: string, maxValue: string}>> =
-    new Subject<Map<string, {minValue: string, maxValue: string}>>();
+  @Input() public legendUpdater: Subject<any> = new Subject();
+  @Input() public visibilityUpdater: Subject<any> = new Subject();
+
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
   public colorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
   public detail = false;
+  public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
   private legendData: Map<string, {minValue: string, maxValue: string}> = new Map();
 
@@ -38,20 +42,28 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public ngOnInit() {
     this.legendUpdater.subscribe(legendData => {
       this.legendData = legendData;
-      this.getLegends();
+      this.drawLegends(this.visibleMode);
+    });
+
+    this.visibilityUpdater.subscribe(v => {
+      this.visibleMode = this.layer ? v.get(this.layer.id) : false;
+      this.detail = this.visibleMode;
+      if (this.layer) {
+        this.drawLegends(this.visibleMode);
+      }
     });
   }
 
   public ngAfterViewInit() {
     if (this.layer) {
-      this.getLegends();
+      this.drawLegends(this.visibleMode);
     }
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['layer'] !== undefined) {
       if (this.layer) {
-        this.getLegends();
+        this.drawLegends(this.visibleMode);
       }
     }
   }
@@ -61,40 +73,48 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     event.stopPropagation();
   }
 
-  private getLegends(): void {
+  private drawLegends(visibileMode: boolean): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
 
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        this.buildColorLegend(p['circle-color'], this.legendData);
+        this.buildColorLegend(p['circle-color'], visibileMode, this.legendData);
         this.buildCircleRadiusLegend(p['circle-radius']);
         break;
       }
       case 'line': {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        this.buildColorLegend(p['line-color'], this.legendData);
+        this.buildColorLegend(p['line-color'], visibileMode, this.legendData);
         this.buildLineWidthLegend(p['line-width']);
         break;
       }
       case 'fill': {
         const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
-        this.buildColorLegend(p['fill-color'], this.legendData);
+        this.buildColorLegend(p['fill-color'], visibileMode, this.legendData);
         break;
       }
       case 'heatmap': {
         const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-        this.buildColorLegend(p['heatmap-color'], this.legendData);
+        this.colorLegend.title = 'Heatmap-density';
+        this.colorLegend.minValue = '0';
+        this.colorLegend.maxValue = '1';
+
+        this.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData);
         break;
       }
     }
   }
 
 
-  private buildColorLegend(color: string | StyleFunction | Expression, legendData?: any): void {
+  private buildColorLegend(color: string | StyleFunction | Expression, visibileMode: boolean, legendData: any): void {
     if (typeof color === 'string') {
       this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
+      this.colorLegend.fixValue = color;
+      if (!visibileMode) {
+        this.colorLegend.fixValue = tinycolor.default(color.toString()).greyscale().lighten(20).toHexString();
+      }
     } else if (Array.isArray(color)) {
       if (color.length === 2) {
         /** color = ["get", "field"]  ==> Generated or Provided */
@@ -119,16 +139,25 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
           /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
           // todo throw exception if interpolation is not linear
-          const field = color[2][1];
+          const field = color[2].length === 2 ? color[2][1] : 'Heatmap-density';
           this.colorLegend.title = field;
+          this.colorLegend.interpolatedValues = [];
+          color.filter((c, i) => i > 2 && i % 2 === 0).forEach(c => this.colorLegend.interpolatedValues.push(c));
+
           if (legendData && legendData.get(field)) {
             this.colorLegend.minValue = legendData.get(field).minValue;
             this.colorLegend.maxValue = legendData.get(field).maxValue;
           }
-          this.colorLegend.interpolatedValues = color.filter((c, i) => i > 2 && i % 2 === 0);
+          if (!visibileMode) {
+            this.colorLegend.interpolatedValues = this.colorLegend.interpolatedValues
+              .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
+          }
         }
       }
     }
+    const layer = Object.assign({}, this.layer);
+    this.layer = null;
+    this.layer = Object.assign({}, layer);
   }
 
   private buildLineWidthLegend(lineWidth: number | StyleFunction | Expression): void {
@@ -186,7 +215,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, 210);
+          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend, 210);
         }
       }
     }
@@ -201,6 +230,8 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);
   yDomain.domain([0, maxHeight]);
   const svg = select(svgNode);
+  svg.selectAll('g').remove();
+
   const context = svg.append('g').attr('class', 'context');
   const ar = area()
       .curve(curveLinear)
@@ -214,7 +245,7 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
 }
 
 
-export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>, legendWidth: number) {
+export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>, cLegend: Legend, legendWidth: number) {
   const circleDiameters = [];
   circlesRadiuses.forEach(cr => circleDiameters.push({key: cr.key, value: cr.value * 2}));
   const maxHeight = getMax(circleDiameters);
@@ -226,6 +257,7 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);
   yDomain.domain([0, maxHeight]);
   const svg = select(svgNode);
+  svg.selectAll('g').remove();
   const context = svg.append('g').attr('class', 'context');
   const l = line()
       .x((d: any) => xDomain(d.key))
@@ -238,14 +270,17 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
       .attr('transform', 'translate(' + firstRadius + ', 0)')
       .attr('d', <any>l);
   const circles = [circlesRadiuses[0], circlesRadiuses[circlesRadiuses.length - 1]];
+  const circleColor = cLegend.type === PROPERTY_SELECTOR_SOURCE.fix ? cLegend.fixValue : '#dadada';
   context.append('g')
-      .attr('class', 'histogram__swimlane').selectAll('dot').data(circles).enter().append('circle')
+      .selectAll('dot').data(circles).enter().append('circle')
       .attr('r', (d) => d.value)
-        .attr('cx', (d) => xDomain(d.key))
-        .attr('cy', (d) => maxHeight - d.value)
-        .attr('transform', 'translate(' + firstRadius + ', 0)')
-        .style('fill', 'blue')
-        .style('fill-opacity', 0.2);
+      .attr('cx', (d) => xDomain(d.key))
+      .attr('cy', (d) => maxHeight - d.value)
+      .attr('transform', 'translate(' + firstRadius + ', 0)')
+      .style('fill', circleColor)
+      .style('fill-opacity', 0.6)
+      .style('stroke', circleColor)
+      .style('stroke-width', 0.5);
 
 }
 
@@ -259,7 +294,7 @@ export interface Legend {
   minValue?: string;
   maxValue?: string;
   fixValue?: string | number;
-  interpolatedValues?: Array<string> | Array<number>;
+  interpolatedValues?: Array<string | number>;
   manualValues?: Map<string, string | number>;
 }
 

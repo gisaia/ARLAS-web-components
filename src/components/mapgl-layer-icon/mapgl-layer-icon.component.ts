@@ -43,6 +43,9 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
+        if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
+          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        }
         break;
       }
       case 'line': {
@@ -96,6 +99,7 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
     }
   }
   const svg = select(svgNode);
+  svg.selectAll('g').remove();
   svg.append('g').append('rect')
         .attr('height', 7)
         .attr('width', 7)
@@ -159,6 +163,8 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
   }
 
   const svg = select(svgNode);
+  svg.selectAll('defs').remove();
+  svg.selectAll('circle').remove();
   svg.append('defs')
     .append('filter')
     .attr('id', 'blur')
@@ -201,6 +207,7 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     }
   }
   const svg = select(svgNode);
+  svg.selectAll('g').remove();
   svg.append('g').append('line')
       .attr('x1', 0)
       .attr('y1', 18)
@@ -228,4 +235,51 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
       .attr('cy', 2)
       .attr('stroke', threeColors[2])
       .attr('stroke-width', 3);
+}
+
+export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) {
+  const colorsList = [];
+  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    colorsList.push(colorLegend.fixValue);
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = colorLegend.interpolatedValues;
+    if (iv) {
+      if (iv.length === 1) {
+        for (let i = 0; i < 3; i++) {
+          colorsList.push(iv[0]);
+        }
+      } else if (iv.length === 2) {
+        colorsList.push(iv[0]);
+        colorsList.push(iv[0]);
+        colorsList.push(iv[1]);
+      } else if (iv.length === 3) {
+        colorsList.push(iv[1]);
+        colorsList.push(iv[Math.trunc(iv.length / 2)]);
+        colorsList.push(iv[iv.length - 1]);
+      } else if (iv.length >= 4) {
+        colorsList.push(iv[1]);
+        colorsList.push(iv[Math.trunc( iv.length / 3)]);
+        colorsList.push(iv[Math.trunc(2 * iv.length / 3)]);
+        colorsList.push(iv[iv.length - 1]);
+      }
+    }
+  }
+
+  const svg = select(svgNode);
+  svg.selectAll('circle').remove();
+  svg.selectAll('circle')
+    .data(colorsList).enter()
+    .append('circle')
+    .attr('cx', 10)
+    .attr('cy', 10)
+    .attr('r', (d, i) => {
+      if (i === 0) { return 7; }
+      if (i === 1) { return 8; }
+      if (i === 2) { return 6; }
+      if (i === 3) { return 3; }
+    })
+    .style('fill', (d, i) => d)
+    .style('fill-opacity', 0.6)
+    .style('stroke', (d, i) => d)
+    .style('stroke-width', 0.5);
 }
