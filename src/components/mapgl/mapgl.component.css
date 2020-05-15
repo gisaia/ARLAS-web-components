@@ -47,6 +47,50 @@
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
+.map__visu-list--container /* @doc Sets the style of layers switcher container*/
+ {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 250px;
+  right: 10px;
+  background: white;
+  padding: 5px;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+}
+
+.map__visu-container-true {
+  margin: 3px;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+  border: 2px solid #FF4081;
+  padding: 8px;
+  cursor: pointer;
+}
+.map__visu-container-false {
+  margin: 3px;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  border-radius: 5px;
+  padding: 8px;
+  cursor: pointer;
+}
+.map__visu-container-true:hover, .map__visu-container-false:hover {
+  background-color: #dadada;
+}
+.visu-title {
+  font-weight: bold;
+  padding: 3px
+}
+
+.visu-layers {
+    margin: 0;
+    padding-left: 25px;
+}
+
 .map__layers-stylegroup-name /* @doc Sets the style of Style group name*/
  {
   font-family: Roboto, "Helvetica Neue", sans-serif;
