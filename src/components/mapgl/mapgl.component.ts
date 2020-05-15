@@ -277,6 +277,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public legendUpdater: Subject<Map<string, {minValue: string, maxValue: string}>> =
     new Subject<Map<string, {minValue: string, maxValue: string}>>();
 
+  @Input() public visibilityUpdater: Subject<any> = new Subject();
+
   /**
    * @Input : Angular
    * @description List of data sources names that should be added to the map. Sources should be of type `geojson`

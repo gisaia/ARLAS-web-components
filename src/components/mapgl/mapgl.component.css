@@ -80,7 +80,8 @@
 }
 
 .visu-title {
-  font-weight: bold;
+  font-size: 0.9em;
+  color: #333;
   padding: 3px
 }
 
