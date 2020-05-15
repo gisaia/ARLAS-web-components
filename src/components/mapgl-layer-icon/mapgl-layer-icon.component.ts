@@ -22,29 +22,29 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
 
   public ngAfterViewInit() {
     if (this.layer) {
-      this.getIcons();
+      this.drawIcons();
     }
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['layer'] !== undefined) {
       if (this.layer) {
-        this.getIcons();
+        this.drawIcons();
       }
     }
   }
 
-
-  private getIcons(): void {
+  private drawIcons(): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
     const source: string = this.layer.source as string;
-
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
         if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        } else {
+          // todo
         }
         break;
       }
@@ -52,6 +52,8 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
         if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
           drawFeatureLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        } else {
+          // todo
         }
         break;
       }
@@ -60,7 +62,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         if (source.startsWith('cluster')) {
           drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else {
-
+          // todo
         }
         break;
       }
@@ -68,6 +70,8 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
         if (source.startsWith('cluster')) {
           drawClusterHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        } else {
+          // todo
         }
         break;
       }
@@ -76,6 +80,11 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
 
 }
 
+/**
+ * draws the rectangles icon for cluster mode
+ * @param svgNode SVG element on which we append the rectangles using d3.
+ * @param colorLegend Color legend, to give the drawn icons rectagles the same color on the map
+ */
 export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
   const fourColors = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
@@ -135,33 +144,36 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
 
 }
 
-
+/**
+ * draws the heatmap icon for cluster mode
+ * @param svgNode SVG element on which we append the heamap circles using d3.
+ * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
+ */
 export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend) {
-  const threeColors = [];
+  const heatmapColors = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = colorLegend.interpolatedValues;
     if (iv) {
       if (iv.length === 1) {
         for (let i = 0; i < 3; i++) {
-          threeColors.push(iv[0]);
+          heatmapColors.push(iv[0]);
         }
       } else if (iv.length === 2) {
-        threeColors.push(iv[0]);
-        threeColors.push(iv[0]);
-        threeColors.push(iv[1]);
+        heatmapColors.push(iv[0]);
+        heatmapColors.push(iv[0]);
+        heatmapColors.push(iv[1]);
       } else if (iv.length === 3) {
-        threeColors.push(iv[1]);
-        threeColors.push(iv[Math.trunc(iv.length / 2)]);
-        threeColors.push(iv[iv.length - 1]);
+        heatmapColors.push(iv[1]);
+        heatmapColors.push(iv[Math.trunc(iv.length / 2)]);
+        heatmapColors.push(iv[iv.length - 1]);
       } else if (iv.length >= 4) {
-        threeColors.push(iv[1]);
-        threeColors.push(iv[Math.trunc( iv.length / 3)]);
-        threeColors.push(iv[Math.trunc(2 * iv.length / 3)]);
-        threeColors.push(iv[iv.length - 1]);
+        heatmapColors.push(iv[1]);
+        heatmapColors.push(iv[Math.trunc( iv.length / 3)]);
+        heatmapColors.push(iv[Math.trunc(2 * iv.length / 3)]);
+        heatmapColors.push(iv[iv.length - 1]);
       }
     }
   }
-
   const svg = select(svgNode);
   svg.selectAll('defs').remove();
   svg.selectAll('circle').remove();
@@ -170,9 +182,8 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
     .attr('id', 'blur')
     .append('feGaussianBlur')
     .attr('stdDeviation', 0.8);
-
   svg.selectAll('circle')
-    .data(threeColors).enter()
+    .data(heatmapColors).enter()
     .append('circle')
     .attr('cx', 10)
     .attr('cy', 10)
@@ -185,7 +196,11 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
     .style('fill', (d, i) => d)
     .attr('filter', 'url(#blur)');
 }
-
+/**
+ * draws the line icon for feature mode
+ * @param svgNode SVG element on which we append the line using d3.
+ * @param colorLegend Color legend, to give the drawn icons line the same color on the map
+ */
 export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
   const threeColors = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
@@ -236,7 +251,11 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
       .attr('stroke', threeColors[2])
       .attr('stroke-width', 3);
 }
-
+/**
+ * draws the circle icon for feature mode
+ * @param svgNode SVG element on which we append the circles using d3.
+ * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
+ */
 export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) {
   const colorsList = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
@@ -274,9 +293,7 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
     .attr('cy', 10)
     .attr('r', (d, i) => {
       if (i === 0) { return 7; }
-      if (i === 1) { return 8; }
-      if (i === 2) { return 6; }
-      if (i === 3) { return 3; }
+      // todo complete the case where there is more than one color
     })
     .style('fill', (d, i) => d)
     .style('fill-opacity', 0.6)
