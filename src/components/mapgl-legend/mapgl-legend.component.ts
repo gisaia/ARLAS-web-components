@@ -8,35 +8,36 @@ import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { StyleFunction, Expression } from 'mapbox-gl';
 import * as tinycolor from 'tinycolor2';
 
-
-
 export const GET = 'get';
 export const MATCH = 'match';
 export const INTERPOLATE = 'interpolate';
 export const OTHER = 'other_color';
+
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
   styleUrls: ['./mapgl-legend.component.css']
 })
 export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
-
   @Input() public layer: mapboxgl.Layer;
   @Input() public legendUpdater: Subject<any> = new Subject();
   @Input() public visibilityUpdater: Subject<any> = new Subject();
 
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
+
   public colorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
   public detail = false;
   public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
-  private legendData: Map<string, {minValue: string, maxValue: string}> = new Map();
 
+  private legendData: Map<string, {minValue: string, maxValue: string}> = new Map();
   private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
+  private LEGEND_WIDTH = 210;
+
   constructor(public translate: TranslateService, private el: ElementRef) {}
 
   public ngOnInit() {
@@ -44,7 +45,6 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.legendData = legendData;
       this.drawLegends(this.visibleMode);
     });
-
     this.visibilityUpdater.subscribe(v => {
       this.visibleMode = this.layer ? v.get(this.layer.id) : false;
       this.detail = this.visibleMode;
@@ -73,10 +73,14 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     event.stopPropagation();
   }
 
+  /** Parses the `paint` attribute of a layer and draws the legend elements such as
+   * - color palette
+   * - line width evolution
+   * - circle radius evolution
+   */
   private drawLegends(visibileMode: boolean): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
-
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
@@ -97,22 +101,20 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       }
       case 'heatmap': {
         const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-        this.colorLegend.title = 'Heatmap-density';
         this.colorLegend.minValue = '0';
         this.colorLegend.maxValue = '1';
-
         this.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData);
         break;
       }
     }
   }
 
-
   private buildColorLegend(color: string | StyleFunction | Expression, visibileMode: boolean, legendData: any): void {
     if (typeof color === 'string') {
       this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
       this.colorLegend.fixValue = color;
       if (!visibileMode) {
+        /** apply greyscale because the layer is not visible */
         this.colorLegend.fixValue = tinycolor.default(color.toString()).greyscale().lighten(20).toHexString();
       }
     } else if (Array.isArray(color)) {
@@ -149,6 +151,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             this.colorLegend.maxValue = legendData.get(field).maxValue;
           }
           if (!visibileMode) {
+            /** apply greyscale because the layer is not visible */
             this.colorLegend.interpolatedValues = this.colorLegend.interpolatedValues
               .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
           }
@@ -161,6 +164,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private buildLineWidthLegend(lineWidth: number | StyleFunction | Expression): void {
+    /** if the line width is fix then it is not added to the legend*/
     if (Array.isArray(lineWidth)) {
       if (lineWidth.length >= 3) {
         if (lineWidth[0] === INTERPOLATE) {
@@ -184,8 +188,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-
-          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, 210);
+          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, this.LEGEND_WIDTH);
         }
       }
     }
@@ -215,13 +218,20 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend, 210);
+          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend, this.LEGEND_WIDTH);
         }
       }
     }
   }
 
 }
+
+/**
+ * draws the line width legend
+ * @param svgNode SVG element on which we append the line using d3.
+ * @param lineWidths List of {key, linewidth}
+ * @param legendWidth The width that the svg will take to draw the legend
+ */
 export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>, legendWidth: number) {
   const maxHeight = getMax(lineWidths);
   const xDomain: any = (scaleLinear()).range([0, legendWidth]);
@@ -231,7 +241,6 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
   yDomain.domain([0, maxHeight]);
   const svg = select(svgNode);
   svg.selectAll('g').remove();
-
   const context = svg.append('g').attr('class', 'context');
   const ar = area()
       .curve(curveLinear)
@@ -244,7 +253,13 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
       .attr('d', <any>ar);
 }
 
-
+/**
+ * draws the circle radius legend
+ * @param svgNode SVG element on which we append the circles using d3.
+ * @param circlesRadiuses List of {key, circleradius}
+ * @param cLegend Color legend, to give the drawn legend circles the same color on the map
+ * @param legendWidth The width that the svg will take to draw the legend
+ */
 export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>, cLegend: Legend, legendWidth: number) {
   const circleDiameters = [];
   circlesRadiuses.forEach(cr => circleDiameters.push({key: cr.key, value: cr.value * 2}));
