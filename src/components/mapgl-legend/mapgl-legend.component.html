@@ -1,0 +1,63 @@
+<div class="layer_wrapper">
+  <div class="layer_container">
+    <div class="layer_icon" >
+      <div class="layer_detail">
+        <button mat-mini-fab class="detail_button" (click)="showDetail($event)">
+          <mat-icon class="detail_icon" *ngIf="!detail">keyboard_arrow_down</mat-icon>
+          <mat-icon class="detail_icon" *ngIf="detail">keyboard_arrow_up</mat-icon>
+        </button>
+      </div>
+      <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon></div>
+    <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id}}</div>
+  </div>
+  <div [hidden]="!detail" class="legend-wrapper">
+    <!-- COLOR SECTION -->
+    <div *ngIf="colorLegend.type" class="legend-container">
+      <div class="legend-title">{{colorLegend?.title | translate}}</div>
+      <div *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual">
+        <div class="manual-color-container" *ngFor="let manualColor of colorLegend.manualValues | keyvalue">
+          <div class="manual-color">
+            <div class="manual-color-value" [style.backgroundColor]="manualColor.value"></div>
+            <div class="manual-color-key">{{manualColor.key}}</div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated">
+        <div class="interpolated-color-container">
+          <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + colorLegend.interpolatedValues.join(',') + ')'}"></div>
+        </div>
+        <div class="interpolated-values-container">
+          <div class="interpolated-value">{{colorLegend?.minValue | translate}}</div>
+          <div class="interpolated-value">{{colorLegend?.maxValue | translate}}</div>
+        </div>
+      </div>
+    </div>
+    <!-- WIDTH SECTION -->
+    <div [hidden]="!widthLegend.type" class="legend-container">
+      <div class="legend-title">{{widthLegend?.title | translate}}</div>
+      <div [hidden]="widthLegend.type !== PROPERTY_SELECTOR_SOURCE.interpolated">
+        <div class="interpolated-width-container">
+          <svg #width_svg></svg>
+        </div>
+        <div class="interpolated-values-container">
+          <div class="interpolated-value">{{widthLegend?.minValue | translate}}</div>
+          <div class="interpolated-value">{{widthLegend?.maxValue | translate}}</div>
+        </div>
+      </div>
+    </div>
+    <!-- RADIUS SECTION -->
+    <div [hidden]="!radiusLegend.type" class="legend-container">
+      <div class="legend-title">{{radiusLegend?.title | translate}}</div>
+      <div [hidden]="radiusLegend.type !== PROPERTY_SELECTOR_SOURCE.interpolated">
+        <div class="interpolated-radius-container">
+          <svg #radius_svg></svg>
+        </div>
+        <div class="interpolated-values-container">
+          <div class="interpolated-value">{{radiusLegend?.minValue | translate}}</div>
+          <div class="interpolated-value">{{radiusLegend?.maxValue | translate}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -40,7 +40,7 @@ import { MapglModule } from '../components/mapgl/mapgl.module';
 import { PowerbarsModule } from '../components/powerbars/powerbars.module';
 import { DonutModule } from '../components/donut/donut.module';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
 import { GaugeDemoComponent } from './gauge-demo/gauge-demo.component';
@@ -54,6 +54,8 @@ import { MAT_DATE_LOCALE, MatButtonModule } from '@angular/material';
 import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
 import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
 import { MetricModule } from '../components/metric/metric.module';
+import { MapglLegendModule } from '../components/mapgl-legend/map-legend.module';
+import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgel-layer-icon.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -96,6 +98,8 @@ const routes: Routes = [
     MapglModule,
     MapglImportModule,
     MapglSettingsModule,
+    MapglLegendModule,
+    MapglLayerIconModule,
     HistogramModule,
     DonutModule,
     ResultsModule,
@@ -105,7 +109,7 @@ const routes: Routes = [
     PowerbarsModule,
     WmtsLayerManagerModule,
     MatSlideToggleModule,
-    HttpClientModule,
+      HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

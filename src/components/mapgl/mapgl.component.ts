@@ -267,7 +267,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
   @Input() public redrawSource: Subject<{source: string, data: helpers.Feature[]}> =
-     new Subject<{source: string, data: helpers.Feature[]}>();
+    new Subject<{source: string, data: helpers.Feature[]}>();
+
+
+  @Input() public legendUpdater: Subject<Map<string, {minValue: string, maxValue: string}>> =
+    new Subject<Map<string, {minValue: string, maxValue: string}>>();
+
+  @Input() public visibilityUpdater: Subject<any> = new Subject();
 
   /**
    * @Input : Angular
@@ -1082,6 +1088,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.getCanvas().style.cursor = '';
       this.isDrawingBbox = false;
     }
+  }
+
+  public getLayer(layerId: string): mapboxgl.Layer {
+    return this.layersMap.get(layerId);
   }
 
   private latLngToWKT(features) {
