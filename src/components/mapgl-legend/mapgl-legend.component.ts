@@ -12,7 +12,11 @@ export const GET = 'get';
 export const MATCH = 'match';
 export const INTERPOLATE = 'interpolate';
 export const OTHER = 'other_color';
-
+export interface LegendData {
+  minValue?:  string;
+  maxValue?: string;
+  keysColorsMap?: Map<string, string>;
+}
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
@@ -33,7 +37,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
-  private legendData: Map<string, {minValue: string, maxValue: string}> = new Map();
+  private legendData: Map<string, LegendData> = new Map();
   private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
   private LEGEND_WIDTH = 210;
@@ -120,21 +124,46 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     } else if (Array.isArray(color)) {
       if (color.length === 2) {
         /** color = ["get", "field"]  ==> Generated or Provided */
+        const field = color[1];
+        this.colorLegend.title = field;
+        if ((field as string).endsWith('_color')) {
+          this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
+          if (this.legendData.get(field)) {
+            const keysToColors = this.legendData.get(field).keysColorsMap;
+            const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
+            this.colorLegend.manualValues = new Map();
+            for (let i = 0; i < colorList.length; i += 2) {
+                const c = this.visibleMode ? colorList[i + 1] : '#eee';
+                this.colorLegend.manualValues.set(this.translate.instant(colorList[i]), c);
+            }
+          } else {
+
+          }
+        } else {
+          this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
+        }
         // todo
       } else if (color.length >= 3) {
         if (color[0] === MATCH) {
           /** color = ["match", ["get", "field"], .... ]**/
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.manual;
-          const colorsLength = color.length - 2;
+          const colorsLength = color.length;
           let hasDefaultColor = false;
           if (colorsLength % 2 !== 0) {
             hasDefaultColor = true;
           }
+          this.colorLegend.title = color[1].length === 2 ? color[1][1] : '';
+          this.colorLegend.manualValues = new Map();
           for (let i = 2; i < color.length; i += 2) {
-            if (hasDefaultColor && i === colorsLength - 1) {
-              this.colorLegend.manualValues.set(this.translate.instant(OTHER), color[i]);
+            if (hasDefaultColor && i === colorsLength - 3) {
+              const c1 = this.visibleMode ? color[i + 1] : tinycolor.default(color[i + 1].toString()).greyscale().lighten(20).toHexString();
+              const c2 = this.visibleMode ? color[i + 2] : tinycolor.default(color[i + 2].toString()).greyscale().lighten(20).toHexString();
+              this.colorLegend.manualValues.set(this.translate.instant(color[i]), c1);
+              this.colorLegend.manualValues.set(this.translate.instant(OTHER), c2);
+              break;
             } else {
-              this.colorLegend.manualValues.set(this.translate.instant(color[i]), color[i + 1]);
+              const c = this.visibleMode ? color[i + 1] : tinycolor.default(color[i + 1].toString()).greyscale().lighten(20).toHexString();
+              this.colorLegend.manualValues.set(this.translate.instant(color[i]), c);
             }
           }
         } else if (color[0] === INTERPOLATE) {
@@ -188,7 +217,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, this.LEGEND_WIDTH);
+          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, this.colorLegend, this.LEGEND_WIDTH);
         }
       }
     }
@@ -230,9 +259,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
  * draws the line width legend
  * @param svgNode SVG element on which we append the line using d3.
  * @param lineWidths List of {key, linewidth}
+ * @param cLegend Color legend, to give the drawn legend lines the same color on the map
  * @param legendWidth The width that the svg will take to draw the legend
  */
-export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>, legendWidth: number) {
+export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>, cLegend: Legend, legendWidth: number) {
   const maxHeight = getMax(lineWidths);
   const xDomain: any = (scaleLinear()).range([0, legendWidth]);
   const xDomainExtent = [lineWidths[0].key, lineWidths[lineWidths.length - 1].key];
@@ -247,12 +277,41 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
       .x((d: any) => xDomain(d.key))
       .y0(maxHeight)
       .y1((d: any) => yDomain(d.value));
+
+  const widthLineColor = getMiddleColor(cLegend);
   context.append('path')
       .datum(lineWidths)
-      .attr('class', 'width-legend-svg')
+      .style('fill', widthLineColor)
+      .style('fill-opacity', 0.6)
+      .style('stroke', widthLineColor)
+      .style('stroke-opacity', 0.6)
+      .style('stroke-width', 0.5)
       .attr('d', <any>ar);
 }
 
+export function getMiddleColor(colorLegend: Legend): string {
+  let color = '';
+  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    color = colorLegend.fixValue as string ;
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = colorLegend.interpolatedValues as Array<string>;
+    if (iv.length === 1 || iv.length === 2) {
+      color = iv[0];
+    } else if (iv.length >= 3) {
+      color = iv[Math.trunc(iv.length / 2)];
+    }
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
+    const iv = colorLegend.manualValues as Map<string, string>;
+    if (iv) {
+      if (iv.size === 1) {
+        color = iv.keys().next().value;
+      } else if (iv.size >= 2) {
+        color = Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)];
+      }
+    }
+  }
+  return color;
+}
 /**
  * draws the circle radius legend
  * @param svgNode SVG element on which we append the circles using d3.
@@ -285,7 +344,7 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
       .attr('transform', 'translate(' + firstRadius + ', 0)')
       .attr('d', <any>l);
   const circles = [circlesRadiuses[0], circlesRadiuses[circlesRadiuses.length - 1]];
-  const circleColor = cLegend.type === PROPERTY_SELECTOR_SOURCE.fix ? cLegend.fixValue : '#dadada';
+  const circleColor = getMiddleColor(cLegend);
   context.append('g')
       .selectAll('dot').data(circles).enter().append('circle')
       .attr('r', (d) => d.value)
