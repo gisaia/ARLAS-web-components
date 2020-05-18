@@ -38,12 +38,32 @@
 .layer_icon:hover .detail_button {
   display: block;
 }
+.manual-color-wrapper {
+  display: flex;
+  flex-flow: wrap;
+  margin-top: 5px;
+  max-height: 160px;
+  overflow-y: scroll;
+}
+.manual-color-container {
+  min-width: 50%;
+}
 .manual-color-value {
-  width: 20px;
-  height: 20px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
+  width: 14px;
+  height: 14px;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+}
+
+.manual-color-key {
+  font-size: 0.7em;
+  margin-left: 3px;
+  flex: 1;
+}
+
+.manual-color {
+  display: flex;
 }
 
 .interpolated-color-container {
