@@ -82,6 +82,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public FINISH_DRAWING = 'Double click to finish drawing';
   public map: any;
   public draw: any;
+  public zoom: number;
   private emptyData: FeatureCollection = {
     'type': 'FeatureCollection',
     'features': []
@@ -91,7 +92,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private east: number;
   private west: number;
   private south: number;
-  private zoom: number;
   private isDrawingBbox = false;
   private start: mapboxgl.Point;
   private canvas: HTMLElement;
