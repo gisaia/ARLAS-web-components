@@ -17,7 +17,7 @@
   <div (click)="emitVisualisations(visu.key)" class="map__visu-container-{{visualisationsSets.status.get(visu.key)}}" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
     <span class="visu-title">{{visu.key}}</span>
     <div>
-      <arlas-mapgl-legend *ngFor="let l of visu.value" [layer]="getLayer(l)" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+      <arlas-mapgl-legend *ngFor="let l of visu.value" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
 
     </div>
 
