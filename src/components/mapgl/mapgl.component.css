@@ -46,37 +46,84 @@
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
-
-.map__visu-list--container /* @doc Sets the style of layers switcher container*/
- {
+.map__visu-list--wrapper {
   position: absolute;
   display: flex;
   flex-direction: column;
-  top: 250px;
-  right: 10px;
+  bottom: 165px;
+  right: 8px;
+  background: transparent;
+
+}
+.map_legend-button--wrapper {
+}
+.map__visu-list--container /* @doc Sets the style of layers switcher container*/
+ {
   background: white;
-  padding: 5px;
+  padding: 1px;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
   border-radius: 2px;
+  max-height: 590px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.map_visu-toggle .mat-slide-toggle-thumb-container {
+  width: 15px;
+  height: 15px;
+  top: -3px;
+  left: -2px;
+}
+.map_visu-toggle .mat-slide-toggle-bar {
+  width: 25px;
+  height: 10px;
 }
 
-.map__visu-container-true {
-  margin: 3px;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 5px;
-  border: 0.5px solid #FF4081;
-  padding: 8px;
-  cursor: pointer;
+.map_visu-toggle .mat-slide-toggle-thumb {
+  height: 15px;
+  width: 15px;
 }
-.map__visu-container-false {
+
+.map_legend-button {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 5px 0px;
+  max-width: 75px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+  cursor: pointer;
+  float: right;
+  outline: none;
+  margin-bottom: 4px;
+}
+
+.map_legend-button:hover {
+  background-color: #f5f5f5;
+}
+
+.map_legend-rotate {
+  transform: rotate(180deg);
+}
+.map_visu-title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.map_visu-content-container {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.map__visu-container {
   margin: 3px;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  border-radius: 5px;
-  padding: 8px;
+  border-radius: 2px;
+  padding: 5px;
   cursor: pointer;
+  width: 225px;
 }
 
 .visu-title {
