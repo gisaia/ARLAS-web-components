@@ -174,10 +174,13 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           this.colorLegend.title = field;
           this.colorLegend.interpolatedValues = [];
           color.filter((c, i) => i > 2 && i % 2 === 0).forEach(c => this.colorLegend.interpolatedValues.push(c));
-
+          const colorValues = color.filter((c, i) => i > 2 && i % 2 !== 0);
           if (legendData && legendData.get(field)) {
             this.colorLegend.minValue = legendData.get(field).minValue;
             this.colorLegend.maxValue = legendData.get(field).maxValue;
+          } else {
+            this.colorLegend.minValue = colorValues[0] + '';
+            this.colorLegend.maxValue = colorValues[colorValues.length - 1] + '';
           }
           if (!visibileMode) {
             /** apply greyscale because the layer is not visible */
@@ -228,18 +231,21 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       if (circleRadius.length >= 3) {
         if (circleRadius[0] === INTERPOLATE) {
           const field = circleRadius[2][1];
-          this.radiusLegend.title = field;
-          if (this.legendData && this.legendData.get(field)) {
-            this.radiusLegend.minValue = this.legendData.get(field).minValue;
-            this.radiusLegend.maxValue = this.legendData.get(field).maxValue;
-          }
-          this.radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
           const circleRadiusEvolution: Array<HistogramData> = new Array();
           circleRadius.filter((w, i) => i >= 3).forEach((w, i) => {
             if (i % 2 === 0) {
               circleRadiusEvolution.push({key: w, value: circleRadius[i + 1 + 3]});
             }
           });
+          this.radiusLegend.title = field;
+          if (this.legendData && this.legendData.get(field)) {
+            this.radiusLegend.minValue = this.legendData.get(field).minValue;
+            this.radiusLegend.maxValue = this.legendData.get(field).maxValue;
+          } else {
+            this.radiusLegend.minValue = circleRadiusEvolution[0].key + '';
+            this.radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
+          }
+          this.radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
           const maxCircleRadius = getMax(circleRadiusEvolution);
           if (maxCircleRadius > this.MAX_CIRLE_RADIUS) {
             circleRadiusEvolution.map(lw => {
