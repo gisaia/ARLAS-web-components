@@ -41,20 +41,16 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
+        if (source.startsWith('feature') && source.startsWith('feature-metric')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
-        } else {
-          // todo
+        } else if (source.startsWith('cluster')) {
+          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }
         break;
       }
       case 'line': {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
-          drawFeatureLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
-        } else {
-          // todo
-        }
+        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
         break;
       }
       case 'fill': {
@@ -67,7 +63,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         break;
       }
       case 'heatmap': {
-        const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
+        const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
         if (source.startsWith('cluster')) {
           drawClusterHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else {
@@ -110,37 +106,25 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').append('rect')
-        .attr('height', 7)
-        .attr('width', 7)
+        .attr('height', 7).attr('width', 7)
         .attr('fill', fourColors[0])
         .attr('stroke', fourColors[0])
-        .attr('y', 3)
-        .attr('x', 3);
+        .attr('y', 3).attr('x', 3);
   svg.append('g').append('rect')
-      .attr('height', 7)
-      .attr('width', 7)
-      .attr('fill', fourColors[1])
-      .attr('fill-opacity', 0.6)
-      .attr('stroke', fourColors[1])
-      .attr('stroke-width', 0.6)
-      .attr('y', 10)
-      .attr('x', 3);
+      .attr('height', 7).attr('width', 7)
+      .attr('fill', fourColors[1]).attr('fill-opacity', 0.6)
+      .attr('stroke', fourColors[1]).attr('stroke-width', 0.6)
+      .attr('y', 10).attr('x', 3);
   svg.append('g').append('rect')
-      .attr('height', 7)
-      .attr('width', 7)
-      .attr('fill', fourColors[2])
-      .attr('fill-opacity', 0.6)
-      .attr('stroke', fourColors[2])
-      .attr('stroke-width', 0.6).attr('y', 10)
-      .attr('x', 10);
+      .attr('height', 7).attr('width', 7)
+      .attr('fill', fourColors[2]).attr('fill-opacity', 0.6)
+      .attr('stroke', fourColors[2]).attr('stroke-width', 0.6)
+      .attr('y', 10).attr('x', 10);
   svg.append('g').append('rect')
-      .attr('height', 7)
-      .attr('width', 7)
-      .attr('fill', fourColors[3])
-      .attr('fill-opacity', 0.6)
-      .attr('stroke', fourColors[3])
-      .attr('stroke-width', 0.6).attr('y', 3)
-      .attr('x', 10);
+      .attr('height', 7).attr('width', 7)
+      .attr('fill', fourColors[3]).attr('fill-opacity', 0.6)
+      .attr('stroke', fourColors[3]).attr('stroke-width', 0.6)
+      .attr('y', 3).attr('x', 10);
 
 }
 
@@ -178,15 +162,12 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
   svg.selectAll('defs').remove();
   svg.selectAll('circle').remove();
   svg.append('defs')
-    .append('filter')
-    .attr('id', 'blur')
-    .append('feGaussianBlur')
-    .attr('stdDeviation', 0.8);
+    .append('filter').attr('id', 'blur')
+    .append('feGaussianBlur').attr('stdDeviation', 0.8);
   svg.selectAll('circle')
     .data(heatmapColors).enter()
     .append('circle')
-    .attr('cx', 10)
-    .attr('cy', 10)
+    .attr('cx', 10).attr('cy', 10)
     .attr('r', (d, i) => {
       if (i === 0) { return 10; }
       if (i === 1) { return 8; }
@@ -201,37 +182,25 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
  * @param svgNode SVG element on which we append the line using d3.
  * @param colorLegend Color legend, to give the drawn icons line the same color on the map
  */
-export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     const svg = select(svgNode);
     svg.selectAll('g').remove();
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 18)
-        .attr('x2', 6)
-        .attr('y2', 10)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue)
-        .attr('stroke-width', 3);
+        .attr('x1', 0).attr('y1', 18)
+        .attr('x2', 6).attr('y2', 10)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 6)
-        .attr('y1', 10)
-        .attr('x2', 12)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue)
-        .attr('stroke-width', 3);
+        .attr('x1', 6).attr('y1', 10)
+        .attr('x2', 12).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 12)
-        .attr('y1', 9)
-        .attr('x2', 18)
-        .attr('y2', 0)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue)
-        .attr('stroke-width', 3);
+        .attr('x1', 12).attr('y1', 9)
+        .attr('x2', 18).attr('y2', 0)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const threeColors = [];
     const iv = colorLegend.interpolatedValues;
@@ -257,32 +226,20 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     const svg = select(svgNode);
     svg.selectAll('g').remove();
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 18)
-        .attr('x2', 6)
-        .attr('y2', 10)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', threeColors[0])
-        .attr('stroke-width', 3);
+        .attr('x1', 0).attr('y1', 18)
+        .attr('x2', 6).attr('y2', 10)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', threeColors[0]).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 6)
-        .attr('y1', 10)
-        .attr('x2', 12)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', threeColors[1])
-        .attr('stroke-width', 3);
+        .attr('x1', 6).attr('y1', 10)
+        .attr('x2', 12).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', threeColors[1]).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 12)
-        .attr('y1', 9)
-        .attr('x2', 18)
-        .attr('y2', 0)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', threeColors[2])
-        .attr('stroke-width', 3);
+        .attr('x1', 12).attr('y1', 9)
+        .attr('x2', 18).attr('y2', 0)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', threeColors[2]).attr('stroke-width', 3);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
     const iv = colorLegend.manualValues as Map<string, string>;
     const colorsList = [];
@@ -305,60 +262,30 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     const svg = select(svgNode);
     svg.selectAll('g').remove();
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 18)
-        .attr('x2', 6)
-        .attr('y2', 10)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[0])
-        .attr('stroke-width', 1.5);
+        .attr('x1', 0).attr('y1', 18)
+        .attr('x2', 6).attr('y2', 10)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 6)
-        .attr('y1', 10)
-        .attr('x2', 12)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[0])
-        .attr('stroke-width', 1.5);
+        .attr('x1', 6).attr('y1', 10)
+        .attr('x2', 12).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 12)
-        .attr('y1', 9)
-        .attr('x2', 18)
-        .attr('y2', 0)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[0])
-        .attr('stroke-width', 1.5);
-
+        .attr('x1', 12).attr('y1', 9)
+        .attr('x2', 18).attr('y2', 0)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 11)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[1])
-        .attr('stroke-width', 1.5);
-    // svg.append('g').append('line')
-    //     .attr('x1', 6)
-    //     .attr('y1', 8)
-    //     .attr('x2', 12)
-    //     .attr('y2', 10)
-    //     .attr('cx', 2)
-    //     .attr('cy', 2)
-    //     .attr('stroke', colorsList[1])
-    //     .attr('stroke-width', 3);
+        .attr('x1', 0).attr('y1', 0)
+        .attr('x2', 11).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[1]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 11)
-        .attr('y1', 8)
-        .attr('x2', 18)
-        .attr('y2', 18)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[1])
-        .attr('stroke-width', 1.5);
+        .attr('x1', 11).attr('y1', 8)
+        .attr('x2', 18).attr('y2', 18)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[1]).attr('stroke-width', 1.5);
   }
 }
 /**
@@ -445,8 +372,65 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
         return 3;
       }
     })
-    .style('fill', (d, i) => d)
-    .style('fill-opacity', colorsList.length === 1 ? 0.6 : 0.8)
-    .style('stroke', (d, i) => d)
-    .style('stroke-width', 0.5);
+    .style('fill', (d, i) => d).style('fill-opacity', colorsList.length === 1 ? 0.6 : 0.8)
+    .style('stroke', (d, i) => d).style('stroke-width', 0.5);
+}
+
+
+/**
+ * draws the circle icon for cluster mode
+ * @param svgNode SVG element on which we append the circles using d3.
+ * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
+ */
+export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend) {
+  // todo include radius legend in drawing icons
+  const colorsList = [];
+  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    colorsList.push(colorLegend.fixValue);
+    colorsList.push(colorLegend.fixValue);
+    colorsList.push(colorLegend.fixValue);
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = colorLegend.interpolatedValues;
+    if (iv) {
+      if (iv.length === 1) {
+        for (let i = 0; i < 3; i++) {
+          colorsList.push(iv[0]);
+        }
+      } else if (iv.length === 2) {
+        colorsList.push(iv[0]);
+        colorsList.push(iv[0]);
+        colorsList.push(iv[1]);
+      } else if (iv.length === 3) {
+        colorsList.push(iv[0]);
+        colorsList.push(iv[Math.trunc(iv.length / 2)]);
+        colorsList.push(iv[iv.length - 1]);
+      } else if (iv.length >= 4) {
+        colorsList.push(iv[1]);
+        colorsList.push(iv[Math.trunc( iv.length / 3)]);
+        colorsList.push(iv[iv.length - 1]);
+      }
+    }
+  }
+  const svg = select(svgNode);
+  svg.selectAll('circle').remove();
+  svg.selectAll('circle')
+    .data(colorsList).enter()
+    .append('circle')
+    .attr('cx', (d, i) => {
+      if (i === 0) { return 12; }
+      if (i === 1) { return 6; }
+      if (i === 2) { return 10; }
+    })
+    .attr('cy', (d, i) => {
+      if (i === 0) { return 7; }
+      if (i === 1) { return 11; }
+      if (i === 2) { return 15; }
+    })
+    .attr('r', (d, i) => {
+      if (i === 0) { return 6; }
+      if (i === 1) { return 5; }
+      if (i === 2) { return 3; }
+    })
+    .style('fill', (d, i) => d).style('fill-opacity', 0.7)
+    .style('stroke', (d, i) => d).style('stroke-width', 0.5);
 }
