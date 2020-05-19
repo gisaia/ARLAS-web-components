@@ -83,6 +83,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public map: any;
   public draw: any;
   public zoom: number;
+  public legendOpen = true;
   private emptyData: FeatureCollection = {
     'type': 'FeatureCollection',
     'features': []

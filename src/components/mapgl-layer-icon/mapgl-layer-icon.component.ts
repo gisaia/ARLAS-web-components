@@ -190,17 +190,17 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
         .attr('x1', 0).attr('y1', 18)
         .attr('x2', 6).attr('y2', 10)
         .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 2);
     svg.append('g').append('line')
         .attr('x1', 6).attr('y1', 10)
         .attr('x2', 12).attr('y2', 8)
         .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 2);
     svg.append('g').append('line')
         .attr('x1', 12).attr('y1', 9)
         .attr('x2', 18).attr('y2', 0)
         .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 2);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const threeColors = [];
     const iv = colorLegend.interpolatedValues;
@@ -229,17 +229,17 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
         .attr('x1', 0).attr('y1', 18)
         .attr('x2', 6).attr('y2', 10)
         .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', threeColors[0]).attr('stroke-width', 3);
+        .attr('stroke', threeColors[0]).attr('stroke-width', 2);
     svg.append('g').append('line')
         .attr('x1', 6).attr('y1', 10)
         .attr('x2', 12).attr('y2', 8)
         .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', threeColors[1]).attr('stroke-width', 3);
+        .attr('stroke', threeColors[1]).attr('stroke-width', 2);
     svg.append('g').append('line')
         .attr('x1', 12).attr('y1', 9)
         .attr('x2', 18).attr('y2', 0)
         .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', threeColors[2]).attr('stroke-width', 3);
+        .attr('stroke', threeColors[2]).attr('stroke-width', 2);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
     const iv = colorLegend.manualValues as Map<string, string>;
     const colorsList = [];
