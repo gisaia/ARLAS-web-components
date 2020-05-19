@@ -41,21 +41,16 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
+        if (source.startsWith('feature') && source.startsWith('feature-metric')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else if (source.startsWith('cluster')) {
           drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
-          // todo
         }
         break;
       }
       case 'line': {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        if (source.startsWith('feature') && !source.startsWith('feature-metric')) {
-          drawFeatureLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
-        } else {
-          // todo
-        }
+        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
         break;
       }
       case 'fill': {
@@ -68,7 +63,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         break;
       }
       case 'heatmap': {
-        const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
+        const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
         if (source.startsWith('cluster')) {
           drawClusterHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else {
@@ -187,37 +182,25 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
  * @param svgNode SVG element on which we append the line using d3.
  * @param colorLegend Color legend, to give the drawn icons line the same color on the map
  */
-export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     const svg = select(svgNode);
     svg.selectAll('g').remove();
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 18)
-        .attr('x2', 6)
-        .attr('y2', 10)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue)
-        .attr('stroke-width', 3);
+        .attr('x1', 0).attr('y1', 18)
+        .attr('x2', 6).attr('y2', 10)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 6)
-        .attr('y1', 10)
-        .attr('x2', 12)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue)
-        .attr('stroke-width', 3);
+        .attr('x1', 6).attr('y1', 10)
+        .attr('x2', 12).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 12)
-        .attr('y1', 9)
-        .attr('x2', 18)
-        .attr('y2', 0)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue)
-        .attr('stroke-width', 3);
+        .attr('x1', 12).attr('y1', 9)
+        .attr('x2', 18).attr('y2', 0)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 3);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const threeColors = [];
     const iv = colorLegend.interpolatedValues;
@@ -243,32 +226,20 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     const svg = select(svgNode);
     svg.selectAll('g').remove();
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 18)
-        .attr('x2', 6)
-        .attr('y2', 10)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', threeColors[0])
-        .attr('stroke-width', 3);
+        .attr('x1', 0).attr('y1', 18)
+        .attr('x2', 6).attr('y2', 10)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', threeColors[0]).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 6)
-        .attr('y1', 10)
-        .attr('x2', 12)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', threeColors[1])
-        .attr('stroke-width', 3);
+        .attr('x1', 6).attr('y1', 10)
+        .attr('x2', 12).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', threeColors[1]).attr('stroke-width', 3);
     svg.append('g').append('line')
-        .attr('x1', 12)
-        .attr('y1', 9)
-        .attr('x2', 18)
-        .attr('y2', 0)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', threeColors[2])
-        .attr('stroke-width', 3);
+        .attr('x1', 12).attr('y1', 9)
+        .attr('x2', 18).attr('y2', 0)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', threeColors[2]).attr('stroke-width', 3);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
     const iv = colorLegend.manualValues as Map<string, string>;
     const colorsList = [];
@@ -291,60 +262,30 @@ export function drawFeatureLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     const svg = select(svgNode);
     svg.selectAll('g').remove();
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 18)
-        .attr('x2', 6)
-        .attr('y2', 10)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[0])
-        .attr('stroke-width', 1.5);
+        .attr('x1', 0).attr('y1', 18)
+        .attr('x2', 6).attr('y2', 10)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 6)
-        .attr('y1', 10)
-        .attr('x2', 12)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[0])
-        .attr('stroke-width', 1.5);
+        .attr('x1', 6).attr('y1', 10)
+        .attr('x2', 12).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 12)
-        .attr('y1', 9)
-        .attr('x2', 18)
-        .attr('y2', 0)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[0])
-        .attr('stroke-width', 1.5);
-
+        .attr('x1', 12).attr('y1', 9)
+        .attr('x2', 18).attr('y2', 0)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 0)
-        .attr('y1', 0)
-        .attr('x2', 11)
-        .attr('y2', 8)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[1])
-        .attr('stroke-width', 1.5);
-    // svg.append('g').append('line')
-    //     .attr('x1', 6)
-    //     .attr('y1', 8)
-    //     .attr('x2', 12)
-    //     .attr('y2', 10)
-    //     .attr('cx', 2)
-    //     .attr('cy', 2)
-    //     .attr('stroke', colorsList[1])
-    //     .attr('stroke-width', 3);
+        .attr('x1', 0).attr('y1', 0)
+        .attr('x2', 11).attr('y2', 8)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[1]).attr('stroke-width', 1.5);
     svg.append('g').append('line')
-        .attr('x1', 11)
-        .attr('y1', 8)
-        .attr('x2', 18)
-        .attr('y2', 18)
-        .attr('cx', 2)
-        .attr('cy', 2)
-        .attr('stroke', colorsList[1])
-        .attr('stroke-width', 1.5);
+        .attr('x1', 11).attr('y1', 8)
+        .attr('x2', 18).attr('y2', 18)
+        .attr('cx', 2).attr('cy', 2)
+        .attr('stroke', colorsList[1]).attr('stroke-width', 1.5);
   }
 }
 /**
