@@ -22,15 +22,8 @@ export interface GeoQuery {
 }
 
 export interface MapSettingsService {
-  getAllGeometries(): Array<GeometrySelectModel>;
-  getFeatureGeometries(): Array<GeometrySelectModel>;
-  getTopologyGeometries(): Array<GeometrySelectModel>;
-  getClusterGeometries(): Array<GeometrySelectModel>;
   getFilterGeometries(): Array<GeometrySelectModel>;
   getOperations(): Array<OperationSelectModel>;
-  hasFeaturesMode(): boolean;
-  hasTopologyMode(): boolean;
-  hasClusterMode(): boolean;
 }
 
 @Component({
