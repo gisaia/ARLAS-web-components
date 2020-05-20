@@ -28,7 +28,7 @@
         <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
       </div>
       <div class="map_visu-content-container">
-        <arlas-mapgl-legend *ngFor="let l of visu.value" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+        <arlas-mapgl-legend *ngFor="let l of visu.value" [enabled]="visualisationsSets.status.get(visu.key)" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
       </div>
 
     </div>

@@ -25,6 +25,7 @@ export interface LegendData {
 export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public layer: mapboxgl.Layer;
   @Input() public zoom: number;
+  @Input() public enabled: boolean;
   @Input() public legendUpdater: Subject<any> = new Subject();
   @Input() public visibilityUpdater: Subject<any> = new Subject();
 
@@ -54,6 +55,9 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.visibleMode = this.layer ? v.get(this.layer.id) : false;
       if (this.visibleMode && this.layer && !!this.layer.minzoom && !! this.layer.maxzoom) {
           this.visibleMode = (this.zoom <= this.layer.maxzoom &&  this.zoom >= this.layer.minzoom);
+      }
+      if (!this.enabled) {
+        this.visibleMode = false;
       }
       this.detail = this.visibleMode;
       if (this.layer) {
