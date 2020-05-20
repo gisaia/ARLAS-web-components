@@ -392,12 +392,30 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public emitVisualisations(visu: string) {
-    const visuStatus = this.visualisationsSets.status.get(visu);
-    this.visualisationsSets.status.set(visu, !visuStatus);
+    const visuStatus = !this.visualisationsSets.status.get(visu);
+    if (!visuStatus) {
+      const layersSet = new Set(this.visualisationsSets.visualisations.get(visu));
+      this.visualisationsSets.visualisations.forEach((ls, v) => {
+        if (v !== visu) {
+          ls.forEach(ll => {
+            if (layersSet && layersSet.has(ll)) {
+              layersSet.delete(ll);
+            }
+          })
+        }
+      });
+      layersSet.forEach(ll => {
+        (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
+      });
+    }
+    this.visualisationsSets.status.set(visu, visuStatus);
     const layers = new Set<string>();
     this.visualisationsSets.visualisations.forEach((ls, v) => {
       if (this.visualisationsSets.status.get(v)) {
-        ls.forEach(l => layers.add(l));
+        ls.forEach(l => {
+          layers.add(l);
+          (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
+        });
       }
     });
     this.visualisations.emit(layers);
@@ -1161,6 +1179,21 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private addVisuLayers() {
     this.visualisationsSets.visualisations.forEach((ls, v) => {
       ls.forEach(l => this.addLayer(l));
+    });
+    this.visualisationsSets.status.forEach((b, vs) => {
+      if (!b) {
+        this.visualisationsSets.visualisations.get(vs).forEach(l => {
+            this.map.setLayoutProperty(l, 'visibility', 'none');
+        });
+      }
+    });
+    this.visualisationsSets.status.forEach((b, vs) => {
+      if (b) {
+        this.visualisationsSets.visualisations.get(vs).forEach(l => {
+          this.map.setLayoutProperty(l, 'visibility', 'visible');
+        });
+
+      }
     });
   }
   /**
