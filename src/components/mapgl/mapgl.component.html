@@ -13,14 +13,25 @@
     </mat-radio-group>
   </div>
 </div>
-<div *ngIf="visualisationsSets" class="map__visu-list--container">
-  <div (click)="emitVisualisations(visu.key)" class="map__visu-container-{{visualisationsSets.status.get(visu.key)}}" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
-    <span class="visu-title">{{visu.key}}</span>
-    <div>
-      <arlas-mapgl-legend *ngFor="let l of visu.value" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+<div class="map__visu-list--wrapper">
+  <div class="map_legend-button--wrapper">
+    <mat-basic-chip class="map_legend-button" (click)="legendOpen=!legendOpen"
+      matTooltip="{{'Show/hide map legend' | translate}}">
+      <span>{{'Legend' | translate}}</span>
+      <mat-icon class="primary" [class.map_legend-rotate]="legendOpen">keyboard_arrow_up</mat-icon>
+    </mat-basic-chip>
+  </div>
+  <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
+    <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
+      <div class="map_visu-title-container">
+        <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key}}</span>
+        <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
+      </div>
+      <div class="map_visu-content-container">
+        <arlas-mapgl-legend *ngFor="let l of visu.value" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+      </div>
 
     </div>
-
   </div>
 </div>
 <div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip" [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>

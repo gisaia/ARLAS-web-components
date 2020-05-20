@@ -19,7 +19,8 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule } from '@angular/material';
+import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule,
+   MatSlideToggleModule, MatTooltipModule, MatChipsModule } from '@angular/material';
 import { MapglComponent } from './mapgl.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -35,7 +36,10 @@ import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgel-layer-icon.modu
     MatRadioModule,
     TranslateModule,
     MapglLegendModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    MatChipsModule
   ],
   declarations: [MapglComponent],
   exports: [MapglComponent]
