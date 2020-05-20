@@ -29,73 +29,6 @@
           "description": "List of mapbox-gl layers",
           "type": "array"
         },
-        "styleGroups": {
-          "description": "Either a hex string color or a color name (in English) or a saturation interval.",
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Id of the style group.",
-                "type": "string"
-              },
-              "name": {
-                "description": "Name of the style group.",
-                "type": "string"
-              },
-              "base": {
-                "description": "Ids list of base layers that are added to the map once this style group is chosen.",
-                "type": "array"
-              },
-              "isDefault": {
-                "description": "Whether this style group is the default one",
-                "type": "boolean"
-              },
-              "styles": {
-                "description": "List of the styles",
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "description": "Id of the style.",
-                      "type": "string"
-                    },
-                    "name": {
-                      "description": "Name of the style.",
-                      "type": "string"
-                    },
-                    "geomStrategy": {
-                      "description": "Geometry method of representation for aggregate data",
-                      "enum": [
-                          "bbox",
-                          "centroid",
-                          "first",
-                          "last",
-                          "byDefault",
-                          "geohash"
-                      ]
-                  },
-                    "layerIds": {
-                      "description": "Ids list of layers that are added to the map when this style is chosen.",
-                      "type": "array"
-                    },
-                    "isDefault": {
-                      "description": "Whether this style group is the default one",
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "id", "name", "layerIds"
-                  ]
-                }
-              }
-            },
-            "required": [
-              "id", "name", "base", "styles"
-            ]
-          }
-        },
         "events": {
           "type": "object",
           "properties": {
@@ -118,7 +51,7 @@
         }
       },
       "required": [
-        "layers", "styleGroups", "events"
+        "layers", "events"
       ]
     },
     "idFeatureField": {

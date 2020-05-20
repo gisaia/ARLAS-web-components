@@ -30,7 +30,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, Style, StyleGroup, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
+import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -99,7 +99,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private DATA_SOURCE = 'data_source';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private LOCAL_STORAGE_STYLE_GROUP = 'ARLAS_SG-';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
   private savedEditFeature = null;
@@ -292,12 +291,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     visualisations: Map<string, Set<string>>,
     status: Map<string, boolean>;
   };
-
-  /**
-   * @Output : Angular
-   * @description Emits all the StyleGroups of the map on style change. Each StyleGroup has its selected Style set.
-  */
-  @Output() public onStyleChanged: Subject<Array<StyleGroup>> = new Subject<Array<StyleGroup>>();
 
   /**
    * @Output : Angular
@@ -615,7 +608,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
-        this.addBaseLayers();
         this.addVisuLayers();
 
         this.mapLayers.events.zoomOnClick.forEach(layerId => {
@@ -820,7 +812,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.nbPolygonVertice = 0;
         }
       });
-      this.cleanLocalStorage(this.mapLayers.styleGroups);
       this.onMapLoaded.next(true);
     });
 
@@ -973,46 +964,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.deleteSelectedItem();
   }
 
-  // public onChangeStyle(styleGroupId: string, selectedStyleId: string) {
-  //   if (this.mapLayers && this.mapLayers.styleGroups) {
-  //     const selectedStyle: Style = this.getStyle(styleGroupId, selectedStyleId, this.mapLayers.styleGroups);
-  //     if (selectedStyle) {
-  //       this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
-  //         styleGroup.selectedStyle = selectedStyle;
-  //       });
-  //       this.removeAllLayers();
-  //       if (selectedStyle.geomStrategy !== undefined) {
-  //         this.switchLayer.next(selectedStyle);
-  //       }
-  //       this.mapLayers.styleGroups.forEach(styleGroup => {
-  //         localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
-  //         styleGroup.selectedStyle.layerIds.forEach(layerId => {
-  //           this.addLayer(layerId);
-  //         });
-  //       });
-  //       this.onStyleChanged.next(this.mapLayers.styleGroups);
-  //     }
-  //   }
-  // }
-
-  public setStyleGroup(styleGroupId: string, selectedStyleId: string) {
-    if (this.mapLayers && this.mapLayers.styleGroups) {
-      const selectedStyle: Style = this.getStyle(styleGroupId, selectedStyleId, this.mapLayers.styleGroups);
-      if (selectedStyle) {
-        this.mapLayers.styleGroups.filter(styleGroup => styleGroup.id === styleGroupId).forEach(styleGroup => {
-          styleGroup.selectedStyle = selectedStyle;
-        });
-        this.removeAllLayers();
-        this.mapLayers.styleGroups.forEach(styleGroup => {
-          localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, styleGroup.selectedStyle.id);
-          styleGroup.selectedStyle.layerIds.forEach(layerId => {
-            this.addLayer(layerId);
-          });
-        });
-      }
-    }
-  }
-
   public onChangePolygonDraw() {
     this.onPolygonChange.next(this.draw.getAll().features);
 
@@ -1156,17 +1107,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  /**
-   * @description Add base layers of each style group
-   */
-  private addBaseLayers() {
-    this.mapLayers.styleGroups.forEach(styleGroup => {
-      styleGroup.base.forEach(layerId => {
-        this.addLayer(layerId);
-      });
-    });
-  }
-
   private addVisuLayers() {
     this.visualisationsSets.visualisations.forEach((ls, v) => {
       ls.forEach(l => this.addLayer(l));
@@ -1187,31 +1127,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     });
   }
-  /**
-   * @description Add layers of the selected style of each style group
-   */
-  // private addStylesLayers() {
-  //   this.mapLayers.styleGroups.forEach(styleGroup => {
-  //     let style;
-  //     const localStorageSelectedStyleId = localStorage.getItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id);
-  //     if (localStorageSelectedStyleId) {
-  //       styleGroup.selectedStyle = this.getStyle(styleGroup.id, localStorageSelectedStyleId, this.mapLayers.styleGroups);
-  //     }
-  //     if (!styleGroup.selectedStyle) {
-  //       style = getDefaultStyle(styleGroup.styles);
-  //       styleGroup.selectedStyle = style;
-  //       localStorage.setItem(this.LOCAL_STORAGE_STYLE_GROUP + styleGroup.id, style.id);
-  //     } else {
-  //       style = styleGroup.selectedStyle;
-  //     }
-  //     if (style.geomStrategy !== undefined) {
-  //       this.switchLayer.next(style);
-  //     }
-  //     style.layerIds.forEach(layerId => {
-  //       this.addLayer(layerId);
-  //     });
-  //   });
-  // }
 
   private getAllBasemapStyles(): Array<BasemapStyle> {
     const allBasemapStyles = new Array<BasemapStyle>();
@@ -1273,20 +1188,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     } else {
-      throw new Error('The layer `' + layerId + '` specified in `mapLayers.styleGroups` is not declared in `mapLayers.layers`');
+      throw new Error('The layer `' + layerId + '` is not declared in `mapLayers.layers`');
     }
-  }
-
-  private removeAllLayers() {
-    this.mapLayers.styleGroups.forEach(styleGroup => {
-      styleGroup.styles.forEach(style => {
-        style.layerIds.forEach(layerId => {
-          if (this.map.getLayer(layerId) !== undefined) {
-            this.map.removeLayer(layerId);
-          }
-        });
-      });
-    });
   }
 
   private highlightFeature(featureToHightLight: { isleaving: boolean, elementidentifier: ElementIdentifier }) {
@@ -1451,35 +1354,5 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const id = this.getNextFeatureId();
     this.draw.setFeatureProperty(featureId, 'arlas_id', id);
     this.customIds.set(id, featureId);
-  }
-
-  /**
-   * Gets Style by `styleId` and `styleGroupId` from the given `styleGroups` list
-   * @param styleGroupId Id of the StyleGroup that contains the Style
-   * @param styleId Id of the Style
-   * @param styleGroups List of StyleGroups containing the style
-   */
-  private getStyle(styleGroupId: string, styleId: string, styleGroups: Array<StyleGroup>): Style {
-    let style;
-    if (styleGroups) {
-      const styleGroup: StyleGroup = styleGroups.find(sg => sg.id === styleGroupId);
-      if (styleGroup && styleGroup.styles) {
-        style = styleGroup.styles.find(s => s.id === styleId);
-      }
-    }
-    return style;
-  }
-
-  /**
-   * Removes from localStorage the style groups that are not in the given `styleGroups` list anymore
-   * @param styleGroups list of style groups
-   */
-  private cleanLocalStorage(styleGroups: Array<StyleGroup>): void {
-    const itemsToRemove = Object.keys(localStorage).filter(key => key.startsWith(this.LOCAL_STORAGE_STYLE_GROUP))
-      .map(key => key.substring(this.LOCAL_STORAGE_STYLE_GROUP.length))
-      .filter(sgId => !styleGroups.find(sg => sg.id === sgId));
-    itemsToRemove.forEach(sgId => {
-      localStorage.removeItem(this.LOCAL_STORAGE_STYLE_GROUP + sgId);
-    });
   }
 }
