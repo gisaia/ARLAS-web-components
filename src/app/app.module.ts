@@ -54,8 +54,8 @@ import { MAT_DATE_LOCALE, MatButtonModule } from '@angular/material';
 import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
 import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
 import { MetricModule } from '../components/metric/metric.module';
-import { MapglLegendModule } from '../components/mapgl-legend/map-legend.module';
-import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgel-layer-icon.module';
+import { MapglLegendModule } from '../components/mapgl-legend/mapgl-legend.module';
+import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgl-layer-icon.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');

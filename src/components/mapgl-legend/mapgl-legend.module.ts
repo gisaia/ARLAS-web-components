@@ -22,7 +22,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglLegendComponent } from './mapgl-legend.component';
-import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgel-layer-icon.module';
+import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
 import { MatButtonModule, MatIconModule } from '@angular/material';
 
 
