@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { StyleGroup, Style } from './model/mapLayers';
 import { Point } from 'mapbox-gl';
 
 export function paddedBounds(npad: number, spad: number, epad: number,
@@ -75,41 +74,6 @@ export function getTiles(bounds: Array<Array<number>>, zoom: number): Array<{ x:
     }
     return tiles;
 }
-
-export function getDefaultStyleGroup(styleGroups: Array<StyleGroup>): StyleGroup {
-    let defaultStyleGroup: StyleGroup;
-    if (styleGroups !== undefined) {
-        for (let i = 0; i < styleGroups.length; i++) {
-            if (styleGroups[i].isDefault) {
-                defaultStyleGroup = styleGroups[i];
-                break;
-            }
-        }
-        // if there is no default style group
-        if (styleGroups.length > 0 && defaultStyleGroup === undefined) {
-            defaultStyleGroup = styleGroups[0];
-        }
-    }
-    return defaultStyleGroup;
-}
-
-export function getDefaultStyle(styles: Array<Style>) {
-    let defaultStyle: Style;
-    if (styles !== undefined) {
-        for (let i = 0; i < styles.length; i++) {
-            if (styles[i].isDefault) {
-                defaultStyle = styles[i];
-                break;
-            }
-        }
-        // if there is no default style
-        if (styles.length > 0 && defaultStyle === undefined) {
-            defaultStyle = styles[0];
-        }
-    }
-    return defaultStyle;
-}
-
 
 export function project(lat: number, lng: number, zoom: number): { x: number, y: number } {
 

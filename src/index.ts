@@ -54,6 +54,6 @@ export { MapglImportModule } from './components/mapgl-import/mapgl-import.module
 export { MapglImportComponent } from './components/mapgl-import/mapgl-import.component';
 export { MapglSettingsModule } from './components/mapgl-settings/mapgl-settings.module';
 export { MapglSettingsComponent, MapSettingsService, GeoQuery,
-  GeometrySelectModel, RenderedGeometries, OperationSelectModel } from './components/mapgl-settings/mapgl-settings.component';
+  GeometrySelectModel, OperationSelectModel } from './components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent } from './components/wmts-layer-manager/wmts-layer-manager.component';
