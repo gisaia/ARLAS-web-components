@@ -15,11 +15,9 @@
 </div>
 <div class="map__visu-list--wrapper">
   <div class="map_legend-button--wrapper">
-    <mat-basic-chip class="map_legend-button" (click)="legendOpen=!legendOpen"
-      matTooltip="{{'Show/hide map legend' | translate}}">
-      <span>{{'Legend' | translate}}</span>
-      <mat-icon class="primary" [class.map_legend-rotate]="legendOpen">keyboard_arrow_up</mat-icon>
-    </mat-basic-chip>
+    <div class="map_legend-button-icon" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
+      <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
+    </div>
   </div>
   <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
     <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
