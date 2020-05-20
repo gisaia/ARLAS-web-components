@@ -198,5 +198,6 @@ export class MapglSettingsComponent implements OnInit {
     this.dialogRef.componentInstance.filterGeometries = mapSettingsService.getFilterGeometries();
     this.dialogRef.componentInstance.operations = mapSettingsService.getOperations();
     this.dialogRef.componentInstance.geoQueryEmitter = this.geoQueryEmitter;
+    this.dialogRef.componentInstance.baseMapStyleEmitter = this.baseMapStyleEmitter;
   }
 }

@@ -1,39 +1,6 @@
-<h1 mat-dialog-title class="mapgl-settings-title">{{ 'Layers Settings' | translate}}</h1>
+<h1 mat-dialog-title class="mapgl-settings-title">{{ 'Geo-queries & basemaps' | translate}}</h1>
 <div mat-dialog-content class="mapgl-settings-body">
   <mat-tab-group (selectedTabChange)="changeTab($event)">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon svgIcon="basemap"></mat-icon> {{ 'Geometries and Styles' | translate}}
-      </ng-template>
-      <div class="displayed-geo-container">
-        <fieldset class="fieldset-geo">
-          <legend class="displayed-geo-label">
-            <mat-icon style="height:22px;width:22px;" svgIcon="basemap"></mat-icon>
-            <span style="padding-left:2px">{{'Basemaps' | translate}}</span>
-          </legend>
-          <div class="displayed-geo">
-            <div class="displayed-geo-select">
-              <div class="styles-container">
-                <div class="styles-select" >
-                  <span class="styles">{{'Basemap styles' | translate}}</span>
-                  <div class="mat-select-arrow select-arrow"></div>
-                </div>
-                <div (click)="$event.stopPropagation()" class="basemap-styles-list">
-                  <span class="stylegroup-name">{{'Basemaps' | translate}}</span>
-                  <mat-radio-group class="stylegroup-radio-group" [value]="basemapStylesGroup?.selectedBasemapStyle">
-                    <mat-radio-button class="stylegroup-radio-button"
-                      [checked]="style.name == basemapStylesGroup?.selectedBasemapStyle?.name" (change)="emitBasemapStyle(style)"
-                      *ngFor="let style of basemapStylesGroup?.basemapStyles" [value]="style">
-                      {{style.name | translate}}
-                    </mat-radio-button>
-                  </mat-radio-group>
-                </div>
-              </div>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-    </mat-tab>
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon>search</mat-icon> {{ 'Geo-queries' | translate}}
@@ -63,12 +30,33 @@
         </div>
       </div>
     </mat-tab>
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon svgIcon="basemap"></mat-icon> {{ 'Basemaps' | translate}}
+      </ng-template>
+      <div class="displayed-geo-container">
+        <fieldset class="fieldset-geo">
+          <legend class="displayed-geo-label">
+            <span style="padding-left:2px">{{'Choose one of the following basemaps' | translate}}</span>
+          </legend>
+          <div>
+            <mat-radio-group class="stylegroup-radio-group" [value]="basemapStylesGroup?.selectedBasemapStyle">
+              <mat-radio-button class="stylegroup-radio-button"
+                [checked]="style.name == basemapStylesGroup?.selectedBasemapStyle?.name" (change)="emitBasemapStyle(style)"
+                *ngFor="let style of basemapStylesGroup?.basemapStyles" [value]="style">
+                {{style.name | translate}}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </fieldset>
+      </div>
+    </mat-tab>
   </mat-tab-group>
 </div>
 <div mat-dialog-actions class="mapgl-settings-actions">
-  <button mat-button *ngIf="currentTabIndex === 1" class="apply-displayed-geometries"
+  <button mat-button *ngIf="currentTabIndex === 0" class="apply-displayed-geometries"
     (click)="emitGeoFilter()">{{'Apply geo-queries' | translate}}</button>
-  <button mat-button *ngIf="currentTabIndex === 1" class="apply-displayed-geometries"
+  <button mat-button *ngIf="currentTabIndex === 0" class="apply-displayed-geometries"
     (click)="emitGeoFilter();onClose()">{{'Set geo-queries' | translate}}</button>
   <button mat-button class="cancel-map-settings" (click)="onClose()">{{ 'Cancel' | translate}}</button>
 </div>
