@@ -3,118 +3,9 @@
   <mat-tab-group (selectedTabChange)="changeTab($event)">
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon svgIcon="map_style"></mat-icon> {{ 'Geometries and Styles' | translate}}
+        <mat-icon svgIcon="basemap"></mat-icon> {{ 'Geometries and Styles' | translate}}
       </ng-template>
-      <div class="displayed-geo-container" (click)="hideAllStylesContainers()">
-        <fieldset class="fieldset-geo" *ngIf="hasClusterMode">
-          <legend class="displayed-geo-label">
-            <mat-icon>bubble_chart</mat-icon>
-            <span>{{'Clusters' | translate}}</span>
-          </legend>
-          <div class="displayed-geo">
-            <div class="displayed-geo-select">
-              <mat-form-field appearance="outline">
-                <mat-label>{{'Geometry to render' | translate}}</mat-label>
-                <mat-select [formControl]="clusterGeoControl" [compareWith]="compareGeometries"
-                  (selectionChange)="applyClusterStyles()" [(ngModel)]="selectedCluster">
-                  <mat-option *ngFor="let geometry of clusterGeometries" [value]="geometry">
-                    {{ geometry.path | translate}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="displayed-geo-select">
-              <mat-form-field appearance="outline">
-                <mat-label>{{'Style to display' | translate}}</mat-label>
-                <mat-select [(ngModel)]="selectedClusterStyle"
-                  (selectionChange)="emitStyle(clusterStyleGroup.id, selectedClusterStyle.id)">
-                  <mat-option *ngFor="let style of clusterStyleGroup?.styles" [value]="style"
-                    [hidden]="!style?.isAvailable">
-                    {{style.name | translate}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-
-        </fieldset>
-        <fieldset class="fieldset-geo" *ngIf="hasFeatureMode">
-          <legend class="displayed-geo-label">
-            <mat-icon style="height:22px;width:22px;" svgIcon="features"></mat-icon>
-            <span>{{'Features' | translate}}</span>
-          </legend>
-          <div class="displayed-geo">
-            <div class="displayed-geo-select">
-              <mat-form-field appearance="outline">
-                <mat-label>{{'Select the geometries to render' | translate}}</mat-label>
-                <mat-select multiple [formControl]="featuresGeoControl" [compareWith]="compareGeometries"
-                  (selectionChange)="applyFeaturesStyles()" [(ngModel)]="selectedFeatures">
-                  <mat-option *ngFor="let geometry of featureGeometries" [value]="geometry">
-                    {{ geometry.path | translate }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="displayed-geo-select">
-              <div class="styles-container">
-                <div class="styles-select" (click)="showFeaturesStyles($event)">
-                  <span class="styles">{{'Features styles' | translate}}</span>
-                  <div class="mat-select-arrow select-arrow"></div>
-                </div>
-              </div>
-              <div *ngIf="showFeaturesStyle" (click)="$event.stopPropagation()" class="styles-list">
-                <div *ngFor="let styleGroup of featuresStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
-                  <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
-                  <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
-                    <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
-                      (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
-                      {{style.name | translate}}
-                    </mat-radio-button>
-                  </mat-radio-group>
-                </div>
-              </div>
-            </div>
-          </div>
-        </fieldset>
-        <fieldset class="fieldset-geo" *ngIf="hasTopologyMode">
-          <legend class="displayed-geo-label">
-            <mat-icon style="height:22px;width:22px;" svgIcon="topology"></mat-icon>
-            <span>{{'Topology' | translate}}</span>
-          </legend>
-          <div class="displayed-geo">
-            <div class="displayed-geo-select">
-              <mat-form-field appearance="outline">
-                <mat-label>{{'Select the geometries to render' | translate}}</mat-label>
-                <mat-select multiple [formControl]="topologyGeoControl" [compareWith]="compareGeometries"
-                  (selectionChange)="applyTopologyStyles()" [(ngModel)]="selectedTopology">
-                  <mat-option *ngFor="let geometry of topologyGeometries" [value]="geometry">
-                    {{ geometry.path | translate }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-            <div class="displayed-geo-select">
-              <div class="styles-container">
-                <div class="styles-select" (click)="showTopologyStyles($event)">
-                  <span class="styles">{{'Topology styles' | translate}}</span>
-                  <div class="mat-select-arrow select-arrow"></div>
-                </div>
-              </div>
-              <div *ngIf="showTopologyStyle" (click)="$event.stopPropagation()" class="styles-list">
-                <div *ngFor="let styleGroup of topologyStyleGroups" [hidden]="styleGroup.id === CONSTANTS.CLUSTER">
-                  <div class="stylegroup-name">{{ styleGroup.name | translate}}</div>
-                  <mat-radio-group class="stylegroup-radio-group" [value]="styleGroup.selectedStyle">
-                    <mat-radio-button class="stylegroup-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id"
-                      (change)="emitStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
-                      {{style.name | translate}}
-                    </mat-radio-button>
-                  </mat-radio-group>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </fieldset>
+      <div class="displayed-geo-container">
         <fieldset class="fieldset-geo">
           <legend class="displayed-geo-label">
             <mat-icon style="height:22px;width:22px;" svgIcon="basemap"></mat-icon>
@@ -123,11 +14,11 @@
           <div class="displayed-geo">
             <div class="displayed-geo-select">
               <div class="styles-container">
-                <div class="styles-select" (click)="showBasemapsStyles($event)">
+                <div class="styles-select" >
                   <span class="styles">{{'Basemap styles' | translate}}</span>
                   <div class="mat-select-arrow select-arrow"></div>
                 </div>
-                <div *ngIf="showBasemapsStyle" (click)="$event.stopPropagation()" class="basemap-styles-list">
+                <div (click)="$event.stopPropagation()" class="basemap-styles-list">
                   <span class="stylegroup-name">{{'Basemaps' | translate}}</span>
                   <mat-radio-group class="stylegroup-radio-group" [value]="basemapStylesGroup?.selectedBasemapStyle">
                     <mat-radio-button class="stylegroup-radio-button"
@@ -175,8 +66,6 @@
   </mat-tab-group>
 </div>
 <div mat-dialog-actions class="mapgl-settings-actions">
-  <button mat-button *ngIf="currentTabIndex === 0" class="apply-displayed-geometries"
-    (click)="emitRenderedGeometries()">{{'Set geometries' | translate}}</button>
   <button mat-button *ngIf="currentTabIndex === 1" class="apply-displayed-geometries"
     (click)="emitGeoFilter()">{{'Apply geo-queries' | translate}}</button>
   <button mat-button *ngIf="currentTabIndex === 1" class="apply-displayed-geometries"
