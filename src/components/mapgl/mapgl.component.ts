@@ -401,7 +401,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
             if (layersSet && layersSet.has(ll)) {
               layersSet.delete(ll);
             }
-          })
+          });
         }
       });
       layersSet.forEach(ll => {

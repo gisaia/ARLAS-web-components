@@ -46,14 +46,15 @@
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
+
 .map__visu-list--wrapper {
   position: absolute;
   display: flex;
   flex-direction: column;
-  bottom: 165px;
-  right: 8px;
+  top: 220px;
+  right: 7px;
   background: transparent;
-
+  flex-wrap: wrap-reverse;
 }
 
 .map__visu-list--container /* @doc Sets the style of layers switcher container*/
@@ -83,18 +84,25 @@
   width: 15px;
 }
 
-.map_legend-button {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 5px 0px;
-  max-width: 75px;
-  background-color: white;
-  border-radius: 4px;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+.map_legend-button--wrapper {
   cursor: pointer;
-  float: right;
-  outline: none;
   margin-bottom: 4px;
+  width: 30px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  background-color: white;
+}
+
+.map_legend-button-icon {
+  height: 30px;
+  padding: 3px;
+  cursor: pointer;
+}
+
+.map_legend-button-icon:hover {
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .map_legend-button:hover {

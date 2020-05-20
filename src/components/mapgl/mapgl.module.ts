@@ -24,8 +24,7 @@ import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule,
 import { MapglComponent } from './mapgl.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MapglLegendModule } from '../mapgl-legend/map-legend.module';
-import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgel-layer-icon.module';
+import { MapglLegendModule } from '../mapgl-legend/mapgl-legend.module';
 
 @NgModule({
   imports: [
