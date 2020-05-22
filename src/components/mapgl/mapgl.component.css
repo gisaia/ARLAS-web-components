@@ -115,6 +115,7 @@
 .map_visu-title-container {
   display: flex;
   justify-content: space-between;
+  padding-right: 5px;
 }
 
 .map_visu-content-container {
@@ -125,7 +126,7 @@
 
 .map__visu-container {
   margin: 3px;
-  padding: 5px;
+  padding: 5px 0 5px 5px;
   cursor: pointer;
   width: 225px;
   border-bottom: 0.8px solid #bbb
