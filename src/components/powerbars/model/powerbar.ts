@@ -40,6 +40,10 @@ export class PowerBar {
    * @description Whether the powerbar is selected.
    */
   public isSelected = false;
+  /**
+   * @description Value displayed on the powerbar tooltip.
+   */
+  public tooltipValue: string;
 
   /**
    * @description Path from the powerbar to the parent nodes

@@ -18,7 +18,18 @@
  */
 
 import { mix } from 'tinycolor2';
+import { isNumber } from 'util';
 
+export function formatWithSpace(x): string {
+  if (isNumber(x)) {
+    const trunc = Math.trunc(x);
+    const decimal = Math.abs(x) - Math.abs(trunc);
+    const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const spacedNumberString = trunc < 0 ? '-' + spacedNumber : spacedNumber;
+    return decimal > 0 ? spacedNumberString + '.' + decimal : spacedNumberString;
+  }
+  return x;
+}
 export function getKeys(map): Array<string> {
   return Array.from(map.keys());
 }
