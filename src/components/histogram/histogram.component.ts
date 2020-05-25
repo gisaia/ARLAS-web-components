@@ -29,6 +29,7 @@ import {
 
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
   , AbstractSwimlane, AbstractChart  } from 'arlas-d3';
@@ -36,6 +37,7 @@ import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimen
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
 import { HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
@@ -301,7 +303,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ChartType = ChartType;
   public Array = Array;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef) {
+  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
@@ -434,6 +436,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   private setHistogramParameters() {
     this.histogram.histogramParams = new HistogramParams();
     this.histogram.histogramParams.barWeight = this.barWeight;
+    this.histogram.histogramParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
     this.histogram.histogramParams.brushHandlesHeightWeight = this.brushHandlesHeightWeight;
     this.histogram.histogramParams.chartHeight = this.chartHeight;
     this.histogram.histogramParams.chartTitle = this.chartTitle;
