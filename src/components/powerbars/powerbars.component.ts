@@ -23,8 +23,7 @@ import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { TreeNode, SimpleNode } from 'arlas-d3';
-import { TranslateService } from '@ngx-translate/core';
-import { FORMAT_CHAR } from '../componentsUtils';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -127,9 +126,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    */
   public SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
 
-  public FORMAT_CHAR = FORMAT_CHAR;
+  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(private colorService: ArlasColorService, public translate: TranslateService) {}
+  constructor(private colorService: ArlasColorService) {}
 
   public static getPowerbarsJsonSchema(): Object {
     return powerbarsJsonSchema;

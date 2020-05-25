@@ -19,8 +19,7 @@
 
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as metricJsonSchema from './metric.schema.json';
-import { TranslateService } from '@ngx-translate/core';
-import { FORMAT_CHAR } from '../componentsUtils';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 
 @Component({
@@ -46,9 +45,9 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
   public displayedValue = '0';
-  public FORMAT_CHAR = FORMAT_CHAR;
+  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(public translate: TranslateService) { }
+  constructor() { }
 
   public ngOnInit() {
     if (this.value) {
