@@ -25,6 +25,8 @@ import { debounceTime } from 'rxjs/operators';
 import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
 import { ArlasColorService } from '../../services/color.generator.service';
+import { TranslateService } from '@ngx-translate/core';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 @Component({
   selector: 'arlas-donut',
@@ -99,7 +101,8 @@ export class DonutComponent implements OnChanges {
 
   public donut: AbstractDonut;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef, private colorService: ArlasColorService) {
+  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef,
+    private colorService: ArlasColorService, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
@@ -150,5 +153,6 @@ export class DonutComponent implements OnChanges {
     this.donut.donutParams.keysToColors = this.keysToColors;
     this.donut.donutParams.colorsSaturationWeight = this.colorsSaturationWeight;
     this.donut.donutParams.donutNodeColorizer = this.colorService;
+    this.donut.donutParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
   }
 }
