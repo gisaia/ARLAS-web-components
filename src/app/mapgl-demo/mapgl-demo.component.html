@@ -22,12 +22,12 @@
   <arlas-mapgl-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="400" [maxLoadingTime]="10000"
     [maxFileSize]="1050000" [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']">
   </arlas-mapgl-import>
-  <arlas-mapgl-settings #mapSettings [styleGroups]="mapLayers.styleGroups">
+  <arlas-mapgl-settings #mapSettings>
 
   </arlas-mapgl-settings>
-  <arlas-mapgl #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles" [geojsondata]="geojsondata"
-    [margePanForLoad]=40 [margePanForTest]=2 [zoomToPrecisionCluster]="[]" [displayLayerSwitcher]=true [mapLayers]="mapLayers"
-    [displayScale]=true [displayCurrentCoordinates]=true [minZoom]=1 [maxZoom]=28 [maxPrecision]="[6,4]" (onPolygonChange)="polygonChange($event)"
+  <arlas-mapgl #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles"
+    [margePanForLoad]=40 [margePanForTest]=2 [displayLayerSwitcher]=true [mapLayers]="mapLayers"
+    [displayScale]=true [displayCurrentCoordinates]=true [minZoom]=1 [maxZoom]=28 (onPolygonChange)="polygonChange($event)"
     (onPolygonSelect)="polygonSelect($event)" [drawOption]="drawOptions" [drawData]="drawData" [drawButtonEnabled]="true"
     [drawPolygonVerticesLimit]="5" [transformRequest]="transformRequest" (onAoiChanged)="onAoiChanged($event)">
   </arlas-mapgl>

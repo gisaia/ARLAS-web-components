@@ -23,6 +23,7 @@ import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { TreeNode, SimpleNode } from 'arlas-d3';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -124,6 +125,8 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    * @constant
    */
   public SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
+
+  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   constructor(private colorService: ArlasColorService) {}
 

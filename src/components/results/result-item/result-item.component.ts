@@ -26,6 +26,9 @@ import { Subject } from 'rxjs';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import { TranslateService } from '@ngx-translate/core';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+
 
 @Component({
   selector: '[arlas-result-item]',
@@ -126,7 +129,9 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public borderStyle = 'solid';
   protected identifier: string;
 
-  constructor(public colorService: ArlasColorService) {
+  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
+
+  constructor(public colorService: ArlasColorService, public translate: TranslateService) {
     super();
   }
 

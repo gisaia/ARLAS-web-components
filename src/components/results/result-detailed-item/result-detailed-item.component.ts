@@ -23,6 +23,7 @@ import { Item } from '../model/item';
 
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
@@ -60,7 +61,9 @@ export class ResultDetailedItemComponent implements OnInit {
   @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
     new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
 
-  constructor(private translate: TranslateService) { }
+  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
+
+  constructor(public translate: TranslateService) { }
 
   public ngOnInit() {}
 

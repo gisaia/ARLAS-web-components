@@ -13,16 +13,16 @@
           [style.max-width.px]="column.width"
           [style.min-width.px]="column.width">
       <label *ngIf="(!useColorService || !column.useColorService || cellBackgroundStyle === undefined); else labelModeIsDefined" class="resultitem__cell--label resultitem__cell--label__{{column.fieldName}}  resultitem__cell--label__{{rowItem.itemData.get(column.fieldName)}}">
-        {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
+        {{rowItem.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
       </label>
       <ng-template #labelModeIsDefined>
         <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.filled && column.useColorService" class="resultitem__cell--label resultitem__cell--label__filled"
           [style.background-color]="getColor(rowItem.itemData.get(column.fieldName))" [style.color]="getTextColor(getColor(rowItem.itemData.get(column.fieldName)))">
-          {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
+          {{rowItem.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
         </label>
         <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.outlined && column.useColorService" class="resultitem__cell--label resultitem__cell--label__outlined"
           [style.color]="getColor(rowItem.itemData.get(column.fieldName))" [style.border-color]="getColor(rowItem.itemData.get(column.fieldName))">
-          {{rowItem.itemData.get(column.fieldName)}}{{column.dataType}}
+          {{rowItem.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
         </label>
       </ng-template>
     </td>

@@ -228,7 +228,8 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, this.colorLegend, this.LEGEND_WIDTH);
+          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, this.colorLegend,
+            this.LEGEND_WIDTH, this.MAX_LINE_WIDTH);
         }
       }
     }
@@ -261,7 +262,8 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend, this.LEGEND_WIDTH);
+          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend,
+            this.LEGEND_WIDTH, maxCircleRadius * 2);
         }
       }
     }
@@ -276,14 +278,15 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
  * @param cLegend Color legend, to give the drawn legend lines the same color on the map
  * @param legendWidth The width that the svg will take to draw the legend
  */
-export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>, cLegend: Legend, legendWidth: number) {
+export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>, cLegend: Legend,
+  legendWidth: number, legendHeight: number) {
   const maxHeight = getMax(lineWidths);
   const xDomain: any = (scaleLinear()).range([0, legendWidth]);
   const xDomainExtent = [lineWidths[0].key, lineWidths[lineWidths.length - 1].key];
   xDomain.domain(xDomainExtent);
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);
   yDomain.domain([0, maxHeight]);
-  const svg = select(svgNode);
+  const svg = select(svgNode).attr('width', legendWidth).attr('height', legendHeight);
   svg.selectAll('g').remove();
   const context = svg.append('g').attr('class', 'context');
   const ar = area()
@@ -333,7 +336,8 @@ export function getMiddleColor(colorLegend: Legend): string {
  * @param cLegend Color legend, to give the drawn legend circles the same color on the map
  * @param legendWidth The width that the svg will take to draw the legend
  */
-export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>, cLegend: Legend, legendWidth: number) {
+export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>, cLegend: Legend,
+  legendWidth: number, legendHeight: number) {
   const circleDiameters = [];
   circlesRadiuses.forEach(cr => circleDiameters.push({key: cr.key, value: cr.value * 2}));
   const maxHeight = getMax(circleDiameters);
@@ -344,7 +348,7 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
   xDomain.domain(xDomainExtent);
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);
   yDomain.domain([0, maxHeight]);
-  const svg = select(svgNode);
+  const svg = select(svgNode).attr('width', legendWidth).attr('height', legendHeight);
   svg.selectAll('g').remove();
   const context = svg.append('g').attr('class', 'context');
   const l = line()
@@ -357,6 +361,13 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
       .attr('stroke-width', 0.8)
       .attr('transform', 'translate(' + firstRadius + ', 0)')
       .attr('d', <any>l);
+  context.append('g').append('line')
+      .attr('x1', 0).attr('y1', maxHeight)
+      .attr('x2', legendWidth - firstRadius - lastRadius).attr('y2', maxHeight)
+      .attr('cx', 2).attr('cy', 2)      .attr('fill', 'none')
+      .attr('stroke', '#eaeaea')
+      .attr('stroke-width', 0.8)
+      .attr('transform', 'translate(' + firstRadius + ', 0)');
   const circles = [circlesRadiuses[0], circlesRadiuses[circlesRadiuses.length - 1]];
   const circleColor = getMiddleColor(cLegend);
   context.append('g')

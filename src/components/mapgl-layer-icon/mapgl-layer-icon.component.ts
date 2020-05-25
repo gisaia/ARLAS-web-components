@@ -41,7 +41,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        if (source.startsWith('feature') && source.startsWith('feature-metric')) {
+        if (source.startsWith('feature') || source.startsWith('feature-metric')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else if (source.startsWith('cluster')) {
           drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);

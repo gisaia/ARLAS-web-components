@@ -17,26 +17,18 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { PowerbarsComponent } from './powerbars.component';
-import { MatCardModule, MatIconModule, MatTooltipModule, MatInputModule } from '@angular/material';
-import { TranslateModule } from '@ngx-translate/core';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
-import { FormatNumberModule } from '../../pipes/pipes.module';
+import { Pipe, PipeTransform } from '@angular/core';
+import { formatNumber } from '../components/componentsUtils';
+import { TranslateService } from '@ngx-translate/core';
 
-@NgModule({
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatInputModule,
-    ColorGeneratorModule.forRoot(),
-    TranslateModule,
-    FormatNumberModule
-  ],
-  declarations: [PowerbarsComponent],
-  exports: [PowerbarsComponent]
+@Pipe({
+  name: 'formatNumber'
 })
-export class PowerbarsModule {}
+export class FormatNumberPipe implements PipeTransform {
+
+  constructor(private translate: TranslateService) {}
+  public transform(x, formatChar: string = ' '): any {
+    return formatNumber(x, this.translate.instant(formatChar));
+  }
+
+}
