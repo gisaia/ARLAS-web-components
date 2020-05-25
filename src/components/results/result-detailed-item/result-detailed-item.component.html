@@ -6,7 +6,7 @@
     <br>
     <span *ngFor="let detail of group.details" class="detail-item {{detail.key}}-item-detail">
       <span class="resultdetaileditem-key">{{detail.key | translate}}</span> :
-      <span class="resultdetaileditem-value">{{detail.value}}</span>
+      <span class="resultdetaileditem-value">{{formatWithSpace(detail.value)}}</span>
     </span>
     <br>
     <br />
