@@ -23,6 +23,7 @@ import { Item } from '../model/item';
 
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { formatWithSpace } from '../../componentsUtils';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
@@ -94,5 +95,9 @@ export class ResultDetailedItemComponent implements OnInit {
     } else {
       return attachment.url;
     }
+  }
+
+  public formatWithSpace(x): string {
+    return formatWithSpace(x);
   }
 }

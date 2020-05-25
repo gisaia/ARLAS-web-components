@@ -26,6 +26,7 @@ import { Subject } from 'rxjs';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import { formatWithSpace } from '../../componentsUtils';
 
 @Component({
   selector: '[arlas-result-item]',
@@ -180,6 +181,10 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
 
   public triggerActionOnItem(action: Action) {
     this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
+  }
+
+  public formatWithSpace(item: Item, field: string): string {
+    return formatWithSpace(item.itemData.get(field));
   }
 
 }
