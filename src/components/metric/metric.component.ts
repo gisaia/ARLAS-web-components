@@ -19,6 +19,7 @@
 
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as metricJsonSchema from './metric.schema.json';
+import { formatWithSpace } from '../componentsUtils';
 
 @Component({
   selector: 'arlas-metric',
@@ -48,22 +49,14 @@ export class MetricComponent implements OnInit, OnChanges {
 
   public ngOnInit() {
     if (this.value) {
-      if (this.shortValue) {
-        this.displayedValue = this.intToString(Math.round(this.value));
-      } else {
-        this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
-      }
+      this.setDisplayedValue();
     }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
       if (this.value !== undefined && this.value !== NaN) {
-        if (this.shortValue) {
-          this.displayedValue = this.intToString(Math.round(this.value));
-        } else {
-          this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
-        }
+        this.setDisplayedValue();
       } else {
         /** '-' will be set when `value` is undefined or not a number */
         this.displayedValue = '-';
@@ -90,6 +83,17 @@ export class MetricComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * sets the value displayed in html
+   */
+  private setDisplayedValue(): void {
+    if (this.shortValue) {
+      this.displayedValue = this.intToString(Math.round(this.value));
+    } else {
+      const v = MetricComponent.round(this.value, this.valuePrecision);
+      this.displayedValue = formatWithSpace(v);
+    }
+  }
   private intToString(value: number): string {
     let newValue = value.toString();
     if (value >= 1000) {
