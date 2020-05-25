@@ -23,10 +23,10 @@ import { isNumber } from 'util';
 export function formatWithSpace(x): string {
   if (isNumber(x)) {
     const trunc = Math.trunc(x);
-    const decimal = Math.abs(x) - Math.abs(trunc);
+    const decimal = (x + '').split('.');
     const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     const spacedNumberString = trunc < 0 ? '-' + spacedNumber : spacedNumber;
-    return decimal > 0 ? spacedNumberString + '.' + decimal : spacedNumberString;
+    return decimal.length === 2 ? spacedNumberString + '.' + decimal[1] : spacedNumberString;
   }
   return x;
 }
