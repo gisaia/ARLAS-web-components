@@ -53,8 +53,9 @@ export interface OnMoveResult {
   extendWithOffset: Array<number>;
   rawExtendWithOffset: Array<number>;
   extendForLoad: Array<number>;
-  rawExtendForLoad: Array<number>;
   extendForTest: Array<number>;
+  rawExtendForLoad: Array<number>;
+  rawExtendForTest: Array<number>;
   xMoveRatio: number;
   yMoveRatio: number;
   visibleLayers: Set<string>;
@@ -896,8 +897,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         rawExtendWithOffset: [rawNorthOffset, rawWestOffset, rawSouthOffset, rawEastOffset],
         extend: [this.north, this.west, this.south, this.east],
         extendForLoad: [],
-        rawExtendForLoad: [],
         extendForTest: [],
+        rawExtendForLoad: [],
+        rawExtendForTest: [],
         xMoveRatio: this.xMoveRatio,
         yMoveRatio: this.yMoveRatio,
         visibleLayers: visibleLayers
@@ -920,6 +922,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         Math.min(extendForTestdLatLng[1].lng, 180)
       ];
       onMoveData.rawExtendForLoad = [
+        extendForLoadLatLng[1].lat,
+        extendForLoadLatLng[0].lng,
+        extendForLoadLatLng[0].lat,
+        extendForLoadLatLng[1].lng,
+      ];
+      onMoveData.rawExtendForTest = [
         extendForTestdLatLng[1].lat,
         extendForTestdLatLng[0].lng,
         extendForTestdLatLng[0].lat,
