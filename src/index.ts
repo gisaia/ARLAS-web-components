@@ -46,8 +46,6 @@ export { ResultListComponent } from './components/results/result-list/result-lis
 export { ResultItemComponent } from './components/results/result-item/result-item.component';
 export { ResultDetailedItemComponent } from './components/results/result-detailed-item/result-detailed-item.component';
 export { ResultsModule } from './components/results/results.module';
-export { GaugeComponent } from './components/gauge/gauge.component';
-export { GaugeModule } from './components/gauge/gauge.module';
 export { ColorGeneratorModule } from './services/color.generator.module';
 export { ArlasColorService } from './services/color.generator.service';
 export { MapglImportModule } from './components/mapgl-import/mapgl-import.module';

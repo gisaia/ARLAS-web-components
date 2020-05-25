@@ -34,7 +34,6 @@ export class AppComponent implements OnInit {
     '/histogram',
     '/powerbars',
     '/list',
-    '/gauge',
     '/wmts-layer-manager'
   ];
 
