@@ -26,8 +26,9 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class FormatNumberPipe implements PipeTransform {
 
-  public transform(x, formatChar: string = ' ', translate: TranslateService): any {
-    return formatNumber(x, translate.instant(formatChar));
+  constructor(private translate: TranslateService) {}
+  public transform(x, formatChar: string = ' '): any {
+    return formatNumber(x, this.translate.instant(formatChar));
   }
 
 }

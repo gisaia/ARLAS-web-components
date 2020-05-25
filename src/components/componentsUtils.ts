@@ -21,7 +21,7 @@ import { mix } from 'tinycolor2';
 import { isNumber } from 'util';
 
 export function formatNumber(x, formatChar = ' '): string {
-  if (formatChar === FORMAT_CHAR) {
+  if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
   if (isNumber(x)) {
@@ -34,7 +34,7 @@ export function formatNumber(x, formatChar = ' '): string {
   return x;
 }
 
-export const FORMAT_CHAR = 'FORMAT_CHAR';
+export const NUMBER_FORMAT_CHAR = 'NUMBER_FORMAT_CHAR';
 export function getKeys(map): Array<string> {
   return Array.from(map.keys());
 }
