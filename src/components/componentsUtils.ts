@@ -20,16 +20,21 @@
 import { mix } from 'tinycolor2';
 import { isNumber } from 'util';
 
-export function formatWithSpace(x): string {
+export function formatNumber(x, formatChar = ' '): string {
+  if (formatChar === FORMAT_CHAR) {
+    formatChar = ' ';
+  }
   if (isNumber(x)) {
     const trunc = Math.trunc(x);
     const decimal = (x + '').split('.');
-    const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, formatChar);
     const spacedNumberString = trunc < 0 ? '-' + spacedNumber : spacedNumber;
     return decimal.length === 2 ? spacedNumberString + '.' + decimal[1] : spacedNumberString;
   }
   return x;
 }
+
+export const FORMAT_CHAR = 'FORMAT_CHAR';
 export function getKeys(map): Array<string> {
   return Array.from(map.keys());
 }

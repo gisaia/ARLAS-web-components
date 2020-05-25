@@ -23,7 +23,8 @@ import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { TreeNode, SimpleNode } from 'arlas-d3';
-import { formatWithSpace } from '../componentsUtils';
+import { TranslateService } from '@ngx-translate/core';
+import { FORMAT_CHAR } from '../componentsUtils';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -126,7 +127,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    */
   public SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
 
-  constructor(private colorService: ArlasColorService) {}
+  public FORMAT_CHAR = FORMAT_CHAR;
+
+  constructor(private colorService: ArlasColorService, public translate: TranslateService) {}
 
   public static getPowerbarsJsonSchema(): Object {
     return powerbarsJsonSchema;
@@ -288,14 +291,12 @@ export class PowerbarsComponent implements OnInit, OnChanges {
       if (powerBar.count.toString() === 'NaN') {
         powerBar.count = 0;
       }
-      powerBar.tooltipValue = formatWithSpace(powerBar.count);
       sum += powerBar.count;
     });
     this.selectedPowerbarsList.forEach(selectedPowerBar => {
       if (selectedPowerBar.count.toString() === 'NaN') {
         selectedPowerBar.count = 0;
       }
-      selectedPowerBar.tooltipValue = formatWithSpace(selectedPowerBar.count);
       if (this.getPowerbar(selectedPowerBar.term, selectedPowerBar.parentTerm) === null) {
         sum += selectedPowerBar.count;
       }

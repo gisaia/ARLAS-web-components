@@ -19,7 +19,9 @@
 
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as metricJsonSchema from './metric.schema.json';
-import { formatWithSpace } from '../componentsUtils';
+import { TranslateService } from '@ngx-translate/core';
+import { FORMAT_CHAR } from '../componentsUtils';
+
 
 @Component({
   selector: 'arlas-metric',
@@ -44,8 +46,9 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
   public displayedValue = '0';
+  public FORMAT_CHAR = FORMAT_CHAR;
 
-  constructor() { }
+  constructor(public translate: TranslateService) { }
 
   public ngOnInit() {
     if (this.value) {
@@ -90,8 +93,7 @@ export class MetricComponent implements OnInit, OnChanges {
     if (this.shortValue) {
       this.displayedValue = this.intToString(Math.round(this.value));
     } else {
-      const v = MetricComponent.round(this.value, this.valuePrecision);
-      this.displayedValue = formatWithSpace(v);
+      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
     }
   }
   private intToString(value: number): string {
