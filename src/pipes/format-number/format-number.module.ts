@@ -16,19 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { FormatNumberPipe } from './format-number.pipe';
+import { NgModule } from '@angular/core';
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { formatNumber } from '../components/componentsUtils';
-import { TranslateService } from '@ngx-translate/core';
-
-@Pipe({
-  name: 'formatNumber'
+@NgModule({
+  imports: [
+  ],
+  declarations: [
+    FormatNumberPipe
+  ],
+  exports: [
+    FormatNumberPipe
+  ]
 })
-export class FormatNumberPipe implements PipeTransform {
-
-  constructor(private translate: TranslateService) {}
-  public transform(x, formatChar: string = ' '): any {
-    return formatNumber(x, this.translate.instant(formatChar));
-  }
-
-}
+export class FormatNumberModule {}

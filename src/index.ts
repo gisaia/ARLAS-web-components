@@ -50,6 +50,12 @@ export { ColorGeneratorModule } from './services/color.generator.module';
 export { ArlasColorService } from './services/color.generator.service';
 export { MapglImportModule } from './components/mapgl-import/mapgl-import.module';
 export { MapglImportComponent } from './components/mapgl-import/mapgl-import.component';
+export { MapglLegendModule } from './components/mapgl-legend/mapgl-legend.module';
+export { MapglLegendComponent } from './components/mapgl-legend/mapgl-legend.component';
+export { MapglLayerIconModule } from './components/mapgl-layer-icon/mapgl-layer-icon.module';
+export { MapglLayerIconComponent } from './components/mapgl-layer-icon/mapgl-layer-icon.component';
+export { FormatNumberModule } from './pipes/format-number/format-number.module';
+export { FormatNumberPipe } from './pipes/format-number/format-number.pipe';
 export { MapglSettingsModule } from './components/mapgl-settings/mapgl-settings.module';
 export { MapglSettingsComponent, MapSettingsService, GeoQuery,
   GeometrySelectModel, OperationSelectModel } from './components/mapgl-settings/mapgl-settings.component';
