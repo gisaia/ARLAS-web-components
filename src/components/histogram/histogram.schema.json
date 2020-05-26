@@ -123,6 +123,10 @@
             "description": "Number of labels in the X axis.",
             "type": "integer"
         },
+        "shortYLabels": {
+            "description": "Display short labels on y axis.",
+            "type": "boolean"
+        },
         "yLabels": {
             "description": "Number of labels in the Y axis.",
             "type": "integer"
