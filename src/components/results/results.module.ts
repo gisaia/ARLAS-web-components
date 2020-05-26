@@ -38,7 +38,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { FormatNumberModule } from '../../pipes/pipes.module';
+import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 
 @NgModule({
   imports: [
