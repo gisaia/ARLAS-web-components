@@ -44,7 +44,7 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
-  public displayedValue = '0';
+  public displayedValue: string | number = '0';
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   constructor() { }
@@ -92,7 +92,7 @@ export class MetricComponent implements OnInit, OnChanges {
     if (this.shortValue) {
       this.displayedValue = this.intToString(Math.round(this.value));
     } else {
-      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
+      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
     }
   }
   private intToString(value: number): string {
