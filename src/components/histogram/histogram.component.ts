@@ -184,6 +184,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public yLabels = 5;
   /**
    * @Input : Angular
+   * @description Display short labels on y axis.
+   */
+  @Input() public shortYLabels = false;
+  /**
+   * @Input : Angular
    * @description Whether showing the X axis ticks.
    */
   @Input() public showXTicks = true;
@@ -481,6 +486,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.xTicks = this.xTicks;
     this.histogram.histogramParams.yLabels = this.yLabels;
     this.histogram.histogramParams.yTicks = this.yTicks;
+    this.histogram.histogramParams.shortYLabels = this.shortYLabels;
     this.histogram.histogramParams.swimLaneLabelsWidth = this.swimLaneLabelsWidth;
     this.histogram.histogramParams.swimlaneHeight = this.swimlaneHeight;
     this.histogram.histogramParams.swimlaneBorderRadius = this.swimlaneBorderRadius;
