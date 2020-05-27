@@ -240,7 +240,8 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
         .attr('x2', 18).attr('y2', 0)
         .attr('cx', 2).attr('cy', 2)
         .attr('stroke', threeColors[2]).attr('stroke-width', 2);
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
+    || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const iv = colorLegend.manualValues as Map<string, string>;
     const colorsList = [];
     if (iv) {
@@ -318,7 +319,8 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
         colorsList.push(iv[iv.length - 1]);
       }
     }
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
+    || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const iv = colorLegend.manualValues as Map<string, string>;
     if (iv) {
       if (iv.size === 1) {
