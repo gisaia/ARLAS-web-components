@@ -3,7 +3,7 @@ import * as shp from 'shpjs/dist/shp';
 import * as extent from 'turf-extent';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
-import * as JSZip from 'jszip';
+import JSZip from 'jszip';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { MapglComponent } from '../mapgl/mapgl.component';
 import { Subject } from 'rxjs';
@@ -209,7 +209,7 @@ export class MapglImportComponent {
         return new Promise<string>((resolve, reject) => {
           this.jszip.loadAsync(result).then(kmzContent => {
             const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === this.KML)[0];
-            this.jszip.file(kmlFile).async('string').then(function (data) {
+            this.jszip.file(kmlFile).async('text').then(function (data) {
               resolve(data);
             });
           });
@@ -389,7 +389,7 @@ export class MapglImportComponent {
   public processAllShape() {
     const fileReaderPromise = this.readZipFile();
 
-    const zipLoaderPromise = fileReaderPromise.then(buffer => {
+    const zipLoaderPromise = fileReaderPromise.then((buffer: ArrayBuffer) => {
       return new Promise<any>((resolve, reject) => {
         this.jszip.loadAsync(buffer).then(zipResult => {
           const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
