@@ -136,19 +136,22 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend.title = field;
         if ((field as string).endsWith('_color')) {
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
-          if (this.legendData.get(field)) {
-            const keysToColors = this.legendData.get(field).keysColorsMap;
-            const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
-            this.colorLegend.manualValues = new Map();
-            for (let i = 0; i < colorList.length; i += 2) {
-                const c = this.visibleMode ? colorList[i + 1] : '#eee';
-                this.colorLegend.manualValues.set(this.translate.instant(colorList[i]), c);
-            }
-          } else {
-
-          }
         } else {
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
+        }
+        this.colorLegend.manualValues = new Map();
+        if (this.legendData.get(field)) {
+          const keysToColors = this.legendData.get(field).keysColorsMap;
+          const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
+          for (let i = 0; i < colorList.length; i += 2) {
+              const c = this.visibleMode ? colorList[i + 1] : '#eee';
+              this.colorLegend.manualValues.set(this.translate.instant(colorList[i]), c);
+          }
+          if (colorList.length === 0) {
+            this.colorLegend.manualValues.set('', '#eee');
+          }
+        } else {
+          this.colorLegend.manualValues.set('', '#eee');
         }
         // todo
       } else if (color.length >= 3) {
@@ -317,7 +320,8 @@ export function getMiddleColor(colorLegend: Legend): string {
     } else if (iv.length >= 3) {
       color = iv[Math.trunc(iv.length / 2)];
     }
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
+    || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const iv = colorLegend.manualValues as Map<string, string>;
     if (iv) {
       if (iv.size === 1) {

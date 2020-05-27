@@ -43,7 +43,7 @@
   flex-flow: wrap;
   margin-top: 5px;
   max-height: 160px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .manual-color-container {
   min-width: 50%;
