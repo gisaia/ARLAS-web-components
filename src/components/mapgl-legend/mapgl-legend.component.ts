@@ -7,28 +7,46 @@ import { select } from 'd3-selection';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { StyleFunction, Expression } from 'mapbox-gl';
 import * as tinycolor from 'tinycolor2';
+import { LegendData } from '../mapgl/mapgl.component';
 
 export const GET = 'get';
 export const MATCH = 'match';
 export const INTERPOLATE = 'interpolate';
 export const OTHER = 'other_color';
-export interface LegendData {
-  minValue?:  string;
-  maxValue?: string;
-  keysColorsMap?: Map<string, string>;
-}
+
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
   styleUrls: ['./mapgl-legend.component.css']
 })
 export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
+  /**
+   * @Input : Angular
+   * @description Layer object
+   */
   @Input() public layer: mapboxgl.Layer;
+  /**
+   * @Input : Angular
+   * @description Current zoom level of the map
+   */
   @Input() public zoom: number;
+  /**
+   * @Input : Angular
+   * @description Whether the layer is enabled or disabled.
+   */
   @Input() public enabled: boolean;
-  @Input() public legendUpdater: Subject<any> = new Subject();
-  @Input() public visibilityUpdater: Subject<any> = new Subject();
-
+  /**
+   * @Input : Angular
+   * @description Subject of [layerId, legendData] map. The map subscribes to it to keep
+   * the legend updated with the data displayed on the map.
+   */
+  @Input() public legendUpdater: Subject<Map<string, LegendData>> = new Subject<Map<string, LegendData>>();
+  /**
+   * @Input : Angular
+   * @description Subject of [layerId, boolean] map. The map subscribes to it to keep
+   * the legend updated with the visibility of the layer.
+   */
+  @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
