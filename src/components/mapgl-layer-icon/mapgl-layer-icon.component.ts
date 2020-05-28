@@ -58,7 +58,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         if (source.startsWith('cluster')) {
           drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else {
-          // todo
+          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }
         break;
       }
@@ -79,7 +79,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
 /**
  * draws the rectangles icon for cluster mode
  * @param svgNode SVG element on which we append the rectangles using d3.
- * @param colorLegend Color legend, to give the drawn icons rectagles the same color on the map
+ * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
  */
 export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
   const fourColors = [];
@@ -125,7 +125,62 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
       .attr('fill', fourColors[3]).attr('fill-opacity', 0.6)
       .attr('stroke', fourColors[3]).attr('stroke-width', 0.6)
       .attr('y', 3).attr('x', 10);
+}
 
+/**
+ * draws the rectangles icon for feature and feature-metric modes
+ * @param svgNode SVG element on which we append the rectangles using d3.
+ * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
+ */
+export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
+  const colorsList = [];
+  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = colorLegend.interpolatedValues;
+    if (iv) {
+      if (iv.length === 1) {
+        colorsList.push(iv[0], iv[0], iv[0]);
+      } else if (iv.length === 2) {
+        colorsList.push(iv[0], iv[0], iv[1]);
+      } else if (iv.length >= 3) {
+        colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
+      }
+    }
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    colorsList.push(colorLegend.fixValue, colorLegend.fixValue, colorLegend.fixValue);
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated) {
+    const iv = colorLegend.manualValues as Map<string, string>;
+    const colorsList = [];
+    if (iv) {
+      if (iv.size === 1) {
+        const c = iv.values().next().value;
+        colorsList.push(c, c, c);
+      } else if (iv.size === 2) {
+        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[0], Array.from(iv.values())[1]);
+      } else if (iv.size >= 3) {
+        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)],
+          Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
+      }
+    } else if (!iv || iv.size === 0) {
+      colorsList.push('#eee', '#eee', '#eee');
+    }
+  }
+  const svg = select(svgNode);
+  svg.selectAll('g').remove();
+  svg.append('g').append('rect')
+        .attr('height', 9).attr('width', 9)
+        .attr('fill', colorsList[0]).attr('fill-opacity', 0.6)
+        .attr('stroke', colorsList[0]).attr('stroke-width', 0.6)
+        .attr('y', 1).attr('x', 1);
+  svg.append('g').append('rect')
+      .attr('height', 7).attr('width', 7)
+      .attr('fill', colorsList[1]).attr('fill-opacity', 0.8)
+      .attr('stroke', colorsList[1]).attr('stroke-width', 0.6)
+      .attr('y', 4).attr('x', 6);
+  svg.append('g').append('rect')
+      .attr('height', 4).attr('width', 4)
+      .attr('fill', colorsList[2]).attr('fill-opacity', 0.6)
+      .attr('stroke', colorsList[2]).attr('stroke-width', 0.6)
+      .attr('y', 9).attr('x', 4);
 }
 
 /**
@@ -139,22 +194,13 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
     const iv = colorLegend.interpolatedValues;
     if (iv) {
       if (iv.length === 1) {
-        for (let i = 0; i < 3; i++) {
-          heatmapColors.push(iv[0]);
-        }
+        heatmapColors.push(iv[0], iv[0], iv[0]);
       } else if (iv.length === 2) {
-        heatmapColors.push(iv[0]);
-        heatmapColors.push(iv[0]);
-        heatmapColors.push(iv[1]);
+        heatmapColors.push(iv[0], iv[0], iv[1]);
       } else if (iv.length === 3) {
-        heatmapColors.push(iv[1]);
-        heatmapColors.push(iv[Math.trunc(iv.length / 2)]);
-        heatmapColors.push(iv[iv.length - 1]);
+        heatmapColors.push(iv[1], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
       } else if (iv.length >= 4) {
-        heatmapColors.push(iv[1]);
-        heatmapColors.push(iv[Math.trunc( iv.length / 3)]);
-        heatmapColors.push(iv[Math.trunc(2 * iv.length / 3)]);
-        heatmapColors.push(iv[iv.length - 1]);
+        heatmapColors.push(iv[1], iv[Math.trunc(iv.length / 3)], iv[Math.trunc(2 * iv.length / 3)], iv[iv.length - 1]);
       }
     }
   }
@@ -206,22 +252,14 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     const iv = colorLegend.interpolatedValues;
     if (iv) {
       if (iv.length === 1) {
-        for (let i = 0; i < 3; i++) {
-          threeColors.push(iv[0]);
-        }
+        threeColors.push(iv[0], iv[0], iv[0]);
       } else if (iv.length === 2) {
-        threeColors.push(iv[0]);
-        threeColors.push(iv[0]);
-        threeColors.push(iv[1]);
+        threeColors.push(iv[0], iv[0], iv[1]);
       } else if (iv.length >= 3) {
-        threeColors.push(iv[0]);
-        threeColors.push(iv[Math.trunc(iv.length / 2)]);
-        threeColors.push(iv[iv.length - 1]);
+        threeColors.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
       }
     } else {
-      threeColors.push('#2da4ff');
-      threeColors.push('#2da4ff');
-      threeColors.push('#2da4ff');
+      threeColors.push('#2da4ff', '#2da4ff', '#2da4ff');
     }
     const svg = select(svgNode);
     svg.selectAll('g').remove();
@@ -247,18 +285,14 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     if (iv) {
       if (iv.size === 1) {
         const c = iv.values().next().value;
-        colorsList.push(c);
-        colorsList.push(c);
+        colorsList.push(c, c);
       } else if (iv.size === 2) {
-        colorsList.push(Array.from(iv.values())[0]);
-        colorsList.push(Array.from(iv.values())[1]);
+        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[1]);
       } else if (iv.size >= 3) {
-        colorsList.push(Array.from(iv.values())[0]);
-        colorsList.push(Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
+        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
       }
     } else if (!iv || iv.size === 0) {
-      colorsList.push('#eee');
-      colorsList.push('#eee');
+      colorsList.push('#eee', '#eee');
     }
     const svg = select(svgNode);
     svg.selectAll('g').remove();
@@ -302,21 +336,13 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
     const iv = colorLegend.interpolatedValues;
     if (iv) {
       if (iv.length === 1) {
-        for (let i = 0; i < 3; i++) {
-          colorsList.push(iv[0]);
-        }
+        colorsList.push(iv[0], iv[0], iv[0]);
       } else if (iv.length === 2) {
-        colorsList.push(iv[0]);
-        colorsList.push(iv[0]);
-        colorsList.push(iv[1]);
+        colorsList.push(iv[0], iv[0], iv[1]);
       } else if (iv.length === 3) {
-        colorsList.push(iv[0]);
-        colorsList.push(iv[Math.trunc(iv.length / 2)]);
-        colorsList.push(iv[iv.length - 1]);
+        colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
       } else if (iv.length >= 4) {
-        colorsList.push(iv[1]);
-        colorsList.push(iv[Math.trunc( iv.length / 3)]);
-        colorsList.push(iv[iv.length - 1]);
+        colorsList.push(iv[1], iv[Math.trunc(iv.length / 3)], iv[Math.trunc(2 * iv.length / 3)], iv[iv.length - 1]);
       }
     }
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
@@ -325,22 +351,15 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
     if (iv) {
       if (iv.size === 1) {
         const color = iv.values().next().value;
-        colorsList.push(color);
-        colorsList.push(color);
-        colorsList.push(color);
+        colorsList.push(color, color, color);
       } else if (iv.size === 2) {
-        colorsList.push(Array.from(iv.values())[0]);
-        colorsList.push(Array.from(iv.values())[0]);
-        colorsList.push(Array.from(iv.values())[1]);
+        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[0], Array.from(iv.values())[1]);
       } else if (iv.size >= 3) {
-        colorsList.push(Array.from(iv.values())[0]);
-        colorsList.push(Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)]);
-        colorsList.push(Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
+        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)],
+          Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
       }
     } else if (!iv || iv.size === 0) {
-        colorsList.push('#eee');
-        colorsList.push('#eee');
-        colorsList.push('#eee');
+        colorsList.push('#eee', '#eee', '#eee');
     }
   }
 
@@ -395,21 +414,13 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
     const iv = colorLegend.interpolatedValues;
     if (iv) {
       if (iv.length === 1) {
-        for (let i = 0; i < 3; i++) {
-          colorsList.push(iv[0]);
-        }
+        colorsList.push(iv[0], iv[0], iv[0]);
       } else if (iv.length === 2) {
-        colorsList.push(iv[0]);
-        colorsList.push(iv[0]);
-        colorsList.push(iv[1]);
+        colorsList.push(iv[0], iv[0], iv[1]);
       } else if (iv.length === 3) {
-        colorsList.push(iv[0]);
-        colorsList.push(iv[Math.trunc(iv.length / 2)]);
-        colorsList.push(iv[iv.length - 1]);
+        colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
       } else if (iv.length >= 4) {
-        colorsList.push(iv[1]);
-        colorsList.push(iv[Math.trunc( iv.length / 3)]);
-        colorsList.push(iv[iv.length - 1]);
+        colorsList.push(iv[1], iv[Math.trunc( iv.length / 3)], iv[iv.length - 1]);
       }
     }
   }
