@@ -19,7 +19,6 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglLegendComponent } from './mapgl-legend.component';
 import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
@@ -29,7 +28,6 @@ import { MatButtonModule, MatIconModule } from '@angular/material';
 @NgModule({
   imports: [
     CommonModule,
-    BrowserModule,
     TranslateModule,
     MapglLayerIconModule,
     MatButtonModule,
