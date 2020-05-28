@@ -19,14 +19,12 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 import { MapglLayerIconComponent } from './mapgl-layer-icon.component';
 
 
 @NgModule({
   imports: [
-    CommonModule,
-    BrowserModule
+    CommonModule
   ],
   declarations: [MapglLayerIconComponent],
   exports: [MapglLayerIconComponent]
