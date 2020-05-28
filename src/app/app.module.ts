@@ -40,11 +40,9 @@ import { MapglModule } from '../components/mapgl/mapgl.module';
 import { PowerbarsModule } from '../components/powerbars/powerbars.module';
 import { DonutModule } from '../components/donut/donut.module';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
-import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { RouterModule, Routes } from '@angular/router';
-import { GaugeDemoComponent } from './gauge-demo/gauge-demo.component';
-import { GaugeModule } from '../components/gauge/gauge.module';
 import { MapglImportModule } from '../components/mapgl-import/mapgl-import.module';
 import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import.component';
 import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
@@ -54,6 +52,8 @@ import { MAT_DATE_LOCALE, MatButtonModule } from '@angular/material';
 import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
 import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
 import { MetricModule } from '../components/metric/metric.module';
+import { MapglLegendModule } from '../components/mapgl-legend/mapgl-legend.module';
+import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgl-layer-icon.module';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -65,9 +65,7 @@ const routes: Routes = [
   { path: 'donut', component: DonutDemoComponent },
   { path: 'powerbars', component: PowerbarsDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
-  { path: 'gauge', component: GaugeDemoComponent },
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent }
-
 ];
 
 
@@ -79,7 +77,6 @@ const routes: Routes = [
     MapglDemoComponent,
     PowerbarsDemoComponent,
     DonutDemoComponent,
-    GaugeDemoComponent,
     WmtsLayerManagerDemoComponent
   ],
   imports: [
@@ -96,16 +93,17 @@ const routes: Routes = [
     MapglModule,
     MapglImportModule,
     MapglSettingsModule,
+    MapglLegendModule,
+    MapglLayerIconModule,
     HistogramModule,
     DonutModule,
     ResultsModule,
-    GaugeModule,
     MetricModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,
     MatSlideToggleModule,
-    HttpClientModule,
+      HttpClientModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

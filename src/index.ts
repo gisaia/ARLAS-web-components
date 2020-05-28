@@ -21,7 +21,7 @@ import { WmtsLayerManagerComponent } from 'components/wmts-layer-manager/wmts-la
  */
 
 export { ColorGeneratorLoader, AwcColorGeneratorLoader } from './components/componentsUtils';
-export { MapLayers } from './components/mapgl/model/mapLayers';
+export { MapLayers, BasemapStyle } from './components/mapgl/model/mapLayers';
 export { MapSource } from './components/mapgl/model/mapSource';
 export { MapExtend } from './components/mapgl/mapgl.component.util';
 export { PowerbarsComponent } from './components/powerbars/powerbars.component';
@@ -46,14 +46,18 @@ export { ResultListComponent } from './components/results/result-list/result-lis
 export { ResultItemComponent } from './components/results/result-item/result-item.component';
 export { ResultDetailedItemComponent } from './components/results/result-detailed-item/result-detailed-item.component';
 export { ResultsModule } from './components/results/results.module';
-export { GaugeComponent } from './components/gauge/gauge.component';
-export { GaugeModule } from './components/gauge/gauge.module';
 export { ColorGeneratorModule } from './services/color.generator.module';
 export { ArlasColorService } from './services/color.generator.service';
 export { MapglImportModule } from './components/mapgl-import/mapgl-import.module';
 export { MapglImportComponent } from './components/mapgl-import/mapgl-import.component';
+export { MapglLegendModule } from './components/mapgl-legend/mapgl-legend.module';
+export { MapglLegendComponent } from './components/mapgl-legend/mapgl-legend.component';
+export { MapglLayerIconModule } from './components/mapgl-layer-icon/mapgl-layer-icon.module';
+export { MapglLayerIconComponent } from './components/mapgl-layer-icon/mapgl-layer-icon.component';
+export { FormatNumberModule } from './pipes/format-number/format-number.module';
+export { FormatNumberPipe } from './pipes/format-number/format-number.pipe';
 export { MapglSettingsModule } from './components/mapgl-settings/mapgl-settings.module';
 export { MapglSettingsComponent, MapSettingsService, GeoQuery,
-  GeometrySelectModel, RenderedGeometries, OperationSelectModel } from './components/mapgl-settings/mapgl-settings.component';
+  GeometrySelectModel, OperationSelectModel } from './components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent } from './components/wmts-layer-manager/wmts-layer-manager.component';

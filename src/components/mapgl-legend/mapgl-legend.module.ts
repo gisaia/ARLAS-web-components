@@ -17,23 +17,27 @@
  * under the License.
  */
 
-.full-gauge{
-    fill-opacity:1;
-    fill:#00dde5;
-    stroke:black;
-    stroke-width: 0.8;
-}
-
-.part-gauge{
-    fill-opacity:1;
-    fill:#322d90;
-    stroke:black;
-    stroke-width: 0.8;
-}
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { TranslateModule } from '@ngx-translate/core';
+import { MapglLegendComponent } from './mapgl-legend.component';
+import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 
-.cursor{
-    fill-opacity:1;
-    fill:white;
-    stroke:black;
+@NgModule({
+  imports: [
+    CommonModule,
+    BrowserModule,
+    TranslateModule,
+    MapglLayerIconModule,
+    MatButtonModule,
+    MatIconModule
+  ],
+  declarations: [MapglLegendComponent],
+  exports: [MapglLegendComponent]
+})
+export class MapglLegendModule {
+
 }

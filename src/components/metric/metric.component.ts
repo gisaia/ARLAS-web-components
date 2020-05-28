@@ -19,6 +19,8 @@
 
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import * as metricJsonSchema from './metric.schema.json';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
+
 
 @Component({
   selector: 'arlas-metric',
@@ -42,28 +44,21 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
-  public displayedValue = '0';
+  public displayedValue: string | number = '0';
+  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   constructor() { }
 
   public ngOnInit() {
     if (this.value) {
-      if (this.shortValue) {
-        this.displayedValue = this.intToString(Math.round(this.value));
-      } else {
-        this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
-      }
+      this.setDisplayedValue();
     }
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
       if (this.value !== undefined && this.value !== NaN) {
-        if (this.shortValue) {
-          this.displayedValue = this.intToString(Math.round(this.value));
-        } else {
-          this.displayedValue = MetricComponent.round(this.value, this.valuePrecision).toString();
-        }
+        this.setDisplayedValue();
       } else {
         /** '-' will be set when `value` is undefined or not a number */
         this.displayedValue = '-';
@@ -90,6 +85,16 @@ export class MetricComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * sets the value displayed in html
+   */
+  private setDisplayedValue(): void {
+    if (this.shortValue) {
+      this.displayedValue = this.intToString(Math.round(this.value));
+    } else {
+      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
+    }
+  }
   private intToString(value: number): string {
     let newValue = value.toString();
     if (value >= 1000) {

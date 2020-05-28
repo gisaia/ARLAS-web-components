@@ -1,0 +1,110 @@
+.layer_wrapper {
+  margin-bottom: 3px;
+  border-top: .4px #eaeaea solid;
+  margin-top: 3px;
+  padding-top: 5px;
+}
+.layer_container {
+  display: flex;
+  position: relative;
+}
+.layer_detail {
+  position: absolute;
+}
+.detail_button {
+  background-color: #fff;
+  display: none;
+  height: 20px;
+  width: 20px;
+  position: relative;
+}
+.detail_icon {
+  color: #555;
+  font-size: 1.3em;
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  width: 20px;
+  height: 20px;
+}
+.layer_name{
+  font-size: 0.8em;
+}
+
+.layer_icon {
+  margin-right: 5px;
+}
+
+.layer_icon:hover .detail_button {
+  display: flex;
+}
+.manual-color-wrapper {
+  display: flex;
+  flex-flow: wrap;
+  margin-top: 5px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.manual-color-container {
+  min-width: 50%;
+}
+.manual-color-value {
+  width: 14px;
+  height: 14px;
+  -webkit-border-radius: 7px;
+  -moz-border-radius: 7px;
+  border-radius: 7px;
+}
+
+.manual-color-key {
+  font-size: 0.7em;
+  margin-left: 3px;
+  flex: 1;
+}
+
+.manual-color {
+  display: flex;
+}
+
+.interpolated-color-container {
+  height: 100%;
+}
+
+.interpolated-color-palette {
+  height: 5px;
+  border-radius: 2px;
+}
+
+.interpolated-width-container {
+  height: 15px;
+}
+
+.width-legend-svg {
+  fill: #dadada !important;
+  stroke: #dadada !important;
+}
+.interpolated-radius-container {
+  height: 20px;
+}
+.legend-wrapper {
+  width: 210px;
+}
+.legend-container {
+  display: block;
+  margin-top: 5px;
+}
+.legend-title {
+  text-align: center;
+  font-size: 0.7em;
+  color: #666;
+}
+
+.interpolated-values-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.interpolated-value {
+  font-size: 0.6em;
+  color: #666;
+}

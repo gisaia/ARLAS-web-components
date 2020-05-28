@@ -49,8 +49,8 @@ export class PowerbarsDemoComponent implements OnInit {
           id: 'airbus',
           fieldValue: 'Airbus',
           fieldName: 'contructors',
-          size: 1000,
-          metricValue: 1000,
+          size: 1000000.8009,
+          metricValue: 1000000.8009,
           isOther: false
         },
         {

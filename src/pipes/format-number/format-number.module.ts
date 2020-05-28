@@ -16,3 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { FormatNumberPipe } from './format-number.pipe';
+import { NgModule } from '@angular/core';
+
+@NgModule({
+  imports: [
+  ],
+  declarations: [
+    FormatNumberPipe
+  ],
+  exports: [
+    FormatNumberPipe
+  ]
+})
+export class FormatNumberModule {}

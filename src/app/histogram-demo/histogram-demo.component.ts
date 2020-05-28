@@ -68,10 +68,10 @@ export class HistogramDemoComponent implements OnInit {
   private showData() {
     this.defaultHistogramData = [
       {value: 0,   key: 154660976000},
-      {value: 40,  key: 154709760000},
-      {value: 500, key: 154809760000},
+      {value: 4000,  key: 154709760000},
+      {value: 5000, key: 154809760000},
       {value: 120, key: 154909760000},
-      {value: 300, key: 155009760000}];
+      {value: 3000, key: 155009760000}];
   }
 
 

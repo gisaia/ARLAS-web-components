@@ -38,6 +38,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 
 @NgModule({
   imports: [
@@ -57,12 +58,15 @@ import { LazyLoadImageModule } from 'ng-lazyload-image';
     FormsModule,
     LazyLoadImageModule,
     LoadingModule,
-    TranslateModule
+    TranslateModule,
+    FormatNumberModule
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
-    ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
+    ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
+    ResultFilterComponent, ResultScrollDirective],
   exports: [ResultListComponent, ResultGridTileComponent,
-    ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent, ResultFilterComponent, ResultScrollDirective],
+    ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
+    ResultFilterComponent, ResultScrollDirective],
 
 })
 export class ResultsModule { }

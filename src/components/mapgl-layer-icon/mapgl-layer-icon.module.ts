@@ -17,28 +17,20 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { MapglLayerIconComponent } from './mapgl-layer-icon.component';
 
-import { GaugeDemoComponent } from './gauge-demo.component';
 
-describe('GaugeDemoComponent', () => {
-  let component: GaugeDemoComponent;
-  let fixture: ComponentFixture<GaugeDemoComponent>;
+@NgModule({
+  imports: [
+    CommonModule,
+    BrowserModule
+  ],
+  declarations: [MapglLayerIconComponent],
+  exports: [MapglLayerIconComponent]
+})
+export class MapglLayerIconModule {
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GaugeDemoComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GaugeDemoComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+}

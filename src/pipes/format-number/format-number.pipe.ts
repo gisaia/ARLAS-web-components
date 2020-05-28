@@ -17,28 +17,18 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Pipe, PipeTransform } from '@angular/core';
+import { formatNumber } from '../../components/componentsUtils';
+import { TranslateService } from '@ngx-translate/core';
 
-import { GaugeComponent } from './gauge.component';
+@Pipe({
+  name: 'formatNumber'
+})
+export class FormatNumberPipe implements PipeTransform {
 
-describe('GaugeComponent', () => {
-  let component: GaugeComponent;
-  let fixture: ComponentFixture<GaugeComponent>;
+  constructor(private translate: TranslateService) {}
+  public transform(x, formatChar: string = ' '): any {
+    return formatNumber(x, this.translate.instant(formatChar));
+  }
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ GaugeComponent ]
-    })
-    .compileComponents();
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(GaugeComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+}

@@ -12,13 +12,24 @@
       </mat-radio-button>
     </mat-radio-group>
   </div>
-  <div *ngFor="let styleGroup of mapLayers.styleGroups">
-    <span *ngIf="styleGroup.styles.length > 1" class="map__layers-stylegroup-name">{{ styleGroup.name | translate}}</span>
-    <mat-radio-group *ngIf="styleGroup.styles.length > 1" class="map__layers-radio-group" [value]="styleGroup.selectedStyle">
-      <mat-radio-button class="map__layers-radio-button" [checked]="styleGroup.selectedStyle?.id == style.id" (change)="onChangeStyle(styleGroup.id, style.id)" *ngFor="let style of styleGroup.styles" [value]="style">
-        {{style.name | translate}}
-      </mat-radio-button>
-    </mat-radio-group>
+</div>
+<div class="map__visu-list--wrapper">
+  <div class="map_legend-button--wrapper">
+    <div class="map_legend-button-icon" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
+      <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
+    </div>
+  </div>
+  <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
+    <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
+      <div class="map_visu-title-container">
+        <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key}}</span>
+        <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
+      </div>
+      <div class="map_visu-content-container">
+        <arlas-mapgl-legend *ngFor="let l of visu.value" [enabled]="visualisationsSets.status.get(visu.key)" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+      </div>
+
+    </div>
   </div>
 </div>
 <div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip" [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>

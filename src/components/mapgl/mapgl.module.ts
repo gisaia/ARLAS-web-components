@@ -19,10 +19,12 @@
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule } from '@angular/material';
+import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule,
+   MatSlideToggleModule, MatTooltipModule, MatChipsModule } from '@angular/material';
 import { MapglComponent } from './mapgl.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MapglLegendModule } from '../mapgl-legend/mapgl-legend.module';
 
 @NgModule({
   imports: [
@@ -32,7 +34,11 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatSelectModule,
     MatRadioModule,
     TranslateModule,
-    MatSnackBarModule
+    MapglLegendModule,
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    MatChipsModule
   ],
   declarations: [MapglComponent],
   exports: [MapglComponent]
