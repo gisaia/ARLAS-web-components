@@ -24,7 +24,6 @@ import { MatDialog, MatDialogRef } from '@angular/material';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { retry, timeout } from 'rxjs/operators';
-import { xyz } from '../mapgl/mapgl.component.util';
 
 export interface GetTilesInfo {
   url: string;

@@ -35,46 +35,6 @@ export function paddedBounds(npad: number, spad: number, epad: number,
     return [swWorld, neWorld];
 }
 
-export function xyz(bounds, minZoom, maxZoom?): Array<{ x: number, y: number, z: number }> {
-    let min;
-    let max;
-    let tiles = [];
-
-    if (!maxZoom) {
-        max = min = minZoom;
-    } else if (maxZoom < minZoom) {
-        min = maxZoom;
-        max = minZoom;
-    } else {
-        min = minZoom;
-        max = maxZoom;
-    }
-    for (let z = min; z <= max; z++) {
-        tiles = tiles.concat(getTiles(bounds, z));
-    }
-    return tiles;
-}
-
-
-export function getTiles(bounds: Array<Array<number>>, zoom: number): Array<{ x: number, y: number, z: number }> {
-    // north,west
-    const min = project(bounds[1][1], bounds[0][0], zoom);
-    // south,east
-    const max = project(bounds[0][1], bounds[1][0], zoom);
-    const tiles = [];
-    for (let x = min.x; x <= max.x; x++) {
-        for (let y = min.y; y <= max.y; y++) {
-
-            tiles.push({
-                x: x % (2 ** (zoom)),
-                y: y % (2 ** (zoom)),
-                z: zoom
-            });
-        }
-    }
-    return tiles;
-}
-
 export function project(lat: number, lng: number, zoom: number): { x: number, y: number } {
 
     const R = 6378137;

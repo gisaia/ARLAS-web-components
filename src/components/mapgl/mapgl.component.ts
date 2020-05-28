@@ -61,6 +61,11 @@ export interface OnMoveResult {
   visibleLayers: Set<string>;
 }
 
+export interface LegendData {
+  minValue?:  string;
+  maxValue?: string;
+  keysColorsMap?: Map<string, string>;
+}
 
 export const ZOOM_IN = 'Zoom in';
 export const ZOOM_OUT = 'Zoom out';
@@ -80,7 +85,6 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
-  public FINISH_DRAWING = 'Double click to finish drawing';
   public map: any;
   public draw: any;
   public zoom: number;
@@ -101,12 +105,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private current: mapboxgl.Point;
   private startlngLat: any;
   private endlngLat: any;
+  private savedEditFeature = null;
 
+  public FINISH_DRAWING = 'Double click to finish drawing';
   private DATA_SOURCE = 'data_source';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
-
-  private savedEditFeature = null;
 
   /**
    * @Input : Angular
@@ -274,11 +278,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public redrawSource: Subject<{source: string, data: helpers.Feature[]}> =
     new Subject<{source: string, data: helpers.Feature[]}>();
 
+  /**
+   * @Input : Angular
+   * @description Subject of [layerId, legendData] map. The map subscribes to it to keep
+   * the legend updated with the data displayed on the map.
+   */
+  @Input() public legendUpdater: Subject<Map<string, LegendData>> = new Subject<Map<string, LegendData>>();
 
-  @Input() public legendUpdater: Subject<Map<string, {minValue: string, maxValue: string}>> =
-    new Subject<Map<string, {minValue: string, maxValue: string}>>();
-
-  @Input() public visibilityUpdater: Subject<any> = new Subject();
+  /**
+   * @Input : Angular
+   * @description Subject of [layerId, boolean] map. The map subscribes to it to keep
+   * the legend updated with the visibility of the layer.
+   */
+  @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
 
   /**
    * @Input : Angular
