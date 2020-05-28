@@ -85,6 +85,11 @@ export class DonutComponent implements OnChanges {
    */
   @Input() public colorsSaturationWeight = 1 / 2 ;
 
+  /**
+   * @Input : Angular
+   * @description Diameter of the donut. If it's not set, the donut take the Max(width,height) of the div containing the svg.
+   */
+  @Input() public diameter: number;
 
   /**
    * @Output : Angular
@@ -154,5 +159,6 @@ export class DonutComponent implements OnChanges {
     this.donut.donutParams.colorsSaturationWeight = this.colorsSaturationWeight;
     this.donut.donutParams.donutNodeColorizer = this.colorService;
     this.donut.donutParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
+    this.donut.donutParams.diameter = this.diameter;
   }
 }
