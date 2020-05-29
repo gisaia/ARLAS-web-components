@@ -199,6 +199,32 @@
     },
     "drawPolygonVerticesLimit": {
       "description": "Maximum number of vertices allowed when drawing a polygon."
+    },
+    "visualisationSetsConfig": {
+      "description": "List of visualisations sets",
+      "type": "array",
+      "items": {
+        "description": "A Visualisation set is an entity where to group layers together",
+        "type": "object",
+        "properties": {
+          "name": {
+            "description": "Name of the visualisation set",
+            "type": "string"
+          },
+          "layers": {
+            "description": "List of layers ids grouped in this visualisation set",
+            "type": "string",
+            "items": {
+              "description": "layer id",
+              "type": "string"
+            }
+          },
+          "enabled": {
+            "description": "If enabled, all the layers can be displayed on the map, otherwise the layers are removed from the map.",
+            "type": "boolean"
+          }
+        }
+      }
     }
   },
   "required": [
