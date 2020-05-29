@@ -47,6 +47,10 @@
       "diameter": {
           "description": "Diameter of the donut. If it's not set, the donut take the Max(width,height) of the div containing the svg.",
           "type": "number"
+      },
+      "unit": {
+        "description": "Unit of a node in the donut",
+        "type": "string"
       }
   },
   "required": [
