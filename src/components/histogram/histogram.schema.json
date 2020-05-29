@@ -17,8 +17,16 @@
             ]
         },
         "dataUnit": {
-            "description": "Unit of represented data on the histogram",
+            "description": "Unit of represented data on the histogram. Deprecated. If xUnit is specified, dataUnit is not taken into account.",
             "type": "string"
+        },
+        "xUnit": {
+          "description": "Unit of x axis values.",
+          "type": "string"
+        },
+        "yUnit": {
+          "description": "Unit of x axis values.",
+          "type": "string"
         },
         "chartXLabel": {
             "description": "Chart's label for the x axis (Visible when there is one bucket on the histogram).",

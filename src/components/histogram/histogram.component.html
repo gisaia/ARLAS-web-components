@@ -30,8 +30,8 @@
     </div>
   </div>
   <div *ngIf="histogram.histogramParams.dataLength === 1" class="histogram__no-chart" [style.width.px]="histogram.histogramParams.chartWidth" [style.height.px]="histogram.histogramParams.chartHeight">
-    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{histogram.histogramParams.startValue}} {{dataUnit}}</span>
-    <span class="histogram__no-chart__value">{{histogram.histogramParams.chartTitle | translate}} {{data[0].value}}</span>
+    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{histogram.histogramParams.startValue}} {{xUnit | translate}}</span>
+    <span class="histogram__no-chart__value">{{histogram.histogramParams.chartTitle | translate}} {{data[0].value}} {{yUnit | translate}}</span>
   </div>
   <div *ngIf="descriptionPosition === 1" class="histogram__description" [style.width.px]="histogram.histogramParams.chartWidth-histogram.histogramParams.margin.left-histogram.histogramParams.margin.right"
     [style.margin-left.px]="histogram.histogramParams.margin.left" [style.margin-right.px]="histogram.histogramParams.margin.right">
@@ -43,12 +43,24 @@
   </div>
   <div *ngIf="chartType !== ChartType.swimlane">
     <div class="histogram__tooltip" *ngIf="histogram.histogramParams.tooltip.isShown && !histogram.histogramParams.tooltip.isRightSide" [style.left.px]="histogram.histogramParams.tooltip.xPosition" [style.top.px]="histogram.histogramParams.tooltip.yPosition">
-      <span class="histogram__tooltip-content">{{histogram.histogramParams.tooltip.xContent}}</span>
-      <span class="histogram__tooltip-content">{{histogram.histogramParams.tooltip.yContent}}</span>
+      <div class="histogram__tooltip-xcontent-wrapper">
+        <span class="histogram__tooltip-content histogram__tooltip-xlabel">{{(chartXLabel | translate)}}</span>
+        <span class="histogram__tooltip-content histogram__tooltip-xcontent">{{ histogram.histogramParams.tooltip.xContent}} {{xUnit | translate}}</span>
+      </div>
+      <div class="histogram__tooltip-ycontent-wrapper">
+        <span class="histogram__tooltip-content histogram__tooltip-ylabel">{{(chartTitle | translate)}}</span>
+        <span class="histogram__tooltip-content histogram__tooltip-ycontent">{{ histogram.histogramParams.tooltip.yContent}} {{yUnit | translate}}</span>
+      </div>
     </div>
     <div class="histogram__tooltip" *ngIf="histogram.histogramParams.tooltip.isShown && histogram.histogramParams.tooltip.isRightSide" [style.right.px]="histogram.histogramParams.tooltip.xPosition" [style.top.px]="histogram.histogramParams.tooltip.yPosition">
-      <span class="histogram__tooltip-content">{{histogram.histogramParams.tooltip.xContent}}</span>
-      <span class="histogram__tooltip-content">{{histogram.histogramParams.tooltip.yContent}}</span>
+      <div class="histogram__tooltip-xcontent-wrapper">
+        <span class="histogram__tooltip-content histogram__tooltip-xlabel">{{(chartXLabel | translate)}}</span>
+        <span class="histogram__tooltip-content histogram__tooltip-xcontent">{{ histogram.histogramParams.tooltip.xContent}} {{xUnit | translate}}</span>
+      </div>
+      <div class="histogram__tooltip-ycontent-wrapper">
+        <span class="histogram__tooltip-content histogram__tooltip-ylabel">{{(chartTitle | translate)}}</span>
+        <span class="histogram__tooltip-content histogram__tooltip-ycontent">{{ histogram.histogramParams.tooltip.yContent}} {{yUnit | translate}}</span>
+      </div>
     </div>
   </div>
   <div *ngIf="chartType === ChartType.swimlane">

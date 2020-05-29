@@ -68,9 +68,18 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    */
   @Input() public dataType: DataType = DataType.numeric;
   /**
-   * @description Unity of data to add in the end of tooltip values.
+   * @description Unit of data to add in the end of tooltip values.
+   * @deprecated If xUnit is specified, dataUnit is not taken into account.
    */
   @Input() public dataUnit = '';
+  /**
+   * @description Unit of x axis values.
+   */
+  @Input() public xUnit = '';
+  /**
+   * @description Unit of y axis values.
+   */
+  @Input() public yUnit = '';
   /**
    * @Input : Angular
    * @description The date format of the start/end values.
@@ -447,8 +456,16 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (!this.chartXLabel) {
       this.chartXLabel = '';
     }
+    if (!this.xUnit && this.dataUnit) {
+      this.xUnit = this.dataUnit;
+    } else if (!this.xUnit) {
+      this.xUnit = '';
+    }
     if (!this.dataUnit) {
       this.dataUnit = '';
+    }
+    if (!this.yUnit) {
+      this.yUnit = '';
     }
     this.histogram.histogramParams = new HistogramParams();
     this.histogram.histogramParams.barWeight = this.barWeight;
