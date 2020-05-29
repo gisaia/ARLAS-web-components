@@ -40,66 +40,8 @@ body {
   background-color: rgb(255, 243, 137) !important;
 }
 
-.histogram__area .histogram__chart--area {
-  fill: #FFC107;
-  fill-opacity: 1;
-  stroke: #C49D28;
-  stroke-width: 1px;
-  stroke-opacity: 1;
-}
-
-.histogram__area .histogram__chart--bar__fullyselected {
-  fill: #FFC107;
-  fill-opacity: 1;
-  stroke: none;
-  stroke-width: 0.5px;
-  stroke-opacity: 1;
-}
-
-.histogram__area .histogram__chart--bar__partlyselected {
-  fill: #FFC107;
-  fill-opacity: 1;
-  stroke: none;
-  stroke-width: 0.5px;
-  stroke-opacity: 1;
-}
-
-.histogram__area .histogram__chart--bar {
-  fill: rgb(140, 140, 140);
-  fill-opacity: 1;
-  stroke-opacity: 0.1;
-}
-
-.histogram__area .histogram__description__startvalue--background, .histogram__area .histogram__description__endvalue--background {
-  background-color: white;
-}
-
 .histogram__area .histogram__swimlane-height--tick {
   stroke: black;
-}
-
-.histogram__area .histogram__description__startvalue, .histogram__area .histogram__description__endvalue {
-  color: #4CA3EB;
-}
-
-.histogram__area .histogram__ticks {
-  stroke: #757575;
-  stroke-width: 1px;
-}
-
-.histogram__area .histogram__axis {
-  stroke: #757575;
-  stroke-width: 1px;
-}
-
-.histogram__area .tick text {
-  fill: #757575;
-  font-size: 0.9em;
-}
-
-.histogram__area .histogram__brush--handles {
-  stroke: #757575;
-  fill: #757575;
 }
 
 a.arlas-map-control {
