@@ -201,7 +201,7 @@
       "description": "Maximum number of vertices allowed when drawing a polygon."
     },
     "visualisationSetsConfig": {
-      "description": "List of visualisations sets",
+      "description": "List of visualisation sets",
       "type": "array",
       "items": {
         "description": "A Visualisation set is an entity where to group layers together",
