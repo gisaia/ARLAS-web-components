@@ -67,6 +67,12 @@ export interface LegendData {
   keysColorsMap?: Map<string, string>;
 }
 
+export interface VisualisationSetConfig {
+  name: string;
+  layers: Set<string>;
+  enabled?: boolean;
+}
+
 export const ZOOM_IN = 'Zoom in';
 export const ZOOM_OUT = 'Zoom out';
 export const RESET_BEARING = 'Reset bearing to north';
@@ -298,11 +304,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() public dataSources: Set<string>;
 
-
-  @Input() public visualisationSetsConfig: {
-    visualisations: Map<string, Set<string>>,
-    default: Set<string>;
-  };
+  /**
+   * @Input : Angular
+   * @description List of visualisation sets. A Visualisation set is an entity where to group layers together.
+   * If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map.
+   */
+  @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
   public visualisationsSets: {
     visualisations: Map<string, Set<string>>,
@@ -863,12 +870,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       visualisations: new Map(),
       status: new Map()
     };
-    Object.keys(this.visualisationSetsConfig.visualisations).forEach(visu => {
-      this.visualisationsSets.visualisations.set(visu, this.visualisationSetsConfig.visualisations[visu]);
-      const selectedSets = new Set(this.visualisationSetsConfig.default);
-      this.visualisationsSets.status.set(visu, selectedSets.has(visu));
+    this.visualisationSetsConfig.forEach(visu => {
+      this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
+      this.visualisationsSets.status.set(visu.name, visu.enabled);
     });
-
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
     moveend.subscribe(e => {
