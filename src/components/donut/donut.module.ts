@@ -21,11 +21,13 @@
 import { CommonModule } from '@angular/common';
 import { DonutComponent } from './donut.component';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
-    ColorGeneratorModule.forRoot()
+    ColorGeneratorModule.forRoot(),
+    TranslateModule
   ],
   declarations: [DonutComponent],
   exports: [DonutComponent]

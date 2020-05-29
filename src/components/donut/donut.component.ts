@@ -92,6 +92,12 @@ export class DonutComponent implements OnChanges {
   @Input() public diameter: number;
 
   /**
+   * @Input : Angular
+   * @description Unit that a node of the donut represents
+   */
+  @Input() public unit = '';
+
+  /**
    * @Output : Angular
    * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
@@ -144,6 +150,9 @@ export class DonutComponent implements OnChanges {
   }
 
   private setDonutParameters(): void {
+    if (!this.unit) {
+      this.unit = '';
+    }
     this.donut.donutParams = new DonutParams();
     this.donut.donutParams.id = this.id;
     this.donut.donutParams.customizedCssClass = this.customizedCssClass;
