@@ -39,6 +39,10 @@
         "displayFilter": {
           "description": "Whether text input, to filter powerbars, is displayed",
           "type": "boolean"
+        },
+        "unit": {
+          "description": "Unit that a powerbar represents",
+          "type": "string"
         }
     }
 }

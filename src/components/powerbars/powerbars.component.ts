@@ -57,6 +57,12 @@ export class PowerbarsComponent implements OnInit, OnChanges {
 
   /**
    * @Input : Angular
+   * @description Unit the a powerbar represents
+   */
+  @Input() public unit = '';
+
+  /**
+   * @Input : Angular
    * @description Css class name to use to customize a specific powerbar's style.
    */
   @Input() public customizedCssClass;
@@ -137,6 +143,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
   public ngOnInit() {
     if (this.level > 1) {
       throw new Error('Not implemented : Only level 1 is supported');
+    }
+    if (!this.unit) {
+      this.unit = '';
     }
   }
 
