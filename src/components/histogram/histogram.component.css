@@ -34,7 +34,7 @@
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 0.9em;
     line-height: 1.3;
-    color: deeppink;
+    color: #555;
     opacity: 1;
     z-index: 10000;
 }
@@ -49,7 +49,7 @@
     font-size: 1.0em;
     flex: 1 1 100%;
     max-width: 40%;
-    color: dodgerblue;
+    color: #555;
     opacity: 1;
     text-align: center;
     z-index: 8000;
@@ -70,7 +70,7 @@
 .histogram__description__startvalue--background, /* @doc Sets startvalue background style*/
 .histogram__description__endvalue--background  /* @doc Sets endvalue background style*/
 {
-    background: rgba(220, 220, 220, 0.8);
+
 }
 
 .histogram__ticks /* @doc Sets the ticks style*/
@@ -87,7 +87,7 @@
 
 .tick text /* @doc Sets the labels style*/
 {
-  fill: #BDBDBD;
+  fill: #757575;
   font-size: 0.9em;
 }
 
@@ -104,12 +104,17 @@
   text-align: left;
   padding: 2px;
   font: 12px sans-serif;
-  background: #043b53;
+  background: #fff;
   border: 0px;
   border-radius: 2px;
   pointer-events: none;
-  color: white;
+  fill: #555;
   z-index: 20000;
+}
+
+.selected_bars_zone {
+  fill: #b7b7b7;
+  fill-opacity: 0.1;
 }
 
 .histogram__brush-tooltip /* @doc Sets all the brush tooltips styles*/
@@ -207,7 +212,7 @@
 
 .brush .selection /* @doc Sets the brush selection style*/
 {
-  opacity: 0.6;
+  opacity: 0.1;
 }
 
 .histogram__brush--handles /* @doc Sets the brush handles style*/
@@ -234,62 +239,48 @@
 
 .histogram__chart--fixed-selected--area /* @doc Sets the style of the area's selected parts*/
 {
-  fill: #FFC107;
+  fill: #88c9c3;
   fill-opacity: 1;
-  stroke: #C49D28;
-  stroke-width: 1px;
-  stroke-opacity: 1;
 }
 
 .histogram__chart--current-selected--area /* @doc Sets the style of the area's selected parts*/
 {
-  fill: rgb(155, 116, 0);
+  fill: #88c9c3;
   fill-opacity: 1;
-  stroke: #C49D28;
-  stroke-width: 1px;
-  stroke-opacity: 1;
 }
 
 .histogram__chart--unselected--area /* @doc Sets the style of the area's unselected parts*/
 {
-  fill: rgb(167, 166, 161);
-  fill-opacity: 1;
-  stroke: rgb(220, 220, 220);
-  stroke-width: 1px;
-  stroke-opacity: 1;
+  fill: #b7b7b7;
+  fill-opacity: .7;
 }
 
 .histogram__chart--bar__fullyselected /* @doc Sets the fixed selected bars style*/
 {
-  fill: #FFC107;
-  fill-opacity: 1;
-  stroke: none;
-  stroke-width: 0.5px;
-  stroke-opacity: 1;
+  fill: #FFF;
+  stroke: #a5a5a5;
+  stroke-width: 0.4px;
 }
 
 .histogram__chart--bar__currentselection /* @doc Sets the currently selected bars style*/
 {
-  fill: rgb(191, 143, 0);
-  fill-opacity: 1;
-  stroke: none;
-  stroke-width: 0.5px;
-  stroke-opacity: 1;
+  fill: #FFF;
+  stroke: #a5a5a5;
+  stroke-width: 0.4px;
 }
 
 .histogram__chart--bar__partlyselected /* @doc Sets the partly selected bars style*/
 {
-  fill: #FFC107;
-  fill-opacity: 1;
-  stroke: none;
-  stroke-width: 0.5px;
-  stroke-opacity: 1;
+  fill: #FFF;
+  stroke: #a5a5a5;
+  stroke-width: 0.4px;
 }
 
 .histogram__chart--bar /* @doc Sets the unselected selected bars style*/
 {
-  fill-opacity: 0.3;
-  stroke-opacity: 0.1;
+  fill: #FFF;
+  stroke: #b7b7b7;
+  stroke-width: 0.4px;
 }
 
 .histogram__swimlane--vertical-tooltip-line /* @doc Sets the vertical line that's shown when hovering bars in swimlane*/
@@ -297,6 +288,35 @@
   stroke-width: 2px;
   stroke: #000;
   fill: none;
+}
+
+.headband_currentselection /* @doc Sets the currently selected headbands style (a headband is a band over the bar)*/
+{
+  fill: #88c9c3 !important;
+  stroke: #88c9c3 !important;
+  stroke-width: 0.4px !important;;
+  height: 1.5px !important;
+}
+.headband_partlyselected /* @doc Sets the partly selected headbands style (a headband is a band over the bar)*/
+{
+  fill: #88c9c3 !important;
+  stroke: #88c9c3 !important;
+  stroke-width: 0.4px !important;
+  height: 1.5px !important;
+}
+.headband_fullyselected /* @doc Sets the fully selected headbands style (a headband is a band over the bar)*/
+{
+  fill: #88c9c3 !important;
+  stroke: #88c9c3 !important;
+  stroke-width: 0.4px !important;
+  height: 1.5px !important;
+}
+.headband_notselected /* @doc Sets the not selected headbands style (a headband is a band over the bar)*/
+{
+  fill: #FFF !important;
+  stroke: #b7b7b7 !important;
+  stroke-width: 0 !important;
+  height: 0 !important;
 }
 
 .swimlane-label-unselected /* @doc Sets the unselected labels style of the swimlane*/

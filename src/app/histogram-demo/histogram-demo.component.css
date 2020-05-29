@@ -69,12 +69,3 @@
   margin-left: 40px;
   font-size: 0.8em;
 }
-
-.histogram__area .histogram__chart--area{
-  fill: #FFC107 !important;
-  fill-opacity: 0;
-  stroke: #FFC107;
-  stroke-width: 1px;
-  stroke-opacity: 1;
-}
-

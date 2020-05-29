@@ -111,7 +111,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @Input : Angular
    * @description A 0 to 1 weight of the brush height. It controls the brush handles height.
    */
-  @Input() public brushHandlesHeightWeight = 1 / 2;
+  @Input() public brushHandlesHeightWeight = 1;
   /**
    * @Input : Angular
    * @description Chart's representation type.
