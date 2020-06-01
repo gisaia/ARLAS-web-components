@@ -8,7 +8,7 @@
         </button>
       </div>
       <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon></div>
-    <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id}}</div>
+    <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id | translate}}</div>
   </div>
   <div [hidden]="!detail" class="legend-wrapper">
     <!-- COLOR SECTION -->
@@ -17,8 +17,12 @@
       <div class="manual-color-wrapper" *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided">
         <div class="manual-color-container" *ngFor="let manualColor of colorLegend.manualValues | keyvalue">
           <div class="manual-color">
-            <div class="manual-color-value" [style.backgroundColor]="manualColor.value"></div>
-            <div class="manual-color-key">{{manualColor.key}}</div>
+            <div [style.backgroundColor]="manualColor.value"
+              [class.circle-tip]="layer.type === 'circle'"
+              [class.line-tip]="layer.type === 'line'"
+              [class.fill-tip]="layer.type === 'fill'">
+            </div>
+            <div class="manual-color-key" matTooltip="{{manualColor.key | translate}}" [matTooltipPosition]="'left'">{{manualColor.key | translate}}</div>
           </div>
         </div>
       </div>
