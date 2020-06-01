@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, Output, SimpleChanges, OnChanges, ChangeDetectorRef } from '@angular/core';
-import { MatDialogRef, MatDialog } from '@angular/material';
+import { ChangeDetectorRef, Component, Input, OnInit, Output } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { BasemapStyle, BasemapStylesGroup } from '../../components/mapgl/model/mapLayers';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
-import { MatIconRegistry } from '@angular/material';
-
 
 export interface GeometrySelectModel {
   path: string;

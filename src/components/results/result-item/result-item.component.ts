@@ -17,14 +17,13 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
+import { Subject } from 'rxjs';
+import { ArlasColorService } from '../../../services/color.generator.service';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-
-import { Subject } from 'rxjs';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
-import { ArlasColorService } from '../../../services/color.generator.service';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 import { TranslateService } from '@ngx-translate/core';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';

@@ -19,7 +19,6 @@
 
 import { SortEnum } from '../utils/enumerations/sortEnum';
 
-
 export class Column {
   /**
    * @description The column name

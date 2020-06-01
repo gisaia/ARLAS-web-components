@@ -17,8 +17,8 @@
  * under the License.
  */
 
+import { Action, Attachment } from '../utils/results.utils';
 import { Column } from './column';
-import { Action, FieldsConfiguration, Attachment } from '../utils/results.utils';
 
 export class Item {
 

@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Item } from '../model/item';
-import { Action, Attachment, AdditionalInfo } from '../utils/results.utils';
 import { Observable } from 'rxjs';
+import { Item } from '../model/item';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { Action, AdditionalInfo, Attachment } from '../utils/results.utils';
 
 export class ItemComponent {
 

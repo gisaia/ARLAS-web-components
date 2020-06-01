@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { Component, OnChanges, Input, Output, SimpleChanges, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { SimpleNode, TreeNode } from 'arlas-d3';
 import { Subject } from 'rxjs';
+import { ArlasColorService } from '../../services/color.generator.service';
 import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
-import { ArlasColorService } from '../../services/color.generator.service';
-import { TreeNode, SimpleNode } from 'arlas-d3';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 /**

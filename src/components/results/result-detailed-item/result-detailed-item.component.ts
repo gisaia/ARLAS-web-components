@@ -17,13 +17,12 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, Output } from '@angular/core';
-import { Action, ElementIdentifier, Attachment } from '../utils/results.utils';
-import { Item } from '../model/item';
-
-import { Subject } from 'rxjs';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { Subject } from 'rxjs';
+import { Item } from '../model/item';
+import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
 
 @Component({
   selector: '[arlas-result-detailed-item]',

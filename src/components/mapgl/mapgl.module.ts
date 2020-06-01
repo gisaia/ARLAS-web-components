@@ -17,14 +17,20 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSelectModule, MatRadioModule, MatButtonModule, MatIconModule,
-   MatSlideToggleModule, MatTooltipModule, MatChipsModule } from '@angular/material';
-import { MapglComponent } from './mapgl.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule } from '@ngx-translate/core';
+import { MapglComponent } from './mapgl.component';
 import { MapglLegendModule } from '../mapgl-legend/mapgl-legend.module';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
+
 
 @NgModule({
   imports: [

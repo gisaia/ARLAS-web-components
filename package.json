@@ -7,18 +7,19 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:stats": "ng build --stats-json",
     "test": "ng test",
     "lint": "ng lint",
     "tslint": "ng lint",
     "build-release": "ngc -p tsconfig-build.json && gulp",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "analyze": "webpack-bundle-analyzer dist/stats-es2015.json"
   },
   "private": true,
   "dependencies": {
     "@angular/animations": "~8.2.10",
     "@angular/cdk": "~8.2.3",
     "@angular/common": "~8.2.10",
-    "@angular/compiler": "~8.2.10",
     "@angular/core": "~8.2.10",
     "@angular/forms": "~8.2.10",
     "@angular/material": "~8.2.3",
@@ -39,7 +40,7 @@
     "d3-dsv": "^1.0.10",
     "geojson-validation": "0.2.1",
     "iv-viewer": "~2.0.1",
-    "jsts": "2.0.3",
+    "jsts": "2.1.0",
     "jszip": "^3.2.1",
     "mapbox-gl": "^1.6.1",
     "moment": "^2.24.0",
@@ -58,6 +59,7 @@
     "@angular-devkit/build-angular": "~0.803.9",
     "@angular/cli": "8.3.9",
     "@angular/compiler-cli": "8.2.10",
+    "@angular/compiler": "~8.2.10",
     "@angular/language-service": "8.2.10",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
@@ -76,6 +78,7 @@
     "tsickle": ">=0.29.0",
     "tslib": "^1.9.0",
     "tslint": "~5.11.0",
-    "typescript": "3.5.3"
+    "typescript": "3.5.3",
+    "webpack-bundle-analyzer": "^3.6.1"
   }
 }

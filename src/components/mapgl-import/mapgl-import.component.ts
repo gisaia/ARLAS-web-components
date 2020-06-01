@@ -1,15 +1,15 @@
-import { Component, Input, ViewChild, ElementRef, Output, OnInit } from '@angular/core';
-import * as shp from 'shpjs/dist/shp';
-import * as extent from 'turf-extent';
-import * as helpers from '@turf/helpers';
+import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import * as toGeoJSON from '@mapbox/togeojson';
 import * as centroid from '@turf/centroid';
 import JSZip from 'jszip';
-import { MatDialog, MatDialogRef } from '@angular/material';
 import { MapglComponent } from '../mapgl/mapgl.component';
+import * as helpers from '@turf/helpers';
+import { valid } from 'geojson-validation';
 import { Subject } from 'rxjs';
-import * as toGeoJSON from '@mapbox/togeojson';
+import * as shp from 'shpjs/dist/shp';
+import * as extent from 'turf-extent';
 import { parse } from 'wellknown';
-import { valid, isFeature } from 'geojson-validation';
 
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',
