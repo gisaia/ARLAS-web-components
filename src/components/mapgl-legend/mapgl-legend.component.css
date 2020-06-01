@@ -76,6 +76,9 @@
   font-size: 0.7em;
   margin-left: 3px;
   flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .manual-color {
