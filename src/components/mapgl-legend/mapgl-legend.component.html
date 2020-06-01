@@ -17,7 +17,11 @@
       <div class="manual-color-wrapper" *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided">
         <div class="manual-color-container" *ngFor="let manualColor of colorLegend.manualValues | keyvalue">
           <div class="manual-color">
-            <div class="manual-color-value" [style.backgroundColor]="manualColor.value"></div>
+            <div [style.backgroundColor]="manualColor.value"
+              [class.circle-tip]="layer.type === 'circle'"
+              [class.line-tip]="layer.type === 'line'"
+              [class.fill-tip]="layer.type === 'fill'">
+            </div>
             <div class="manual-color-key">{{manualColor.key}}</div>
           </div>
         </div>
