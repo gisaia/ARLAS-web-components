@@ -624,12 +624,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.zoom = this.map.getZoom();
 
       // Add Data_source
-      this.dataSources.forEach(source => {
-        this.map.addSource(source, {
-          type: GEOJSON_SOURCE_TYPE,
-          data: Object.assign({}, this.emptyData)
+      if (this.dataSources) {
+        this.dataSources.forEach(source => {
+          this.map.addSource(source, {
+            type: GEOJSON_SOURCE_TYPE,
+            data: Object.assign({}, this.emptyData)
+          });
         });
-      });
+      }
       this.map.addSource(this.POLYGON_LABEL_SOURCE, {
         'type': GEOJSON_SOURCE_TYPE,
         'data': this.polygonlabeldata
@@ -870,10 +872,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       visualisations: new Map(),
       status: new Map()
     };
-    this.visualisationSetsConfig.forEach(visu => {
-      this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
-      this.visualisationsSets.status.set(visu.name, visu.enabled);
-    });
+    if (this.visualisationSetsConfig) {
+      this.visualisationSetsConfig.forEach(visu => {
+        this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
+        this.visualisationsSets.status.set(visu.name, visu.enabled);
+      });
+    }
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
     moveend.subscribe(e => {
