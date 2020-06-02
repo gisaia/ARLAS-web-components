@@ -1,14 +1,16 @@
 <div class="layer_wrapper">
   <div class="layer_container">
-    <div class="layer_icon" >
-      <div class="layer_detail">
-        <button mat-mini-fab class="detail_button" (click)="showDetail($event)">
-          <mat-icon class="detail_icon" *ngIf="!detail">keyboard_arrow_down</mat-icon>
-          <mat-icon class="detail_icon" *ngIf="detail">keyboard_arrow_up</mat-icon>
-        </button>
+    <div class="layer_icon_container">
+      <div class="layer_icon" >
+        <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon></div>
+      <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id | translate}}</div>
+    </div>
+    <div class="layer_detail">
+      <div class="detail_button" (click)="showDetail($event)">
+        <mat-icon class="detail_icon" *ngIf="!detail">keyboard_arrow_down</mat-icon>
+        <mat-icon class="detail_icon" *ngIf="detail">keyboard_arrow_up</mat-icon>
       </div>
-      <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon></div>
-    <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id | translate}}</div>
+    </div>
   </div>
   <div [hidden]="!detail" class="legend-wrapper">
     <!-- COLOR SECTION -->

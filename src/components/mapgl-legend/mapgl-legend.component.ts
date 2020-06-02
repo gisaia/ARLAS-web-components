@@ -77,7 +77,9 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       if (!this.enabled) {
         this.visibleMode = false;
       }
-      this.detail = this.visibleMode;
+      if (!this.visibleMode) {
+        this.detail = this.visibleMode;
+      }
       if (this.layer) {
         this.drawLegends(this.visibleMode);
       }

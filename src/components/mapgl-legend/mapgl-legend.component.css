@@ -7,25 +7,31 @@
 .layer_container {
   display: flex;
   position: relative;
+  justify-content: space-between;
+}
+.layer_icon_container {
+  display: flex;
 }
 .layer_detail {
-  position: absolute;
+  display: flex;
 }
 .detail_button {
   background-color: #fff;
-  display: none;
+  display: flex;
   height: 20px;
   width: 20px;
   position: relative;
+  cursor: pointer;
 }
 .detail_icon {
   color: #555;
   font-size: 1.3em;
   position: absolute;
   top: 2px;
-  left: 1px;
+  left: 0px;
   width: 20px;
   height: 20px;
+  cursor: pointer;
 }
 .layer_name{
   font-size: 0.8em;
@@ -35,9 +41,6 @@
   margin-right: 5px;
 }
 
-.layer_icon:hover .detail_button {
-  display: flex;
-}
 .manual-color-wrapper {
   display: flex;
   flex-flow: wrap;
