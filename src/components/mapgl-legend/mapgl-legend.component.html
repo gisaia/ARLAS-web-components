@@ -30,7 +30,7 @@
       </div>
       <div *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated">
         <div class="interpolated-color-container">
-          <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + colorLegend.interpolatedValues.join(',') + ')'}"></div>
+          <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + colorsPalette + ')'}"></div>
         </div>
         <div class="interpolated-values-container">
           <div class="interpolated-value">{{colorLegend?.minValue | translate}}</div>

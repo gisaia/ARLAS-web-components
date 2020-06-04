@@ -61,6 +61,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
   private LEGEND_WIDTH = 210;
+  public colorsPalette = '';
 
   constructor(public translate: TranslateService, private el: ElementRef) {}
 
@@ -141,18 +142,18 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private buildColorLegend(color: string | StyleFunction | Expression, visibileMode: boolean, legendData: any): void {
-    if (typeof color === 'string') {
+  private buildColorLegend(colorExpression: string | StyleFunction | Expression, visibileMode: boolean, legendData: any): void {
+    if (typeof colorExpression === 'string') {
       this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
-      this.colorLegend.fixValue = color;
+      this.colorLegend.fixValue = colorExpression;
       if (!visibileMode) {
         /** apply greyscale because the layer is not visible */
-        this.colorLegend.fixValue = tinycolor.default(color.toString()).greyscale().lighten(20).toHexString();
+        this.colorLegend.fixValue = tinycolor.default(colorExpression.toString()).greyscale().lighten(20).toHexString();
       }
-    } else if (Array.isArray(color)) {
-      if (color.length === 2) {
+    } else if (Array.isArray(colorExpression)) {
+      if (colorExpression.length === 2) {
         /** color = ["get", "field"]  ==> Generated or Provided */
-        const field = color[1];
+        const field = colorExpression[1];
         this.colorLegend.title = field;
         if ((field as string).endsWith('_color')) {
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
@@ -174,38 +175,53 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           this.colorLegend.manualValues.set('', '#eee');
         }
         // todo
-      } else if (color.length >= 3) {
-        if (color[0] === MATCH) {
+      } else if (colorExpression.length >= 3) {
+        if (colorExpression[0] === MATCH) {
           /** color = ["match", ["get", "field"], .... ]**/
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.manual;
-          const colorsLength = color.length;
+          const colorsLength = colorExpression.length;
           let hasDefaultColor = false;
           if (colorsLength % 2 !== 0) {
             hasDefaultColor = true;
           }
-          this.colorLegend.title = color[1].length === 2 ? color[1][1] : '';
+          this.colorLegend.title = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
           this.colorLegend.manualValues = new Map();
-          for (let i = 2; i < color.length; i += 2) {
+          for (let i = 2; i < colorExpression.length; i += 2) {
             if (hasDefaultColor && i === colorsLength - 3) {
-              const c1 = this.visibleMode ? color[i + 1] : tinycolor.default(color[i + 1].toString()).greyscale().lighten(20).toHexString();
-              const c2 = this.visibleMode ? color[i + 2] : tinycolor.default(color[i + 2].toString()).greyscale().lighten(20).toHexString();
-              this.colorLegend.manualValues.set(this.translate.instant(color[i]), c1);
+              const c1 = this.visibleMode ? colorExpression[i + 1] :
+                tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
+              const c2 = this.visibleMode ? colorExpression[i + 2] :
+                tinycolor.default(colorExpression[i + 2].toString()).greyscale().lighten(20).toHexString();
+              this.colorLegend.manualValues.set(this.translate.instant(colorExpression[i]), c1);
               this.colorLegend.manualValues.set(this.translate.instant(OTHER), c2);
               break;
             } else {
-              const c = this.visibleMode ? color[i + 1] : tinycolor.default(color[i + 1].toString()).greyscale().lighten(20).toHexString();
-              this.colorLegend.manualValues.set(this.translate.instant(color[i]), c);
+              const c = this.visibleMode ? colorExpression[i + 1] :
+                tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
+              this.colorLegend.manualValues.set(this.translate.instant(colorExpression[i]), c);
             }
           }
-        } else if (color[0] === INTERPOLATE) {
+        } else if (colorExpression[0] === INTERPOLATE) {
           this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
           /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
           // todo throw exception if interpolation is not linear
-          const field = color[2].length === 2 ? color[2][1] : 'Heatmap-density';
+          const field = colorExpression[2].length === 2 ? colorExpression[2][1] : 'Heatmap-density';
           this.colorLegend.title = field;
           this.colorLegend.interpolatedValues = [];
-          color.filter((c, i) => i > 2 && i % 2 === 0).forEach(c => this.colorLegend.interpolatedValues.push(c));
-          const colorValues = color.filter((c, i) => i > 2 && i % 2 !== 0);
+          const palette = [];
+          const colors = colorExpression.slice(3);
+          colors.forEach((c, i) => {
+            if (i % 2 === 0) {
+              palette.push({
+                proportion: c,
+                value: colors[i + 1]
+              });
+            }
+          });
+          const minimum = palette[0].proportion;
+          const maximum = palette.slice(-1)[0].proportion;
+          palette.forEach(c => this.colorLegend.interpolatedValues.push(c.value));
+          const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
           if (legendData && legendData.get(field)) {
             this.colorLegend.minValue = legendData.get(field).minValue;
             this.colorLegend.maxValue = legendData.get(field).maxValue;
@@ -217,7 +233,11 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             /** apply greyscale because the layer is not visible */
             this.colorLegend.interpolatedValues = this.colorLegend.interpolatedValues
               .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
+            palette.forEach(p => {
+              p.value = tinycolor.default(p.value.toString()).greyscale().lighten(20).toHexString();
+            });
           }
+          this.colorsPalette = palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');
         }
       }
     }
