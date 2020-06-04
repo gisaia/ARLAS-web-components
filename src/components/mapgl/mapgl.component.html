@@ -22,7 +22,7 @@
   <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
     <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
       <div class="map_visu-title-container">
-        <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key}}</span>
+        <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key | translate}}</span>
         <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
       </div>
       <div class="map_visu-content-container">
