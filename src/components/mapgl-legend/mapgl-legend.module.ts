@@ -23,6 +23,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MapglLegendComponent } from './mapgl-legend.component';
 import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
 import { MatButtonModule, MatIconModule, MatTooltipModule } from '@angular/material';
+import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { MatButtonModule, MatIconModule, MatTooltipModule } from '@angular/mater
     MapglLayerIconModule,
     MatButtonModule,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    FormatNumberModule
   ],
   declarations: [MapglLegendComponent],
   exports: [MapglLegendComponent]

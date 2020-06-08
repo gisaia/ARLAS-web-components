@@ -24,9 +24,10 @@ export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
-  if (isNumber(x)) {
-    const trunc = Math.trunc(x);
-    const decimal = (x + '').split('.');
+  if (isNumber(+x)) {
+    const num = +x;
+    const trunc = Math.trunc(num);
+    const decimal = (num + '').split('.');
     const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, formatChar);
     const spacedNumberString = trunc < 0 ? '-' + spacedNumber : spacedNumber;
     return decimal.length === 2 ? spacedNumberString + '.' + decimal[1] : spacedNumberString;

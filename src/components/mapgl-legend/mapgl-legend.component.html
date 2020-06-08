@@ -33,8 +33,8 @@
           <div class="interpolated-color-palette" [ngStyle]="{'background': 'linear-gradient(to right, ' + colorsPalette + ')'}"></div>
         </div>
         <div class="interpolated-values-container">
-          <div class="interpolated-value">{{colorLegend?.minValue | translate}}</div>
-          <div class="interpolated-value">{{colorLegend?.maxValue | translate}}</div>
+          <div class="interpolated-value">{{colorLegend?.minValue | formatNumber:'NUMBER_FORMAT_CHAR' | translate}}</div>
+          <div class="interpolated-value">{{colorLegend?.maxValue | formatNumber:'NUMBER_FORMAT_CHAR' | translate}}</div>
         </div>
       </div>
     </div>
