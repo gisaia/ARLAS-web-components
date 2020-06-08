@@ -150,7 +150,6 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
       || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const iv = colorLegend.manualValues as Map<string, string>;
-    const colorsList = [];
     if (iv) {
       if (iv.size === 1) {
         const c = iv.values().next().value;
