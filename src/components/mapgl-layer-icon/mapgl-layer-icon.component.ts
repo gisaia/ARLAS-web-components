@@ -106,81 +106,58 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').append('rect')
-        .attr('height', 7).attr('width', 7)
-        .attr('fill', fourColors[0])
-        .attr('stroke', fourColors[0])
-        .attr('y', 3).attr('x', 3);
+    .attr('height', 7).attr('width', 7)
+    .attr('fill', fourColors[0])
+    .attr('stroke', fourColors[0])
+    .attr('y', 3).attr('x', 3);
   svg.append('g').append('rect')
-      .attr('height', 7).attr('width', 7)
-      .attr('fill', fourColors[1]).attr('fill-opacity', 0.6)
-      .attr('stroke', fourColors[1]).attr('stroke-width', 0.6)
-      .attr('y', 10).attr('x', 3);
+    .attr('height', 7).attr('width', 7)
+    .attr('fill', fourColors[1]).attr('fill-opacity', 0.6)
+    .attr('stroke', fourColors[1]).attr('stroke-width', 0.6)
+    .attr('y', 10).attr('x', 3);
   svg.append('g').append('rect')
-      .attr('height', 7).attr('width', 7)
-      .attr('fill', fourColors[2]).attr('fill-opacity', 0.6)
-      .attr('stroke', fourColors[2]).attr('stroke-width', 0.6)
-      .attr('y', 10).attr('x', 10);
+    .attr('height', 7).attr('width', 7)
+    .attr('fill', fourColors[2]).attr('fill-opacity', 0.6)
+    .attr('stroke', fourColors[2]).attr('stroke-width', 0.6)
+    .attr('y', 10).attr('x', 10);
   svg.append('g').append('rect')
-      .attr('height', 7).attr('width', 7)
-      .attr('fill', fourColors[3]).attr('fill-opacity', 0.6)
-      .attr('stroke', fourColors[3]).attr('stroke-width', 0.6)
-      .attr('y', 3).attr('x', 10);
+    .attr('height', 7).attr('width', 7)
+    .attr('fill', fourColors[3]).attr('fill-opacity', 0.6)
+    .attr('stroke', fourColors[3]).attr('stroke-width', 0.6)
+    .attr('y', 3).attr('x', 10);
 }
 
 /**
  * draws the rectangles icon for feature and feature-metric modes
  * @param svgNode SVG element on which we append the rectangles using d3.
- * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
- */
+ * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map **/
 export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
-  const colorsList = [];
+  let fillColor = '';
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = colorLegend.interpolatedValues;
-    if (iv) {
-      if (iv.length === 1) {
-        colorsList.push(iv[0], iv[0], iv[0]);
-      } else if (iv.length === 2) {
-        colorsList.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length >= 3) {
-        colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      }
-    }
+    fillColor = iv[0] + '';
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    colorsList.push(colorLegend.fixValue, colorLegend.fixValue, colorLegend.fixValue);
+    fillColor = colorLegend.fixValue + '';
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
-      || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const iv = colorLegend.manualValues as Map<string, string>;
-    if (iv) {
-      if (iv.size === 1) {
-        const c = iv.values().next().value;
-        colorsList.push(c, c, c);
-      } else if (iv.size === 2) {
-        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[0], Array.from(iv.values())[1]);
-      } else if (iv.size >= 3) {
-        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)],
-          Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
-      }
-    } else if (!iv || iv.size === 0) {
-      colorsList.push('#eee', '#eee', '#eee');
-    }
+    || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
+    const mv = colorLegend.manualValues as Map<string, string>;
+    fillColor = mv.values().next().value;
   }
-  const svg = select(svgNode);
-  svg.selectAll('g').remove();
-  svg.append('g').append('rect')
-        .attr('height', 9).attr('width', 9)
-        .attr('fill', colorsList[0]).attr('fill-opacity', 0.6)
-        .attr('stroke', colorsList[0]).attr('stroke-width', 0.6)
-        .attr('y', 1).attr('x', 1);
-  svg.append('g').append('rect')
-      .attr('height', 7).attr('width', 7)
-      .attr('fill', colorsList[1]).attr('fill-opacity', 0.8)
-      .attr('stroke', colorsList[1]).attr('stroke-width', 0.6)
-      .attr('y', 4).attr('x', 6);
-  svg.append('g').append('rect')
-      .attr('height', 4).attr('width', 4)
-      .attr('fill', colorsList[2]).attr('fill-opacity', 0.6)
-      .attr('stroke', colorsList[2]).attr('stroke-width', 0.6)
-      .attr('y', 9).attr('x', 4);
+
+  const polygon = [{ 'x': 0, 'y': 0 },
+    { 'x': 18, 'y': 0 },
+    { 'x': 13, 'y': 15 },
+    { 'x': 1, 'y': 15 },
+    { 'x': 8, 'y': 7 },
+    { 'x': 0, 'y': 0}];
+    const svg = select(svgNode);
+    svg.selectAll('g').remove();
+    svg.append('g').selectAll('polygon')
+        .data([polygon])
+        .enter().append('polygon')
+        .attr('points', (d) => d.map(d => [d.x, d.y].join(',')).join(' ')).attr('fill', fillColor)
+        .attr('fill-opacity', 0.5)
+        .attr('stroke', fillColor);
 }
 
 /**
@@ -229,99 +206,39 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
  * @param colorLegend Color legend, to give the drawn icons line the same color on the map
  */
 export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
+  let lineColor = '';
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    const svg = select(svgNode);
-    svg.selectAll('g').remove();
-    svg.append('g').append('line')
-        .attr('x1', 0).attr('y1', 18)
-        .attr('x2', 6).attr('y2', 10)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 2);
-    svg.append('g').append('line')
-        .attr('x1', 6).attr('y1', 10)
-        .attr('x2', 12).attr('y2', 8)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 2);
-    svg.append('g').append('line')
-        .attr('x1', 12).attr('y1', 9)
-        .attr('x2', 18).attr('y2', 0)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorLegend.fixValue).attr('stroke-width', 2);
+    lineColor = colorLegend.fixValue + '';
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
-    const threeColors = [];
     const iv = colorLegend.interpolatedValues;
     if (iv) {
-      if (iv.length === 1) {
-        threeColors.push(iv[0], iv[0], iv[0]);
-      } else if (iv.length === 2) {
-        threeColors.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length >= 3) {
-        threeColors.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      }
+      lineColor = iv[0] + '';
     } else {
-      threeColors.push('#2da4ff', '#2da4ff', '#2da4ff');
+      lineColor = '#2da4ff';
     }
-    const svg = select(svgNode);
-    svg.selectAll('g').remove();
-    svg.append('g').append('line')
-        .attr('x1', 0).attr('y1', 18)
-        .attr('x2', 6).attr('y2', 10)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', threeColors[0]).attr('stroke-width', 2);
-    svg.append('g').append('line')
-        .attr('x1', 6).attr('y1', 10)
-        .attr('x2', 12).attr('y2', 8)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', threeColors[1]).attr('stroke-width', 2);
-    svg.append('g').append('line')
-        .attr('x1', 12).attr('y1', 9)
-        .attr('x2', 18).attr('y2', 0)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', threeColors[2]).attr('stroke-width', 2);
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
     || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const iv = colorLegend.manualValues as Map<string, string>;
-    const colorsList = [];
-    if (iv) {
-      if (iv.size === 1) {
-        const c = iv.values().next().value;
-        colorsList.push(c, c);
-      } else if (iv.size === 2) {
-        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[1]);
-      } else if (iv.size >= 3) {
-        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
-      }
-    } else if (!iv || iv.size === 0) {
-      colorsList.push('#eee', '#eee');
-    }
-    const svg = select(svgNode);
-    svg.selectAll('g').remove();
-    svg.append('g').append('line')
-        .attr('x1', 0).attr('y1', 18)
-        .attr('x2', 6).attr('y2', 10)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
-    svg.append('g').append('line')
-        .attr('x1', 6).attr('y1', 10)
-        .attr('x2', 12).attr('y2', 8)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
-    svg.append('g').append('line')
-        .attr('x1', 12).attr('y1', 9)
-        .attr('x2', 18).attr('y2', 0)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorsList[0]).attr('stroke-width', 1.5);
-    svg.append('g').append('line')
-        .attr('x1', 0).attr('y1', 0)
-        .attr('x2', 11).attr('y2', 8)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorsList[1]).attr('stroke-width', 1.5);
-    svg.append('g').append('line')
-        .attr('x1', 11).attr('y1', 8)
-        .attr('x2', 18).attr('y2', 18)
-        .attr('cx', 2).attr('cy', 2)
-        .attr('stroke', colorsList[1]).attr('stroke-width', 1.5);
+    const mv = colorLegend.manualValues as Map<string, string>;
+    lineColor = mv.values().next().value;
   }
+
+  const svg = select(svgNode);
+  svg.selectAll('g').remove();
+  svg.append('g').append('line')
+    .attr('x1', 0).attr('y1', 18)
+    .attr('x2', 6).attr('y2', 10)
+    .attr('cx', 2).attr('cy', 2)
+    .attr('stroke', lineColor).attr('stroke-width', 2);
+  svg.append('g').append('line')
+    .attr('x1', 6).attr('y1', 10)
+    .attr('x2', 12).attr('y2', 4)
+    .attr('cx', 2).attr('cy', 2)
+    .attr('stroke', lineColor).attr('stroke-width', 2);
+  svg.append('g').append('line')
+    .attr('x1', 12).attr('y1', 4)
+    .attr('x2', 18).attr('y2', 0)
+    .attr('cx', 2).attr('cy', 2)
+    .attr('stroke', lineColor).attr('stroke-width', 2);
 }
 /**
  * draws the circle icon for feature mode
@@ -359,7 +276,7 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
           Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
       }
     } else if (!iv || iv.size === 0) {
-        colorsList.push('#eee', '#eee', '#eee');
+      colorsList.push('#eee', '#eee', '#eee');
     }
   }
 
@@ -420,7 +337,7 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
       } else if (iv.length === 3) {
         colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
       } else if (iv.length >= 4) {
-        colorsList.push(iv[1], iv[Math.trunc( iv.length / 3)], iv[iv.length - 1]);
+        colorsList.push(iv[1], iv[Math.trunc(iv.length / 3)], iv[iv.length - 1]);
       }
     }
   }
