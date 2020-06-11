@@ -142,11 +142,11 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private buildColorLegend(colorExpression: string | StyleFunction | Expression, visibileMode: boolean, legendData: any): void {
+  private buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean, legendData: any): void {
     if (typeof colorExpression === 'string') {
       this.colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
       this.colorLegend.fixValue = colorExpression;
-      if (!visibileMode) {
+      if (!visibleMode) {
         /** apply greyscale because the layer is not visible */
         this.colorLegend.fixValue = tinycolor.default(colorExpression.toString()).greyscale().lighten(20).toHexString();
       }
@@ -162,10 +162,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this.colorLegend.manualValues = new Map();
         if (this.legendData.get(field)) {
-          const keysToColors = this.legendData.get(field).keysColorsMap;
+          const keysToColors = legendData.get(field).keysColorsMap;
           const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
           for (let i = 0; i < colorList.length; i += 2) {
-              const c = this.visibleMode ? colorList[i + 1] : '#eee';
+              const c = visibleMode ? colorList[i + 1] : '#eee';
               this.colorLegend.manualValues.set(this.translate.instant(colorList[i]), c);
           }
           if (colorList.length === 0) {
@@ -229,7 +229,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             this.colorLegend.minValue = colorValues[0] + '';
             this.colorLegend.maxValue = colorValues[colorValues.length - 1] + '';
           }
-          if (!visibileMode) {
+          if (!visibleMode) {
             /** apply greyscale because the layer is not visible */
             this.colorLegend.interpolatedValues = this.colorLegend.interpolatedValues
               .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
