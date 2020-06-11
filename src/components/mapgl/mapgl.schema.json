@@ -225,6 +225,24 @@
           }
         }
       }
+    },
+    "icons": {
+      "description": "List of icons to add to the map and to use in layers styling.",
+      "type": "array",
+      "items": {
+        "description": "Icon to add",
+        "type": "object",
+        "properties": {
+          "path": {
+            "description": "path to the icon. The icon should be placed at `assest/icons` folder and should be `png` or `jpeg`. Example : 'path': 'arlas_direction_arrow.png'",
+            "type": "string"
+          },
+          "recolorable": {
+            "description": "Whether to allow recolorising the icon or not.",
+            "type": "boolean"
+          }
+        }
+      }
     }
   },
   "required": [

@@ -40,7 +40,7 @@ export { HistogramComponent } from './components/histogram/histogram.component';
 export { HistogramModule } from './components/histogram/histogram.module';
 export { DonutComponent } from './components/donut/donut.component';
 export { DonutModule } from './components/donut/donut.module';
-export { MapglComponent, VisualisationSetConfig } from './components/mapgl/mapgl.component';
+export { MapglComponent, VisualisationSetConfig, IconConfig } from './components/mapgl/mapgl.component';
 export { MapglModule } from './components/mapgl/mapgl.module';
 export { ResultListComponent } from './components/results/result-list/result-list.component';
 export { ResultItemComponent } from './components/results/result-item/result-item.component';
