@@ -73,6 +73,11 @@ export interface VisualisationSetConfig {
   enabled?: boolean;
 }
 
+export interface IconConfig {
+  path: string;
+  recolorable?: boolean;
+}
+
 export const ZOOM_IN = 'Zoom in';
 export const ZOOM_OUT = 'Zoom out';
 export const RESET_BEARING = 'Reset bearing to north';
@@ -117,6 +122,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private DATA_SOURCE = 'data_source';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+  private ICONS_BASE_PATH = 'assets/icons/';
 
   /**
    * @Input : Angular
@@ -315,6 +321,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     visualisations: Map<string, Set<string>>,
     status: Map<string, boolean>;
   };
+
+  /**
+   * @Input : Angular
+   * @description List of icons to add to the map and that can be used in layers.
+   */
+  @Input() public icons: Array<IconConfig>;
 
   /**
    * @Output : Angular
@@ -614,6 +626,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
+      if (this.icons) {
+        this.icons.forEach(icon => {
+          this.map.loadImage(
+            this.ICONS_BASE_PATH + icon.path,
+            (error, image) => {
+              if (error)  {
+                console.warn('The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found');
+              } else {
+                this.map.addImage(icon.path.split('.')[0], image, {'sdf': icon.recolorable});
+              }
+            });
+        });
+      }
       this.firstDrawLayer = this.map.getStyle().layers
         .map(layer => layer.id)
         .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
