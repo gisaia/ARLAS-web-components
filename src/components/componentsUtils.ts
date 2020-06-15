@@ -24,7 +24,7 @@ export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
-  if (isNumber(+x)) {
+  if (+x + '' !== 'NaN' && isNumber(+x)) {
     const num = +x;
     const trunc = Math.trunc(num);
     const decimal = (num + '').split('.');
