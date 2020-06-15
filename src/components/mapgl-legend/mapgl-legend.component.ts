@@ -8,6 +8,7 @@ import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { StyleFunction, Expression } from 'mapbox-gl';
 import * as tinycolor from 'tinycolor2';
 import { LegendData } from '../mapgl/mapgl.component';
+import { debounceTime } from 'rxjs/operators';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -70,7 +71,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.legendData = legendData;
       this.drawLegends(this.visibleMode);
     });
-    this.visibilityUpdater.subscribe(v => {
+    this.visibilityUpdater.pipe(debounceTime(0)).subscribe(v => {
       this.visibleMode = this.layer ? v.get(this.layer.id) : false;
       if (this.visibleMode && this.layer && !!this.layer.minzoom && !! this.layer.maxzoom) {
           this.visibleMode = (this.zoom <= this.layer.maxzoom &&  this.zoom >= this.layer.minzoom);
@@ -147,6 +148,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorsPalette = colors [1];
         break;
       }
+      case 'symbol': {
+        this.colorLegend = {};
+        this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
+        this.colorLegend.visible = visibileMode;
+        break;
+      }
     }
     const layer = Object.assign({}, this.layer);
     this.layer = null;
@@ -162,7 +169,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       colorLegend.fixValue = colorExpression;
       if (!visibleMode) {
         /** apply greyscale because the layer is not visible */
-        colorLegend.fixValue = tinycolor.default(colorExpression.toString()).greyscale().lighten(20).toHexString();
+        colorLegend.fixValue = '#d3d3d3';
       }
     } else if (Array.isArray(colorExpression)) {
       if (colorExpression.length === 2) {
@@ -255,6 +262,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
 
+    colorLegend.visible = visibleMode;
     return [colorLegend, colorsPalette];
   }
 
@@ -451,6 +459,7 @@ export interface Legend {
   fixValue?: string | number;
   interpolatedValues?: Array<string | number>;
   manualValues?: Map<string, string | number>;
+  visible?: boolean;
 }
 
 export enum PROPERTY_SELECTOR_SOURCE {
