@@ -2,3 +2,15 @@
   width: 20px;
   height: 20px;
 }
+
+.img_icon {
+  height: 23px;
+  width: 20px;
+  object-fit: none;
+  object-position: 48% -1px;
+  opacity: 1;
+}
+
+.grayed_img {
+  opacity: 0.2 ;
+}

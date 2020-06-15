@@ -1,3 +1,4 @@
 <div class="icon_legend">
-  <svg #layer_icon width="100%" height="100%" ></svg>
+  <svg *ngIf="!isImage" #layer_icon width="100%" height="100%" ></svg>
+  <img [hidden]="!isImage" src="assets/icons/arlas_direction_arrow.png" class="img_icon" [class.grayed_img]="!colorLegend.visible">
 </div>
