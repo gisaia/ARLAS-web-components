@@ -15,6 +15,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public radiusLegend: Legend = {};
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
+  public isImage = false;
   constructor(public translate: TranslateService) { }
 
   public ngOnInit() {
@@ -28,7 +29,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['layer'] !== undefined) {
-      if (this.layer) {
+      if (this.layer && this.layerIconElement) {
         this.drawIcons();
       }
     }
@@ -71,6 +72,14 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         }
         break;
       }
+      case 'symbol': {
+        const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
+        if (l['text-field']) {
+          drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        } else if (l['icon-image']) {
+          this.isImage = true;
+        }
+      }
     }
   }
 
@@ -102,6 +111,9 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
         fourColors.push(iv[Math.trunc(iv.length / 3)]);
       }
     }
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    const c = colorLegend.fixValue;
+    fourColors.push(c, c, c, c);
   }
   const svg = select(svgNode);
   svg.selectAll('g').remove();
@@ -143,7 +155,6 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
     const mv = colorLegend.manualValues as Map<string, string>;
     fillColor = mv.values().next().value;
   }
-
   const polygon = [{ 'x': 0, 'y': 0 },
     { 'x': 18, 'y': 0 },
     { 'x': 13, 'y': 15 },
@@ -160,6 +171,13 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
         .attr('stroke', fillColor);
 }
 
+
+export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
+  const svg = select(svgNode);
+  svg.selectAll('g').remove();
+  svg.append('g').append('text').text('123')
+    .attr('y' , 14).attr('font-size', '0.75em').attr('fill', colorLegend.fixValue);
+}
 /**
  * draws the heatmap icon for cluster mode
  * @param svgNode SVG element on which we append the heamap circles using d3.
