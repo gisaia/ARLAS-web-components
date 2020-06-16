@@ -144,8 +144,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend.minValue = '0';
         this.colorLegend.maxValue = '1';
         const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.translate);
+        this.buildCircleRadiusLegend(p['heatmap-radius']);
         this.colorLegend = colors[0];
         this.colorsPalette = colors [1];
+        if (this.layer.source.toString().startsWith('feature-metric')) {
+          this.colorLegend.visible = false;
+        }
         break;
       }
       case 'symbol': {
@@ -162,7 +166,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
 
   public static buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
     legendData: Map<string, LegendData>, translate?: TranslateService): [Legend, string] {
-    const colorLegend: Legend = {};
+    const colorLegend: Legend = { visible: true};
     let colorsPalette = '';
     if (typeof colorExpression === 'string') {
       colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
@@ -326,7 +330,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             });
           }
           drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend,
-            this.LEGEND_WIDTH, maxCircleRadius * 2);
+            this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
         }
       }
     }

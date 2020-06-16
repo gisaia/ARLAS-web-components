@@ -64,12 +64,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         break;
       }
       case 'heatmap': {
-        const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-        if (source.startsWith('cluster')) {
-          drawClusterHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend);
-        } else {
-          // todo
-        }
+        drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer.source.toString().startsWith('feature-metric'));
         break;
       }
       case 'symbol': {
@@ -183,7 +178,7 @@ export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
  * @param svgNode SVG element on which we append the heamap circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
  */
-export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small: boolean) {
   const heatmapColors = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = colorLegend.interpolatedValues;
@@ -201,22 +196,32 @@ export function drawClusterHeatmapIcon(svgNode: SVGElement, colorLegend: Legend)
   }
   const svg = select(svgNode);
   svg.selectAll('defs').remove();
-  svg.selectAll('circle').remove();
   svg.append('defs')
-    .append('filter').attr('id', 'blur')
-    .append('feGaussianBlur').attr('stdDeviation', 0.8);
-  svg.selectAll('circle')
-    .data(heatmapColors).enter()
+  .append('filter').attr('id', 'blur')
+  .append('feGaussianBlur').attr('stdDeviation', 0.8);
+  if (small) {
+    svg.selectAll('g').remove();
+    svg.append('g')
     .append('circle')
     .attr('cx', 10).attr('cy', 10)
-    .attr('r', (d, i) => {
-      if (i === 0) { return 10; }
-      if (i === 1) { return 8; }
-      if (i === 2) { return 6; }
-      if (i === 3) { return 3; }
-    })
-    .style('fill', (d, i) => d)
+    .attr('r', 7)
+    .style('fill', heatmapColors[0])
     .attr('filter', 'url(#blur)');
+  } else {
+    svg.selectAll('circle').remove();
+    svg.selectAll('circle')
+      .data(heatmapColors).enter()
+      .append('circle')
+      .attr('cx', 10).attr('cy', 10)
+      .attr('r', (d, i) => {
+        if (i === 0) { return 10; }
+        if (i === 1) { return 8; }
+        if (i === 2) { return 6; }
+        if (i === 3) { return 3; }
+      })
+      .style('fill', (d, i) => d)
+      .attr('filter', 'url(#blur)');
+  }
 }
 /**
  * draws the line icon for feature mode
