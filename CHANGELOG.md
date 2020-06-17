@@ -1,5 +1,34 @@
 # Change Log
 
+## [v13.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.0) (2020-06-17)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.2...v13.0.0)
+
+**Breaking changes:**
+
+- Delete 'Gauge' component [\#424](https://github.com/gisaia/ARLAS-web-components/issues/424)
+- Remove 'Layers and styles' tab [\#422](https://github.com/gisaia/ARLAS-web-components/issues/422)
+
+**New stuff:**
+
+- Add custom icons to map components [\#469](https://github.com/gisaia/ARLAS-web-components/issues/469) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Indicates units for each displayed value [\#458](https://github.com/gisaia/ARLAS-web-components/issues/458) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)] [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)] [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Histograms : group ticks values by "K", "M, "B" \(40000 =\> 40K, ....\) [\#446](https://github.com/gisaia/ARLAS-web-components/issues/446) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- Display powerbars tooltips with space between thousands, millions, ... [\#436](https://github.com/gisaia/ARLAS-web-components/issues/436) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Add a Legend component [\#425](https://github.com/gisaia/ARLAS-web-components/issues/425)
+- Add visualisation sets  [\#423](https://github.com/gisaia/ARLAS-web-components/issues/423)
+- \[Powerbars\] Add rightband [\#444](https://github.com/gisaia/ARLAS-web-components/pull/444) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+**Fixed bugs:**
+
+- \[Legend\] Interpolation of colors needs to take steps into account [\#464](https://github.com/gisaia/ARLAS-web-components/issues/464)
+- Fix bug of raw extents [\#441](https://github.com/gisaia/ARLAS-web-components/pull/441) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+
+**Miscellaneous:**
+
+- Display numbers with space between thousands, millions, ...  [\#438](https://github.com/gisaia/ARLAS-web-components/issues/438)
+- Display numbers with space between thousands, millions, ... [\#437](https://github.com/gisaia/ARLAS-web-components/issues/437) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v12.7.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.2) (2020-04-29)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.1...v12.7.2)
