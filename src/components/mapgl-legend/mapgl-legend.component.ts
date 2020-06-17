@@ -159,6 +159,9 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       }
     }
+    if (!this.colorLegend.fixValue) {
+      this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
+    }
     const layer = Object.assign({}, this.layer);
     this.layer = null;
     this.layer = Object.assign({}, layer);

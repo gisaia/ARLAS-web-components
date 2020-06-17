@@ -42,7 +42,9 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        if (source.startsWith('feature') || source.startsWith('feature-metric')) {
+        if (source.startsWith('feature-metric')) {
+          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, true);
+        } else if (source.startsWith('feature')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
         } else if (source.startsWith('cluster')) {
           drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
@@ -50,14 +52,18 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         break;
       }
       case 'line': {
-        const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        if (source.startsWith('feature-metric')) {
+          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, true);
+        } else {
+          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        }
         break;
       }
       case 'fill': {
-        const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
         if (source.startsWith('cluster')) {
           drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        } else if (source.startsWith('feature-metric')) {
+          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, true);
         } else {
           drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }
@@ -138,7 +144,7 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
  * draws the rectangles icon for feature and feature-metric modes
  * @param svgNode SVG element on which we append the rectangles using d3.
  * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map **/
-export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, isMetric = false) {
   let fillColor = '';
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = colorLegend.interpolatedValues;
@@ -151,19 +157,23 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend) {
     fillColor = mv.values().next().value;
   }
   const polygon = [{ 'x': 0, 'y': 0 },
-    { 'x': 18, 'y': 0 },
-    { 'x': 13, 'y': 15 },
-    { 'x': 1, 'y': 15 },
-    { 'x': 8, 'y': 7 },
-    { 'x': 0, 'y': 0}];
-    const svg = select(svgNode);
-    svg.selectAll('g').remove();
-    svg.append('g').selectAll('polygon')
-        .data([polygon])
-        .enter().append('polygon')
-        .attr('points', (d) => d.map(d => [d.x, d.y].join(',')).join(' ')).attr('fill', fillColor)
-        .attr('fill-opacity', 0.5)
-        .attr('stroke', fillColor);
+  { 'x': 18, 'y': 0 },
+  { 'x': 13, 'y': 15 },
+  { 'x': 1, 'y': 15 },
+  { 'x': 8, 'y': 7 },
+  { 'x': 0, 'y': 0 }];
+  const svg = select(svgNode);
+  svg.selectAll('g').remove();
+  svg.append('g').selectAll('polygon')
+    .data([polygon])
+    .enter().append('polygon')
+    .attr('points', (d) => d.map(d => [d.x, d.y].join(',')).join(' ')).attr('fill', fillColor)
+    .attr('fill-opacity', 0.5)
+    .attr('stroke', fillColor);
+  if (isMetric) {
+    svg.append('g').append('text').text('∑')
+      .attr('x', 14).attr('y', 14).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
+  }
 }
 
 
@@ -171,7 +181,7 @@ export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').append('text').text('123')
-    .attr('y' , 14).attr('font-size', '0.75em').attr('fill', colorLegend.fixValue);
+    .attr('y', 14).attr('font-size', '0.75em').attr('fill', colorLegend.fixValue);
 }
 /**
  * draws the heatmap icon for cluster mode
@@ -197,16 +207,16 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
   const svg = select(svgNode);
   svg.selectAll('defs').remove();
   svg.append('defs')
-  .append('filter').attr('id', 'blur')
-  .append('feGaussianBlur').attr('stdDeviation', 0.8);
+    .append('filter').attr('id', 'blur')
+    .append('feGaussianBlur').attr('stdDeviation', 0.8);
   if (small) {
     svg.selectAll('g').remove();
     svg.append('g')
-    .append('circle')
-    .attr('cx', 10).attr('cy', 10)
-    .attr('r', 7)
-    .style('fill', heatmapColors[0])
-    .attr('filter', 'url(#blur)');
+      .append('circle')
+      .attr('cx', 10).attr('cy', 10)
+      .attr('r', 7)
+      .style('fill', heatmapColors[0])
+      .attr('filter', 'url(#blur)');
   } else {
     svg.selectAll('circle').remove();
     svg.selectAll('circle')
@@ -228,7 +238,7 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
  * @param svgNode SVG element on which we append the line using d3.
  * @param colorLegend Color legend, to give the drawn icons line the same color on the map
  */
-export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, isMetric = false) {
   let lineColor = '';
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     lineColor = colorLegend.fixValue + '';
@@ -262,13 +272,17 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend) {
     .attr('x2', 18).attr('y2', 0)
     .attr('cx', 2).attr('cy', 2)
     .attr('stroke', lineColor).attr('stroke-width', 2);
+  if (isMetric) {
+    svg.append('g').append('text').text('∑')
+      .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
+  }
 }
 /**
  * draws the circle icon for feature mode
  * @param svgNode SVG element on which we append the circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
  */
-export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, isMetric = false) {
   const colorsList = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     colorsList.push(colorLegend.fixValue);
@@ -279,10 +293,8 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
         colorsList.push(iv[0], iv[0], iv[0]);
       } else if (iv.length === 2) {
         colorsList.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length === 3) {
+      } else if (iv.length >= 3) {
         colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      } else if (iv.length >= 4) {
-        colorsList.push(iv[1], iv[Math.trunc(iv.length / 3)], iv[Math.trunc(2 * iv.length / 3)], iv[iv.length - 1]);
       }
     }
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
@@ -305,6 +317,7 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
 
   const svg = select(svgNode);
   svg.selectAll('circle').remove();
+  svg.selectAll('g').remove();
   svg.selectAll('circle')
     .data(colorsList).enter()
     .append('circle')
@@ -335,6 +348,11 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
     })
     .style('fill', (d, i) => d).style('fill-opacity', colorsList.length === 1 ? 0.6 : 0.8)
     .style('stroke', (d, i) => d).style('stroke-width', 0.5);
+
+  if (isMetric) {
+    svg.append('g').append('text').text('∑')
+      .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
+  }
 }
 
 
@@ -357,10 +375,8 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
         colorsList.push(iv[0], iv[0], iv[0]);
       } else if (iv.length === 2) {
         colorsList.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length === 3) {
+      } else if (iv.length >= 3) {
         colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      } else if (iv.length >= 4) {
-        colorsList.push(iv[1], iv[Math.trunc(iv.length / 3)], iv[iv.length - 1]);
       }
     }
   }
