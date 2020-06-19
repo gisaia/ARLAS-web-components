@@ -52,7 +52,8 @@
   display: flex;
   flex-direction: column;
   top: 220px;
-  right: 7px;
+  right: 9px;
+  z-index: 1;
   background: transparent;
   flex-wrap: wrap-reverse;
 }
@@ -108,7 +109,7 @@
 }
 
 .map_legend-button-icon {
-  height: 30px;
+  height: 24px;
   padding: 3px;
   cursor: pointer;
 }

@@ -1,4 +1,26 @@
-<div id="mapgl"></div>
+<div id="mapgl">
+
+  <div class="map__visu-list--wrapper">
+    <div class="map_legend-button--wrapper">
+      <div class="map_legend-button-icon" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
+        <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
+      </div>
+    </div>
+    <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
+      <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
+        <div class="map_visu-title-container">
+          <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key | translate}}</span>
+          <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
+        </div>
+        <div class="map_visu-content-container">
+          <arlas-mapgl-legend *ngFor="let l of visu.value" [enabled]="visualisationsSets.status.get(visu.key)" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+</div>
 <div class="current-coordinate" *ngIf="displayCurrentCoordinates">
   <span class="lat"> Lat : {{currentLat | number:'1.5-5'}} </span>
   <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
@@ -13,25 +35,7 @@
     </mat-radio-group>
   </div>
 </div>
-<div class="map__visu-list--wrapper">
-  <div class="map_legend-button--wrapper">
-    <div class="map_legend-button-icon" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
-      <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
-    </div>
-  </div>
-  <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
-    <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
-      <div class="map_visu-title-container">
-        <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key | translate}}</span>
-        <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
-      </div>
-      <div class="map_visu-content-container">
-        <arlas-mapgl-legend *ngFor="let l of visu.value" [enabled]="visualisationsSets.status.get(visu.key)" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
-      </div>
 
-    </div>
-  </div>
-</div>
 <div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip" [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>
 
 
