@@ -1,36 +1,28 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "outDir": "./dist/",
+    "importHelpers": true,
+    "outDir": "./dist/out-tsc",
     "baseUrl": "src",
     "sourceMap": true,
     "declaration": true,
-    "target": "es6",
-    "module": "es2015",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "stripInternal": true,
     "skipLibCheck": true,
     "types": ["mapbox-gl", "geojson"],
+    "target": "es6",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
     "typeRoots": ["node_modules/@types"],
-    "lib": ["es2015", "es6", "dom"]
+    "lib": ["es2015", "es6", "dom"],
+    "module": "es2020"
   },
-  "files": ["src/index.ts"],
-  "include": ["src/components/**/*"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "src/app/**.ts",
-    "src/components/**/*.spec.*",
-    "e2e/"
-  ],
+  "exclude": ["node_modules", "app"],
   "angularCompilerOptions": {
-    "genDir": "dist",
     "strictMetadataEmit": true,
-    "annotateForClosureCompiler": false,
     "skipTemplateCodegen": true,
     "fullTemplateTypeCheck": true,
     "enableIvy": true
