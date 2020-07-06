@@ -1,17 +1,37 @@
-/*
-  This is a "Solution Style" tsconfig.json file, and is used by editors and TypeScript’s language server to improve development experience.
-  It is not intended to be used to perform a compilation.
-
-  To learn more about this file see: https://angular.io/config/solution-tsconfig.
-*/
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./src/tsconfig.app.json"
-    },
-    {
-      "path": "./src/tsconfig.spec.json"
-    }
-  ]
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "declaration": true,
+    "target": "es6",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "stripInternal": true,
+    "skipLibCheck": true,
+    "types": ["mapbox-gl", "geojson"],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2015", "es6", "dom"]
+  },
+  "files": ["src/index.ts"],
+  "include": ["src/components/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "src/app/**.ts",
+    "src/components/**/*.spec.*",
+    "e2e/"
+  ],
+  "angularCompilerOptions": {
+    "genDir": "dist",
+    "strictMetadataEmit": true,
+    "annotateForClosureCompiler": false,
+    "skipTemplateCodegen": true,
+    "enableIvy": false
+  }
 }
