@@ -32,7 +32,6 @@
     "strictMetadataEmit": true,
     "annotateForClosureCompiler": false,
     "skipTemplateCodegen": true,
-    "fullTemplateTypeCheck": true,
-    "enableIvy": true
+    "enableIvy": false
   }
 }
