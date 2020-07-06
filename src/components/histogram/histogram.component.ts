@@ -54,8 +54,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
-  @ViewChild('left', { read: ElementRef, static: false }) public lt: ElementRef;
-  @ViewChild('right', { read: ElementRef, static: false }) public rt: ElementRef;
+  @ViewChild('left', { read: ElementRef }) public lt: ElementRef;
+  @ViewChild('right', { read: ElementRef }) public rt: ElementRef;
 
   /**
    * @Input : Angular

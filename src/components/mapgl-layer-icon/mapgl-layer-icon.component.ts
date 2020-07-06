@@ -13,7 +13,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public colorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
   @Input() public radiusLegend: Legend = {};
-  @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
+  @ViewChild('layer_icon', { read: ElementRef }) public layerIconElement: ElementRef;
 
   public isImage = false;
   constructor(public translate: TranslateService) { }

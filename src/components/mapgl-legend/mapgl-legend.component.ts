@@ -48,8 +48,8 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    * the legend updated with the visibility of the layer.
    */
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
-  @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
-  @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
+  @ViewChild('width_svg', { read: ElementRef }) public lineWidthLegendElement: ElementRef;
+  @ViewChild('radius_svg', { read: ElementRef }) public circleRadiusLegendElement: ElementRef;
 
   public colorLegend: Legend = {};
   public widthLegend: Legend = {};

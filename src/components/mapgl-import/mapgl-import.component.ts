@@ -36,7 +36,7 @@ export class MapglImportDialogComponent implements OnInit {
 
   @Output() public file = new Subject<File>();
   @Output() public importRun = new Subject<any>();
-  @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
+  @ViewChild('fileInput') public fileInput: ElementRef;
 
   constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
 

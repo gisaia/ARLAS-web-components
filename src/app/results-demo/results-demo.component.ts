@@ -23,8 +23,8 @@ import { FieldsConfiguration, Action, PageQuery, ResultListOptions } from '../..
 import { ModeEnum } from '../../components/results/utils/enumerations/modeEnum';
 import { Observable, from } from 'rxjs';
 import { ResultListComponent } from '../../components/results/result-list/result-list.component';
-import { Column } from 'components/results/model/column';
-import { SortEnum } from 'components/results/utils/enumerations/sortEnum';
+import { Column } from '../../components/results/model/column';
+import { SortEnum } from '../../components/results/utils/enumerations/sortEnum';
 
 
 @Component({
@@ -34,7 +34,7 @@ import { SortEnum } from 'components/results/utils/enumerations/sortEnum';
 })
 export class ResultsDemoComponent implements OnInit {
 
-  @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
+  @ViewChild('resultlist') public resultListComponent: ResultListComponent;
 
   public data: Array<Map<string, string | number | Date>>;
   public fieldsList: Array<{ columnName: string, fieldName: string, dataType: string, dropdown?: boolean }>;
@@ -93,7 +93,7 @@ export class ResultsDemoComponent implements OnInit {
     }
   }
 
-  public addMoreData(page: PageQuery) {
+  public addMoreData() {
     setTimeout(() => {
       if (this.count < 2) {
         for (let i = 50; i < 100; i++) {
