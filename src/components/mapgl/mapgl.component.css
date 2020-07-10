@@ -52,7 +52,7 @@
   display: flex;
   flex-direction: column;
   top: 220px;
-  right: 9px;
+  right: 7px;
   z-index: 1;
   background: transparent;
   flex-wrap: wrap-reverse;
@@ -109,7 +109,7 @@
 }
 
 .map_legend-button-icon {
-  height: 24px;
+  height: 30px;
   padding: 3px;
   cursor: pointer;
 }
@@ -160,7 +160,6 @@
 }
 
 .visu-title {
-  font-size: 0.9em;
   color: #333;
   padding: 3px
 }

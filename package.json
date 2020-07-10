@@ -48,7 +48,7 @@
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",
     "node": "^10.0.0",
-    "rxjs": "^6.5.3",
+    "rxjs": "~6.5.3",
     "shpjs": "^3.4.3",
     "stream": "0.0.2",
     "turf-extent": "1.0.4",
