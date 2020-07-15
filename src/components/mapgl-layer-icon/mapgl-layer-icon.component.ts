@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl-legend/mapgl-legend.component';
-import { TranslateService } from '@ngx-translate/core';
 import { select } from 'd3-selection';
 
 @Component({
@@ -16,7 +15,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
   public isImage = false;
-  constructor(public translate: TranslateService) { }
+  constructor() { }
 
   public ngOnInit() {
   }
