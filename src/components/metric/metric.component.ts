@@ -44,6 +44,13 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
+
+  /**
+   * @Input : Angular
+   * @description Chart's width. If not specified, the chart takes the component's container width.
+   */
+  @Input() public chartWidth = null;
+
   public displayedValue: string | number = '0';
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
