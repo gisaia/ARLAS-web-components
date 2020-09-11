@@ -100,6 +100,12 @@ export class PowerbarsComponent implements OnInit, OnChanges {
   @Input() public useColorService = false;
 
   /**
+   * @Input : Angular
+   * @description Chart's width. If not specified, the chart takes the component's container width.
+   */
+  @Input() public chartWidth = null;
+
+  /**
    * @Output : Angular
    * @description Emits the list of selected paths in the tree inputData
    */
