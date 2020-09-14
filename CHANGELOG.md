@@ -1,8 +1,16 @@
 # Change Log
 
+## [v13.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.3) (2020-09-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.2...v13.0.3)
+
 ## [v13.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.2) (2020-07-17)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.1...v13.0.2)
+
+**Fixed bugs:**
+
+- \[Map-icon\] Import module TranslateModule in Map icon module [\#487](https://github.com/gisaia/ARLAS-web-components/issues/487)
 
 ## [v13.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.1) (2020-07-10)
 
