@@ -13,7 +13,9 @@
     "tslint": "ng lint",
     "build-release": "ngc -p tsconfig-build.json && gulp",
     "e2e": "ng e2e",
-    "analyze": "webpack-bundle-analyzer dist/stats-es2015.json"
+    "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
+    "i18n:init": "ngx-translate-extract --input ./src --output ./src/assets/i18n/template.json s--key-as-default-value --replace --format json",
+    "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n/{en,fr}.json --format json"
   },
   "private": true,
   "dependencies": {
@@ -47,7 +49,6 @@
     "ng-lazyload-image": "^7.0.1",
     "ngeohash": "^0.6.0",
     "ngx-loading": "^1.0.7",
-    "node": "^10.0.0",
     "rxjs": "~6.5.3",
     "shpjs": "^3.4.3",
     "stream": "0.0.2",
@@ -61,6 +62,8 @@
     "@angular/compiler-cli": "8.2.10",
     "@angular/compiler": "~8.2.10",
     "@angular/language-service": "8.2.10",
+    "@biesbjerg/ngx-translate-extract": "7.0.2",
+    "@biesbjerg/ngx-translate-extract-marker": "1.0.0",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
@@ -74,6 +77,7 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "node": "^11.0.0",
     "ts-node": "~7.0.0",
     "tsickle": ">=0.29.0",
     "tslib": "^1.9.0",
