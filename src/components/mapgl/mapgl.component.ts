@@ -547,6 +547,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
 
+    /** init values */
+    if (!this.initCenter) { this.initCenter = [0, 0]; }
+    if (this.initZoom === undefined || this.initZoom === null) { this.initZoom = 3; }
+    if (this.maxZoom === undefined || this.maxZoom === null) { this.maxZoom = 22; }
+    if (this.minZoom === undefined || this.minZoom === null) { this.maxZoom = 0; }
+
     this.map = new mapboxgl.Map({
       container: 'mapgl',
       style: afterViewInitbasemapStyle.styleFile,
@@ -999,14 +1005,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.endlngLat = e.lngLat;
     });
 
-    this.redrawSource.subscribe(sd => {
-      if (this.map.getSource(sd.source) !== undefined) {
-        this.map.getSource(sd.source).setData({
-          'type': 'FeatureCollection',
-          'features': sd.data
-        });
-      }
-    });
+    if (!!this.redrawSource) {
+      this.redrawSource.subscribe(sd => {
+        if (this.map.getSource(sd.source) !== undefined) {
+          this.map.getSource(sd.source).setData({
+            'type': 'FeatureCollection',
+            'features': sd.data
+          });
+        }
+      });
+    }
 
   }
 
