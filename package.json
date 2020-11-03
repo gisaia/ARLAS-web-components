@@ -40,6 +40,7 @@
     "arlas-d3": "~7.1.0",
     "core-js": "^2.5.4",
     "d3-dsv": "^1.0.10",
+    "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
     "iv-viewer": "~2.0.1",
     "jsts": "2.1.0",
