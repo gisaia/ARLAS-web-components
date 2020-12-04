@@ -30,6 +30,7 @@ import { MapglLegendModule } from '../mapgl-legend/mapgl-legend.module';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 
 @NgModule({
@@ -44,7 +45,8 @@ import { MatChipsModule } from '@angular/material/chips';
     MatSnackBarModule,
     MatSlideToggleModule,
     MatTooltipModule,
-    MatChipsModule
+    MatChipsModule,
+    DragDropModule
   ],
   declarations: [MapglComponent],
   exports: [MapglComponent]

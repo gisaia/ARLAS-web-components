@@ -42,6 +42,7 @@ import { FeatureCollection } from '@turf/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction } from 'mapbox-gl';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 
 export interface OnMoveResult {
@@ -69,8 +70,9 @@ export interface LegendData {
 
 export interface VisualisationSetConfig {
   name: string;
-  layers: Set<string>;
+  layers: Array<string>;
   enabled?: boolean;
+  order: number;
 }
 
 export interface IconConfig {
@@ -418,6 +420,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public emitVisualisations(visu: string) {
     const visuStatus = !this.visualisationsSets.status.get(visu);
+    this.visualisationSetsConfig.find(v => v.name ===  visu).enabled = visuStatus;
     if (!visuStatus) {
       const layersSet = new Set(this.visualisationsSets.visualisations.get(visu));
       this.visualisationsSets.visualisations.forEach((ls, v) => {
@@ -459,6 +462,21 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public ngOnInit() { }
 
+  public drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.visualisationSetsConfig, event.previousIndex, event.currentIndex);
+    this.reorderLayers();
+  }
+
+  public reorderLayers() {
+    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
+      const visualisation = this.visualisationSetsConfig[i];
+      visualisation.layers.forEach(l => {
+        if (!!this.map.getLayer(l)) {
+          this.map.moveLayer(l);
+        }
+      });
+    }
+  }
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
       if (changes['drawData'] !== undefined) {
@@ -1179,9 +1197,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private addVisuLayers() {
-    this.visualisationsSets.visualisations.forEach((ls, v) => {
-      ls.forEach(l => this.addLayer(l));
-    });
+    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
+      const visualisation = this.visualisationSetsConfig[i];
+      visualisation.layers.forEach(l => {
+        this.addLayer(l);
+      });
+    }
     this.visualisationsSets.status.forEach((b, vs) => {
       if (!b) {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
