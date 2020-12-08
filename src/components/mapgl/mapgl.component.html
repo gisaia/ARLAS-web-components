@@ -9,17 +9,22 @@
     <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
       (cdkDropListDropped)="drop($event)">
       <div cdkDrag class="map__visu-container" *ngFor="let visu of visualisationSetsConfig">
-        <div class="map_visu-title-container">
-          <div style="display: flex;">
-            <mat-icon class="map__visu-drag-handle" >drag_indicator</mat-icon>
-            <span class="visu-title" [class.visu-title-disabled]="!visu.enabled">{{visu.name | translate}}</span>
+        <div cdkDragHandle class="map_visu-title-container">
+          <span class="visu-title" [class.visu-title-disabled]="!visu.enabled">{{visu.name | translate}}</span>
+          <div class="map__visu-toggle">
+            <mat-slide-toggle class="map_visu-toggle" [checked]="visu.enabled" (change)="emitVisualisations(visu.name)"
+              [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
           </div>
-          <mat-slide-toggle class="map_visu-toggle" [checked]="visu.enabled" (change)="emitVisualisations(visu.name)"
-            [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
         </div>
-        <div class="map_visu-content-container">
-          <arlas-mapgl-legend *ngFor="let l of visu.layers" [enabled]="visu.enabled" [layer]="getLayer(l)" [zoom]="zoom"
-            [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater"></arlas-mapgl-legend>
+        <div class="map_visu-content-container" cdkDropList
+        (cdkDropListDropped)="dropLayer($event, visu.name)">
+        <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer">
+          <arlas-mapgl-legend  [enabled]="visu.enabled" [layer]="getLayer(l)" [zoom]="zoom"
+          [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater"></arlas-mapgl-legend>
+          <div cdkDragHandle class="map__visu-layer-drag">
+            <mat-icon>drag_indicator</mat-icon>
+          </div>
+        </div>
         </div>
 
       </div>

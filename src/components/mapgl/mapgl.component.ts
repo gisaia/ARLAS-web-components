@@ -72,7 +72,6 @@ export interface VisualisationSetConfig {
   name: string;
   layers: Array<string>;
   enabled?: boolean;
-  order: number;
 }
 
 export interface IconConfig {
@@ -418,13 +417,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   }
 
-  public emitVisualisations(visu: string) {
-    const visuStatus = !this.visualisationsSets.status.get(visu);
-    this.visualisationSetsConfig.find(v => v.name ===  visu).enabled = visuStatus;
+  /** Hides/shows all the layers inside the given visualisation name*/
+  public emitVisualisations(visualisationName: string) {
+    const visuStatus = !this.visualisationsSets.status.get(visualisationName);
+    this.visualisationSetsConfig.find(v => v.name ===  visualisationName).enabled = visuStatus;
     if (!visuStatus) {
-      const layersSet = new Set(this.visualisationsSets.visualisations.get(visu));
+      const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
       this.visualisationsSets.visualisations.forEach((ls, v) => {
-        if (v !== visu) {
+        if (v !== visualisationName) {
           ls.forEach(ll => {
             if (layersSet && layersSet.has(ll)) {
               layersSet.delete(ll);
@@ -436,7 +436,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
       });
     }
-    this.visualisationsSets.status.set(visu, visuStatus);
+    this.visualisationsSets.status.set(visualisationName, visuStatus);
     const layers = new Set<string>();
     this.visualisationsSets.visualisations.forEach((ls, v) => {
       if (this.visualisationsSets.status.get(v)) {
@@ -447,7 +447,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     });
     this.visualisations.emit(layers);
+    this.reorderLayers();
   }
+
   public openInvalidGeometrySnackBar() {
     this._snackBar.open(this.translate.instant('Invalid geometry'), this.translate.instant('Ok'), {
       duration: 3 * 1000,
@@ -462,21 +464,36 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public ngOnInit() { }
 
+  /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.visualisationSetsConfig, event.previousIndex, event.currentIndex);
     this.reorderLayers();
   }
 
+  /** puts the layers list in the new order after dropping */
+  public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
+    const layers = Array.from(this.visualisationSetsConfig.find(v => v.name === visuName).layers);
+    moveItemInArray(layers, event.previousIndex, event.currentIndex);
+    this.visualisationSetsConfig.find(v => v.name === visuName).layers = layers;
+    this.reorderLayers();
+  }
+
+  /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
   public reorderLayers() {
+    // parses the visulisation list from bottom in order to put the fist ones first
     for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation = this.visualisationSetsConfig[i];
-      visualisation.layers.forEach(l => {
-        if (!!this.map.getLayer(l)) {
-          this.map.moveLayer(l);
+      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
+      if (!!visualisation.layers && visualisation.enabled) {
+        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
+          const l = visualisation.layers[j];
+          if (!!this.map.getLayer(l)) {
+            this.map.moveLayer(l);
+          }
         }
-      });
+      }
     }
   }
+
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
       if (changes['drawData'] !== undefined) {
@@ -535,7 +552,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   public setStyle(s: mapboxgl.Style, style: string | mapboxgl.Style) {
     const selectedBasemapLayersSet = new Set<string>();
-    const layers = (<mapboxgl.Map>this.map).getStyle().layers;
+    const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
     const sources = (<mapboxgl.Map>this.map).getStyle().sources;
     if (s.layers) { s.layers.forEach(l => selectedBasemapLayersSet.add(l.id)); }
     const layersToSave = new Array<mapboxgl.Layer>();
@@ -1198,10 +1215,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private addVisuLayers() {
     for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation = this.visualisationSetsConfig[i];
-      visualisation.layers.forEach(l => {
-        this.addLayer(l);
-      });
+      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
+      if (!!visualisation.layers) {
+        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
+          const l = visualisation.layers[j];
+          this.addLayer(l);
+        }
+      }
     }
     this.visualisationsSets.status.forEach((b, vs) => {
       if (!b) {
