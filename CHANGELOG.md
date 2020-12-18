@@ -1,5 +1,14 @@
 # Change Log
 
+## [v14.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.1) (2020-12-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.1.0...v14.1.1)
+
+**New stuff:**
+
+- Change the order of layers inside visualisation sets [\#501](https://github.com/gisaia/ARLAS-web-components/issues/501) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Change the order of visualisation sets [\#500](https://github.com/gisaia/ARLAS-web-components/issues/500) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v14.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.0) (2020-12-07)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.1...v14.1.0)
