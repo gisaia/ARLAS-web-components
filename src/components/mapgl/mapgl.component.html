@@ -6,16 +6,27 @@
         <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
       </div>
     </div>
-    <div [hidden]="!legendOpen" *ngIf="visualisationsSets" class="map__visu-list--container">
-      <div class="map__visu-container" *ngFor="let visu of visualisationsSets.visualisations | keyvalue">
-        <div class="map_visu-title-container">
-          <span class="visu-title" [class.visu-title-disabled]="!visualisationsSets.status.get(visu.key)">{{visu.key | translate}}</span>
-          <mat-slide-toggle class="map_visu-toggle" [checked]="visualisationsSets.status.get(visu.key)" (change)="emitVisualisations(visu.key)"  [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
+    <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
+      (cdkDropListDropped)="drop($event)">
+      <div cdkDrag class="map__visu-container" *ngFor="let visu of visualisationSetsConfig">
+        <div cdkDragHandle class="map_visu-title-container">
+          <span class="visu-title" [class.visu-title-disabled]="!visu.enabled">{{visu.name | translate}}</span>
+          <div class="map__visu-toggle">
+            <mat-slide-toggle class="map_visu-toggle" [checked]="visu.enabled" (change)="emitVisualisations(visu.name)"
+              [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
+          </div>
         </div>
-        <div class="map_visu-content-container">
-          <arlas-mapgl-legend *ngFor="let l of visu.value" [enabled]="visualisationsSets.status.get(visu.key)" [layer]="getLayer(l)" [zoom]="zoom" [legendUpdater]="legendUpdater" [visibilityUpdater]= "visibilityUpdater" ></arlas-mapgl-legend>
+        <div class="map_visu-content-container" cdkDropList
+        (cdkDropListDropped)="dropLayer($event, visu.name)">
+        <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer">
+          <arlas-mapgl-legend  [enabled]="visu.enabled" [layer]="getLayer(l)" [zoom]="zoom"
+          [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater"></arlas-mapgl-legend>
+          <div cdkDragHandle class="map__visu-layer-drag">
+            <mat-icon>drag_indicator</mat-icon>
+          </div>
         </div>
-  
+        </div>
+
       </div>
     </div>
   </div>
@@ -29,17 +40,14 @@
   <div *ngIf="basemapStyles && basemapStyles.length > 1">
     <span class="map__layers-stylegroup-name">{{'Basemaps' | translate}}</span>
     <mat-radio-group class="map__layers-radio-group" [value]="basemapStylesGroup.selectedBasemapStyle">
-      <mat-radio-button class="map__layers-radio-button" [checked]="style.name == basemapStylesGroup.selectedBasemapStyle.name" (change)="onChangeBasemapStyle(style)" *ngFor="let style of basemapStyles" [value]="style">
+      <mat-radio-button class="map__layers-radio-button"
+        [checked]="style.name == basemapStylesGroup.selectedBasemapStyle.name" (change)="onChangeBasemapStyle(style)"
+        *ngFor="let style of basemapStyles" [value]="style">
         {{style.name | translate}}
       </mat-radio-button>
     </mat-radio-group>
   </div>
 </div>
 
-<div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip" [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>
-
-
-
-
-
-
+<div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip"
+  [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>
