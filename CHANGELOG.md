@@ -1,5 +1,13 @@
 # Change Log
 
+## [v12.7.5](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.5) (2021-01-13)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.4...v12.7.5)
+
+## [v12.7.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.4) (2021-01-13)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.1.1...v12.7.4)
+
 ## [v14.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.1) (2020-12-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.1.0...v14.1.1)
@@ -19,15 +27,11 @@
 
 ## [v14.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0) (2020-11-09)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.4...v14.0.0)
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.0-rc.1...v14.0.0)
 
 **New stuff:**
 
 - Add validity geometry check in import file component [\#496](https://github.com/gisaia/ARLAS-web-components/issues/496)
-
-## [v12.7.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.4) (2020-11-03)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.0-rc.1...v12.7.4)
 
 ## [v14.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0-rc.1) (2020-09-29)
 
