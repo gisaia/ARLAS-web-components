@@ -1,5 +1,54 @@
 # Change Log
 
+## [v14.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.1) (2020-12-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.1.0...v14.1.1)
+
+**New stuff:**
+
+- Change the order of layers inside visualisation sets [\#501](https://github.com/gisaia/ARLAS-web-components/issues/501) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Change the order of visualisation sets [\#500](https://github.com/gisaia/ARLAS-web-components/issues/500) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v14.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.0) (2020-12-07)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.1...v14.1.0)
+
+## [v14.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.1) (2020-11-09)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.0...v14.0.1)
+
+## [v14.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0) (2020-11-09)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.4...v14.0.0)
+
+**New stuff:**
+
+- Add validity geometry check in import file component [\#496](https://github.com/gisaia/ARLAS-web-components/issues/496)
+
+## [v12.7.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.4) (2020-11-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.0-rc.1...v12.7.4)
+
+## [v14.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0-rc.1) (2020-09-29)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.3...v14.0.0-rc.1)
+
+## [v13.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.3) (2020-09-14)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.2...v13.0.3)
+
+## [v13.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.2) (2020-07-17)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.1...v13.0.2)
+
+**Fixed bugs:**
+
+- \[Map-icon\] Import module TranslateModule in Map icon module [\#487](https://github.com/gisaia/ARLAS-web-components/issues/487)
+
+## [v13.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.1) (2020-07-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.3...v13.0.1)
+
 ## [v12.7.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.3) (2020-06-30)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v1.1.1...v12.7.3)
