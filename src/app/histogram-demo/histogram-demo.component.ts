@@ -67,21 +67,21 @@ export class HistogramDemoComponent implements OnInit {
 
   private showData() {
     this.defaultHistogramData = [
-      {value: 0,   key: 0},
-      {value: 123,  key: 1},
-      {value: 3333,  key: 2},
-      {value: 4000,  key: 3},
-      {value: 4000,  key: 4},
-      {value: 2123,  key: 5},
-      {value: 1111,  key: 6},
-      {value: 4000,  key: 7},
-      {value: 5000, key: 8},
-      {value: 120, key: 9},
-      {value: 120, key: 10},
-      {value: 1234, key: 11},
-      {value: 120, key: 12},
-      {value: 5555, key: 13},
-      {value: 120, key: 14},
+      {value: -400,   key: 0},
+      {value: -123,  key: 1},
+      {value: -333,  key: 2},
+      {value: -400,  key: 3},
+      {value: -400,  key: 4},
+      {value: -212,  key: 5},
+      {value: -111,  key: 6},
+      {value: -400,  key: 7},
+      {value: -400, key: 8},
+      {value: -120, key: 9},
+      {value: -120, key: 10},
+      {value: -123, key: 11},
+      {value: -100, key: 12},
+      {value: -222, key: 13},
+      {value: -120, key: 14},
     ];
   }
 

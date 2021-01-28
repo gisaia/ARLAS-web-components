@@ -387,11 +387,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public currentLng: string;
 
   // Polygon
-  private isDrawingPolygon = false;
   public nbPolygonVertice = 0;
+  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
   private indexId = 0;
   private customIds = new Map<number, string>();
-  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
+  private isDrawingPolygon = false;
 
   public firstDrawLayer = '';
 
@@ -413,9 +413,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {
-
-  }
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {}
 
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
@@ -447,6 +445,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     });
     this.visualisations.emit(layers);
+    this.reorderLayers();
+  }
+
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<mapboxgl.Layer>, sources: Array<MapSource>) {
+    sources.forEach((s) => {
+      this.map.addSource(s.id, s.source);
+    });
+    this.visualisationSetsConfig.push(visualisation);
+    this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
+    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
+
+    layers.forEach(layer => {
+      this.layersMap.set(layer.id, layer);
+      this.map.addLayer(layer);
+    });
+
     this.reorderLayers();
   }
 
@@ -540,6 +554,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
+
   public setBaseMapStyle(style: string | mapboxgl.Style) {
     if (this.map) {
       if (typeof this.basemapStylesGroup.selectedBasemapStyle.styleFile === 'string') {
