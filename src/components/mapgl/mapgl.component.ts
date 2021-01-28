@@ -448,11 +448,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.reorderLayers();
   }
 
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<mapboxgl.Layer>, sources: Array<MapSource>) {
+  /**
+   * @description Add an external visulisation set to the map
+   * @param visualisation A visulisation set object to add to the map
+   * @param layers List of actual layers that are declared in `visualisation` object
+   * @param sources List of sources that these external `layers` use.
+   */
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<mapboxgl.Layer>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
       this.map.addSource(s.id, s.source);
     });
-    this.visualisationSetsConfig.push(visualisation);
+    this.visualisationSetsConfig.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
     this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
 
@@ -462,6 +468,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
 
     this.reorderLayers();
+  }
+
+  /**
+   * @description Updates the visibility status of the given layers in Legend component
+   * @param visibility Map of layerId, and its visibility status as boolean (true = visible)
+   */
+  public updateLayerVisibility (visibility: Map<string, boolean>) {
+    this.visibilityUpdater.next(visibility);
   }
 
   public openInvalidGeometrySnackBar() {
