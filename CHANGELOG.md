@@ -1,5 +1,13 @@
 # Change Log
 
+## [v14.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.0) (2021-01-29)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.2.0...v14.3.0)
+
+**New stuff:**
+
+- Add method that allows to add visualisation set to map programatically [\#508](https://github.com/gisaia/ARLAS-web-components/issues/508) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v14.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.2.0) (2021-01-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.5...v14.2.0)
