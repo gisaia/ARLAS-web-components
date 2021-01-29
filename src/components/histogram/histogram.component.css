@@ -330,6 +330,22 @@
   stroke-width: 0.4px !important;;
   height: 1.5px !important;
 }
+
+.headband_currentselection_min /* @doc Sets the currently selected headbands style (a headband is a band over the bar)*/
+{
+  fill: #e62938 !important;
+  stroke: #e62938 !important;
+  stroke-width: 0.4px !important;;
+  height: 1.5px !important;
+}
+
+.headband_currentselection_max /* @doc Sets the currently selected headbands style (a headband is a band over the bar)*/
+{
+  fill: #e62938 !important;
+  stroke: #e62938 !important;
+  stroke-width: 0.4px !important;;
+  height: 1.5px !important;
+}
 .headband_partlyselected /* @doc Sets the partly selected headbands style (a headband is a band over the bar)*/
 {
   fill: #88c9c3 !important;

@@ -72,7 +72,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.drawLegends(this.visibleMode);
     });
     this.visibilityUpdater.pipe(debounceTime(0)).subscribe(v => {
-      this.visibleMode = this.layer ? v.get(this.layer.id) : false;
+      this.visibleMode = this.layer ? v.get(this.layer.id) !== undefined ? v.get(this.layer.id) : this.visibleMode : false;
       if (this.visibleMode && this.layer && !!this.layer.minzoom && !! this.layer.maxzoom) {
           this.visibleMode = (this.zoom <= this.layer.maxzoom &&  this.zoom >= this.layer.minzoom);
       }

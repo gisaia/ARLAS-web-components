@@ -387,11 +387,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public currentLng: string;
 
   // Polygon
-  private isDrawingPolygon = false;
   public nbPolygonVertice = 0;
+  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
   private indexId = 0;
   private customIds = new Map<number, string>();
-  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
+  private isDrawingPolygon = false;
 
   public firstDrawLayer = '';
 
@@ -413,9 +413,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {
-
-  }
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {}
 
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
@@ -448,6 +446,36 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
     this.visualisations.emit(layers);
     this.reorderLayers();
+  }
+
+  /**
+   * @description Add an external visulisation set to the map
+   * @param visualisation A visulisation set object to add to the map
+   * @param layers List of actual layers that are declared in `visualisation` object
+   * @param sources List of sources that these external `layers` use.
+   */
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<mapboxgl.Layer>, sources: Array<MapSource>): void {
+    sources.forEach((s) => {
+      this.map.addSource(s.id, s.source);
+    });
+    this.visualisationSetsConfig.unshift(visualisation);
+    this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
+    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
+
+    layers.forEach(layer => {
+      this.layersMap.set(layer.id, layer);
+      this.map.addLayer(layer);
+    });
+
+    this.reorderLayers();
+  }
+
+  /**
+   * @description Updates the visibility status of the given layers in Legend component
+   * @param visibility Map of layerId, and its visibility status as boolean (true = visible)
+   */
+  public updateLayerVisibility (visibility: Map<string, boolean>) {
+    this.visibilityUpdater.next(visibility);
   }
 
   public openInvalidGeometrySnackBar() {
@@ -540,6 +568,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       }
     }
   }
+
   public setBaseMapStyle(style: string | mapboxgl.Style) {
     if (this.map) {
       if (typeof this.basemapStylesGroup.selectedBasemapStyle.styleFile === 'string') {
