@@ -188,24 +188,26 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         /** color = ["get", "field"]  ==> Generated or Provided */
         const field = colorExpression[1];
         colorLegend.title = field;
-        if ((field as string).endsWith('_color')) {
-          colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
-        } else {
-          colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
-        }
-        colorLegend.manualValues = new Map();
-        if (legendData && legendData.get(field)) {
-          const keysToColors = legendData.get(field).keysColorsMap;
-          const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
-          for (let i = 0; i < colorList.length; i += 2) {
-              const c = visibleMode ? colorList[i + 1] : '#eee';
-              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], c);
+        if (!Array.isArray(field)) {
+          if ((field as string).endsWith('_color')) {
+            colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
+          } else {
+            colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
           }
-          if (colorList.length === 0) {
+          colorLegend.manualValues = new Map();
+          if (legendData && legendData.get(field)) {
+            const keysToColors = legendData.get(field).keysColorsMap;
+            const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
+            for (let i = 0; i < colorList.length; i += 2) {
+                const c = visibleMode ? colorList[i + 1] : '#eee';
+                colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], c);
+            }
+            if (colorList.length === 0) {
+              colorLegend.manualValues.set('', '#eee');
+            }
+          } else {
             colorLegend.manualValues.set('', '#eee');
           }
-        } else {
-          colorLegend.manualValues.set('', '#eee');
         }
       } else if (colorExpression.length >= 3) {
         if (colorExpression[0] === MATCH) {
