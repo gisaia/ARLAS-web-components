@@ -71,8 +71,13 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.legendData = legendData;
       this.drawLegends(this.visibleMode);
     });
-    this.visibilityUpdater.pipe(debounceTime(0)).subscribe(v => {
-      this.visibleMode = this.layer ? v.get(this.layer.id) !== undefined ? v.get(this.layer.id) : this.visibleMode : false;
+    this.visibilityUpdater.pipe(debounceTime(0)).subscribe(visibilityUpdater => {
+      if (!!this.layer) {
+        /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
+        this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
+      } else {
+        this.visibleMode = false;
+      }
       if (this.visibleMode && this.layer && !!this.layer.minzoom && !! this.layer.maxzoom) {
           this.visibleMode = (this.zoom <= this.layer.maxzoom &&  this.zoom >= this.layer.minzoom);
       }
@@ -183,24 +188,26 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         /** color = ["get", "field"]  ==> Generated or Provided */
         const field = colorExpression[1];
         colorLegend.title = field;
-        if ((field as string).endsWith('_color')) {
-          colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
-        } else {
-          colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
-        }
-        colorLegend.manualValues = new Map();
-        if (legendData && legendData.get(field)) {
-          const keysToColors = legendData.get(field).keysColorsMap;
-          const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
-          for (let i = 0; i < colorList.length; i += 2) {
-              const c = visibleMode ? colorList[i + 1] : '#eee';
-              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], c);
+        if (!Array.isArray(field)) {
+          if ((field as string).endsWith('_color')) {
+            colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
+          } else {
+            colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
           }
-          if (colorList.length === 0) {
+          colorLegend.manualValues = new Map();
+          if (legendData && legendData.get(field)) {
+            const keysToColors = legendData.get(field).keysColorsMap;
+            const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
+            for (let i = 0; i < colorList.length; i += 2) {
+                const c = visibleMode ? colorList[i + 1] : '#eee';
+                colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], c);
+            }
+            if (colorList.length === 0) {
+              colorLegend.manualValues.set('', '#eee');
+            }
+          } else {
             colorLegend.manualValues.set('', '#eee');
           }
-        } else {
-          colorLegend.manualValues.set('', '#eee');
         }
       } else if (colorExpression.length >= 3) {
         if (colorExpression[0] === MATCH) {
@@ -219,13 +226,13 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
                 tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
               const c2 = visibleMode ? colorExpression[i + 2] :
                 tinycolor.default(colorExpression[i + 2].toString()).greyscale().lighten(20).toHexString();
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i]) : colorExpression[i], c1);
+              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], c1);
               colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, c2);
               break;
             } else {
               const c = visibleMode ? colorExpression[i + 1] :
                 tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i]) : colorExpression[i], c);
+              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], c);
             }
           }
         } else if (colorExpression[0] === INTERPOLATE) {
