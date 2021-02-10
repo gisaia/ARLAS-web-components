@@ -107,6 +107,7 @@ export class MapglImportComponent {
     'type': 'FeatureCollection',
     'features': []
   };
+  private featureIndex = 0;
 
   @Input() public mapComponent: MapglComponent;
   @Input() public maxVertexByPolygon: number;
@@ -233,32 +234,52 @@ export class MapglImportComponent {
             type: 'FeatureCollection',
             features: []
           };
-          let index = 0;
           geojson.features.filter(feature => feature.geometry.type === 'Polygon'
             || feature.geometry.type === 'GeometryCollection'
-            || feature.geometry.type === 'MultiGeometry')
+            || feature.geometry.type === 'MultiGeometry'
+            || feature.geometry.type === 'MultiPolygon')
             .forEach((feature) => {
-              // Test self intersection polygon
-              if (gpsi(feature).geometry.coordinates.length === 0) {
-                if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'MultiGeometry') {
-                  // Create a new Polygon feature for each polygon in the MultiPolygon
-                  // All properties of the MultiPolygon are copied in each feature created
-                  feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
-                    const newFeature = {
-                      type: 'Feature',
-                      geometry: {
-                        coordinates: geom.coordinates,
-                        type: 'Polygon'
-                      },
-                      properties: feature.properties
-                    };
-                    this.addFeature(newFeature, centroides, importedGeojson, ++index);
-                  });
-                } else {
-                  this.addFeature(feature, centroides, importedGeojson, ++index);
-                }
+              if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'MultiGeometry') {
+                // Create a new Polygon feature for each polygon in the MultiPolygon
+                // All properties of the MultiPolygon are copied in each feature created
+                feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
+                  const newFeature = {
+                    type: 'Feature',
+                    geometry: {
+                      coordinates: geom.coordinates,
+                      type: 'Polygon'
+                    },
+                    properties: feature.properties
+                  };
+                  if (gpsi(newFeature).geometry.coordinates.length === 0) {
+                    this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+                  } else {
+                    reject(new Error('Geometry is not valid due to self-intersection'));
+                  }
+                });
+              } else if (feature.geometry.type === 'MultiPolygon') {
+                feature.geometry.coordinates.forEach(geom => {
+                  const newFeature = {
+                    type: 'Feature',
+                    geometry: {
+                      coordinates: geom,
+                      type: 'Polygon'
+                    },
+                    properties: feature.properties
+                  };
+                  if (gpsi(newFeature).geometry.coordinates.length === 0) {
+                    this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+                  } else {
+                    reject(new Error('Geometry is not valid due to self-intersection'));
+                  }
+                });
               } else {
-                reject(new Error('Geometry is not valid due to self-intersection'));
+                if (gpsi(feature).geometry.coordinates.length === 0) {
+                  this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
+                } else {
+                  reject(new Error('Geometry is not valid due to self-intersection'));
+                }
+
               }
             });
           resolve({ geojson: importedGeojson, centroides: centroides });
@@ -292,7 +313,7 @@ export class MapglImportComponent {
         reject(new Error('File is too large'));
       } else {
         const extension = this.currentFile.name.split('.').pop().toLowerCase();
-        if ( extension === 'json' || extension === 'geojson') {
+        if (extension === 'json' || extension === 'geojson') {
           reader.readAsText(this.currentFile);
         } else {
           reject(new Error('Only `json` or `geojson` file is allowed'));
@@ -313,53 +334,58 @@ export class MapglImportComponent {
             type: 'FeatureCollection',
             features: []
           };
-          let index = 0;
           if (feature.geometry && feature.geometry.type === 'Polygon') {
             if (gpsi(feature).geometry.coordinates.length === 0) {
-              this.addFeature(feature, centroides, importedGeojson, ++index);
+              this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
             } else {
               reject(new Error('Geometry is not valid due to self-intersection'));
             }
           } else if (feature.geometry && feature.geometry.type === 'MultiPolygon') {
-            if (gpsi(feature).geometry.coordinates.length === 0) {
-              feature.geometry.coordinates.forEach(geom => {
-                const newFeature = {
-                  type: 'Feature',
-                  geometry: {
-                    coordinates: geom,
-                    type: 'Polygon'
-                  },
-                  properties: feature.properties
-                };
-                this.addFeature(newFeature, centroides, importedGeojson, ++index);
-              });
-            } else {
-              reject(new Error('Geometry is not valid due to self-intersection'));
-            }
+            feature.geometry.coordinates.forEach(geom => {
+              const newFeature = {
+                type: 'Feature',
+                geometry: {
+                  coordinates: geom,
+                  type: 'Polygon'
+                },
+                properties: feature.properties
+              };
+              if (gpsi(newFeature).geometry.coordinates.length === 0) {
+                this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+              } else {
+                reject(new Error('Geometry is not valid due to self-intersection'));
+              }
+            });
+
           } else if (feature.type && feature.type === 'FeatureCollection') {
             feature.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
               .forEach((feature) => {
-                if (gpsi(feature).geometry.coordinates.length === 0) {
-                  if (feature.geometry.type === 'MultiPolygon') {
-                    // Create a new Polygon feature for each polygon in the MultiPolygon
-                    // All properties of the MultiPolygon are copied in each feature created
-                    feature.geometry.coordinates.forEach(geom => {
-                      const newFeature = {
-                        type: 'Feature',
-                        geometry: {
-                          bbox: feature.geometry.bbox,
-                          coordinates: geom,
-                          type: 'Polygon'
-                        },
-                        properties: feature.properties
-                      };
-                      this.addFeature(newFeature, centroides, importedGeojson, ++index);
-                    });
-                  } else {
-                    this.addFeature(feature, centroides, importedGeojson, ++index);
-                  }
+
+                if (feature.geometry.type === 'MultiPolygon') {
+                  // Create a new Polygon feature for each polygon in the MultiPolygon
+                  // All properties of the MultiPolygon are copied in each feature created
+                  feature.geometry.coordinates.forEach(geom => {
+                    const newFeature = {
+                      type: 'Feature',
+                      geometry: {
+                        bbox: feature.geometry.bbox,
+                        coordinates: geom,
+                        type: 'Polygon'
+                      },
+                      properties: feature.properties
+                    };
+                    if (gpsi(newFeature).geometry.coordinates.length === 0) {
+                      this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+                    } else {
+                      reject(new Error('Geometry is not valid due to self-intersection'));
+                    }
+                  });
                 } else {
-                  reject(new Error('Geometry is not valid due to self-intersection'));
+                  if (gpsi(feature).geometry.coordinates.length === 0) {
+                    this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
+                  } else {
+                    reject(new Error('Geometry is not valid due to self-intersection'));
+                  }
                 }
               });
           }
@@ -442,32 +468,34 @@ export class MapglImportComponent {
           type: 'FeatureCollection',
           features: []
         };
-        let index = 0;
         if (valid(geojson)) {
           geojson.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
             .forEach((feature) => {
-              if (gpsi(feature).geometry.coordinates.length === 0) {
-
-                if (feature.geometry.type === 'MultiPolygon') {
-                  // Create a new Polygon feature for each polygon in the MultiPolygon
-                  // All properties of the MultiPolygon are copied in each feature created
-                  feature.geometry.coordinates.forEach(geom => {
-                    const newFeature = {
-                      type: 'Feature',
-                      geometry: {
-                        bbox: feature.geometry.bbox,
-                        coordinates: geom,
-                        type: 'Polygon'
-                      },
-                      properties: feature.properties
-                    };
-                    this.addFeature(newFeature, centroides, importedGeojson, ++index);
-                  });
-                } else {
-                  this.addFeature(feature, centroides, importedGeojson, ++index);
-                }
+              if (feature.geometry.type === 'MultiPolygon') {
+                // Create a new Polygon feature for each polygon in the MultiPolygon
+                // All properties of the MultiPolygon are copied in each feature created
+                feature.geometry.coordinates.forEach(geom => {
+                  const newFeature = {
+                    type: 'Feature',
+                    geometry: {
+                      bbox: feature.geometry.bbox,
+                      coordinates: geom,
+                      type: 'Polygon'
+                    },
+                    properties: feature.properties
+                  };
+                  if (gpsi(newFeature).geometry.coordinates.length === 0) {
+                    this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+                  } else {
+                    reject(new Error('Geometry is not valid due to self-intersection'));
+                  }
+                });
               } else {
-                reject(new Error('Geometry is not valid due to self-intersection'));
+                if (gpsi(feature).geometry.coordinates.length === 0) {
+                  this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
+                } else {
+                  reject(new Error('Geometry is not valid due to self-intersection'));
+                }
               }
 
             });
@@ -497,41 +525,49 @@ export class MapglImportComponent {
         features: []
       };
       if (geojsonWKT && valid(geojsonWKT)) {
-        let index = 0;
         const feature = {
           type: 'Feature',
           geometry: geojsonWKT,
           properties: { arlas_id: null }
         };
-        if (gpsi(feature).geometry.coordinates.length === 0) {
-          if (feature.geometry.type === 'Polygon') {
-            this.addFeature(feature, centroides, importedGeojson, ++index);
-          } else if (feature.geometry.type === 'MultiPolygon') {
-            feature.geometry.coordinates.forEach(geom => {
-              const newFeature = {
-                type: 'Feature',
-                geometry: {
-                  coordinates: geom,
-                  type: 'Polygon'
-                },
-                properties: feature.properties
-              };
-              this.addFeature(newFeature, centroides, importedGeojson, ++index);
-            });
-          } else if (feature.geometry.type === 'GeometryCollection') {
-            feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
-              const newFeature = {
-                type: 'Feature',
-                geometry: geom,
-                properties: feature.properties
-              };
-              this.addFeature(newFeature, centroides, importedGeojson, ++index);
-            });
-          }
-        } else {
-          reject(new Error('Geometry is not valid due to self-intersection'));
 
+        if (feature.geometry.type === 'Polygon') {
+          if (gpsi(feature).geometry.coordinates.length === 0) {
+            this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
+          } else {
+            reject(new Error('Geometry is not valid due to self-intersection'));
+          }
+        } else if (feature.geometry.type === 'MultiPolygon') {
+          feature.geometry.coordinates.forEach(geom => {
+            const newFeature = {
+              type: 'Feature',
+              geometry: {
+                coordinates: geom,
+                type: 'Polygon'
+              },
+              properties: feature.properties
+            };
+            if (gpsi(newFeature).geometry.coordinates.length === 0) {
+              this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+            } else {
+              reject(new Error('Geometry is not valid due to self-intersection'));
+            }
+          });
+        } else if (feature.geometry.type === 'GeometryCollection') {
+          feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
+            const newFeature = {
+              type: 'Feature',
+              geometry: geom,
+              properties: feature.properties
+            };
+            if (gpsi(newFeature).geometry.coordinates.length === 0) {
+              this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
+            } else {
+              reject(new Error('Geometry is not valid due to self-intersection'));
+            }
+          });
         }
+
         resolve({ geojson: importedGeojson, centroides: centroides });
       } else {
         reject(new Error('Geometry is not valid'));
@@ -549,6 +585,7 @@ export class MapglImportComponent {
   public clearPolygons() {
     // Clean source of imported polygons
     const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
+    this.featureIndex = 0;
     this.mapComponent.onAoiChanged.next(<helpers.FeatureCollection>this.emptyData);
     if (labelSource !== undefined) {
       labelSource.setData(this.emptyData);
