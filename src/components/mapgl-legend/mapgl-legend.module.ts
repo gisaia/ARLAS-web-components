@@ -24,6 +24,7 @@ import { MapglLegendComponent } from './mapgl-legend.component';
 import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
 import { MatButtonModule, MatIconModule, MatTooltipModule } from '@angular/material';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
+import { LayerIdToName } from './layer-name.pipe';
 
 
 @NgModule({
@@ -36,8 +37,8 @@ import { FormatNumberModule } from '../../pipes/format-number/format-number.modu
     MatTooltipModule,
     FormatNumberModule
   ],
-  declarations: [MapglLegendComponent],
-  exports: [MapglLegendComponent]
+  declarations: [MapglLegendComponent, LayerIdToName],
+  exports: [MapglLegendComponent, LayerIdToName]
 })
 export class MapglLegendModule {
 
