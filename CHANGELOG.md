@@ -1,5 +1,17 @@
 # Change Log
 
+## [v15.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0) (2021-02-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0-beta.0...v15.0.0)
+
+**New stuff:**
+
+- Support importing MultiPolygon [\#507](https://github.com/gisaia/ARLAS-web-components/issues/507) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v15.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0-beta.0) (2021-02-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.3.1...v15.0.0-beta.0)
+
 ## [v14.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.1) (2021-02-01)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.3.0...v14.3.1)
