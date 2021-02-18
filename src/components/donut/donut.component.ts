@@ -93,6 +93,12 @@ export class DonutComponent implements OnChanges {
 
   /**
    * @Input : Angular
+   * @description Width of the svg containing the donut. If it's not set, the container width takes the donut's diameter.
+   */
+  @Input() public containerWidth: number;
+
+  /**
+   * @Input : Angular
    * @description Unit that a node of the donut represents
    */
   @Input() public unit = '';
@@ -169,5 +175,6 @@ export class DonutComponent implements OnChanges {
     this.donut.donutParams.donutNodeColorizer = this.colorService;
     this.donut.donutParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
     this.donut.donutParams.diameter = this.diameter;
+    this.donut.donutParams.containerWidth = this.containerWidth;
   }
 }
