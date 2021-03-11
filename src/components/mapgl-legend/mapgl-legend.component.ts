@@ -189,7 +189,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         const field = colorExpression[1];
         colorLegend.title = field;
         if (!Array.isArray(field)) {
-          if ((field as string).endsWith('_color')) {
+          if ((field as string).endsWith('_arlas__color')) {
             colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
           } else {
             colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
