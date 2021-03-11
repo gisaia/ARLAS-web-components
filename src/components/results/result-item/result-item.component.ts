@@ -167,7 +167,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public getColor(key): string {
-    if (key !== undefined) {
+    if (key !== undefined && key !== null) {
       return this.colorService.getColor(key.toString(), this.keysToColors, this.colorsSaturationWeight);
     } else {
       return '';
@@ -175,7 +175,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public getTextColor(key: string): string {
-    if (key !== undefined) {
+    if (key !== undefined && key !== null) {
       return this.colorService.getTextColor(key.toString());
     } else {
       return '';
