@@ -31,8 +31,10 @@ import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
-import { HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
-  , AbstractSwimlane, AbstractChart  } from 'arlas-d3';
+import {
+  HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
+  , AbstractSwimlane, AbstractChart
+} from 'arlas-d3';
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
@@ -243,10 +245,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Either a hex string color or a color name (in English) or a saturation interval.
    */
   @Input() public paletteColors: [number, number] | string = null;
-   /**
-   * @Input : Angular
-   * @description Allows to include only selections that contain data in the histogram/swimlane
-   */
+  /**
+  * @Input : Angular
+  * @description Allows to include only selections that contain data in the histogram/swimlane
+  */
   @Input() public displayOnlyIntervalsWithData = false;
   /**
    * @Input : Angular
@@ -297,6 +299,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Term's list of powerbars to select
    */
   @Input() public selectedSwimlanes = new Set<string>();
+  /**
+ * @Input : Angular
+ * @description Wether use UTC to display date on the app
+ */
+  @Input() public useUtc = true;
   /**
    * @Output : Angular
    * @description Emits the list of selected powerbars terms
@@ -410,7 +417,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (this.chartType === ChartType.swimlane) {
       (<AbstractSwimlane>this.histogram).truncateLabels();
     }
-    if (this.rt !==  undefined && this.lt !== undefined) {
+    if (this.rt !== undefined && this.lt !== undefined) {
       this.histogram.setHTMLElementsOfBrushCornerTooltips(this.rt.nativeElement, this.lt.nativeElement);
     }
   }
@@ -468,6 +475,10 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       this.yUnit = '';
     }
     this.histogram.histogramParams = new HistogramParams();
+    this.histogram.histogramParams.useUtc = this.useUtc;
+    if (this.histogram.histogramParams.useUtc === undefined) {
+      this.histogram.histogramParams.useUtc = true;
+    }
     this.histogram.histogramParams.barWeight = this.barWeight;
     this.histogram.histogramParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
     this.histogram.histogramParams.brushHandlesHeightWeight = this.brushHandlesHeightWeight;
