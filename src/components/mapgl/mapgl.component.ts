@@ -735,6 +735,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.mapLayers !== null) {
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
         this.addVisuLayers();
+        this.addExternalEventLayers();
 
         this.mapLayers.events.zoomOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
@@ -1269,6 +1270,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
+  private addExternalEventLayers() {
+    this.mapLayers.layers
+    .filter(layer =>  this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+    .forEach(l => this.addLayer(l.id) );
+
+
+  }
+
   private getAllBasemapStyles(): Array<BasemapStyle> {
     const allBasemapStyles = new Array<BasemapStyle>();
     if (this.basemapStyles) {
@@ -1353,11 +1362,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     if (this.mapLayers && this.mapLayers.externalEventLayers) {
       this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.map.getLayer(layer.id) !== undefined) {
+          let originalLayerIsVisible = false;
+          const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
+          if (this.map.getLayer(originalLayerId) !== undefined) {
+            originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
+          }
           const layerFilter: Array<any> = ['all'];
           if ((layer as any).filter) {
             Object.assign(layerFilter, (layer as any).filter);
           }
-          if (visibilityCondition) {
+          if (visibilityCondition && originalLayerIsVisible) {
             const condition = visibilityFilter;
             layerFilter.push(condition);
             this.map.setFilter(layer.id, layerFilter);
