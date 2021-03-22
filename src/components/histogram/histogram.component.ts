@@ -38,7 +38,8 @@ import {
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
-import { HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions,
+  HistogramTooltip } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
@@ -321,9 +322,14 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Output() public hoveredBucketEvent: Subject<Date | number> = new Subject<Date | number>();
   /**
    * @Output : Angular
-   * @description Emits the hovered bucket key (key as in HistogramData).
+   * @description Emits an event informing that the chart finished plotting.
    */
   @Output() public dataPlottedEvent: Subject<string> = new Subject<string>();
+  /**
+   * @Output : Angular
+   * @description Emits the hovered bucket information that can be exploited to display a tooltip
+   */
+  @Output() public tooltipEvent: Subject<HistogramTooltip> = new Subject<HistogramTooltip>();
 
   public histogram: AbstractHistogram;
   public ChartType = ChartType;
@@ -532,5 +538,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
     this.histogram.histogramParams.selectedSwimlanes = this.selectedSwimlanes;
     this.histogram.histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
+    this.histogram.histogramParams.tooltipEvent.subscribe(t => {
+      t.xLabel = this.chartXLabel;
+      t.yLabel = this.chartTitle;
+      t.xUnit = this.xUnit;
+      t.yUnit = this.yUnit;
+      this.tooltipEvent.next(t);
+    });
   }
 }
