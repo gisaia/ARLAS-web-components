@@ -1,5 +1,9 @@
 # Change Log
 
+## [v16.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.0) (2021-03-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0...v16.0.0)
+
 ## [v15.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0) (2021-02-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0-beta.0...v15.0.0)
