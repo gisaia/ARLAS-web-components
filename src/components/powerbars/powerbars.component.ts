@@ -95,10 +95,14 @@ export class PowerbarsComponent implements OnInit, OnChanges {
 
    /**
    * @Input : Angular
-   * @description Whether to allow colorizing the bar according to its term or not
+   * @description Whether to allow colorizing the bar according to its term or not using keysToColors
    */
   @Input() public useColorService = false;
-
+     /**
+   * @Input : Angular
+   * @description Whether to allow colorizing the bar according to its term or not using a field of the data
+   */
+  @Input() public useColorFromData = false;
   /**
    * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
@@ -283,6 +287,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
           powerBar.path = currentPath;
           if (this.useColorService) {
             powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
+          }
+          if (this.useColorFromData) {
+            powerBar.color = child.color.toString()[0] === '#' ? child.color.toString() : '#'.concat(child.color.toString());
           }
           powerBarsList.push(powerBar);
         }
