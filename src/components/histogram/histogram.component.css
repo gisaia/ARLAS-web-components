@@ -256,6 +256,12 @@
   z-index: 30000;
 }
 
+.histogram__area_circle
+{
+  fill: #7fa5a1;
+  stroke: #7fa5a1;
+}
+
 .swimlane_legend_color, .swimlane_legend_value {
   display: inline-block;
   font-size: 0.7em;
