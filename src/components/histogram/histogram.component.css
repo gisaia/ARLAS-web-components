@@ -262,6 +262,18 @@
   stroke: #7fa5a1;
 }
 
+.histogram__tooltip_cursor_rect
+{
+  fill: #bbbbbb;
+  stroke: #bbbbbb;
+  opacity: 0.5;
+}
+.histogram__tooltip_cursor_line
+{
+  fill: #bbbbbb;
+  stroke: #bbbbbb;
+}
+
 .swimlane_legend_color, .swimlane_legend_value {
   display: inline-block;
   font-size: 0.7em;
