@@ -43,8 +43,10 @@
   margin: 3px;
   padding: 5px 10px;
   cursor: pointer;
-  color:white;
-  background-color: #607D8B;
+  color:black;
+  background-color: white;
+  border: 1.5px solid black;
+  border-radius: 2px
 }
 
 .group-item-title{
