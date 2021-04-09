@@ -1,7 +1,7 @@
 import DirectSelect from '@gisaia-team/mapbox-gl-draw/src/modes/direct_select';
 import createSupplementaryPoints from '@gisaia-team/mapbox-gl-draw/src/lib/create_supplementary_points';
 import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zoom';
-import Constants from '@gisaia-team/mapbox-gl-draw/src/constants';
+import { activeStates, geojsonTypes } from '@gisaia-team/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts.min';
 
 const LimitVertexDirectSelectMode = DirectSelect;
@@ -22,7 +22,7 @@ LimitVertexDirectSelectMode.fireInitialFeature = function (feature) {
 
 LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
-    geojson.properties.active = Constants.activeStates.ACTIVE;
+    geojson.properties.active = activeStates.ACTIVE;
     push(geojson);
     createSupplementaryPoints(geojson, {
       map: this.map,
@@ -30,7 +30,7 @@ LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) 
       selectedPaths: state.selectedCoordPaths
     }).forEach(push);
   } else {
-    geojson.properties.active = Constants.activeStates.INACTIVE;
+    geojson.properties.active = activeStates.INACTIVE;
     push(geojson);
   }
   this.fireActionable(state);
@@ -76,7 +76,7 @@ LimitVertexDirectSelectMode.onSetup = function (opts) {
     maxVertexByPolygon = 100;
   }
 
-  if (feature.type === Constants.geojsonTypes.POINT) {
+  if (feature.type === geojsonTypes.POINT) {
     throw new TypeError('direct_select mode doesn\'t handle point features');
   }
 

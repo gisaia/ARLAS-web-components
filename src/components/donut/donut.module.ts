@@ -17,18 +17,10 @@
  * under the License.
  */
 
- import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { DonutComponent } from './donut.component';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
-import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    ColorGeneratorModule.forRoot(),
-    TranslateModule
-  ],
   declarations: [DonutComponent],
   exports: [DonutComponent]
 })

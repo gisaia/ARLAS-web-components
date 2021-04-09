@@ -389,7 +389,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
   public hasGridMode = false;
-  public resultMode: ModeEnum = this.defautMode;
+  public resultMode: ModeEnum;
   public allItemsChecked = false;
 
   public isDetailledGridOpen = false;

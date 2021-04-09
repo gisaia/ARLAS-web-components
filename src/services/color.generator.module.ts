@@ -32,7 +32,7 @@ export class ColorGeneratorModule {
   /**
    * Use this method in your root module to provide the ColorGeneratorLoader
    */
-  public static forRoot(config: ColorGeneratorModuleConfig = {}): ModuleWithProviders {
+  public static forRoot(config: ColorGeneratorModuleConfig = {}): ModuleWithProviders<ColorGeneratorModule> {
     return {
       ngModule: ColorGeneratorModule,
       providers: [
@@ -42,7 +42,7 @@ export class ColorGeneratorModule {
     };
   }
 
-  public static forChild(config: ColorGeneratorModuleConfig = {}): ModuleWithProviders {
+  public static forChild(config: ColorGeneratorModuleConfig = {}): ModuleWithProviders<ColorGeneratorModule> {
     return {
       ngModule: ColorGeneratorModule,
       providers: [

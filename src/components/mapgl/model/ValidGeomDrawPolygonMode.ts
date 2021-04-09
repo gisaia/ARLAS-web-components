@@ -1,7 +1,7 @@
 import DrawPolygon from '@gisaia-team/mapbox-gl-draw/src/modes/draw_polygon';
-import CommonSelectors from '@gisaia-team/mapbox-gl-draw/src/lib/common_selectors';
+import * as CommonSelectors from '@gisaia-team/mapbox-gl-draw/src/lib/common_selectors';
 import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zoom';
-import Constants from '@gisaia-team/mapbox-gl-draw/src/constants';
+import { modes, cursors, events } from '@gisaia-team/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts.min';
 
 const ValidGeomDrawPolygonMode = DrawPolygon;
@@ -22,11 +22,11 @@ ValidGeomDrawPolygonMode.fireOnStop = function () {
   this.map.fire('draw.onStop', 'draw end');
 };
 
-ValidGeomDrawPolygonMode.clickOnVertex = function(state) {
-  return this.changeMode(Constants.modes.SIMPLE_SELECT, {});
+ValidGeomDrawPolygonMode.clickOnVertex = function (state) {
+  return this.changeMode(modes.SIMPLE_SELECT, {});
 };
 
-ValidGeomDrawPolygonMode.onTap = ValidGeomDrawPolygonMode.onClick = function(state, e) {
+ValidGeomDrawPolygonMode.onTap = ValidGeomDrawPolygonMode.onClick = function (state, e) {
   if (CommonSelectors.isVertex(e)) {
     return this.clickOnVertex(state, e);
   } else {
@@ -37,7 +37,7 @@ ValidGeomDrawPolygonMode.onTap = ValidGeomDrawPolygonMode.onClick = function(sta
 
 ValidGeomDrawPolygonMode.onStop = function (state) {
   this.fireOnStop();
-  this.updateUIClasses({ mouse: Constants.cursors.NONE });
+  this.updateUIClasses({ mouse: cursors.NONE });
   doubleClickZoom.enable(this);
   this.activateUIButton();
 
@@ -69,13 +69,13 @@ ValidGeomDrawPolygonMode.onStop = function (state) {
       this.fireInvalidGeom(state.polygon);
       this.deleteFeature([state.polygon.id], { silent: true });
     } else {
-      this.map.fire(Constants.events.CREATE, {
+      this.map.fire(events.CREATE, {
         features: [state.polygon.toGeoJSON()]
       });
     }
   } else {
     this.deleteFeature([state.polygon.id], { silent: true });
-    this.changeMode(Constants.modes.SIMPLE_SELECT, {}, { silent: true });
+    this.changeMode(modes.SIMPLE_SELECT, {}, { silent: true });
   }
 };
 
