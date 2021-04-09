@@ -42,12 +42,12 @@ export class MapglDemoComponent implements OnInit {
   public drawEnabled = true;
   public defaultBasemapStyle = {
     name: 'Positron Style',
-    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+    styleFile: 'https://api.maptiler.com/maps/positron/style.json?key=kO3nZIVLnPvIVn8AEnuk'
   };
   public basemapStyles = [
     {
       name: 'Positron Style',
-      styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+      styleFile: 'https://api.maptiler.com/maps/positron/style.json?key=kO3nZIVLnPvIVn8AEnuk'
     },
     {
       'name': 'OSM',

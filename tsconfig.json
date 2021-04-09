@@ -1,1 +1,41 @@
-{"compileOnSave":false,"compilerOptions":{"importHelpers":true,"outDir":"./dist/out-tsc","baseUrl":"src","sourceMap":true,"declaration":true,"moduleResolution":"node","emitDecoratorMetadata":true,"experimentalDecorators":true,"allowSyntheticDefaultImports":true,"stripInternal":true,"skipLibCheck":true,"types":["mapbox-gl","geojson"],"target":"es6","resolveJsonModule":true,"esModuleInterop":true,"typeRoots":["node_modules/@types"],"lib":["es2015","es6","dom"],"module":"es2015"},"exclude":["node_modules","app"],"angularCompilerOptions":{"strictMetadataEmit":true,"skipTemplateCodegen":true}}
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "importHelpers": true,
+    "outDir": "./dist/out-tsc",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "declaration": true,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "stripInternal": true,
+    "skipLibCheck": true,
+    "types": [
+      "mapbox-gl",
+      "geojson"
+    ],
+    "target": "es2015",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2015",
+      "es6",
+      "dom"
+    ],
+    "module": "es2015"
+  },
+  "exclude": [
+    "node_modules",
+    "app"
+  ],
+  "angularCompilerOptions": {
+    "strictMetadataEmit": true,
+    "skipTemplateCodegen": true,
+    "enableIvy": false
+  }
+}

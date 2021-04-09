@@ -747,6 +747,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           })
       }
     };
+
     const drawControl = new DrawControl(drawOptions, this.drawButtonEnabled);
     this.map.addControl(drawControl, 'top-right');
     this.draw = drawControl.mapboxDraw;
