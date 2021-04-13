@@ -59,7 +59,7 @@
 .resultitem__cell--label__outlined {
   padding: 3px;
   border-radius:2px;
-  border : 1px solid;
+  border : 1.5px solid;
 }
 
 .resultdetaileditem__actions {
