@@ -20,7 +20,7 @@
           [style.background-color]="getColor(rowItem.itemData.get(column.fieldName))" [style.color]="getTextColor(getColor(rowItem.itemData.get(column.fieldName)))">
           {{rowItem.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
         </label>
-        <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.outlined && column.useColorService" class="resultitem__cell--label resultitem__cell--label__outlined"
+        <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.outlined && column.useColorService && !!rowItem.itemData.get(column.fieldName) && rowItem.itemData.get(column.fieldName) !== ''" class="resultitem__cell--label resultitem__cell--label__outlined"
           [style.border-color]="getColor(rowItem.itemData.get(column.fieldName))">
           {{rowItem.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
         </label>
