@@ -407,7 +407,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public xMoveRatio = 0;
   public yMoveRatio = 0;
   public zoomStart: number;
-
+  public visibilityStatus = new Map();
   public isDrawPolyonSelected = false;
   public drawClickCounter = 0;
   private drawSelectionChanged = false;
@@ -490,7 +490,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     return mapglJsonSchema;
   }
 
-  public ngOnInit() { }
+  public ngOnInit() {}
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {

@@ -18,8 +18,8 @@
         </div>
         <div class="map_visu-content-container" cdkDropList
         (cdkDropListDropped)="dropLayer($event, visu.name)">
-        <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer">
-          <arlas-mapgl-legend  [enabled]="visu.enabled" [layer]="getLayer(l)" [zoom]="zoom"
+        <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer" [hidden]="visibilityStatus.get(l) === false" >
+          <arlas-mapgl-legend  [enabled]="visu.enabled" [layer]="getLayer(l)" [zoom]="zoom" (visibilityStatus)="visibilityStatus.set(l, $event)"
           [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater"></arlas-mapgl-legend>
           <div cdkDragHandle class="map__visu-layer-drag">
             <mat-icon>drag_indicator</mat-icon>
