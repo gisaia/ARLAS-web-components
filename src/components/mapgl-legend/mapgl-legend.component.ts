@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { curveLinear, area, line } from 'd3-shape';
@@ -48,6 +48,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    * the legend updated with the visibility of the layer.
    */
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
+
+  /**
+   * @Output : Angular
+   * @description Notifies the parent component that this layer is visible or not
+   */
+  @Output() public visibilityStatus: Subject<boolean> = new Subject();
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
@@ -90,6 +96,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       if (this.layer) {
         this.drawLegends(this.visibleMode);
       }
+      this.visibilityStatus.next(this.visibleMode);
     });
   }
 
