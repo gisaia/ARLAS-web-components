@@ -1,5 +1,19 @@
 # Change Log
 
+## [v16.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.1.0) (2021-04-21)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.3...v16.1.0)
+
+**New stuff:**
+
+- Remove layers that are not visible on the map from the TOC [\#535](https://github.com/gisaia/ARLAS-web-components/issues/535) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Text in cells should be in black for outlined cells [\#530](https://github.com/gisaia/ARLAS-web-components/issues/530) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Colors applied to powerbars hide the text [\#529](https://github.com/gisaia/ARLAS-web-components/issues/529) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
+**Fixed bugs:**
+
+- Show outlined cell only if the cell is not empty [\#534](https://github.com/gisaia/ARLAS-web-components/issues/534) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v16.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.3) (2021-03-29)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.2...v16.0.3)
