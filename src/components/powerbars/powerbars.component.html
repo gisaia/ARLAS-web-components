@@ -14,51 +14,36 @@
         <div *ngFor="let selectedPowerbar of selectedPowerbarsList"
           class="powerbars__powerbar powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
           (click)="clickOnPowerbar(selectedPowerbar)">
-          <span *ngIf="!useColorService && !useColorFromData"
+          <span
             matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
             [matTooltipPosition]="'after'"
             class="powerbar__powerbar--term powerbar__powerbar--term--selected powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">{{selectedPowerbar.term | translate}}</span>
-          <div *ngIf="!useColorService && !useColorFromData"
+          <div
             class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"
             [style.width]="selectedPowerbar.progression+'%'"
             matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
             [matTooltipPosition]="'after'">
           </div>
           <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{selectedPowerbar.classSuffix}}"></div>
-
-          <div *ngIf="useColorService || useColorFromData"
-            class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"
-            [style.width]="selectedPowerbar.progression+'%'" [style.background-color]="selectedPowerbar.color"
-            [style.border-color]="selectedPowerbar.color"
-            matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate) }}"
-            [matTooltipPosition]="'after'">
-            <span
-              class="powerbar__powerbar--term powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">{{selectedPowerbar.term | translate}}</span>
-          </div>
+          <div *ngIf="useColorService || useColorFromData" [style.background-color]="selectedPowerbar.color"
+          [style.border-color]="selectedPowerbar.color" class="rightband-{{selectedPowerbar.classSuffix}}"></div>
         </div>
       </div>
       <div *ngFor="let powerbar of powerBarsList" (click)="clickOnPowerbar(powerbar)">
         <div *ngIf="!powerbar.isSelected" class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}">
-          <span *ngIf="!useColorService && !useColorFromData"
+          <span
             matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
             [matTooltipPosition]="'after'"
-            class="powerbar__powerbar--term powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term | translate}}</span>
-          <div *ngIf="!useColorService && !useColorFromData"
+            class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term | translate}}</span>
+          <div
             class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"
             [style.width]="powerbar.progression+'%'"
             matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
             [matTooltipPosition]="'after'">
           </div>
           <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{powerbar.classSuffix}}"></div>
-          <div *ngIf="useColorService || useColorFromData"
-            class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"
-            [style.width]="powerbar.progression+'%'" [style.background-color]="powerbar.color"
-            [style.border-color]="powerbar.color"
-            matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-            [matTooltipPosition]="'after'">
-            <span
-              class="powerbar__powerbar--term powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term | translate}}</span>
-          </div>
+          <div *ngIf="useColorService || useColorFromData" [style.background-color]="powerbar.color"
+          [style.border-color]="powerbar.color" class="rightband"></div>
         </div>
       </div>
     </div>
