@@ -22,7 +22,7 @@ import {
 } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode } from 'arlas-d3';
+import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode, ARLASDonutTooltip } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -116,9 +116,15 @@ export class DonutComponent implements OnChanges {
    */
   @Output() public hoveredNodesEvent: Subject<Map<string, string>> = new Subject<Map<string, string>>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the information about the hovered node and its parents.
+   */
+  @Output() public hoveredNodeTooltipEvent: Subject<ARLASDonutTooltip> = new Subject<ARLASDonutTooltip>();
+
   public donut: AbstractDonut;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef,
+  constructor(private el: ElementRef,
     private colorService: ArlasColorService, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
@@ -164,6 +170,7 @@ export class DonutComponent implements OnChanges {
     this.donut.donutParams.customizedCssClass = this.customizedCssClass;
     this.donut.donutParams.donutData = this.donutData;
     this.donut.donutParams.hoveredNodesEvent = this.hoveredNodesEvent;
+    this.donut.donutParams.tooltipEvent = this.hoveredNodeTooltipEvent;
     this.donut.donutParams.multiselectable = this.multiselectable;
     this.donut.donutParams.opacity = this.opacity;
     this.donut.donutParams.selectedArcsList = this.selectedArcsList;
