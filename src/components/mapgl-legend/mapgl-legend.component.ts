@@ -77,7 +77,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.legendData = legendData;
       this.drawLegends(this.visibleMode);
     });
-    this.visibilityUpdater.pipe(debounceTime(0)).subscribe(visibilityUpdater => {
+    this.visibilityUpdater.subscribe(visibilityUpdater => {
       if (!!this.layer) {
         /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
         this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
