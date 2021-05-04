@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { Pipe, PipeTransform } from '@angular/core';
 import { Point } from 'mapbox-gl';
 
 export function paddedBounds(npad: number, spad: number, epad: number,
@@ -63,4 +64,18 @@ export interface MapExtend {
     bounds: number[][];
     center: number[];
     zoom: number;
+}
+
+@Pipe({ name: 'getLayer' })
+export class GetLayerPipe implements PipeTransform {
+    public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): mapboxgl.Layer {
+        return !!layersMap ? layersMap.get(value) : undefined;
+    }
+}
+
+@Pipe({ name: 'getCollection' })
+export class GetCollectionPipe implements PipeTransform {
+    public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): string {
+        return !!layersMap ? !!layersMap.get(value).metadata ? layersMap.get(value).metadata.collection : undefined : undefined;
+    }
 }
