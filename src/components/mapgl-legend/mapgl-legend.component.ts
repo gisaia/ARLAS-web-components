@@ -1,4 +1,23 @@
-import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+ import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { curveLinear, area, line } from 'd3-shape';
@@ -15,8 +34,6 @@ export const MATCH = 'match';
 export const INTERPOLATE = 'interpolate';
 export const OTHER = 'other_color';
 
-
-
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
@@ -29,9 +46,9 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() public layer: mapboxgl.Layer;
   /**
- * @Input : Angular
- * @description Layer object
- */
+   * @Input : Angular
+   * @description Collection of the layer
+   */
   @Input() public collection: string;
   /**
    * @Input : Angular
