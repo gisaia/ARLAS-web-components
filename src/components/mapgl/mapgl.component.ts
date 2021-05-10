@@ -464,7 +464,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     layers.forEach(layer => {
       this.map.addLayer(layer);
     });
-    this.layersMap = new Map(this.mapLayers.layers.concat(layers).map(layer => [layer.id, layer]));
+    const layersMap = new Map();
+    this.mapLayers.layers.concat(layers).forEach(layer => this.layersMap.set(layer.id, layer));
+    this.layersMap = layersMap;
 
     this.reorderLayers();
   }
@@ -732,7 +734,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
-        this.layersMap = new Map(this.mapLayers.layers.map(layer => [layer.id, layer]));
+        const layersMap = new Map();
+        this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
+        this.layersMap = layersMap;
         this.addVisuLayers();
         this.addExternalEventLayers();
 
