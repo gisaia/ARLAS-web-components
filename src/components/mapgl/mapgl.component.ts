@@ -380,7 +380,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
 
   public showLayersList = false;
-  private layersMap = new Map<string, mapboxgl.Layer>();
+  public layersMap: Map<string, mapboxgl.Layer>;
   public basemapStylesGroup: BasemapStylesGroup;
 
   public currentLat: string;
@@ -461,11 +461,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.visualisationSetsConfig.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
     this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
-
     layers.forEach(layer => {
-      this.layersMap.set(layer.id, layer);
       this.map.addLayer(layer);
     });
+    const layersMap = new Map();
+    this.mapLayers.layers.concat(layers).forEach(layer => this.layersMap.set(layer.id, layer));
+    this.layersMap = layersMap;
 
     this.reorderLayers();
   }
@@ -733,7 +734,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
+        const layersMap = new Map();
         this.mapLayers.layers.forEach(layer => this.layersMap.set(layer.id, layer));
+        this.layersMap = layersMap;
         this.addVisuLayers();
         this.addExternalEventLayers();
 
@@ -1194,10 +1197,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.getCanvas().style.cursor = '';
       this.isDrawingBbox = false;
     }
-  }
-
-  public getLayer(layerId: string): mapboxgl.Layer {
-    return this.layersMap.get(layerId);
   }
 
   private latLngToWKT(features) {
