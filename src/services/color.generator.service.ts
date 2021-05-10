@@ -25,7 +25,7 @@ export class ArlasColorService {
 
   constructor(public colorGenerator: ColorGeneratorLoader) {}
 
-  public getColor(key: string, keysToColors: Array<[string, string]>, colorsSaturationWeight: number): string {
+  public getColor(key: string, keysToColors?: Array<[string, string]>, colorsSaturationWeight?: number): string {
     return this.colorGenerator.getColor(key, keysToColors, colorsSaturationWeight);
   }
 
