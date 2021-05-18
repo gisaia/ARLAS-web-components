@@ -82,6 +82,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
   public colorLegend: Legend = {};
+  public strokeColorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
   public detail = false;
@@ -93,6 +94,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   private MAX_CIRLE_RADIUS = 7;
   private LEGEND_WIDTH = 210;
   public colorsPalette = '';
+  public strokeColorPalette = '';
 
   constructor(public translate: TranslateService, private el: ElementRef,
     public colorService: ArlasColorService) { }
@@ -157,9 +159,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
         const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData, this.translate);
+        const strokeColors = MapglLegendComponent.buildColorLegend(p['circle-stroke-color'], visibileMode, this.legendData, this.translate);
         this.buildCircleRadiusLegend(p['circle-radius']);
         this.colorLegend = colors[0];
+        this.strokeColorLegend = strokeColors[0];
         this.colorsPalette = colors[1];
+        this.strokeColorPalette = strokeColors[1];
         break;
       }
       case 'line': {
@@ -354,6 +359,40 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           circleRadius.filter((w, i) => i >= 3).forEach((w, i) => {
             if (i % 2 === 0) {
               circleRadiusEvolution.push({ key: w, value: circleRadius[i + 1 + 3] });
+            }
+          });
+          this.radiusLegend.title = field;
+          if (this.legendData && this.legendData.get(field)) {
+            this.radiusLegend.minValue = this.legendData.get(field).minValue;
+            this.radiusLegend.maxValue = this.legendData.get(field).maxValue;
+          } else {
+            this.radiusLegend.minValue = circleRadiusEvolution[0].key + '';
+            this.radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
+          }
+          this.radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+          const maxCircleRadius = getMax(circleRadiusEvolution);
+          if (maxCircleRadius > this.MAX_CIRLE_RADIUS) {
+            circleRadiusEvolution.map(lw => {
+              lw.value = lw.value * this.MAX_CIRLE_RADIUS / maxCircleRadius;
+              return lw;
+            });
+          }
+          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend,
+            this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
+        }
+      }
+    }
+  }
+
+  private buildCircleStrokeLegend(circleStroke: number | StyleFunction | Expression): void {
+    if (Array.isArray(circleStroke)) {
+      if (circleStroke.length >= 3) {
+        if (circleStroke[0] === INTERPOLATE) {
+          const field = circleStroke[2][1];
+          const circleRadiusEvolution: Array<HistogramData> = new Array();
+          circleStroke.filter((w, i) => i >= 3).forEach((w, i) => {
+            if (i % 2 === 0) {
+              circleRadiusEvolution.push({ key: w, value: circleStroke[i + 1 + 3] });
             }
           });
           this.radiusLegend.title = field;

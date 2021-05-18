@@ -10,6 +10,7 @@ import { select } from 'd3-selection';
 export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public layer: mapboxgl.Layer;
   @Input() public colorLegend: Legend = {};
+  @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
   @Input() public radiusLegend: Legend = {};
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
@@ -42,11 +43,11 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
         if (source.startsWith('feature-metric')) {
-          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, true);
+          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
         } else if (source.startsWith('feature')) {
-          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
+          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
         } else if (source.startsWith('cluster')) {
-          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend);
+          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
         }
         break;
       }
@@ -281,38 +282,11 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, isMetric 
  * @param svgNode SVG element on which we append the circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
  */
-export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, isMetric = false) {
+export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, isMetric = false) {
   const colorsList = [];
-  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    colorsList.push(colorLegend.fixValue);
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
-    const iv = colorLegend.interpolatedValues;
-    if (iv) {
-      if (iv.length === 1) {
-        colorsList.push(iv[0], iv[0], iv[0]);
-      } else if (iv.length === 2) {
-        colorsList.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length >= 3) {
-        colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      }
-    }
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
-    || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const iv = colorLegend.manualValues as Map<string, string>;
-    if (iv) {
-      if (iv.size === 1) {
-        const color = iv.values().next().value;
-        colorsList.push(color, color, color);
-      } else if (iv.size === 2) {
-        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[0], Array.from(iv.values())[1]);
-      } else if (iv.size >= 3) {
-        colorsList.push(Array.from(iv.values())[0], Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)],
-          Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
-      }
-    } else if (!iv || iv.size === 0) {
-      colorsList.push('#eee', '#eee', '#eee');
-    }
-  }
+  const strokeColorsList = [];
+  populateListFromLegend(colorsList, colorLegend);
+  populateListFromLegend(strokeColorsList, strokeColorLegend);
 
   const svg = select(svgNode);
   svg.selectAll('circle').remove();
@@ -346,7 +320,7 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
       }
     })
     .style('fill', (d, i) => d).style('fill-opacity', colorsList.length === 1 ? 0.6 : 0.8)
-    .style('stroke', (d, i) => d).style('stroke-width', 0.5);
+    .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.5);
 
   if (isMetric) {
     svg.append('g').append('text').text('∑')
@@ -360,25 +334,12 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
  * @param svgNode SVG element on which we append the circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
  */
-export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend) {
+export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend) {
   // todo include radius legend in drawing icons
   const colorsList = [];
-  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    colorsList.push(colorLegend.fixValue);
-    colorsList.push(colorLegend.fixValue);
-    colorsList.push(colorLegend.fixValue);
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
-    const iv = colorLegend.interpolatedValues;
-    if (iv) {
-      if (iv.length === 1) {
-        colorsList.push(iv[0], iv[0], iv[0]);
-      } else if (iv.length === 2) {
-        colorsList.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length >= 3) {
-        colorsList.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      }
-    }
-  }
+  const strokeColorsList = [];
+  populateListFromLegend(colorsList, colorLegend);
+  populateListFromLegend(strokeColorsList, strokeColorLegend);
   const svg = select(svgNode);
   svg.selectAll('circle').remove();
   svg.selectAll('circle')
@@ -400,5 +361,42 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend) 
       if (i === 2) { return 3; }
     })
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
-    .style('stroke', (d, i) => d).style('stroke-width', 0.5);
+    .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);
+}
+
+
+
+export function populateListFromLegend(list: Array<string | number>, legend: Legend) {
+  if (legend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    list.push(legend.fixValue);
+    list.push(legend.fixValue);
+    list.push(legend.fixValue);
+  } else if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = legend.interpolatedValues;
+    if (iv) {
+      if (iv.length === 1) {
+        list.push(iv[0], iv[0], iv[0]);
+      } else if (iv.length === 2) {
+        list.push(iv[0], iv[0], iv[1]);
+      } else if (iv.length >= 3) {
+        list.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
+      }
+    }
+  } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
+    || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
+    const iv = legend.manualValues as Map<string, string>;
+    if (iv) {
+      if (iv.size === 1) {
+        const color = iv.values().next().value;
+        list.push(color, color, color);
+      } else if (iv.size === 2) {
+        list.push(Array.from(iv.values())[0], Array.from(iv.values())[0], Array.from(iv.values())[1]);
+      } else if (iv.size >= 3) {
+        list.push(Array.from(iv.values())[0], Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)],
+          Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
+      }
+    } else if (!iv || iv.size === 0) {
+      list.push('#eee', '#eee', '#eee');
+    }
+  }
 }

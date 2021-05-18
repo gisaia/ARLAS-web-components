@@ -1,6 +1,6 @@
 {
   "name": "arlas-web-components",
-  "version": "*update by script*",
+  "version": "17.0.0-beta.0",
   "description": "Components library for ARLAS Web App",
   "repository": {
     "type": "git",
