@@ -24,6 +24,7 @@ import { ArlasColorService } from '../../services/color.generator.service';
 import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
+import * as tinycolor from 'tinycolor2';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -219,7 +220,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
         powerBar.isSelected = true;
         powerBar.classSuffix = this.SELECTED_BAR;
         if (this.useColorService) {
-          powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
+          const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
+              this.colorsSaturationWeight)).toRgb();
+          powerBar.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
         }
       } else {
         powerBar = currentPath.length > 1 ? new PowerBar(currentPath[0].fieldValue, currentPath[1].fieldValue, 0) :
@@ -286,7 +289,9 @@ export class PowerbarsComponent implements OnInit, OnChanges {
           currentPath.reverse();
           powerBar.path = currentPath;
           if (this.useColorService) {
-            powerBar.color = this.colorService.getColor(powerBar.term, this.keysToColors, this.colorsSaturationWeight);
+            const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
+              this.colorsSaturationWeight)).toRgb();
+            powerBar.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
           }
           if (this.useColorFromData) {
             powerBar.color = child.color.toString()[0] === '#' ? child.color.toString() : '#'.concat(child.color.toString());
