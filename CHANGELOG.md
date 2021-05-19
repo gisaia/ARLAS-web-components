@@ -1,5 +1,17 @@
 # Change Log
 
+## [v17.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0) (2021-05-19)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0-beta.0...v17.0.0)
+
+## [v17.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0-beta.0) (2021-05-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.1.0...v17.0.0-beta.0)
+
+**New stuff:**
+
+- Add a level notion in layers [\#173](https://github.com/gisaia/ARLAS-web-components/issues/173) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v16.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.1.0) (2021-04-21)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.3...v16.1.0)
