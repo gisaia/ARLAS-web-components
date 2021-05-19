@@ -1,15 +1,25 @@
 .layer_wrapper {
   border-top: .4px #eaeaea solid;
-  padding: 3px 0;
+}
+.collection_color {
+  width: 4px;
+  background-color: transparent;
+  height: 100%;
+  position: absolute;
+  cursor: pointer;
+  z-index: 1000;
 }
 .layer_container {
   display: flex;
   position: relative;
   justify-content: space-between;
   padding-left: 15px;
+  padding-top: 3px;
+
 }
 .layer_icon_container {
   display: flex;
+  padding-left: 3px;
 }
 .layer_detail {
   display: flex;
@@ -107,6 +117,7 @@
 }
 .legend-wrapper {
   width: 210px;
+  padding-left: 10px;
 }
 .legend-container {
   display: block;

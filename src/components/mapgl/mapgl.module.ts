@@ -31,6 +31,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { GetCollectionPipe, GetLayerPipe } from './mapgl.component.util';
 
 
 @NgModule({
@@ -48,7 +49,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatChipsModule,
     DragDropModule
   ],
-  declarations: [MapglComponent],
+  declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe],
   exports: [MapglComponent]
 })
 export class MapglModule {
