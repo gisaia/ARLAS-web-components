@@ -82,6 +82,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
   public colorLegend: Legend = {};
+  public lineDasharray;
   public strokeColorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
@@ -171,6 +172,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
         const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.translate);
         this.buildLineWidthLegend(p['line-width']);
+        this.lineDasharray = p['line-dasharray'];
         this.colorLegend = colors[0];
         this.colorsPalette = colors[1];
         break;

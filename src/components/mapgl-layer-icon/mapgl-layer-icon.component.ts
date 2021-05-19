@@ -13,6 +13,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
   @Input() public radiusLegend: Legend = {};
+  @Input() public lineDasharray;
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
   public isImage = false;
@@ -53,9 +54,9 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
       }
       case 'line': {
         if (source.startsWith('feature-metric')) {
-          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, true);
+          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray, true);
         } else {
-          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend);
+          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray);
         }
         break;
       }
@@ -238,7 +239,7 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
  * @param svgNode SVG element on which we append the line using d3.
  * @param colorLegend Color legend, to give the drawn icons line the same color on the map
  */
-export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, isMetric = false) {
+export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray, isMetric = false) {
   let lineColor = '';
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     lineColor = colorLegend.fixValue + '';
@@ -254,24 +255,34 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, isMetric 
     const mv = colorLegend.manualValues as Map<string, string>;
     lineColor = mv.values().next().value;
   }
-
+  let svgDashArray = '0';
+  if (!!dashArray && dashArray.length > 1) {
+    const joinedDashArray = dashArray.join(',');
+    if (joinedDashArray === '2,5') {
+      svgDashArray = '0, 2, 3';
+    } else if (joinedDashArray === '0.1,5') {
+      svgDashArray = '1,2.5';
+    } else {
+      svgDashArray = '4,2,1';
+    }
+  }
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').append('line')
     .attr('x1', 0).attr('y1', 18)
     .attr('x2', 6).attr('y2', 10)
     .attr('cx', 2).attr('cy', 2)
-    .attr('stroke', lineColor).attr('stroke-width', 2);
+    .attr('stroke', lineColor).attr('stroke-width', 1.5).attr('stroke-dasharray', svgDashArray);
   svg.append('g').append('line')
     .attr('x1', 6).attr('y1', 10)
     .attr('x2', 12).attr('y2', 4)
     .attr('cx', 2).attr('cy', 2)
-    .attr('stroke', lineColor).attr('stroke-width', 2);
+    .attr('stroke', lineColor).attr('stroke-width', 1.5).attr('stroke-dasharray', svgDashArray);
   svg.append('g').append('line')
     .attr('x1', 12).attr('y1', 4)
     .attr('x2', 18).attr('y2', 0)
     .attr('cx', 2).attr('cy', 2)
-    .attr('stroke', lineColor).attr('stroke-width', 2);
+    .attr('stroke', lineColor).attr('stroke-width', 1.5).attr('stroke-dasharray', svgDashArray);
   if (isMetric) {
     svg.append('g').append('text').text('∑')
       .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
