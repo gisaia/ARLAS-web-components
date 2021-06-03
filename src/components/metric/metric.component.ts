@@ -84,7 +84,7 @@ export class MetricComponent implements OnInit, OnChanges {
 
   public static round(value, precision): number {
     let multiplier;
-    if (precision === 0) {
+    if (precision === 0 || precision === undefined) {
       return Math.round(value);
     } else {
       multiplier = Math.pow(10, precision * 10 || 0);
@@ -97,30 +97,16 @@ export class MetricComponent implements OnInit, OnChanges {
    */
   private setDisplayedValue(): void {
     if (this.shortValue) {
-      this.displayedValue = this.intToString(Math.round(this.value));
+      this.displayedValue = this.numberToShortValue(this.value, this.valuePrecision);
     } else {
       this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
     }
   }
-  private intToString(value: number): string {
-    let newValue = value.toString();
-    if (value >= 1000) {
-      const suffixes = ['', 'k', 'M', 'b', 't'];
-      const suffixNum = Math.floor(('' + value).length / 3);
-      let shortValue: number;
-      for (let precision = 3; precision >= 1; precision--) {
-        shortValue = parseFloat((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value)
-          .toPrecision(precision));
-        const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
-        if (dotLessShortValue.length <= 2) { break; }
-      }
-      let shortNum = shortValue.toString();
-      if (shortValue % 1 !== 0) {
-        shortNum = shortValue.toFixed(1);
-      }
-      newValue = shortNum + suffixes[suffixNum];
-    }
-    return newValue.toString();
+  private numberToShortValue(value: number, p?: number): string {
+    const suffixes = ['', 'k', 'M', 'b', 't'];
+    const suffixNum = Math.floor(('' + Math.round(value)).length / 3);
+    const shortValue = MetricComponent.round((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value), p);
+    return shortValue + suffixes[suffixNum];
   }
 
 }
