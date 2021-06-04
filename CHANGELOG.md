@@ -1,8 +1,21 @@
 # Change Log
 
+## [v17.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.1.0) (2021-06-04)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0...v17.1.0)
+
+**New stuff:**
+
+- Apply value precision for short value metrics [\#549](https://github.com/gisaia/ARLAS-web-components/issues/549)
+
 ## [v17.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0) (2021-05-19)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0-beta.0...v17.0.0)
+
+**Fixed bugs:**
+
+- Map layer Icon doesn't handle cricle strokes and dasharrays [\#546](https://github.com/gisaia/ARLAS-web-components/issues/546) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Text appears behind the rightband [\#545](https://github.com/gisaia/ARLAS-web-components/issues/545) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
 ## [v17.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0-beta.0) (2021-05-10)
 
