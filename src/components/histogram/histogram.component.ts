@@ -38,9 +38,12 @@ import {
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
-import { HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions,
-  HistogramTooltip } from 'arlas-d3/histograms/utils/HistogramUtils';
+import {
+  HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions,
+  HistogramTooltip
+} from 'arlas-d3/histograms/utils/HistogramUtils';
 import { TranslateService } from '@ngx-translate/core';
+import { ArlasColorService } from 'services/color.generator.service';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
@@ -335,7 +338,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ChartType = ChartType;
   public Array = Array;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef, private translate: TranslateService) {
+  constructor(private colorService: ArlasColorService, private el: ElementRef, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
@@ -538,6 +541,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
     this.histogram.histogramParams.selectedSwimlanes = this.selectedSwimlanes;
     this.histogram.histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
+    this.histogram.histogramParams.colorGenerator = this.colorService;
     this.histogram.histogramParams.tooltipEvent.subscribe(t => {
       t.xLabel = this.chartXLabel;
       t.yLabel = this.chartTitle;
