@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "arlas-web-components": {
+    "arlas-web-components-demo": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -101,7 +101,7 @@
         }
       }
     },
-    "arlas-web-components-e2e": {
+    "arlas-web-components-demo-e2e": {
       "root": "e2e",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -123,9 +123,50 @@
           }
         }
       }
+    },
+    "arlas-web-components": {
+      "projectType": "library",
+      "root": "projects/arlas-components",
+      "sourceRoot": "projects/arlas-components/src",
+      "prefix": "arlas",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/arlas-components/tsconfig.lib.json",
+            "project": "projects/arlas-components/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/arlas-components/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/arlas-components/src/test.ts",
+            "tsConfig": "projects/arlas-components/tsconfig.spec.json",
+            "karmaConfig": "projects/arlas-components/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/arlas-components/tsconfig.lib.json",
+              "projects/arlas-components/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "projects/arlas-components/src/lib/components/**/*.schema.json"
+            ]
+          }
+        }
+      }
     }
   },
-  "defaultProject": "arlas-web-components",
+  "defaultProject": "arlas-web-components-demo",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "arlas",

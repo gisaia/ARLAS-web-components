@@ -17,12 +17,16 @@
  * under the License.
  */
 
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { DonutComponent } from './donut.component';
 
 @NgModule({
   declarations: [DonutComponent],
-  exports: [DonutComponent]
+  exports: [DonutComponent],
+  imports: [
+    CommonModule
+  ]
 })
 export class DonutModule {
 }
