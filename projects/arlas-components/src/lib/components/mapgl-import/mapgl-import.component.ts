@@ -6,11 +6,14 @@ import JSZip from 'jszip';
 import { MapglComponent } from '../mapgl/mapgl.component';
 import * as helpers from '@turf/helpers';
 import { Subject } from 'rxjs';
-import * as shp from 'shpjs/dist/shp';
-import * as extent from 'turf-extent';
+import * as shp_ from 'shpjs/dist/shp';
+import * as extent_ from 'turf-extent';
 import { parse } from 'wellknown';
-import { valid, isFeature } from 'geojson-validation';
-import * as gpsi from 'geojson-polygon-self-intersections';
+import { valid } from 'geojson-validation';
+import * as gpsi_ from 'geojson-polygon-self-intersections';
+const gpsi = gpsi_;
+const extent = extent_;
+const shp = shp_;
 
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',

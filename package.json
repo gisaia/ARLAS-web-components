@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/ng-packagr/package.schema.json",
-  "name": "arlas-web-components",
+  "name": "arlas-web-components-demo",
   "version": "17.2.0-dev0",
   "license": "Apache-2.0",
   "scripts": {
@@ -11,11 +11,11 @@
     "test": "ng test",
     "lint": "ng lint",
     "tslint": "ng lint",
-    "build-release": "ngc -p tsconfig-build.json && gulp",
+    "build-release": "ng build arlas-web-components --prod",
     "e2e": "ng e2e",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
-    "i18n:init": "ngx-translate-extract --input ./src --output ./src/assets/i18n/template.json s--key-as-default-value --replace --format json",
-    "i18n:extract": "ngx-translate-extract --input ./src --output ./src/assets/i18n/{en,fr}.json --format json"
+    "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
+    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr}.json --format json"
   },
   "private": true,
   "dependencies": {
@@ -53,6 +53,7 @@
     "rxjs": "^6.6.7",
     "shpjs": "^3.4.3",
     "stream": "0.0.2",
+    "tslib": "^2.0.0",
     "turf-extent": "1.0.4",
     "wellknown": "0.5.0",
     "zone.js": "^0.11.4"
@@ -78,10 +79,10 @@
     "karma-coverage-istanbul-reporter": "~2.1.0",
     "karma-jasmine": "~1.1.2",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "node": "^11.0.0",
+    "ng-packagr": "^11.0.0",
+    "node": "^12.0.0",
     "ts-node": "~7.0.0",
     "tsickle": ">=0.29.0",
-    "tslib": "^1.9.0",
     "tslint": "~5.11.0",
     "typescript": "4.1.6",
     "webpack-bundle-analyzer": "^3.6.1"

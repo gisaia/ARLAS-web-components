@@ -6,56 +6,56 @@ mkdir target
 mkdir target/generated-docs
 
 ## GENERATE THE TYPESCRIPT DOCUMENTATION##
-docker run -a STDERR --rm -i -v `pwd`:/docs gisaia/typedocgen:0.0.5 generatedoc src/components
+docker run -a STDERR --rm -i -v `pwd`:/docs gisaia/typedocgen:0.0.5 generatedoc projects/arlas-components/src/lib/components
 
 ## GENERATE THE CSS DOCUMENTATION##
 echo "# Customize your components style" > style.md
-for file in $(find src/components -name '*.css')
+for file in $(find projects/arlas-components/src/lib/components -name '*.css')
 do
 
   echo "" >> style.md
   ## ADD TITLE FOR EACH CSS FILE
-  if  [[ $file == src/components/powerbars* ]]  ;
+  if  [[ $file == projects/arlas-components/src/lib/components/powerbars* ]]  ;
   then
       echo "## PowerbarsComponent" >> style.md
   fi
 
-  if [[ $file == src/components/mapgl/mapgl* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/mapgl/mapgl* ]]
   then
       echo "## MapglComponent" >> style.md
   fi
 
-  if [[ $file == src/components/results/result-item* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/results/result-item* ]]
   then
       echo "## ResultItemComponent" >> style.md
   fi
 
-  if [[ $file == src/components/results/result-detailed-item* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/results/result-detailed-item* ]]
   then
       echo "## ResultDetailedItemComponent" >> style.md
   fi
 
-  if [[ $file == src/components/results/result-grid-tile* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/results/result-grid-tile* ]]
   then
       echo "## ResultGridTileComponent" >> style.md
   fi
 
-  if [[ $file == src/components/results/result-detailed-grid* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/results/result-detailed-grid* ]]
   then
       echo "## ResultDetailedGridComponent" >> style.md
   fi
 
-  if [[ $file == src/components/results/result-list/* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/results/result-list/* ]]
   then
       echo "## ResultListComponent" >> style.md
   fi
 
-  if [[ $file == src/components/results/result-filter/* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/results/result-filter/* ]]
   then
       echo "## ResultFilterComponent" >> style.md
   fi
 
-  if [[ $file == src/components/histogram/* ]]
+  if [[ $file == projects/arlas-components/src/lib/components/histogram/* ]]
   then
       echo "## HistogramComponent" >> style.md
   fi

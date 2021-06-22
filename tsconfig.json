@@ -2,6 +2,12 @@
   "compileOnSave": false,
   "compilerOptions": {
     "importHelpers": true,
+    "paths": {
+      "arlas-components": [
+        "dist/arlas-components/arlas-components",
+        "dist/arlas-components"
+      ]
+    },
     "outDir": "./dist/out-tsc",
     "baseUrl": "src",
     "sourceMap": true,
