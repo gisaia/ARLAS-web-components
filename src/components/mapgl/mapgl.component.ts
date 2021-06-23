@@ -378,6 +378,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
  * @description Emits the geojson of an aoi added to the map
  */
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
+  /**
+   * @Output :  Angular
+   * @description Emits which layers are displayed in the Legend
+   */
+  @Output() public legendVisibiltyStatus: Subject<Map<string, boolean>> = new Subject();
 
   public showLayersList = false;
   public layersMap: Map<string, mapboxgl.Layer>;
@@ -415,6 +420,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {}
 
+
+  public emitLegendVisibility(l: string, visible: boolean): void {
+    this.visibilityStatus.set(l, visible);
+    this.legendVisibiltyStatus.next(this.visibilityStatus);
+  }
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
