@@ -1,5 +1,9 @@
 # Change Log
 
+## [v17.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.0) (2021-06-24)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.1.0...v17.2.0)
+
 ## [v17.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.1.0) (2021-06-04)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0...v17.1.0)
