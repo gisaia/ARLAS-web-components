@@ -65,7 +65,8 @@
             "enum": [
                 "bars",
                 "area",
-                "oneDimension"
+                "oneDimension",
+                "curve"
             ]
         },
         "chartTitle": {

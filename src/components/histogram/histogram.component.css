@@ -243,6 +243,16 @@
   display: none;
 }
 
+.histogram__only-axis .line {
+  stroke: #bdbdbd;
+  stroke-width: 1px;
+}
+
+.histogram__only-axis-right .line {
+  stroke: #bdbdbd;
+  stroke-width: 1px;
+}
+
 .brush .selection /* @doc Sets the brush selection style*/
 {
   opacity: 0.1;
