@@ -316,6 +316,43 @@
   fill-opacity: .7;
 }
 
+.histogram__chart--fixed-selected--curve /* @doc Sets the style of the curve's selected parts*/
+{
+  fill: none;
+  stroke: #88c9c3;
+}
+
+.histogram__chart--fixed-selected--curve--without_color
+{
+  fill: none;
+}
+
+.histogram__chart--current-selected--curve /* @doc Sets the style of the curve's selected parts*/
+{
+  fill: none;
+  stroke: #88c9c3;
+}
+
+.histogram__chart--current-selected--curve--without_color
+{
+  fill: none;
+}
+
+.histogram__chart--unselected--curve /* @doc Sets the style of the curve's unselected parts*/
+{
+  fill: none;
+  stroke: #a5a5a5;
+  stroke-width: 0.8px;
+}
+
+.histogram__ticks-axis-right text {
+  display: none;
+}
+
+.stroke_canceller {
+  stroke: unset;
+}
+
 .histogram__chart--bar__fullyselected /* @doc Sets the fixed selected bars style*/
 {
   fill: #FFF;
