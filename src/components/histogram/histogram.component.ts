@@ -24,7 +24,8 @@ import {
 
 import {
   ChartType, DataType, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
-  HistogramUtils
+  HistogramUtils,
+  ChartCurve
 } from 'arlas-d3';
 
 import { Subject, fromEvent } from 'rxjs';
@@ -38,9 +39,12 @@ import {
 
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
-import { HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions,
-  HistogramTooltip } from 'arlas-d3/histograms/utils/HistogramUtils';
+import {
+  HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions,
+  HistogramTooltip
+} from 'arlas-d3/histograms/utils/HistogramUtils';
 import { TranslateService } from '@ngx-translate/core';
+import { ArlasColorService } from '../../services/color.generator.service';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
@@ -65,6 +69,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    * @description Data to plot in the chart.
    */
   @Input() public data: Array<HistogramData> | SwimlaneData;
+  /**
+   * @Input : Angular
+   * @description HistogramData is a bucket of a given chart Id. Many charts ids can be represented in histogram. This
+   * input sets the main chart id. So that the main one can be represented differently from the others
+   */
+  @Input() public mainChartId: string;
   /**
    * @Input
    * @description To be set to `time` when x axis represents dates and to `numeric` otherwise.
@@ -335,7 +345,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ChartType = ChartType;
   public Array = Array;
 
-  constructor(private viewContainerRef: ViewContainerRef, private el: ElementRef, private translate: TranslateService) {
+  constructor(private colorService: ArlasColorService, private el: ElementRef, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
@@ -353,11 +363,14 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
 
 
   public ngOnChanges(changes: SimpleChanges): void {
-
     if (this.histogram === undefined) {
       switch (this.chartType) {
         case ChartType.area: {
           this.histogram = new ChartArea();
+          break;
+        }
+        case ChartType.curve: {
+          this.histogram = new ChartCurve();
           break;
         }
         case ChartType.bars: {
@@ -538,9 +551,11 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
     this.histogram.histogramParams.selectedSwimlanes = this.selectedSwimlanes;
     this.histogram.histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
+    this.histogram.histogramParams.colorGenerator = this.colorService;
+    this.histogram.histogramParams.mainChartId = this.mainChartId;
     this.histogram.histogramParams.tooltipEvent.subscribe(t => {
+      t.title = this.chartTitle;
       t.xLabel = this.chartXLabel;
-      t.yLabel = this.chartTitle;
       t.xUnit = this.xUnit;
       t.yUnit = this.yUnit;
       this.tooltipEvent.next(t);
