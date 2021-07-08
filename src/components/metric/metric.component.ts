@@ -102,11 +102,20 @@ export class MetricComponent implements OnInit, OnChanges {
       this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
     }
   }
+
   private numberToShortValue(value: number, p?: number): string {
+    let isNegative = false;
+    if (value < 0) {
+      value = value * -1;
+      isNegative = true;
+    }
     const suffixes = ['', 'k', 'M', 'b', 't'];
-    const suffixNum = Math.floor(('' + Math.round(value)).length / 3);
+    let suffixNum = Math.floor(('' + Math.round(value)).length / 3);
+    if (('' + Math.round(value)).length <= 3) {
+      suffixNum = 0;
+    }
     const shortValue = MetricComponent.round((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value), p);
-    return shortValue + suffixes[suffixNum];
+    return (isNegative ? '-' : '') + shortValue + suffixes[suffixNum];
   }
 
 }
