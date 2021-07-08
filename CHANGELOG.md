@@ -1,5 +1,18 @@
 # Change Log
 
+## [v18.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.0) (2021-07-08)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.0...v18.0.0)
+
+**New stuff:**
+
+- Inject color service to histogram component [\#556](https://github.com/gisaia/ARLAS-web-components/issues/556) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- Add curve chart in Histogram component [\#555](https://github.com/gisaia/ARLAS-web-components/issues/555) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+**Fixed bugs:**
+
+- numbers with xxx numerals are not shown correctly as short value [\#554](https://github.com/gisaia/ARLAS-web-components/issues/554)
+
 ## [v17.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.0) (2021-06-24)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.1.0...v17.2.0)
