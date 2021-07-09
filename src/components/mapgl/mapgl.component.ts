@@ -63,7 +63,7 @@ export interface OnMoveResult {
 }
 
 export interface LegendData {
-  minValue?:  string;
+  minValue?: string;
   maxValue?: string;
   keysColorsMap?: Map<string, string>;
 }
@@ -288,8 +288,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
-  @Input() public redrawSource: Subject<{source: string, data: helpers.Feature[]}> =
-    new Subject<{source: string, data: helpers.Feature[]}>();
+  @Input() public redrawSource: Subject<{ source: string, data: helpers.Feature[] }> =
+    new Subject<{ source: string, data: helpers.Feature[] }>();
 
   /**
    * @Input : Angular
@@ -347,12 +347,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Output : Angular
    * @description Emits the event of clicking on a feature.
    */
-  @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() public onFeatureClic: EventEmitter<any> = new EventEmitter<any>();
   /**
    * @Output : Angular
    * @description Emits the event of hovering feature.
    */
-  @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() public onFeatureOver: EventEmitter<any> = new EventEmitter<any>();
   /**
    * @Output : Angular
    * @description Emit the event of updating the draw polygon
@@ -418,7 +418,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {}
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
 
 
   public emitLegendVisibility(l: string, visible: boolean): void {
@@ -428,7 +428,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
-    this.visualisationSetsConfig.find(v => v.name ===  visualisationName).enabled = visuStatus;
+    this.visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
     if (!visuStatus) {
       const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
       this.visualisationsSets.visualisations.forEach((ls, v) => {
@@ -485,7 +485,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Updates the visibility status of the given layers in Legend component
    * @param visibility Map of layerId, and its visibility status as boolean (true = visible)
    */
-  public updateLayerVisibility (visibility: Map<string, boolean>) {
+  public updateLayerVisibility(visibility: Map<string, boolean>) {
     this.visibilityUpdater.next(visibility);
   }
 
@@ -501,7 +501,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     return mapglJsonSchema;
   }
 
-  public ngOnInit() {}
+  public ngOnInit() { }
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
@@ -712,10 +712,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.map.loadImage(
             this.ICONS_BASE_PATH + icon.path,
             (error, image) => {
-              if (error)  {
+              if (error) {
                 console.warn('The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found');
               } else {
-                this.map.addImage(icon.path.split('.')[0], image, {'sdf': icon.recolorable});
+                this.map.addImage(icon.path.split('.')[0], image, { 'sdf': icon.recolorable });
               }
             });
         });
@@ -779,13 +779,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
-            this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
+            this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
           });
         });
 
         this.mapLayers.events.onHover.forEach(layerId => {
           this.map.on('mousemove', layerId, (e) => {
-            this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
+            this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
           });
 
           this.map.on('mouseleave', layerId, (e) => {
@@ -1265,7 +1265,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.visualisationsSets.status.forEach((b, vs) => {
       if (!b) {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.map.setLayoutProperty(l, 'visibility', 'none');
+          this.map.setLayoutProperty(l, 'visibility', 'none');
         });
       }
     });
@@ -1281,8 +1281,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private addExternalEventLayers() {
     this.mapLayers.layers
-    .filter(layer =>  this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-    .forEach(l => this.addLayer(l.id) );
+      .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+      .forEach(l => this.addLayer(l.id));
 
 
   }
