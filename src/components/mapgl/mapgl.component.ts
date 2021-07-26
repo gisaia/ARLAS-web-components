@@ -30,7 +30,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
+import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent, ARLAS_ID, FILLSTROKE_LAYER_PREFIX } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -442,6 +442,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       layersSet.forEach(ll => {
         (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
+        this.setStrokeLayoutVisibility(ll, 'none');
       });
     }
     this.visualisationsSets.status.set(visualisationName, visuStatus);
@@ -451,6 +452,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         ls.forEach(l => {
           layers.add(l);
           (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
+          this.setStrokeLayoutVisibility(l, 'visible');
         });
       }
     });
@@ -527,6 +529,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           const l = visualisation.layers[j];
           if (!!this.map.getLayer(l)) {
             this.map.moveLayer(l);
+            const layer = this.layersMap.get(l);
+            if (layer.type === 'fill') {
+              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+              const strokeLayer = this.layersMap.get(strokeId);
+              if (!!strokeLayer && !!this.map.getLayer(strokeId)) {
+                this.map.moveLayer(strokeId);
+              }
+            }
           }
         }
       }
@@ -1259,6 +1269,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
           this.addLayer(l);
+          /** add stroke layer if the layer is a fill */
+          const layer = this.layersMap.get(l);
+          if (layer.type === 'fill') {
+            const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+            const strokeLayer = this.layersMap.get(strokeId);
+            if (!!strokeLayer) {
+              this.addLayer(strokeId);
+            }
+          }
         }
       }
     }
@@ -1266,6 +1285,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (!b) {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'none');
+          this.setStrokeLayoutVisibility(l, 'none');
         });
       }
     });
@@ -1273,6 +1293,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (b) {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'visible');
+          this.setStrokeLayoutVisibility(l, 'visible');
         });
 
       }
@@ -1518,5 +1539,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const id = this.getNextFeatureId();
     this.draw.setFeatureProperty(featureId, 'arlas_id', id);
     this.customIds.set(id, featureId);
+  }
+
+  private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    if (layer.type === 'fill') {
+      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.layersMap.get(strokeId);
+      if (!!strokeLayer) {
+        this.map.setLayoutProperty(strokeId, 'visibility', visibility);
+      }
+    }
   }
 }
