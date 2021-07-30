@@ -51,12 +51,12 @@
       <span class="histogram__swimlane--tooltip-xcontent">{{histogram.histogramParams.swimlaneXTooltip.xContent}}</span>
     </div>
     <div *ngFor="let key of Array.from(histogram.histogramParams.swimlaneTooltipsMap.keys()); index as i">
-      <div class="histogram__tooltip" *ngIf="(histogram.histogramParams.swimlaneTooltipsMap).get(key).isShown && !(histogram.histogramParams.swimlaneTooltipsMap).get(key).isRightSide"
+      <div class="histogram__tooltip" *ngIf="(histogram.histogramParams.swimlaneTooltipsMap).get(key).isShown && !(histogram.histogramParams.swimlaneTooltipsMap).get(key).isRightSide && histogram.histogramParams.swimlaneTooltipsMap.get(key).yContent"
         [style.left.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).xPosition"   [style.top.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).yPosition">
         <span class="histogram__swimlane--tooltip-content">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yContent}}</span>
         <span class="histogram__swimlane--tooltip-additional_info">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yAdditonalInfo}}</span>
       </div>
-      <div class="histogram__tooltip" *ngIf="(histogram.histogramParams.swimlaneTooltipsMap).get(key).isShown && (histogram.histogramParams.swimlaneTooltipsMap).get(key).isRightSide"
+      <div class="histogram__tooltip" *ngIf="(histogram.histogramParams.swimlaneTooltipsMap).get(key).isShown && (histogram.histogramParams.swimlaneTooltipsMap).get(key).isRightSide && histogram.histogramParams.swimlaneTooltipsMap.get(key).yContent"
         [style.right.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).xPosition"  [style.top.px]="histogram.histogramParams.swimlaneTooltipsMap.get(key).yPosition">
         <span class="histogram__swimlane--tooltip-content">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yContent}}</span>
         <span class="histogram__swimlane--tooltip-additional_info">{{histogram.histogramParams.swimlaneTooltipsMap.get(key).yAdditonalInfo}}</span>

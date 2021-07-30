@@ -112,8 +112,8 @@
   z-index: 20000;
   min-width: 100px;
 
-  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14),
-    0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
 .selected_bars_zone {
@@ -336,8 +336,8 @@
 
 .histogram__swimlane--vertical-tooltip-line /* @doc Sets the vertical line that's shown when hovering bars in swimlane*/
 {
-  stroke-width: 2px;
-  stroke: #000;
+  stroke-width: 1px;
+  stroke: rgb(37, 37, 37);
   fill: none;
 }
 
