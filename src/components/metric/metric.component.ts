@@ -111,7 +111,7 @@ export class MetricComponent implements OnInit, OnChanges {
     }
     const suffixes = ['', 'k', 'M', 'b', 't'];
     let suffixNum = Math.floor(('' + Math.round(value)).length / 3);
-    if (('' + Math.round(value)).length <= 3) {
+    if (('' + value).length === 3) {
       suffixNum = 0;
     }
     const shortValue = MetricComponent.round((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value), p);
