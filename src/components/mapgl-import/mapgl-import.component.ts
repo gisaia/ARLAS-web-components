@@ -624,6 +624,9 @@ export class MapglImportComponent {
   }
 
   public calcCentroid(feature) {
+    if (!this.maxVertexByPolygon) {
+      this.maxVertexByPolygon = 100;
+    }
     if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length - 1 > this.maxVertexByPolygon) {
       this.tooManyVertex = true;
     }
