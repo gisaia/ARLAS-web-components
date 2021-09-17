@@ -132,7 +132,6 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, st
   if (strokeColorLegend) {
     strokeColor = getOneColor(strokeColorLegend);
   }
- 
   const polygon = [{ 'x': 0, 'y': 0 },
   { 'x': 18, 'y': 0 },
   { 'x': 13, 'y': 15 },
@@ -147,7 +146,7 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, st
     .attr('points', (d) => d.map(d => [d.x, d.y].join(',')).join(' ')).attr('fill', fillColor)
     .attr('fill-opacity', 0.5)
     .attr('stroke', strokeColor)
-    .attr('stroke-width', 0.6);
+    .attr('stroke-width', 0.9);
   if (isMetric) {
     svg.append('g').append('text').text('∑')
       .attr('x', 14).attr('y', 14).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
