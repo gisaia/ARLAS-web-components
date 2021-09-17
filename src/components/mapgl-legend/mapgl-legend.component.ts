@@ -156,6 +156,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   private drawLegends(visibileMode: boolean): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
+    const metadata = this.layer.metadata;
     switch (type) {
       case 'circle': {
         const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
@@ -182,6 +183,11 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.translate);
         this.colorLegend = colors[0];
         this.colorsPalette = colors[1];
+        if (!!metadata && !!metadata.stroke) {
+          const strokeColors = MapglLegendComponent.buildColorLegend(metadata.stroke.color, visibileMode, this.legendData, this.translate);
+          this.strokeColorLegend = strokeColors[0];
+          this.strokeColorPalette = strokeColors[1];
+        }
         break;
       }
       case 'heatmap': {
