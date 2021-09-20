@@ -291,6 +291,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public showEmptyGroup = false;
   /**
+   * @Input
+   * @description Whether display the detailled part in grid mode.
+   */
+  @Input() public isDetailledGridOpen = false;
+
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
@@ -368,6 +374,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Output() public clickOnTile: Subject<Item> = new Subject<Item>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the event of clicking on the switch mode button. Emits the new mode (grid or list).
+   */
+  @Output() public changeResultMode: Subject<ModeEnum> = new Subject<ModeEnum>();
+
+
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { fieldName: string, sortDirection: SortEnum } = { fieldName: '', sortDirection: SortEnum.asc };
@@ -392,7 +405,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public resultMode: ModeEnum = this.defautMode;
   public allItemsChecked = false;
 
-  public isDetailledGridOpen = false;
   private detailedGridCounter = 0;
 
   public borderStyle = 'solid';
@@ -454,6 +466,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.items = [];
       this.isPreviousPageRequested = false;
       this.closeDetail(true);
+    }
+    if (changes['isDetailledGridOpen'] !== undefined) {
+      this.isDetailledGridOpen = changes['isDetailledGridOpen'].currentValue;
     }
     if (changes['indeterminatedItems'] !== undefined) {
       this.items.forEach(item => {
@@ -734,6 +749,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.resultMode = ModeEnum.list;
       this.displayListGrid = 'inline';
     }
+    this.changeResultMode.next(this.resultMode);
     this.tbodyHeight = this.getOffSetHeight() - (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
   }
 
