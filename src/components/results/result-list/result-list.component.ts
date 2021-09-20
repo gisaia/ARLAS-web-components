@@ -400,6 +400,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public isShiftDown = false;
 
   private debouncer = new Subject<ElementIdentifier>();
+  private scrollDebouncer = new Subject<any>();
+
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
     private colorService: ArlasColorService, public translate: TranslateService) {
@@ -414,6 +416,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
     // Add debounce on hover item list
     this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+    this.scrollDebouncer.pipe(debounceTime(1000)).subscribe(page => this.paginationEvent.next(page));
   }
 
   @HostListener('document:keydown.shift', ['$event'])
@@ -558,7 +561,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public paginate(itemData: Map<string, string | number | Date>, whichPage: PageEnum) {
     this.isNextPageRequested = whichPage === PageEnum.next;
     this.isPreviousPageRequested = whichPage === PageEnum.previous;
-    this.paginationEvent.next({ reference: itemData, whichPage: whichPage });
+    this.scrollDebouncer.next({ reference: itemData, whichPage: whichPage });
 
   }
 
