@@ -1,5 +1,43 @@
 # Change Log
 
+## [v19.0.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.0-beta.3) (2021-09-20)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.1.0...v19.0.0-beta.3)
+
+## [v18.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.1.0) (2021-09-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.2...v18.1.0)
+
+**Fixed bugs:**
+
+- histograms axis labels show only 0 when values are less than 1 [\#578](https://github.com/gisaia/ARLAS-web-components/issues/578) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+## [v18.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.2) (2021-08-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.2...v18.0.2)
+
+## [v17.2.2](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.2) (2021-08-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.1...v17.2.2)
+
+## [v18.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.1) (2021-08-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.1...v18.0.1)
+
+**Fixed bugs:**
+
+- Metric short values should show 100k instead of 0.1M [\#571](https://github.com/gisaia/ARLAS-web-components/issues/571)
+- Swimlane tooltip hides the buckets [\#569](https://github.com/gisaia/ARLAS-web-components/issues/569)
+- Swimlane tooltip should not be displayed for infinity values [\#568](https://github.com/gisaia/ARLAS-web-components/issues/568)
+
+## [v17.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.1) (2021-08-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.2.1...v17.2.1)
+
+## [v18.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v18.2.1) (2021-08-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.0...v18.2.1)
+
 ## [v18.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.0) (2021-07-08)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.0...v18.0.0)
@@ -912,7 +950,7 @@
 
 **Miscellaneous:**
 
-- COMPONENTS: review documentation [\#90](https://github.com/gisaia/ARLAS-web-components/issues/90) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)] [[documentation](https://github.com/gisaia/ARLAS-web-components/labels/documentation)]
+- COMPONENTS: review documentation [\#90](https://github.com/gisaia/ARLAS-web-components/issues/90) [[documentation](https://github.com/gisaia/ARLAS-web-components/labels/documentation)] [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
 
 ## [v6.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.1) (2018-05-29)
 
