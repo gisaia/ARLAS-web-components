@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.2...v18.1.0)
 
+**Fixed bugs:**
+
+- histograms axis labels show only 0 when values are less than 1 [\#578](https://github.com/gisaia/ARLAS-web-components/issues/578) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
 ## [v18.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.2) (2021-08-16)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.2...v18.0.2)
