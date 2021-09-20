@@ -76,10 +76,8 @@
 }
 
 .fill-tip {
-  padding: 1px;
   width: 10px;
   height: 10px;
-  margin-top: 3px;
 }
 
 .manual-color-key {
@@ -93,6 +91,11 @@
 
 .manual-color {
   display: flex;
+}
+
+.manual-color-stroke {
+  display: flex;
+  align-items: center;
 }
 
 .interpolated-color-container {

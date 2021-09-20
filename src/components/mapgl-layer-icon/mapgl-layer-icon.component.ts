@@ -62,11 +62,11 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
       }
       case 'fill': {
         if (source.startsWith('cluster')) {
-          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
+          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
         } else if (source.startsWith('feature-metric')) {
-          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, true);
+          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
         } else {
-          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend);
+          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
         }
         break;
       }
@@ -92,52 +92,33 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
  * @param svgNode SVG element on which we append the rectangles using d3.
  * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
  */
-export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
-  const fourColors = [];
-  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
-    const iv = colorLegend.interpolatedValues;
-    if (iv) {
-      if (iv.length === 1) {
-        for (let i = 0; i < 4; i++) {
-          fourColors.push(iv[0]);
-        }
-      } else if (iv.length === 2) {
-        fourColors.push(iv[0]);
-        fourColors.push(iv[1]);
-        fourColors.push(iv[0]);
-        fourColors.push(iv[1]);
-      } else if (iv.length >= 3) {
-        fourColors.push(iv[0]);
-        fourColors.push(iv[Math.trunc(2 * iv.length / 3)]);
-        fourColors.push(iv[iv.length - 1]);
-        fourColors.push(iv[Math.trunc(iv.length / 3)]);
-      }
-    }
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    const c = colorLegend.fixValue;
-    fourColors.push(c, c, c, c);
+export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend) {
+  const fillFourColors = getClusterFillColors(colorLegend);
+  let strokeFourColors = fillFourColors;
+  if (strokeColorLegend) {
+    strokeFourColors = getClusterFillColors(strokeColorLegend);
   }
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').append('rect')
     .attr('height', 7).attr('width', 7)
-    .attr('fill', fourColors[0])
-    .attr('stroke', fourColors[0])
+    .attr('fill', fillFourColors[0]).attr('fill-opacity', 0.8)
+    .attr('stroke', strokeFourColors[0]).attr('stroke-width', 0.6)
     .attr('y', 3).attr('x', 3);
   svg.append('g').append('rect')
     .attr('height', 7).attr('width', 7)
-    .attr('fill', fourColors[1]).attr('fill-opacity', 0.6)
-    .attr('stroke', fourColors[1]).attr('stroke-width', 0.6)
+    .attr('fill', fillFourColors[1]).attr('fill-opacity', 0.6)
+    .attr('stroke', strokeFourColors[1]).attr('stroke-width', 0.6)
     .attr('y', 10).attr('x', 3);
   svg.append('g').append('rect')
     .attr('height', 7).attr('width', 7)
-    .attr('fill', fourColors[2]).attr('fill-opacity', 0.6)
-    .attr('stroke', fourColors[2]).attr('stroke-width', 0.6)
+    .attr('fill', strokeFourColors[2]).attr('fill-opacity', 0.6)
+    .attr('stroke', strokeFourColors[2]).attr('stroke-width', 0.6)
     .attr('y', 10).attr('x', 10);
   svg.append('g').append('rect')
     .attr('height', 7).attr('width', 7)
-    .attr('fill', fourColors[3]).attr('fill-opacity', 0.6)
-    .attr('stroke', fourColors[3]).attr('stroke-width', 0.6)
+    .attr('fill', strokeFourColors[3]).attr('fill-opacity', 0.6)
+    .attr('stroke', strokeFourColors[3]).attr('stroke-width', 0.6)
     .attr('y', 3).attr('x', 10);
 }
 
@@ -145,17 +126,11 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend) {
  * draws the rectangles icon for feature and feature-metric modes
  * @param svgNode SVG element on which we append the rectangles using d3.
  * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map **/
-export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, isMetric = false) {
-  let fillColor = '';
-  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
-    const iv = colorLegend.interpolatedValues;
-    fillColor = iv[0] + '';
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    fillColor = colorLegend.fixValue + '';
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
-    || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const mv = colorLegend.manualValues as Map<string, string>;
-    fillColor = mv.values().next().value;
+export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, isMetric = false) {
+  const fillColor = getOneColor(colorLegend);
+  let strokeColor = fillColor;
+  if (strokeColorLegend) {
+    strokeColor = getOneColor(strokeColorLegend);
   }
   const polygon = [{ 'x': 0, 'y': 0 },
   { 'x': 18, 'y': 0 },
@@ -170,11 +145,28 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, is
     .enter().append('polygon')
     .attr('points', (d) => d.map(d => [d.x, d.y].join(',')).join(' ')).attr('fill', fillColor)
     .attr('fill-opacity', 0.5)
-    .attr('stroke', fillColor);
+    .attr('stroke', strokeColor)
+    .attr('stroke-width', 0.9);
   if (isMetric) {
     svg.append('g').append('text').text('∑')
       .attr('x', 14).attr('y', 14).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
   }
+}
+
+
+export function getOneColor(legend: Legend): string {
+  let color = '';
+  if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = legend.interpolatedValues;
+    color = iv[0] + '';
+  } else if (legend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    color = legend.fixValue + '';
+  } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
+    || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
+    const mv = legend.manualValues as Map<string, string>;
+    color = mv.values().next().value;
+  }
+  return color;
 }
 
 
@@ -410,4 +402,32 @@ export function populateListFromLegend(list: Array<string | number>, legend: Leg
       list.push('#eee', '#eee', '#eee');
     }
   }
+}
+
+export function getClusterFillColors(colorLegend: Legend): string[] {
+  const fourColors = [];
+  if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    const iv = colorLegend.interpolatedValues;
+    if (iv) {
+      if (iv.length === 1) {
+        for (let i = 0; i < 4; i++) {
+          fourColors.push(iv[0]);
+        }
+      } else if (iv.length === 2) {
+        fourColors.push(iv[0]);
+        fourColors.push(iv[1]);
+        fourColors.push(iv[0]);
+        fourColors.push(iv[1]);
+      } else if (iv.length >= 3) {
+        fourColors.push(iv[0]);
+        fourColors.push(iv[Math.trunc(2 * iv.length / 3)]);
+        fourColors.push(iv[iv.length - 1]);
+        fourColors.push(iv[Math.trunc(iv.length / 3)]);
+      }
+    }
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+    const c = colorLegend.fixValue;
+    fourColors.push(c, c, c, c);
+  }
+  return fourColors;
 }
