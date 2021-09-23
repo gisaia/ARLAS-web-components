@@ -37,7 +37,7 @@ export interface Action {
   id: string;
   label: string;
   actionBus?: Subject<{ idFieldName: string, idValue: string }>;
-  cssClass?: string;
+  cssClass?: string | string[];
   tooltip?: string;
 }
 
