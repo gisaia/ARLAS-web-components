@@ -1,5 +1,147 @@
 # Change Log
 
+## [v12.7.6](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.6) (2021-09-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.0-beta.3...v12.7.6)
+
+## [v19.0.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.0-beta.3) (2021-09-20)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.1.0...v19.0.0-beta.3)
+
+## [v18.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.1.0) (2021-09-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.2...v18.1.0)
+
+**Fixed bugs:**
+
+- histograms axis labels show only 0 when values are less than 1 [\#578](https://github.com/gisaia/ARLAS-web-components/issues/578) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+## [v18.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.2) (2021-08-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.2...v18.0.2)
+
+## [v17.2.2](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.2) (2021-08-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.1...v17.2.2)
+
+## [v18.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.1) (2021-08-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.1...v18.0.1)
+
+**Fixed bugs:**
+
+- Metric short values should show 100k instead of 0.1M [\#571](https://github.com/gisaia/ARLAS-web-components/issues/571)
+- Swimlane tooltip hides the buckets [\#569](https://github.com/gisaia/ARLAS-web-components/issues/569)
+- Swimlane tooltip should not be displayed for infinity values [\#568](https://github.com/gisaia/ARLAS-web-components/issues/568)
+
+## [v17.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.1) (2021-08-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.2.1...v17.2.1)
+
+## [v18.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v18.2.1) (2021-08-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.0...v18.2.1)
+
+## [v18.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.0) (2021-07-08)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.0...v18.0.0)
+
+**New stuff:**
+
+- Inject color service to histogram component [\#556](https://github.com/gisaia/ARLAS-web-components/issues/556) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+- Add curve chart in Histogram component [\#555](https://github.com/gisaia/ARLAS-web-components/issues/555) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+**Fixed bugs:**
+
+- numbers with xxx numerals are not shown correctly as short value [\#554](https://github.com/gisaia/ARLAS-web-components/issues/554)
+
+## [v17.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.0) (2021-06-24)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.1.0...v17.2.0)
+
+## [v17.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.1.0) (2021-06-04)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0...v17.1.0)
+
+**New stuff:**
+
+- Apply value precision for short value metrics [\#549](https://github.com/gisaia/ARLAS-web-components/issues/549)
+
+## [v17.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0) (2021-05-19)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0-beta.0...v17.0.0)
+
+**Fixed bugs:**
+
+- Map layer Icon doesn't handle cricle strokes and dasharrays [\#546](https://github.com/gisaia/ARLAS-web-components/issues/546) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Text appears behind the rightband [\#545](https://github.com/gisaia/ARLAS-web-components/issues/545) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
+## [v17.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0-beta.0) (2021-05-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.1.0...v17.0.0-beta.0)
+
+**New stuff:**
+
+- Add a level notion in layers [\#173](https://github.com/gisaia/ARLAS-web-components/issues/173) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v16.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.1.0) (2021-04-21)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.3...v16.1.0)
+
+**New stuff:**
+
+- Remove layers that are not visible on the map from the TOC [\#535](https://github.com/gisaia/ARLAS-web-components/issues/535) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Text in cells should be in black for outlined cells [\#530](https://github.com/gisaia/ARLAS-web-components/issues/530) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Colors applied to powerbars hide the text [\#529](https://github.com/gisaia/ARLAS-web-components/issues/529) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
+**Fixed bugs:**
+
+- Show outlined cell only if the cell is not empty [\#534](https://github.com/gisaia/ARLAS-web-components/issues/534) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+## [v16.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.3) (2021-03-29)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.2...v16.0.3)
+
+## [v16.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.2) (2021-03-26)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.1...v16.0.2)
+
+## [v16.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.1) (2021-03-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.0...v16.0.1)
+
+## [v16.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.0) (2021-03-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0...v16.0.0)
+
+## [v15.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0) (2021-02-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0-beta.0...v15.0.0)
+
+**New stuff:**
+
+- Support importing MultiPolygon [\#507](https://github.com/gisaia/ARLAS-web-components/issues/507) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v15.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0-beta.0) (2021-02-03)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.3.1...v15.0.0-beta.0)
+
+## [v14.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.1) (2021-02-01)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.3.0...v14.3.1)
+
+## [v14.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.0) (2021-01-29)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.2.0...v14.3.0)
+
+**New stuff:**
+
+- Add method that allows to add visualisation set to map programatically [\#508](https://github.com/gisaia/ARLAS-web-components/issues/508) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v14.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.2.0) (2021-01-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.5...v14.2.0)
+
 ## [v12.7.5](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.5) (2021-01-13)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.4...v12.7.5)
@@ -812,7 +954,7 @@
 
 **Miscellaneous:**
 
-- COMPONENTS: review documentation [\#90](https://github.com/gisaia/ARLAS-web-components/issues/90) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)] [[documentation](https://github.com/gisaia/ARLAS-web-components/labels/documentation)]
+- COMPONENTS: review documentation [\#90](https://github.com/gisaia/ARLAS-web-components/issues/90) [[documentation](https://github.com/gisaia/ARLAS-web-components/labels/documentation)] [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
 
 ## [v6.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.1) (2018-05-29)
 

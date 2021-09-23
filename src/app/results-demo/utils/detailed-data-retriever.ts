@@ -26,6 +26,7 @@ import { Item } from 'components/results/model/item';
 
 export class DetailedDataRetrieverImp implements DetailedDataRetriever {
 
+
   public getActions(item: Item): Observable<Array<Action>> {
     const actionsList = new Array<Action>();
     actionsList.push({ id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS' },
@@ -36,6 +37,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     );
     return from(new Array(actionsList));
   }
+
   public getData(identifier: string): Observable<AdditionalInfo> {
     const detailsDataMap = new Map<string, Map<string, string>>();
 
@@ -52,7 +54,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
 
     const actionsList = new Array<Action>();
     actionsList.push({ id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS' },
-      { id: '2', label: 'Download', actionBus: null, tooltip: 'Download' },
+      { id: '2', label: 'Download', actionBus: null, tooltip: 'Download', cssClass: ['TEST1', 'TEST2'] },
       { id: '3', label: 'WMTS', actionBus: null, tooltip: 'WMTS' });
 
     const attachments = new Array<Attachment>();
@@ -62,8 +64,8 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       url: 'gisaia.fr',
       description: 'Developpeur d\'ARLAS',
     }, {
-        url: 'arlas.io',
-      });
+      url: 'arlas.io',
+    });
 
     for (let i = 0; i < 100; i++) {
       attachments.push({
@@ -74,9 +76,9 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         description: 'Developpeur d\'ARLAS',
 
       }, {
-          url: 'arlas.io',
+        url: 'arlas.io',
 
-        });
+      });
     }
     return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments }));
 
