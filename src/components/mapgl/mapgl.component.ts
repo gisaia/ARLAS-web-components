@@ -374,10 +374,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onMapClosed: EventEmitter<MapExtend> = new EventEmitter<MapExtend>();
   /**
- * @Output :  Angular
- * @description Emits the geojson of an aoi added to the map
- */
+   * @Output :  Angular
+   * @description Emits the geojson of an aoi added to the map
+   */
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
+  /**
+   * @Output :  Angular
+   * @description Emits the geojson of an aoi added to the map
+   */
+   @Output() public onBasemapChanged: Subject<boolean> = new Subject();
   /**
    * @Output :  Angular
    * @description Emits which layers are displayed in the Legend
@@ -625,6 +630,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.setStyle(style).once('styledata', () => {
       this.addSourcesToMap(sourcesToSave, this.map);
       layersToSave.forEach(l => this.map.addLayer(l));
+      this.onBasemapChanged.next(true);
     });
   }
 
