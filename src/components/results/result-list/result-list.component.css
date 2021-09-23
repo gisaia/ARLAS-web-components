@@ -91,20 +91,24 @@
 .resultlist__body--item-hover-true {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
-  background-color: rgba(0, 0, 0, 0.075);
+  background-color: #fff;
   position: relative;
+  font-weight: 500;
 }
 
 .resultlist__body--item-hover- {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
   position: relative;
+  background-color: #fff;
 }
 
 .resultlist__body--item-hover-false {
   border-top: 1px solid #e9ecef;
   border-bottom: 1px dashed #e9ecef;
   position: relative;
+  background-color: #eee;
+  color: #aaa;
 }
 
 tr:hover td.resultitem__cell.toggle .list_actions {
@@ -198,6 +202,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
+  background-color: #ddd;
 }
 
 ::-webkit-scrollbar {

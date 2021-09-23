@@ -56,31 +56,24 @@
   justify-content: space-between;
 }
 
-.resultgrid--container-highlight- /* @doc Sets the grid container style.*/
+.resultgrid--container, .resultgrid--container-highlight- /* @doc Sets the grid container style.*/
 {
   width:100%;
   height:100%;
   margin:1px;
-  background-color: #607D8B;
+  background-color: #fff;
   position: relative;
+  color: #000;
 }
 
 .resultgrid--container-highlight-false /* @doc Sets the grid container style.*/
 {
-  width:100%;
-  height:100%;
-  margin:1px;
-  background-color: #607D8B;
-  position: relative;
   opacity: 0.3;
 }
 
-.resultgrid--container-highlight-true {
-  width:100%;
-  height:100%;
-  margin:1px;
-  background-color: rgba(0, 0,0, 0.075);
-  position: relative;
+.resultgrid--container-highlight-true 
+{
+  opacity: 1;
 }
 
 .resultgrid__icon_check /* @doc Sets the checkbox icon style.*/
@@ -110,7 +103,7 @@
 
 .resultgrid__title-highlight- /* @doc Sets the grid title style.*/
 {
-  color: #fff;
+  color: #000;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   display: flex;
@@ -121,7 +114,7 @@
 
 .resultgrid__title-highlight-false /* @doc Sets the grid title style.*/
 {
-  color: #fff;
+  color: #000;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: 0.9em;
   display: flex;
