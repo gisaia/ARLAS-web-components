@@ -44,6 +44,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
+export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
 export interface OnMoveResult {
   zoom: number;
@@ -120,7 +121,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private savedEditFeature = null;
 
   public FINISH_DRAWING = 'Double click to finish drawing';
-  private DATA_SOURCE = 'data_source';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
   private ICONS_BASE_PATH = 'assets/icons/';
@@ -795,7 +795,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
-            this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+            const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
+            const hasCrossLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
+            if (!this.isDrawingBbox && !this.isDrawingPolygon && !hasCrossLayer) {
+              this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+            }
           });
         });
 
@@ -810,19 +814,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         });
       }
       this.map.showTileBoundaries = false;
-      this.map.on('mousemove', this.DATA_SOURCE, (e) => {
-        if (this.isDrawingBbox) {
+      this.map.on('mousemove', (e) => {
+        if (this.isDrawingBbox || this.isDrawingPolygon) {
           this.map.getCanvas().style.cursor = 'crosshair';
-        } else {
-          this.map.getCanvas().style.cursor = 'pointer';
-        }
-      });
-      this.map.on('mouseleave', this.DATA_SOURCE, (e) => {
-        if (this.isDrawingBbox) {
-          this.map.getCanvas().style.cursor = 'crosshair';
-
-        } else {
-          this.map.getCanvas().style.cursor = '';
         }
       });
       this.canvas = this.map.getCanvasContainer();
@@ -935,7 +929,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.isDrawingPolygon = true;
         }
         if (e.mode === 'simple_select') {
-          this.isDrawingPolygon = false;
+          /** This allows to debounce the clic on feature detail */
+          setTimeout(() => {
+            this.isDrawingPolygon = false;
+          }, 100);
         }
         if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelected().features;
