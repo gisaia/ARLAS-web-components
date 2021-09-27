@@ -30,7 +30,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent } from './model/mapLayers';
+import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent, ARLAS_ID, FILLSTROKE_LAYER_PREFIX } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -44,6 +44,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
+export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
 export interface OnMoveResult {
   zoom: number;
@@ -63,7 +64,7 @@ export interface OnMoveResult {
 }
 
 export interface LegendData {
-  minValue?:  string;
+  minValue?: string;
   maxValue?: string;
   keysColorsMap?: Map<string, string>;
 }
@@ -120,7 +121,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private savedEditFeature = null;
 
   public FINISH_DRAWING = 'Double click to finish drawing';
-  private DATA_SOURCE = 'data_source';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
   private ICONS_BASE_PATH = 'assets/icons/';
@@ -288,8 +288,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
-  @Input() public redrawSource: Subject<{source: string, data: helpers.Feature[]}> =
-    new Subject<{source: string, data: helpers.Feature[]}>();
+  @Input() public redrawSource: Subject<{ source: string, data: helpers.Feature[] }> =
+    new Subject<{ source: string, data: helpers.Feature[] }>();
 
   /**
    * @Input : Angular
@@ -347,12 +347,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Output : Angular
    * @description Emits the event of clicking on a feature.
    */
-  @Output() public onFeatureClic: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() public onFeatureClic: EventEmitter<any> = new EventEmitter<any>();
   /**
    * @Output : Angular
    * @description Emits the event of hovering feature.
    */
-  @Output() public onFeatureOver: EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  @Output() public onFeatureOver: EventEmitter<any> = new EventEmitter<any>();
   /**
    * @Output : Angular
    * @description Emit the event of updating the draw polygon
@@ -374,10 +374,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public onMapClosed: EventEmitter<MapExtend> = new EventEmitter<MapExtend>();
   /**
- * @Output :  Angular
- * @description Emits the geojson of an aoi added to the map
- */
+   * @Output :  Angular
+   * @description Emits the geojson of an aoi added to the map
+   */
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
+  /**
+   * @Output :  Angular
+   * @description Emits the geojson of an aoi added to the map
+   */
+   @Output() public onBasemapChanged: Subject<boolean> = new Subject();
   /**
    * @Output :  Angular
    * @description Emits which layers are displayed in the Legend
@@ -418,7 +423,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) {}
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
 
 
   public emitLegendVisibility(l: string, visible: boolean): void {
@@ -428,7 +433,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
-    this.visualisationSetsConfig.find(v => v.name ===  visualisationName).enabled = visuStatus;
+    this.visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
     if (!visuStatus) {
       const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
       this.visualisationsSets.visualisations.forEach((ls, v) => {
@@ -442,6 +447,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       });
       layersSet.forEach(ll => {
         (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
+        this.setStrokeLayoutVisibility(ll, 'none');
       });
     }
     this.visualisationsSets.status.set(visualisationName, visuStatus);
@@ -451,6 +457,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         ls.forEach(l => {
           layers.add(l);
           (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
+          this.setStrokeLayoutVisibility(l, 'visible');
         });
       }
     });
@@ -485,7 +492,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Updates the visibility status of the given layers in Legend component
    * @param visibility Map of layerId, and its visibility status as boolean (true = visible)
    */
-  public updateLayerVisibility (visibility: Map<string, boolean>) {
+  public updateLayerVisibility(visibility: Map<string, boolean>) {
     this.visibilityUpdater.next(visibility);
   }
 
@@ -501,7 +508,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     return mapglJsonSchema;
   }
 
-  public ngOnInit() {}
+  public ngOnInit() { }
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
@@ -527,6 +534,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           const l = visualisation.layers[j];
           if (!!this.map.getLayer(l)) {
             this.map.moveLayer(l);
+            const layer = this.layersMap.get(l);
+            if (layer.type === 'fill') {
+              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+              const strokeLayer = this.layersMap.get(strokeId);
+              if (!!strokeLayer && !!this.map.getLayer(strokeId)) {
+                this.map.moveLayer(strokeId);
+              }
+            }
           }
         }
       }
@@ -615,6 +630,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.setStyle(style).once('styledata', () => {
       this.addSourcesToMap(sourcesToSave, this.map);
       layersToSave.forEach(l => this.map.addLayer(l));
+      this.onBasemapChanged.next(true);
     });
   }
 
@@ -712,10 +728,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.map.loadImage(
             this.ICONS_BASE_PATH + icon.path,
             (error, image) => {
-              if (error)  {
+              if (error) {
                 console.warn('The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found');
               } else {
-                this.map.addImage(icon.path.split('.')[0], image, {'sdf': icon.recolorable});
+                this.map.addImage(icon.path.split('.')[0], image, { 'sdf': icon.recolorable });
               }
             });
         });
@@ -779,13 +795,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
-            this.onFeatureClic.next(e.features.map(f => f.properties[this.idFeatureField]));
+            const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
+            const hasCrossLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
+            if (!this.isDrawingBbox && !this.isDrawingPolygon && !hasCrossLayer) {
+              this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+            }
           });
         });
 
         this.mapLayers.events.onHover.forEach(layerId => {
           this.map.on('mousemove', layerId, (e) => {
-            this.onFeatureOver.next(e.features.map(f => f.properties[this.idFeatureField]));
+            this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
           });
 
           this.map.on('mouseleave', layerId, (e) => {
@@ -794,19 +814,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         });
       }
       this.map.showTileBoundaries = false;
-      this.map.on('mousemove', this.DATA_SOURCE, (e) => {
-        if (this.isDrawingBbox) {
+      this.map.on('mousemove', (e) => {
+        if (this.isDrawingBbox || this.isDrawingPolygon) {
           this.map.getCanvas().style.cursor = 'crosshair';
-        } else {
-          this.map.getCanvas().style.cursor = 'pointer';
-        }
-      });
-      this.map.on('mouseleave', this.DATA_SOURCE, (e) => {
-        if (this.isDrawingBbox) {
-          this.map.getCanvas().style.cursor = 'crosshair';
-
-        } else {
-          this.map.getCanvas().style.cursor = '';
         }
       });
       this.canvas = this.map.getCanvasContainer();
@@ -919,7 +929,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           this.isDrawingPolygon = true;
         }
         if (e.mode === 'simple_select') {
-          this.isDrawingPolygon = false;
+          /** This allows to debounce the clic on feature detail */
+          setTimeout(() => {
+            this.isDrawingPolygon = false;
+          }, 100);
         }
         if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelected().features;
@@ -1259,13 +1272,23 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
           this.addLayer(l);
+          /** add stroke layer if the layer is a fill */
+          const layer = this.layersMap.get(l);
+          if (layer.type === 'fill') {
+            const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+            const strokeLayer = this.layersMap.get(strokeId);
+            if (!!strokeLayer) {
+              this.addLayer(strokeId);
+            }
+          }
         }
       }
     }
     this.visualisationsSets.status.forEach((b, vs) => {
       if (!b) {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.map.setLayoutProperty(l, 'visibility', 'none');
+          this.map.setLayoutProperty(l, 'visibility', 'none');
+          this.setStrokeLayoutVisibility(l, 'none');
         });
       }
     });
@@ -1273,6 +1296,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (b) {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'visible');
+          this.setStrokeLayoutVisibility(l, 'visible');
         });
 
       }
@@ -1281,8 +1305,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private addExternalEventLayers() {
     this.mapLayers.layers
-    .filter(layer =>  this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-    .forEach(l => this.addLayer(l.id) );
+      .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+      .forEach(l => this.addLayer(l.id));
 
 
   }
@@ -1518,5 +1542,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const id = this.getNextFeatureId();
     this.draw.setFeatureProperty(featureId, 'arlas_id', id);
     this.customIds.set(id, featureId);
+  }
+
+  private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    if (layer.type === 'fill') {
+      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.layersMap.get(strokeId);
+      if (!!strokeLayer) {
+        this.map.setLayoutProperty(strokeId, 'visibility', visibility);
+      }
+    }
   }
 }

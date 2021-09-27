@@ -21,7 +21,7 @@ import { WmtsLayerManagerComponent } from 'components/wmts-layer-manager/wmts-la
  */
 
 export { ColorGeneratorLoader, AwcColorGeneratorLoader } from './components/componentsUtils';
-export { MapLayers, BasemapStyle } from './components/mapgl/model/mapLayers';
+export { MapLayers, BasemapStyle, PaintColor, FillStroke, LayerMetadata } from './components/mapgl/model/mapLayers';
 export { MapSource } from './components/mapgl/model/mapSource';
 export { MapExtend } from './components/mapgl/mapgl.component.util';
 export { PowerbarsComponent } from './components/powerbars/powerbars.component';
@@ -40,7 +40,7 @@ export { HistogramComponent } from './components/histogram/histogram.component';
 export { HistogramModule } from './components/histogram/histogram.module';
 export { DonutComponent } from './components/donut/donut.component';
 export { DonutModule } from './components/donut/donut.module';
-export { MapglComponent, VisualisationSetConfig, IconConfig } from './components/mapgl/mapgl.component';
+export { MapglComponent, VisualisationSetConfig, IconConfig, CROSS_LAYER_PREFIX } from './components/mapgl/mapgl.component';
 export { MapglModule } from './components/mapgl/mapgl.module';
 export { ResultListComponent } from './components/results/result-list/result-list.component';
 export { ResultItemComponent } from './components/results/result-item/result-item.component';

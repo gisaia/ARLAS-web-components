@@ -291,6 +291,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public showEmptyGroup = false;
   /**
+   * @Input
+   * @description Whether display the detailled part in grid mode.
+   */
+  @Input() public isDetailledGridOpen = false;
+
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
@@ -368,6 +374,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Output() public clickOnTile: Subject<Item> = new Subject<Item>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the event of clicking on the switch mode button. Emits the new mode (grid or list).
+   */
+  @Output() public changeResultMode: Subject<ModeEnum> = new Subject<ModeEnum>();
+
+
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { fieldName: string, sortDirection: SortEnum } = { fieldName: '', sortDirection: SortEnum.asc };
@@ -392,7 +405,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public resultMode: ModeEnum = this.defautMode;
   public allItemsChecked = false;
 
-  public isDetailledGridOpen = false;
   private detailedGridCounter = 0;
 
   public borderStyle = 'solid';
@@ -400,6 +412,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public isShiftDown = false;
 
   private debouncer = new Subject<ElementIdentifier>();
+  private scrollDebouncer = new Subject<any>();
+
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
     private colorService: ArlasColorService, public translate: TranslateService) {
@@ -414,6 +428,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       });
     // Add debounce on hover item list
     this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+    this.scrollDebouncer.pipe(debounceTime(1000)).subscribe(page => this.paginationEvent.next(page));
   }
 
   @HostListener('document:keydown.shift', ['$event'])
@@ -454,6 +469,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.items = [];
       this.isPreviousPageRequested = false;
       this.closeDetail(true);
+    }
+    if (changes['isDetailledGridOpen'] !== undefined) {
+      this.isDetailledGridOpen = changes['isDetailledGridOpen'].currentValue;
     }
     if (changes['indeterminatedItems'] !== undefined) {
       this.items.forEach(item => {
@@ -558,7 +576,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public paginate(itemData: Map<string, string | number | Date>, whichPage: PageEnum) {
     this.isNextPageRequested = whichPage === PageEnum.next;
     this.isPreviousPageRequested = whichPage === PageEnum.previous;
-    this.paginationEvent.next({ reference: itemData, whichPage: whichPage });
+    this.scrollDebouncer.next({ reference: itemData, whichPage: whichPage });
 
   }
 
@@ -734,6 +752,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.resultMode = ModeEnum.list;
       this.displayListGrid = 'inline';
     }
+    this.changeResultMode.next(this.resultMode);
     this.tbodyHeight = this.getOffSetHeight() - (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
   }
 
