@@ -1,5 +1,28 @@
 # Change Log
 
+## [v19.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.0) (2021-09-27)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.6...v19.0.0)
+
+**New stuff:**
+
+- Add new output to notif when the basemap has been changed [\#590](https://github.com/gisaia/ARLAS-web-components/issues/590) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Improve Grid title style [\#587](https://github.com/gisaia/ARLAS-web-components/issues/587) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Add stroke layer that corresponds to a fill layer if it exists [\#565](https://github.com/gisaia/ARLAS-web-components/issues/565) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- Fix cursor style when drawing a bbox/polygon [\#589](https://github.com/gisaia/ARLAS-web-components/issues/589) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Fix end of scroll bug [\#588](https://github.com/gisaia/ARLAS-web-components/issues/588) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+## [v12.7.6](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.6) (2021-09-23)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.0-beta.3...v12.7.6)
+
+## [v19.0.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.0-beta.3) (2021-09-20)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.1.0...v19.0.0-beta.3)
+
 ## [v18.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.1.0) (2021-09-10)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.2...v18.1.0)
