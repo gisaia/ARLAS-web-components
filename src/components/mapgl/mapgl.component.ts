@@ -796,8 +796,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
             const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
-            const hasCrossLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
-            if (!this.isDrawingBbox && !this.isDrawingPolygon && !hasCrossLayer) {
+            const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX) ||
+              f.source.startsWith('mapbox-gl-draw')));
+            if (!this.isDrawingBbox && !this.isDrawingPolygon && !hasCrossOrDrawLayer) {
               this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
             }
           });
