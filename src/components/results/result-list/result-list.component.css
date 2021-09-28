@@ -112,7 +112,9 @@
 }
 
 tr:hover td.resultitem__cell.toggle .list_actions {
-  display: inline;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
 }
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
@@ -125,6 +127,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 {
   border-top: 1px dashed #e9ecef;
   border-bottom: 1px solid #e9ecef;
+  background-color: #fff;
 }
 
 .resultlist__header, /* @doc Sets the header border style.*/

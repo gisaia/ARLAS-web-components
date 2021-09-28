@@ -28,7 +28,7 @@
 
 .resultdetaileditem-key /* @doc Sets key style. (key: value part)*/
 {
-  font-weight: bold;
+  font-weight: 520;
 }
 
 .resultdetaileditem-value /* @doc Sets value style (key: value part)*/
@@ -77,5 +77,5 @@
 }
 .detail-item{
   font-weight: bold;
-  color: red;
+  color: #444;
 }
