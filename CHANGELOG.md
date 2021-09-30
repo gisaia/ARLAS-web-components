@@ -1,5 +1,13 @@
 # Change Log
 
+## [v19.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.3) (2021-09-30)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.2...v19.0.3)
+
+**Fixed bugs:**
+
+- Fill color for cluster legend icon is wrong [\#595](https://github.com/gisaia/ARLAS-web-components/issues/595) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v19.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.2) (2021-09-28)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.1...v19.0.2)
