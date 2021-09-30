@@ -112,12 +112,12 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, st
     .attr('y', 10).attr('x', 3);
   svg.append('g').append('rect')
     .attr('height', 7).attr('width', 7)
-    .attr('fill', strokeFourColors[2]).attr('fill-opacity', 0.6)
+    .attr('fill', fillFourColors[2]).attr('fill-opacity', 0.6)
     .attr('stroke', strokeFourColors[2]).attr('stroke-width', 0.6)
     .attr('y', 10).attr('x', 10);
   svg.append('g').append('rect')
     .attr('height', 7).attr('width', 7)
-    .attr('fill', strokeFourColors[3]).attr('fill-opacity', 0.6)
+    .attr('fill', fillFourColors[3]).attr('fill-opacity', 0.6)
     .attr('stroke', strokeFourColors[3]).attr('stroke-width', 0.6)
     .attr('y', 3).attr('x', 10);
 }
