@@ -69,8 +69,7 @@
 }
 
 .line-tip {
-  margin-top: 6px;
-  width: 16px;
+  width: 20px;
   height: 4px;
   border-radius: 2px;
 }
@@ -81,8 +80,8 @@
 }
 
 .manual-color-key {
-  font-size: 0.7em;
-  margin-left: 3px;
+  font-size: 0.8em;
+  margin-left: 5px;
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -91,6 +90,7 @@
 
 .manual-color {
   display: flex;
+  align-items: center;
 }
 
 .manual-color-stroke {
