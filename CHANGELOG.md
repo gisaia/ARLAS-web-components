@@ -1,5 +1,13 @@
 # Change Log
 
+## [v19.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.4) (2021-10-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.3...v19.0.4)
+
+**Fixed bugs:**
+
+- External layers visibility is always hidden after toggle of legend [\#599](https://github.com/gisaia/ARLAS-web-components/issues/599) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v19.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.3) (2021-09-30)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.2...v19.0.3)
