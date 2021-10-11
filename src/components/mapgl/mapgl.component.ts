@@ -493,6 +493,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @param visibility Map of layerId, and its visibility status as boolean (true = visible)
    */
   public updateLayerVisibility(visibility: Map<string, boolean>) {
+
     this.visibilityUpdater.next(visibility);
   }
 
