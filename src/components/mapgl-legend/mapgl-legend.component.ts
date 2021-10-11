@@ -17,7 +17,7 @@
  * under the License.
  */
 
- import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { curveLinear, area, line } from 'd3-shape';
@@ -28,6 +28,7 @@ import { StyleFunction, Expression } from 'mapbox-gl';
 import * as tinycolor from 'tinycolor2';
 import { LegendData } from '../mapgl/mapgl.component';
 import { ArlasColorService } from '../../services/color.generator.service';
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -107,20 +108,32 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       this.drawLegends(this.visibleMode);
     });
     this.visibilityUpdater.subscribe(visibilityUpdater => {
+      /** check legend visibility according to Data source status (mapcontirbutor) */
       if (!!this.layer) {
         /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
         this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
       } else {
         this.visibleMode = false;
       }
+      /** check legend visibility according to VisibilityRules */
       if (this.visibleMode && this.layer && !!this.layer.minzoom && !!this.layer.maxzoom) {
         this.visibleMode = (this.zoom <= this.layer.maxzoom && this.zoom >= this.layer.minzoom);
       }
+      /** check legend visibility according to legend enabled or not */
       if (!this.enabled) {
         this.visibleMode = false;
       }
       if (!this.visibleMode) {
         this.detail = this.visibleMode;
+      }
+      /** check legend visibility for external layers that are not set by config nor map contributors */
+      if (this.layer && !this.layer.id.startsWith(ARLAS_ID) &&
+        !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
+        && !this.layer.id.startsWith(SELECT_LAYER_PREFIX)) {
+        this.visibleMode = this.enabled;
+        if (!!this.layer.metadata && this.layer.metadata.showLegend === false) {
+          this.visibleMode = false;
+        }
       }
       if (this.layer) {
         this.drawLegends(this.visibleMode);
