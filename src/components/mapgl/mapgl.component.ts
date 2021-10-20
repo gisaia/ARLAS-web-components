@@ -874,6 +874,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       this.map.on('draw.onStop', () => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
+        this.map.getCanvas().style.cursor = '';
       });
 
       this.map.on('draw.invalidGeometry', (e) => {
@@ -898,6 +899,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         }
         this.openInvalidGeometrySnackBar();
         this.onPolygonError.next(e);
+        this.map.getCanvas().style.cursor = '';
       });
 
       this.map.on('draw.edit.saveInitialFeature', (edition) => {
