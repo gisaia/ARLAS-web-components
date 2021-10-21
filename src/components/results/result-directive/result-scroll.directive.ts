@@ -36,6 +36,8 @@ export class ResultScrollDirective implements OnChanges {
 
   @Output() public nextDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
   @Output() public previousDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+  @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
+
   private lastScrollTop = 0;
   private previousFirstId: string = null;
   private previousLastId: string = null;
@@ -142,6 +144,17 @@ export class ResultScrollDirective implements OnChanges {
       }
     }
     this.lastScrollTop = this.el.nativeElement.scrollTop;
+    this.visibleItems.next(this.items.filter(i => this.isElementInViewport(document.getElementById(i.identifier))));
+  }
+
+  private isElementInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (
+          rect.top >= 0 &&
+          rect.left >= 0 &&
+          rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+          rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+      );
   }
 
   private isScrollingDown(scrollTop) {

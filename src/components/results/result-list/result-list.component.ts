@@ -380,6 +380,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Output() public changeResultMode: Subject<ModeEnum> = new Subject<ModeEnum>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the current visible items in the viewport.
+   */
+   @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
+
+    /**
+   * @Output : Angular
+   * @description Emits on changes rowItemList current value .
+   */
+    @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
+
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
@@ -413,6 +425,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   private debouncer = new Subject<ElementIdentifier>();
   private scrollDebouncer = new Subject<any>();
+  private emitVisibleItemsDebouncer = new Subject<any>();
 
 
   constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
@@ -429,6 +442,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     // Add debounce on hover item list
     this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
     this.scrollDebouncer.pipe(debounceTime(1000)).subscribe(page => this.paginationEvent.next(page));
+    this.emitVisibleItemsDebouncer.pipe(debounceTime(1000)).subscribe(event => this.visibleItems.next(event));
   }
 
   @HostListener('document:keydown.shift', ['$event'])
@@ -468,6 +482,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
       this.isPreviousPageRequested = false;
+      this.onChangeItems.next(changes['rowItemList'].currentValue);
       this.closeDetail(true);
     }
     if (changes['isDetailledGridOpen'] !== undefined) {
@@ -566,6 +581,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.isNextPageRequested = false;
       this.isPreviousPageRequested = false;
     }
+  }
+
+  public emitVisibleItems(items: Array<Item>) {
+    this.emitVisibleItemsDebouncer.next(items);
   }
 
   /**
