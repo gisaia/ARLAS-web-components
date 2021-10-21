@@ -30,7 +30,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent, ARLAS_ID, FILLSTROKE_LAYER_PREFIX } from './model/mapLayers';
+import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent, ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -448,6 +448,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       layersSet.forEach(ll => {
         (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
         this.setStrokeLayoutVisibility(ll, 'none');
+        this.setScrollbaleLayoutVisibility(ll, 'none');
       });
     }
     this.visualisationsSets.status.set(visualisationName, visuStatus);
@@ -458,6 +459,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           layers.add(l);
           (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
+          this.setScrollbaleLayoutVisibility(l, 'visible');
         });
       }
     });
@@ -533,16 +535,41 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (!!visualisation.layers && visualisation.enabled) {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
+          const layer = this.layersMap.get(l);
+          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+          const scrollableLayer = this.layersMap.get(scrollableId);
+          if (!!scrollableLayer && !!this.map.getLayer(scrollableId)) {
+            this.map.moveLayer(scrollableId);
+          }
           if (!!this.map.getLayer(l)) {
             this.map.moveLayer(l);
-            const layer = this.layersMap.get(l);
             if (layer.type === 'fill') {
               const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
               const strokeLayer = this.layersMap.get(strokeId);
               if (!!strokeLayer && !!this.map.getLayer(strokeId)) {
                 this.map.moveLayer(strokeId);
               }
+              const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
+              const selectLayer = this.layersMap.get(selectId);
+              if (!!selectLayer && !!this.map.getLayer(selectId)) {
+                  this.map.moveLayer(selectId);
+              }
+              const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
+              const hoverLayer = this.layersMap.get(hoverId);
+              if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
+                  this.map.moveLayer(hoverId);
+              }
             }
+          }
+          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
+          const selectLayer = this.layersMap.get(selectId);
+          if (!!selectLayer && !!this.map.getLayer(selectId)) {
+            this.map.moveLayer(selectId);
+          }
+          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
+          const hoverLayer = this.layersMap.get(hoverId);
+          if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
+            this.map.moveLayer(hoverId);
           }
         }
       }
@@ -1275,9 +1302,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (!!visualisation.layers) {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
+          const layer = this.layersMap.get(l);
+          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+          const scrollableLayer = this.layersMap.get(scrollableId);
+          if (!!scrollableLayer) {
+            this.addLayer(scrollableId);
+          }
           this.addLayer(l);
           /** add stroke layer if the layer is a fill */
-          const layer = this.layersMap.get(l);
           if (layer.type === 'fill') {
             const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
             const strokeLayer = this.layersMap.get(strokeId);
@@ -1293,6 +1325,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'none');
           this.setStrokeLayoutVisibility(l, 'none');
+          this.setScrollbaleLayoutVisibility(l, 'none');
         });
       }
     });
@@ -1301,6 +1334,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
+          this.setScrollbaleLayoutVisibility(l, 'visible');
         });
 
       }
@@ -1556,6 +1590,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       if (!!strokeLayer) {
         this.map.setLayoutProperty(strokeId, 'visibility', visibility);
       }
+    }
+  }
+
+  private setScrollbaleLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollbaleLayer = this.layersMap.get(scrollableId);
+    if (!!scrollbaleLayer) {
+      this.map.setLayoutProperty(scrollableId, 'visibility', visibility);
     }
   }
 }

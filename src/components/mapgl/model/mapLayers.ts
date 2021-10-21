@@ -72,6 +72,7 @@ export interface PaintColor {
 export const HOVER_LAYER_PREFIX = 'arlas-hover-';
 export const SELECT_LAYER_PREFIX = 'arlas-select-';
 export const FILLSTROKE_LAYER_PREFIX = 'arlas-fill_stroke-';
+export const SCROLLABLE_ARLAS_ID = 'scrollable_arlas_id:';
 export const ARLAS_ID = 'arlas_id:';
 
 
