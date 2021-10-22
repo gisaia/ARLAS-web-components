@@ -30,7 +30,8 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent, ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from './model/mapLayers';
+import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
+  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -1438,9 +1439,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           if (this.map.getLayer(originalLayerId) !== undefined) {
             originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
           }
-          const layerFilter: Array<any> = ['all'];
-          if ((layer as any).filter) {
-            Object.assign(layerFilter, (layer as any).filter);
+          const layerFilter: Array<any> = [];
+          const externalEventLayer = this.layersMap.get(layer.id);
+          if (!!externalEventLayer && !!externalEventLayer.filter) {
+            externalEventLayer.filter.forEach(f => {
+              layerFilter.push(f);
+            });
+          }
+          if (layerFilter.length === 0) {
+            layerFilter.push('all');
           }
           if (visibilityCondition && originalLayerIsVisible) {
             const condition = visibilityFilter;
