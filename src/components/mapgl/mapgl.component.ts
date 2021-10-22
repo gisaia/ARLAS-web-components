@@ -1438,9 +1438,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           if (this.map.getLayer(originalLayerId) !== undefined) {
             originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
           }
-          const layerFilter: Array<any> = ['all'];
-          if ((layer as any).filter) {
-            Object.assign(layerFilter, (layer as any).filter);
+          const layerFilter: Array<any> = [];
+          const externalEventLayer = this.layersMap.get(layer.id);
+          if (!!externalEventLayer && !!externalEventLayer.filter) {
+            externalEventLayer.filter.forEach(f => {
+              layerFilter.push(f);
+            });
+          }
+          if (layerFilter.length === 0) {
+            layerFilter.push('all');
           }
           if (visibilityCondition && originalLayerIsVisible) {
             const condition = visibilityFilter;
