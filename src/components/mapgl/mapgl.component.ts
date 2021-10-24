@@ -427,8 +427,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
 
 
-  public emitLegendVisibility(l: string, visible: boolean): void {
-    this.visibilityStatus.set(l, visible);
+  /**
+   * 
+   * @param visualisation visualisation set name
+   * @param l layer id
+   * @param visible whether the layer is enabled and visible in the visualisation set
+   */
+  public emitLegendVisibility(visualisation: string, l: string, visible: boolean): void {
+    this.visibilityStatus.set(visualisation + l, visible);
     this.legendVisibiltyStatus.next(this.visibilityStatus);
   }
   /** Hides/shows all the layers inside the given visualisation name*/
