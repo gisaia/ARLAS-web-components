@@ -872,8 +872,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
                     this.setScrollableLayoutVisibility(l, 'none');
                   }
               }
-          })
-      })
+          });
+        });
       }
       this.map.showTileBoundaries = false;
       this.map.on('mousemove', (e) => {
