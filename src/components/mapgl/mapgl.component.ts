@@ -31,7 +31,7 @@ import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.contr
 import { paddedBounds, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
-  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from './model/mapLayers';
+  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
@@ -434,7 +434,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @param visible whether the layer is enabled and visible in the visualisation set
    */
   public emitLegendVisibility(visualisation: string, l: string, visible: boolean): void {
-    this.visibilityStatus.set(visualisation + l, visible);
+    this.visibilityStatus.set(visualisation + ARLAS_VSET + l, visible);
     this.legendVisibiltyStatus.next(this.visibilityStatus);
   }
   /** Hides/shows all the layers inside the given visualisation name*/
