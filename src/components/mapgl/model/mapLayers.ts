@@ -59,6 +59,8 @@ export interface FillStroke {
 export interface LayerMetadata {
   collection?: string;
   stroke?: FillStroke;
+  isScrollableLayer?: boolean;
+
 }
 type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
 

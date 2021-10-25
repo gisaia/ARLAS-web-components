@@ -427,8 +427,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
 
 
-  public emitLegendVisibility(l: string, visible: boolean): void {
-    this.visibilityStatus.set(l, visible);
+  /**
+   *
+   * @param visualisation visualisation set name
+   * @param l layer id
+   * @param visible whether the layer is enabled and visible in the visualisation set
+   */
+  public emitLegendVisibility(visualisation: string, l: string, visible: boolean): void {
+    this.visibilityStatus.set(visualisation + l, visible);
     this.legendVisibiltyStatus.next(this.visibilityStatus);
   }
   /** Hides/shows all the layers inside the given visualisation name*/
@@ -449,7 +455,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       layersSet.forEach(ll => {
         (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
         this.setStrokeLayoutVisibility(ll, 'none');
-        this.setScrollbaleLayoutVisibility(ll, 'none');
+        this.setScrollableLayoutVisibility(ll, 'none');
       });
     }
     this.visualisationsSets.status.set(visualisationName, visuStatus);
@@ -460,7 +466,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           layers.add(l);
           (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
-          this.setScrollbaleLayoutVisibility(l, 'visible');
+          this.setScrollableLayoutVisibility(l, 'visible');
         });
       }
     });
@@ -840,6 +846,32 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
           this.map.on('mouseleave', layerId, (e) => {
             this.onFeatureOver.next([]);
+          });
+        });
+
+        this.visibilityUpdater.subscribe(visibilityStatus => {
+          visibilityStatus.forEach((vs, l) => {
+              if (!vs) {
+                (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
+                this.setStrokeLayoutVisibility(l, 'none');
+                this.setScrollableLayoutVisibility(l, 'none');
+              } else {
+                  let oneVisualisationEnabled = false;
+                  this.visualisationSetsConfig.forEach(v => {
+                      const ls = new Set(v.layers);
+                      if (ls.has(l) && v.enabled) {
+                          oneVisualisationEnabled = true;
+                          (this.map).setLayoutProperty(l, 'visibility', 'visible');
+                          this.setStrokeLayoutVisibility(l, 'visible');
+                          this.setScrollableLayoutVisibility(l, 'visible');
+                      }
+                  });
+                  if (!oneVisualisationEnabled) {
+                    (this.map).setLayoutProperty(l, 'visibility', 'none');
+                    this.setStrokeLayoutVisibility(l, 'none');
+                    this.setScrollableLayoutVisibility(l, 'none');
+                  }
+              }
           });
         });
       }
@@ -1326,7 +1358,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'none');
           this.setStrokeLayoutVisibility(l, 'none');
-          this.setScrollbaleLayoutVisibility(l, 'none');
+          this.setScrollableLayoutVisibility(l, 'none');
         });
       }
     });
@@ -1335,7 +1367,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.visualisationsSets.visualisations.get(vs).forEach(l => {
           this.map.setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
-          this.setScrollbaleLayoutVisibility(l, 'visible');
+          this.setScrollableLayoutVisibility(l, 'visible');
         });
 
       }
@@ -1600,7 +1632,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private setScrollbaleLayoutVisibility(layerId: string, visibility: string): void {
+  private setScrollableLayoutVisibility(layerId: string, visibility: string): void {
     const layer = this.layersMap.get(layerId);
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollbaleLayer = this.layersMap.get(scrollableId);
