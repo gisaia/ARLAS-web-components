@@ -1,8 +1,27 @@
 # Change Log
 
+## [v19.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.1.0) (2021-10-25)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.4...v19.1.0)
+
+**New stuff:**
+
+- Use scientific notation for numbers between -0.09 and 0.09 [\#602](https://github.com/gisaia/ARLAS-web-components/issues/602) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Emit an event of visible items after scroll [\#601](https://github.com/gisaia/ARLAS-web-components/issues/601) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Fixed bugs:**
+
+- filters of external event layers are not taking into account [\#606](https://github.com/gisaia/ARLAS-web-components/issues/606) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- After drawing a polygon on the map, the cursor stays in drawing mode [\#597](https://github.com/gisaia/ARLAS-web-components/issues/597) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Fix visibility of layers that belong to several visualisation sets [\#540](https://github.com/gisaia/ARLAS-web-components/issues/540) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v19.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.4) (2021-10-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.3...v19.0.4)
+
+**New stuff:**
+
+- Action buttons of the list should support several field for the css class [\#580](https://github.com/gisaia/ARLAS-web-components/issues/580) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 **Fixed bugs:**
 
