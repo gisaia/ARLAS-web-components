@@ -22,7 +22,8 @@ import { WmtsLayerManagerComponent } from 'components/wmts-layer-manager/wmts-la
 
 export { ColorGeneratorLoader, AwcColorGeneratorLoader } from './components/componentsUtils';
 export { MapLayers, BasemapStyle, PaintColor, FillStroke, LayerMetadata, ARLAS_ID,
-  SCROLLABLE_ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from './components/mapgl/model/mapLayers';
+  SCROLLABLE_ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX,
+  ARLAS_VSET } from './components/mapgl/model/mapLayers';
 export { MapSource } from './components/mapgl/model/mapSource';
 export { MapExtend } from './components/mapgl/mapgl.component.util';
 export { PowerbarsComponent } from './components/powerbars/powerbars.component';
