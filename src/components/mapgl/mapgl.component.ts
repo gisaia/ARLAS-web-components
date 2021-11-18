@@ -1286,6 +1286,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
+    const visibilityFilter = features.length > 0 ?
+      features.reduce((ids, element) => { ids.push(element.idValue); return ids; }, ['in', ['get', features[0].idFieldName]]) : [];
+    this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+  }
+
   private latLngToWKT(features) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {
@@ -1448,7 +1454,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private highlightFeature(featureToHightLight: { isleaving: boolean, elementidentifier: ElementIdentifier }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
-      const visibilityFilter = ['==', featureToHightLight.elementidentifier.idFieldName, featureToHightLight.elementidentifier.idValue];
+      const visibilityFilter = ['==', ['get', featureToHightLight.elementidentifier.idFieldName],
+        featureToHightLight.elementidentifier.idValue];
       this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
     }
   }
@@ -1457,38 +1464,43 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     if (elementToSelect) {
       const visibilityFilter = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => { memo.push(element.idValue); return memo; }
-          , ['in', elementToSelect[0].idFieldName]) : [];
+          , ['in', ['get', elementToSelect[0].idFieldName]]) : [];
       this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }
 
-  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent): void {
+  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
+    collection?: string): void {
     if (this.mapLayers && this.mapLayers.externalEventLayers) {
       this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.map.getLayer(layer.id) !== undefined) {
           let originalLayerIsVisible = false;
-          const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-          if (this.map.getLayer(originalLayerId) !== undefined) {
-            originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
-          }
-          const layerFilter: Array<any> = [];
-          const externalEventLayer = this.layersMap.get(layer.id);
-          if (!!externalEventLayer && !!externalEventLayer.filter) {
-            externalEventLayer.filter.forEach(f => {
-              layerFilter.push(f);
-            });
-          }
-          if (layerFilter.length === 0) {
-            layerFilter.push('all');
-          }
-          if (visibilityCondition && originalLayerIsVisible) {
-            const condition = visibilityFilter;
-            layerFilter.push(condition);
-            this.map.setFilter(layer.id, layerFilter);
-            this.map.setLayoutProperty(layer.id, 'visibility', 'visible');
-          } else {
-            this.map.setFilter(layer.id, (layer as any).filter);
-            this.map.setLayoutProperty(layer.id, 'visibility', 'none');
+          const fullLayer = this.layersMap.get(layer.id);
+          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
+          if (isCollectionCompatible) {
+            const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
+            if (this.map.getLayer(originalLayerId) !== undefined) {
+              originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
+            }
+            const layerFilter: Array<any> = [];
+            const externalEventLayer = this.layersMap.get(layer.id);
+            if (!!externalEventLayer && !!externalEventLayer.filter) {
+              externalEventLayer.filter.forEach(f => {
+                layerFilter.push(f);
+              });
+            }
+            if (layerFilter.length === 0) {
+              layerFilter.push('all');
+            }
+            if (visibilityCondition && originalLayerIsVisible) {
+              const condition = visibilityFilter;
+              layerFilter.push(condition);
+              this.map.setFilter(layer.id, layerFilter);
+              this.map.setLayoutProperty(layer.id, 'visibility', 'visible');
+            } else {
+              this.map.setFilter(layer.id, (layer as any).filter);
+              this.map.setLayoutProperty(layer.id, 'visibility', 'none');
+            }
           }
         }
       });
