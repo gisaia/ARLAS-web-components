@@ -926,27 +926,23 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         item.iconCssClass = item.iconCssClass.trim();
       }
     }
-    item.imageEnabled = this.fieldsConfiguration.imageFieldName &&
-      !(itemData.get('imageEnabled') === 'false' || itemData.get('imageEnabled') === '');
-    item.thumbnailEnabled = this.fieldsConfiguration.thumbnailFieldName &&
-      !(itemData.get('thumbnailEnabled') === 'false' || itemData.get('thumbnailEnabled') === '');
+    item.imageEnabled = itemData.get('imageEnabled') === 'true';
+    item.thumbnailEnabled = itemData.get('thumbnailEnabled') === 'true';
 
     if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
       item.urlImage = this.fieldsConfiguration.urlImageTemplate;
-      this.fieldsConfiguration.urlImageTemplate.split('/').forEach(t => {
-        if (t.indexOf('{') >= 0 && t.indexOf('}') >= 0) {
-          const key: string = t.replace('{', '').replace('}', '');
-          item.urlImage = item.urlImage.replace(t, itemData.get(key).toString());
-        }
+      /** match : => ["{field1}", "{field2}"] */
+      this.fieldsConfiguration.urlImageTemplate.match(/{(.+?)}/g).forEach(t => {
+        const key: string = t.replace('{', '').replace('}', '');
+        item.urlImage = item.urlImage.replace(t, itemData.get(key).toString());
       });
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
-      this.fieldsConfiguration.urlThumbnailTemplate.split('/').forEach(t => {
-        if (t.indexOf('{') >= 0 && t.indexOf('}') >= 0) {
-          const key: string = t.replace('{', '').replace('}', '');
-          item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
-        }
+       /** match : => ["{field1}", "{field2}"] */
+       this.fieldsConfiguration.urlThumbnailTemplate.match(/{(.+?)}/g).forEach(t => {
+        const key: string = t.replace('{', '').replace('}', '');
+        item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
       });
     }
 
