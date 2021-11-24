@@ -159,7 +159,8 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 .resultlist__tools--select /* @doc Sets the selection tools style.*/
 {
   flex: 1;
-  padding-top: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .resultlist__tools--select-all {
@@ -309,4 +310,12 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   display:flex;
   flex-direction: row;
   align-items: baseline;
+}
+
+.fit-images {
+  color: rgb(155, 155, 155);
+}
+
+.cover-images {
+  color: rgb(68, 68, 68);
 }

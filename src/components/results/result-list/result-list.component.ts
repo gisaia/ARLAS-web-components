@@ -296,6 +296,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public isDetailledGridOpen = false;
 
+   /**
+   * @Input
+   * @description Whether to fit the thumbnail to the tile in grid view.
+   */
+    @Input() public fitThumbnails = false;
+
   /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
@@ -390,7 +396,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Output : Angular
    * @description Emits on changes rowItemList current value .
    */
-    @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
+  @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
+
+
+  @Output() public thumbnailFitEvent: Subject<boolean> = new  Subject();
 
 
   public columns: Array<Column>;
@@ -465,6 +474,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.tbodyHeight = this.getOffSetHeight();
     }
 
+  }
+
+  public emitThumbnailsFitStatus(): void {
+    this.fitThumbnails = !this.fitThumbnails;
+    this.thumbnailFitEvent.next(this.fitThumbnails);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

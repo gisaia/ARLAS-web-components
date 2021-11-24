@@ -133,7 +133,14 @@
   padding: 0 5px;
 }
 
-.fit-picture{
+.fill-images{
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  background-color:black;
+}
+
+.fit-images {
   object-fit: contain;
   width: 100%;
   height: 100%;

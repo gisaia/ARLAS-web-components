@@ -41,6 +41,12 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
    * @description An object representing an Item .
    */
   @Input() public gridTile: Item;
+
+  /**
+   * @Input
+   * @description Whether to fit the image to the tile in grid view.
+   */
+   @Input() public fitThumbnails = false;
   /**
    * @Input
    * @description List of all selected items in the result-list.component.

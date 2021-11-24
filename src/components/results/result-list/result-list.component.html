@@ -39,6 +39,13 @@
           <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort" id="resultlist_geosort">
             <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
           </div>
+          <div *ngIf="resultMode == ModeEnum.grid">
+            <button mat-icon-button (click)="emitThumbnailsFitStatus()" [matTooltip]="'Fit images' | translate">
+              <mat-icon [class.fit-images]="fitThumbnails" [class.cover-images]="!fitThumbnails">
+                fit_screen
+              </mat-icon>
+            </button>
+          </div>
         </div>
         <div class="resultlist__tools--separator">|</div>
         <div class="resultlist__tools--sort" id="resultlist_sort">
@@ -137,7 +144,7 @@
         </ng-container>
         <ng-template #grid_mode>
           <mat-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile">
-            <arlas-result-grid-tile  id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
+            <arlas-result-grid-tile [fitThumbnails]="fitThumbnails" id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
               (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
             </arlas-result-grid-tile>
