@@ -172,7 +172,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Input : Angular
    * @description Height of the detail grid div (Grid Mode).
    */
-  @Input() public detailedGridHeight = 250;
+  @Input() public detailedGridHeight = 300;
 
   /**
    * @Input : Angular
