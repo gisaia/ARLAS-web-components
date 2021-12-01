@@ -105,7 +105,7 @@
 {
   color: #000;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.9em;
+  font-size: 0.65em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -116,7 +116,7 @@
 {
   color: #000;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.9em;
+  font-size: 0.65em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -126,7 +126,7 @@
 
 .resultgrid__title-highlight-true {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.9em;
+  font-size: 0.65em;
   display: flex;
   justify-content: space-between;
   align-items: center;

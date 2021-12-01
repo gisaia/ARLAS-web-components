@@ -19,6 +19,7 @@
 
 .resultlist__header {
   text-align: center;
+  height: 25px;
 }
 
 .resultlist__header--columns /* @doc Sets columns names style.*/
@@ -39,7 +40,6 @@
 }
 
 .resultlist {
-  height: 100%;
   width: 100%;
   overflow: hidden;
   display: table;
@@ -142,13 +142,18 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   border-bottom: 1px solid #e9ecef;
 }
 
+.resultlist__tools {
+  height: 50px;
+  overflow: hidden;
+}
+
 .resultlist__grid-detail {
   display: block;
   margin-bottom: 3px;
 }
 
 .resultlist__grid-detail--td {
-  padding-bottom: 0;
+  padding: 0 !important;
 }
 
 .resultlist__mode__groupedButton {
