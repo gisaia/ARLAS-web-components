@@ -142,6 +142,13 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   border-bottom: 1px solid #e9ecef;
 }
 
+.resultlist-thumbnails-fit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
 .resultlist__tools {
   height: 50px;
   overflow: hidden;

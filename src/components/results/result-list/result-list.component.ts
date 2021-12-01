@@ -33,6 +33,7 @@ import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundSty
 import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
+import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions } from '../utils/results.utils';
 
 /**
@@ -89,17 +90,22 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @constant
    */
   public LIST_MODE = 'List mode';
+
+
+  public CONTAIN_FIT = 'Fit the whole thumbnail to the tile';
+  public WIDTH_FIT = 'Fit the thumbnail\'s width to the tile';
+  public HEIGHT_FIT = 'Fit the thumbnail\'s height to the tile';
+
   /**
    * @constant
    */
   public GEOSORT_BUTTON = 'Geo-sort';
-
   public COLUMN_ACTIONS_HEIGHT = 50;
-
   public COLUMN_NAME_HEIGHT = 25;
-
-
   public FILTERS_HEIGHT = 50;
+  public TAIL_HEIGHT = 40;
+
+
 
   public loadAnimationConfig = {
     animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
@@ -296,11 +302,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public isDetailledGridOpen = false;
 
-   /**
+  /**
    * @Input
-   * @description Whether to fit the thumbnail to the tile in grid view.
+   * @description How to fit the thumbnail to the tile:
+   * - `height` fit the height of the thumbnail.
+   * - `width` fit the width of the thumbnail.
+   * - `contain` fit the wholethumbnail.
    */
-    @Input() public fitThumbnails = false;
+    @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
 
   /**
    * @Output : Angular
@@ -399,7 +408,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
 
 
-  @Output() public thumbnailFitEvent: Subject<boolean> = new  Subject();
+  @Output() public thumbnailFitEvent: Subject<ThumbnailFitEnum> = new  Subject();
 
 
   public columns: Array<Column>;
@@ -414,6 +423,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public theadHeight: number = null;
 
   public ModeEnum = ModeEnum;
+  public ThumbnailFitEnum = ThumbnailFitEnum;
   public PageEnum = PageEnum;
   public SortEnum = SortEnum;
 
@@ -476,9 +486,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   }
 
-  public emitThumbnailsFitStatus(): void {
-    this.fitThumbnails = !this.fitThumbnails;
-    this.thumbnailFitEvent.next(this.fitThumbnails);
+  public emitThumbnailsFitStatus(fitChange: MatButtonToggleChange): void {
+    this.thumbnailFit = ThumbnailFitEnum[fitChange.value as string];
+    this.thumbnailFitEvent.next(this.thumbnailFit);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -1003,6 +1013,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       }
       if (nativeElement.parentElement && nativeElement.parentElement.offsetHeight !== undefined && this.theadHeight !== undefined) {
         this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
+        if (this.resultMode === ModeEnum.grid) {
+          this.tbodyHeight = this.tbodyHeight - this.TAIL_HEIGHT;
+        }
       }
     }
   }
@@ -1010,14 +1023,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   private getOffSetHeight(): number {
     if (!this.displayFilters) {
       if (this.resultMode === ModeEnum.grid) {
-        return this.el.nativeElement.parentElement.offsetHeight - this.COLUMN_ACTIONS_HEIGHT;
+        return this.el.nativeElement.parentElement.offsetHeight - (this.COLUMN_ACTIONS_HEIGHT + this.TAIL_HEIGHT);
       } else {
         return this.el.nativeElement.parentElement.offsetHeight - (this.COLUMN_ACTIONS_HEIGHT + this.COLUMN_NAME_HEIGHT);
       }
     } else {
       if (this.resultMode === ModeEnum.grid) {
         return this.el.nativeElement.parentElement.offsetHeight -
-          (this.COLUMN_ACTIONS_HEIGHT + this.FILTERS_HEIGHT);
+          (this.COLUMN_ACTIONS_HEIGHT + this.FILTERS_HEIGHT + this.TAIL_HEIGHT);
       } else {
         return this.el.nativeElement.parentElement.offsetHeight -
           (this.COLUMN_ACTIONS_HEIGHT + this.COLUMN_NAME_HEIGHT + this.FILTERS_HEIGHT);

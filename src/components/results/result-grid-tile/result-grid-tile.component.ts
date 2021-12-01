@@ -23,6 +23,7 @@ import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 
 @Component({
@@ -44,9 +45,12 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
 
   /**
    * @Input
-   * @description Whether to fit the image to the tile in grid view.
+   * @description How to fit the thumbnail to the tile:
+   * - `height` fit the height of the thumbnail.
+   * - `width` fit the width of the thumbnail.
+   * - `contain` fit the wholethumbnail.
    */
-   @Input() public fitThumbnails = false;
+   @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
   /**
    * @Input
    * @description List of all selected items in the result-list.component.
@@ -99,6 +103,9 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
    */
   @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
 
+
+
+  public ThumbnailFitEnum = ThumbnailFitEnum;
 
   constructor() {
     super();
