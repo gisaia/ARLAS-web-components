@@ -30,7 +30,7 @@ export function formatNumber(x, formatChar = ' '): string {
     const decimal = (num + '').split('.');
     const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, formatChar);
     const spacedNumberString = trunc < 0 ? '-' + spacedNumber : spacedNumber;
-    if (num < 0.09 && num > -0.09) {
+    if (num < 0.09 && num > -0.09 && num !== 0) {
       return Number.parseFloat(x).toExponential(3);
     }
     return decimal.length === 2 ? spacedNumberString + '.' + decimal[1] : spacedNumberString;

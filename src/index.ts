@@ -1,6 +1,3 @@
-import { MapglImportModule } from './components/mapgl-import/mapgl-import.module';
-import { MapglImportComponent } from './components/mapgl-import/mapgl-import.component';
-import { WmtsLayerManagerComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -33,6 +30,7 @@ export { MetricModule } from './components/metric/metric.module';
 export { ChartType, DataType, Position, SimpleNode, TreeNode, SwimlaneMode, HistogramTooltip } from 'arlas-d3';
 export { SortEnum } from './components/results/utils/enumerations/sortEnum';
 export { ModeEnum } from './components/results/utils/enumerations/modeEnum';
+export { ThumbnailFitEnum } from './components/results/utils/enumerations/thumbnailFitEnum';
 export { CellBackgroundStyleEnum } from './components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { DetailedDataRetriever } from './components/results/utils/detailed-data-retriever';
 export { Action, ElementIdentifier, FieldsConfiguration, ResultListOptions } from './components/results/utils/results.utils';

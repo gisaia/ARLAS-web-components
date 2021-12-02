@@ -72,7 +72,7 @@
         </div>
         <div class="resultlist__tools--separator">|</div>
         <div *ngIf="hasGridMode" class="resultlist__tools--mode" id="resultlist_mode">
-          <mat-button-toggle-group #group="matButtonToggleGroup" (change)="whichMode($event)">
+          <mat-button-toggle-group [name]="'modeGroup'" (change)="whichMode($event)">
             <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
               <mat-icon>list</mat-icon>
             </mat-button-toggle>
@@ -137,7 +137,7 @@
         </ng-container>
         <ng-template #grid_mode>
           <mat-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile">
-            <arlas-result-grid-tile  id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
+            <arlas-result-grid-tile [thumbnailFit]="thumbnailFit" id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
               (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
             </arlas-result-grid-tile>
@@ -147,6 +147,19 @@
     </mat-grid-list>
 
   </tbody>
+  <div *ngIf="resultMode==ModeEnum.grid" class="resultlist-thumbnails-fit" >
+    <mat-button-toggle-group [name]="'thumbnailFitGroup'" (change)="emitThumbnailsFitStatus($event)" >
+      <mat-button-toggle matTooltip="{{WIDTH_FIT | translate}}" value="{{ThumbnailFitEnum.width}}" [checked]="thumbnailFit==ThumbnailFitEnum.width">
+        <mat-icon style="transform: rotate(-90deg)">height</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle matTooltip="{{CONTAIN_FIT | translate}}" value="{{ThumbnailFitEnum.contain}}" [checked]="thumbnailFit==ThumbnailFitEnum.contain ">
+        <mat-icon>fit_screen</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle matTooltip="{{HEIGHT_FIT | translate}}" value="{{ThumbnailFitEnum.height}}" [checked]="thumbnailFit==ThumbnailFitEnum.height">
+        <mat-icon>height</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
   <div *ngIf="isNextPageRequested" class="resultlist__loading resultlist__bottom_loading" [style.width.px]="tableWidth">
       <ngx-loading [show]="isNextPageRequested" [config]="loadAnimationConfig"></ngx-loading>
   </div>

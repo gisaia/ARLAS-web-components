@@ -1287,8 +1287,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    const visibilityFilter = features.length > 0 ?
-      features.reduce((ids, element) => { ids.push(element.idValue); return ids; }, ['in', ['get', features[0].idFieldName]]) : [];
+    const ids = features.map(f => f.idValue);
+    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids]] : [];
     this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
   }
 

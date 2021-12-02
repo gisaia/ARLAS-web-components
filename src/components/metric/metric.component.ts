@@ -103,19 +103,21 @@ export class MetricComponent implements OnInit, OnChanges {
     }
   }
 
-  private numberToShortValue(value: number, p?: number): string {
-    let isNegative = false;
-    if (value < 0) {
-      value = value * -1;
-      isNegative = true;
-    }
+  private numberToShortValue(number: number, p?: number): string {
+    // what tier? (determines SI symbol)
     const suffixes = ['', 'k', 'M', 'b', 't'];
-    let suffixNum = Math.floor(('' + Math.round(value)).length / 3);
-    if (('' + value).length === 3) {
-      suffixNum = 0;
+    const suffixNum = Math.log10(Math.abs(number)) / 3 | 0;
+
+    if (suffixNum === 0) {
+      return number.toString();
     }
-    const shortValue = MetricComponent.round((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value), p);
-    return (isNegative ? '-' : '') + shortValue + suffixes[suffixNum];
+    // get suffix and determine scale
+    const suffix = suffixes[suffixNum];
+    const scale = Math.pow(10, suffixNum * 3);
+    // scale the number
+    const scaled = number / scale;
+    // format number and add suffix
+    return scaled.toFixed(p) + suffix;
   }
 
 }
