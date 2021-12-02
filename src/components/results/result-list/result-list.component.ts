@@ -240,6 +240,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
   @Input() public isGeoSortEnabled = false;
 
+  @Input() public isGeoSortActivated = false;
+
+
   @Input() public currentSortedColumn: Column;
 
   /**
@@ -416,7 +419,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public sortedColumn: { fieldName: string, sortDirection: SortEnum } = { fieldName: '', sortDirection: SortEnum.asc };
   public lastSortedColumn: Column;
 
-  public isGeoSortActivated = false;
 
   // Heights of table elements
   public tbodyHeight: number = null;
