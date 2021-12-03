@@ -331,3 +331,25 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 .cover-images {
   color: rgb(68, 68, 68);
 }
+
+.fit-group {
+  height: 25px;
+  align-items: center;
+}
+
+.contain-icon {
+  position: absolute;
+  top: 11px;
+  transform: rotate(90deg);
+}
+
+.fit-icon {
+  height: 18px;
+  width: 18px;
+  font-size: 18px;
+}
+
+.contain-icon-wrapper {
+  position: relative;
+}
+
