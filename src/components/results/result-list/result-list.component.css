@@ -146,7 +146,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 40px;
+  height: 30px;
 }
 
 .resultlist__tools {
