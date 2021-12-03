@@ -435,7 +435,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
   public hasGridMode = false;
-  public resultMode: ModeEnum = this.defautMode;
+  public resultMode: ModeEnum;
   public allItemsChecked = false;
 
   private detailedGridCounter = 0;
@@ -453,7 +453,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     private colorService: ArlasColorService, public translate: TranslateService) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
-    this.resultMode = this.defautMode;
     // Resize the table height on window resize
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
@@ -477,6 +476,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   }
 
   public ngOnInit() {
+    this.resultMode = (this.defautMode && (this.defautMode.toString() === 'grid' ||
+      this.defautMode.toString() === ModeEnum.grid.toString())) ? ModeEnum.grid : ModeEnum.list;
     this.options = Object.assign(new ResultListOptions(), this.options);
     if (this.fieldsConfiguration !== undefined && this.fieldsConfiguration !== null) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
@@ -485,6 +486,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.setTableWidth();
       this.tbodyHeight = this.getOffSetHeight();
     }
+
 
   }
 
@@ -495,7 +497,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
-      if (this.defautMode.toString() === ModeEnum.grid.toString()) {
+      if (this.defautMode.toString() === 'grid' || this.defautMode.toString() === ModeEnum.grid.toString()) {
         this.resultMode = ModeEnum.grid;
         this.displayListGrid = 'block';
       } else {
