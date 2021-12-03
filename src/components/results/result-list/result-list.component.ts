@@ -103,7 +103,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public COLUMN_ACTIONS_HEIGHT = 50;
   public COLUMN_NAME_HEIGHT = 25;
   public FILTERS_HEIGHT = 50;
-  public TAIL_HEIGHT = 40;
+  public TAIL_HEIGHT = 30;
 
 
 
