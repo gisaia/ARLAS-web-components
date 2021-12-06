@@ -1,5 +1,20 @@
 # Change Log
 
+## [v19.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.2.0) (2021-12-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.1.0...v19.2.0)
+
+**New stuff:**
+
+- Handle multiple field in image/thumbnail url pattern [\#615](https://github.com/gisaia/ARLAS-web-components/issues/615) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Select features on layer of a given collection [\#614](https://github.com/gisaia/ARLAS-web-components/issues/614) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- Metric short values are wrong [\#616](https://github.com/gisaia/ARLAS-web-components/issues/616)
+- 0 is displayed as 0e0000 [\#613](https://github.com/gisaia/ARLAS-web-components/issues/613)
+- Layers that are hidden in the visualisation set keep displayed on the map [\#514](https://github.com/gisaia/ARLAS-web-components/issues/514) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v19.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.1.0) (2021-10-25)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.4...v19.1.0)
