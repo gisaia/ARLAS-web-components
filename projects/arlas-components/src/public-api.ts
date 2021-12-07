@@ -2,6 +2,9 @@
  * Public API Surface of arlas-components
  */
 
+
+
+
 export { ColorGeneratorLoader, AwcColorGeneratorLoader } from './lib/components/componentsUtils';
 export { MapLayers, BasemapStyle } from './lib/components/mapgl/model/mapLayers';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
@@ -44,6 +47,13 @@ export { MapglSettingsComponent, MapSettingsService, GeoQuery,
   GeometrySelectModel, OperationSelectModel } from './lib/components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
+export { WmtsLayerManagertDialogComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
+
+export { ResultDetailedGridComponent } from './lib/components/results/result-detailed-grid/result-detailed-grid.component';
+export { ResultScrollDirective } from './lib/components/results/result-directive/result-scroll.directive';
+export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
+export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
+
 export * from './lib/arlas-components.service';
 export * from './lib/arlas-components.component';
 export * from './lib/arlas-components.module';

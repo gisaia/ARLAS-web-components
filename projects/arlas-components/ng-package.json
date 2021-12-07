@@ -4,38 +4,6 @@
   "assets": ["./assets"],
   "allowedNonPeerDependencies": ["."],
   "lib": {
-    "entryFile": "src/public-api.ts",
-    "umdModuleIds": {
-      "tinycolor2": "tinycolor2",
-      "util": "util",
-      "@ngx-translate/core": "translateCore",
-      "arlas-d3": "arlasD3",
-      "arlas-d3/histograms/utils/HistogramUtils": "arlasD3HistogramUtils",
-      "@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw": "mapboxGlDraw",
-      "mapbox-gl": "mapboxgl",
-      "@turf/helpers": "turfHelpers",
-      "@turf/centroid": "turfCentroid",
-      "@gisaia-team/mapbox-gl-draw/src/modes/direct_select": "mapboxGlDrawDirectSelect",
-      "@gisaia-team/mapbox-gl-draw/src/lib/create_supplementary_points": "mapboxGlDrawCreateSupPoints",
-      "@gisaia-team/mapbox-gl-draw/src/lib/double_click_zoom": "mapboxGlDrawDblClickZoom",
-      "@gisaia-team/mapbox-gl-draw/src/constants": "mapboxGlDrawConstants",
-      "jsts/dist/jsts.min": "jsts",
-      "@gisaia-team/mapbox-gl-draw/src/modes/draw_polygon": "mapboxGlDrawDrawPolygon",
-      "@gisaia-team/mapbox-gl-draw/src/lib/common_selectors": "mapboxGlDrawCommonSelectors",
-      "d3-scale": "d3Scale",
-      "d3-selection": "d3Selection",
-      "d3-shape": "d3Shape",
-      "ngx-loading": "ngxLoading",
-      "ng-lazyload-image": "ngLazyloadImage",
-      "iv-viewer": "ivViewer",
-      "@mapbox/togeojson": "mapboxToGeoJSON",
-      "jszip": "JSZip",
-      "shpjs/dist/shp": "shp_",
-      "turf-extent": "turfExtent",
-      "wellknown": "wellknown",
-      "geojson-validation": "geojsonValidation",
-      "geojson-polygon-self-intersections": "gpsi_",
-      "moment": "moment"
-    }
+    "entryFile": "src/public-api.ts"
   }
 }

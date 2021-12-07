@@ -26,9 +26,9 @@ import { select } from 'd3-selection';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { StyleFunction, Expression } from 'mapbox-gl';
 import * as tinycolor from 'tinycolor2';
-import { LegendData } from '../mapgl/mapgl.component';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
+import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -558,23 +558,5 @@ export function getMax(data: Array<HistogramData>): number {
   return Math.max(...data.map(hd => +hd.value));
 }
 
-export interface Legend {
-  type?: PROPERTY_SELECTOR_SOURCE;
-  title?: string;
-  minValue?: string;
-  maxValue?: string;
-  fixValue?: string | number;
-  interpolatedValues?: Array<string | number>;
-  manualValues?: Map<string, string | number>;
-  visible?: boolean;
-}
 
-export enum PROPERTY_SELECTOR_SOURCE {
-  fix = 'Fix',
-  provided = 'Provided',
-  generated = 'Generated',
-  manual = 'Manual',
-  interpolated = 'Interpolated',
-  metric_on_field = 'Metric on field',
-  heatmap_density = 'Density'
-}
+

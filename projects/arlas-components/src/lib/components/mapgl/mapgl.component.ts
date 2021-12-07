@@ -28,7 +28,7 @@ import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
-import { paddedBounds, MapExtend } from './mapgl.component.util';
+import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
   ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET } from './model/mapLayers';
@@ -62,12 +62,6 @@ export interface OnMoveResult {
   xMoveRatio: number;
   yMoveRatio: number;
   visibleLayers: Set<string>;
-}
-
-export interface LegendData {
-  minValue?: string;
-  maxValue?: string;
-  keysColorsMap?: Map<string, string>;
 }
 
 export interface VisualisationSetConfig {

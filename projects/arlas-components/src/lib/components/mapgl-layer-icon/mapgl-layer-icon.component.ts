@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
-import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl-legend/mapgl-legend.component';
 import { select } from 'd3-selection';
+import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
 
 @Component({
   selector: 'arlas-mapgl-layer-icon',
