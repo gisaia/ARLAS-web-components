@@ -10,7 +10,7 @@ describe('MapglImportComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ MapglImportComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

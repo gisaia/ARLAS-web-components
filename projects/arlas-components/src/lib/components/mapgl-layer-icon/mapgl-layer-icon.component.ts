@@ -41,47 +41,47 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     const paint = this.layer.paint;
     const source: string = this.layer.source as string;
     switch (type) {
-      case 'circle': {
-        const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        if (source.startsWith('feature-metric')) {
-          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
-        } else if (source.startsWith('feature')) {
-          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
-        } else if (source.startsWith('cluster')) {
-          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
-        }
-        break;
+    case 'circle': {
+      const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
+      if (source.startsWith('feature-metric')) {
+        drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
+      } else if (source.startsWith('feature')) {
+        drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+      } else if (source.startsWith('cluster')) {
+        drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
       }
-      case 'line': {
-        if (source.startsWith('feature-metric')) {
-          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray, true);
-        } else {
-          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray);
-        }
-        break;
+      break;
+    }
+    case 'line': {
+      if (source.startsWith('feature-metric')) {
+        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray, true);
+      } else {
+        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray);
       }
-      case 'fill': {
-        if (source.startsWith('cluster')) {
-          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
-        } else if (source.startsWith('feature-metric')) {
-          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
-        } else {
-          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
-        }
-        break;
+      break;
+    }
+    case 'fill': {
+      if (source.startsWith('cluster')) {
+        drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+      } else if (source.startsWith('feature-metric')) {
+        drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
+      } else {
+        drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
       }
-      case 'heatmap': {
-        drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer.source.toString().startsWith('feature-metric'));
-        break;
+      break;
+    }
+    case 'heatmap': {
+      drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer.source.toString().startsWith('feature-metric'));
+      break;
+    }
+    case 'symbol': {
+      const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
+      if (l['text-field']) {
+        drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
+      } else if (l['icon-image']) {
+        this.isImage = true;
       }
-      case 'symbol': {
-        const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
-        if (l['text-field']) {
-          drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
-        } else if (l['icon-image']) {
-          this.isImage = true;
-        }
-      }
+    }
     }
   }
 
@@ -133,11 +133,11 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, st
     strokeColor = getOneColor(strokeColorLegend);
   }
   const polygon = [{ 'x': 0, 'y': 0 },
-  { 'x': 18, 'y': 0 },
-  { 'x': 13, 'y': 15 },
-  { 'x': 1, 'y': 15 },
-  { 'x': 8, 'y': 7 },
-  { 'x': 0, 'y': 0 }];
+    { 'x': 18, 'y': 0 },
+    { 'x': 13, 'y': 15 },
+    { 'x': 1, 'y': 15 },
+    { 'x': 8, 'y': 7 },
+    { 'x': 0, 'y': 0 }];
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').selectAll('polygon')
@@ -217,10 +217,18 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
       .append('circle')
       .attr('cx', 10).attr('cy', 10)
       .attr('r', (d, i) => {
-        if (i === 0) { return 10; }
-        if (i === 1) { return 8; }
-        if (i === 2) { return 6; }
-        if (i === 3) { return 3; }
+        if (i === 0) {
+          return 10;
+        }
+        if (i === 1) {
+          return 8;
+        }
+        if (i === 2) {
+          return 6;
+        }
+        if (i === 3) {
+          return 3;
+        }
       })
       .style('fill', (d, i) => d)
       .attr('filter', 'url(#blur)');
@@ -301,18 +309,30 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
       if (colorsList.length === 1) {
         return 10;
       } else {
-        if (i === 0) { return 6; }
-        if (i === 1) { return 12; }
-        if (i === 2) { return 5; }
+        if (i === 0) {
+          return 6;
+        }
+        if (i === 1) {
+          return 12;
+        }
+        if (i === 2) {
+          return 5;
+        }
       }
     })
     .attr('cy', (d, i) => {
       if (colorsList.length === 1) {
         return 10;
       } else {
-        if (i === 0) { return 5; }
-        if (i === 1) { return 10; }
-        if (i === 2) { return 15; }
+        if (i === 0) {
+          return 5;
+        }
+        if (i === 1) {
+          return 10;
+        }
+        if (i === 2) {
+          return 15;
+        }
       }
     })
     .attr('r', (d, i) => {
@@ -349,19 +369,37 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
     .data(colorsList).enter()
     .append('circle')
     .attr('cx', (d, i) => {
-      if (i === 0) { return 12; }
-      if (i === 1) { return 6; }
-      if (i === 2) { return 10; }
+      if (i === 0) {
+        return 12;
+      }
+      if (i === 1) {
+        return 6;
+      }
+      if (i === 2) {
+        return 10;
+      }
     })
     .attr('cy', (d, i) => {
-      if (i === 0) { return 7; }
-      if (i === 1) { return 11; }
-      if (i === 2) { return 15; }
+      if (i === 0) {
+        return 7;
+      }
+      if (i === 1) {
+        return 11;
+      }
+      if (i === 2) {
+        return 15;
+      }
     })
     .attr('r', (d, i) => {
-      if (i === 0) { return 6; }
-      if (i === 1) { return 5; }
-      if (i === 2) { return 3; }
+      if (i === 0) {
+        return 6;
+      }
+      if (i === 1) {
+        return 5;
+      }
+      if (i === 2) {
+        return 3;
+      }
     })
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
     .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);

@@ -4,29 +4,29 @@ import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zo
 import { modes, cursors, events } from '@gisaia-team/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts.min';
 
-const ValidGeomDrawPolygonMode = DrawPolygon;
+const validGeomDrawPolygonMode = DrawPolygon;
 const reader = new jsts.io.GeoJSONReader();
 
-ValidGeomDrawPolygonMode.fireInvalidGeom = function (feature) {
+validGeomDrawPolygonMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
     action: 'error',
     features: [feature]
   });
 };
 
-ValidGeomDrawPolygonMode.fireOnClick = function () {
+validGeomDrawPolygonMode.fireOnClick = function () {
   this.map.fire('draw.onClick', 'point drawn');
 };
 
-ValidGeomDrawPolygonMode.fireOnStop = function () {
+validGeomDrawPolygonMode.fireOnStop = function () {
   this.map.fire('draw.onStop', 'draw end');
 };
 
-ValidGeomDrawPolygonMode.clickOnVertex = function (state) {
+validGeomDrawPolygonMode.clickOnVertex = function (state) {
   return this.changeMode(modes.SIMPLE_SELECT, {});
 };
 
-ValidGeomDrawPolygonMode.onTap = ValidGeomDrawPolygonMode.onClick = function (state, e) {
+validGeomDrawPolygonMode.onTap = validGeomDrawPolygonMode.onClick = function (state, e) {
   if (CommonSelectors.isVertex(e)) {
     return this.clickOnVertex(state, e);
   } else {
@@ -35,7 +35,7 @@ ValidGeomDrawPolygonMode.onTap = ValidGeomDrawPolygonMode.onClick = function (st
   }
 };
 
-ValidGeomDrawPolygonMode.onStop = function (state) {
+validGeomDrawPolygonMode.onStop = function (state) {
   this.fireOnStop();
   this.updateUIClasses({ mouse: cursors.NONE });
   doubleClickZoom.enable(this);
@@ -79,4 +79,4 @@ ValidGeomDrawPolygonMode.onStop = function (state) {
   }
 };
 
-export default ValidGeomDrawPolygonMode;
+export default validGeomDrawPolygonMode;

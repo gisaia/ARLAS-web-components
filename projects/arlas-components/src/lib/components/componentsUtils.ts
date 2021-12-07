@@ -65,7 +65,7 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
   public keysToColors: Array<Array<string>>;
   public colorsSaturationWeight = 0.5 ;
 
-    /**
+  /**
    * This method generates a determistic color from the given key, a list of [key, color] and a saturation weight.
    * - First the method checks if the [key,color] is defined in externalkeysToColors and returns the correspondant color.
    *
@@ -81,11 +81,11 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
    * @param colorsSaturationWeight Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a factor (between 0 and 1) that
    * tightens this scale to [(1-colorsSaturationWeight), 1]. Therefore all generated colors saturation will be within this scale.
    */
-    public getColor(key: string, externalKeysToColors: Array<[string, string]>, externalColorsSaturationWeight: number): string {
+  public getColor(key: string, externalKeysToColors: Array<[string, string]>, externalColorsSaturationWeight: number): string {
     let colorHex = null;
     const keysToColors = externalKeysToColors ? externalKeysToColors : this.keysToColors;
     const saturationWeight = (externalColorsSaturationWeight !== undefined && externalColorsSaturationWeight !== null) ?
-     externalColorsSaturationWeight : this.colorsSaturationWeight;
+      externalColorsSaturationWeight : this.colorsSaturationWeight;
     if (keysToColors) {
       for (let i = 0; i < keysToColors.length; i++) {
         const keyToColor = keysToColors[i];

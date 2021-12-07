@@ -71,8 +71,8 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
    * @description Emits the event of applying the specified action on the specified item.
    */
 
-  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
-    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
+    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
   /**
  * @Output
  * @description Emits the event of closing details.
@@ -132,7 +132,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
   }
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
-  public triggerActionOnItem(actionOnItem: { action: Action, elementidentifier: ElementIdentifier }): void {
+  public triggerActionOnItem(actionOnItem: { action: Action; elementidentifier: ElementIdentifier; }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 

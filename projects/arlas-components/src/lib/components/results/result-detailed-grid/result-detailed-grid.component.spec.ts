@@ -29,7 +29,7 @@ describe('ResultDetailedGridComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ResultDetailedGridComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

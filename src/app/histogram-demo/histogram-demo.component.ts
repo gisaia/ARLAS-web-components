@@ -27,10 +27,10 @@ import { DataType, ChartType, SelectedOutputValues, SelectedInputValues, Swimlan
   styleUrls: ['./histogram-demo.component.css']
 })
 export class HistogramDemoComponent implements OnInit {
-  public curvedTimelineData: Array<{key: Date | number, value: number}>;
-  public barsHistogramData: Array<Array<{key: Date | number, value: number}>>;
-  public oneDimensionHistogramData: Array<Array<{key: Date | number, value: number}>>;
-  public defaultHistogramData: Array<{key: Date | number, value: number}>;
+  public curvedTimelineData: Array<{key: Date | number; value: number; }>;
+  public barsHistogramData: Array<Array<{key: Date | number; value: number; }>>;
+  public oneDimensionHistogramData: Array<Array<{key: Date | number; value: number; }>>;
+  public defaultHistogramData: Array<{key: Date | number; value: number; }>;
   public swimlaneHistogramData: Map<any, any>;
   public dataType = DataType;
   public swimlaneMode = SwimlaneMode;
@@ -48,7 +48,7 @@ export class HistogramDemoComponent implements OnInit {
     this.showData();
   }
 
-  public setSelectedTimeValues(selectedValues: Array<{ startvalue: Date, endvalue: Date }>) {
+  public setSelectedTimeValues(selectedValues: Array<{ startvalue: Date; endvalue: Date; }>) {
     this.selectedTimeValues.startvalue = selectedValues[0].startvalue;
     this.selectedTimeValues.endvalue = selectedValues[0].endvalue;
     if (selectedValues.length === 1) {
@@ -59,7 +59,7 @@ export class HistogramDemoComponent implements OnInit {
     }
   }
 
-  public setSelectedNumericValues(selectedValues: Array<{ startvalue: Date, endvalue: Date }>) {
+  public setSelectedNumericValues(selectedValues: Array<{ startvalue: Date; endvalue: Date; }>) {
     this.selectedNumericValues.startvalue = selectedValues[0].startvalue;
     this.selectedNumericValues.endvalue = selectedValues[0].endvalue;
 

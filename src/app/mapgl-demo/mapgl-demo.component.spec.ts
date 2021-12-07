@@ -29,7 +29,7 @@ describe('MapglDemoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ MapglDemoComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

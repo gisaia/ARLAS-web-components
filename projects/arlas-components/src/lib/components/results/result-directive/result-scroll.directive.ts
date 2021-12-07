@@ -31,8 +31,8 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public nbLinesBeforeFetch: number;
   @Input() public nbGridColumns: number;
   @Input() public resultMode: ModeEnum;
-  @Input() public fetchState: { endListUp: true, endListDown: false };
-  @Input() public scrollOptions: { maintainScrollUpPosition: boolean, maintainScrollDownPosition: boolean, nbLines: number };
+  @Input() public fetchState: { endListUp: true; endListDown: false; };
+  @Input() public scrollOptions: { maintainScrollUpPosition: boolean; maintainScrollDownPosition: boolean; nbLines: number; };
 
   @Output() public nextDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
   @Output() public previousDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
@@ -112,9 +112,9 @@ export class ResultScrollDirective implements OnChanges {
     this.top = scrollTop;
     this.height = scrollHeight;
     if (this.previousFirstId) {
-        if (this.previousFirstId !== this.items[0].identifier || (this.fetchState && this.fetchState.endListDown)) {
-          this.previousFirstId = null;
-        }
+      if (this.previousFirstId !== this.items[0].identifier || (this.fetchState && this.fetchState.endListDown)) {
+        this.previousFirstId = null;
+      }
     }
     if (this.previousLastId) {
       if (this.previousLastId !== this.items[this.items.length - 1].identifier || (this.fetchState && this.fetchState.endListUp)) {
@@ -148,13 +148,13 @@ export class ResultScrollDirective implements OnChanges {
   }
 
   private isElementInViewport(el) {
-      const rect = el.getBoundingClientRect();
-      return (
-          rect.top >= 0 &&
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top >= 0 &&
           rect.left >= 0 &&
           rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
           rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-      );
+    );
   }
 
   private isScrollingDown(scrollTop) {

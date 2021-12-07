@@ -38,7 +38,7 @@ export class Item {
    * @description Url that links the item's thumbnail.
    */
   public urlThumbnail: string;
-    /**
+  /**
    * @description If thumbnail is enabled (to avoid 404 nott found)
    */
   public thumbnailEnabled: boolean;
@@ -46,7 +46,7 @@ export class Item {
    * @description Item's title.
    */
   public title: string;
-    /**
+  /**
    * @description Item's tooltip.
    */
   public tooltip: string;
@@ -63,11 +63,11 @@ export class Item {
    * @description More data organized in groups.
    */
   public itemDetailedData: Array<{
-    group: string,
-    details: Array<{ key: string, value: string }>
+    group: string;
+    details: Array<{ key: string; value: string; }>;
   }> = new Array<{
-    group: string,
-    details: Array<{ key: string, value: string}>
+    group: string;
+    details: Array<{ key: string; value: string; }>;
   }>();
   /**
      * @description Links attached to the item.

@@ -365,34 +365,34 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.histogram === undefined) {
       switch (this.chartType) {
-        case ChartType.area: {
-          this.histogram = new ChartArea();
-          break;
+      case ChartType.area: {
+        this.histogram = new ChartArea();
+        break;
+      }
+      case ChartType.curve: {
+        this.histogram = new ChartCurve();
+        break;
+      }
+      case ChartType.bars: {
+        this.histogram = new ChartBars();
+        break;
+      }
+      case ChartType.oneDimension: {
+        this.histogram = new ChartOneDimension();
+        break;
+      }
+      case ChartType.swimlane: {
+        if (this.swimlaneMode === SwimlaneMode.circles) {
+          this.histogram = new SwimlaneCircles();
+        } else {
+          this.histogram = new SwimlaneBars();
         }
-        case ChartType.curve: {
-          this.histogram = new ChartCurve();
-          break;
-        }
-        case ChartType.bars: {
-          this.histogram = new ChartBars();
-          break;
-        }
-        case ChartType.oneDimension: {
-          this.histogram = new ChartOneDimension();
-          break;
-        }
-        case ChartType.swimlane: {
-          if (this.swimlaneMode === SwimlaneMode.circles) {
-            this.histogram = new SwimlaneCircles();
-          } else {
-            this.histogram = new SwimlaneBars();
-          }
-          break;
-        }
-        default: {
-          this.histogram = new ChartArea();
-          break;
-        }
+        break;
+      }
+      default: {
+        this.histogram = new ChartArea();
+        break;
+      }
       }
       this.setHistogramParameters();
     }

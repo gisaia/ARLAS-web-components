@@ -18,12 +18,10 @@
  */
 
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { MapglComponent } from '../../components/mapgl/mapgl.component';
-import { MapglImportComponent } from '../../components/mapgl-import/mapgl-import.component';
-import { MapglSettingsComponent,
-  MapSettingsService,
-  GeometrySelectModel,
-  OperationSelectModel } from '../../components/mapgl-settings/mapgl-settings.component';
+import {
+  GeometrySelectModel, MapglComponent, MapglImportComponent, MapglSettingsComponent,
+  MapSettingsService, OperationSelectModel
+} from '../../../projects/arlas-components/src/public-api';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -498,9 +496,11 @@ export class MapglDemoComponent implements OnInit {
   constructor() { }
 
   public ngOnInit(): void {
-    this.mapComponent.onPolygonError.subscribe(error => {
-      console.log(error);
-    });
+    if (!!this.mapComponent.onPolygonError) {
+      this.mapComponent.onPolygonError.subscribe(error => {
+        console.log(error);
+      });
+    }
   }
 
   public onPolygonError(event) {
@@ -556,11 +556,9 @@ export class MapglDemoComponent implements OnInit {
     console.log(event);
   }
 
-  public transformRequest = (url: string, resourceType: string) => {
-    return {
-      url: url.replace('http', 'http'),
-    };
-  }
+  public transformRequest = (url: string, resourceType: string) => ({
+    url: url.replace('http', 'http'),
+  });
 
   public openSettings() {
     this.mapSettings.openDialog(new MapSettings());

@@ -171,57 +171,57 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     const paint = this.layer.paint;
     const metadata = this.layer.metadata;
     switch (type) {
-      case 'circle': {
-        const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-        const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData, this.translate);
-        const strokeColors = MapglLegendComponent.buildColorLegend(p['circle-stroke-color'], visibileMode, this.legendData, this.translate);
-        this.buildCircleRadiusLegend(p['circle-radius']);
-        this.colorLegend = colors[0];
+    case 'circle': {
+      const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
+      const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData, this.translate);
+      const strokeColors = MapglLegendComponent.buildColorLegend(p['circle-stroke-color'], visibileMode, this.legendData, this.translate);
+      this.buildCircleRadiusLegend(p['circle-radius']);
+      this.colorLegend = colors[0];
+      this.strokeColorLegend = strokeColors[0];
+      this.colorsPalette = colors[1];
+      this.strokeColorPalette = strokeColors[1];
+      break;
+    }
+    case 'line': {
+      const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
+      const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.translate);
+      this.buildLineWidthLegend(p['line-width']);
+      this.lineDasharray = p['line-dasharray'];
+      this.colorLegend = colors[0];
+      this.colorsPalette = colors[1];
+      break;
+    }
+    case 'fill': {
+      const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
+      const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.translate);
+      this.colorLegend = colors[0];
+      this.colorsPalette = colors[1];
+      if (!!metadata && !!metadata.stroke) {
+        const strokeColors = MapglLegendComponent.buildColorLegend(metadata.stroke.color, visibileMode, this.legendData, this.translate);
         this.strokeColorLegend = strokeColors[0];
-        this.colorsPalette = colors[1];
         this.strokeColorPalette = strokeColors[1];
-        break;
       }
-      case 'line': {
-        const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-        const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.translate);
-        this.buildLineWidthLegend(p['line-width']);
-        this.lineDasharray = p['line-dasharray'];
-        this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
-        break;
+      break;
+    }
+    case 'heatmap': {
+      const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
+      this.colorLegend.minValue = '0';
+      this.colorLegend.maxValue = '1';
+      const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.translate);
+      this.buildCircleRadiusLegend(p['heatmap-radius']);
+      this.colorLegend = colors[0];
+      this.colorsPalette = colors[1];
+      if (this.layer.source.toString().startsWith('feature-metric')) {
+        this.colorLegend.visible = false;
       }
-      case 'fill': {
-        const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
-        const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.translate);
-        this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
-        if (!!metadata && !!metadata.stroke) {
-          const strokeColors = MapglLegendComponent.buildColorLegend(metadata.stroke.color, visibileMode, this.legendData, this.translate);
-          this.strokeColorLegend = strokeColors[0];
-          this.strokeColorPalette = strokeColors[1];
-        }
-        break;
-      }
-      case 'heatmap': {
-        const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-        this.colorLegend.minValue = '0';
-        this.colorLegend.maxValue = '1';
-        const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.translate);
-        this.buildCircleRadiusLegend(p['heatmap-radius']);
-        this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
-        if (this.layer.source.toString().startsWith('feature-metric')) {
-          this.colorLegend.visible = false;
-        }
-        break;
-      }
-      case 'symbol': {
-        this.colorLegend = {};
-        this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
-        this.colorLegend.visible = visibileMode;
-        break;
-      }
+      break;
+    }
+    case 'symbol': {
+      this.colorLegend = {};
+      this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
+      this.colorLegend.visible = visibileMode;
+      break;
+    }
     }
     if (!this.colorLegend.fixValue) {
       this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';

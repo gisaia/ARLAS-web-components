@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Layer } from 'mapbox-gl';
+import { AnyLayer } from 'mapbox-gl';
 
 export interface BasemapStyle {
   name: string;
@@ -30,7 +30,7 @@ export interface BasemapStylesGroup {
 }
 
 export interface MapLayers {
-  layers: Array<mapboxgl.Layer>;
+  layers: Array<AnyLayer>;
   externalEventLayers?: Array<ExternalEventLayer>;
   events: LayerEvents;
 }

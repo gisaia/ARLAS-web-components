@@ -1,12 +1,8 @@
 /*
  * Public API Surface of arlas-components
  */
-
-
-
-
 export { ColorGeneratorLoader, AwcColorGeneratorLoader } from './lib/components/componentsUtils';
-export { MapLayers, BasemapStyle } from './lib/components/mapgl/model/mapLayers';
+export { MapLayers, BasemapStyle, ARLAS_VSET } from './lib/components/mapgl/model/mapLayers';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
 export { MapExtend } from './lib/components/mapgl/mapgl.component.util';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
@@ -53,7 +49,7 @@ export { ResultDetailedGridComponent } from './lib/components/results/result-det
 export { ResultScrollDirective } from './lib/components/results/result-directive/result-scroll.directive';
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
-
+export { PageQuery } from './lib/components/results/utils/results.utils';
 export * from './lib/arlas-components.service';
 export * from './lib/arlas-components.component';
 export * from './lib/arlas-components.module';

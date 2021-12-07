@@ -36,13 +36,13 @@ import { MapSource } from './model/mapSource';
 import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
-import LimitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
-import ValidGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
+import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
+import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
 import { FeatureCollection } from '@turf/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { TransformRequestFunction } from 'mapbox-gl';
+import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
@@ -228,8 +228,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Feature to highlight.
    */
   @Input() public featureToHightLight: {
-    isleaving: boolean,
-    elementidentifier: ElementIdentifier
+    isleaving: boolean;
+    elementidentifier: ElementIdentifier;
   };
   /**
    * @Input : Angular
@@ -252,7 +252,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Features drawn at component start
    */
-  @Input() public drawData: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
+  @Input() public drawData: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
 
   /**
    * @Input : Angular
@@ -276,15 +276,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @description An object with noth,east,south,west properies which represent an offset in pixel
    * Origin is top-left and x axe is west to east and y axe north to south.
    */
-  @Input() public offset: { north: number, east: number, south: number, west: number } =
+  @Input() public offset: { north: number; east: number; south: number; west: number; } =
     { north: 0, east: 0, south: 0, west: 0 };
 
   /**
    * @Input : Angular
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
-  @Input() public redrawSource: Subject<{ source: string, data: helpers.Feature[] }> =
-    new Subject<{ source: string, data: helpers.Feature[] }>();
+  @Input() public redrawSource: Subject<{ source: string; data: helpers.Feature[]; }> =
+    new Subject<{ source: string; data: helpers.Feature[]; }>();
 
   /**
    * @Input : Angular
@@ -314,7 +314,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
   public visualisationsSets: {
-    visualisations: Map<string, Set<string>>,
+    visualisations: Map<string, Set<string>>;
     status: Map<string, boolean>;
   };
 
@@ -393,7 +393,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   // Polygon
   public nbPolygonVertice = 0;
-  public polygonlabeldata: { type: string, features: Array<any> } = Object.assign({}, this.emptyData);
+  public polygonlabeldata: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
   private indexId = 0;
   private customIds = new Map<number, string>();
   private isDrawingPolygon = false;
@@ -474,7 +474,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @param layers List of actual layers that are declared in `visualisation` object
    * @param sources List of sources that these external `layers` use.
    */
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<mapboxgl.Layer>, sources: Array<MapSource>): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
       this.map.addSource(s.id, s.source);
     });
@@ -553,12 +553,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
               const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
               const selectLayer = this.layersMap.get(selectId);
               if (!!selectLayer && !!this.map.getLayer(selectId)) {
-                  this.map.moveLayer(selectId);
+                this.map.moveLayer(selectId);
               }
               const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
               const hoverLayer = this.layersMap.get(hoverId);
               if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
-                  this.map.moveLayer(hoverId);
+                this.map.moveLayer(hoverId);
               }
             }
           }
@@ -638,7 +638,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const selectedBasemapLayersSet = new Set<string>();
     const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
     const sources = (<mapboxgl.Map>this.map).getStyle().sources;
-    if (s.layers) { s.layers.forEach(l => selectedBasemapLayersSet.add(l.id)); }
+    if (s.layers) {
+      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
+    }
     const layersToSave = new Array<mapboxgl.Layer>();
     const sourcesToSave = new Array<MapSource>();
     layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
@@ -668,10 +670,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
 
     /** init values */
-    if (!this.initCenter) { this.initCenter = [0, 0]; }
-    if (this.initZoom === undefined || this.initZoom === null) { this.initZoom = 3; }
-    if (this.maxZoom === undefined || this.maxZoom === null) { this.maxZoom = 22; }
-    if (this.minZoom === undefined || this.minZoom === null) { this.maxZoom = 0; }
+    if (!this.initCenter) {
+      this.initCenter = [0, 0];
+    }
+    if (this.initZoom === undefined || this.initZoom === null) {
+      this.initZoom = 3;
+    }
+    if (this.maxZoom === undefined || this.maxZoom === null) {
+      this.maxZoom = 22;
+    }
+    if (this.minZoom === undefined || this.minZoom === null) {
+      this.maxZoom = 0;
+    }
 
     this.map = new mapboxgl.Map({
       container: 'mapgl',
@@ -736,8 +746,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         modes: Object.assign(
           MapboxDraw.modes,
           {
-            limit_vertex: LimitVertexDirectSelectMode,
-            draw_polygon: ValidGeomDrawPolygonMode
+            limit_vertex: limitVertexDirectSelectMode,
+            draw_polygon: validGeomDrawPolygonMode
           })
       }
     };
@@ -846,27 +856,27 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.visibilityUpdater.subscribe(visibilityStatus => {
           visibilityStatus.forEach((vs, l) => {
-              if (!vs) {
-                (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
+            if (!vs) {
+              (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
+              this.setStrokeLayoutVisibility(l, 'none');
+              this.setScrollableLayoutVisibility(l, 'none');
+            } else {
+              let oneVisualisationEnabled = false;
+              this.visualisationSetsConfig.forEach(v => {
+                const ls = new Set(v.layers);
+                if (ls.has(l) && v.enabled) {
+                  oneVisualisationEnabled = true;
+                  (this.map).setLayoutProperty(l, 'visibility', 'visible');
+                  this.setStrokeLayoutVisibility(l, 'visible');
+                  this.setScrollableLayoutVisibility(l, 'visible');
+                }
+              });
+              if (!oneVisualisationEnabled) {
+                (this.map).setLayoutProperty(l, 'visibility', 'none');
                 this.setStrokeLayoutVisibility(l, 'none');
                 this.setScrollableLayoutVisibility(l, 'none');
-              } else {
-                  let oneVisualisationEnabled = false;
-                  this.visualisationSetsConfig.forEach(v => {
-                      const ls = new Set(v.layers);
-                      if (ls.has(l) && v.enabled) {
-                          oneVisualisationEnabled = true;
-                          (this.map).setLayoutProperty(l, 'visibility', 'visible');
-                          this.setStrokeLayoutVisibility(l, 'visible');
-                          this.setScrollableLayoutVisibility(l, 'visible');
-                      }
-                  });
-                  if (!oneVisualisationEnabled) {
-                    (this.map).setLayoutProperty(l, 'visibility', 'none');
-                    this.setStrokeLayoutVisibility(l, 'none');
-                    this.setScrollableLayoutVisibility(l, 'none');
-                  }
               }
+            }
           });
         });
       }
@@ -1447,7 +1457,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private highlightFeature(featureToHightLight: { isleaving: boolean, elementidentifier: ElementIdentifier }) {
+  private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
       const visibilityFilter = ['==', ['get', featureToHightLight.elementidentifier.idFieldName],
         featureToHightLight.elementidentifier.idValue];
@@ -1458,8 +1468,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
     if (elementToSelect) {
       const visibilityFilter = elementToSelect.length > 0 ?
-        elementToSelect.reduce((memo, element) => { memo.push(element.idValue); return memo; }
-          , ['in', ['get', elementToSelect[0].idFieldName]]) : [];
+        elementToSelect.reduce((memo, element) => {
+          memo.push(element.idValue); return memo;
+        }
+        , ['in', ['get', elementToSelect[0].idFieldName]]) : [];
       this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }
@@ -1504,7 +1516,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
-    if (!this.isDrawingBbox) { return; }
+    if (!this.isDrawingBbox) {
+      return;
+    }
     // Disable default drag zooming when we add a geobox.
     this.map.dragPan.disable();
     // Call functions for the following events
@@ -1516,7 +1530,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
-  }
+  };
 
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
@@ -1543,7 +1557,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.box.style.webkitTransform = pos;
     this.box.style.width = maxX - minX + 'px';
     this.box.style.height = maxY - minY + 'px';
-  }
+  };
 
   private mouseup = (e) => {
     const rect = this.canvas.getBoundingClientRect();
@@ -1565,7 +1579,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.box = undefined;
       }
     }
-  }
+  };
 
   private finish(bbox?) {
     // Remove these events now that finish has been called.

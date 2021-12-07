@@ -57,7 +57,7 @@ export class ItemComponent {
           });
         });
         additionalInfo.details.forEach((v, k) => {
-          const details: Array<{ key: string, value: string }> = new Array<{ key: string, value: string }>();
+          const details: Array<{ key: string; value: string; }> = new Array<{ key: string; value: string; }>();
           v.forEach((value, key) => details.push({ key: key, value: value }));
           item.itemDetailedData.push({ group: k, details: details });
         });

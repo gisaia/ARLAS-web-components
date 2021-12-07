@@ -29,7 +29,7 @@ describe('TimelineComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HistogramComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

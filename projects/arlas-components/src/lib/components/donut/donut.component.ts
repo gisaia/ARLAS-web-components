@@ -130,7 +130,7 @@ export class DonutComponent implements OnChanges {
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
         this.donut.resize(this.el.nativeElement.childNodes[0]);
-    });
+      });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

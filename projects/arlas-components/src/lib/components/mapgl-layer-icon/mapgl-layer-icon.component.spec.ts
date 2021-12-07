@@ -10,7 +10,7 @@ describe('MapglLayerIconComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ MapglLayerIconComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

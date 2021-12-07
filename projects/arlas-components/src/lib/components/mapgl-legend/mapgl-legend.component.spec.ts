@@ -10,7 +10,7 @@ describe('MapglLegendComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ MapglLegendComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

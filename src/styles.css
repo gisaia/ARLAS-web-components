@@ -57,7 +57,7 @@ a.arlas-map-control {
   font-style: normal;
   font-weight: 400;
   font-display: auto;
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url('./assets/font/material-icons.woff2') format('woff2');
+  src: local('Material Icons'), local('MaterialIcons-Regular'), url('../projects/arlas-components/assets/font/material-icons.woff2') format('woff2');
 }
 
 .material-icons {

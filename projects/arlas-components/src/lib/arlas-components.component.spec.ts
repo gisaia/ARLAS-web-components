@@ -10,7 +10,7 @@ describe('ArlasComponentsComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ ArlasComponentsComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

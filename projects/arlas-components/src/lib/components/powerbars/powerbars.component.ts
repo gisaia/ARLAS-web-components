@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -94,12 +95,12 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    */
   @Input() public colorsSaturationWeight ;
 
-   /**
+  /**
    * @Input : Angular
    * @description Whether to allow colorizing the bar according to its term or not using keysToColors
    */
   @Input() public useColorService = false;
-     /**
+  /**
    * @Input : Angular
    * @description Whether to allow colorizing the bar according to its term or not using a field of the data
    */
@@ -187,6 +188,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
       powerBar.isSelected = false;
       this.selectedPowerbarsTerms.delete(powerBar.term);
       this.selectedPowerbarsList.delete(powerBar);
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       (this.selectedPowerbarsTerms.size === 0) ? this.clearSelection() : powerBar.classSuffix = this.UNSELECTED_BAR;
     } else {
       if (this.selectedPaths) {
@@ -209,7 +211,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    * @description Set selected powerbars from outside of the component
    * @param selectedPaths selects the powerbars whose terms are in the selected paths
    */
-  public setSelectedPowerbars(selectedPaths: Array<Array<{ fieldName: string, fieldValue: string }>>) {
+  public setSelectedPowerbars(selectedPaths: Array<Array<{ fieldName: string; fieldValue: string; }>>) {
     const selectedPowerbarsTerms = new Set<string>();
     const selectedPowerbarsList = new Set<PowerBar>();
     selectedPaths.forEach(path => {
@@ -221,7 +223,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
         powerBar.classSuffix = this.SELECTED_BAR;
         if (this.useColorService) {
           const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
-              this.colorsSaturationWeight)).toRgb();
+            this.colorsSaturationWeight)).toRgb();
           powerBar.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
         }
       } else {

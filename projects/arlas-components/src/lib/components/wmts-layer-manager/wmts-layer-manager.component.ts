@@ -192,7 +192,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public errorInRun = false;
   public isGetCapaLoading = false;
 
-  public constructor(public dialog: MatDialog, private http: HttpClient) {
+  constructor(public dialog: MatDialog, private http: HttpClient) {
 
   }
 

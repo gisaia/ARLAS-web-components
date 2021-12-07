@@ -21,43 +21,43 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Point } from 'mapbox-gl';
 
 export function paddedBounds(npad: number, spad: number, epad: number,
-    wpad: number, map: any, SW, NE) {
-    const topRight = map.project(NE);
-    const bottomLeft = map.project(SW);
-    const scale = 1;
-    const SWtopoint = map.project(SW);
-    const SWpoint = new Point(((SWtopoint.x - bottomLeft.x) * scale) - wpad, ((SWtopoint.y - topRight.y) * scale) + spad);
-    const SWworld = new Point(SWpoint.x / scale + bottomLeft.x, SWpoint.y / scale + topRight.y);
-    const swWorld = map.unproject(SWworld);
-    const NEtopoint = map.project(NE);
-    const NEpoint = new Point(((NEtopoint.x - bottomLeft.x) * scale) + epad, ((NEtopoint.y - topRight.y) * scale) - npad);
-    const NEworld = new Point(NEpoint.x / scale + bottomLeft.x, NEpoint.y / scale + topRight.y);
-    const neWorld = map.unproject(NEworld);
-    return [swWorld, neWorld];
+  wpad: number, map: any, SW, NE) {
+  const topRight = map.project(NE);
+  const bottomLeft = map.project(SW);
+  const scale = 1;
+  const southWestToPoint = map.project(SW);
+  const southWestPoint = new Point(((southWestToPoint.x - bottomLeft.x) * scale) - wpad, ((southWestToPoint.y - topRight.y) * scale) + spad);
+  const southWestWorld = new Point(southWestPoint.x / scale + bottomLeft.x, southWestPoint.y / scale + topRight.y);
+  const swWorld = map.unproject(southWestWorld);
+  const northEastToPoint = map.project(NE);
+  const northEastPoint = new Point(((northEastToPoint.x - bottomLeft.x) * scale) + epad, ((northEastToPoint.y - topRight.y) * scale) - npad);
+  const northEastWorld = new Point(northEastPoint.x / scale + bottomLeft.x, northEastPoint.y / scale + topRight.y);
+  const neWorld = map.unproject(northEastWorld);
+  return [swWorld, neWorld];
 }
 
-export function project(lat: number, lng: number, zoom: number): { x: number, y: number } {
+export function project(lat: number, lng: number, zoom: number): { x: number; y: number; } {
 
-    const R = 6378137;
-    const sphericalScale = 0.5 / (Math.PI * R);
-    const d = Math.PI / 180;
-    const max = 1 - 1E-15;
-    const sin = Math.max(Math.min(Math.sin(lat * d), max), -max);
-    const scale = 256 * Math.pow(2, zoom);
+  const R = 6378137;
+  const sphericalScale = 0.5 / (Math.PI * R);
+  const d = Math.PI / 180;
+  const max = 1 - 1E-15;
+  const sin = Math.max(Math.min(Math.sin(lat * d), max), -max);
+  const scale = 256 * Math.pow(2, zoom);
 
-    const point = {
-        x: R * lng * d,
-        y: R * Math.log((1 + sin) / (1 - sin)) / 2
-    };
+  const point = {
+    x: R * lng * d,
+    y: R * Math.log((1 + sin) / (1 - sin)) / 2
+  };
 
-    point.x = tiled(scale * (sphericalScale * point.x + 0.5));
-    point.y = tiled(scale * (-sphericalScale * point.y + 0.5));
+  point.x = tiled(scale * (sphericalScale * point.x + 0.5));
+  point.y = tiled(scale * (-sphericalScale * point.y + 0.5));
 
-    return point;
+  return point;
 }
 
 function tiled(num: number): number {
-    return Math.floor(num / 256);
+  return Math.floor(num / 256);
 }
 
 export interface MapExtend {
@@ -68,16 +68,16 @@ export interface MapExtend {
 
 @Pipe({ name: 'getLayer' })
 export class GetLayerPipe implements PipeTransform {
-    public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): mapboxgl.Layer {
-        return !!layersMap ? layersMap.get(value) : undefined;
-    }
+  public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): mapboxgl.Layer {
+    return !!layersMap ? layersMap.get(value) : undefined;
+  }
 }
 
 @Pipe({ name: 'getCollection' })
 export class GetCollectionPipe implements PipeTransform {
-    public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): string {
-        return !!layersMap ? !!layersMap.get(value).metadata ? layersMap.get(value).metadata.collection : undefined : undefined;
-    }
+  public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): string {
+    return !!layersMap ? !!layersMap.get(value).metadata ? layersMap.get(value).metadata.collection : undefined : undefined;
+  }
 }
 
 export interface LegendData {

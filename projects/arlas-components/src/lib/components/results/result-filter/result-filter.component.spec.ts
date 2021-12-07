@@ -29,7 +29,7 @@ describe('ResultFilterComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ResultFilterComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

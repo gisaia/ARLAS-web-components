@@ -106,8 +106,8 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
-    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
+    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
   /**
    * @Output

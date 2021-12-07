@@ -29,7 +29,7 @@ describe('ResultGridTileComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ResultGridTileComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

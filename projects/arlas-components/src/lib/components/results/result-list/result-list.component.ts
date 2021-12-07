@@ -131,10 +131,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * NOTE : This list should include the ID field. It will be the id of each item
    */
   @Input() public fieldsList: Array<{
-    fieldName: string,
-    columnName: string,
-    dataType: string,
-    useColorService?: boolean
+    fieldName: string;
+    columnName: string;
+    dataType: string;
+    useColorService?: boolean;
   }>;
 
   /**
@@ -318,8 +318,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
-  @Output() public sortColumnEvent: Subject<{ fieldName: string, sortDirection: SortEnum }> =
-    new Subject<{ fieldName: string, sortDirection: SortEnum }>();
+  @Output() public sortColumnEvent: Subject<{ fieldName: string; sortDirection: SortEnum; }> =
+    new Subject<{ fieldName: string; sortDirection: SortEnum; }>();
 
   /**
    * @Output : Angular
@@ -371,8 +371,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Output : Angular
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{ action: Action, elementidentifier: ElementIdentifier }> =
-    new Subject<{ action: Action, elementidentifier: ElementIdentifier }>();
+  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
+    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
   /**
    * @Output : Angular
@@ -404,7 +404,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    */
    @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
 
-    /**
+   /**
    * @Output : Angular
    * @description Emits on changes rowItemList current value .
    */
@@ -416,7 +416,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
-  public sortedColumn: { fieldName: string, sortDirection: SortEnum } = { fieldName: '', sortDirection: SortEnum.asc };
+  public sortedColumn: { fieldName: string; sortDirection: SortEnum; } = { fieldName: '', sortDirection: SortEnum.asc };
   public lastSortedColumn: Column;
 
 
@@ -630,7 +630,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   /**
    * @description Emits which action to apply on which item/product
    */
-  public triggerActionOnItem(actionOnItem: { action: Action, elementidentifier: ElementIdentifier }): void {
+  public triggerActionOnItem(actionOnItem: { action: Action; elementidentifier: ElementIdentifier; }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
@@ -967,8 +967,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
-       /** match : => ["{field1}", "{field2}"] */
-       this.fieldsConfiguration.urlThumbnailTemplate.match(/{(.+?)}/g).forEach(t => {
+      /** match : => ["{field1}", "{field2}"] */
+      this.fieldsConfiguration.urlThumbnailTemplate.match(/{(.+?)}/g).forEach(t => {
         const key: string = t.replace('{', '').replace('}', '');
         item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
       });

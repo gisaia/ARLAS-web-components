@@ -28,18 +28,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { MapglImportDialogComponent } from 'components/mapgl-import/mapgl-import.component';
-import { WmtsLayerManagertDialogComponent } from 'components/wmts-layer-manager/wmts-layer-manager.component';
-import { DonutModule } from '../components/donut/donut.module';
-import { HistogramModule } from '../components/histogram/histogram.module';
-import { MapglImportModule } from '../components/mapgl-import/mapgl-import.module';
-import { MapglSettingsDialogComponent } from '../components/mapgl-settings/mapgl-settings.component';
-import { MapglSettingsModule } from '../components/mapgl-settings/mapgl-settings.module';
-import { MapglModule } from '../components/mapgl/mapgl.module';
-import { MetricModule } from '../components/metric/metric.module';
-import { PowerbarsModule } from '../components/powerbars/powerbars.module';
-import { ResultsModule } from '../components/results/results.module';
-import { WmtsLayerManagerModule } from '../components/wmts-layer-manager/wmts-layer-manager.module';
 import { AppComponent } from './app.component';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
@@ -51,13 +39,17 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MapglLegendModule } from '../components/mapgl-legend/mapgl-legend.module';
-import { MapglLayerIconModule } from '../components/mapgl-layer-icon/mapgl-layer-icon.module';
+import {
+  DonutModule, HistogramModule, MapglImportModule,
+  MapglLayerIconModule, MapglLegendModule, MapglModule, MapglSettingsModule,
+  MetricModule, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
+  WmtsLayerManagertDialogComponent
+} from '../../projects/arlas-components/src/public-api';
+import { MapglImportDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
+import { MapglSettingsDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
 
 
-
-
-export function HttpLoaderFactory(http: HttpClient) {
+export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 
@@ -106,7 +98,7 @@ const routes: Routes = [
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
+        useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
     })

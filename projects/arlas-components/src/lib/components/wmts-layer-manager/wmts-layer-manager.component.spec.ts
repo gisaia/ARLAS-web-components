@@ -29,7 +29,7 @@ describe('WmtsLayerManagerComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ WmtsLayerManagerComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

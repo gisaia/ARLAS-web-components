@@ -29,7 +29,7 @@ describe('PowerbarsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ PowerbarsComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

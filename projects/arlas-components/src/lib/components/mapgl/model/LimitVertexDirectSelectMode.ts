@@ -4,23 +4,23 @@ import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zo
 import { activeStates, geojsonTypes } from '@gisaia-team/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts.min';
 
-const LimitVertexDirectSelectMode = DirectSelect;
+const limitVertexDirectSelectMode = DirectSelect;
 const reader = new jsts.io.GeoJSONReader();
 
-LimitVertexDirectSelectMode.fireInvalidGeom = function (feature) {
+limitVertexDirectSelectMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
     action: 'error',
     features: [feature]
   });
 };
 
-LimitVertexDirectSelectMode.fireInitialFeature = function (feature) {
+limitVertexDirectSelectMode.fireInitialFeature = function (feature) {
   this.map.fire('draw.edit.saveInitialFeature', {
     feature: feature
   });
 };
 
-LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
+limitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
     geojson.properties.active = activeStates.ACTIVE;
     push(geojson);
@@ -36,7 +36,7 @@ LimitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) 
   this.fireActionable(state);
 };
 
-LimitVertexDirectSelectMode.onTouchEnd = LimitVertexDirectSelectMode.onMouseUp = function (state) {
+limitVertexDirectSelectMode.onTouchEnd = limitVertexDirectSelectMode.onMouseUp = function (state) {
   if (state.dragMoving) {
     const featureCoords = [...state.feature.coordinates[0]];
     if (
@@ -63,7 +63,7 @@ LimitVertexDirectSelectMode.onTouchEnd = LimitVertexDirectSelectMode.onMouseUp =
 };
 
 
-LimitVertexDirectSelectMode.onSetup = function (opts) {
+limitVertexDirectSelectMode.onSetup = function (opts) {
   const featureId = opts.featureId;
   let maxVertexByPolygon = opts.maxVertexByPolygon;
   const feature = this.getFeature(featureId);
@@ -101,4 +101,4 @@ LimitVertexDirectSelectMode.onSetup = function (opts) {
   return state;
 };
 
-export default LimitVertexDirectSelectMode;
+export default limitVertexDirectSelectMode;

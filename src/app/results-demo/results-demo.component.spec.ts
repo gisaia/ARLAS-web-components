@@ -29,7 +29,7 @@ describe('ResultsDemoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ResultsDemoComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

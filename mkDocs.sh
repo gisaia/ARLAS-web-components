@@ -6,7 +6,7 @@ mkdir target
 mkdir target/generated-docs
 
 ## GENERATE THE TYPESCRIPT DOCUMENTATION##
-docker run -a STDERR --rm -i -v `pwd`:/docs gisaia/typedocgen:0.0.5 generatedoc projects/arlas-components/src/lib/components
+docker run -a STDERR --rm -i -v `pwd`:/docs gisaia/typedocgen:0.0.7 generatedoc projects/arlas-components/src/lib/components
 
 ## GENERATE THE CSS DOCUMENTATION##
 echo "# Customize your components style" > style.md

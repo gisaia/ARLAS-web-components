@@ -29,7 +29,7 @@ describe('CardComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ MetricComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
