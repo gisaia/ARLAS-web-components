@@ -20,7 +20,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, from } from 'rxjs';
 import { Action, Column, FieldsConfiguration, ModeEnum, ResultListComponent,
-  ResultListOptions, SortEnum, PageQuery } from '../../../projects/arlas-components/src/public-api';
+  ResultListOptions, SortEnum } from '../../../projects/arlas-components/src/public-api';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 
 
@@ -90,7 +90,7 @@ export class ResultsDemoComponent implements OnInit {
       }
     }
 
-    public addMoreData(page: PageQuery) {
+    public addMoreData() {
       setTimeout(() => {
         if (this.count < 2) {
           for (let i = 50; i < 100; i++) {
