@@ -5,6 +5,7 @@
     "@angular/animations": "~13.0.0",
     "@angular/common": "~13.0.0",
     "@angular/core": "~13.0.0",
+    "@angular/cdk": "~13.0.0",
     "@angular/forms": "~13.0.0",
     "@angular/material": "~13.0.0",
     "@angular/platform-browser": "~13.0.0",
