@@ -33,7 +33,7 @@ import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
   ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
-import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
+import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw';
 import * as helpers from '@turf/helpers';
 import * as centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';

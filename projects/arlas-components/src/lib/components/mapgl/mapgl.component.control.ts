@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw';
+import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw';
+
 
 export class PitchToggle {
   public bearing: number;
@@ -74,7 +75,7 @@ export class DrawControl {
   public mapboxDraw: MapboxDraw;
   public enabled: boolean;
   constructor(drawOptions: any, enabled: boolean) {
-    this.mapboxDraw = new MapboxDraw(drawOptions);
+    this.mapboxDraw = new MapboxDraw(drawOptions).default;
     this.enabled = enabled;
   }
 
