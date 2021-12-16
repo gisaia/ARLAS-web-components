@@ -45,6 +45,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
+
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
 export interface OnMoveResult {

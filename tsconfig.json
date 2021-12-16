@@ -41,7 +41,6 @@
   ],
   "angularCompilerOptions": {
     "strictMetadataEmit": true,
-    "skipTemplateCodegen": true,
-    "enableIvy": false
+    "skipTemplateCodegen": true
   }
 }

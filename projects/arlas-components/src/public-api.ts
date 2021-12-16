@@ -39,8 +39,10 @@ export { MapglLayerIconComponent } from './lib/components/mapgl-layer-icon/mapgl
 export { FormatNumberModule } from './lib/pipes/format-number/format-number.module';
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
 export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-settings.module';
-export { MapglSettingsComponent, MapSettingsService, GeoQuery,
-  GeometrySelectModel, OperationSelectModel } from './lib/components/mapgl-settings/mapgl-settings.component';
+export {
+  MapglSettingsComponent, MapSettingsService, GeoQuery,
+  GeometrySelectModel, OperationSelectModel
+} from './lib/components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { WmtsLayerManagertDialogComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
@@ -50,6 +52,8 @@ export { ResultScrollDirective } from './lib/components/results/result-directive
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
 export { PageQuery } from './lib/components/results/utils/results.utils';
-export * from './lib/arlas-components.service';
-export * from './lib/arlas-components.component';
-export * from './lib/arlas-components.module';
+export { SCROLLABLE_ARLAS_ID } from './lib/components/mapgl/model/mapLayers';
+export { CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.component';
+export { ArlasComponentsService } from './lib/arlas-components.service';
+export { ArlasComponentsComponent } from './lib/arlas-components.component';
+export { ArlasComponentsModule } from './lib/arlas-components.module';

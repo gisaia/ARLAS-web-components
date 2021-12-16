@@ -44,7 +44,6 @@
     "genDir": "dist",
     "strictMetadataEmit": true,
     "annotateForClosureCompiler": false,
-    "skipTemplateCodegen": true,
-    "enableIvy": false
+    "skipTemplateCodegen": true
   }
 }
