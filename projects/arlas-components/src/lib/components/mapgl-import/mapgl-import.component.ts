@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as toGeoJSON from '@mapbox/togeojson';
-import * as centroid from '@turf/centroid';
+import centroid from '@turf/centroid';
 import JSZip from 'jszip';
 import { MapglComponent } from '../mapgl/mapgl.component';
-import * as helpers from '@turf/helpers';
+import { FeatureCollection, polygon} from '@turf/helpers';
 import { Subject } from 'rxjs';
 import * as shp_ from 'shpjs/dist/shp';
 import * as extent_ from 'turf-extent';
@@ -574,7 +574,7 @@ export class MapglImportComponent {
     // Clean source of imported polygons
     const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
     this.featureIndex = 0;
-    this.mapComponent.onAoiChanged.next(<helpers.FeatureCollection>this.emptyData);
+    this.mapComponent.onAoiChanged.next(<FeatureCollection>this.emptyData);
     if (labelSource !== undefined) {
       labelSource.setData(this.emptyData);
     }
@@ -618,8 +618,8 @@ export class MapglImportComponent {
     if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length - 1 > this.maxVertexByPolygon) {
       this.tooManyVertex = true;
     }
-    const poly = helpers.polygon(feature.geometry.coordinates);
-    const cent = centroid.default(poly);
+    const poly = polygon(feature.geometry.coordinates);
+    const cent = centroid(poly);
     cent.properties.arlas_id = feature.properties.arlas_id;
     return cent;
   }

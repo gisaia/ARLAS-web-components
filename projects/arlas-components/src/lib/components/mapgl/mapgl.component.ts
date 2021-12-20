@@ -33,9 +33,9 @@ import * as mapglJsonSchema from './mapgl.schema.json';
 import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
   ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
-import * as MapboxDraw from '@gisaia-team/mapbox-gl-draw';
-import * as helpers from '@turf/helpers';
-import * as centroid from '@turf/centroid';
+import MapboxDraw from '@gisaia-team/mapbox-gl-draw';
+import { Feature as TurfFeature, polygon } from '@turf/helpers';
+import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
@@ -284,8 +284,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
-  @Input() public redrawSource: Subject<{ source: string; data: helpers.Feature[]; }> =
-    new Subject<{ source: string; data: helpers.Feature[]; }>();
+  @Input() public redrawSource: Subject<{ source: string; data: TurfFeature[]; }> =
+    new Subject<{ source: string; data: TurfFeature[]; }>();
 
   /**
    * @Input : Angular
@@ -584,8 +584,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
-          const poly = helpers.polygon(feature.geometry.coordinates);
-          const cent = centroid.default(poly);
+          const poly = polygon(feature.geometry.coordinates);
+          const cent = centroid(poly);
           cent.properties.arlas_id = feature.properties.arlas_id;
           centroides.push(cent);
         });
@@ -1201,8 +1201,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
     const centroides = new Array<any>();
     this.draw.getAll().features.forEach(feature => {
-      const poly = helpers.polygon(feature.geometry.coordinates);
-      const cent = centroid.default(poly);
+      const poly = polygon(feature.geometry.coordinates);
+      const cent = centroid(poly);
       cent.properties.arlas_id = feature.properties.arlas_id;
       centroides.push(cent);
     });
