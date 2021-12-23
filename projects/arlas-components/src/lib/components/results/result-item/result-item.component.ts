@@ -135,7 +135,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.identifier = this.rowItem.identifier;
+    this.identifier = this.rowItem?.identifier;
   }
 
   // Detailed data is retrieved wheb the row is toggled for the first time

@@ -1,6 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapglImportComponent } from './mapgl-import.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatRadioModule } from '@angular/material/radio';
 
 describe('MapglImportComponent', () => {
   let component: MapglImportComponent;
@@ -8,7 +15,17 @@ describe('MapglImportComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapglImportComponent ]
+      declarations: [ MapglImportComponent ],
+      imports: [
+        MatDialogModule,
+        FormsModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        MatSelectModule,
+        MatRadioModule
+      ]
     })
       .compileComponents();
   }));

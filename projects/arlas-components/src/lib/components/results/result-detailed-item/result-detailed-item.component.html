@@ -11,16 +11,16 @@
     <br>
     <br />
   </span>
-  <button mat-raised-button *ngFor="let action of rowItem.actions" (click)="triggerActionOnItem(action)" matTooltip="{{action.tooltip | translate}}"
+  <button mat-raised-button *ngFor="let action of rowItem?.actions" (click)="triggerActionOnItem(action)" matTooltip="{{action.tooltip | translate}}"
     class="resultdetaileditem__actions {{action.id}}-action {{action.cssClass}}-action">
     {{action.label | translate}}
   </button>
   <br>
   <br />
-  <span class="result-attachments-list" *ngIf="rowItem.attachments && rowItem.attachments.length > 0">
+  <span class="result-attachments-list" *ngIf="rowItem?.attachments && rowItem?.attachments.length > 0">
     <span class="result-attachments-title">{{'Attachments' | translate}}</span>
     <br>
-    <span class="result-attachment" *ngFor="let att of rowItem.attachments; index as i">
+    <span class="result-attachment" *ngFor="let att of rowItem?.attachments; index as i">
       <a class="result-attachment-link" href="{{getAttachmentUrl(att.url)}}" matTooltip="{{getAttachmentDescription(att)}}"
         [matTooltipPosition]="'after'" target="_blank">
         <mat-icon *ngIf="att.icon" class="result-attachment-icon">{{att.icon}}</mat-icon>

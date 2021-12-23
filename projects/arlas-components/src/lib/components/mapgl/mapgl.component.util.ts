@@ -106,4 +106,4 @@ export enum PROPERTY_SELECTOR_SOURCE {
     interpolated = 'Interpolated',
     metric_on_field = 'Metric on field',
     heatmap_density = 'Density'
-  }
+}

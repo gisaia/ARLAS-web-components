@@ -62,7 +62,7 @@ export interface LayerMetadata {
   isScrollableLayer?: boolean;
 
 }
-type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
+export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
 
 export interface PaintColor {
   property: string;

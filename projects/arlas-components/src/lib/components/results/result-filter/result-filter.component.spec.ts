@@ -20,6 +20,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultFilterComponent } from './result-filter.component';
+import { FormsModule } from '@angular/forms';
 
 describe('ResultFilterComponent', () => {
   let component: ResultFilterComponent;
@@ -27,7 +28,10 @@ describe('ResultFilterComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultFilterComponent ]
+      declarations: [ ResultFilterComponent ],
+      imports: [
+        FormsModule
+      ]
     })
       .compileComponents();
   }));

@@ -5,6 +5,7 @@
 /tmp
 /out-tsc
 /documentation
+/typedoc_docs
 /target
 # dependencies
 /node_modules

@@ -25,6 +25,6 @@ jobs:
     - env:
         - job=generate_documentation
       script: ./mkDocs.sh
-    - env:
-        - job=check_i18n
-      script: ./checki18n.sh
+    # - env:
+    #     - job=check_i18n
+    #   script: ./checki18n.sh

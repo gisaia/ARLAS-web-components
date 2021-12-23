@@ -72,7 +72,7 @@ export class ResultDetailedItemComponent implements OnInit {
   }
 
   public getGroups() {
-    return (this.showEmptyGroup) ? (this.rowItem.itemDetailedData) : (this.rowItem.itemDetailedData.filter(d => d.details.length > 0));
+    return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
   }
 
   public getAttachmentUrl(url: string): string {

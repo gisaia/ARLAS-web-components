@@ -20,14 +20,26 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HistogramComponent } from './histogram.component';
+import { ArlasColorService } from '../../services/color.generator.service';
+import { ColorGeneratorLoader } from '../componentsUtils';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
-describe('TimelineComponent', () => {
+describe('HistogramComponent', () => {
   let component: HistogramComponent;
   let fixture: ComponentFixture<HistogramComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HistogramComponent ]
+      declarations: [ HistogramComponent ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        MatTooltipModule
+      ],
+      providers: [
+        ArlasColorService,
+        ColorGeneratorLoader
+      ]
     })
       .compileComponents();
   }));

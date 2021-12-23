@@ -8,7 +8,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:stats": "ng build --stats-json",
-    "test": "ng test",
+    "test": "ng test arlas-web-components",
     "lint": "ng lint",
     "build-release": "ng build arlas-web-components --configuration production",
     "e2e": "ng e2e",
@@ -86,7 +86,6 @@
     "ng-packagr": "^13.0.0",
     "node": "^12.11.1",
     "ts-node": "~10.4.0",
-    "tslint": "~5.18.0",
     "typescript": "~4.4.3",
     "webpack-bundle-analyzer": "^3.6.1"
   }

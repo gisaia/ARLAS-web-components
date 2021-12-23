@@ -142,7 +142,13 @@
           "options": {
             "main": "projects/arlas-components/src/test.ts",
             "tsConfig": "projects/arlas-components/tsconfig.spec.json",
-            "karmaConfig": "projects/arlas-components/karma.conf.js"
+            "karmaConfig": "projects/arlas-components/karma.conf.js",
+            "styles": [
+              "src/styles.css",
+              "node_modules/mapbox-gl/dist/mapbox-gl.css",
+              "node_modules/@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw.css",
+              "node_modules/iv-viewer/dist/iv-viewer.css"
+            ]
           }
         },
         "lint": {
