@@ -20,6 +20,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DonutComponent } from './donut.component';
+import { ArlasColorService } from '../../services/color.generator.service';
+import { ColorGeneratorLoader } from '../componentsUtils';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 
 describe('DonutComponent', () => {
   let component: DonutComponent;
@@ -27,7 +30,14 @@ describe('DonutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DonutComponent ]
+      declarations: [ DonutComponent ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+      ],
+      providers: [
+        ArlasColorService,
+        ColorGeneratorLoader
+      ]
     })
       .compileComponents();
   }));

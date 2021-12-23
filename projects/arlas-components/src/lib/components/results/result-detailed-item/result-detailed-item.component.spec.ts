@@ -20,6 +20,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultDetailedItemComponent } from './result-detailed-item.component';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 
 describe('ResultDetailedItemComponent', () => {
   let component: ResultDetailedItemComponent;
@@ -27,7 +28,10 @@ describe('ResultDetailedItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultDetailedItemComponent ]
+      declarations: [ ResultDetailedItemComponent ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+      ]
     })
       .compileComponents();
   }));

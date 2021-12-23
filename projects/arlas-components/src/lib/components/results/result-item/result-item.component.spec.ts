@@ -20,6 +20,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultItemComponent } from './result-item.component';
+import { ArlasColorService } from '../../../services/color.generator.service';
+import { ColorGeneratorLoader } from '../../componentsUtils';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 describe('ResultItemComponent', () => {
   let component: ResultItemComponent;
@@ -27,7 +32,16 @@ describe('ResultItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultItemComponent ]
+      declarations: [ ResultItemComponent ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        MatIconModule,
+        MatTooltipModule
+      ],
+      providers: [
+        ColorGeneratorLoader,
+        ArlasColorService
+      ]
     })
       .compileComponents();
   }));

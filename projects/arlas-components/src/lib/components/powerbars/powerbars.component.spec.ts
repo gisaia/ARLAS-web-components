@@ -20,6 +20,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PowerbarsComponent } from './powerbars.component';
+import { ArlasColorService } from '../../services/color.generator.service';
+import { ColorGeneratorLoader } from '../componentsUtils';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatInputModule } from '@angular/material/input';
 
 describe('PowerbarsComponent', () => {
   let component: PowerbarsComponent;
@@ -27,7 +35,18 @@ describe('PowerbarsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PowerbarsComponent ]
+      declarations: [ PowerbarsComponent, FormatNumberPipe ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        MatCardModule,
+        MatIconModule,
+        MatTooltipModule,
+        MatInputModule,
+      ],
+      providers: [
+        ArlasColorService,
+        ColorGeneratorLoader
+      ]
     })
       .compileComponents();
   }));

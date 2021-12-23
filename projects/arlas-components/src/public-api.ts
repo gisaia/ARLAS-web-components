@@ -17,7 +17,7 @@ export { MapglLayerIconModule } from './lib/components/mapgl-layer-icon/mapgl-la
 export {
   MapLayers, BasemapStyle, ARLAS_VSET, LayerEvents, BasemapStylesGroup,
   ExternalEventLayer, ExternalEvent, SCROLLABLE_ARLAS_ID, FillStroke, LayerMetadata, PaintColor, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX,
-  FILLSTROKE_LAYER_PREFIX, ARLAS_ID
+  FILLSTROKE_LAYER_PREFIX, ARLAS_ID, PaintValue
 } from './lib/components/mapgl/model/mapLayers';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
 export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE } from './lib/components/mapgl/mapgl.component.util';

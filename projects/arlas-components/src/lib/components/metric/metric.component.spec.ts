@@ -20,14 +20,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MetricComponent } from './metric.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 
-describe('CardComponent', () => {
+describe('MetricComponent', () => {
   let component: MetricComponent;
   let fixture: ComponentFixture<MetricComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MetricComponent ]
+      declarations: [ MetricComponent, FormatNumberPipe ],
+      imports: [
+        MatDialogModule,
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+      ]
     })
       .compileComponents();
   }));

@@ -20,6 +20,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultGridTileComponent } from './result-grid-tile.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 describe('ResultGridTileComponent', () => {
   let component: ResultGridTileComponent;
@@ -27,7 +31,13 @@ describe('ResultGridTileComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultGridTileComponent ]
+      declarations: [ ResultGridTileComponent ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        MatTooltipModule,
+        MatIconModule,
+        LazyLoadImageModule
+      ]
     })
       .compileComponents();
   }));
