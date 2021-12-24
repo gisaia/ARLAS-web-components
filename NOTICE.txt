@@ -1,5 +1,5 @@
 ARLAS-web-components
-Copyright 2017-2018 and onwards Gisaïa
+Copyright 2017-2021 and onwards Gisaïa
 
 
 ARLAS-web-components embeds the following components and their dependencies :
@@ -15,8 +15,6 @@ ARLAS-web-components embeds the following components and their dependencies :
 + Chart Tools
     - D3.js                 (Copyright 2010-2017 Mike Bostock - https://d3js.org/)
 
-+ Test and Build Tools
-    - gulp.js               (The MIT License - https://gulpjs.com/)
 
 -------------------------------------------------------------------------------
 

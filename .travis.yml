@@ -25,6 +25,9 @@ jobs:
     - env:
         - job=generate_documentation
       script: ./mkDocs.sh
+    - env:
+        - job=test
+      script: npm run test
     # - env:
     #     - job=check_i18n
     #   script: ./checki18n.sh

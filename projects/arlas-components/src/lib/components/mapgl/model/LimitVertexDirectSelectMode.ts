@@ -1,7 +1,7 @@
-import DirectSelect from '@gisaia-team/mapbox-gl-draw/src/modes/direct_select';
-import createSupplementaryPoints from '@gisaia-team/mapbox-gl-draw/src/lib/create_supplementary_points';
-import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zoom';
-import { activeStates, geojsonTypes } from '@gisaia-team/mapbox-gl-draw/src/constants';
+import DirectSelect from '@mapbox/mapbox-gl-draw/src/modes/direct_select';
+import createSupplementaryPoints from '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points';
+import doubleClickZoom from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
+import { activeStates, geojsonTypes } from '@mapbox/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts.min';
 
 const limitVertexDirectSelectMode = DirectSelect;

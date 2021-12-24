@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import MapboxDraw from '@gisaia-team/mapbox-gl-draw';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 
 export class PitchToggle {

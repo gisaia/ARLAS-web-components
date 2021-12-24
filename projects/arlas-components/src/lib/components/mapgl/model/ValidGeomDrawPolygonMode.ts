@@ -1,7 +1,7 @@
-import DrawPolygon from '@gisaia-team/mapbox-gl-draw/src/modes/draw_polygon';
-import * as CommonSelectors from '@gisaia-team/mapbox-gl-draw/src/lib/common_selectors';
-import doubleClickZoom from '@gisaia-team/mapbox-gl-draw/src/lib/double_click_zoom';
-import { modes, cursors, events } from '@gisaia-team/mapbox-gl-draw/src/constants';
+import DrawPolygon from '@mapbox/mapbox-gl-draw/src/modes/draw_polygon';
+import * as CommonSelectors from '@mapbox/mapbox-gl-draw/src/lib/common_selectors';
+import doubleClickZoom from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
+import { modes, cursors, events } from '@mapbox/mapbox-gl-draw/src/constants';
 import * as jsts from 'jsts/dist/jsts.min';
 
 const validGeomDrawPolygonMode = DrawPolygon;
