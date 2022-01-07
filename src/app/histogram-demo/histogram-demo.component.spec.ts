@@ -29,7 +29,7 @@ describe('HistogramDemoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ HistogramDemoComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -1,9 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": false
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "arlas-web-components": {
+    "arlas-web-components-demo": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -23,7 +26,7 @@
             "styles": [
               "src/styles.css",
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
-              "node_modules/@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw.css",
+              "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
             ],
             "scripts": [
@@ -80,7 +83,7 @@
             "styles": [
               "src/styles.css",
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
-              "node_modules/@gisaia-team/mapbox-gl-draw/dist/mapbox-gl-draw.css",
+              "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
             ],
             "assets": [
@@ -90,18 +93,19 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json"
-            ],
-            "exclude": ["src/components/**/*.schema.json"]
+            "eslintConfig": ".eslintrc.json",
+            "lintFilePatterns": [
+              "src/**/*.spec.ts",
+              "src/**/*.d.ts",
+              "src/**/*.ts"
+            ]
           }
         }
       }
     },
-    "arlas-web-components-e2e": {
+    "arlas-web-components-demo-e2e": {
       "root": "e2e",
       "sourceRoot": "e2e",
       "projectType": "application",
@@ -112,20 +116,56 @@
             "protractorConfig": "./protractor.conf.js",
             "devServerTarget": "arlas-web-components:serve"
           }
+        }
+      }
+    },
+    "arlas-web-components": {
+      "projectType": "library",
+      "root": "projects/arlas-components",
+      "sourceRoot": "projects/arlas-components/src",
+      "prefix": "arlas",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "projects/arlas-components/tsconfig.lib.json",
+            "project": "projects/arlas-components/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/arlas-components/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/arlas-components/src/test.ts",
+            "tsConfig": "projects/arlas-components/tsconfig.spec.json",
+            "karmaConfig": "projects/arlas-components/karma.conf.js",
+            "styles": [
+              "src/styles.css",
+              "node_modules/mapbox-gl/dist/mapbox-gl.css",
+              "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
+              "node_modules/iv-viewer/dist/iv-viewer.css"
+            ]
+          }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "e2e/tsconfig.e2e.json"
-            ],
-            "exclude": []
+            "eslintConfig": ".eslintrc.json",
+            "lintFilePatterns": [
+              "projects/**/*.spec.ts",
+              "projects/**/*.d.ts",
+              "projects/**/*.ts"
+            ]
           }
         }
       }
     }
   },
-  "defaultProject": "arlas-web-components",
+  "defaultProject": "arlas-web-components-demo",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "arlas",

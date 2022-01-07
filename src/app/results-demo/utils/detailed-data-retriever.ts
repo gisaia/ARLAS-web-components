@@ -18,10 +18,9 @@
  * under the License.
  */
 
-import { DetailedDataRetriever } from '../../../components/results/utils/detailed-data-retriever';
 import { Observable, from } from 'rxjs';
-import { Action, AdditionalInfo, Attachment } from 'components/results/utils/results.utils';
-import { Item } from 'components/results/model/item';
+import { AdditionalInfo, Attachment } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
+import { Action, DetailedDataRetriever, Item } from '../../../../projects/arlas-components/src/public-api';
 
 
 export class DetailedDataRetrieverImp implements DetailedDataRetriever {
@@ -60,10 +59,10 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       icon: 'list',
       label: 'Gisaia',
       url: 'gisaia.fr',
-      description: 'Developpeur d\'ARLAS',
+      description: "Developpeur d'ARLAS",
     }, {
-        url: 'arlas.io',
-      });
+      url: 'arlas.io',
+    });
 
     for (let i = 0; i < 100; i++) {
       attachments.push({
@@ -71,12 +70,12 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
 
         label: 'Gisaia',
         url: 'gisaia.fr',
-        description: 'Developpeur d\'ARLAS',
+        description: "Developpeur d'ARLAS",
 
       }, {
-          url: 'arlas.io',
+        url: 'arlas.io',
 
-        });
+      });
     }
     return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments }));
 

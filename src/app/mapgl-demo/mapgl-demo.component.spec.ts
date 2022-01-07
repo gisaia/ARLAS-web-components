@@ -20,6 +20,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapglDemoComponent } from './mapgl-demo.component';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 describe('MapglDemoComponent', () => {
   let component: MapglDemoComponent;
@@ -27,9 +29,13 @@ describe('MapglDemoComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MapglDemoComponent ]
+      declarations: [ MapglDemoComponent ],
+      imports: [
+        MatInputModule,
+        FormsModule
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

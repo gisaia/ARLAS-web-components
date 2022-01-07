@@ -18,14 +18,20 @@
  */
 
 import { TestBed, async } from '@angular/core/testing';
+import { HistogramComponent } from '../../projects/arlas-components/src/lib/components/histogram/histogram.component';
 import { AppComponent } from './app.component';
-import { HistogramComponent } from '../components/histogram/histogram.component';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
         AppComponent, HistogramComponent
+      ], imports: [
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateFakeLoader }
+        }), RouterTestingModule
       ],
     }).compileComponents();
   }));

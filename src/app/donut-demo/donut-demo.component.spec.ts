@@ -29,7 +29,7 @@ describe('DonutDemoComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DonutDemoComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

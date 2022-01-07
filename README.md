@@ -47,7 +47,7 @@ Install all the project's dependencies
 $ npm install
 ```
 
-Build the project with `ngc` and `gulp` :
+Build the project with `ng` :
 
 ```shell
 $ npm run build-release

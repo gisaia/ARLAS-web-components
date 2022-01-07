@@ -1,0 +1,85 @@
+<div id="{{id}}" class="histogram" [ngClass]="customizedCssClass">
+  <div *ngIf="descriptionPosition === 0" class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
+    [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
+    <div class="histogram__description--display">
+      <div class="histogram__description__startvalue"><span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span></div>
+      <div class="histogram__description__title"><span *ngIf="histogram?.histogramParams.showTitle">{{histogram?.histogramParams.chartTitle}}</span></div>
+      <div class="histogram__description__endvalue"><span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span></div>
+    </div>
+  </div>
+  <div [style.display]="histogram?.histogramParams.displaySvg" style="position:relative">
+    <svg id="svgix" class="histogram__chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight"></svg>
+    <div *ngIf="histogram?.isBrushing">
+      <div #left [style.visibility]="histogram?.brushCornerTooltips.horizontalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--left"
+        [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition">
+        {{histogram?.brushCornerTooltips.leftCornerTooltip.content}}
+      </div>
+      <div #right [style.visibility]="histogram?.brushCornerTooltips.horizontalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--right"
+        [style.right.px]="histogram?.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.rightCornerTooltip.yPosition">
+        {{histogram?.brushCornerTooltips.rightCornerTooltip.content}}
+      </div>
+
+      <div #leftvertical [style.visibility]="histogram?.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--left__rotation histogram__brush-tooltip__vertical--left"
+        [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.bottom.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.leftCornerTooltip.width">
+        {{histogram?.brushCornerTooltips.leftCornerTooltip.content}}
+      </div>
+      <div #rightvertical [style.visibility]="histogram?.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--right__rotation histogram__brush-tooltip__vertical--right"
+        [style.left.px]="histogram?.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.bottom.px]="histogram?.brushCornerTooltips.rightCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.rightCornerTooltip.width">
+        {{histogram?.brushCornerTooltips.rightCornerTooltip.content}}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="histogram?.histogramParams.dataLength === 1" class="histogram__no-chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight">
+    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{histogram?.histogramParams.startValue}} {{xUnit | translate}}</span>
+    <span class="histogram__no-chart__value">{{histogram?.histogramParams.chartTitle | translate}} {{data[0].value}} {{yUnit | translate}}</span>
+  </div>
+  <div *ngIf="descriptionPosition === 1" class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
+    [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
+    <div class="histogram__description--display">
+      <div class="histogram__description__startvalue"><span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span></div>
+      <div class="histogram__description__title"><span *ngIf="histogram?.histogramParams.showTitle">{{histogram?.histogramParams.chartTitle}}</span></div>
+      <div class="histogram__description__endvalue"><span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span></div>
+    </div>
+  </div>
+  <div *ngIf="chartType === ChartType.swimlane">
+    <div class="histogram__tooltip" *ngIf="histogram?.histogramParams.swimlaneXTooltip.isShown && !histogram?.histogramParams.swimlaneXTooltip.isRightSide"
+      [style.left.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
+      <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
+    </div>
+    <div class="histogram__tooltip" *ngIf="histogram?.histogramParams.swimlaneXTooltip.isShown && histogram?.histogramParams.swimlaneXTooltip.isRightSide"
+      [style.right.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
+      <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
+    </div>
+    <div *ngFor="let key of Array.from(histogram?.histogramParams.swimlaneTooltipsMap.keys()); index as i">
+      <div class="histogram__tooltip" *ngIf="(histogram?.histogramParams.swimlaneTooltipsMap).get(key).isShown && !(histogram?.histogramParams.swimlaneTooltipsMap).get(key).isRightSide && histogram?.histogramParams.swimlaneTooltipsMap.get(key).yContent"
+        [style.left.px]="histogram?.histogramParams.swimlaneTooltipsMap.get(key).xPosition"   [style.top.px]="histogram?.histogramParams.swimlaneTooltipsMap.get(key).yPosition">
+        <span class="histogram__swimlane--tooltip-content">{{histogram?.histogramParams.swimlaneTooltipsMap.get(key).yContent}}</span>
+        <span class="histogram__swimlane--tooltip-additional_info">{{histogram?.histogramParams.swimlaneTooltipsMap.get(key).yAdditonalInfo}}</span>
+      </div>
+      <div class="histogram__tooltip" *ngIf="(histogram?.histogramParams.swimlaneTooltipsMap).get(key).isShown && (histogram?.histogramParams.swimlaneTooltipsMap).get(key).isRightSide && histogram?.histogramParams.swimlaneTooltipsMap.get(key).yContent"
+        [style.right.px]="histogram?.histogramParams.swimlaneTooltipsMap.get(key).xPosition"  [style.top.px]="histogram?.histogramParams.swimlaneTooltipsMap.get(key).yPosition">
+        <span class="histogram__swimlane--tooltip-content">{{histogram?.histogramParams.swimlaneTooltipsMap.get(key).yContent}}</span>
+        <span class="histogram__swimlane--tooltip-additional_info">{{histogram?.histogramParams.swimlaneTooltipsMap.get(key).yAdditonalInfo}}</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngFor="let id of histogram?.histogramParams.selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="histogram?.histogramParams.topOffsetRemoveInterval"
+    [style.left.px]="histogram?.histogramParams.intervalSelectedMap.get(id)?.x_position">
+    <svg on-mouseover='overRemove($event)' on-mouseleave='leaveRemove()' fill="#fff" height="24" viewBox="0 0 24 24"
+      width="24" xmlns="http://www.w3.org/2000/svg" transform="rotate(45)">
+      <path  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+      <path fill="#555" d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+    </svg>
+  </div>
+  <div *ngIf="chartType === ChartType.swimlane">
+    <div>
+      <div class="swimlane_legend">
+        <div [style.width.px]="histogram?.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_color" *ngFor="let b of histogram?.histogramParams.legend" [style.background-color]="b.color"></div>
+      </div>
+      <div class="swimlane_legend">
+        <div [style.width.px]="histogram?.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_value" *ngFor="let b of histogram?.histogramParams.legend; index as i" >{{b.key}}</div>
+      </div>
+    </div>
+  </div>
+</div>

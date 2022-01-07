@@ -1,0 +1,31 @@
+<td class="checkboxcell" [colSpan]="1">
+</td>
+<td class="resultdetaileditem" [colSpan]="detailColspan - 1">
+  <span *ngFor="let group of getGroups()">
+    <span class="group-item-title {{group.group.toLowerCase().replace(' ','-')}}-item-detail">{{group.group | translate}}</span>
+    <br>
+    <span *ngFor="let detail of group.details" class="detail-item {{detail.key}}-item-detail">
+      <span class="resultdetaileditem-key">{{detail.key | translate}}</span> :
+      <span class="resultdetaileditem-value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
+    </span>
+    <br>
+    <br />
+  </span>
+  <button mat-raised-button *ngFor="let action of rowItem?.actions" (click)="triggerActionOnItem(action)" matTooltip="{{action.tooltip | translate}}"
+    class="resultdetaileditem__actions {{action.id}}-action {{action.cssClass}}-action">
+    {{action.label | translate}}
+  </button>
+  <br>
+  <br />
+  <span class="result-attachments-list" *ngIf="rowItem?.attachments && rowItem?.attachments.length > 0">
+    <span class="result-attachments-title">{{'Attachments' | translate}}</span>
+    <br>
+    <span class="result-attachment" *ngFor="let att of rowItem?.attachments; index as i">
+      <a class="result-attachment-link" href="{{getAttachmentUrl(att.url)}}" matTooltip="{{getAttachmentDescription(att)}}"
+        [matTooltipPosition]="'after'" target="_blank">
+        <mat-icon *ngIf="att.icon" class="result-attachment-icon">{{att.icon}}</mat-icon>
+        <span class="result-attachment-label"> {{getAttachmentLabel(att, i + 1)}}</span>
+      </a>
+    </span>
+  </span>
+</td>
