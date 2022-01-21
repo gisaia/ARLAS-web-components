@@ -96,8 +96,8 @@
         <th *ngIf="!column.isIdField && !column.isToggleField"
             [style.max-width.px]="column.width"
             [style.min-width.px]="column.width"
-            class="resultlist__header--columns" >
-          <span>
+            class="resultlist__header--columns" matTooltip="{{column.columnName | translate}}{{column.dataType}}">
+          <span >
             {{column.columnName | translate}}{{column.dataType}}
           </span>
         </th>

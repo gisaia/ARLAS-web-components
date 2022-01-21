@@ -28,6 +28,9 @@
   font-size: 0.9em;
   text-align: left;
   vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .resultlist__header--columns__sort {
