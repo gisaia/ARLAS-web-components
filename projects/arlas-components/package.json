@@ -27,7 +27,7 @@
     "@turf/helpers": "6.5.0",
     "@types/d3-dsv": "1.0.33",
     "@types/mapbox-gl": "^1.6.3",
-    "arlas-d3": "9.0.0-rc.1",
+    "arlas-d3": "9.0.0",
     "d3-dsv": "^1.0.10",
     "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
