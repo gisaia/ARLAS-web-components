@@ -1,5 +1,17 @@
 # Change Log
 
+## [v20.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v20.0.0) (2022-02-02)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0-rc.2...v20.0.0)
+
+**New stuff:**
+
+- Add spinner when the resultlist is fetching new/more data [\#563](https://github.com/gisaia/ARLAS-web-components/issues/563) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Fixed bugs:**
+
+- Columns titles are incorrectly aligned if values of a column are too long [\#623](https://github.com/gisaia/ARLAS-web-components/issues/623) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v20.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v20.0.0-rc.2) (2022-01-07)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0-rc.1...v20.0.0-rc.2)
