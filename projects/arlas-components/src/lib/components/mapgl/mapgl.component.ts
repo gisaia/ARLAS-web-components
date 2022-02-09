@@ -1132,16 +1132,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const extendForLoadLatLng = paddedBounds(panLoad, panLoad, panLoad, panLoad, this.map, southWest, northEast);
       const extendForTestdLatLng = paddedBounds(panTest, panTest, panTest, panTest, this.map, southWest, northEast);
       onMoveData.extendForLoad = [
-        Math.min(extendForLoadLatLng[1].lat, 90),
-        Math.max(extendForLoadLatLng[0].lng, -180),
-        Math.max(extendForLoadLatLng[0].lat, -90),
-        Math.min(extendForLoadLatLng[1].lng, 180)
+        extendForLoadLatLng[1].wrap().lat,
+        extendForLoadLatLng[0].wrap().lng,
+        extendForLoadLatLng[0].wrap().lat,
+        extendForLoadLatLng[1].wrap().lng
       ];
       onMoveData.extendForTest = [
-        Math.min(extendForTestdLatLng[1].lat, 90),
-        Math.max(extendForTestdLatLng[0].lng, -180),
-        Math.max(extendForTestdLatLng[0].lat, -90),
-        Math.min(extendForTestdLatLng[1].lng, 180)
+        extendForTestdLatLng[1].wrap().lat,
+        extendForTestdLatLng[0].wrap().lng,
+        extendForTestdLatLng[0].wrap().lat,
+        extendForTestdLatLng[1].wrap().lng
       ];
       onMoveData.rawExtendForLoad = [
         extendForLoadLatLng[1].lat,
