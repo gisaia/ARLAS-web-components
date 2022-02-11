@@ -93,7 +93,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale.
    */
-  @Input() public colorsSaturationWeight ;
+  @Input() public colorsSaturationWeight;
 
   /**
    * @Input : Angular
@@ -110,6 +110,11 @@ export class PowerbarsComponent implements OnInit, OnChanges {
    * @description Chart's width. If not specified, the chart takes the component's container width.
    */
   @Input() public chartWidth = null;
+  /**
+     * @Input : Angular
+     * @description Whether the powerbar is scrollable or fully displayed
+     */
+  @Input() public scrollable = false;
 
   /**
    * @Output : Angular
@@ -146,7 +151,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(private colorService: ArlasColorService) {}
+  constructor(private colorService: ArlasColorService) { }
 
   public static getPowerbarsJsonSchema(): Object {
     return powerbarsJsonSchema;
@@ -168,7 +173,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
         this.populateSelectedPowerbars();
         this.calculateAllPowerBarsProgression();
       } else {
-        this.inputData = {id: 'root', fieldName: 'root', fieldValue: 'root', isOther: false, children: []};
+        this.inputData = { id: 'root', fieldName: 'root', fieldValue: 'root', isOther: false, children: [] };
         this.powerBarsList = [];
       }
     }
@@ -237,7 +242,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
       selectedPowerbarsTerms.add(powerBar.term);
       this.addSelectedPowerbarToList(powerBar, selectedPowerbarsList);
     });
-    this.selectedPowerbarsTerms  = selectedPowerbarsTerms;
+    this.selectedPowerbarsTerms = selectedPowerbarsTerms;
     this.selectedPowerbarsList = this.sortSelectedPowerBars(selectedPowerbarsList);
     this.unselectAllButNotSelectedBars();
   }
@@ -263,7 +268,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
     this.powerBarsList = this.fetchPowerbarsList(this.level, this.inputData);
   }
 
-  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?:  Array<PowerBar>, recursivityCount?: number, path?: any) {
+  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?: Array<PowerBar>, recursivityCount?: number, path?: any) {
     if (recursivityCount === undefined) {
       recursivityCount = 0;
     }
@@ -278,14 +283,14 @@ export class PowerbarsComponent implements OnInit, OnChanges {
       data.children.forEach(child => {
         const currentPath = [];
         Object.assign(currentPath, path);
-        currentPath.push({fieldName: child.fieldName, fieldValue: child.fieldValue});
+        currentPath.push({ fieldName: child.fieldName, fieldValue: child.fieldValue });
         this.fetchPowerbarsList(level, child, powerBarsList, ++recursivityCount, currentPath);
       });
     } else {
       data.children.forEach(child => {
         const currentPath = [];
         Object.assign(currentPath, path);
-        currentPath.push({fieldName: child.fieldName, fieldValue: child.fieldValue});
+        currentPath.push({ fieldName: child.fieldName, fieldValue: child.fieldValue });
         if (!child.isOther) {
           const powerBar = new PowerBar(child.fieldValue, data.fieldValue, child.metricValue);
           currentPath.reverse();
@@ -335,13 +340,13 @@ export class PowerbarsComponent implements OnInit, OnChanges {
     // calculate progression
     this.powerBarsList.forEach(powerBar => {
       powerBar.progression = powerBar.count / sum * 100;
-      if (powerBar.progression !== 0 && powerBar.progression !== 100 ) {
+      if (powerBar.progression !== 0 && powerBar.progression !== 100) {
         powerBar.progression += 1;
       }
     });
     this.selectedPowerbarsList.forEach(selectedPowerBar => {
       selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
-      if (selectedPowerBar.progression !== 0 && selectedPowerBar.progression !== 100 ) {
+      if (selectedPowerBar.progression !== 0 && selectedPowerBar.progression !== 100) {
         selectedPowerBar.progression += 1;
       }
     });

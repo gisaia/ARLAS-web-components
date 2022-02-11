@@ -1,7 +1,10 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "analytics": false
+    "analytics": false,
+    "cache": {
+      "enabled": false
+    }
   },
   "version": 1,
   "newProjectRoot": "projects",
@@ -28,9 +31,6 @@
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
-            ],
-            "scripts": [
-
             ]
           },
           "configurations": {
@@ -38,7 +38,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -46,8 +45,8 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "src": "src/environments/environment.ts",
+                  "replaceWith": "src/environments/environment.prod.ts"
                 }
               ]
             }
@@ -168,8 +167,7 @@
   "defaultProject": "arlas-web-components-demo",
   "schematics": {
     "@schematics/angular:component": {
-      "prefix": "arlas",
-      "styleext": "css"
+      "prefix": "arlas"
     },
     "@schematics/angular:directive": {
       "prefix": "arlas"
