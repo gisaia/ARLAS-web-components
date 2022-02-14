@@ -30,8 +30,10 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import { MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
-  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET } from './model/mapLayers';
+import {
+  MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
+  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET
+} from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Feature as TurfFeature, polygon } from '@turf/helpers';
@@ -44,7 +46,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
+import * as styles from './model/theme';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -378,7 +381,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    * @Output :  Angular
    * @description Emits the geojson of an aoi added to the map
    */
-   @Output() public onBasemapChanged: Subject<boolean> = new Subject();
+  @Output() public onBasemapChanged: Subject<boolean> = new Subject();
   /**
    * @Output :  Angular
    * @description Emits which layers are displayed in the Legend
@@ -398,7 +401,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   private indexId = 0;
   private customIds = new Map<number, string>();
   private isDrawingPolygon = false;
-
+  private isInSimpleDrawMode = false;
   public firstDrawLayer = '';
 
   // Drag start position
@@ -744,9 +747,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     this.map.addControl(removeAoisButton, 'top-right');
     const drawOptions = {
       ...this.drawOption, ...{
+        styles: styles.default,
         modes: Object.assign(
           MapboxDraw.modes,
           {
+            static: StaticMode,
             limit_vertex: limitVertexDirectSelectMode,
             draw_polygon: validGeomDrawPolygonMode
           })
@@ -764,6 +769,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
+      this.draw.changeMode('static');
       if (this.icons) {
         this.icons.forEach(icon => {
           this.map.loadImage(
@@ -837,17 +843,33 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
             const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
-            const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX) ||
-              f.source.startsWith('mapbox-gl-draw')));
-            if (!this.isDrawingBbox && !this.isDrawingPolygon && !hasCrossOrDrawLayer) {
-              this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+            const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
+            if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
+              this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
             }
           });
         });
 
+        ['gl-draw-polygon-stroke-inactive',
+          'gl-draw-polygon-stroke-active',
+          'gl-draw-polygon-stroke-static'].forEach(layer =>
+          ['.cold', '.hot'].forEach(layerId =>
+            this.map.on('mousemove', layer.concat(layerId), (e) => {
+              this.map.getCanvas().style.cursor = 'pointer';
+            })
+          )
+        );
+        ['gl-draw-polygon-stroke-inactive',
+          'gl-draw-polygon-stroke-active',
+          'gl-draw-polygon-stroke-static'].forEach(layer =>
+          ['.cold', '.hot'].forEach(layerId =>
+            this.map.on('mouseleave', layer.concat(layerId), (e) => {
+              this.map.getCanvas().style.cursor = '';
+            })));
+
         this.mapLayers.events.onHover.forEach(layerId => {
           this.map.on('mousemove', layerId, (e) => {
-            this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+            this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
           });
 
           this.map.on('mouseleave', layerId, (e) => {
@@ -930,7 +952,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.finishDrawTooltip.style.left = (x + 20) + 'px';
       };
 
-      this.map.on('draw.onClick', () => {
+      this.map.on('draw.onClick', (e) => {
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
@@ -992,17 +1014,25 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
                   && coordinates[0][0] !== (null && undefined);
               })
             });
+          this.isDrawingBbox = false;
+          this.isDrawingPolygon = false;
+          this.isInSimpleDrawMode = false;
+          this.draw.changeMode('static');
+          this.map.getCanvas().style.cursor = '';
         }
       });
       this.map.on('draw.modechange', (e) => {
         if (e.mode === 'draw_polygon') {
           this.isDrawingPolygon = true;
+          this.isInSimpleDrawMode = false;
         }
         if (e.mode === 'simple_select') {
-          /** This allows to debounce the clic on feature detail */
-          setTimeout(() => {
-            this.isDrawingPolygon = false;
-          }, 100);
+          this.isInSimpleDrawMode = true;
+        }
+        if (e.mode === 'static') {
+          this.isDrawingPolygon = false;
+          this.isInSimpleDrawMode = false;
+          this.map.getCanvas().style.cursor = '';
         }
         if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelected().features;
@@ -1012,6 +1042,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
               this.draw.changeMode('simple_select', {
                 featureIds: [selectedIds[0]]
               });
+              this.isInSimpleDrawMode = true;
             } else if (this.drawPolygonVerticesLimit) {
               this.draw.changeMode('limit_vertex', {
                 featureId: selectedIds[0],
@@ -1019,20 +1050,40 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
                 selectedCoordPaths: selectedFeatures[0].geometry.coordinates
               });
             }
+          } else {
+            this.isDrawingPolygon = false;
+            this.isInSimpleDrawMode = false;
+            this.map.getCanvas().style.cursor = '';
           }
         }
       });
 
-      this.map.on('click', () => {
+      this.map.on('click', (e) => {
         if (this.isDrawingPolygon) {
           this.nbPolygonVertice++;
           if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
-            this.draw.changeMode('simple_select');
+            this.draw.changeMode('static');
             this.isDrawingPolygon = false;
             this.nbPolygonVertice = 0;
           }
         } else {
           this.nbPolygonVertice = 0;
+          const features = this.map.queryRenderedFeatures(e.point);
+          // edit polygon condition : no arlas feature && mapbox-gl-draw source present
+          const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
+            features.filter(f => f.source.startsWith('mapbox-gl-draw')).length > 0;
+          if (editCondition) {
+            const candidates = features.filter(f => f.source.startsWith('mapbox-gl-draw'));
+            // edit only on click on the border of the polygon
+            const id = candidates.filter(f => f.layer.id?.indexOf('stroke') >= 0)[0]?.properties?.id;
+            if (!!id) {
+              this.draw.changeMode('simple_select', {
+                featureIds: [id]
+              });
+              this.isInSimpleDrawMode = true;
+
+            }
+          }
         }
       });
       this.onMapLoaded.next(true);
@@ -1270,6 +1321,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public switchToDrawMode() {
     this.draw.changeMode('draw_polygon');
     this.isDrawingPolygon = true;
+    this.isInSimpleDrawMode =false;
+  }
+
+  public switchToEditMode(){
+    this.draw.changeMode('simple_select',{
+      featureIds:  this.draw.getAll().features.map(f=>f.id)
+    });
+    this.isInSimpleDrawMode =true;
+    this.isDrawingPolygon = false;
   }
 
   public deleteSelectedItem() {
