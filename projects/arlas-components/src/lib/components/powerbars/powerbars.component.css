@@ -146,12 +146,6 @@
 
 }
 
-.powerbars--selectedbars {
-  padding-bottom: 2px;
-  border-bottom: 1px solid rgb(209, 209, 209);
-}
-
-
 ::-webkit-scrollbar
 {
 	width: 6px;
@@ -167,4 +161,22 @@
 ::-webkit-scrollbar-thumb
 {
 	background-color: #555;
+}
+
+.powerbar-scrollable{
+  display: flex;
+  flex-direction: column;
+  max-height: 255px;
+}
+
+.powerbar-selected-scrollable{
+  max-height: 126px;
+  border-bottom: 1px solid rgb(209,209,209);
+  overflow-y: auto;
+  padding-bottom: 2px;
+}
+
+.powerbar-list-scrollable{
+  overflow-y: auto;
+  margin-top: 3px;
 }
