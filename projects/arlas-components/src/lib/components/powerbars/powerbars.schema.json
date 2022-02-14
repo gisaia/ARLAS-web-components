@@ -43,6 +43,21 @@
         "unit": {
           "description": "Unit that a powerbar represents",
           "type": "string"
+        },
+        "filterOperator": {
+            "description": "Options about how to apply filters on powerbars",
+            "type": "object",
+            "properties": {
+                "value": {
+                    "description": "The default operator value. \n if 'Eq', the selected powerbar is included in the ARLAS filter. \n if 'Neq', the selected powerbar is included in the ARLAS filter.",
+                    "type": "string",
+                    "enum": ["Eq", "Neq"]
+                },
+                "display": {
+                    "description": "Whether to display a switcher between 'Eq' and 'Neq' or keep the default operator all the time",
+                    "type": "boolean"
+                }
+            }
         }
     }
 }

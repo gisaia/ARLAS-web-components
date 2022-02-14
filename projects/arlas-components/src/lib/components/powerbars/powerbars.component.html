@@ -1,50 +1,64 @@
 <div [ngStyle]="{'width.px':!!chartWidth ? chartWidth : 'unset' }">
-  <div *ngIf="!displayFilterField" class="powerbarTitle">{{powerbarTitle | translate}}</div>
-  <div class="powerbars--search" *ngIf="displayFilterField">
-    <form (keydown.enter)="$event.preventDefault()">
-      <mat-form-field class="powerbars-search-field">
-        <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle | translate}}" matInput
-          class="powerbars-search-input" (keyup)="onKeyUp(searchText.value)" name="search">
-      </mat-form-field>
-    </form>
+  <div class="tools">
+    <div *ngIf="!displayFilterField" class="powerbarTitle">{{powerbarTitle | translate}}</div>
+    <div class="powerbars--search" *ngIf="displayFilterField">
+      <form (keydown.enter)="$event.preventDefault()">
+        <mat-form-field class="powerbars-search-field">
+          <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle | translate}}" matInput
+            class="powerbars-search-input" (keyup)="onKeyUp(searchText.value)" name="search">
+        </mat-form-field>
+      </form>
+    </div>
+    <div *ngIf="filterOperator && filterOperator?.display" class="include_exclude">
+      <div class="operation" [class.selected_operation]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div>
+      <div class="operation" [class.selected_operation]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div>
+    </div>
+    <div *ngIf="filterOperator && !filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
+      <div class="operation" [class.exclude]="filterOperator?.value === 'Neq'">{{'exclude' | translate}}</div>
+    </div>
   </div>
+
   <div class="powerbars--wrapper" [ngClass]="customizedCssClass">
     <div class="powerbars--container" [class.powerbar-scrollable]="scrollable">
-      <div *ngIf="selectedPowerbarsList.size !== 0" [class.powerbar-selected-scrollable]="scrollable" [style.min-height.px]="selectedPowerbarsList.size > 5 ? 126 : selectedPowerbarsList.size * 25">
+      <div *ngIf="selectedPowerbarsList.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
+        [style.min-height.px]="selectedPowerbarsList.size > 5 ? 126 : selectedPowerbarsList.size * 25">
         <div *ngFor="let selectedPowerbar of selectedPowerbarsList"
           class="powerbars__powerbar powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
           (click)="clickOnPowerbar(selectedPowerbar)">
-          <span
-            matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
+          <div matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
             [matTooltipPosition]="'after'"
-            class="powerbar__powerbar--term powerbar__powerbar--term--selected powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">{{selectedPowerbar.term | translate}}</span>
-          <div
-            class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"
+            class="powerbar__powerbar--term powerbar__powerbar--term--selected powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">
+            <span>{{selectedPowerbar.term
+              | translate}}</span>
+
+          </div>
+          <div class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"
             [style.width]="selectedPowerbar.progression+'%'"
             matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
             [matTooltipPosition]="'after'">
           </div>
-          <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{selectedPowerbar.classSuffix}}"></div>
+          <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{selectedPowerbar.classSuffix}}">
+          </div>
           <div *ngIf="useColorService || useColorFromData" [style.background-color]="selectedPowerbar.color"
-          [style.border-color]="selectedPowerbar.color" class="rightband-{{selectedPowerbar.classSuffix}}"></div>
+            [style.border-color]="selectedPowerbar.color" class="rightband-{{selectedPowerbar.classSuffix}}"></div>
+
         </div>
       </div>
       <div [class.powerbar-list-scrollable]="scrollable">
         <div *ngFor="let powerbar of powerBarsList" (click)="clickOnPowerbar(powerbar)">
           <div *ngIf="!powerbar.isSelected" class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}">
-            <span
-              matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
+            <span matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
               [matTooltipPosition]="'after'"
-              class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term | translate}}</span>
-            <div
-              class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"
+              class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term
+              | translate}}</span>
+            <div class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"
               [style.width]="powerbar.progression+'%'"
               matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
               [matTooltipPosition]="'after'">
             </div>
             <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{powerbar.classSuffix}}"></div>
             <div *ngIf="useColorService || useColorFromData" [style.background-color]="powerbar.color"
-            [style.border-color]="powerbar.color" class="rightband"></div>
+              [style.border-color]="powerbar.color" class="rightband"></div>
           </div>
         </div>
       </div>
