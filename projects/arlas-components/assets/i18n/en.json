@@ -68,5 +68,7 @@
 	"None": "None",
 	"Fit the whole thumbnail to the tile": "Fit the whole thumbnail to the tile",
 	"Fit the thumbnail's width to the tile": "Fit the thumbnail's width to the tile",
-	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile"
+	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile",
+	"exclude": "exclude",
+	"include": "include"
 }

@@ -27,6 +27,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { PowerbarsComponent } from './powerbars.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @NgModule({
   imports: [
@@ -34,7 +37,10 @@ import { PowerbarsComponent } from './powerbars.component';
     MatCardModule,
     MatIconModule,
     MatTooltipModule,
+    MatMenuModule,
     MatInputModule,
+    MatButtonModule,
+    MatButtonToggleModule,
     ColorGeneratorModule.forRoot(),
     TranslateModule,
     FormatNumberModule

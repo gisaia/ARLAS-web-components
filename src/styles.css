@@ -37,7 +37,6 @@ body {
 }
 
 .constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar {
-  background-color: rgb(255, 243, 137) !important;
 }
 
 .histogram__area .histogram__swimlane-height--tick {

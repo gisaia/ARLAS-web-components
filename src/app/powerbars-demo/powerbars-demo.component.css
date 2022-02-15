@@ -18,11 +18,11 @@
  */
 
 .powerbars-constructor-container {
-  width: 130px;
-  height: 155px;
+  width: 150px;
   margin: 10px;
   margin-right: 0;
   overflow: hidden;
   float: left;
+  font-size: 0.9em;
 }
 

@@ -18,14 +18,15 @@
  * under the License.
  */
 
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
 import { SimpleNode, TreeNode } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { PowerBar } from './model/powerbar';
+import { FilterOperator, PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as tinycolor from 'tinycolor2';
+import { debounceTime } from 'rxjs/operators';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -115,6 +116,25 @@ export class PowerbarsComponent implements OnInit, OnChanges {
      * @description Whether the powerbar is scrollable or fully displayed
      */
   @Input() public scrollable = false;
+
+  /**
+     * @Input : Angular
+     * @description Options about how to apply filters on powerbars
+     * - value : The default value.
+     *           if 'Eq', the selected powerbar is included in the ARLAS filter.
+     *           if 'Neq', the selected powerbar is included in the ARLAS filter.
+     * - display: Whether to display a switcher between 'Eq' and 'Neq' or keep the default operator all the time
+     */
+  @Input() public filterOperator: FilterOperator = {
+    value: 'Eq',
+    display: true
+  };
+
+  /**
+   * @Output : Angular
+   * @description Emits the filter operator
+   */
+  @Output() public filterOperatorEvent: EventEmitter<'Neq' | 'Eq'> = new EventEmitter();
 
   /**
    * @Output : Angular
@@ -249,6 +269,13 @@ export class PowerbarsComponent implements OnInit, OnChanges {
 
   public onKeyUp(searchText: any) {
     this.searchedTerm.next(searchText);
+  }
+
+  public setOperator(op: 'Eq' | 'Neq'): void {
+    if (this.filterOperator.value !== op) {
+      this.filterOperator.value = op;
+      this.filterOperatorEvent.next(op);
+    }
   }
 
   private clearSelection(): void {
