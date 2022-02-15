@@ -1,5 +1,13 @@
 # Change Log
 
+## [v20.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v20.1.0-beta.1) (2022-02-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0...v20.1.0-beta.1)
+
+**New stuff:**
+
+- Add option to exclude selected bars from the global filter instead of including them [\#562](https://github.com/gisaia/ARLAS-web-components/issues/562) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
 ## [v20.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v20.0.0) (2022-02-02)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0-rc.2...v20.0.0)
