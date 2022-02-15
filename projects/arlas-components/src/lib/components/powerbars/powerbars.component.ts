@@ -127,7 +127,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
      */
   @Input() public filterOperator: FilterOperator = {
     value: 'Eq',
-    display: true
+    display: false
   };
 
   /**
