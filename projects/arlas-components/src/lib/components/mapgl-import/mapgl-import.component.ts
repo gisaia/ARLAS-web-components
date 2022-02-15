@@ -11,10 +11,9 @@ import * as extent_ from 'turf-extent';
 import { parse } from 'wellknown';
 import { valid } from 'geojson-validation';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
-const gpsi = gpsi_;
+const gpsi = gpsi_.default;
+const shp = shp_.default;
 const extent = extent_;
-const shp = shp_;
-
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',
   selector: 'arlas-mapgl-import-dialog',
