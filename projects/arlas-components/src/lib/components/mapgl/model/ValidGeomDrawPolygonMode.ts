@@ -23,7 +23,7 @@ validGeomDrawPolygonMode.fireOnStop = function () {
 };
 
 validGeomDrawPolygonMode.clickOnVertex = function (state) {
-  return this.changeMode(modes.SIMPLE_SELECT, {});
+  return this.changeMode(modes.STATIC, {});
 };
 
 validGeomDrawPolygonMode.onTap = validGeomDrawPolygonMode.onClick = function (state, e) {
@@ -75,7 +75,7 @@ validGeomDrawPolygonMode.onStop = function (state) {
     }
   } else {
     this.deleteFeature([state.polygon.id], { silent: true });
-    this.changeMode(modes.SIMPLE_SELECT, {}, { silent: true });
+    this.changeMode(modes.STATIC, {}, { silent: true });
   }
 };
 
