@@ -601,6 +601,7 @@ export class MapglImportComponent {
         if (this.mapComponent.drawData.features.length > 0) {
           this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
         }
+        this.mapComponent.draw.changeMode('static');
         this.imported.next(importedResult.geojson.features);
         this.mapComponent.onAoiChanged.next(importedResult.geojson);
         this.dialogRef.close();
