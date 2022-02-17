@@ -67,7 +67,7 @@
 .powerbars__powerbar--neutral-state, /* @doc Sets all powerbars containers when none of them is selected. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--selected-bar, /* @doc Sets selected powerbars containers. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--unselected-bar, /* @doc Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
-.powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/ 
+.powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/
 {
   margin-top: 3px;
   display: flex;
@@ -92,7 +92,7 @@
 .rightband-neutral-state, /* @doc Style of all powerbars rightband when none of them is selected.*/
 .rightband-selected-bar, /* @doc Style of selected powerbars rightband .*/
 .rightband-unselected-bar, /* @doc Style of unselected powerbars rightband.*/
-.rightband-selected-no-mounted-bar /* @doc Style of selected-no-mounted powerbars rightband.*/ 
+.rightband-selected-no-mounted-bar /* @doc Style of selected-no-mounted powerbars rightband.*/
 {
   width: 4px;
   background-color: #88c9c3;
@@ -107,7 +107,7 @@
   width: 4px;
 }
 
-.powerbar__powerbar--term /* @doc Style of terms.*/ 
+.powerbar__powerbar--term /* @doc Style of terms.*/
 {
   padding-left: 3px;
   white-space: nowrap;
@@ -195,10 +195,12 @@
   max-height: 126px;
   border-bottom: 1px solid rgb(209, 209, 209);
   overflow-y: auto;
+  overflow-x: clip;
   padding-bottom: 2px;
 }
 
 .powerbar-list-scrollable {
   overflow-y: auto;
+  overflow-x: clip;
   margin-top: 3px;
 }
