@@ -18,7 +18,7 @@
  * under the License.
  */
 
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitter, AfterViewInit } from '@angular/core';
 import { SimpleNode, TreeNode } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import { ArlasColorService } from '../../services/color.generator.service';
@@ -39,7 +39,7 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./powerbars.component.css']
 })
 
-export class PowerbarsComponent implements OnInit, OnChanges {
+export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * @Input : Angular
    * @description Data formated as a tree to be plotted as powerbars
@@ -127,7 +127,7 @@ export class PowerbarsComponent implements OnInit, OnChanges {
      */
   @Input() public filterOperator: FilterOperator = {
     value: 'Eq',
-    display: false
+    display: true
   };
 
   /**
@@ -183,6 +183,15 @@ export class PowerbarsComponent implements OnInit, OnChanges {
     }
     if (!this.unit) {
       this.unit = '';
+    }
+  }
+
+  public ngAfterViewInit(): void {
+    if (!this.filterOperator) {
+      this.filterOperator = {
+        value: 'Eq',
+        display: true
+      };
     }
   }
 
