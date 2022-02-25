@@ -1,5 +1,5 @@
 ARLAS-web-components
-Copyright 2017-2021 and onwards Gisaïa
+Copyright 2017-2022 and onwards Gisaïa
 
 
 ARLAS-web-components embeds the following components and their dependencies :
@@ -18,9 +18,11 @@ ARLAS-web-components embeds the following components and their dependencies :
 
 -------------------------------------------------------------------------------
 
-  Copyright (c) 2016, Mapbox
+  Contains code from mapbox-gl-js v1.13 and earlier
 
-  All rights reserved.
+  Version v1.13 of mapbox-gl-js and earlier are licensed under a BSD-3-Clause license
+
+  Copyright (c) 2020, Mapbox
 
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -48,7 +50,7 @@ ARLAS-web-components embeds the following components and their dependencies :
 
   -------------------------------------------------------------------------------
 
-  Copyright 2010-2017 Mike Bostock
+  Copyright 2010-2021 Mike Bostock
   All rights reserved.
 
   Redistribution and use in source and binary forms, with or without modification,
