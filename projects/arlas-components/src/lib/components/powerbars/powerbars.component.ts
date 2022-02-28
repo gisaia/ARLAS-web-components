@@ -26,7 +26,6 @@ import { FilterOperator, PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as tinycolor from 'tinycolor2';
-import { debounceTime } from 'rxjs/operators';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -130,6 +129,8 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     display: true
   };
 
+  @Input() public missingLeafEvent: Subject<any[]>;
+
   /**
    * @Output : Angular
    * @description Emits the filter operator
@@ -171,13 +172,40 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(private colorService: ArlasColorService) { }
+  constructor(private colorService: ArlasColorService) {
+
+
+  }
 
   public static getPowerbarsJsonSchema(): Object {
     return powerbarsJsonSchema;
   }
 
   public ngOnInit() {
+    if (!!this.missingLeafEvent) {
+      this.missingLeafEvent.subscribe(data => {
+        if (this.selectedPaths !== undefined && this.selectedPaths !== null) {
+          this.setSelectedPowerbars(this.selectedPaths);
+          data.filter(d => !!d.value).forEach(d => {
+            const value = d.value;
+            const key = d.key;
+            const missingLeaf = Array.from(this.selectedPowerbarsList).filter(pw => pw.term === key)[0];
+            const missingLeafToUpdate = Object.assign({}, missingLeaf);
+            missingLeafToUpdate.count = value;
+            missingLeafToUpdate.isSelected = true;
+            missingLeafToUpdate.classSuffix = this.SELECTED_BAR;
+            if (this.useColorService) {
+              const rgbaColor = tinycolor.default(this.colorService.getColor(missingLeafToUpdate.term, this.keysToColors,
+                this.colorsSaturationWeight)).toRgb();
+              missingLeafToUpdate.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
+            }
+            this.selectedPowerbarsList.delete(missingLeaf);
+            this.selectedPowerbarsList.add(missingLeafToUpdate);
+          });
+        }
+      });
+    }
+
     if (this.level > 1) {
       throw new Error('Not implemented : Only level 1 is supported');
     }
@@ -261,6 +289,8 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
           powerBar.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
         }
       } else {
+
+
         powerBar = currentPath.length > 1 ? new PowerBar(currentPath[0].fieldValue, currentPath[1].fieldValue, 0) :
           new PowerBar(currentPath[0].fieldValue, 'root', 0);
         powerBar.path = currentPath;
