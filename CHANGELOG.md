@@ -1,5 +1,9 @@
 # Change Log
 
+## [v21.0.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v21.0.0-beta.1) (2022-02-28)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.1.0...v21.0.0-beta.1)
+
 ## [v20.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v20.1.0) (2022-02-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.1.0-beta.3...v20.1.0)
