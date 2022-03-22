@@ -401,7 +401,6 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       }
     });
 
-    this.powerBarsList.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
 
     // calculate progression
     this.powerBarsList.forEach(powerBar => {
@@ -435,7 +434,6 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   // Sort the selected PowerBars decreasingly. And recalculate the progression of the bars in this array.
   private sortSelectedPowerBars(selectedPowerbarsList: Set<PowerBar>): Set<PowerBar> {
     const selectedPowerbarsArray = Array.from(selectedPowerbarsList);
-    selectedPowerbarsArray.sort((a: PowerBar, b: PowerBar) => b.count - a.count);
     const sortedSelectedPowerbarsList = new Set<PowerBar>();
     selectedPowerbarsArray.forEach(powerBar => {
       sortedSelectedPowerbarsList.add(powerBar);
