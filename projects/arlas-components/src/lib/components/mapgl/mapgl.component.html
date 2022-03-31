@@ -36,18 +36,6 @@
   <span class="lat"> Lat : {{currentLat | number:'1.5-5'}} </span>
   <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
 </div>
-<div *ngIf="showLayersList && displayLayerSwitcher" class="map__layers-list--container">
-  <div *ngIf="basemapStyles && basemapStyles.length > 1">
-    <span class="map__layers-stylegroup-name">{{'Basemaps' | translate}}</span>
-    <mat-radio-group class="map__layers-radio-group" [value]="basemapStylesGroup.selectedBasemapStyle">
-      <mat-radio-button class="map__layers-radio-button"
-        [checked]="style.name == basemapStylesGroup.selectedBasemapStyle.name" (change)="onChangeBasemapStyle(style)"
-        *ngFor="let style of basemapStyles" [value]="style">
-        {{style.name | translate}}
-      </mat-radio-button>
-    </mat-radio-group>
-  </div>
-</div>
-
+<arlas-mapgl-basemap *ngIf="showBasemapsList" (mouseleave)="hideBasemapSwitcher()" [selectedBasemap]="basemapStylesGroup?.selectedBasemapStyle" (basemapChanged)="onChangeBasemapStyle($event)" [basemapStyles]="basemapStyles"></arlas-mapgl-basemap>
 <div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip"
   [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>

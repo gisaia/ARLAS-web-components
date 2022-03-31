@@ -1,62 +1,34 @@
-<h1 mat-dialog-title class="mapgl-settings-title">{{ 'Geo-queries & basemaps' | translate}}</h1>
+<h1 mat-dialog-title class="mapgl-settings-title">{{ 'Geo-queries' | translate}}</h1>
 <div mat-dialog-content class="mapgl-settings-body">
-  <mat-tab-group (selectedTabChange)="changeTab($event)">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon>search</mat-icon> {{ 'Geo-queries' | translate}}
-      </ng-template>
-      <div class="geo-queries-container">
-        <div class="geo-queries-description">{{GEO_QUERIES_DESCRIPTION | translate}}</div>
-        <div class="geo-queries-operations">
-          <mat-form-field >
-              <mat-label>{{'operation' | translate}}</mat-label>
-              <mat-select  [(ngModel)]="selectedOperation">
-                <mat-option *ngFor="let operation of operations" [value]="operation?.operation">
-                    {{operation?.operation | translate}}
-                  </mat-option>
-              </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="geo-queries-geometry">
-          <mat-form-field style="height: 50px !important;">
-            <mat-label>{{'point or geometry' | translate}}</mat-label>
-            <mat-select [formControl]="geoFilterControl" [compareWith]="compareGeometries"
-              [(ngModel)]="selectedGeoFilterGeometry">
-              <mat-option *ngFor="let geometry of filterGeometries" [value]="geometry">
-                {{ geometry.path | translate}}
+  <div class="geo-queries-container">
+    <div class="geo-queries-description">{{GEO_QUERIES_DESCRIPTION | translate}}</div>
+    <div class="geo-queries-operations">
+      <mat-form-field >
+          <mat-label>{{'operation' | translate}}</mat-label>
+          <mat-select  [(ngModel)]="selectedOperation">
+            <mat-option *ngFor="let operation of operations" [value]="operation?.operation">
+                {{operation?.operation | translate}}
               </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-      </div>
-    </mat-tab>
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon svgIcon="basemap"></mat-icon> {{ 'Basemaps' | translate}}
-      </ng-template>
-      <div class="displayed-geo-container">
-        <fieldset class="fieldset-geo">
-          <legend class="displayed-geo-label">
-            <span style="padding-left:2px">{{'Choose one of the following basemaps' | translate}}</span>
-          </legend>
-          <div>
-            <mat-radio-group class="stylegroup-radio-group" [value]="basemapStylesGroup?.selectedBasemapStyle">
-              <mat-radio-button class="stylegroup-radio-button"
-                [checked]="style.name == basemapStylesGroup?.selectedBasemapStyle?.name" (change)="emitBasemapStyle(style)"
-                *ngFor="let style of basemapStylesGroup?.basemapStyles" [value]="style">
-                {{style.name | translate}}
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-        </fieldset>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+          </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="geo-queries-geometry">
+      <mat-form-field style="height: 50px !important;">
+        <mat-label>{{'point or geometry' | translate}}</mat-label>
+        <mat-select [formControl]="geoFilterControl" [compareWith]="compareGeometries"
+          [(ngModel)]="selectedGeoFilterGeometry">
+          <mat-option *ngFor="let geometry of filterGeometries" [value]="geometry">
+            {{ geometry.path | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
 </div>
 <div mat-dialog-actions class="mapgl-settings-actions">
-  <button mat-button *ngIf="currentTabIndex === 0" class="apply-displayed-geometries"
+  <button mat-button class="apply-displayed-geometries"
     (click)="emitGeoFilter()">{{'Apply geo-queries' | translate}}</button>
-  <button mat-button *ngIf="currentTabIndex === 0" class="apply-displayed-geometries"
+  <button mat-button class="apply-displayed-geometries"
     (click)="emitGeoFilter();onClose()">{{'Set geo-queries' | translate}}</button>
   <button mat-button class="cancel-map-settings" (click)="onClose()">{{ 'Cancel' | translate}}</button>
 </div>

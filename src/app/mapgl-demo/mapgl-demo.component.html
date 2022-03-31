@@ -26,7 +26,7 @@
 
   </arlas-mapgl-settings>
   <arlas-mapgl #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles"
-    [margePanForLoad]=40 [margePanForTest]=2 [displayLayerSwitcher]=true [mapLayers]="mapLayers"
+    [margePanForLoad]=40 [margePanForTest]=2 [mapLayers]="mapLayers"
     [displayScale]=true [displayCurrentCoordinates]=true [minZoom]=1 [maxZoom]=28 (onPolygonChange)="polygonChange($event)"
     (onPolygonSelect)="polygonSelect($event)" [drawOption]="drawOptions" [drawData]="drawData" [drawButtonEnabled]="true"
     [drawPolygonVerticesLimit]="5" [transformRequest]="transformRequest" (onAoiChanged)="onAoiChanged($event)">

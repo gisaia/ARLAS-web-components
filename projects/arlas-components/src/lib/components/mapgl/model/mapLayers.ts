@@ -22,6 +22,7 @@ import { AnyLayer } from 'mapbox-gl';
 export interface BasemapStyle {
   name: string;
   styleFile: string | mapboxgl.Style;
+  image?: string;
 }
 
 export interface BasemapStylesGroup {
