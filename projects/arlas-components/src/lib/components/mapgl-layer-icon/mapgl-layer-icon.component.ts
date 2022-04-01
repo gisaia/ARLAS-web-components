@@ -173,8 +173,8 @@ export function getOneColor(legend: Legend): string {
 export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
   const svg = select(svgNode);
   svg.selectAll('g').remove();
-  svg.append('g').append('text').text('123')
-    .attr('y', 14).attr('font-size', '0.75em').attr('fill', colorLegend.fixValue);
+  svg.append('g').append('text').text(' T ').attr('transform', ' translate(5 0)')
+    .attr('y', 14).attr('font-size', '0.9em').attr('font-family', 'Garamond').attr('fill', colorLegend.fixValue);
 }
 /**
  * draws the heatmap icon for cluster mode

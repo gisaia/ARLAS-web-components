@@ -185,7 +185,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     case 'line': {
       const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
       const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.translate);
-      this.buildLineWidthLegend(p['line-width']);
+      this.buildWidthLegend(p['line-width']);
       this.lineDasharray = p['line-dasharray'];
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
@@ -217,9 +217,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       break;
     }
     case 'symbol': {
-      this.colorLegend = {};
-      this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
-      this.colorLegend.visible = visibileMode;
+      const p: mapboxgl.SymbolPaint = (paint as mapboxgl.SymbolPaint);
+      const colors = MapglLegendComponent.buildColorLegend(p['text-color'], visibileMode, this.legendData, this.translate);
+      this.colorLegend = colors[0];
+      this.colorsPalette = colors[1];
+      const l: mapboxgl.SymbolLayout = (paint as mapboxgl.SymbolLayout);
+      this.buildWidthLegend(l['text-size']);
       break;
     }
     }
@@ -231,7 +234,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     this.layer = Object.assign({}, layer);
   }
 
-  public static buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
+  public static   buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
     legendData: Map<string, LegendData>, translate?: TranslateService): [Legend, string] {
     const colorLegend: Legend = { visible: true };
     let colorsPalette = '';
@@ -339,7 +342,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     return [colorLegend, colorsPalette];
   }
 
-  private buildLineWidthLegend(lineWidth: number | StyleFunction | Expression): void {
+  private buildWidthLegend(lineWidth: number | StyleFunction | Expression): void {
     /** if the line width is fix then it is not added to the legend*/
     if (Array.isArray(lineWidth)) {
       if (lineWidth.length >= 3) {
