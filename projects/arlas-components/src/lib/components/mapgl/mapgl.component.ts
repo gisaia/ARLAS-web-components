@@ -277,6 +277,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * @Input : Angular
+   * @description Whether the drawing buffer is activated
+   * If true , the map's canvas can be exported to a PNG using map.getCanvas().toDataURL()
+   * default: false
+   */
+  @Input() public preserveDrawingBuffer = false;
+
+  /**
+   * @Input : Angular
    * @description An object with noth,east,south,west properies which represent an offset in pixel
    * Origin is top-left and x axe is west to east and y axe north to south.
    */
@@ -695,6 +703,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       maxZoom: this.maxZoom,
       minZoom: this.minZoom,
       renderWorldCopies: true,
+      preserveDrawingBuffer: this.preserveDrawingBuffer,
       locale: {
         'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
         'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
