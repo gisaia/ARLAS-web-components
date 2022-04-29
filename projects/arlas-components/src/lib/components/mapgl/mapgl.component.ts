@@ -18,6 +18,7 @@
  */
 
 import {
+  AfterContentInit,
   AfterViewInit, Component, EventEmitter,
   HostListener, Input,
   OnChanges, OnInit, Output, SimpleChanges,
@@ -95,7 +96,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
   styleUrls: ['./mapgl.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
+export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterContentInit {
 
   public map: any;
   public draw: any;
@@ -130,12 +131,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() public mapLayers: MapLayers;
 
-  /**
-   * @Input : Angular
-   * @description Whether the layer switcher controll is displayed.
-   * If not, the map component uses the default style group and with its default style
-   */
-  @Input() public displayLayerSwitcher = false;
   /**
  * @Input : Angular
  * @description Whether the scale is displayed.
@@ -396,7 +391,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public legendVisibiltyStatus: Subject<Map<string, boolean>> = new Subject();
 
-  public showLayersList = false;
+  public showBasemapsList = false;
   public layersMap: Map<string, mapboxgl.Layer>;
   public basemapStylesGroup: BasemapStylesGroup;
 
@@ -677,6 +672,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
+  public ngAfterContentInit(): void {
+    /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
+    this.setBasemapStylesGroup(this.getAfterViewInitBasemapStyle());
+  }
+
   public ngAfterViewInit() {
 
     const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
@@ -718,8 +718,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     });
 
     this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
-    /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
-    this.setBasemapStylesGroup(afterViewInitbasemapStyle);
+
 
     /** Whether to display scale */
     if (this.displayScale) {
@@ -740,16 +739,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
         this.currentLat = String(Math.round(lngLat.lat * 100000) / 100000);
       });
     }
-    const layerSwitcherButton = new ControlButton('layersswitcher', this.translate.instant(LAYER_SWITCHER_TOOLTIP));
+
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
     const removeAoisButton = new ControlButton('removeaois');
-    if (this.displayLayerSwitcher) {
-      this.map.addControl(layerSwitcherButton, 'top-right');
-      layerSwitcherButton.btn.onclick = () => {
-        this.showLayersList = !this.showLayersList;
-      };
-    }
+
+
     this.map.addControl(navigationControllButtons, 'top-right');
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
@@ -859,18 +854,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
           });
         });
 
-        ['gl-draw-polygon-stroke-inactive',
+        [
+          'gl-draw-polygon-stroke-inactive',
           'gl-draw-polygon-stroke-active',
-          'gl-draw-polygon-stroke-static'].forEach(layer =>
+          'gl-draw-polygon-stroke-static'
+        ].forEach(layer =>
           ['.cold', '.hot'].forEach(layerId =>
             this.map.on('mousemove', layer.concat(layerId), (e) => {
               this.map.getCanvas().style.cursor = 'pointer';
             })
           )
         );
-        ['gl-draw-polygon-stroke-inactive',
+        [
+          'gl-draw-polygon-stroke-inactive',
           'gl-draw-polygon-stroke-active',
-          'gl-draw-polygon-stroke-static'].forEach(layer =>
+          'gl-draw-polygon-stroke-static'
+        ].forEach(layer =>
           ['.cold', '.hot'].forEach(layerId =>
             this.map.on('mouseleave', layer.concat(layerId), (e) => {
               this.map.getCanvas().style.cursor = '';
@@ -1240,6 +1239,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   /**
+   * @description Display the basemapswitcher
+   */
+  public showBasemapSwitcher() {
+    this.showBasemapsList = true;
+  }
+
+  /**
    * @description Displays the geobox
    */
   public addGeoBox() {
@@ -1330,14 +1336,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   public switchToDrawMode() {
     this.draw.changeMode('draw_polygon');
     this.isDrawingPolygon = true;
-    this.isInSimpleDrawMode =false;
+    this.isInSimpleDrawMode = false;
   }
 
-  public switchToEditMode(){
-    this.draw.changeMode('simple_select',{
-      featureIds:  this.draw.getAll().features.map(f=>f.id)
+  public switchToEditMode() {
+    this.draw.changeMode('simple_select', {
+      featureIds: this.draw.getAll().features.map(f => f.id)
     });
-    this.isInSimpleDrawMode =true;
+    this.isInSimpleDrawMode = true;
     this.isDrawingPolygon = false;
   }
 
@@ -1365,6 +1371,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
     const ids = features.map(f => f.idValue);
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids]] : [];
     this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+  }
+
+  public hideBasemapSwitcher() {
+    this.showBasemapsList = false;
   }
 
   private latLngToWKT(features) {
@@ -1411,48 +1421,50 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   private addVisuLayers() {
-    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-      if (!!visualisation.layers) {
-        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-          const l = visualisation.layers[j];
-          const layer = this.layersMap.get(l);
-          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-          const scrollableLayer = this.layersMap.get(scrollableId);
-          if (!!scrollableLayer) {
-            this.addLayer(scrollableId);
-          }
-          this.addLayer(l);
-          /** add stroke layer if the layer is a fill */
-          if (layer.type === 'fill') {
-            const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-            const strokeLayer = this.layersMap.get(strokeId);
-            if (!!strokeLayer) {
-              this.addLayer(strokeId);
+    if (!!this.visualisationSetsConfig) {
+      for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
+        const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
+        if (!!visualisation.layers) {
+          for (let j = visualisation.layers.length - 1; j >= 0; j--) {
+            const l = visualisation.layers[j];
+            const layer = this.layersMap.get(l);
+            const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+            const scrollableLayer = this.layersMap.get(scrollableId);
+            if (!!scrollableLayer) {
+              this.addLayer(scrollableId);
+            }
+            this.addLayer(l);
+            /** add stroke layer if the layer is a fill */
+            if (layer.type === 'fill') {
+              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+              const strokeLayer = this.layersMap.get(strokeId);
+              if (!!strokeLayer) {
+                this.addLayer(strokeId);
+              }
             }
           }
         }
       }
-    }
-    this.visualisationsSets.status.forEach((b, vs) => {
-      if (!b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => {
-          this.map.setLayoutProperty(l, 'visibility', 'none');
-          this.setStrokeLayoutVisibility(l, 'none');
-          this.setScrollableLayoutVisibility(l, 'none');
-        });
-      }
-    });
-    this.visualisationsSets.status.forEach((b, vs) => {
-      if (b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => {
-          this.map.setLayoutProperty(l, 'visibility', 'visible');
-          this.setStrokeLayoutVisibility(l, 'visible');
-          this.setScrollableLayoutVisibility(l, 'visible');
-        });
+      this.visualisationsSets.status.forEach((b, vs) => {
+        if (!b) {
+          this.visualisationsSets.visualisations.get(vs).forEach(l => {
+            this.map.setLayoutProperty(l, 'visibility', 'none');
+            this.setStrokeLayoutVisibility(l, 'none');
+            this.setScrollableLayoutVisibility(l, 'none');
+          });
+        }
+      });
+      this.visualisationsSets.status.forEach((b, vs) => {
+        if (b) {
+          this.visualisationsSets.visualisations.get(vs).forEach(l => {
+            this.map.setLayoutProperty(l, 'visibility', 'visible');
+            this.setStrokeLayoutVisibility(l, 'visible');
+            this.setScrollableLayoutVisibility(l, 'visible');
+          });
 
-      }
-    });
+        }
+      });
+    }
   }
 
   private addExternalEventLayers() {
@@ -1540,8 +1552,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges {
       const visibilityFilter = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => {
           memo.push(element.idValue); return memo;
-        }
-        , ['in', ['get', elementToSelect[0].idFieldName]]) : [];
+        }, ['in', ['get', elementToSelect[0].idFieldName]]) : [];
       this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }

@@ -32,6 +32,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { GetCollectionPipe, GetLayerPipe } from './mapgl.component.util';
+import { MapglBasemapModule } from '../mapgl-basemap/mapgl-basemap.module';
 
 
 @NgModule({
@@ -43,6 +44,7 @@ import { GetCollectionPipe, GetLayerPipe } from './mapgl.component.util';
     MatRadioModule,
     TranslateModule,
     MapglLegendModule,
+    MapglBasemapModule,
     MatSnackBarModule,
     MatSlideToggleModule,
     MatTooltipModule,
