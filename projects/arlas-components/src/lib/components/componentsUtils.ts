@@ -19,6 +19,7 @@
 
 import { mix } from 'tinycolor2';
 import { isNumber } from 'util';
+import { FormControl, Validators } from '@angular/forms';
 
 export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
@@ -122,4 +123,27 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
     return color.toHexString();
   }
 
+}
+
+export class SelectFormControl extends FormControl {
+
+  // used only for autocomplete: list of filtered options
+  public filteredOptions: Array<string>;
+  public syncOptions: Array<string> = [];
+
+  constructor(
+    formState: any,
+    label: string,
+    options: Array<string>) {
+
+    super(formState, Validators.required);
+    this.setValue(formState);
+    this.setSyncOptions(options);
+
+  }
+
+  public setSyncOptions(newOptions: Array<string>) {
+    this.syncOptions = newOptions;
+    this.filteredOptions = newOptions;
+  }
 }
