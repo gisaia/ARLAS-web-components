@@ -127,6 +127,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   /**
    * @Input : Angular
+   * @description element identifier given to map container
+   */
+  @Input() public id='mapgl';
+
+  /**
+   * @Input : Angular
    * @description List of mapgl layers
    */
   @Input() public mapLayers: MapLayers;
@@ -696,7 +702,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     }
 
     this.map = new mapboxgl.Map({
-      container: 'mapgl',
+      container: this.id,
       style: afterViewInitbasemapStyle.styleFile,
       center: this.initCenter,
       zoom: this.initZoom,
