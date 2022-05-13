@@ -59,6 +59,7 @@ export interface FillStroke {
 }
 export interface LayerMetadata {
   collection?: string;
+  collectionDisplayName?: string;
   stroke?: FillStroke;
   isScrollableLayer?: boolean;
 
