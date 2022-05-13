@@ -61,9 +61,9 @@ function tiled(num: number): number {
 }
 
 export interface MapExtend {
-    bounds: number[][];
-    center: number[];
-    zoom: number;
+  bounds: number[][];
+  center: number[];
+  zoom: number;
 }
 
 @Pipe({ name: 'getLayer' })
@@ -76,34 +76,42 @@ export class GetLayerPipe implements PipeTransform {
 @Pipe({ name: 'getCollection' })
 export class GetCollectionPipe implements PipeTransform {
   public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): string {
-    return !!layersMap ? !!layersMap.get(value).metadata ? layersMap.get(value).metadata.collection : undefined : undefined;
+    let collection: string;
+    if (!!layersMap && !!layersMap.get(value).metadata) {
+      if (!!layersMap.get(value).metadata.collectionDisplayName) {
+        collection = layersMap.get(value).metadata.collectionDisplayName;
+      } else if (!!layersMap.get(value).metadata.collection) {
+        collection = layersMap.get(value).metadata.collection;
+      }
+    }
+    return collection;
   }
 }
 
 export interface LegendData {
-    minValue?: string;
-    maxValue?: string;
-    keysColorsMap?: Map<string, string>;
+  minValue?: string;
+  maxValue?: string;
+  keysColorsMap?: Map<string, string>;
 }
 
 export interface Legend {
-    type?: PROPERTY_SELECTOR_SOURCE;
-    title?: string;
-    minValue?: string;
-    maxValue?: string;
-    fixValue?: string | number;
-    interpolatedValues?: Array<string | number>;
-    manualValues?: Map<string, string | number>;
-    visible?: boolean;
+  type?: PROPERTY_SELECTOR_SOURCE;
+  title?: string;
+  minValue?: string;
+  maxValue?: string;
+  fixValue?: string | number;
+  interpolatedValues?: Array<string | number>;
+  manualValues?: Map<string, string | number>;
+  visible?: boolean;
 }
 
 
 export enum PROPERTY_SELECTOR_SOURCE {
-    fix = 'Fix',
-    provided = 'Provided',
-    generated = 'Generated',
-    manual = 'Manual',
-    interpolated = 'Interpolated',
-    metric_on_field = 'Metric on field',
-    heatmap_density = 'Density'
+  fix = 'Fix',
+  provided = 'Provided',
+  generated = 'Generated',
+  manual = 'Manual',
+  interpolated = 'Interpolated',
+  metric_on_field = 'Metric on field',
+  heatmap_density = 'Density'
 }
