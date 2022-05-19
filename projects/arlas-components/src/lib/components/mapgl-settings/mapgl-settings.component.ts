@@ -1,13 +1,14 @@
 import { Component, OnInit, Output } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
+import { SelectFormControl, ColorGeneratorLoader } from '../componentsUtils';
+import { ArlasColorService } from '../../services/color.generator.service';
 
 export interface GeometrySelectModel {
   path: string;
   selected?: boolean;
 }
-
 export interface OperationSelectModel {
   operation: string;
   selected?: boolean;
@@ -18,8 +19,8 @@ export interface GeoQuery {
 }
 
 export interface MapSettingsService {
-  getFilterGeometries(): Array<GeometrySelectModel>;
-  getOperations(): Array<OperationSelectModel>;
+
+  getGeoQueries(): Map<string, [Array<GeometrySelectModel>, Array<OperationSelectModel>]>;
 }
 
 @Component({
@@ -30,69 +31,33 @@ export interface MapSettingsService {
 export class MapglSettingsDialogComponent implements OnInit {
   /**
    * @Angular
-   * List of styles groups to display.
-   * For cluster mode, a StyleGroup named "cluster" is needed ("StyleGroup.id":"cluster").
-   * For feature mode, a StyleGroup should be created for each geometry ("StyleGroup.id": "{geometry_path}")
-   */
-
-  /**
-   * @Angular
    * Emits the geo-query to apply. A geo-query is defined by
    * - the operation ("within", "intersects", "notwithin", "notintersects")
    * - the geometry field to query
    */
   @Output()
-  public geoQueryEmitter: Subject<GeoQuery> = new Subject<GeoQuery>();
-
+  public geoQueryEmitter: Subject<Map<string, GeoQuery>> = new Subject<Map<string, GeoQuery>>();
+  public emittedGeoQueries: Map<string, GeoQuery> = new Map();
   /** Constants */
   public GEO_QUERIES_DESCRIPTION = 'Draw a bbox or a polygon that';
   public GEO_QUERIES_GEOMETRY_DESCRIPTION = 'the following geometry';
-  public CONSTANTS = {
+  public OP_CONSTANTS = {
     WITHIN: 'within',
     NOTWITHIN: 'notwithin',
     INTERSECTS: 'intersects',
     NOTINTERSECTS: 'notintersects'
   };
+  public geoQueriesFormGroups: FormGroup[] = [];
+  public collectionsColors: string[] = [];
+  public selectionsSnapshot: Map<string, string> = new Map();
 
-  /** Rendered geometries form controls */
-  public clusterGeoControl: FormControl = new FormControl('cluster_displayed_geo', Validators.required);
-  public featuresGeoControl: FormControl = new FormControl('features_displayed_geo', Validators.required);
-  public topologyGeoControl: FormControl = new FormControl('topology_displayed_geo', Validators.required);
+  constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>, private colorGeneratorLoader: ArlasColorService    ) { }
 
-  /** Geo-filter geometry form control */
-  public geoFilterControl: FormControl = new FormControl('geo_filter_geometry', Validators.required);
-
-  /** Variables binded with HTML, set from the parent component of this dialog*/
-  public filterGeometries: Array<GeometrySelectModel>;
-  public operations: Array<OperationSelectModel>;
-  /** Variables binded with HTML, set inside this dialog */
-
-  public selectedOperation: string;
-  public selectedGeoFilterGeometry: GeometrySelectModel;
-
-  constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>) { }
-
-  public ngOnInit() {
-    /** Populate the filters geometries to query */
-    if (this.filterGeometries) {
-      this.geoFilterControl.setValue(this.filterGeometries);
-      this.selectedGeoFilterGeometry = this.filterGeometries.filter(g => g.selected)[0];
-      if (!this.selectedGeoFilterGeometry) {
-        this.logSelectedGeometryError(this.filterGeometries);
-      }
-    }
-
-    if (this.operations) {
-      this.selectedOperation = this.operations.find(o => o.selected).operation;
-    }
-  }
+  public ngOnInit() { }
 
   /** Emits the geo-query to apply */
   public emitGeoFilter() {
-    this.geoQueryEmitter.next({
-      operation: this.selectedOperation,
-      geometry_path: this.geoFilterControl.value.path
-    });
+    this.geoQueryEmitter.next(this.emittedGeoQueries);
   }
 
   /** closes the dialog */
@@ -100,15 +65,41 @@ export class MapglSettingsDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  /** input function for mat-select */
-  public compareGeometries = (o: GeometrySelectModel, s: GeometrySelectModel) => s.path === o.path;
-
-  /** Logs an error if there are no selected geometry to apply queries*/
-  private logSelectedGeometryError(gemetriesSelection: Array<GeometrySelectModel>): void {
-    let NO_SELECTED_GEOMETRY = 'No geometry is selected to apply queries. There are ' + gemetriesSelection.length +
-      'available geometries : ';
-    gemetriesSelection.forEach(cg => NO_SELECTED_GEOMETRY += cg.path + ', ');
-    console.error(NO_SELECTED_GEOMETRY);
+  public createGeoQueryForm(collectionName: string, filterGeometries: Array<GeometrySelectModel>,
+    operationsSelectModel: Array<OperationSelectModel>): void {
+    /** geometry */
+    const geometryPaths = filterGeometries.map(fg => fg.path);
+    const selectedGeometry = filterGeometries.find(fg => fg.selected);
+    const selectedGeometryPath = !!selectedGeometry ? selectedGeometry.path : '';
+    /** operation */
+    const operations = operationsSelectModel.map(osm => osm.operation);
+    const selectedOperationSelectModel = operationsSelectModel.find(osm => osm.selected);
+    const selectedOperation = !!selectedOperationSelectModel ?  selectedOperationSelectModel.operation : this.OP_CONSTANTS.INTERSECTS;
+    const geoQueryControls = {
+      a_operation: new SelectFormControl(selectedOperation, '', operations),
+      b_geometryPath: new SelectFormControl(selectedGeometryPath, '', geometryPaths),
+      c_collection: new FormControl(collectionName),
+    };
+    const geoQueryForm = new FormGroup(geoQueryControls);
+    /** snapshot defaultselections */
+    this.emittedGeoQueries.clear();
+    this.selectionsSnapshot.clear();
+    this.selectionsSnapshot.set(collectionName, selectedGeometry + selectedOperation);
+    geoQueryForm.valueChanges.subscribe(vc => {
+      const selectionSnapShot = vc.b_geometryPath + vc.a_operation;
+      /** ignore selection changes if the user go back to initial state of a control */
+      const ignoreChange = selectionSnapShot === this.selectionsSnapshot.get(vc.c_collection);
+      if (ignoreChange) {
+        this.emittedGeoQueries.delete(vc.c_collection);
+      } else {
+        this.emittedGeoQueries.set(vc.c_collection, {
+          geometry_path: vc.b_geometryPath,
+          operation: vc.a_operation
+        });
+      }
+    });
+    this.collectionsColors.push((this.colorGeneratorLoader.getColor(collectionName)));
+    this.geoQueriesFormGroups.push(geoQueryForm);
   }
 }
 
@@ -126,7 +117,7 @@ export class MapglSettingsComponent implements OnInit {
    * - the geometry field to query
    */
   @Output()
-  public geoQueryEmitter: Subject<GeoQuery> = new Subject<GeoQuery>();
+  public geoQueryEmitter: Subject<Map<string, GeoQuery>> = new Subject<Map<string, GeoQuery>>();
 
   public dialogRef: MatDialogRef<MapglSettingsDialogComponent>;
 
@@ -136,8 +127,12 @@ export class MapglSettingsComponent implements OnInit {
 
   public openDialog(mapSettingsService: MapSettingsService) {
     this.dialogRef = this.dialog.open(MapglSettingsDialogComponent, { data: null, panelClass: 'map-settings-dialog' });
-    this.dialogRef.componentInstance.filterGeometries = mapSettingsService.getFilterGeometries();
-    this.dialogRef.componentInstance.operations = mapSettingsService.getOperations();
+    const mapGeoQueries = mapSettingsService.getGeoQueries();
+    if (!!mapGeoQueries) {
+      mapGeoQueries.forEach((geoQueries, collection) => {
+        this.dialogRef.componentInstance.createGeoQueryForm(collection, geoQueries[0], geoQueries[1]);
+      });
+    }
     this.dialogRef.componentInstance.geoQueryEmitter = this.geoQueryEmitter;
   }
 }
