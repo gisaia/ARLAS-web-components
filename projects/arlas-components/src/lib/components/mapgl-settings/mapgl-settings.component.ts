@@ -20,7 +20,7 @@ export interface GeoQuery {
 
 export interface MapSettingsService {
 
-  getGeoQueries(): Map<string, [Array<GeometrySelectModel>, Array<OperationSelectModel>]>;
+  getGeoQueries(): Map<string, [Array<GeometrySelectModel>, Array<OperationSelectModel>, string]>;
 }
 
 @Component({
@@ -65,7 +65,7 @@ export class MapglSettingsDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  public createGeoQueryForm(collectionName: string, filterGeometries: Array<GeometrySelectModel>,
+  public createGeoQueryForm(collectionName: string, displayCollectionName: string ,filterGeometries: Array<GeometrySelectModel>,
     operationsSelectModel: Array<OperationSelectModel>): void {
     /** geometry */
     const geometryPaths = filterGeometries.map(fg => fg.path);
@@ -79,6 +79,7 @@ export class MapglSettingsDialogComponent implements OnInit {
       a_operation: new SelectFormControl(selectedOperation, '', operations),
       b_geometryPath: new SelectFormControl(selectedGeometryPath, '', geometryPaths),
       c_collection: new FormControl(collectionName),
+      d_displayCollectionName: new FormControl(displayCollectionName),
     };
     const geoQueryForm = new FormGroup(geoQueryControls);
     /** snapshot defaultselections */
@@ -130,7 +131,7 @@ export class MapglSettingsComponent implements OnInit {
     const mapGeoQueries = mapSettingsService.getGeoQueries();
     if (!!mapGeoQueries) {
       mapGeoQueries.forEach((geoQueries, collection) => {
-        this.dialogRef.componentInstance.createGeoQueryForm(collection, geoQueries[0], geoQueries[1]);
+        this.dialogRef.componentInstance.createGeoQueryForm(collection, geoQueries[2], geoQueries[0], geoQueries[1]);
       });
     }
     this.dialogRef.componentInstance.geoQueryEmitter = this.geoQueryEmitter;
