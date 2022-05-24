@@ -1,6 +1,16 @@
 # Change Log
 
-## [v21.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v21.0.0) (2022-04-01)
+## [v22.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.0) (2022-05-24)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v21.0.0...v22.0.0)
+
+**New stuff:**
+
+- Add html identifier to map container [\#656](https://github.com/gisaia/ARLAS-web-components/issues/656) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Add preserveDrawingBuffer input to the map [\#654](https://github.com/gisaia/ARLAS-web-components/issues/654) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Externalise Basemaps choice from map settings [\#525](https://github.com/gisaia/ARLAS-web-components/issues/525)
+
+## [v21.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v21.0.0) (2022-04-05)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v21.0.0-beta.1...v21.0.0)
 
