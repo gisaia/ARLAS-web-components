@@ -16,7 +16,6 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public lineDasharray;
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
-  public isImage = false;
   constructor() { }
 
   public ngOnInit() {
@@ -78,8 +77,6 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
       const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
       if (l['text-field']) {
         drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
-      } else if (l['icon-image']) {
-        this.isImage = true;
       }
     }
     }
