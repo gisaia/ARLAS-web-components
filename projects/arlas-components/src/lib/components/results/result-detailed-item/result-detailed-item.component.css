@@ -44,6 +44,8 @@
   font-size: 0.9em;
   margin: 3px;
   padding: 5px 10px;
+  height: 25px;
+  line-height: 0;
   cursor: pointer;
   color:black;
   background-color: white;
