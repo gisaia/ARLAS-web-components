@@ -18,7 +18,14 @@ export class MapglBasemapComponent implements OnInit {
   constructor() { }
 
   public ngOnInit(): void {
-
+    if (this.basemapStyles) {
+      this.basemapStyles.filter(bm => !bm.image).forEach(bm => {
+        const splitUrl = bm.styleFile.toString().split('/style.json?key=');
+        if (splitUrl.length === 2) {
+          bm.image = `${splitUrl[0]}/0/0/0.png?key=${splitUrl[1]}`;
+        }
+      });
+    }
   }
 
   public onChangeBasemapStyle(style: BasemapStyle){

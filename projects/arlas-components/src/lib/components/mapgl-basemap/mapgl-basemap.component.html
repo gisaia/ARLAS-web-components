@@ -2,7 +2,7 @@
 
   <div *ngFor="let style of basemapStyles" class="basemap" [class.selected]="style.name === selectedBasemap?.name" (click)="onChangeBasemapStyle(style)">
     <div class="image">
-      <img *ngIf="!!style?.image && style?.image !== ''" src="{{style?.image}}" />
+      <img *ngIf="!!style?.image && style?.image !== ''" src="{{style?.image}}" (error)="style.image = null" />
       <div *ngIf="!style?.image || (!!style?.image && style?.image === '')" class="no-image">
         <mat-icon>wallpaper</mat-icon>
       </div>
