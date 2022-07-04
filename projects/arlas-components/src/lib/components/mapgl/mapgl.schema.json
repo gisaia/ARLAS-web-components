@@ -234,7 +234,7 @@
         "type": "object",
         "properties": {
           "path": {
-            "description": "path to the icon. The icon should be placed at `assest/icons` folder and should be `png` or `jpeg`. Example : 'path': 'arlas_direction_arrow.png'",
+            "description": "path to the icon. The icon should be placed at `assest/icons` folder and should be `png` or `jpeg`. Example : 'path': 'name_of_icon.png'",
             "type": "string"
           },
           "recolorable": {

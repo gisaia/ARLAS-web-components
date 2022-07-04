@@ -1241,7 +1241,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         }
       });
     }
-
   }
 
   /**
