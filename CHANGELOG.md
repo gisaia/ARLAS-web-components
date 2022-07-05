@@ -1,5 +1,13 @@
 # Change Log
 
+## [v22.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.1) (2022-07-05)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.0...v22.0.1)
+
+**Fixed bugs:**
+
+- Actions on a result list detail are not displayed [\#665](https://github.com/gisaia/ARLAS-web-components/issues/665)
+
 ## [v22.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.0) (2022-05-24)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v21.0.0...v22.0.0)
