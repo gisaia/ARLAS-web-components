@@ -19,11 +19,13 @@
 
 .resultdetaileditem /* @doc Sets all texts style.*/
 {
-  font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.7em;
+  font-family: Roboto,Helvetica Neue,sans-serif;
+  font-size: .7em;
   text-align: left;
-  vertical-align: middle;
-  overflow-y: auto;
+  height: 100%;
+  overflow-y: scroll;
+  display: block;
+  padding: 10px;
 }
 
 .resultdetaileditem-key /* @doc Sets key style. (key: value part)*/
@@ -42,6 +44,8 @@
   font-size: 0.9em;
   margin: 3px;
   padding: 5px 10px;
+  height: 25px;
+  line-height: 0;
   cursor: pointer;
   color:black;
   background-color: white;
