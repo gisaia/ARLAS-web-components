@@ -26,6 +26,7 @@
 
 .basemap-container .basemap .image {
   height: 75px;
+  width: 75px;
   position: relative;
 }
 
