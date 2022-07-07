@@ -24,7 +24,7 @@
 .layer_detail {
   display: flex;
 }
-.detail_button {
+.detail_button, .download_button {
   background-color: #fff;
   display: flex;
   height: 20px;
@@ -32,7 +32,7 @@
   position: relative;
   cursor: pointer;
 }
-.detail_icon {
+.detail_icon, .download_icon {
   color: #555;
   font-size: 1.3em;
   position: absolute;
@@ -41,6 +41,9 @@
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+.download_icon {
+  margin-right: 3px;
 }
 
 .layer_icon {

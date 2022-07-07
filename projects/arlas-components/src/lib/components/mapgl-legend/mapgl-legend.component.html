@@ -8,6 +8,17 @@
       <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id | layerIdToName | translate}}</div>
     </div>
     <div class="layer_detail">
+      <div class="download_button">
+        <mat-icon class="download_icon" [matMenuTriggerFor]="menu" [matTooltip]="'Download the layer\'s data' | translate">file_download</mat-icon>
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="downloadLayerSource(layer, 'csv')">
+            <span>{{'CSV' | translate}}</span>
+          </button>
+          <button mat-menu-item (click)="downloadLayerSource(layer, 'geojson')">
+            <span>{{'GeoJson' | translate}}</span>
+          </button>
+        </mat-menu>
+      </div>
       <div class="detail_button" (click)="showDetail($event)">
         <mat-icon class="detail_icon" *ngIf="!detail">keyboard_arrow_down</mat-icon>
         <mat-icon class="detail_icon" *ngIf="detail">keyboard_arrow_up</mat-icon>

@@ -49,6 +49,7 @@ import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
+import { getLayerName } from '../componentsUtils';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -396,6 +397,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    * @description Emits which layers are displayed in the Legend
    */
   @Output() public legendVisibiltyStatus: Subject<Map<string, boolean>> = new Subject();
+  @Output() public downloadSourceEmitter: Subject<{
+    layerId: string;
+    layerName: string;
+    collection: string;
+    sourceName: string;
+    downloadType: string;
+  }> = new Subject();
 
   public showBasemapsList = false;
   public layersMap: Map<string, mapboxgl.Layer>;
@@ -479,6 +487,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     });
     this.visualisations.emit(layers);
     this.reorderLayers();
+  }
+
+  public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string;}): void {
+    const downlodedSource = {
+      layerId: downaload.layer.id,
+      layerName: getLayerName(downaload.layer.id),
+      collection: downaload.layer.metadata.collection,
+      sourceName: downaload.layer.source as string,
+      downloadType: downaload.downloadType
+    };
+    this.downloadSourceEmitter.next(downlodedSource);
   }
 
   /**

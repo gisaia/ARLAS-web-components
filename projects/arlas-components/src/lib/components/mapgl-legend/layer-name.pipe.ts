@@ -18,8 +18,8 @@ under the License.
 */
 
 import { Pipe, PipeTransform } from '@angular/core';
+import { getLayerName } from '../componentsUtils';
 
-const ARLAS_ID = 'arlas_id:';
 
 @Pipe({
   name: 'layerIdToName'
@@ -29,13 +29,8 @@ export class LayerIdToName implements PipeTransform {
   /** FROM V15.0.0 layer ids look like 'arlas_id:NAME:timestamp
    * This pipe extracts the 'NAME' in that id
    */
-  public transform(label: string): any {
-    if (!!label && label.startsWith(ARLAS_ID)) {
-      const datedName = label.split(ARLAS_ID)[1];
-      const undatedName = datedName.split(':')[0];
-      return undatedName;
-    }
-    return label;
+  public transform(id: string): any {
+    return getLayerName(id);
   }
 
 }
