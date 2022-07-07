@@ -147,3 +147,16 @@ export class SelectFormControl extends FormControl {
     this.filteredOptions = newOptions;
   }
 }
+const ARLAS_ID = 'arlas_id:';
+
+/** FROM V15.0.0 layer ids look like 'arlas_id:NAME:timestamp
+   * This pipe extracts the 'NAME' in that id
+   */
+export function getLayerName(id: string): string {
+  if (!!id && id.startsWith(ARLAS_ID)) {
+    const datedName = id.split(ARLAS_ID)[1];
+    const undatedName = datedName.split(':')[0];
+    return undatedName;
+  }
+  return id;
+}

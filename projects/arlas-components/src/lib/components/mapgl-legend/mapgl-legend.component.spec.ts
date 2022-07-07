@@ -10,6 +10,7 @@ import { ArlasColorService } from '../../services/color.generator.service';
 import { ColorGeneratorLoader } from '../componentsUtils';
 import { LayerIdToName } from './layer-name.pipe';
 import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
+import { MatMenuModule } from '@angular/material/menu';
 
 describe('MapglLegendComponent', () => {
   let component: MapglLegendComponent;
@@ -21,6 +22,7 @@ describe('MapglLegendComponent', () => {
       imports: [
         MatButtonModule,
         MatIconModule,
+        MatMenuModule,
         MatTooltipModule,
         MapglLayerIconModule,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })

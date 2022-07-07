@@ -29,6 +29,7 @@ import * as tinycolor from 'tinycolor2';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
+import * as mapboxgl from 'mapbox-gl';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -79,6 +80,8 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    * @description Notifies the parent component that this layer is visible or not
    */
   @Output() public visibilityStatus: Subject<boolean> = new Subject();
+
+  @Output() public downloadSourceEmitter: Subject<{layer: mapboxgl.Layer; downloadType: string;}> = new Subject();
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
@@ -154,6 +157,14 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.drawLegends(this.visibleMode);
       }
     }
+  }
+
+  public downloadLayerSource(layer: mapboxgl.Layer, downloadType: string): void {
+    const download = {
+      layer,
+      downloadType
+    };
+    this.downloadSourceEmitter.next(download);
   }
 
   public showDetail(event: Event) {

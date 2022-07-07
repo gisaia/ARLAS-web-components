@@ -20,7 +20,7 @@
         (cdkDropListDropped)="dropLayer($event, visu.name)">
         <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer" [hidden]="visibilityStatus.get(visu.name + ':arlas_vset:' + l) === false" >
           <arlas-mapgl-legend [collection]="l | getCollection: layersMap " [enabled]="visu.enabled" [layer]="l | getLayer: layersMap " [zoom]="zoom" (visibilityStatus)="emitLegendVisibility(visu.name,l, $event)"
-          [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater"></arlas-mapgl-legend>
+          [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater" (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-mapgl-legend>
           <div cdkDragHandle class="map__visu-layer-drag">
             <mat-icon >drag_indicator</mat-icon>
           </div>

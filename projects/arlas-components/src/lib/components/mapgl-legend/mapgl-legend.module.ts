@@ -27,6 +27,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { LayerIdToName } from './layer-name.pipe';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { LayerIdToName } from './layer-name.pipe';
     MapglLayerIconModule,
     MatButtonModule,
     MatIconModule,
+    MatMenuModule,
     MatTooltipModule,
     FormatNumberModule
   ],
