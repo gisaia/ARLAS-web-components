@@ -41,6 +41,9 @@ export class ResultDetailedItemComponent implements OnInit {
    */
   @Input() public idFieldName: string;
 
+
+  @Input() public containerType: string;
+
   /**
    * @Input
    * @description An object representing an Item and that contains the detailed data.
