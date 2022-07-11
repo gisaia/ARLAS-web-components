@@ -1,4 +1,6 @@
-<td class="resultdetaileditem" [colSpan]="detailColspan - 1">
+<td class="checkboxcell" [colSpan]="1">
+</td>
+<td class="resultdetaileditem" [class.grid-container]="containerType === 'grid'" [colSpan]="detailColspan - 1">
   <span *ngFor="let group of getGroups()">
     <span class="group-item-title {{group.group.toLowerCase().replace(' ','-')}}-item-detail">{{group.group | translate}}</span>
     <br>
