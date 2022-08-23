@@ -329,7 +329,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           const maximum = palette.slice(-1)[0].proportion;
           palette.forEach(c => colorLegend.interpolatedValues.push(c.value));
           const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
-          if (legendData && legendData.get(field)) {
+          if (legendData && legendData.get(field) && field !== 'count') {
             colorLegend.minValue = legendData.get(field).minValue;
             colorLegend.maxValue = legendData.get(field).maxValue;
           } else {
