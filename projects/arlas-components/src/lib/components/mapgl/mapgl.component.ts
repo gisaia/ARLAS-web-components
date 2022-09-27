@@ -563,15 +563,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
               if (!!strokeLayer && !!this.map.getLayer(strokeId)) {
                 this.map.moveLayer(strokeId);
               }
-              const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-              const selectLayer = this.layersMap.get(selectId);
-              if (!!selectLayer && !!this.map.getLayer(selectId)) {
-                this.map.moveLayer(selectId);
-              }
-              const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-              const hoverLayer = this.layersMap.get(hoverId);
-              if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
-                this.map.moveLayer(hoverId);
+              if (!!strokeLayer && !!strokeLayer.id) {
+                const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
+                const selectLayer = this.layersMap.get(selectId);
+                if (!!selectLayer && !!this.map.getLayer(selectId)) {
+                  this.map.moveLayer(selectId);
+                }
+                const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
+                const hoverLayer = this.layersMap.get(hoverId);
+                if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
+                  this.map.moveLayer(hoverId);
+                }
               }
             }
           }
