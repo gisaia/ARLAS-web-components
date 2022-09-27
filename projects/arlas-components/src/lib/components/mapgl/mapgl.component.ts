@@ -130,7 +130,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    * @Input : Angular
    * @description element identifier given to map container
    */
-  @Input() public id='mapgl';
+  @Input() public id = 'mapgl';
 
   /**
    * @Input : Angular
@@ -489,7 +489,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.reorderLayers();
   }
 
-  public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string;}): void {
+  public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string; }): void {
     const downlodedSource = {
       layerId: downaload.layer.id,
       layerName: getLayerName(downaload.layer.id),
@@ -582,15 +582,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
               if (!!strokeLayer && !!this.map.getLayer(strokeId)) {
                 this.map.moveLayer(strokeId);
               }
-              const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-              const selectLayer = this.layersMap.get(selectId);
-              if (!!selectLayer && !!this.map.getLayer(selectId)) {
-                this.map.moveLayer(selectId);
-              }
-              const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-              const hoverLayer = this.layersMap.get(hoverId);
-              if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
-                this.map.moveLayer(hoverId);
+              if (!!strokeLayer && !!strokeLayer.id) {
+                const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
+                const selectLayer = this.layersMap.get(selectId);
+                if (!!selectLayer && !!this.map.getLayer(selectId)) {
+                  this.map.moveLayer(selectId);
+                }
+                const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
+                const hoverLayer = this.layersMap.get(hoverId);
+                if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
+                  this.map.moveLayer(hoverId);
+                }
               }
             }
           }
