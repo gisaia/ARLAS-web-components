@@ -1,5 +1,17 @@
 # Change Log
 
+## [v23.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.1) (2022-09-27)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0...v23.0.1)
+
+**New stuff:**
+
+- Change icon of filters/draw actions  [\#524](https://github.com/gisaia/ARLAS-web-components/issues/524) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- layers displaying not normalized count have wrong legends [\#673](https://github.com/gisaia/ARLAS-web-components/issues/673)
+
 ## [v23.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.0) (2022-07-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0-rc.2...v23.0.0)
