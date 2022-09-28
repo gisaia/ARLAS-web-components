@@ -1,5 +1,33 @@
 # Change Log
 
+## [v22.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.3) (2022-09-28)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.1...v22.0.3)
+
+## [v23.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.1) (2022-09-27)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0...v23.0.1)
+
+**New stuff:**
+
+- Change icon of filters/draw actions  [\#524](https://github.com/gisaia/ARLAS-web-components/issues/524) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- layers displaying not normalized count have wrong legends [\#673](https://github.com/gisaia/ARLAS-web-components/issues/673)
+
+## [v23.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.0) (2022-07-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0-rc.2...v23.0.0)
+
+## [v23.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.0-rc.2) (2022-07-11)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.2...v23.0.0-rc.2)
+
+**Fixed bugs:**
+
+- Result set List : layout problem [\#669](https://github.com/gisaia/ARLAS-web-components/issues/669)
+
 ## [v22.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.2) (2022-07-08)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0-rc.1...v22.0.2)
