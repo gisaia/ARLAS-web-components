@@ -1556,10 +1556,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
     if (elementToSelect) {
-      const visibilityFilter = elementToSelect.length > 0 ?
+      const ids = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => {
           memo.push(element.idValue); return memo;
-        }, ['in', ['get', elementToSelect[0].idFieldName]]) : [];
+        }, []) : [];
+      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids]] : [];
       this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }
