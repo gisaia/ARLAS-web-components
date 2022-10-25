@@ -913,15 +913,27 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         });
 
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          visibilityStatus.forEach((vs, l) => {
-            if (!vs) {
-              (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
-              this.setStrokeLayoutVisibility(l, 'none');
-              this.setScrollableLayoutVisibility(l, 'none');
+          visibilityStatus.forEach((visibilityStatus, l) => {
+            let layerInVisualisations = false;
+            if (!visibilityStatus) {
+              this.visualisationSetsConfig.forEach(v => {
+                const ls = new Set(v.layers);
+                if (!layerInVisualisations) {
+                  layerInVisualisations = ls.has(l);
+                }
+              });
+              if (layerInVisualisations) {
+                (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
+                this.setStrokeLayoutVisibility(l, 'none');
+                this.setScrollableLayoutVisibility(l, 'none');
+              }
             } else {
               let oneVisualisationEnabled = false;
               this.visualisationSetsConfig.forEach(v => {
                 const ls = new Set(v.layers);
+                if (!layerInVisualisations) {
+                  layerInVisualisations = ls.has(l);
+                }
                 if (ls.has(l) && v.enabled) {
                   oneVisualisationEnabled = true;
                   (this.map).setLayoutProperty(l, 'visibility', 'visible');
@@ -929,7 +941,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
                   this.setScrollableLayoutVisibility(l, 'visible');
                 }
               });
-              if (!oneVisualisationEnabled) {
+              if (!oneVisualisationEnabled && layerInVisualisations) {
                 (this.map).setLayoutProperty(l, 'visibility', 'none');
                 this.setStrokeLayoutVisibility(l, 'none');
                 this.setScrollableLayoutVisibility(l, 'none');
