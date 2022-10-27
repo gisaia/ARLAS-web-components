@@ -682,6 +682,11 @@ export class MapSettings implements MapSettingsService {
     ];
   }
 
+  public getGeoQueries(): Map<string, [GeometrySelectModel[], OperationSelectModel[], string]> {
+    // TODO 
+    return
+  }
+
   public hasFeaturesMode(): boolean {
     return true;
   }
