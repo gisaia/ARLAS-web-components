@@ -302,10 +302,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   /**
    * @Input : Angular
-   * @description Subject of [layerId, legendData] map. The map subscribes to it to keep
+   * @description Subject of [collection, [field, legendData]] map. The map subscribes to it to keep
    * the legend updated with the data displayed on the map.
    */
-  @Input() public legendUpdater: Subject<Map<string, LegendData>> = new Subject<Map<string, LegendData>>();
+  @Input() public legendUpdater: Subject<Map<string, Map<string, LegendData>>> = new Subject();
 
   /**
    * @Input : Angular
