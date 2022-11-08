@@ -10,7 +10,7 @@
           "type": "string"
       },
       "customizedCssClass":{
-          "description": "Css class name to use to customize a specific powerbar's style.",
+          "description": "Css class name to use to customize a specific donut's style.",
           "type":"string"
       },
       "opacity":{

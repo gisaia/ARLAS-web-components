@@ -26,6 +26,7 @@ import { FilterOperator, PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as tinycolor from 'tinycolor2';
+import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -130,6 +131,13 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   };
 
   @Input() public missingLeafEvent: Subject<any[]>;
+
+  /**
+   * @Input : Angular
+   * @description Precision when rounding numbers (ie the count next to the progress bar).
+   * Default is 2.
+   */
+  @Input() public numberShorteningPrecision = DEFAULT_SHORTENING_PRECISION;
 
   /**
    * @Output : Angular
@@ -408,12 +416,14 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       if (powerBar.progression !== 0 && powerBar.progression !== 100) {
         powerBar.progression += 1;
       }
+      powerBar.progression = Math.min(powerBar.progression, 100);
     });
     this.selectedPowerbarsList.forEach(selectedPowerBar => {
       selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
       if (selectedPowerBar.progression !== 0 && selectedPowerBar.progression !== 100) {
         selectedPowerBar.progression += 1;
       }
+      selectedPowerBar.progression = Math.min(selectedPowerBar.progression, 100);
     });
   }
 

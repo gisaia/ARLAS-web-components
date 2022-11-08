@@ -63,3 +63,5 @@ export { ModeEnum } from './lib/components/results/utils/enumerations/modeEnum';
 export { SortEnum } from './lib/components/results/utils/enumerations/sortEnum';
 export { FormatNumberModule } from './lib/pipes/format-number/format-number.module';
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
+export { ShortenNumberModule } from './lib/pipes/shorten-number/shorten-number.module';
+export { ShortenNumberPipe } from './lib/pipes/shorten-number/shorten-number.pipe';

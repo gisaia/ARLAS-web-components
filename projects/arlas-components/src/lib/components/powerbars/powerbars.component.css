@@ -46,13 +46,6 @@
   width: 100%;
 }
 
-.powerbars--wrapper {
-  width: 100%;
-  height: 100%;
-  border: 1px solid rgb(194, 194, 194);
-  border-radius: 1px;
-}
-
 .powerbars--container {
   height: 100%;
   overflow-y: auto;
@@ -61,16 +54,18 @@
   padding-top: 0;
 }
 .powerbars__powerbar {
-  height: 22px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
+
 .powerbars__powerbar--neutral-state, /* @doc Sets all powerbars containers when none of them is selected. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--selected-bar, /* @doc Sets selected powerbars containers. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--unselected-bar, /* @doc Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/
 {
   margin-top: 3px;
-  display: flex;
 }
 
 .powerbars__powerbar--neutral-state:hover,
@@ -80,40 +75,20 @@
   cursor: pointer;
 }
 
-.powerbar__powerbar--progression--neutral-state, /* @doc Style of all powerbars when none of them is selected.*/
-.powerbar__powerbar--progression--selected-bar, /* @doc Style of selected powerbars.*/
-.powerbar__powerbar--progression--unselected-bar, /* @doc Style of unselected powerbars.*/
-
-
-.powerbars__powerbar--progression--selected-no-mounted-bar /* @doc Style of selected-no-mounted powerbars.*/ {
-  font-family: "Roboto", "Helvetica Neue", sans-serif;
-}
-
-.rightband-neutral-state, /* @doc Style of all powerbars rightband when none of them is selected.*/
-.rightband-selected-bar, /* @doc Style of selected powerbars rightband .*/
-.rightband-unselected-bar, /* @doc Style of unselected powerbars rightband.*/
-.rightband-selected-no-mounted-bar /* @doc Style of selected-no-mounted powerbars rightband.*/
-{
-  width: 4px;
+.powerbars__powerbar--progression-default-colour /* @doc Style of all powerbars progression bar when no color is specified.*/ {
   background-color: #88c9c3;
   border: 1px solid #88c9c3;
+  height: 0.25em;
+  border-radius: calc(0.25em / 2);
 }
 
-.rightband-unselected-bar {
-  visibility: hidden;
+.powerbars__powerbar--progression /* @doc Style of all powerbars rightband when none of them is selected.*/ {
+  height: 0.25em;
+  border-radius: calc(0.25em / 2);
 }
 
-.rightband {
-  width: 4px;
-}
-
-.powerbar__powerbar--term /* @doc Style of terms.*/
-{
-  padding-left: 3px;
-  white-space: nowrap;
-  position: absolute;
-  top: 2px;
-  font-size: 0.75em;
+.powerbar__powerbar--top-group {
+  padding-top: 0.75em;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -121,41 +96,31 @@
   width: 100%;
 }
 
-.powerbar__powerbar--progression--neutral-state {
-  background-color: #fff;
-  border-top: 0.4px solid #b7b7b7;
-  border-bottom: 0.4px solid #b7b7b7;
-  border-left: 0.4px solid #b7b7b7;
-}
-
-.powerbar__powerbar--progression--selected-bar {
-  background-color: #fff;
-  border-top: 0.4px solid #b7b7b7;
-  border-bottom: 0.4px solid #b7b7b7;
-  border-left: 0.4px solid #b7b7b7;
-}
-
-.powerbar__powerbar--progression--unselected-bar {
-  background-color: #fff;
-  border: 0.4px solid #b7b7b7;
-}
-
-.powerbar__powerbar--progression--selected-bar {
-  background-color: #fff;
-  border-top: 0.4px solid #b7b7b7;
-  border-bottom: 0.4px solid #b7b7b7;
-  border-left: 0.4px solid #b7b7b7;
-}
-
-.powerbar__powerbar--progression--selected-no-mounted-bar {
-  background-color: #fff;
-  border-top: 0.6px dashed #b7b7b7;
-  border-bottom: 0.4px dashed #b7b7b7;
-  border-left: 0.4px dashed #b7b7b7;
-  width: 100% !important;
+.powerbar__powerbar--term /* @doc Style of terms.*/
+{
+  font-size: 0.75em;
+  width: 70%;
   cursor: pointer;
+  position: absolute;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
+.powerbar__powerbar--count /* @doc Style of counts.*/
+{
+  font-size: 0.75em;
+  width: 100%;
+  cursor: pointer;
+  position:relative;
+  display: inline-block;
+  white-space: nowrap;
+  text-align: right; 
+}
+
+.powerbar__powerbar--count--selected,
 .powerbar__powerbar--term--selected {
   font-weight: bold;
 }

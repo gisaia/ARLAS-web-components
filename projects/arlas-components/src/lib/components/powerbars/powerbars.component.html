@@ -18,47 +18,54 @@
     </div>
   </div>
 
-  <div class="powerbars--wrapper" [ngClass]="customizedCssClass">
+  <div [ngClass]="customizedCssClass">
     <div class="powerbars--container" [class.powerbar-scrollable]="scrollable">
       <div *ngIf="selectedPowerbarsList.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
         [style.min-height.px]="selectedPowerbarsList.size > 5 ? 126 : selectedPowerbarsList.size * 25">
         <div *ngFor="let selectedPowerbar of selectedPowerbarsList"
           class="powerbars__powerbar powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
-          (click)="clickOnPowerbar(selectedPowerbar)">
-          <div matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-            [matTooltipPosition]="'after'"
-            class="powerbar__powerbar--term powerbar__powerbar--term--selected powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">
-            <span>{{selectedPowerbar.term
-              | translate}}</span>
+          (click)="clickOnPowerbar(selectedPowerbar)"
+          matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
+          [matTooltipPosition]="'after'">
 
+          <div class="powerbar__powerbar--top-group">
+            <div class="powerbar__powerbar--term powerbar__powerbar--term--selected powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">
+              {{selectedPowerbar.term | translate}}
+            </div>
+            <div class="powerbar__powerbar--count powerbar__powerbar--count--selected powerbar__powerbar--term-{{selectedPowerbar.classSuffix}} powerbar__powerbar--term--{{selectedPowerbar.term}}">
+              {{selectedPowerbar.count | shortenNumber:numberShorteningPrecision}}
+            </div>
           </div>
-          <div class="powerbar__powerbar--progression--{{selectedPowerbar.classSuffix}} {{selectedPowerbar.term}}"
-            [style.width]="selectedPowerbar.progression+'%'"
-            matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-            [matTooltipPosition]="'after'">
-          </div>
-          <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{selectedPowerbar.classSuffix}}">
-          </div>
+          
+          <div *ngIf="!useColorService && !useColorFromData" class="powerbars__powerbar--progression-default-colour"
+          [style.width]="selectedPowerbar.progression+'%'"></div>
           <div *ngIf="useColorService || useColorFromData" [style.background-color]="selectedPowerbar.color"
-            [style.border-color]="selectedPowerbar.color" class="rightband-{{selectedPowerbar.classSuffix}}"></div>
-
+            [style.border-color]="selectedPowerbar.color" [style.width]="selectedPowerbar.progression+'%'" class="powerbars__powerbar--progression"></div>
+                      
         </div>
       </div>
+
       <div [class.powerbar-list-scrollable]="scrollable">
         <div *ngFor="let powerbar of powerBarsList" (click)="clickOnPowerbar(powerbar)">
-          <div *ngIf="!powerbar.isSelected" class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}">
-            <span matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-              [matTooltipPosition]="'after'"
-              class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">{{powerbar.term
-              | translate}}</span>
-            <div class="powerbar__powerbar--progression--{{powerbar.classSuffix}} {{powerbar.term}}"
-              [style.width]="powerbar.progression+'%'"
-              matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-              [matTooltipPosition]="'after'">
+          <div *ngIf="!powerbar.isSelected" class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}"
+          matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
+          [matTooltipPosition]="'after'">
+
+            <div class="powerbar__powerbar--top-group">
+              <div class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">
+                {{powerbar.term | translate}}
+              </div>
+
+              <div class="powerbar__powerbar--count powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">
+                {{powerbar.count | shortenNumber:numberShorteningPrecision}}
+              </div>
             </div>
-            <div *ngIf="!useColorService && !useColorFromData" class="rightband-{{powerbar.classSuffix}}"></div>
+            
+            <div *ngIf="!useColorService && !useColorFromData" class="powerbars__powerbar--progression-default-colour"
+            [style.width]="powerbar.progression+'%'"></div>
             <div *ngIf="useColorService || useColorFromData" [style.background-color]="powerbar.color"
-              [style.border-color]="powerbar.color" class="rightband"></div>
+              [style.border-color]="powerbar.color" [style.width]="powerbar.progression+'%'" class="powerbars__powerbar--progression"></div>
+              
           </div>
         </div>
       </div>
