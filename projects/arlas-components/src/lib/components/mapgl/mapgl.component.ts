@@ -1406,8 +1406,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    const ids = features.map(f => f.idValue);
-    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids]] : [];
+    const ids: Array<number | string> = features.map(f => f.idValue);
+    const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
+    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
     this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
   }
 
@@ -1579,8 +1580,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
-      const visibilityFilter = ['==', ['get', featureToHightLight.elementidentifier.idFieldName],
-        featureToHightLight.elementidentifier.idValue];
+      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
+      if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
+        ids.push(+featureToHightLight.elementidentifier.idValue);
+      }
+      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
+        ['literal', ids]];
       this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
     }
   }
@@ -1591,7 +1596,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         elementToSelect.reduce((memo, element) => {
           memo.push(element.idValue); return memo;
         }, []) : [];
-      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids]] : [];
+      const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
+      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
       this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }

@@ -30,7 +30,6 @@ export class ShortenNumberPipe implements PipeTransform {
   constructor() {}
 
   public transform(number: number, precision: number = DEFAULT_SHORTENING_PRECISION): any {
-    console.log(precision);
     return numberToShortValue(number, precision);
   }
 }
