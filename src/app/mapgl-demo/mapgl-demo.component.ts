@@ -526,29 +526,29 @@ export class MapglDemoComponent implements OnInit {
 
   public getWKT() {
     switch (this.modeChoice) {
-      case 'all':
-        console.log(this.mapComponent.getAllPolygon('wkt'));
-        break;
-      case 'selected':
-        console.log(this.mapComponent.getSelectedPolygon('wkt'));
-        break;
-      case 'id':
-        console.log(this.mapComponent.getPolygonById(this.idToSelect, 'wkt'));
-        break;
+    case 'all':
+      console.log(this.mapComponent.getAllPolygon('wkt'));
+      break;
+    case 'selected':
+      console.log(this.mapComponent.getSelectedPolygon('wkt'));
+      break;
+    case 'id':
+      console.log(this.mapComponent.getPolygonById(this.idToSelect, 'wkt'));
+      break;
     }
   }
 
   public getGeojson() {
     switch (this.modeChoice) {
-      case 'all':
-        console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
-        break;
-      case 'selected':
-        console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
-        break;
-      case 'id':
-        console.log(JSON.stringify(this.mapComponent.getPolygonById(this.idToSelect, 'geojson')));
-        break;
+    case 'all':
+      console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
+      break;
+    case 'selected':
+      console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
+      break;
+    case 'id':
+      console.log(JSON.stringify(this.mapComponent.getPolygonById(this.idToSelect, 'geojson')));
+      break;
     }
   }
 
@@ -683,8 +683,8 @@ export class MapSettings implements MapSettingsService {
   }
 
   public getGeoQueries(): Map<string, [GeometrySelectModel[], OperationSelectModel[], string]> {
-    // TODO 
-    return
+    // TODO
+    return;
   }
 
   public hasFeaturesMode(): boolean {
