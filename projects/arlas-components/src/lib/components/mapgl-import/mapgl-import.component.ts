@@ -76,7 +76,7 @@ export class MapglImportDialogComponent implements OnInit {
     } else if (this.importType === this.KML) {
       this.allowedFileExtension = '.kml,.kmz';
     } else if (this.importType === this.GEOJSON) {
-      this.allowedFileExtension = '.json';
+      this.allowedFileExtension = '.json,.geojson';
     }
   }
 
