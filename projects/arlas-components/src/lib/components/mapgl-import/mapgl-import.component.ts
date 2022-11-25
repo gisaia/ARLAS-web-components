@@ -1,6 +1,6 @@
 import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import * as toGeoJSON from '@mapbox/togeojson';
+import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
 import JSZip from 'jszip';
 import { MapglComponent } from '../mapgl/mapgl.component';
@@ -285,8 +285,8 @@ export class MapglImportComponent {
       }
     }));
 
-    return Promise.all<string | ArrayBuffer, any, { geojson: any; centroides: any; }>([readKmzFile, parseKml, geojsonParserPromise])
-      .then(([file, geojson, importedResult]) => {
+    return Promise.all<{ geojson: any; centroides: any; }>([geojsonParserPromise])
+      .then(([importedResult]) => {
         this.setImportedData(importedResult);
       });
   }
@@ -390,8 +390,8 @@ export class MapglImportComponent {
       }
     }));
 
-    return Promise.all<string | ArrayBuffer, { geojson: any; centroides: any; }>([readJsonFile, parseJson])
-      .then(([fileContent, importedResult]) => {
+    return Promise.all<{ geojson: any; centroides: any; }>([parseJson])
+      .then(([importedResult]) => {
         this.setImportedData(importedResult);
       });
   }
