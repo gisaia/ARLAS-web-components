@@ -1,12 +1,36 @@
 # Change Log
 
+## [v23.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0) (2022-11-28)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.4...v23.1.0)
+
+## [v23.1.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.4) (2022-11-25)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.3...v23.1.0-beta.4)
+
+## [v23.1.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.3) (2022-11-21)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.2...v23.1.0-beta.3)
+
+## [v23.1.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.2) (2022-11-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.1...v23.1.0-beta.2)
+
+## [v23.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.1) (2022-11-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.5-beta.2...v23.1.0-beta.1)
+
+## [v23.0.5-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.5-beta.2) (2022-10-26)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.5-beta.1...v23.0.5-beta.2)
+
+## [v23.0.5-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.5-beta.1) (2022-10-26)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.4...v23.0.5-beta.1)
+
 ## [v22.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.4) (2022-10-26)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.5-beta.1...v22.0.4)
-
-## [v23.0.5-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.5-beta.1) (2022-10-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.3...v23.0.5-beta.1)
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.3...v22.0.4)
 
 ## [v22.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.3) (2022-09-28)
 
