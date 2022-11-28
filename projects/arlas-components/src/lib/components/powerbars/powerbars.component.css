@@ -50,7 +50,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 0px 5px 3px 3px;
+  padding-bottom: 2px;
 }
 
 .powerbars__powerbar {
@@ -65,7 +65,8 @@
 .powerbars__powerbar--unselected-bar, /* @doc Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
 .powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/
 {
-  margin-top: 3px;
+  margin-top: 0px;
+  padding-bottom: 5px;
 }
 
 .powerbars__powerbar--neutral-state:hover,
@@ -88,7 +89,6 @@
 }
 
 .powerbar__powerbar--top-group {
-  padding-top: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -162,10 +162,11 @@
   overflow-y: auto;
   overflow-x: clip;
   padding-bottom: 2px;
+  padding-right: 10px;
 }
 
 .powerbar-list-scrollable {
   overflow-y: auto;
   overflow-x: clip;
-  margin-top: 3px;
+  padding-right: 10px;
 }

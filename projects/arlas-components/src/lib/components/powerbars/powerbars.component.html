@@ -21,7 +21,7 @@
   <div [ngClass]="customizedCssClass">
     <div class="powerbars--container" [class.powerbar-scrollable]="scrollable">
       <div *ngIf="selectedPowerbarsList.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
-        [style.min-height.px]="selectedPowerbarsList.size > 5 ? 126 : selectedPowerbarsList.size * 25">
+        [style.min-height.px]="selectedPowerbarsList.size > 5 ? 126 : selectedPowerbarsList.size * 31">
         <div *ngFor="let selectedPowerbar of selectedPowerbarsList"
           class="powerbars__powerbar powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
           (click)="clickOnPowerbar(selectedPowerbar)"
