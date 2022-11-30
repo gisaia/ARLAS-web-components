@@ -1315,7 +1315,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       type: 'FeatureCollection',
       features: centroides
     };
-    this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
+    if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
+      this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
+    }
   }
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
