@@ -312,7 +312,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * - `width` fit the width of the thumbnail.
    * - `contain` fit the wholethumbnail.
    */
-    @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
+  @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
 
   /**
    * @Output : Angular
@@ -402,16 +402,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @Output : Angular
    * @description Emits the current visible items in the viewport.
    */
-   @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
+  @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
 
-   /**
-   * @Output : Angular
-   * @description Emits on changes rowItemList current value .
-   */
+  /**
+  * @Output : Angular
+  * @description Emits on changes rowItemList current value .
+  */
   @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
 
 
-  @Output() public thumbnailFitEvent: Subject<ThumbnailFitEnum> = new  Subject();
+  @Output() public thumbnailFitEvent: Subject<ThumbnailFitEnum> = new Subject();
 
 
   public columns: Array<Column>;
@@ -710,9 +710,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.sort(event.value);
     } else {
       this.sortedColumn.sortDirection = SortEnum.none;
-      if (this.lastSortedColumn) {
-        this.sort(this.lastSortedColumn);
-      }
+      this.sortedColumn.fieldName = '';
+      this.sort(this.sortedColumn as any);
     }
   }
 
