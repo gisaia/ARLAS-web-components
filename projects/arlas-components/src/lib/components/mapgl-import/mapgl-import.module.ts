@@ -33,20 +33,20 @@ import { MapglImportComponent, MapglImportDialogComponent } from './mapgl-import
 
 
 @NgModule({
-    imports: [
-        CommonModule,
-        BrowserModule,
-        FormsModule,
-        MatButtonModule,
-        MatCheckboxModule,
-        MatDialogModule,
-        MatProgressSpinnerModule,
-        MatSelectModule,
-        MatRadioModule,
-        TranslateModule
-    ],
-    declarations: [MapglImportComponent, MapglImportDialogComponent],
-    exports: [MapglImportComponent]
+  imports: [
+    CommonModule,
+    BrowserModule,
+    FormsModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatRadioModule,
+    TranslateModule
+  ],
+  declarations: [MapglImportComponent, MapglImportDialogComponent],
+  exports: [MapglImportComponent]
 })
 export class MapglImportModule {
 
