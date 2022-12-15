@@ -36,7 +36,7 @@
     "mapbox-gl": "^1.6.1",
     "ng-lazyload-image": "^9.0.0",
     "ngeohash": "^0.6.0",
-    "ngx-loading": "^1.0.7",
+    "ngx-loading": "^14.0.0",
     "shpjs": "^4.0.4",
     "turf-extent": "1.0.4",
     "wellknown": "0.5.0",

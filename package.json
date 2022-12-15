@@ -48,7 +48,7 @@
     "moment": "^2.29.4",
     "ng-lazyload-image": "^9.0.0",
     "ngeohash": "^0.6.0",
-    "ngx-loading": "^1.0.7",
+    "ngx-loading": "^14.0.0",
     "rxjs": "~7.4.0",
     "shpjs": "^4.0.4",
     "stream": "0.0.2",

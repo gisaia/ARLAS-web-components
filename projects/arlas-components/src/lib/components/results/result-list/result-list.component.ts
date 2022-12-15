@@ -22,7 +22,7 @@ import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
-import { ANIMATION_TYPES } from 'ngx-loading';
+import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ArlasColorService } from '../../../services/color.generator.service';
@@ -108,7 +108,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
 
   public loadAnimationConfig = {
-    animationType: ANIMATION_TYPES.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
+    animationType: ngxLoadingAnimationTypes.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
     backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
   };
 
