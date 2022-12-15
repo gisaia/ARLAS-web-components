@@ -34,24 +34,23 @@ import { MapglSettingsComponent, MapglSettingsDialogComponent } from './mapgl-se
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    BrowserModule,
-    FormsModule,
-    MatTabsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    MatButtonModule,
-    MatRadioModule,
-    ReactiveFormsModule,
-    TranslateModule
-  ],
-  declarations: [MapglSettingsComponent, MapglSettingsDialogComponent],
-  exports: [MapglSettingsComponent],
-  entryComponents: [MapglSettingsDialogComponent]
+    imports: [
+        CommonModule,
+        BrowserModule,
+        FormsModule,
+        MatTabsModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatButtonToggleModule,
+        MatIconModule,
+        MatButtonModule,
+        MatRadioModule,
+        ReactiveFormsModule,
+        TranslateModule
+    ],
+    declarations: [MapglSettingsComponent, MapglSettingsDialogComponent],
+    exports: [MapglSettingsComponent]
 })
 export class MapglSettingsModule {
 

@@ -19,7 +19,7 @@
 
 import { mix } from 'tinycolor2';
 import { isNumber } from 'util';
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 
 export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
@@ -143,7 +143,7 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
 
 }
 
-export class SelectFormControl extends FormControl {
+export class SelectFormControl extends UntypedFormControl {
 
   // used only for autocomplete: list of filtered options
   public filteredOptions: Array<string>;

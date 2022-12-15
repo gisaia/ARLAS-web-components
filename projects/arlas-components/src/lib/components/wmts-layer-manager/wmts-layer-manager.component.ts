@@ -19,7 +19,7 @@
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
@@ -55,7 +55,7 @@ export interface LayerParam {
 export class WmtsLayerManagertDialogComponent implements OnInit {
   public layer: string;
   public style: string;
-  public formGroup: FormGroup;
+  public formGroup: UntypedFormGroup;
   public imageToShow: any;
   public isImageLoading = false;
   public showError = false;
@@ -77,9 +77,9 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
       l.push(key);
     });
     this.layers = l;
-    this.formGroup = new FormGroup({
-      layer: new FormControl(),
-      style: new FormControl(),
+    this.formGroup = new UntypedFormGroup({
+      layer: new UntypedFormControl(),
+      style: new UntypedFormControl(),
     });
   }
 
@@ -89,7 +89,7 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
     this.styles = this.data.get(event.value).styles;
     this.dimensions = this.data.get(event.value).dimensions;
     this.dimensions.forEach(d => {
-      this.formGroup.addControl(d.identifier, new FormControl);
+      this.formGroup.addControl(d.identifier, new UntypedFormControl);
     });
   }
   public clickOnPreview() {

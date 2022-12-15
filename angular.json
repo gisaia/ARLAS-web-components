@@ -176,7 +176,6 @@
       }
     }
   },
-  "defaultProject": "arlas-web-components-demo",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "arlas"
