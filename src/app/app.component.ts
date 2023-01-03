@@ -33,6 +33,7 @@ export class AppComponent implements OnInit {
     '/donut',
     '/histogram',
     '/powerbars',
+    '/calendar-timeline',
     '/list',
     '/wmts-layer-manager'
   ];
