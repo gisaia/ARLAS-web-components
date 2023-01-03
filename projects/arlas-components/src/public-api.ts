@@ -65,3 +65,5 @@ export { FormatNumberModule } from './lib/pipes/format-number/format-number.modu
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
 export { ShortenNumberModule } from './lib/pipes/shorten-number/shorten-number.module';
 export { ShortenNumberPipe } from './lib/pipes/shorten-number/shorten-number.pipe';
+export { CalendarTimelineComponent } from './lib/components/calendar-timeline/calendar-timeline.component';
+export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
