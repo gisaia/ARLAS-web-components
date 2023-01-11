@@ -13,8 +13,8 @@
     "build-release": "ng build arlas-web-components --configuration production",
     "e2e": "ng e2e",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
-    "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib/public-api.ts --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
-    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib/public-api.ts --output ./projects/arlas-components/assets/i18n/{en,fr}.json --format json"
+    "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
+    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr}.json --format json"
   },
   "private": true,
   "dependencies": {
@@ -66,10 +66,10 @@
     "@angular-eslint/template-parser": "~13.0.0",
     "@angular/cli": "~13.0.1",
     "@angular/compiler-cli": "~13.0.0",
-    "@biesbjerg/ngx-translate-extract": "7.0.4",
+    "@gisaia/ngx-translate-extract": "8.2.0",
     "@biesbjerg/ngx-translate-extract-marker": "1.0.0",
     "@types/jasmine": "~3.10.0",
-    "@types/node": "^12.11.1",
+    "@types/node": "^16.18.0",
     "@typescript-eslint/eslint-plugin": "5.3.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.6.0",
     "@typescript-eslint/parser": "5.3.0",
@@ -82,7 +82,7 @@
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
     "ng-packagr": "^13.0.0",
-    "node": "^12.11.1",
+    "node": "^16.18.0",
     "ts-node": "~10.4.0",
     "typescript": "~4.4.3",
     "webpack-bundle-analyzer": "^4.6.1",
