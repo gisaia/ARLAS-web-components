@@ -1,7 +1,7 @@
 /*
  * Public API Surface of arlas-components
  */
-export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TreeNode } from 'arlas-d3';
+export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TreeNode, TimelineData } from 'arlas-d3';
 export { ArlasComponentsComponent } from './lib/arlas-components.component';
 export { ArlasComponentsModule } from './lib/arlas-components.module';
 export { ArlasComponentsService } from './lib/arlas-components.service';
