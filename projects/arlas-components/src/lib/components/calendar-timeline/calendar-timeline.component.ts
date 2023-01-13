@@ -18,7 +18,7 @@
  */
 
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output } from '@angular/core';
-import { Dimensions, Granularity, Margins, Timeline } from 'arlas-d3';
+import { Dimensions, Granularity, Margins, Timeline, TimelineData } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import * as timelineJsonSchema from './calendar-timeline.schema.json';
 
@@ -36,9 +36,9 @@ export class CalendarTimelineComponent implements AfterViewInit {
   @Input() public id;
   @Input() public granularity: Subject<Granularity> = new Subject();
   @Input() public boundDates: Subject<Date[]> = new Subject();
-  @Input() public data: Subject<any[]> = new Subject();
-  @Output() public selectedDate: Subject<Date> = new Subject();
-  @Output() public hoveredDate: Subject<Date> = new Subject();
+  @Input() public data: Subject<TimelineData[]> = new Subject();
+  @Output() public selectedData: Subject<TimelineData> = new Subject();
+  @Output() public hoveredData: Subject<TimelineData> = new Subject();
 
   public width: number;
   public height: number;
@@ -53,6 +53,8 @@ export class CalendarTimelineComponent implements AfterViewInit {
     this.height = 90;
     const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
     const timeline = (new Timeline(svg));
+    this.selectedData = timeline.selectedData;
+    this.hoveredData = timeline.hoveredData;
     timeline.setDimensions(dimensions);
     this.granularity.subscribe(g => {
       timeline.setGranularity(g);
@@ -63,8 +65,6 @@ export class CalendarTimelineComponent implements AfterViewInit {
     this.data.subscribe(g => {
       timeline.setData(g);
       timeline.plot();
-      this.selectedDate = timeline.cursor.selectedDate;
-      this.hoveredDate = timeline.verticalLine.hoveredDate;
     });
   }
 
