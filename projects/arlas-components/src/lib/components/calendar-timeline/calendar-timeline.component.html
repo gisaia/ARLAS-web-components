@@ -1,9 +1,11 @@
 <div id="{{id}}" class="calendar-timeline">
-    <div  #timeline_container class="container">
+    <div class="container">
         <div [style.height.px]="height" class="move_button past">
             <mat-icon class="chevron">chevron_left</mat-icon>
         </div>
-        <svg id="calendar-svg" [style.width.px]="width" [style.height.px]="height" ></svg>
+        <div class="svg_container" #timeline_container>
+            <svg id="calendar-svg" [style.width.px]="width" [style.height.px]="height" ></svg>
+        </div>
         <div [style.height.px]="height" class="move_button future">
             <mat-icon class="chevron">chevron_right</mat-icon>
         </div>

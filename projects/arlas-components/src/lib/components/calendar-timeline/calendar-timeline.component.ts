@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output } from '@angular/core';
 import { Dimensions, Granularity, Margins, Timeline } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import * as timelineJsonSchema from './calendar-timeline.schema.json';
@@ -34,8 +34,11 @@ import * as timelineJsonSchema from './calendar-timeline.schema.json';
 export class CalendarTimelineComponent implements AfterViewInit {
 
   @Input() public id;
-
   @Input() public granularity: Subject<Granularity> = new Subject();
+  @Input() public boundDates: Subject<Date[]> = new Subject();
+  @Input() public data: Subject<any[]> = new Subject();
+  @Output() public selectedDate: Subject<Date> = new Subject();
+  @Output() public hoveredDate: Subject<Date> = new Subject();
 
   public width: number;
   public height: number;
@@ -51,10 +54,17 @@ export class CalendarTimelineComponent implements AfterViewInit {
     const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
     const timeline = (new Timeline(svg));
     timeline.setDimensions(dimensions);
-    timeline.setGranularity(Granularity.day);
-
     this.granularity.subscribe(g => {
       timeline.setGranularity(g);
+    });
+    this.boundDates.subscribe(g => {
+      timeline.setBoundDates(g);
+    });
+    this.data.subscribe(g => {
+      timeline.setData(g);
+      timeline.plot();
+      this.selectedDate = timeline.cursor.selectedDate;
+      this.hoveredDate = timeline.verticalLine.hoveredDate;
     });
   }
 
