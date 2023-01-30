@@ -22,6 +22,10 @@ import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineToolt
 import { Subject } from 'rxjs';
 import * as timelineJsonSchema from './calendar-timeline.schema.json';
 
+export enum TranslationDirection {
+  past = 'past',
+  future = 'future'
+}
 
 @Component({
   selector: 'arlas-calendar-timeline',
@@ -35,13 +39,19 @@ export class CalendarTimelineComponent implements AfterViewInit {
 
   @Input() public id;
   @Input() public granularity: Subject<Granularity> = new Subject();
+  @Input() public climatological: Subject<boolean> = new Subject();
   @Input() public boundDates: Subject<Date[]> = new Subject();
   @Input() public data: Subject<TimelineData[]> = new Subject();
+  @Input() public plot: Subject<boolean> = new Subject();
+  @Input() public cursorPosition: Subject<Date> = new Subject();
+
   @Output() public selectedData: Subject<TimelineData> = new Subject();
   @Output() public hoveredData: Subject<TimelineTooltip> = new Subject();
+  @Output() public translate: Subject<TranslationDirection> = new Subject();
 
   public width: number;
   public height: number;
+  public isClimatological = false;
 
   @ViewChild('timeline_container', { static: false }) private timelineContainer: ElementRef;
 
@@ -53,7 +63,6 @@ export class CalendarTimelineComponent implements AfterViewInit {
     this.height = 90;
     const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
     const timeline = (new Timeline(svg));
-    this.selectedData = timeline.selectedData;
     timeline.setDimensions(dimensions);
     this.granularity.subscribe(g => {
       timeline.setGranularity(g);
@@ -61,16 +70,31 @@ export class CalendarTimelineComponent implements AfterViewInit {
     this.boundDates.subscribe(g => {
       timeline.setBoundDates(g);
     });
+    this.climatological.subscribe(c => {
+      timeline.setClimatological(c);
+      this.isClimatological = c;
+    });
     this.data.subscribe(g => {
       timeline.setData(g);
-      timeline.plot();
+      timeline.plot(true);
     });
-    
+    this.cursorPosition.subscribe(d => {
+      timeline.moveCursor(d);
+    });
     timeline.hoveredData.subscribe(r => {
       this.hoveredData.next(r);
-    })
+    });
+    timeline.selectedData.subscribe(r => {
+      this.selectedData.next(r);
+    });
+    this.plot.subscribe(() => timeline.plot());
   }
 
+  public translateFuture(): void {
+    this.translate.next(TranslationDirection.future);
+  }
 
-
+  public translatePast(): void {
+    this.translate.next(TranslationDirection.past);
+  }
 }
