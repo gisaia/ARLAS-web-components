@@ -18,7 +18,7 @@
  */
 
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output } from '@angular/core';
-import { Dimensions, Granularity, Margins, Timeline, TimelineData } from 'arlas-d3';
+import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import * as timelineJsonSchema from './calendar-timeline.schema.json';
 
@@ -38,7 +38,7 @@ export class CalendarTimelineComponent implements AfterViewInit {
   @Input() public boundDates: Subject<Date[]> = new Subject();
   @Input() public data: Subject<TimelineData[]> = new Subject();
   @Output() public selectedData: Subject<TimelineData> = new Subject();
-  @Output() public hoveredData: Subject<TimelineData> = new Subject();
+  @Output() public hoveredData: Subject<TimelineTooltip> = new Subject();
 
   public width: number;
   public height: number;
@@ -54,7 +54,6 @@ export class CalendarTimelineComponent implements AfterViewInit {
     const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
     const timeline = (new Timeline(svg));
     this.selectedData = timeline.selectedData;
-    this.hoveredData = timeline.hoveredData;
     timeline.setDimensions(dimensions);
     this.granularity.subscribe(g => {
       timeline.setGranularity(g);
@@ -66,6 +65,10 @@ export class CalendarTimelineComponent implements AfterViewInit {
       timeline.setData(g);
       timeline.plot();
     });
+    
+    timeline.hoveredData.subscribe(r => {
+      this.hoveredData.next(r);
+    })
   }
 
 
