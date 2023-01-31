@@ -27,7 +27,7 @@
     "@turf/centroid": "6.5.0",
     "@turf/helpers": "6.5.0",
     "@types/mapbox-gl": "^1.6.3",
-    "arlas-d3": "10.0.0-alpha.10",
+    "arlas-d3": "10.0.0-alpha.11",
     "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
     "iv-viewer": "~2.0.1",
