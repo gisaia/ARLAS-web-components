@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import * as timelineJsonSchema from './calendar-timeline.schema.json';
@@ -35,15 +35,14 @@ export enum TranslationDirection {
 /**
  * todo : documentation of the component
  */
-export class CalendarTimelineComponent implements AfterViewInit {
+export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
 
   @Input() public id;
-  @Input() public granularity: Subject<Granularity> = new Subject();
-  @Input() public climatological: Subject<boolean> = new Subject();
-  @Input() public boundDates: Subject<Date[]> = new Subject();
-  @Input() public data: Subject<TimelineData[]> = new Subject();
-  @Input() public plot: Subject<boolean> = new Subject();
-  @Input() public cursorPosition: Subject<Date> = new Subject();
+  @Input() public granularity: Granularity;
+  @Input() public climatological: boolean;
+  @Input() public boundDates: Date[] = [];
+  @Input() public data: TimelineData[] = [];
+  @Input() public cursorPosition: Date;
 
   @Output() public selectedData: Subject<TimelineData> = new Subject();
   @Output() public hoveredData: Subject<TimelineTooltip> = new Subject();
@@ -51,10 +50,32 @@ export class CalendarTimelineComponent implements AfterViewInit {
 
   public width: number;
   public height: number;
-  public isClimatological = false;
+
+  private timeline: Timeline;
 
   @ViewChild('timeline_container', { static: false }) private timelineContainer: ElementRef;
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.data && this.timeline) {
+      this.timeline.setData(this.data);
+      if (this.timeline.boundDates && this.timeline.boundDates.length === 2) {
+        this.timeline.plot(true);
+      }
+    }
+    if (changes.boundDates && this.timeline) {
+      this.timeline.setBoundDates(this.boundDates);
+      this.timeline.plot();
+    }
+    if (changes.granularity && this.timeline) {
+      this.timeline.setGranularity(this.granularity);
+    }
+    if (changes.climatological && this.timeline) {
+      this.timeline.setClimatological(this.climatological);
+    }
+    if (changes.cursorPosition && this.timeline) {
+      this.timeline.moveCursor(this.cursorPosition);
+    }
+  }
   public ngAfterViewInit(): void {
     const element: HTMLElement = this.timelineContainer.nativeElement;
     const svg = element.querySelector('svg');
@@ -62,32 +83,22 @@ export class CalendarTimelineComponent implements AfterViewInit {
     this.width = element.offsetWidth;
     this.height = 90;
     const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
-    const timeline = (new Timeline(svg));
-    timeline.setDimensions(dimensions);
-    this.granularity.subscribe(g => {
-      timeline.setGranularity(g);
-    });
-    this.boundDates.subscribe(g => {
-      timeline.setBoundDates(g);
-    });
-    this.climatological.subscribe(c => {
-      timeline.setClimatological(c);
-      this.isClimatological = c;
-    });
-    this.data.subscribe(g => {
-      timeline.setData(g);
-      timeline.plot(true);
-    });
-    this.cursorPosition.subscribe(d => {
-      timeline.moveCursor(d);
-    });
-    timeline.hoveredData.subscribe(r => {
+    this.timeline = (new Timeline(svg));
+    this.timeline.setDimensions(dimensions);
+    this.timeline.setBoundDates(this.boundDates);
+
+    this.timeline.hoveredData.subscribe(r => {
       this.hoveredData.next(r);
     });
-    timeline.selectedData.subscribe(r => {
+    this.timeline.selectedData.subscribe(r => {
       this.selectedData.next(r);
     });
-    this.plot.subscribe(() => timeline.plot());
+  }
+
+  public plot(): void {
+    if (this.timeline) {
+      this.timeline.plot();
+    }
   }
 
   public translateFuture(): void {
