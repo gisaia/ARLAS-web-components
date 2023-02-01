@@ -19,7 +19,7 @@
 
 import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
-import { Subject } from 'rxjs';
+import { debounceTime, fromEvent, Subject } from 'rxjs';
 import * as timelineJsonSchema from './calendar-timeline.schema.json';
 
 export enum TranslationDirection {
@@ -55,6 +55,21 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
 
   @ViewChild('timeline_container', { static: false }) private timelineContainer: ElementRef;
 
+  constructor() {
+    fromEvent(window, 'resize')
+      .pipe(debounceTime(500))
+      .subscribe((event: Event) => {
+        const element: HTMLElement = this.timelineContainer.nativeElement;
+        const margins = (new Margins()).setBottom(5).setTop(5).setRight(5).setLeft(5);
+        this.width = element.offsetWidth;
+        this.height = 90;
+        const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
+        if (this.timeline) {
+          this.timeline.setDimensions(dimensions);
+          this.timeline.plot();
+        }
+      });
+  }
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && this.timeline) {
       this.timeline.setData(this.data);
