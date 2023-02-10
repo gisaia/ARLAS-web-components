@@ -47,6 +47,8 @@ import {
 } from '../../projects/arlas-components/src/public-api';
 import { MapglImportDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
 import { MapglSettingsDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
+import { CalendarTimelineModule } from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
+import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -58,6 +60,7 @@ const routes: Routes = [
   { path: 'histogram', component: HistogramDemoComponent },
   { path: 'donut', component: DonutDemoComponent },
   { path: 'powerbars', component: PowerbarsDemoComponent },
+  { path: 'calendar-timeline', component: CalendarTimelineDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent }
 ];
@@ -70,11 +73,13 @@ const routes: Routes = [
     MapglDemoComponent,
     PowerbarsDemoComponent,
     DonutDemoComponent,
-    WmtsLayerManagerDemoComponent
+    WmtsLayerManagerDemoComponent,
+    CalendarTimelineDemoComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    CalendarTimelineModule,
     FormsModule,
     MapglModule,
     MapglImportModule,

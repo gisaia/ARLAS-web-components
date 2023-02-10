@@ -1,0 +1,41 @@
+.move_button {
+    width: 7px;
+    background-color: #b7b7b7;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    justify-content: center;
+}
+
+.calendar-timeline {
+    width: 100%;
+}
+
+.svg_container {
+    /** 14px is the sum of widths of the move buttons on left/right*/
+    width: calc(100% - 14px);
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    border: 1px solid #b7b7b7;
+    border-radius: 4px;
+}
+
+.past {
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+}
+
+.future {
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+}
+
+.chevron {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+}
