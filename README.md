@@ -17,7 +17,7 @@ $ npm install --save arlas-web-components
 
 ## Documentation
 
-Please find the documentation of all the components [here](http://docs.arlas.io/arlas-tech/current/classes/_components_donut_donut_component_.donutcomponent/)
+Please find the documentation of all the components [here](https://docs.arlas.io/classes/DonutComponent/).
 
 ## Build
 
