@@ -245,17 +245,13 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     this.layer = Object.assign({}, layer);
   }
 
-  public static   buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
+  public static buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
     legendData: Map<string, LegendData>, translate?: TranslateService): [Legend, string] {
     const colorLegend: Legend = { visible: true };
     let colorsPalette = '';
     if (typeof colorExpression === 'string') {
       colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
       colorLegend.fixValue = colorExpression;
-      if (!visibleMode) {
-        /** apply greyscale because the layer is not visible */
-        colorLegend.fixValue = '#d3d3d3';
-      }
     } else if (Array.isArray(colorExpression)) {
       if (colorExpression.length === 2) {
         /** color = ["get", "field"]  ==> Generated or Provided */
@@ -272,8 +268,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             const keysToColors = legendData.get(field).keysColorsMap;
             const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
             for (let i = 0; i < colorList.length; i += 2) {
-              const c = visibleMode ? colorList[i + 1] : '#eee';
-              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], c);
+              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], colorList[i + 1]);
             }
             if (colorList.length === 0) {
               colorLegend.manualValues.set('', '#eee');
@@ -295,17 +290,11 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           colorLegend.manualValues = new Map();
           for (let i = 2; i < colorExpression.length; i += 2) {
             if (hasDefaultColor && i === colorsLength - 3) {
-              const c1 = visibleMode ? colorExpression[i + 1] :
-                tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
-              const c2 = visibleMode ? colorExpression[i + 2] :
-                tinycolor.default(colorExpression[i + 2].toString()).greyscale().lighten(20).toHexString();
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], c1);
-              colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, c2);
+              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], colorExpression[i + 1]);
+              colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
               break;
             } else {
-              const c = visibleMode ? colorExpression[i + 1] :
-                tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], c);
+              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], colorExpression[i + 1]);
             }
           }
         } else if (colorExpression[0] === INTERPOLATE) {
