@@ -286,15 +286,39 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           if (colorsLength % 2 !== 0) {
             hasDefaultColor = true;
           }
-          colorLegend.title = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
+          const field = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
+          colorLegend.title = field;
           colorLegend.manualValues = new Map();
+          let keysToColors: Map<string, string>;
+          if (legendData && legendData.get(field + '_color')) {
+            // If there is a legendData, use only the colors in the keysToColors
+            keysToColors = legendData.get(field + '_color').keysColorsMap;
+          } else {
+            // If no legendData for this field, use all the colors of colorExpression
+            keysToColors = new Map();
+            for (let i = 2; i < colorExpression.length; i += 2) {
+              if (hasDefaultColor && i === colorsLength - 3) {
+                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
+                keysToColors.set(OTHER, colorExpression[i + 2]);
+                break;
+              } else {
+                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
+              }
+            }
+          }
           for (let i = 2; i < colorExpression.length; i += 2) {
             if (hasDefaultColor && i === colorsLength - 3) {
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], colorExpression[i + 1]);
+              if (keysToColors.has(colorExpression[i] + '')) {
+                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                  colorExpression[i + 1]);
+              }
               colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
               break;
             } else {
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], colorExpression[i + 1]);
+              if (keysToColors.has(colorExpression[i] + '')) {
+                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                  colorExpression[i + 1]);
+              }
             }
           }
         } else if (colorExpression[0] === INTERPOLATE) {
