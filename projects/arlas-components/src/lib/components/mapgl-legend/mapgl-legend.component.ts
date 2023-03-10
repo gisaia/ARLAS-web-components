@@ -300,7 +300,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           colorLegend.manualValues = new Map();
           if (legendData && legendData.get(field)) {
             const keysToColors = legendData.get(field).keysColorsMap;
-            const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
+            const colorList = Array.from(keysToColors.keys()).map(k => [k, keysToColors.get(k)]).flat();
             for (let i = 0; i < colorList.length; i += 2) {
               colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], colorList[i + 1]);
             }
