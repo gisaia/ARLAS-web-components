@@ -36,6 +36,9 @@ export const MATCH = 'match';
 export const INTERPOLATE = 'interpolate';
 export const OTHER = 'other_color';
 
+export const IN = 'in';
+export const NOT_IN = '!';
+
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
@@ -184,8 +187,9 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     switch (type) {
     case 'circle': {
       const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-      const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData, this.translate);
-      const strokeColors = MapglLegendComponent.buildColorLegend(p['circle-stroke-color'], visibileMode, this.legendData, this.translate);
+      const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
+      const strokeColors = MapglLegendComponent.buildColorLegend(p['circle-stroke-color'], visibileMode, this.legendData,
+        this.layer.filter, this.translate);
       this.buildCircleRadiusLegend(p['circle-radius']);
       this.colorLegend = colors[0];
       this.strokeColorLegend = strokeColors[0];
@@ -195,7 +199,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
     case 'line': {
       const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
-      const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.translate);
+      const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.buildWidthLegend(p['line-width']);
       this.lineDasharray = p['line-dasharray'];
       this.colorLegend = colors[0];
@@ -204,11 +208,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
     case 'fill': {
       const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
-      const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.translate);
+      const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
       if (!!metadata && !!metadata.stroke) {
-        const strokeColors = MapglLegendComponent.buildColorLegend(metadata.stroke.color, visibileMode, this.legendData, this.translate);
+        const strokeColors = MapglLegendComponent.buildColorLegend(metadata.stroke.color, visibileMode, this.legendData,
+          this.layer.filter, this.translate);
         this.strokeColorLegend = strokeColors[0];
         this.strokeColorPalette = strokeColors[1];
       }
@@ -218,7 +223,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
       this.colorLegend.minValue = '0';
       this.colorLegend.maxValue = '1';
-      const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.translate);
+      const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.buildCircleRadiusLegend(p['heatmap-radius']);
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
@@ -229,7 +234,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
     case 'symbol': {
       const p: mapboxgl.SymbolPaint = (paint as mapboxgl.SymbolPaint);
-      const colors = MapglLegendComponent.buildColorLegend(p['text-color'], visibileMode, this.legendData, this.translate);
+      const colors = MapglLegendComponent.buildColorLegend(p['text-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
       const l: mapboxgl.SymbolLayout = (paint as mapboxgl.SymbolLayout);
@@ -245,17 +250,42 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     this.layer = Object.assign({}, layer);
   }
 
-  public static   buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
-    legendData: Map<string, LegendData>, translate?: TranslateService): [Legend, string] {
+  public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
+    filter.forEach((f, idx) => {
+      if (idx !== 0 && idx !== filter.length - 1) {
+        switch(f[0]) {
+        case IN: {
+          if (f[1][1] === field) {
+            const valuesToKeep: Array<string> = f[2][1];
+            colorLegendValues.forEach((val, key) => {
+              if (!(valuesToKeep.includes(key))) {
+                colorLegendValues.delete(key);
+              }
+            });
+          }
+          break;
+        }
+        case NOT_IN: {
+          if (f[1][0] === IN && f[1][1][1] === field) {
+            const valuesToExclude: Array<string> = f[1][2][1];
+            valuesToExclude.forEach(value => {
+              colorLegendValues.delete(value);
+            });
+          }
+          break;
+        }
+        }
+      }
+    });
+  }
+
+  public static buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
+    legendData: Map<string, LegendData>, filter?: any[] , translate?: TranslateService): [Legend, string] {
     const colorLegend: Legend = { visible: true };
     let colorsPalette = '';
     if (typeof colorExpression === 'string') {
       colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
       colorLegend.fixValue = colorExpression;
-      if (!visibleMode) {
-        /** apply greyscale because the layer is not visible */
-        colorLegend.fixValue = '#d3d3d3';
-      }
     } else if (Array.isArray(colorExpression)) {
       if (colorExpression.length === 2) {
         /** color = ["get", "field"]  ==> Generated or Provided */
@@ -272,14 +302,18 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             const keysToColors = legendData.get(field).keysColorsMap;
             const colorList = Array.from(keysToColors.keys()).map(k => k + ',' + keysToColors.get(k)).join(',').split(',');
             for (let i = 0; i < colorList.length; i += 2) {
-              const c = visibleMode ? colorList[i + 1] : '#eee';
-              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], c);
+              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], colorList[i + 1]);
             }
             if (colorList.length === 0) {
               colorLegend.manualValues.set('', '#eee');
             }
           } else {
             colorLegend.manualValues.set('', '#eee');
+          }
+
+          if (!!filter) {
+            MapglLegendComponent.filterLegend(colorLegend.manualValues, filter,
+              (field as string).endsWith('_arlas__color') ? (field as string).slice(0, -13): field);
           }
         }
       } else if (colorExpression.length >= 3) {
@@ -291,22 +325,44 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           if (colorsLength % 2 !== 0) {
             hasDefaultColor = true;
           }
-          colorLegend.title = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
+          const field = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
+          colorLegend.title = field;
           colorLegend.manualValues = new Map();
+          let keysToColors: Map<string, string>;
+          if (legendData && legendData.get(field + '_color')) {
+            // If there is a legendData, use only the colors in the keysToColors
+            keysToColors = legendData.get(field + '_color').keysColorsMap;
+          } else {
+            // If no legendData for this field, use all the colors of colorExpression
+            keysToColors = new Map();
+            for (let i = 2; i < colorExpression.length; i += 2) {
+              if (hasDefaultColor && i === colorsLength - 3) {
+                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
+                keysToColors.set(OTHER, colorExpression[i + 2]);
+                break;
+              } else {
+                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
+              }
+            }
+          }
           for (let i = 2; i < colorExpression.length; i += 2) {
             if (hasDefaultColor && i === colorsLength - 3) {
-              const c1 = visibleMode ? colorExpression[i + 1] :
-                tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
-              const c2 = visibleMode ? colorExpression[i + 2] :
-                tinycolor.default(colorExpression[i + 2].toString()).greyscale().lighten(20).toHexString();
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], c1);
-              colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, c2);
+              if (keysToColors.has(colorExpression[i] + '')) {
+                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                  colorExpression[i + 1]);
+              }
+              colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
               break;
             } else {
-              const c = visibleMode ? colorExpression[i + 1] :
-                tinycolor.default(colorExpression[i + 1].toString()).greyscale().lighten(20).toHexString();
-              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i], c);
+              if (keysToColors.has(colorExpression[i] + '')) {
+                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                  colorExpression[i + 1]);
+              }
             }
+          }
+
+          if (!!filter) {
+            MapglLegendComponent.filterLegend(colorLegend.manualValues, filter, field);
           }
         } else if (colorExpression[0] === INTERPOLATE) {
           colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
