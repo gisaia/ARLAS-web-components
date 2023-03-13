@@ -1,5 +1,4 @@
 <div id="{{id}}" class="map_container">
-
   <div class="map__visu-list--wrapper">
     <div class="map_legend-button--wrapper">
       <div class="map_legend-button-icon" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
@@ -16,26 +15,30 @@
               [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
           </div>
         </div>
-        <div class="map_visu-content-container" cdkDropList
-        (cdkDropListDropped)="dropLayer($event, visu.name)">
-        <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer" [hidden]="visibilityStatus.get(visu.name + ':arlas_vset:' + l) === false" >
-          <arlas-mapgl-legend [collection]="l | getCollection: layersMap " [enabled]="visu.enabled" [layer]="l | getLayer: layersMap " [zoom]="zoom" (visibilityStatus)="emitLegendVisibility(visu.name,l, $event)"
-          [legendUpdater]="legendUpdater" [visibilityUpdater]="visibilityUpdater" (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-mapgl-legend>
-          <div cdkDragHandle class="map__visu-layer-drag">
-            <mat-icon >drag_indicator</mat-icon>
+        <div class="map_visu-content-container" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
+          <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer"
+            [class.cdk-visually-hidden]="visibilityStatus.get(visu.name + ':arlas_vset:' + l) === false">
+            <arlas-mapgl-legend [collection]="l | getCollection: layersMap " [enabled]="visu.enabled"
+              [layer]="l | getLayer: layersMap " [zoom]="zoom"
+              (visibilityStatus)="emitLegendVisibility(visu.name,l, $event)" [legendUpdater]="legendUpdater"
+              [visibilityUpdater]="visibilityUpdater"
+              (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-mapgl-legend>
+            <div cdkDragHandle class="map__visu-layer-drag">
+              <mat-icon>drag_indicator</mat-icon>
+            </div>
           </div>
         </div>
-        </div>
-
       </div>
     </div>
   </div>
-
 </div>
+
 <div class="current-coordinate" *ngIf="displayCurrentCoordinates">
   <span class="lat"> Lat : {{currentLat | number:'1.5-5'}} </span>
   <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
 </div>
-<arlas-mapgl-basemap *ngIf="showBasemapsList" (mouseleave)="hideBasemapSwitcher()" [selectedBasemap]="basemapStylesGroup?.selectedBasemapStyle" (basemapChanged)="onChangeBasemapStyle($event)" [basemapStyles]="basemapStyles"></arlas-mapgl-basemap>
+<arlas-mapgl-basemap *ngIf="showBasemapsList" (mouseleave)="hideBasemapSwitcher()"
+  [selectedBasemap]="basemapStylesGroup?.selectedBasemapStyle" (basemapChanged)="onChangeBasemapStyle($event)"
+  [basemapStyles]="basemapStyles"></arlas-mapgl-basemap>
 <div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip"
   [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>
