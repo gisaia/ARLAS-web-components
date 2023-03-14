@@ -39,6 +39,8 @@ export const OTHER = 'other_color';
 export const IN = 'in';
 export const NOT_IN = '!';
 
+export const HEATMAP_DENSITY = 'Heatmap-density';
+
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
@@ -221,8 +223,6 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
     case 'heatmap': {
       const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-      this.colorLegend.minValue = '0';
-      this.colorLegend.maxValue = '1';
       const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.buildCircleRadiusLegend(p['heatmap-radius']);
       this.colorLegend = colors[0];
@@ -368,7 +368,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
           /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
           // todo throw exception if interpolation is not linear
-          const field = colorExpression[2].length === 2 ? colorExpression[2][1] : 'Heatmap-density';
+          const field = colorExpression[2].length === 2 ? colorExpression[2][1] : HEATMAP_DENSITY;
           colorLegend.title = field;
           colorLegend.interpolatedValues = [];
           const palette = [];
@@ -388,6 +388,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
           if (legendData && legendData.get(field) && field !== 'count') {
             colorLegend.minValue = legendData.get(field).minValue;
             colorLegend.maxValue = legendData.get(field).maxValue;
+          // For heatmaps, the count is used to fetch data, so we use it for the legend
+          } else if (field === HEATMAP_DENSITY && legendData.get('count')) {
+            colorLegend.minValue = legendData.get('count').minValue;
+            colorLegend.maxValue = legendData.get('count').maxValue;
           } else {
             colorLegend.minValue = colorValues[0] + '';
             colorLegend.maxValue = colorValues[colorValues.length - 1] + '';
