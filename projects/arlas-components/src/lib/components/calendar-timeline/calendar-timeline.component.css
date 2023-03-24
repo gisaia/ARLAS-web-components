@@ -8,6 +8,8 @@
     justify-content: center;
 }
 
+
+
 .calendar-timeline {
     width: 100%;
 }
@@ -38,4 +40,19 @@
     font-size: 20px;
     width: 20px;
     height: 20px;
+}
+
+.hide_left_button {
+    display: none;
+}
+
+.hide_right_button {
+    display: none;
+}
+.svg_container_one_button_hidden {
+    /** 15px is the width of one move button*/
+    width: calc(100% - 15px);
+}
+.svg_container_buttons_hidden {
+    width: calc(100%);
 }
