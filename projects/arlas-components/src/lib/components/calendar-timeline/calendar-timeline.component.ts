@@ -43,6 +43,8 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
   @Input() public boundDates: Date[] = [];
   @Input() public data: TimelineData[] = [];
   @Input() public cursorPosition: Date;
+  @Input() public hideLeftButton: boolean;
+  @Input() public hideRightButton: boolean;
 
   @Output() public selectedData: Subject<TimelineData> = new Subject();
   @Output() public hoveredData: Subject<TimelineTooltip> = new Subject();

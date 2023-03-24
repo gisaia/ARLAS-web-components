@@ -1,12 +1,16 @@
 <div id="{{id}}" #calendar_timeline class="calendar-timeline">
     <div class="container">
-        <div class="move_button past" (click)="translatePast()" *ngIf="!climatological">
+        <div class="move_button past" [class.hide_left_button]="hideLeftButton" (click)="translatePast()" *ngIf="!climatological">
             <mat-icon class="chevron">chevron_left</mat-icon>
         </div>
-        <div class="svg_container" #timeline_container>
+        <div class="svg_container" 
+            [class.svg_container_buttons_hidden]="hideLeftButton && hideRightButton"
+            [class.svg_container_one_button_hidden]="(hideLeftButton && !hideRightButton) || (!hideLeftButton && hideRightButton)"
+
+             #timeline_container>
             <svg id="calendar-svg" [style.width.px]="width" [style.height.px]="height" ></svg>
         </div>
-        <div class="move_button future" (click)="translateFuture()" *ngIf="!climatological">
+        <div class="move_button future" [class.hide_right_button]="hideRightButton" (click)="translateFuture()" *ngIf="!climatological">
             <mat-icon class="chevron">chevron_right</mat-icon>
         </div>
     </div>
