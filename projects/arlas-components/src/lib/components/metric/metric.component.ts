@@ -44,6 +44,7 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
   @Input() public shortValue = false;
+  @Input() public approximateValue = false;
 
   /**
    * @Input : Angular
