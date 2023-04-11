@@ -29,7 +29,7 @@ export class DonutDemoComponent implements OnInit {
   public donutData = null;
   public selectedNodes;
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit() {
     this.donutData = {

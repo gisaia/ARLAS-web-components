@@ -34,7 +34,7 @@ export class PitchToggle {
     'CI+ICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHN0eWxlPSJmb250LXNpemU6IDE0cHg7IGZvbnQtZmFtaWx5OiAnSGVsdmV0aWNhIE5ldWUnLEFyaWF' +
     'sLEhlbHZldGljYSxzYW5zLXNlcmlmOyBmb250LXdlaWdodDogYm9sZDsgdGV4dC1hbmNob3I6IG1pZGRsZTsiPjJEPC90ZXh0Pjwvc3ZnPg==)';
 
-  constructor(bearing, pitch, minpitchzoom) {
+    public constructor(bearing, pitch, minpitchzoom) {
     this.bearing = bearing;
     this.pitch = pitch;
     this.minpitchzoom = minpitchzoom;
@@ -74,7 +74,7 @@ export class PitchToggle {
 export class DrawControl {
   public mapboxDraw: MapboxDraw;
   public enabled: boolean;
-  constructor(drawOptions: any, enabled: boolean) {
+  public constructor(drawOptions: any, enabled: boolean) {
     this.mapboxDraw = new MapboxDraw(drawOptions);
     this.enabled = enabled;
   }
@@ -98,7 +98,7 @@ export class ControlButton {
   public icon;
   public name;
   private tooltip;
-  constructor(name: string, tooltip?: string) {
+  public constructor(name: string, tooltip?: string) {
     this.name = name;
     this.tooltip = tooltip;
   }

@@ -27,7 +27,7 @@ import { DEFAULT_SHORTENING_PRECISION, numberToShortValue } from '../../componen
 @Injectable()
 export class ShortenNumberPipe implements PipeTransform {
 
-  constructor() {}
+  public constructor() {}
 
   public transform(number: number, precision: number = DEFAULT_SHORTENING_PRECISION): any {
     return numberToShortValue(number, precision);

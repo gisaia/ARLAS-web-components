@@ -506,7 +506,7 @@ export class MapglDemoComponent implements OnInit {
     'features': []
   };
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit(): void {
     if (!!this.mapComponent.onPolygonError) {

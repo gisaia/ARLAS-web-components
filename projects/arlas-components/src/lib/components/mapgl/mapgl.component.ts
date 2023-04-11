@@ -439,7 +439,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
+  public constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
 
 
   /**

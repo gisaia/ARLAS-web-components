@@ -15,7 +15,7 @@ export class MapglBasemapComponent implements OnInit {
   @Output() public basemapChanged = new Subject<BasemapStyle>();
   @Output() public blur = new Subject<void>();
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit(): void {
     if (this.basemapStyles) {

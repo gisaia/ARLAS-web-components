@@ -449,7 +449,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   private emitVisibleItemsDebouncer = new Subject<any>();
 
 
-  constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
+  public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
     private colorService: ArlasColorService, public translate: TranslateService) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);

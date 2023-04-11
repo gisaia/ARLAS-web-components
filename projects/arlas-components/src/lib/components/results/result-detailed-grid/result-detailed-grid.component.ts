@@ -86,7 +86,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
 
   private viewer;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) { }
+  public constructor(private changeDetectorRef: ChangeDetectorRef) { }
 
   public ngOnInit() {
   }

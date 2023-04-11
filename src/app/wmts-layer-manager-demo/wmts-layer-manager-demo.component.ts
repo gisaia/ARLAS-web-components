@@ -11,7 +11,7 @@ export class WmtsLayerManagerDemoComponent implements OnInit {
 
     public getCapaUrl = '/assets/getCap_1.xml';
     public metadata = new Map<string, string>();
-    constructor() { }
+    public constructor() { }
 
     public ngOnInit(
 

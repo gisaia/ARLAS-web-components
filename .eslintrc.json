@@ -46,10 +46,7 @@
         "@typescript-eslint/explicit-member-accessibility": [
             "error",
             {
-                "accessibility": "explicit",
-                "overrides": {
-                    "constructors": "no-public"
-                  }
+                "accessibility": "explicit"
             }
         ],
         "@typescript-eslint/member-delimiter-style": [
@@ -63,7 +60,6 @@
                     "delimiter": "semi",
                     "requireLast": true
                 }
-
             }
         ],
         "@typescript-eslint/member-ordering": 0,
@@ -121,7 +117,6 @@
         "guard-for-in": "error",
         "id-denylist": "off",
         "id-match": "off",
-        "indent":["error", 2],
         "max-len": [
             "error",
             {

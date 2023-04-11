@@ -69,7 +69,7 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
   @Input() public isDimension: boolean;
   @Output() public clickTopreview = new Subject<any>();
 
-  constructor(private dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>, private http: HttpClient) { }
+  public constructor(private dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>, private http: HttpClient) { }
 
   public ngOnInit() {
     const l = new Array();
@@ -192,7 +192,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public errorInRun = false;
   public isGetCapaLoading = false;
 
-  constructor(public dialog: MatDialog, private http: HttpClient) {
+  public constructor(public dialog: MatDialog, private http: HttpClient) {
 
   }
 

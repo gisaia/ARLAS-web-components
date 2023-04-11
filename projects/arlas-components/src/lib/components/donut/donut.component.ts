@@ -124,7 +124,7 @@ export class DonutComponent implements OnChanges {
 
   public donut: AbstractDonut;
 
-  constructor(private el: ElementRef,
+  public constructor(private el: ElementRef,
     private colorService: ArlasColorService, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))

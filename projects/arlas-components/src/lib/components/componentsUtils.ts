@@ -149,7 +149,7 @@ export class SelectFormControl extends UntypedFormControl {
   public filteredOptions: Array<string>;
   public syncOptions: Array<string> = [];
 
-  constructor(
+  public constructor(
     formState: any,
     label: string,
     options: Array<string>) {

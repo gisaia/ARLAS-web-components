@@ -51,7 +51,7 @@ export class MapglSettingsDialogComponent implements OnInit {
   public collectionsColors: string[] = [];
   public selectionsSnapshot: Map<string, string> = new Map();
 
-  constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>, private colorGeneratorLoader: ArlasColorService    ) { }
+  public constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>, private colorGeneratorLoader: ArlasColorService    ) { }
 
   public ngOnInit() { }
 
@@ -122,7 +122,7 @@ export class MapglSettingsComponent implements OnInit {
 
   public dialogRef: MatDialogRef<MapglSettingsDialogComponent>;
 
-  constructor(public dialog: MatDialog) { }
+  public constructor(public dialog: MatDialog) { }
 
   public ngOnInit() { }
 

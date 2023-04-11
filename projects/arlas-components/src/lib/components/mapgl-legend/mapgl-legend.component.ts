@@ -106,7 +106,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public colorsPalette = '';
   public strokeColorPalette = '';
 
-  constructor(public translate: TranslateService, private el: ElementRef,
+  public constructor(public translate: TranslateService, private el: ElementRef,
     public colorService: ArlasColorService) { }
 
 

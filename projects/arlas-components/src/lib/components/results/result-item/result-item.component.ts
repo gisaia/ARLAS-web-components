@@ -130,7 +130,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(public colorService: ArlasColorService, public translate: TranslateService) {
+  public constructor(public colorService: ArlasColorService, public translate: TranslateService) {
     super();
   }
 

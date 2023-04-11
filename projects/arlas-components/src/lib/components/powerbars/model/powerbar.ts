@@ -54,7 +54,7 @@ export class PowerBar {
    */
   public color: string;
 
-  constructor(term: string, parentTerm: string, count: number) {
+  public constructor(term: string, parentTerm: string, count: number) {
     this.term = term;
     this.parentTerm = parentTerm;
     this.count = count;

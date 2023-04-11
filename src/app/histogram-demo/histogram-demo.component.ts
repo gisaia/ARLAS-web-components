@@ -42,7 +42,7 @@ export class HistogramDemoComponent implements OnInit {
   public areaSelection: SelectedInputValues;
   public intervalListSelection: SelectedOutputValues[] = [];
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit() {
     this.showData();

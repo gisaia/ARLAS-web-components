@@ -61,7 +61,7 @@ export class Column {
    */
   public useColorService = false;
 
-  constructor(columnName: string, fieldName: string, dataType: string ) {
+  public constructor(columnName: string, fieldName: string, dataType: string ) {
     this.columnName = columnName;
     this.fieldName = fieldName;
     this.dataType = dataType;

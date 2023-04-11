@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
     '/wmts-layer-manager'
   ];
 
-  constructor(private translate: TranslateService, private router: Router) {
+  public constructor(private translate: TranslateService, private router: Router) {
     this.translate.setDefaultLang('fr');
   }
 

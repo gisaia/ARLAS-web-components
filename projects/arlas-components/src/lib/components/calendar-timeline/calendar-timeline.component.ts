@@ -57,7 +57,7 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
 
   @ViewChild('timeline_container', { static: false }) private timelineContainer: ElementRef;
 
-  constructor() {
+  public constructor() {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
