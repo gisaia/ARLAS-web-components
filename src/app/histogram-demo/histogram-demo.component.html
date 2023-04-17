@@ -55,7 +55,7 @@
 <arlas-histogram [id]="'d'" [chartType]="chartType.bars"
                  [chartTitle]="'Chart title'"
                  (valuesListChangedEvent)="setSelectedNumericValues($event)"
-                 [data]="barsHistogramData"
+                 [data]="defaultHistogramData"
                  [intervalSelection]="selectValues"
                  [xAxisPosition]="0"
                  [customizedCssClass]="'histogram__area'"
@@ -128,7 +128,7 @@
   </div>
   <div class="graphs_timeline">
     <arlas-histogram [id]="'g'" [customizedCssClass]="'histogram__area'"
-      [multiselectable]="true" [dataType]="dataType.time"
+      [multiselectable]="true"
       [showXLabels]=true [showYLabels]=true
       [dataType]="dataType.time" [chartType]="chartType.bars"
       [data]="curvedTimelineData"
@@ -141,7 +141,6 @@
 <div class ="graph__inputs--wrapper">
   <span class ="graph__inputs"><b>chartType</b>: bars</span>
   <span class ="graph__inputs"><b>dataType</b>: numeric</span>
-  <span class ="graph__inputs"><b>intervalSelection</b>: startvalue: 1992, endvalue: 2060</span>
   <span class ="graph__inputs"><b>xAxisPosition</b>: top</span>
 </div>
 <div class ="graph__inputs--wrapper">
@@ -149,10 +148,10 @@
   <span class ="graph__inputs"><b>Selected end value</b>: {{selectedNumericValues.endvalue}}</span>
 </div>
 <div class="graphs_bars">
-  <arlas-histogram [id]="'h'" [chartType]="chartType.bars"
+  <arlas-histogram [id]="'h'" [dataType]="dataType.time" [chartType]="chartType.curve"
                    [chartTitle]="'Chart title'"
                    (valuesListChangedEvent)="setSelectedNumericValues($event)"
-                   [data]="barsHistogramData"
+                   [data]="curvedTimelineData"
                    [intervalSelection]="selectValues"
                    [xAxisPosition]="0"
                    [customizedCssClass]="'histogram__area'"
@@ -170,7 +169,7 @@
   </div>
   <div class="graphs_timeline">
     <arlas-histogram [id]="'i'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
-             [data]="curvedTimelineData" ></arlas-histogram>
+             [data]="defaultHistogramData" ></arlas-histogram>
   </div>
 
   <div class ="graph__inputs--wrapper">
@@ -244,7 +243,7 @@
     <arlas-histogram [id]="'o'" [chartType]="chartType.bars"
                      [chartTitle]="'Chart title'"
                      (valuesListChangedEvent)="setSelectedNumericValues($event)"
-                     [data]="barsHistogramData"
+                     [data]="defaultHistogramData"
                      [intervalSelection]="selectValues"
                      [xAxisPosition]="0"
                      [customizedCssClass]="'histogram__area'"
@@ -259,7 +258,7 @@
   </div>
   <div class="graphs_bars">
     <arlas-histogram [id]="'p'" [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [multiselectable]=true
-              [data]="barsHistogramData" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
+              [data]="defaultHistogramData" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
   <div class ="graph__inputs--wrapper">
@@ -268,7 +267,7 @@
   </div>
   <div class="graphs_bars">
     <arlas-histogram [id]="'q'" [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'" [barWeight]="0.3"
-              [data]="barsHistogramData" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
+              [data]="defaultHistogramData" [xLabels]="6" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
   <div class ="graph__inputs--wrapper">
@@ -280,7 +279,7 @@
   </div>
   <div class="graphs_bars">
     <arlas-histogram  [id]="'r'" [xTicks]="2" [xLabels]="2" [yLabels]="2" [yTicks]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
-              [data]="barsHistogramData" [xLabels]="6" [dataType]="dataType.numeric" [customizedCssClass]="'histogram__area'"></arlas-histogram>
+              [data]="defaultHistogramData" [xLabels]="6" [dataType]="dataType.numeric" [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 
   <div class ="graph__inputs--wrapper">
@@ -291,6 +290,6 @@
   <p class="graphs_bars_inputs">dataType = 'numeric', chartType = 'bars', xTicks = xLabels = 5, yTicks = yLabels = 2, showXTicks=false </p>
   <div class="graphs_bars">
     <arlas-histogram [id]="'s'" [xTicks]="5" [xLabels]="5" [yTicks]="2" [yLabels]="2" [chartType]="chartType.bars" [chartTitle]="'Chart title'"
-              [data]="barsHistogramData" [xLabels]="6" [showXTicks]=false [customizedCssClass]="'histogram__area'"></arlas-histogram>
+              [data]="defaultHistogramData" [xLabels]="6" [showXTicks]=false [customizedCssClass]="'histogram__area'"></arlas-histogram>
   </div>
 </div>
