@@ -30,7 +30,7 @@ export class ResultListOptions {
   public defautlImgUrl = './assets/no-view.png';
 
 
-  constructor() {}
+  public constructor() {}
 }
 
 export interface Action {

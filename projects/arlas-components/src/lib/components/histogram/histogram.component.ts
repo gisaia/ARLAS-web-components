@@ -345,7 +345,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public ChartType = ChartType;
   public Array = Array;
 
-  constructor(private colorService: ArlasColorService, private el: ElementRef, private translate: TranslateService) {
+  public constructor(private colorService: ArlasColorService, private el: ElementRef, private translate: TranslateService) {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {

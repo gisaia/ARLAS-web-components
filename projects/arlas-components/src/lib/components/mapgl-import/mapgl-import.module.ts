@@ -46,8 +46,7 @@ import { MapglImportComponent, MapglImportDialogComponent } from './mapgl-import
     TranslateModule
   ],
   declarations: [MapglImportComponent, MapglImportDialogComponent],
-  exports: [MapglImportComponent],
-  entryComponents: [MapglImportDialogComponent]
+  exports: [MapglImportComponent]
 })
 export class MapglImportModule {
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { SelectFormControl, ColorGeneratorLoader } from '../componentsUtils';
@@ -47,11 +47,11 @@ export class MapglSettingsDialogComponent implements OnInit {
     INTERSECTS: 'intersects',
     NOTINTERSECTS: 'notintersects'
   };
-  public geoQueriesFormGroups: FormGroup[] = [];
+  public geoQueriesFormGroups: UntypedFormGroup[] = [];
   public collectionsColors: string[] = [];
   public selectionsSnapshot: Map<string, string> = new Map();
 
-  constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>, private colorGeneratorLoader: ArlasColorService    ) { }
+  public constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>, private colorGeneratorLoader: ArlasColorService    ) { }
 
   public ngOnInit() { }
 
@@ -78,10 +78,10 @@ export class MapglSettingsDialogComponent implements OnInit {
     const geoQueryControls = {
       a_operation: new SelectFormControl(selectedOperation, '', operations),
       b_geometryPath: new SelectFormControl(selectedGeometryPath, '', geometryPaths),
-      c_collection: new FormControl(collectionName),
-      d_displayCollectionName: new FormControl(displayCollectionName),
+      c_collection: new UntypedFormControl(collectionName),
+      d_displayCollectionName: new UntypedFormControl(displayCollectionName),
     };
-    const geoQueryForm = new FormGroup(geoQueryControls);
+    const geoQueryForm = new UntypedFormGroup(geoQueryControls);
     /** snapshot defaultselections */
     this.emittedGeoQueries.clear();
     this.selectionsSnapshot.clear();
@@ -122,7 +122,7 @@ export class MapglSettingsComponent implements OnInit {
 
   public dialogRef: MatDialogRef<MapglSettingsDialogComponent>;
 
-  constructor(public dialog: MatDialog) { }
+  public constructor(public dialog: MatDialog) { }
 
   public ngOnInit() { }
 

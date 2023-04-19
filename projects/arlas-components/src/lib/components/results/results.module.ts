@@ -33,7 +33,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { LoadingModule } from 'ngx-loading';
+import { NgxLoadingModule } from 'ngx-loading';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ResultDetailedGridComponent } from './result-detailed-grid/result-detailed-grid.component';
 import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
@@ -61,7 +61,7 @@ import { FormatNumberModule } from '../../pipes/format-number/format-number.modu
     MatRadioModule,
     FormsModule,
     LazyLoadImageModule,
-    LoadingModule,
+    NgxLoadingModule,
     TranslateModule,
     FormatNumberModule
   ],

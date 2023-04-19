@@ -50,8 +50,7 @@ import { MapglSettingsComponent, MapglSettingsDialogComponent } from './mapgl-se
     TranslateModule
   ],
   declarations: [MapglSettingsComponent, MapglSettingsDialogComponent],
-  exports: [MapglSettingsComponent],
-  entryComponents: [MapglSettingsDialogComponent]
+  exports: [MapglSettingsComponent]
 })
 export class MapglSettingsModule {
 

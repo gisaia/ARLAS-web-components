@@ -44,7 +44,7 @@ export class ResultsDemoComponent implements OnInit {
     public options: ResultListOptions = new ResultListOptions();
     public activeSort: Column;
 
-    constructor() { }
+    public constructor() { }
 
     public ngOnInit() {
       this.options.showActionsOnhover = true;

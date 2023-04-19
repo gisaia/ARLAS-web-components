@@ -65,7 +65,7 @@ export class ResultDetailedItemComponent implements OnInit {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(public translate: TranslateService) { }
+  public constructor(public translate: TranslateService) { }
 
   public ngOnInit() {}
 

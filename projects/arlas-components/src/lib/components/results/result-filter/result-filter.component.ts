@@ -64,10 +64,7 @@ export class ResultFilterComponent implements OnInit, OnChanges {
 
   public selected: Array<any> = new Array<any>();
 
-  private iterableInputDiffer;
-  private iterableColumnsDiffer;
-
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit() {
   }

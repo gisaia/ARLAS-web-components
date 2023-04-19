@@ -55,7 +55,7 @@ export class MetricComponent implements OnInit, OnChanges {
   public displayedValue: string | number = '0';
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit() {
     if (this.value) {
@@ -65,7 +65,7 @@ export class MetricComponent implements OnInit, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
-      if (this.value !== undefined && this.value !== NaN) {
+      if (this.value !== undefined && !Number.isNaN(this.value)) {
         this.setDisplayedValue();
       } else {
         /** '-' will be set when `value` is undefined or not a number */

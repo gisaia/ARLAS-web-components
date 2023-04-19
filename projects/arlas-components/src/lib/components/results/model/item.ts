@@ -110,7 +110,7 @@ export class Item {
    */
   public color: string;
 
-  constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
+  public constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
     this.columns = columns;
     this.itemData = itemData;
   }

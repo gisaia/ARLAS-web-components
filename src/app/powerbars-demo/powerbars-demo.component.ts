@@ -35,7 +35,7 @@ export class PowerbarsDemoComponent implements OnInit {
   public powerbarsAirlines: TreeNode;
   public airlinesTitle = 'Airlines';
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit() {
     this.powerbarsConstructors = {

@@ -107,7 +107,7 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
 
   public ThumbnailFitEnum = ThumbnailFitEnum;
 
-  constructor() {
+  public constructor() {
     super();
   }
 

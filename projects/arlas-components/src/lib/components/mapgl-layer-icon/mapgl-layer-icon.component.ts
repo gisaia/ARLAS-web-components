@@ -16,7 +16,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public lineDasharray;
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit() {
   }

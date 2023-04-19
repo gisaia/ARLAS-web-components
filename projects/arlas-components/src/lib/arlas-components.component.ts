@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArlasComponentsComponent implements OnInit {
 
-  constructor() { }
+  public constructor() { }
 
   public ngOnInit(): void {
   }

@@ -41,7 +41,7 @@ export class MapglImportDialogComponent implements OnInit {
   @Output() public importRun = new Subject<any>();
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
-  constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
+  public constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
 
   public ngOnInit(): void {
     if (this.allowedImportType.indexOf(this.SHP) > -1) {
@@ -120,7 +120,7 @@ export class MapglImportComponent {
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
 
-  constructor(
+  public constructor(
     public dialog: MatDialog
   ) { }
 

@@ -180,9 +180,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  constructor(private colorService: ArlasColorService) {
-
-
+  public constructor(private colorService: ArlasColorService) {
   }
 
   public static getPowerbarsJsonSchema(): Object {

@@ -46,7 +46,7 @@ export class ResultScrollDirective implements OnChanges {
   private nbScrolledLines;
   private top;
   private height;
-  constructor(private el: ElementRef) { }
+  public constructor(private el: ElementRef) { }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['items']) {

@@ -22,7 +22,7 @@
       "mapbox-gl",
       "geojson"
     ],
-    "target": "es2015",
+    "target": "es2020",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "typeRoots": [

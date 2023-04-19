@@ -23,7 +23,7 @@ import { ColorGeneratorLoader } from '../components/componentsUtils';
 @Injectable()
 export class ArlasColorService {
 
-  constructor(public colorGenerator: ColorGeneratorLoader) {}
+  public constructor(public colorGenerator: ColorGeneratorLoader) {}
 
   public getColor(key: string, keysToColors?: Array<[string, string]>, colorsSaturationWeight?: number): string {
     return this.colorGenerator.getColor(key, keysToColors, colorsSaturationWeight);
