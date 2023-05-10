@@ -1,0 +1,83 @@
+.powerbars__powerbar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.powerbars__powerbar--neutral-state, /* @doc Sets all powerbars containers when none of them is selected. A powerbar container's width is 100% of the component's container.*/
+.powerbars__powerbar--selected-bar, /* @doc Sets selected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+.powerbars__powerbar--unselected-bar, /* @doc Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+.powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/
+{
+    margin-top: 0px;
+    padding-bottom: 5px;
+}
+
+.powerbars__powerbar--neutral-state:hover,
+.powerbars__powerbar--selected-bar:hover,
+.powerbars__powerbar--unselected-bar:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.powerbars__powerbar--progression-default-colour /* @doc Style of all powerbars progression bar when no color is specified.*/ {
+    background-color: #88c9c3;
+    border: 1px solid #88c9c3;
+    height: 4px;
+    border-radius: 2px;
+}
+
+.powerbars__powerbar--progression /* @doc Style of all powerbars rightband when none of them is selected.*/ {
+    height: 4px;
+    border-radius: 2px;
+}
+
+.powerbar__powerbar--top-group {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.powerbar__powerbar--term /* @doc Style of terms.*/
+{
+    font-size: 10px;
+    width: 70%;
+    cursor: pointer;
+    position: absolute;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: left;
+}
+
+.powerbar__powerbar--count /* @doc Style of counts.*/
+{
+    font-size: 10px;
+    width: 100%;
+    cursor: pointer;
+    position:relative;
+    display: inline-block;
+    white-space: nowrap;
+    text-align: right; 
+}
+
+.powerbar__powerbar--selected
+{
+    font-weight: bold;
+}
+
+.powerbar__powerbar--term-unselected-bar {
+    color: #888;
+}
+
+.powerbars__powerbar--selected-bar {
+    background-color: #fff;
+}
+.powerbars__powerbar--selected-no-mounted-bar {
+    background-color: #fff;
+}
+  

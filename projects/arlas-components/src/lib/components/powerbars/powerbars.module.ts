@@ -30,7 +30,7 @@ import { PowerbarsComponent } from './powerbars.component';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { ShortenNumberModule } from '../../pipes/shorten-number/shorten-number.module';
+import { PowerbarModule } from './powerbar/powerbar.module';
 
 @NgModule({
   imports: [
@@ -44,8 +44,8 @@ import { ShortenNumberModule } from '../../pipes/shorten-number/shorten-number.m
     MatButtonToggleModule,
     ColorGeneratorModule.forRoot(),
     TranslateModule,
-    FormatNumberModule,
-    ShortenNumberModule
+    PowerbarModule,
+    FormatNumberModule
   ],
   declarations: [PowerbarsComponent],
   exports: [PowerbarsComponent]

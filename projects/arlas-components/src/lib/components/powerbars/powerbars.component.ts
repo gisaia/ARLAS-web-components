@@ -140,6 +140,13 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   @Input() public numberShorteningPrecision = DEFAULT_SHORTENING_PRECISION;
 
   /**
+   * @Input : Angular
+   * @description Whether to group the selected powerbars in a dedicated list or not.
+   */
+  @Input() public groupSelections = true;
+
+
+  /**
    * @Output : Angular
    * @description Emits the filter operator
    */
@@ -158,7 +165,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() public searchedTerm = new Subject<string>();
 
   public powerBarsList: Array<PowerBar>;
-  public selectedPowerbarsList: Set<PowerBar> = new Set<PowerBar>();
+  public selectedPowerbarsSet: Set<PowerBar> = new Set<PowerBar>();
   public selectedPowerbarsTerms: Set<string> = new Set<string>();
 
   /**
@@ -195,7 +202,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
           data.filter(d => !!d.value).forEach(d => {
             const value = d.value;
             const key = d.key;
-            const missingLeaf = Array.from(this.selectedPowerbarsList).filter(pw => pw.term === key)[0];
+            const missingLeaf = Array.from(this.selectedPowerbarsSet).filter(pw => pw.term === key)[0];
             const missingLeafToUpdate = Object.assign({}, missingLeaf);
             missingLeafToUpdate.count = value;
             missingLeafToUpdate.isSelected = true;
@@ -205,8 +212,8 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
                 this.colorsSaturationWeight)).toRgb();
               missingLeafToUpdate.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
             }
-            this.selectedPowerbarsList.delete(missingLeaf);
-            this.selectedPowerbarsList.add(missingLeafToUpdate);
+            this.selectedPowerbarsSet.delete(missingLeaf);
+            this.selectedPowerbarsSet.add(missingLeafToUpdate);
           });
         }
       });
@@ -255,7 +262,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     if (this.selectedPowerbarsTerms.has(powerBar.term)) {
       powerBar.isSelected = false;
       this.selectedPowerbarsTerms.delete(powerBar.term);
-      this.selectedPowerbarsList.delete(powerBar);
+      this.selectedPowerbarsSet.delete(powerBar);
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       (this.selectedPowerbarsTerms.size === 0) ? this.clearSelection() : powerBar.classSuffix = this.UNSELECTED_BAR;
     } else {
@@ -265,13 +272,13 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       powerBar.isSelected = true;
       powerBar.classSuffix = this.SELECTED_BAR;
       this.selectedPowerbarsTerms.add(powerBar.term);
-      this.addSelectedPowerbarToList(powerBar, this.selectedPowerbarsList);
+      this.addSelectedPowerbarToList(powerBar, this.selectedPowerbarsSet);
       this.unselectAllButNotSelectedBars();
     }
-    this.selectedPowerbarsList.forEach(pb => {
+    this.selectedPowerbarsSet.forEach(pb => {
       selectedPaths.push(pb.path);
     });
-    this.selectedPowerbarsList = this.sortSelectedPowerBars(this.selectedPowerbarsList);
+    this.selectedPowerbarsSet = this.sortSelectedPowerBars(this.selectedPowerbarsSet);
     this.selectedPowerBarEvent.next(selectedPaths);
   }
 
@@ -308,7 +315,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       this.addSelectedPowerbarToList(powerBar, selectedPowerbarsList);
     });
     this.selectedPowerbarsTerms = selectedPowerbarsTerms;
-    this.selectedPowerbarsList = this.sortSelectedPowerBars(selectedPowerbarsList);
+    this.selectedPowerbarsSet = this.sortSelectedPowerBars(selectedPowerbarsList);
     this.unselectAllButNotSelectedBars();
   }
 
@@ -398,7 +405,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       }
       sum += powerBar.count;
     });
-    this.selectedPowerbarsList.forEach(selectedPowerBar => {
+    this.selectedPowerbarsSet.forEach(selectedPowerBar => {
       if (selectedPowerBar.count.toString() === 'NaN') {
         selectedPowerBar.count = 0;
       }
@@ -416,7 +423,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       }
       powerBar.progression = Math.min(powerBar.progression, 100);
     });
-    this.selectedPowerbarsList.forEach(selectedPowerBar => {
+    this.selectedPowerbarsSet.forEach(selectedPowerBar => {
       selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
       if (selectedPowerBar.progression !== 0 && selectedPowerBar.progression !== 100) {
         selectedPowerBar.progression += 1;
@@ -427,7 +434,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   private unselectAllButNotSelectedBars() {
     if (this.selectedPowerbarsTerms.size === 0) {
-      this.selectedPowerbarsList = new Set<PowerBar>();
+      this.selectedPowerbarsSet = new Set<PowerBar>();
       this.clearSelection();
     } else {
       this.powerBarsList.forEach(powerBar => {
