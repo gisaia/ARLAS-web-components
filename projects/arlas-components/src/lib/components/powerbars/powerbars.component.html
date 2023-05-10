@@ -20,53 +20,36 @@
 
   <div [ngClass]="customizedCssClass">
     <div class="powerbars--container" [class.powerbar-scrollable]="scrollable">
-      <div *ngIf="selectedPowerbarsList.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
-        [style.min-height.px]="selectedPowerbarsList.size > 5 ? 126 : selectedPowerbarsList.size * 31">
-        <div *ngFor="let selectedPowerbar of selectedPowerbarsList"
+      <ng-container *ngIf="groupSelections">
+        <div *ngIf="selectedPowerbarsSet.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
+        [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 126 : selectedPowerbarsSet.size * 25">
+        <div *ngFor="let selectedPowerbar of selectedPowerbarsSet"
           class="powerbars__powerbar powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
           (click)="clickOnPowerbar(selectedPowerbar)"
           matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
           [matTooltipPosition]="'after'">
-
-          <div class="powerbar__powerbar--top-group">
-            <div class="powerbar__powerbar--term powerbar__powerbar--term--selected powerbar__powerbar--term--selected--{{selectedPowerbar.term}}">
-              {{selectedPowerbar.term | translate}}
-            </div>
-            <div class="powerbar__powerbar--count powerbar__powerbar--count--selected powerbar__powerbar--term-{{selectedPowerbar.classSuffix}} powerbar__powerbar--term--{{selectedPowerbar.term}}">
-              {{selectedPowerbar.count | shortenNumber:numberShorteningPrecision}}
-            </div>
-          </div>
-          
-          <div *ngIf="!useColorService && !useColorFromData" class="powerbars__powerbar--progression-default-colour"
-          [style.width]="selectedPowerbar.progression+'%'"></div>
-          <div *ngIf="useColorService || useColorFromData" [style.background-color]="selectedPowerbar.color"
-            [style.border-color]="selectedPowerbar.color" [style.width]="selectedPowerbar.progression+'%'" class="powerbars__powerbar--progression"></div>
-                      
+          <arlas-powerbar
+            [unit]="unit"
+            [powerbar]="selectedPowerbar"
+            [useColorFromData]="useColorFromData"
+            [useColorService]="useColorService"
+            [hideSelected]="false"
+            [numberShorteningPrecision]="numberShorteningPrecision"
+          ></arlas-powerbar>
         </div>
       </div>
+      </ng-container>
 
       <div [class.powerbar-list-scrollable]="scrollable">
         <div *ngFor="let powerbar of powerBarsList" (click)="clickOnPowerbar(powerbar)">
-          <div *ngIf="!powerbar.isSelected" class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}"
-          matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-          [matTooltipPosition]="'after'">
-
-            <div class="powerbar__powerbar--top-group">
-              <div class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">
-                {{powerbar.term | translate}}
-              </div>
-
-              <div class="powerbar__powerbar--count powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">
-                {{powerbar.count | shortenNumber:numberShorteningPrecision}}
-              </div>
-            </div>
-            
-            <div *ngIf="!useColorService && !useColorFromData" class="powerbars__powerbar--progression-default-colour"
-            [style.width]="powerbar.progression+'%'"></div>
-            <div *ngIf="useColorService || useColorFromData" [style.background-color]="powerbar.color"
-              [style.border-color]="powerbar.color" [style.width]="powerbar.progression+'%'" class="powerbars__powerbar--progression"></div>
-              
-          </div>
+          <arlas-powerbar
+            [unit]="unit"
+            [powerbar]="powerbar"
+            [useColorFromData]="useColorFromData"
+            [useColorService]="useColorService"
+            [numberShorteningPrecision]="numberShorteningPrecision"
+            [hideSelected]="groupSelections"
+          ></arlas-powerbar>
         </div>
       </div>
     </div>

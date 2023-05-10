@@ -1,0 +1,22 @@
+<ng-container *ngIf="!!powerbar">
+    <ng-container *ngIf="!powerbar.isSelected || (powerbar.isSelected && !hideSelected)">
+        <div class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}"
+            matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
+            [matTooltipPosition]="'after'">
+        <div class="powerbar__powerbar--top-group">
+            <div [class.powerbar__powerbar--selected]="powerbar.isSelected" class="powerbar__powerbar--term powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">
+            {{powerbar.term | translate}}
+            </div>
+
+            <div [class.powerbar__powerbar--selected]="powerbar.isSelected" class="powerbar__powerbar--count powerbar__powerbar--term-{{powerbar.classSuffix}} powerbar__powerbar--term--{{powerbar.term}}">
+            {{powerbar.count | shortenNumber:numberShorteningPrecision}}
+            </div>
+        </div>
+
+        <div *ngIf="!useColorService && !useColorFromData" class="powerbars__powerbar--progression-default-colour"
+        [style.width]="powerbar.progression+'%'"></div>
+        <div *ngIf="useColorService || useColorFromData" [style.background-color]="powerbar.color"
+            [style.border-color]="powerbar.color" [style.width]="powerbar.progression+'%'" class="powerbars__powerbar--progression"></div>
+        </div>
+    </ng-container>
+</ng-container>
