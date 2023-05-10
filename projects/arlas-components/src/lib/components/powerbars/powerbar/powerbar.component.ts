@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PowerBar } from '../model/powerbar';
 import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 
@@ -38,11 +38,23 @@ export class PowerbarComponent implements OnInit {
      */
     @Input() public hideSelected = true;
 
+    /**
+     * @Input : Angular
+     * @description Whether to have the option to select the powerbar using checkboxes.
+     */
+    @Input() public selectWithCheckbox = false;
+
+    @Output() public onCheckEvent: EventEmitter<boolean> = new EventEmitter();
+
 
     public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
 
     public ngOnInit(): void {
+    }
+
+    public onCheck() {
+        this.onCheckEvent.emit(true);
     }
 
 }

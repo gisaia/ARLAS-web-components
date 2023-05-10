@@ -34,7 +34,9 @@
             [useColorFromData]="useColorFromData"
             [useColorService]="useColorService"
             [hideSelected]="false"
+            [selectWithCheckbox]="selectWithCheckbox"
             [numberShorteningPrecision]="numberShorteningPrecision"
+            (onCheckEvent)="clickOnPowerbar(selectedPowerbar)"
           ></arlas-powerbar>
         </div>
       </div>
@@ -48,7 +50,9 @@
             [useColorFromData]="useColorFromData"
             [useColorService]="useColorService"
             [numberShorteningPrecision]="numberShorteningPrecision"
+            [selectWithCheckbox]="selectWithCheckbox"
             [hideSelected]="groupSelections"
+            (onCheckEvent)="clickOnPowerbar(powerbar)"
           ></arlas-powerbar>
         </div>
       </div>

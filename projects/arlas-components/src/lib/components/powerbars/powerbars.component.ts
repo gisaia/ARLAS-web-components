@@ -145,6 +145,12 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @Input() public groupSelections = true;
 
+  /**
+   * @Input : Angular
+   * @description Whether to have the option to select the powerbar using checkboxes.
+   */
+  @Input() public selectWithCheckbox = false;
+
 
   /**
    * @Output : Angular
