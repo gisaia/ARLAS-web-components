@@ -1,5 +1,13 @@
 # Change Log
 
+## [v24.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.1) (2023-05-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.0.1...v24.1.0-beta.1)
+
+**New stuff:**
+
+- make grouping selections optional [\#725](https://github.com/gisaia/ARLAS-web-components/issues/725) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
 ## [v24.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.0.1) (2023-04-20)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.0.0...v24.0.1)
