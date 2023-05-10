@@ -1,3 +1,12 @@
+.container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox {
+    margin-right: 5px; 
+    padding-bottom: 5px;
+}
 .powerbars__powerbar {
     position: relative;
     display: flex;
