@@ -58,6 +58,14 @@
                     "type": "boolean"
                 }
             }
+        },
+        "groupSelections": {
+            "description": "Whether to group the selected powerbars in a dedicated list or not.",
+            "type": "boolean"
+        },
+        "selectWithCheckbox": {
+            "description": " Whether to have the option to select the powerbar using checkboxes.",
+            "type": "boolean"
         }
     }
 }
