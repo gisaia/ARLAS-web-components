@@ -138,17 +138,18 @@
 .histogram__brush-tooltip__vertical--left, /* @doc Sets the vertical left brush tooltip style*/
 .histogram__brush-tooltip__vertical--right /* @doc Sets the vertical right brush tooltip style*/
 {
-
+  background-color: #fff;
+  border-radius: 2px;
 }
 
 .histogram__brush-tooltip__vertical--left__rotation {
-  transform: rotate(-90deg);
-  transform-origin: bottom right;
+  transform: rotate(-90deg) translateY(-100%);
+  transform-origin: top right;
 }
 
 .histogram__brush-tooltip__vertical--right__rotation {
-  transform: rotate(90deg);
-  transform-origin: bottom left;}
+  transform: rotate(90deg) translateY(-100%);
+  transform-origin: top left;}
 
 .histogram__remove /* @doc Sets the remove tooltip's style*/
 {
@@ -256,6 +257,11 @@
 .brush .selection /* @doc Sets the brush selection style*/
 {
   opacity: 0.1;
+}
+
+.slider-brush .selection /* @doc Sets the brush selection style*/
+{
+  opacity: 0;
 }
 
 .histogram__brush--handles /* @doc Sets the brush handles style*/

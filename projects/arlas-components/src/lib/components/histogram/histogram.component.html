@@ -9,7 +9,7 @@
   </div>
   <div [style.display]="histogram?.histogramParams.displaySvg" style="position:relative">
     <svg id="svgix" class="histogram__chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight"></svg>
-    <div *ngIf="histogram?.isBrushing">
+    <div *ngIf="chart?.brush?.isBrushing">
       <div #left [style.visibility]="histogram?.brushCornerTooltips.horizontalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--left"
         [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition">
         {{histogram?.brushCornerTooltips.leftCornerTooltip.content}}
@@ -20,11 +20,11 @@
       </div>
 
       <div #leftvertical [style.visibility]="histogram?.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--left__rotation histogram__brush-tooltip__vertical--left"
-        [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.bottom.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.leftCornerTooltip.width">
+        [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.leftCornerTooltip.width">
         {{histogram?.brushCornerTooltips.leftCornerTooltip.content}}
       </div>
       <div #rightvertical [style.visibility]="histogram?.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--right__rotation histogram__brush-tooltip__vertical--right"
-        [style.left.px]="histogram?.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.bottom.px]="histogram?.brushCornerTooltips.rightCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.rightCornerTooltip.width">
+        [style.left.px]="histogram?.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.rightCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.rightCornerTooltip.width">
         {{histogram?.brushCornerTooltips.rightCornerTooltip.content}}
       </div>
     </div>
