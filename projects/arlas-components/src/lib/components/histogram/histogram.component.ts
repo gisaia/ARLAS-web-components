@@ -25,7 +25,8 @@ import {
 import {
   ChartType, DataType, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
   HistogramUtils,
-  ChartCurve
+  ChartCurve,
+  SelectionType
 } from 'arlas-d3';
 
 import { Subject, fromEvent } from 'rxjs';
@@ -131,9 +132,21 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() public leftOffsetRemoveInterval = 18;
   /**
    * @Input : Angular
-   * @description A 0 to 1 weight of the brush height. It controls the brush handles height.
+   * @description A 0 to 1 weight of the brush handles height.
+   * This input will be taken into account when selectionType is 'rectangle'.
+   * (This input will be renamed handlesHeightWeight in the v25.0.0 release.)
    */
   @Input() public brushHandlesHeightWeight = 1;
+  /**
+   * @Input : Angular
+   * @description Radius of handles in pixels. This input will be taken into account when selectionType is 'slider'.
+   */
+   @Input() public handlesRadius = 4;
+  /**
+   * @Input : Angular
+   * @description Radius of handles in pixels. This input will be taken into account when selectionType is 'slider'.
+   */
+  @Input() public selectionType: SelectionType = SelectionType.slider;
   /**
    * @Input : Angular
    * @description Chart's representation type.
@@ -342,6 +355,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   @Output() public tooltipEvent: Subject<HistogramTooltip> = new Subject<HistogramTooltip>();
 
   public histogram: AbstractHistogram;
+  public chart: AbstractChart;
   public ChartType = ChartType;
   public Array = Array;
 
@@ -367,18 +381,22 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
       switch (this.chartType) {
       case ChartType.area: {
         this.histogram = new ChartArea();
+        this.chart = this.histogram as ChartArea;
         break;
       }
       case ChartType.curve: {
         this.histogram = new ChartCurve();
+        this.chart = this.histogram as ChartCurve;
         break;
       }
       case ChartType.bars: {
         this.histogram = new ChartBars();
+        this.chart = this.histogram as ChartBars;
         break;
       }
       case ChartType.oneDimension: {
         this.histogram = new ChartOneDimension();
+        this.chart = this.histogram as ChartOneDimension;
         break;
       }
       case ChartType.swimlane: {
@@ -493,14 +511,19 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     if (!this.yUnit) {
       this.yUnit = '';
     }
+    if (!this.selectionType) {
+      this.selectionType = SelectionType.slider;
+    }
     this.histogram.histogramParams = new HistogramParams();
     this.histogram.histogramParams.useUtc = this.useUtc;
+    this.histogram.histogramParams.selectionType = this.selectionType;
+    this.histogram.histogramParams.handlesRadius = this.handlesRadius;
     if (this.histogram.histogramParams.useUtc === undefined) {
       this.histogram.histogramParams.useUtc = true;
     }
     this.histogram.histogramParams.barWeight = this.barWeight;
     this.histogram.histogramParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
-    this.histogram.histogramParams.brushHandlesHeightWeight = this.brushHandlesHeightWeight;
+    this.histogram.histogramParams.handlesHeightWeight = this.brushHandlesHeightWeight;
     this.histogram.histogramParams.chartHeight = this.chartHeight;
     this.histogram.histogramParams.chartTitle = this.chartTitle;
     this.histogram.histogramParams.chartType = this.chartType;

@@ -231,6 +231,10 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     if (!this.unit) {
       this.unit = '';
     }
+
+    if (this.groupSelections === undefined) {
+      this.groupSelections = true;
+    }
   }
 
   public ngAfterViewInit(): void {

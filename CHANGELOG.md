@@ -1,5 +1,13 @@
 # Change Log
 
+## [v24.1.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.2) (2023-05-17)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.0-beta.1...v24.1.0-beta.2)
+
+**New stuff:**
+
+- select powerbars using checkboxes optionally [\#727](https://github.com/gisaia/ARLAS-web-components/issues/727) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
 ## [v24.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.1) (2023-05-10)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.0.1...v24.1.0-beta.1)
