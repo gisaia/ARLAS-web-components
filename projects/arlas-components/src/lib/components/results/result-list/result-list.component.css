@@ -186,6 +186,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 {
   cursor: pointer;
   float: left;
+  padding-top: 6px;
 }
 
 .resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
@@ -347,8 +348,8 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 }
 
 .fit-icon {
-  height: 18px;
-  width: 18px;
+  height: 18px !important;
+  width: 18px !important;
   font-size: 18px;
 }
 

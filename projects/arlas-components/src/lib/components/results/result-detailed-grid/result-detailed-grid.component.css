@@ -89,8 +89,12 @@
 }
 
 .resultgrid__info_outline, .resultgrid__close, .resultgrid__image {
-  line-height: 7px;
   font-size: 19px;
+}
+
+.resultgrid__info-button ::ng-deep.mat-button-wrapper {
+  display: block !important;
+  padding: 2px 0 !important;
 }
 
 .resultgrid-overlay{
