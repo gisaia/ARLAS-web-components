@@ -5,7 +5,7 @@ export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMo
 export { ArlasComponentsComponent } from './lib/arlas-components.component';
 export { ArlasComponentsModule } from './lib/arlas-components.module';
 export { ArlasComponentsService } from './lib/arlas-components.service';
-export { AwcColorGeneratorLoader, ColorGeneratorLoader } from './lib/components/componentsUtils';
+export { AwcColorGeneratorLoader, ColorGeneratorLoader, numberToShortValue } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
 export { DonutModule } from './lib/components/donut/donut.module';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
