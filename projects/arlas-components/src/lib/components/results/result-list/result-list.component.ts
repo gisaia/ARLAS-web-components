@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Component, DoCheck, ElementRef, HostListener, Input, IterableDiffers, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, HostListener, Input,
+  IterableDiffers, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
@@ -47,7 +48,7 @@ import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOp
   styleUrls: ['./result-list.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class ResultListComponent implements OnInit, DoCheck, OnChanges {
+export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 
   /**
    * @constant
@@ -100,11 +101,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * @constant
    */
   public GEOSORT_BUTTON = 'Geo-sort';
-  public COLUMN_ACTIONS_HEIGHT = 50;
-  public COLUMN_NAME_HEIGHT = 25;
+  public COLUMN_ACTIONS_HEIGHT = 52;
+  public COLUMN_NAME_HEIGHT = 27;
   public FILTERS_HEIGHT = 50;
   public TAIL_HEIGHT = 30;
-
 
 
   public loadAnimationConfig = {
@@ -164,7 +164,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * When scrolling up or down, once there is `nLastLines` items left at the top or bottom of the list, previous/next data is loaded.
    * @deprecated nLastLines is deprecated and used only if `nbLinesBeforeFetch` is not set
   */
-  @Input() public nLastLines = 5;
+  @Input() public nLastLines: number;
 
   /**
    * @Input : Angular
@@ -172,7 +172,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
    * When scrolling up or down, once there is `nbLinesBeforeFetch` items left at the top or bottom of the list, previous/next
    * data is loaded.
   */
-  @Input() public nbLinesBeforeFetch;
+  @Input() public nbLinesBeforeFetch = 5;
 
   /**
    * @Input : Angular
@@ -236,13 +236,20 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Input : Angular
-   * @description Whether the sort on the geometry is enalabled.
+   * @description Whether the sort on the geometry is enabled.
    */
   @Input() public isGeoSortEnabled = false;
 
+  /**
+   * @Input : Angular
+   * @description Whether the sort on the geometry is activated
+   */
   @Input() public isGeoSortActivated = false;
 
-
+  /**
+   * @Input : Angular
+   * @description The column that is currently sorted on
+   */
   @Input() public currentSortedColumn: Column;
 
   /**
@@ -382,7 +389,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
    * @Output : Angular
-   * @description Emits the event of applying the specified globalb action on the selected items.
+   * @description Emits the event of applying the specified global action on the selected items.
    */
   @Output() public columnFilterChanged: Subject<Column> = new Subject<Column>();
 
@@ -406,11 +413,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
   /**
   * @Output : Angular
-  * @description Emits on changes rowItemList current value .
+  * @description Emits on changes rowItemList current value.
   */
   @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
 
-
+  /**
+   * @Output : Angular
+   * @description Emits when changing how thumbnails fit in their div.
+   */
   @Output() public thumbnailFitEvent: Subject<ThumbnailFitEnum> = new Subject();
 
 
@@ -438,8 +448,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public resultMode: ModeEnum;
   public allItemsChecked = false;
 
-  private detailedGridCounter = 0;
-
   public borderStyle = 'solid';
   public displayListGrid = 'inline';
   public isShiftDown = false;
@@ -450,7 +458,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
 
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
-    private colorService: ArlasColorService, public translate: TranslateService) {
+    private colorService: ArlasColorService, public translate: TranslateService,
+    private cdr: ChangeDetectorRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     // Resize the table height on window resize
@@ -479,15 +488,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     this.resultMode = (this.defautMode && (this.defautMode.toString() === 'grid' ||
       this.defautMode.toString() === ModeEnum.grid.toString())) ? ModeEnum.grid : ModeEnum.list;
     this.options = Object.assign(new ResultListOptions(), this.options);
-    if (this.fieldsConfiguration !== undefined && this.fieldsConfiguration !== null) {
+    if (!!this.fieldsConfiguration) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
         this.hasGridMode = true;
       }
-      this.setTableWidth();
-      this.tbodyHeight = this.getOffSetHeight();
     }
+  }
 
-
+  public ngAfterViewInit(): void {
+    this.setTableWidth();
+    this.setTableHeight();
   }
 
   public emitThumbnailsFitStatus(fitChange: MatButtonToggleChange): void {
@@ -504,7 +514,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
         this.resultMode = ModeEnum.list;
         this.displayListGrid = 'inline';
       }
-      this.tbodyHeight = this.getOffSetHeight() - (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+      this.setTableHeight();
     }
 
     if (changes['rowItemList'] !== undefined) {
@@ -772,18 +782,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
   public setSelectedGridItem(item: Item) {
     this.selectedGridItem = item;
     this.isDetailledGridOpen = true;
-    if (this.detailedGridCounter === 0) {
-      this.detailedGridCounter++;
-    }
-    this.tbodyHeight = this.getOffSetHeight() - this.detailedGridHeight;
+    this.setTableHeight();
     this.clickOnTile.next(item);
   }
 
   public closeDetail(isClosed: boolean) {
     if (isClosed) {
-      this.detailedGridCounter = 0;
       this.isDetailledGridOpen = false;
-      this.tbodyHeight = this.getOffSetHeight();
+      this.setTableHeight();
     }
   }
 
@@ -799,7 +805,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
       this.displayListGrid = 'inline';
     }
     this.changeResultMode.next(this.resultMode);
-    this.tbodyHeight = this.getOffSetHeight() - (this.detailedGridHeight * this.resultMode * this.detailedGridCounter);
+    this.setTableHeight();
   }
 
   /**
@@ -1006,37 +1012,32 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges {
     }
   }
 
-  private setTableHeight() {
-    const nativeElement = this.el.nativeElement;
-    if (nativeElement) {
-      if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0] &&
-        nativeElement.childNodes[0].childNodes && nativeElement.childNodes[0].childNodes.length > 1 &&
-        nativeElement.childNodes[0].childNodes[1]) {
-        this.theadHeight = this.el.nativeElement.childNodes[0].childNodes[1].offsetHeight;
-      }
-      if (nativeElement.parentElement && nativeElement.parentElement.offsetHeight !== undefined && this.theadHeight !== undefined) {
-        this.tbodyHeight = this.el.nativeElement.parentElement.offsetHeight - this.theadHeight;
-        if (this.resultMode === ModeEnum.grid) {
-          this.tbodyHeight = this.tbodyHeight - this.TAIL_HEIGHT;
-        }
-      }
-    }
-  }
-
-  private getOffSetHeight(): number {
-    if (!this.displayFilters) {
-      if (this.resultMode === ModeEnum.grid) {
-        return this.el.nativeElement.parentElement.offsetHeight - (this.COLUMN_ACTIONS_HEIGHT + this.TAIL_HEIGHT);
-      } else {
-        return this.el.nativeElement.parentElement.offsetHeight - (this.COLUMN_ACTIONS_HEIGHT + this.COLUMN_NAME_HEIGHT);
-      }
+  /**
+   * @description Sets the table head and body height
+   */
+  private setTableHeight(nbTrials = 0) {
+    const tableElement = this.el.nativeElement.parentElement as HTMLElement;
+    if (tableElement.getBoundingClientRect().height !== 0) {
+      this.theadHeight = this.COLUMN_ACTIONS_HEIGHT +
+        // Only in list mode
+        this.COLUMN_NAME_HEIGHT * (this.resultMode === ModeEnum.list ? 1 : 0) +
+        // Only if filters are present
+        this.FILTERS_HEIGHT * (this.displayFilters ? 1 : 0);
+      this.tbodyHeight = tableElement.getBoundingClientRect().height - this.theadHeight -
+        // Only if the list is in grid mode
+        this.TAIL_HEIGHT * (this.resultMode === ModeEnum.grid ? 1 : 0) -
+        // Only if the list is in grid mode and has an element selected
+        this.detailedGridHeight * (this.resultMode === ModeEnum.grid ? 1 : 0) * (this.isDetailledGridOpen ? 1 : 0);
+      this.cdr.detectChanges();
     } else {
-      if (this.resultMode === ModeEnum.grid) {
-        return this.el.nativeElement.parentElement.offsetHeight -
-          (this.COLUMN_ACTIONS_HEIGHT + this.FILTERS_HEIGHT + this.TAIL_HEIGHT);
+      // If the container has no height then try again for up to 10 times
+      // Because of an issue with the DOM not loading properly the parent container, its height can be detected to be 0,
+      // even with a preset height. Multiple tiemout values were tested, but they don't have an impact on this behavior.
+      if (nbTrials < 10) {
+        setTimeout(() => this.setTableHeight(nbTrials + 1), 0);
       } else {
-        return this.el.nativeElement.parentElement.offsetHeight -
-          (this.COLUMN_ACTIONS_HEIGHT + this.COLUMN_NAME_HEIGHT + this.FILTERS_HEIGHT);
+        console.error('Failed to load the result list\'s height in less than 10 trials.' +
+          'Try to limit the element visibility to when it is really on screen to avoid this issue.');
       }
     }
   }
