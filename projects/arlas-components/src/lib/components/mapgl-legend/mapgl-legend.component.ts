@@ -389,7 +389,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
             colorLegend.minValue = legendData.get(field).minValue;
             colorLegend.maxValue = legendData.get(field).maxValue;
           // For heatmaps, the count is used to fetch data, so we use it for the legend
-          } else if (field === HEATMAP_DENSITY && legendData.get('count')) {
+          } else if (field === HEATMAP_DENSITY && legendData && legendData.get('count')) {
             colorLegend.minValue = legendData.get('count').minValue;
             colorLegend.maxValue = legendData.get('count').maxValue;
           } else {
