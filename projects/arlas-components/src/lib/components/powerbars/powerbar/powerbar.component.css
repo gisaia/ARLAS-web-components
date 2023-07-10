@@ -41,7 +41,6 @@
 
 .powerbars__powerbar--progression-default-colour /* @doc Style of all powerbars progression bar when no color is specified.*/ {
     background-color: #88c9c3;
-    border: 1px solid #88c9c3;
     height: 4px;
     border-radius: 2px;
 }
