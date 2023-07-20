@@ -18,5 +18,6 @@
  */
 
 export enum CellBackgroundStyleEnum {
-  filled, outlined
+  filled = 'filled',
+  outlined = 'outlined'
 }
