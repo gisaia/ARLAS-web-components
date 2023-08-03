@@ -1,25 +1,29 @@
-<div class="layer_wrapper">
+<div class="layer_wrapper" (mouseenter)="onHover(true)" (mouseleave)="onHover(false)">
   <div class=collection_color matTooltip="Collection: {{collection}}" [style.backgroundColor]="!!collection ? colorService.getColor(collection) : 'transparent'"></div>
   <div class="layer_container" >
     <div class="layer_icon_container">
       <div class="layer_icon" >
-          <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [strokeColorLegend]="strokeColorLegend" [lineDasharray]="lineDasharray" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon>
+        <arlas-mapgl-layer-icon [layer]="layer" [colorLegend]="colorLegend" [strokeColorLegend]="strokeColorLegend" [lineDasharray]="lineDasharray" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-mapgl-layer-icon>
       </div>
       <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">{{layer?.id | layerIdToName | translate}}</div>
     </div>
     <div class="layer_detail">
-      <div class="download_button">
-        <mat-icon class="download_icon" [matMenuTriggerFor]="menu" [matTooltip]="'Download the layer\'s data' | translate">file_download</mat-icon>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="downloadLayerSource(layer, 'csv')">
-            <span>{{'CSV' | translate}}</span>
-          </button>
-          <button mat-menu-item (click)="downloadLayerSource(layer, 'geojson')">
-            <span>{{'GeoJson' | translate}}</span>
-          </button>
-        </mat-menu>
-      </div>
-      <div class="detail_button" (click)="showDetail($event)">
+      <mat-icon *ngIf="displayActionMenu || isActionMenuOpen" class="menu_icon" [matMenuTriggerFor]="menu" (menuOpened)="onMenu(true)" (menuClosed)="onMenu(false)">settings</mat-icon>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="downloadLayerSource(layer, 'csv')">
+          <mat-icon>file_download</mat-icon>
+          <span>{{'Download CSV' | translate}}</span>
+        </button>
+        <button mat-menu-item (click)="downloadLayerSource(layer, 'geojson')">
+          <mat-icon>file_download</mat-icon>
+          <span>{{'Download GeoJson' | translate}}</span>
+        </button>
+        <button mat-menu-item (click)="editLayerStyle()">
+          <mat-icon>edit</mat-icon>
+          <span>{{'Edit layer style' | translate}}</span>
+        </button>
+      </mat-menu>
+      <div (click)="showDetail($event)">
         <mat-icon class="detail_icon" *ngIf="!detail">keyboard_arrow_down</mat-icon>
         <mat-icon class="detail_icon" *ngIf="detail">keyboard_arrow_up</mat-icon>
       </div>
@@ -105,4 +109,3 @@
     </div>
   </div>
 </div>
-

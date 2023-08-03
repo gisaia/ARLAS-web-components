@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { curveLinear, area, line } from 'd3-shape';
@@ -44,7 +44,7 @@ export const HEATMAP_DENSITY = 'Heatmap-density';
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
-  styleUrls: ['./mapgl-legend.component.css']
+  styleUrls: ['./mapgl-legend.component.scss']
 })
 export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   /**
@@ -87,6 +87,13 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() public visibilityStatus: Subject<boolean> = new Subject();
 
   @Output() public downloadSourceEmitter: Subject<{layer: mapboxgl.Layer; downloadType: string;}> = new Subject();
+
+  /**
+   * @Output : Angular
+   * @description Notifies that a layer style edition is requested
+   */
+  @Output() public editLayerStyleEvent: EventEmitter<void> = new EventEmitter();
+
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
@@ -99,6 +106,16 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
+  /**
+   * @description Whether to display the action menu of the layer
+   */
+  public displayActionMenu = false;
+
+  /**
+   * @description Whether the action menu of the layer is open
+   */
+  public isActionMenuOpen = false;
+
   private legendData: Map<string, LegendData> = new Map();
   private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
@@ -106,8 +123,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public colorsPalette = '';
   public strokeColorPalette = '';
 
-  public constructor(public translate: TranslateService, private el: ElementRef,
-    public colorService: ArlasColorService) { }
+  public constructor(
+    public translate: TranslateService,
+    public colorService: ArlasColorService
+  ) { }
 
 
   public ngOnInit() {
@@ -175,6 +194,18 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public showDetail(event: Event) {
     this.detail = !this.detail;
     event.stopPropagation();
+  }
+
+  public editLayerStyle(): void {
+    this.editLayerStyleEvent.next();
+  }
+
+  public onHover(state: boolean): void {
+    this.displayActionMenu = state;
+  }
+
+  public onMenu(state: boolean): void {
+    this.isActionMenuOpen = state;
   }
 
   /** Parses the `paint` attribute of a layer and draws the legend elements such as

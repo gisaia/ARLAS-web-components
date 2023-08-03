@@ -405,6 +405,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     downloadType: string;
   }> = new Subject();
 
+  @Output() public editLayerStyleEvent: EventEmitter<mapboxgl.Layer> = new EventEmitter();
+
   public showBasemapsList = false;
   public layersMap: Map<string, mapboxgl.Layer>;
   public basemapStylesGroup: BasemapStylesGroup;
@@ -1324,6 +1326,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.setBaseMapStyle(selectedStyle.styleFile);
     localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(selectedStyle));
     this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
+  }
+
+  public onEditLayerStyle(l: mapboxgl.Layer) {
+    this.editLayerStyleEvent.next(l);
   }
 
   /**

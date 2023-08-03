@@ -24,26 +24,17 @@
 .layer_detail {
   display: flex;
 }
-.detail_button, .download_button {
+
+.menu_icon,
+.detail_icon {
   background-color: #fff;
+  color: #555;
   display: flex;
-  height: 20px;
-  width: 20px;
+  height: 16px;
+  width: 16px;
+  font-size: 16px;
   position: relative;
   cursor: pointer;
-}
-.detail_icon, .download_icon {
-  color: #555;
-  font-size: 1.3em;
-  position: absolute;
-  top: 2px;
-  left: 0px;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-}
-.download_icon {
-  margin-right: 3px;
 }
 
 .layer_icon {

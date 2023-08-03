@@ -22,7 +22,8 @@
               [layer]="l | getLayer: layersMap " [zoom]="zoom"
               (visibilityStatus)="emitLegendVisibility(visu.name,l, $event)" [legendUpdater]="legendUpdater"
               [visibilityUpdater]="visibilityUpdater"
-              (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-mapgl-legend>
+              (downloadSourceEmitter)="downloadLayerSource($event)"
+              (editLayerStyleEvent)="onEditLayerStyle(l)"></arlas-mapgl-legend>
             <div cdkDragHandle class="map__visu-layer-drag">
               <mat-icon>drag_indicator</mat-icon>
             </div>

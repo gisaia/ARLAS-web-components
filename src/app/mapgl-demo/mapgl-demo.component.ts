@@ -506,6 +506,26 @@ export class MapglDemoComponent implements OnInit {
     'features': []
   };
 
+  public visualisationSets = [
+    {
+        'name': 'Latest products',
+        'layers': [
+            'arlas_id:Latest products:1684942979734'
+        ],
+        'enabled': true
+    },
+    {
+        'name': 'All products',
+        'layers': [
+            'arlas_id:Number of products:1684942985675',
+            'arlas_id:Density of products:1684942995957',
+            'arlas_id:Products:1684943000566',
+            'arlas_id:Product density grid:1684942990215'
+        ],
+        'enabled': true
+    }
+  ];
+
   public constructor() { }
 
   public ngOnInit(): void {
@@ -575,6 +595,11 @@ export class MapglDemoComponent implements OnInit {
 
   public openSettings() {
     this.mapSettings.openDialog(new MapSettings());
+  }
+
+  public onEditLayerStyleEvent(event) {
+    console.log('editing layer style');
+    console.log(event);
   }
 }
 
