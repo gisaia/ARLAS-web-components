@@ -19,11 +19,17 @@
 
 import { Injectable } from '@angular/core';
 import { ColorGeneratorLoader } from '../components/componentsUtils';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class ArlasColorService {
 
-  public constructor(public colorGenerator: ColorGeneratorLoader) {}
+  private changekeysToColors =  new Subject<void>();
+  public changekeysToColors$ = this.changekeysToColors.asObservable();
+  public constructor(public colorGenerator: ColorGeneratorLoader) {
+    this.colorGenerator.changekeysToColors$.subscribe(() => this.changekeysToColors.next());
+
+  }
 
   public getColor(key: string, keysToColors?: Array<[string, string]>, colorsSaturationWeight?: number): string {
     return this.colorGenerator.getColor(key, keysToColors, colorsSaturationWeight);
@@ -32,6 +38,7 @@ export class ArlasColorService {
   public getTextColor(color): string {
     return this.colorGenerator.getTextColor(color);
   }
+
 }
 
 

@@ -131,6 +131,11 @@ export class DonutComponent implements OnChanges {
       .subscribe((event: Event) => {
         this.donut.resize(this.el.nativeElement.childNodes[0]);
       });
+      this.colorService.changekeysToColors$.subscribe(() => {
+        this.donut.donutParams.keysToColors = this.colorService.colorGenerator.keysToColors;
+        this.donut.donutParams.donutNodeColorizer = this.colorService;
+        this.donut.resize(this.el.nativeElement.childNodes[0]);
+    });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

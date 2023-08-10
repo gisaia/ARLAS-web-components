@@ -21,10 +21,12 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultItemComponent } from './result-item.component';
 import { ArlasColorService } from '../../../services/color.generator.service';
-import { ColorGeneratorLoader } from '../../componentsUtils';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ColorGeneratorModule } from '../../../services/color.generator.module';
+import { Item } from '../model/item';
 
 describe('ResultItemComponent', () => {
   let component: ResultItemComponent;
@@ -36,10 +38,15 @@ describe('ResultItemComponent', () => {
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
         MatIconModule,
-        MatTooltipModule
+        MatTooltipModule,
+        ColorGeneratorModule.forRoot({
+          loader: {
+            provide: ColorGeneratorLoader,
+            useClass: AwcColorGeneratorLoader
+          }
+        })
       ],
       providers: [
-        ColorGeneratorLoader,
         ArlasColorService
       ]
     })
