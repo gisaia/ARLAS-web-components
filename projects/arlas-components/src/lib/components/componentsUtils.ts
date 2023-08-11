@@ -20,6 +20,7 @@
 import { mix } from 'tinycolor2';
 import { isNumber } from 'util';
 import { UntypedFormControl, Validators } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
 
 export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
@@ -67,8 +68,9 @@ export function getValues(map): Array<any> {
 }
 
 export abstract class ColorGeneratorLoader {
-  public abstract keysToColors: Array<Array<string>>;
-  public abstract colorsSaturationWeight: number ;
+  public abstract keysToColors: Array<[string, string]>;
+  public abstract colorsSaturationWeight: number;
+  public abstract changekeysToColors$: Observable<void>;
   /**
    * This method generates a determistic color from the given key, a list of [key, color] and a saturation weight.
    * @param key The text from which the color is generated
@@ -81,9 +83,9 @@ export abstract class ColorGeneratorLoader {
 }
 
 export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
-  public keysToColors: Array<Array<string>>;
-  public colorsSaturationWeight = 0.5 ;
-
+  public changekeysToColors$: Observable<void> = new Subject<void>().asObservable();
+  public keysToColors: Array<[string, string]>;
+  public colorsSaturationWeight = 0.5;
   /**
    * This method generates a determistic color from the given key, a list of [key, color] and a saturation weight.
    * - First the method checks if the [key,color] is defined in externalkeysToColors and returns the correspondant color.
@@ -135,12 +137,11 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
     }
     // int to rgb
     let hex = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-    hex =  '00000'.substring(0, 6 - hex.length) + hex;
+    hex = '00000'.substring(0, 6 - hex.length) + hex;
     const color = mix(hex, hex);
     color.saturate(color.toHsv().s * saturationWeight + ((1 - saturationWeight) * 100));
     return color.toHexString();
   }
-
 }
 
 export class SelectFormControl extends UntypedFormControl {

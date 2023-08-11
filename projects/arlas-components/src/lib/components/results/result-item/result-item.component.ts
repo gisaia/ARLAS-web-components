@@ -126,16 +126,20 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public detailedData = '';
   public actions;
   public borderStyle = 'solid';
+  public colors = {};
   protected identifier: string;
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   public constructor(public colorService: ArlasColorService, public translate: TranslateService) {
     super();
+    this.colorService.changekeysToColors$.subscribe(() => this.updateColors());
   }
 
   public ngOnInit() {
     this.identifier = this.rowItem?.identifier;
+    this.updateColors();
+
   }
 
   // Detailed data is retrieved wheb the row is toggled for the first time
@@ -166,15 +170,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public getColor(key): string {
-    if (key !== undefined && key !== null) {
-      return this.colorService.getColor(key.toString(), this.keysToColors, this.colorsSaturationWeight);
-    } else {
-      return '';
-    }
-  }
-
-  public getTextColor(key: string): string {
+  public getTextColor(key): string {
     if (key !== undefined && key !== null) {
       return this.colorService.getTextColor(key.toString());
     } else {
@@ -185,5 +181,31 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public triggerActionOnItem(action: Action) {
     this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
   }
+
+  private updateColors() {
+    const newColor = {};
+    this.rowItem?.columns.forEach(c => {
+      if(c.useColorService){
+        const key = this.rowItem?.itemData.get(c.fieldName);
+        if (key !== undefined && key !== null) {
+          newColor[key.toString()] = {};
+          newColor[key.toString()]['color'] = this.getColor(key);
+          newColor[key.toString()]['textColor'] = this.getTextColor(key);
+
+        }
+      }
+    });
+    this.colors = newColor;
+  }
+
+  private getColor(key): string {
+    if (key !== undefined && key !== null) {
+      return this.colorService.getColor(key.toString(), this.keysToColors, this.colorsSaturationWeight);
+    } else {
+      return '';
+    }
+  }
+
+
 
 }

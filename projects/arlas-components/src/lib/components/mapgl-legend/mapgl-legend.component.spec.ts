@@ -7,10 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { ColorGeneratorLoader } from '../componentsUtils';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { LayerIdToName } from './layer-name.pipe';
 import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
 import { MatMenuModule } from '@angular/material/menu';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 
 describe('MapglLegendComponent', () => {
   let component: MapglLegendComponent;
@@ -25,11 +26,16 @@ describe('MapglLegendComponent', () => {
         MatMenuModule,
         MatTooltipModule,
         MapglLayerIconModule,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        ColorGeneratorModule.forRoot({
+          loader: {
+            provide: ColorGeneratorLoader,
+            useClass: AwcColorGeneratorLoader
+          }
+        })
       ],
       providers: [
-        ArlasColorService,
-        ColorGeneratorLoader
+        ArlasColorService
       ]
     })
       .compileComponents();

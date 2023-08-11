@@ -21,8 +21,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DonutComponent } from './donut.component';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { ColorGeneratorLoader } from '../componentsUtils';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 
 describe('DonutComponent', () => {
   let component: DonutComponent;
@@ -33,11 +34,15 @@ describe('DonutComponent', () => {
       declarations: [ DonutComponent ],
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        ColorGeneratorModule.forRoot({
+          loader: {
+            provide: ColorGeneratorLoader,
+            useClass: AwcColorGeneratorLoader
+          }
+        })
       ],
       providers: [
-        ArlasColorService,
-        ColorGeneratorLoader
-      ]
+        ArlasColorService      ]
     })
       .compileComponents();
   }));

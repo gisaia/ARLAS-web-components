@@ -194,6 +194,15 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   public constructor(private colorService: ArlasColorService) {
+    this.colorService.changekeysToColors$.subscribe(() => {
+        this.powerBarsList.forEach(p => {
+          if (this.useColorService) {
+            const rgbaColor = tinycolor.default(this.colorService.getColor(p.term, this.keysToColors,
+              this.colorsSaturationWeight)).toRgb();
+            p.color = this.getPowerbarColor(rgbaColor);
+          }
+        });
+    });
   }
 
   public static getPowerbarsJsonSchema(): Object {
@@ -216,7 +225,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
             if (this.useColorService) {
               const rgbaColor = tinycolor.default(this.colorService.getColor(missingLeafToUpdate.term, this.keysToColors,
                 this.colorsSaturationWeight)).toRgb();
-              missingLeafToUpdate.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
+              missingLeafToUpdate.color = this.getPowerbarColor(rgbaColor);
             }
             this.selectedPowerbarsSet.delete(missingLeaf);
             this.selectedPowerbarsSet.add(missingLeafToUpdate);
@@ -309,11 +318,9 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
         if (this.useColorService) {
           const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
             this.colorsSaturationWeight)).toRgb();
-          powerBar.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
+          powerBar.color = this.getPowerbarColor(rgbaColor);
         }
       } else {
-
-
         powerBar = currentPath.length > 1 ? new PowerBar(currentPath[0].fieldValue, currentPath[1].fieldValue, 0) :
           new PowerBar(currentPath[0].fieldValue, 'root', 0);
         powerBar.path = currentPath;
@@ -387,7 +394,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
           if (this.useColorService) {
             const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
               this.colorsSaturationWeight)).toRgb();
-            powerBar.color = 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
+            powerBar.color = this.getPowerbarColor(rgbaColor);
           }
           if (this.useColorFromData) {
             powerBar.color = child.color.toString()[0] === '#' ? child.color.toString() : '#'.concat(child.color.toString());
@@ -489,5 +496,9 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       }
     });
     return foundPowerbar;
+  }
+
+  private getPowerbarColor(rgbaColor: tinycolor.ColorFormats.RGBA): string{
+    return 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
   }
 }
