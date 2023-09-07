@@ -123,7 +123,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public FINISH_DRAWING = 'Double click to finish drawing';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
   private ICONS_BASE_PATH = 'assets/icons/';
 
   /**
@@ -389,9 +388,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
   /**
    * @Output :  Angular
-   * @description Emits the geojson of an aoi added to the map
+   * @description Emits the style of the basemap applied to the map
    */
-  @Output() public onBasemapChanged: Subject<boolean> = new Subject();
+  @Output() public onBasemapChanged: EventEmitter<BasemapStyle> = new EventEmitter();
   /**
    * @Output :  Angular
    * @description Emits which layers are displayed in the Legend
@@ -697,7 +696,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.map.setStyle(style).once('styledata', () => {
       this.addSourcesToMap(sourcesToSave, this.map);
       layersToSave.forEach(l => this.map.addLayer(l));
-      this.onBasemapChanged.next(true);
+      this.onBasemapChanged.next(this.basemapStylesGroup.selectedBasemapStyle);
     });
   }
 
@@ -1324,7 +1323,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
     this.setBaseMapStyle(selectedStyle.styleFile);
-    localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(selectedStyle));
     this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
   }
 
@@ -1543,16 +1541,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (!this.defaultBasemapStyle) {
       throw new Error('[defaultBasemapStyle] input is null or undefined.');
     }
-    const allBasemapStyles = this.getAllBasemapStyles();
-    const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
-    /** check if a basemap style is saved in local storage and that it exists in [allBasemapStyles] list */
-    if (localStorageBasemapStyle && allBasemapStyles.filter(b => b.name === localStorageBasemapStyle.name
-      && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
-      return localStorageBasemapStyle;
-    } else {
-      localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(this.defaultBasemapStyle));
-      return this.defaultBasemapStyle;
-    }
+    return this.defaultBasemapStyle;
   }
 
   /**
