@@ -25,7 +25,7 @@ import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
-import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
+import {AoiEdition, AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
 
 @Injectable()
 export class MapboxAoiDrawService {

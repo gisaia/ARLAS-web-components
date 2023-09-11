@@ -44,3 +44,9 @@ export interface BboxDrawCommand {
   north: number;
   south: number;
 }
+
+export interface AoiEdition {
+  area: number;
+  show: boolean;
+  widthHeightBBox: [number, number];
+}
