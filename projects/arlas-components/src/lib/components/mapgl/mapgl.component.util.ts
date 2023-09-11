@@ -66,6 +66,16 @@ export interface MapExtend {
   zoom: number;
 }
 
+@Pipe({ name: 'getLayerDetail'})
+export class GetLayerDetailPipe implements PipeTransform {
+  public transform(layerName: string, visuSetName: string, layerDetailMap: Map<string, Map<string, boolean>>): boolean {
+    if (!!layerDetailMap && layerDetailMap.get(visuSetName)) {
+      return layerDetailMap.get(visuSetName).get(layerName) === true;
+    }
+    return false;
+  }
+}
+
 @Pipe({ name: 'getLayer' })
 export class GetLayerPipe implements PipeTransform {
   public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): mapboxgl.Layer {

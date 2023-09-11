@@ -2,7 +2,7 @@
   <div class="map__visu-list--wrapper">
     <div class="map_legend-button--wrapper">
       <div class="map_legend-button-icon" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
-        <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
+        <mat-icon (click)="toggleLegend()">layers</mat-icon>
       </div>
     </div>
     <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
@@ -17,11 +17,12 @@
         </div>
         <div class="map_visu-content-container" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
           <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer"
-            [class.cdk-visually-hidden]="visibilityStatus.get(visu.name + ':arlas_vset:' + l) === false">
+            [class.cdk-visually-hidden]="!visibilityStatus.get(visu.name + ':arlas_vset:' + l)">
             <arlas-mapgl-legend [collection]="l | getCollection: layersMap " [enabled]="visu.enabled"
               [layer]="l | getLayer: layersMap " [zoom]="zoom"
               (visibilityStatus)="emitLegendVisibility(visu.name,l, $event)" [legendUpdater]="legendUpdater"
               [visibilityUpdater]="visibilityUpdater"
+              [detail]="l | getLayerDetail:visu.name:layerDetailMap" (detailChange)="onLayerDetailChange(l, visu.name, $event)"
               (downloadSourceEmitter)="downloadLayerSource($event)"
               (editLayerStyleEvent)="onEditLayerStyle(l)"></arlas-mapgl-legend>
             <div cdkDragHandle class="map__visu-layer-drag">

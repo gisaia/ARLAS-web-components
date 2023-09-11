@@ -102,7 +102,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   public map: any;
   public draw: any;
   public zoom: number;
-  public legendOpen = true;
   private emptyData: FeatureCollection = {
     'type': 'FeatureCollection',
     'features': []
@@ -338,6 +337,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   @Input() public icons: Array<IconConfig>;
 
   /**
+   * @Input : Angular
+   * @description Whether the map legend is open
+   */
+  @Input() public legendOpen = true;
+
+  /**
+   * @Input : Angular
+   * @description Emits whether the map legend is open
+   */
+  @Output() public legendOpenChange = new EventEmitter<boolean>();
+
+  /**
    * @Output : Angular
    * @description Emits true after the map is loaded and all sources & layers are added.
   */
@@ -440,8 +451,23 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
 
+  // Some layers can have the same name but be in different visualisation sets
+  @Input() public layerDetailMap: Map<string, Map<string, boolean>> = new Map();
+  @Output() public layerDetailChange = new EventEmitter<{layer: string; vs: string; isOpen: boolean;}>();
+
   public constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
 
+  public onLayerDetailChange(l: string, vs: string, isOpen: boolean) {
+    if (this.layerDetailMap.get(vs)) {
+      this.layerDetailMap.get(vs).set(l, isOpen);
+    } else {
+      const map = new Map<string, boolean>();
+      map.set(l, isOpen);
+      this.layerDetailMap.set(vs, map);
+    }
+
+    this.layerDetailChange.next({layer: l, vs: vs, isOpen: isOpen});
+  }
 
   /**
    *
@@ -1420,6 +1446,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public hideBasemapSwitcher() {
     this.showBasemapsList = false;
+  }
+
+  public toggleLegend() {
+    this.legendOpen = !this.legendOpen;
+    this.legendOpenChange.next(this.legendOpen);
   }
 
   private latLngToWKT(features) {

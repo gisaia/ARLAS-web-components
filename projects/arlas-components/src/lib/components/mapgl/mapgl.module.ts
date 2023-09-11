@@ -31,7 +31,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { GetCollectionPipe, GetLayerPipe } from './mapgl.component.util';
+import { GetCollectionPipe, GetLayerPipe, GetLayerDetailPipe } from './mapgl.component.util';
 import { MapglBasemapModule } from '../mapgl-basemap/mapgl-basemap.module';
 
 
@@ -51,7 +51,7 @@ import { MapglBasemapModule } from '../mapgl-basemap/mapgl-basemap.module';
     MatChipsModule,
     DragDropModule
   ],
-  declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe],
+  declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe, GetLayerDetailPipe],
   exports: [MapglComponent]
 })
 export class MapglModule {

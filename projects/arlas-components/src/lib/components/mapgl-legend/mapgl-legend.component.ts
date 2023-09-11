@@ -80,6 +80,18 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
 
+
+  /**
+   * @Input : Angular
+   * @description Whether to display the legend details
+   */
+  @Input() public detail = false;
+  /**
+   * @Input : Angular
+   * @description Emits whether to display the legend details
+   */
+  @Output() public detailChange = new EventEmitter<boolean>();
+
   /**
    * @Output : Angular
    * @description Notifies the parent component that this layer is visible or not
@@ -102,7 +114,6 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   public strokeColorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
-  public detail = false;
   public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
@@ -150,9 +161,6 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       if (!this.enabled) {
         this.visibleMode = false;
       }
-      if (!this.visibleMode) {
-        this.detail = this.visibleMode;
-      }
       /** check legend visibility for external layers that are not set by config nor map contributors */
       if (this.layer && !this.layer.id.startsWith(ARLAS_ID) &&
         !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
@@ -193,6 +201,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
 
   public showDetail(event: Event) {
     this.detail = !this.detail;
+    this.detailChange.next(this.detail);
     event.stopPropagation();
   }
 
