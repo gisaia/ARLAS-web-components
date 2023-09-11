@@ -33,6 +33,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { GetCollectionPipe, GetLayerPipe } from './mapgl.component.util';
 import { MapglBasemapModule } from '../mapgl-basemap/mapgl-basemap.module';
+import { MapboxAoiDrawService } from './draw/draw.service';
 
 
 @NgModule({
@@ -52,6 +53,9 @@ import { MapglBasemapModule } from '../mapgl-basemap/mapgl-basemap.module';
     DragDropModule
   ],
   declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe],
+  providers: [
+    MapboxAoiDrawService
+  ],
   exports: [MapglComponent]
 })
 export class MapglModule {
