@@ -51,7 +51,7 @@ import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
 import { MapboxAoiDrawService } from './draw/draw.service';
-import { AoiEdition } from './draw/draw.models';
+import { AoiDimensions } from './draw/draw.models';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -115,12 +115,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   private west: number;
   private south: number;
   private isDrawingBbox = false;
-  private start: mapboxgl.Point;
   private canvas: HTMLElement;
   private box: HTMLElement;
+  // points which xy coordinates are in screen referential
+  private start: mapboxgl.Point;
   private current: mapboxgl.Point;
-  private startlngLat: any;
-  private endlngLat: any;
+  // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
+  private startlngLat: mapboxgl.LngLat;
+  private endlngLat: mapboxgl.LngLat;
+  private movelngLat: mapboxgl.LngLat;
+
   private savedEditFeature = null;
 
   public FINISH_DRAWING = 'Double click to finish drawing';
@@ -388,7 +392,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    * @description Emits the geojson of an aoi added to the map
    */
   @Output() public onAoiChanged: EventEmitter<FeatureCollection> = new EventEmitter();
-  @Output() public onAoiEdit: EventEmitter<AoiEdition> = new EventEmitter();
+  @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
   /**
    * @Output :  Angular
    * @description Emits the geojson of an aoi added to the map
@@ -442,7 +446,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
     private _snackBar: MatSnackBar, private translate: TranslateService) {
-      this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
+    this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
   }
 
 
@@ -618,7 +622,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map !== undefined) {
       if (changes['drawData'] !== undefined) {
-        console.log('draw data changed (on changes angular, provided donc by the contributor)');
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
@@ -762,17 +765,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         unit: this.unitScale,
       });
       this.map.addControl(scale, 'bottom-right');
-    }
-
-    if (this.displayCurrentCoordinates) {
-      this.map.on('mousemove', (e) => {
-        let lngLat = e.lngLat;
-        if (this.wrapLatLng) {
-          lngLat = lngLat.wrap();
-        }
-        this.currentLng = String(Math.round(lngLat.lng * 100000) / 100000);
-        this.currentLat = String(Math.round(lngLat.lat * 100000) / 100000);
-      });
     }
 
     const navigationControllButtons = new mapboxgl.NavigationControl();
@@ -960,11 +952,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         });
       }
       this.map.showTileBoundaries = false;
-      this.map.on('mousemove', (e) => {
-        if (this.isDrawingBbox || this.isDrawingPolygon) {
-          this.map.getCanvas().style.cursor = 'crosshair';
-        }
-      });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.map.on('draw.create', (e) => {
@@ -980,7 +967,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       });
 
       this.map.on('draw.update', (e) => {
-        console.log('update', e);
         if (e) {
           const features = e.features;
           if (features && features.length > 0) {
@@ -1003,31 +989,26 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         const y = e.clientY;
         this.finishDrawTooltip.style.top = (y + 20) + 'px';
         this.finishDrawTooltip.style.left = (x + 20) + 'px';
-        console.log('move for draw');
       };
 
       this.map.on('draw.onClick', (e) => {
-        console.log('on draw click', e, this.drawClickCounter);
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
         this.drawClickCounter++;
       });
       this.map.on('draw.onStart', (e) => {
-        console.log('on draw start', e, this.drawClickCounter);
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.map.getCanvas().style.cursor = '';
       });
       this.map.on('draw.onStop', (e) => {
-        console.log('on draw stop', e, this.drawClickCounter);
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.map.getCanvas().style.cursor = '';
       });
 
       this.map.on('draw.invalidGeometry', (e) => {
-        console.log('on invalid geometry', e);
         if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
           if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
@@ -1052,14 +1033,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       });
 
       this.map.on('draw.edit.saveInitialFeature', (edition) => {
-        console.log('save initial feature', edition);
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
       this.map.on('draw.selectionchange', (e) => {
-        console.log('selection change', e);
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawPolyonSelected = true;
@@ -1083,7 +1062,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         }
       });
       this.map.on('draw.modechange', (e) => {
-        console.log('mode change', e);
         if (e.mode === 'draw_polygon') {
           this.isDrawingPolygon = true;
           this.isInSimpleDrawMode = false;
@@ -1272,11 +1250,55 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     });
     // Fit bounds on current bounds to emit init position in moveend bus
     this.map.fitBounds(this.map.getBounds());
-    this.map.on('mousedown', (e) => {
+
+    // Mouse events
+    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
       this.startlngLat = e.lngLat;
+      this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e) => {
+    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
       this.endlngLat = e.lngLat;
+      this.drawService.stopBboxDrawing();
+    });
+    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+      const lngLat = e.lngLat;
+      if (this.displayCurrentCoordinates) {
+        const displayedLngLat = this.wrapLatLng ? lngLat.wrap() : lngLat;
+        this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
+        this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
+      }
+      if (this.isDrawingBbox || this.isDrawingPolygon) {
+        this.map.getCanvas().style.cursor = 'crosshair';
+        this.movelngLat = lngLat;
+      }
+      if (this.drawService.bboxEditionState.isDrawing) {
+        const startlng: number = this.startlngLat.lng;
+        const endlng: number = this.movelngLat.lng;
+        const startlat: number = this.startlngLat.lat;
+        const endlat: number = this.movelngLat.lat;
+        const west = Math.min(startlng, endlng);
+        const north = Math.max(startlat, endlat);
+        const east = Math.max(startlng, endlng);
+        const south = Math.min(startlat, endlat);
+        const coordinates = [[
+          [east, south],
+          [east, north],
+          [west, north],
+          [west, south],
+          [east, south],
+        ]];
+        const polygonGeojson = {
+          type: 'Feature',
+          properties: {
+            source: 'bbox'
+          },
+          geometry: {
+            type: 'Polygon',
+            coordinates: coordinates
+          }
+        };
+        this.drawService.emitDimensions(polygonGeojson as Feature);
+      }
     });
 
     if (!!this.redrawSource) {
@@ -1303,6 +1325,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    */
   public addGeoBox() {
     this.map.getCanvas().style.cursor = 'crosshair';
+    this.drawService.enableBboxEdition();
     this.isDrawingBbox = true;
   }
 
@@ -1384,6 +1407,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (event.key === 'Escape' && this.isDrawingBbox) {
       this.map.getCanvas().style.cursor = '';
       this.isDrawingBbox = false;
+      document.removeEventListener('mousemove', this.mousemove);
+      document.removeEventListener('mouseup', this.mouseup);
+      this.map.getCanvas().style.cursor = '';
+      if (this.box) {
+        this.box.parentNode.removeChild(this.box);
+        this.box = undefined;
+      }
+      this.map.dragPan.enable();
+      this.drawService.endDimensionsEmission();
     }
   }
 
@@ -1676,26 +1708,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     const maxX = Math.max(this.start.x, this.current.x);
     const minY = Math.min(this.start.y, this.current.y);
     const maxY = Math.max(this.start.y, this.current.y);
-
-    const coordinates = [[
-      [maxX, minY],
-      [maxX, maxY],
-      [minX, maxY],
-      [minX, minY],
-      [maxX, minY],
-    ]];
-    const polygonGeojson = {
-      type: 'Feature',
-      properties: {
-        source: 'bbox'
-      },
-      geometry: {
-        type: 'Polygon',
-        coordinates: coordinates
-      }
-    };
-    this.drawService.emitAoiEdit(polygonGeojson as Feature);
-
     // Adjust width and xy position of the box element ongoing
     const pos = 'translate(' + minX + 'px,' + minY + 'px)';
     this.box.style.transform = pos;
@@ -1718,13 +1730,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (this.start.x !== f.x && this.start.y !== f.y) {
       this.finish([[this.start, f], [e.lngLat]]);
     } else {
-      this.isDrawingBbox = false;
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
     }
-    this.drawService.hideAoiEdition();
+    this.drawService.endDimensionsEmission();
   };
 
   private finish(bbox?) {
@@ -1764,6 +1775,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       this.drawService.addFeatures(geoboxdata, /** deleteOld */ true);
       this.onAoiChanged.next(geoboxdata);
       this.isDrawingBbox = false;
+      this.drawService.disableBboxEdition();
+      this.drawService.endDimensionsEmission();
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
