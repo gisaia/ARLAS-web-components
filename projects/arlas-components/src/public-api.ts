@@ -20,7 +20,7 @@ export {
 } from './lib/components/mapgl/model/mapLayers';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
 export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE } from './lib/components/mapgl/mapgl.component.util';
-export { AoiEdition } from './lib/components/mapgl/draw/draw.models';
+export { AoiDimensions as AoiEdition } from './lib/components/mapgl/draw/draw.models';
 export { MapboxAoiDrawService } from './lib/components/mapgl/draw/draw.service';
 export { PowerBar } from './lib/components/powerbars/model/powerbar';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';

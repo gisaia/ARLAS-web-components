@@ -17,8 +17,18 @@
  * under the License.
  */
 
-export interface AoiEdition {
+export interface AoiDimensions {
   area: number;
+  areaMessage?: string;
   show: boolean;
-  widthHeightBBox: [number, number];
+  envelope: {
+    width: number;
+    height: number;
+  };
+}
+
+export interface EditionState {
+  enabled: boolean;
+  isDrawing: boolean;
+  isEditing: boolean;
 }

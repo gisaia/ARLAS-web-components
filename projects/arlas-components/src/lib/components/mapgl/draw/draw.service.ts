@@ -25,7 +25,7 @@ import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
-import { AoiEdition } from './draw.models';
+import { AoiDimensions, EditionState } from './draw.models';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -34,11 +34,51 @@ export class MapboxAoiDrawService {
   private editionId: string;
   private registeringMode: boolean;
   private ids: Set<string> = new Set();
-  private editAoiSource = new Subject<AoiEdition>();
+
+  private editAoiSource = new Subject<AoiDimensions>();
   public editAoi$ = this.editAoiSource.asObservable();
 
+  public bboxEditionState: EditionState;
+  public polygonEditionState: EditionState;
 
-  public constructor() { }
+  public constructor() {
+    this.bboxEditionState = {
+      enabled: false,
+      isDrawing: false,
+      isEditing: false
+    };
+    this.polygonEditionState = {
+      enabled: false,
+      isDrawing: false,
+      isEditing: false
+    };
+  }
+
+  public enableBboxEdition() {
+    this.bboxEditionState.enabled = true;
+    this.bboxEditionState.isDrawing = false;
+    this.bboxEditionState.isEditing = false;
+  }
+
+  public startBboxDrawing() {
+    if (this.bboxEditionState.enabled) {
+      this.bboxEditionState.isDrawing = true;
+      this.bboxEditionState.isEditing = false;
+    }
+  }
+
+  public stopBboxDrawing() {
+    if (this.bboxEditionState.enabled) {
+      this.bboxEditionState.isDrawing = false;
+      this.bboxEditionState.isEditing = false;
+    }
+  }
+
+  public disableBboxEdition() {
+    this.bboxEditionState.enabled = false;
+    this.bboxEditionState.isDrawing = false;
+    this.bboxEditionState.isEditing = false;
+  }
 
   public setMap(map: mapboxgl.Map) {
     this.map = map;
@@ -52,6 +92,11 @@ export class MapboxAoiDrawService {
     this.mapDraw = mapboxDraw;
   }
 
+  /**
+   * Add new features to the mapboxdraw object.
+   * @param fc Featurecollection to be added to mapboxdraw object.
+   * @param deleteOld if true, the mapboxdraw object is purged first, before adding the new given feature collection.
+   */
   public addFeatures(fc: FeatureCollection, deleteOld = false) {
     if (deleteOld) {
       this.mapDraw.deleteAll();
@@ -60,96 +105,116 @@ export class MapboxAoiDrawService {
     this.mapDraw.add(fc);
   }
 
+  /** Deletes all the features from Mapboxdraw object */
   public deleteAll() {
     this.registeringMode = true;
     this.mapDraw.deleteAll();
   }
 
+  /** Returns the area of the given feature */
   public calculateArea(feature: Feature): number {
-    let a = 0;
     if (this.isArea(feature)) {
-      a = area(feature);
+      return area(feature);
     }
-    return a;
+    return 0;
   }
 
-  public calculateEnveloppeDimension(feature: Feature): [number, number] {
-    const [minX, minY, maxX, maxY] = bbox(feature);
-    const verticalLine = lineString([[minX, minY], [minX, maxY]]);
-    const horizontalLine = lineString([[minX, minY], [maxX, minY]]);
-    return [length(horizontalLine), length(verticalLine)];
-
-  }
-
-  public hideAoiEdition() {
-    this.editAoiSource.next({
-      area: 0,
-      widthHeightBBox: [0, 0],
-      show: true
-    });
+  /** Returns the width x height of the given feature's envelope */
+  public calculateEnvelopeDimension(feature: Feature): [number, number] {
+    if (this.isLine(feature)) {
+      const [minX, minY, maxX, maxY] = bbox(feature);
+      const verticalLine = lineString([[minX, minY], [minX, maxY]]);
+      const horizontalLine = lineString([[minX, minY], [maxX, minY]]);
+      return [length(horizontalLine), length(verticalLine)];
+    }
+    return [0, 0];
   }
 
   /** on selection of a drawn polygon, we get its corresponding id. */
   private onSelectionChange() {
     this.map.on('draw.selectionchange', (e) => {
       const features = e.features;
-      if (this.hasSelection(features)) {
+      if (this.hasFeatures(features)) {
         this.editionId = features[0].id;
       } else {
         this.editionId = undefined;
-        this.editAoiSource.next({
-          area: 0,
-          widthHeightBBox: [0, 0],
-          show: false
-        });
+        this.disableBboxEdition();
+        this.endDimensionsEmission();
       }
     });
   }
 
-  private onDelete() {
-    this.map.on('draw.delete', (e) => {
-      e.features.forEach(f => this.unregister(f.id));
-    });
-  }
-  private hasSelection(features: any[]) {
+  private hasFeatures(features: any[]) {
     return !!features && features.length > 0;
   }
 
-  private onStop() {
-    this.map.on('draw.onStop', (e) => {
+  /** Triggered on deletion of feature(s).
+   * - Removes the deleted feature(s) from this service's register.
+   * - Stops emitting Aoi dimension info.
+   * */
+  private onDelete() {
+    this.map.on('draw.delete', (e) => {
+      e.features.forEach(f => this.unregister(f.id));
       this.editionId = undefined;
+      this.endDimensionsEmission();
     });
   }
 
+
+  private onStop() {
+    this.map.on('draw.onStop', (e) => {
+      this.register(this.editionId);
+      this.editionId = undefined;
+      this.endDimensionsEmission();
+    });
+  }
+
+  /**
+   * This event is triggered :
+   * - after draw.update
+   * - after draw.delete
+   * - on adding/deleting features from mapboxdraw object.
+   */
   private onRender() {
     this.map.on('draw.render', (e) => {
       if (this.mapDraw) {
-        this.register();
+        this.registerAll();
         const unregisteredFeatures = this.getUnregistredFeatures();
         if (unregisteredFeatures && unregisteredFeatures.length === 1) {
           this.editionId = unregisteredFeatures[0].id + '';
         }
         if (this.editionId) {
           const feature = this.getFeature(this.editionId, this.mapDraw);
-          const a = this.calculateArea(feature);
-          const wh = this.calculateEnveloppeDimension(feature);
-          this.editAoiSource.next({
-            area: a,
-            widthHeightBBox: wh,
-            show: true
-          });
+          this.emitDimensions(feature);
         }
       }
     });
   }
 
-  public emitAoiEdit(feature: Feature) {
+  /** Emits dimension info of the given feature.*/
+  public emitDimensions(feature: Feature) {
     const a = this.calculateArea(feature);
-    const wh = this.calculateEnveloppeDimension(feature);
+    const wh = this.calculateEnvelopeDimension(feature);
     this.editAoiSource.next({
       area: a,
-      widthHeightBBox: wh,
+      areaMessage: a > 0 ? '': 'Draw at least 2 points.',
+      envelope: {
+        width: wh[0],
+        height: wh[1]
+      },
       show: true
+    });
+  }
+
+  /** Stops emitting Aoi dimension info */
+  public endDimensionsEmission() {
+    this.editAoiSource.next({
+      area: 0,
+      envelope: {
+        width: 0,
+        height: 0
+      },
+      show: false
     });
   }
 
@@ -161,7 +226,7 @@ export class MapboxAoiDrawService {
   }
 
   /** registers the identifiers of each drawn polygon in this service. */
-  private register() {
+  private registerAll() {
     if (this.registeringMode) {
       this.ids.clear();
       const fc = this.mapDraw.getAll();
@@ -172,20 +237,40 @@ export class MapboxAoiDrawService {
     }
   }
 
+  /** Unregisters the given feature id in this service. */
   private unregister(id: string) {
     this.ids.delete(id);
   }
 
+  /** Registers the given feature id in this service. */
+  private register(id: string) {
+    this.ids.add(id);
+  }
+
+  /** Gets the given feature from MapboxDraw object. */
   private getFeature(featureId: string, mapDraw: MapboxDraw): Feature {
     return mapDraw.get(featureId);
   }
 
+  /** Checks if the given feature has enough coordinates to represent an area (polygon) */
   private isArea(feature) {
     const isGeometryDefined = !!feature && !!feature.geometry;
     const areCoordinatesDefined = isGeometryDefined && !!feature.geometry.coordinates;
     if (areCoordinatesDefined) {
       const coordinates = feature.geometry.coordinates;
       const isArea = coordinates.length === 1 && coordinates[0].length > 3;
+      return isArea;
+    }
+    return false;
+  }
+
+  /** Checks if the given feature has enough coordinates to represent a line */
+  private isLine(feature) {
+    const isGeometryDefined = !!feature && !!feature.geometry;
+    const areCoordinatesDefined = isGeometryDefined && !!feature.geometry.coordinates;
+    if (areCoordinatesDefined) {
+      const coordinates = feature.geometry.coordinates;
+      const isArea = coordinates.length === 1 && coordinates[0].length > 1;
       return isArea;
     }
     return false;
