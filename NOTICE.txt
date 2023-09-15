@@ -1,5 +1,5 @@
 ARLAS-web-components
-Copyright 2017-2022 and onwards Gisaïa
+Copyright 2017-2023 and onwards Gisaïa
 
 
 ARLAS-web-components embeds the following components and their dependencies :
@@ -11,6 +11,7 @@ ARLAS-web-components embeds the following components and their dependencies :
 + Geo Tools
     - mapboxgl              (Copyright (c) 2016, Mapbox - https://github.com/mapbox/mapbox-gl-js)
     - node-geohash          (The MIT License - https://github.com/sunng87/node-geohash)
+    - Turfjs                (The MIT License - https://github.com/Turfjs/turf)
 
 + Chart Tools
     - D3.js                 (Copyright 2010-2017 Mike Bostock - https://d3js.org/)
