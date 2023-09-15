@@ -270,8 +270,8 @@ export class MapboxAoiDrawService {
     const areCoordinatesDefined = isGeometryDefined && !!feature.geometry.coordinates;
     if (areCoordinatesDefined) {
       const coordinates = feature.geometry.coordinates;
-      const isArea = coordinates.length === 1 && coordinates[0].length > 1;
-      return isArea;
+      const isLine = coordinates.length === 1 && coordinates[0].length > 1;
+      return isLine;
     }
     return false;
   }
