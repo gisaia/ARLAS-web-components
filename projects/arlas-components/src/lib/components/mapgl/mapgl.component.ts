@@ -295,6 +295,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   /**
    * @Input : Angular
+   * @description Padding value applied around a fitBounds to fully show the area targeted
+   * */
+  @Input() public fitBoundsPadding = 10;
+
+  /**
+   * @Input : Angular
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
   @Input() public redrawSource: Subject<{ source: string; data: TurfFeature[]; }> =
@@ -1416,6 +1422,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public hideBasemapSwitcher() {
     this.showBasemapsList = false;
+  }
+
+  /**
+   * Wrapper method to fit the map to the given bounds with enough padding to properly visualize the area
+   */
+  public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
+    const paddedOptions = Object.assign({}, options);
+    paddedOptions.padding = {
+      top: this.offset.north + this.fitBoundsPadding,
+      bottom: this.offset.south + this.fitBoundsPadding,
+      left: this.offset.west + this.fitBoundsPadding,
+      right: this.offset.east + this.fitBoundsPadding
+    };
+    (<mapboxgl.Map>this.map).fitBounds(bounds, paddedOptions);
   }
 
   private latLngToWKT(features) {
