@@ -596,7 +596,7 @@ export class MapglImportComponent {
       if (importedResult.geojson.features.length > 0) {
         this.dialogRef.componentInstance.isRunning = false;
         if (this.fitResult) {
-          this.mapComponent.map.fitBounds(extent(importedResult.geojson));
+          this.mapComponent.paddedFitBounds(extent(importedResult.geojson));
         }
         if (this.mapComponent.drawData.features.length > 0) {
           this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
