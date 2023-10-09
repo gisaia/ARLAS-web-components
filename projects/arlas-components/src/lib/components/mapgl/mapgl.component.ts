@@ -736,6 +736,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
       minZoom: this.minZoom,
+      center: this.initCenter,
       renderWorldCopies: true,
       preserveDrawingBuffer: this.preserveDrawingBuffer,
       locale: {
@@ -743,8 +744,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
         'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
       },
-      transformRequest: this.transformRequest,
-      projection: {name: 'globe', center: this.initCenter}
+      transformRequest: this.transformRequest
     });
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
