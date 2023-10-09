@@ -728,10 +728,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       this.maxZoom = 0;
     }
 
+    // TODO: add token
+    (mapboxgl as any).accessToken = ;
     this.map = new mapboxgl.Map({
       container: this.id,
       style: afterViewInitbasemapStyle.styleFile,
-      center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
       minZoom: this.minZoom,
@@ -742,7 +743,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
         'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
       },
-      transformRequest: this.transformRequest
+      transformRequest: this.transformRequest,
+      projection: {name: 'globe', center: this.initCenter}
     });
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
@@ -1177,6 +1179,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     const moveend = fromEvent(this.map, 'moveend')
       .pipe(debounceTime(750));
     moveend.subscribe(e => {
+      console.log(this.map.getBounds());
       this.west = this.map.getBounds().getWest();
       this.south = this.map.getBounds().getSouth();
       this.east = this.map.getBounds().getEast();
@@ -1196,7 +1199,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       const bottomLeftOffset = bottomLeft.add(new mapboxgl.Point(this.offset.west, this.offset.south));
       const topRghtOffset = topRght.add(new mapboxgl.Point(this.offset.east, this.offset.north));
 
-      const bottomLeftOffsetLatLng = this.map.unproject(bottomLeftOffset);
+      console.log(topRghtOffset);
+      const bottomLeftOffsetLatLng = (this.map as mapboxgl.Map).unproject(bottomLeftOffset);
       const topRghtOffsetLatLng = this.map.unproject(topRghtOffset);
 
       const wrapWestOffset = bottomLeftOffsetLatLng.wrap().lng;
