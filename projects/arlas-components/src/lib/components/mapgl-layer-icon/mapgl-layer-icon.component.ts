@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
 import { select } from 'd3-selection';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
+import { Layer } from '../mapgl/model/mapLayers';
+import { SymbolLayerSpecification } from 'maplibre-gl';
 
 @Component({
   selector: 'arlas-mapgl-layer-icon',
@@ -8,7 +10,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util'
   styleUrls: ['./mapgl-layer-icon.component.css']
 })
 export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input() public layer: mapboxgl.Layer;
+  @Input() public layer: maplibregl.LayerSpecification;
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
@@ -38,10 +40,10 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   private drawIcons(): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
-    const source: string = this.layer.source as string;
+    const source: string = (this.layer as Layer).source as string;
     switch (type) {
     case 'circle': {
-      const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
+      const p: maplibregl.CirclePaintProps = (paint as maplibregl.CirclePaintProps);
       if (source.startsWith('feature-metric')) {
         drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
       } else if (source.startsWith('feature')) {
@@ -74,7 +76,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
       break;
     }
     case 'symbol': {
-      const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
+      const l: maplibregl.SymbolLayoutProps = ((this.layer as any).layout as maplibregl.SymbolLayoutProps);
       if (l['text-field']) {
         drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
       }

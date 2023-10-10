@@ -17,6 +17,9 @@
  * under the License.
  */
 
+import * as maplibregl from 'maplibre-gl';
+
+
 export interface AoiDimensions {
   area: number;
   areaMessage?: string;

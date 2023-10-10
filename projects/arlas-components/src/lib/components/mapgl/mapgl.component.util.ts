@@ -18,7 +18,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Point } from 'mapbox-gl';
+import Point from '@mapbox/point-geometry';
 
 export function paddedBounds(npad: number, spad: number, epad: number,
   wpad: number, map: any, SW, NE) {
@@ -68,20 +68,21 @@ export interface MapExtend {
 
 @Pipe({ name: 'getLayer' })
 export class GetLayerPipe implements PipeTransform {
-  public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): mapboxgl.Layer {
+  public transform(value: string, layersMap?: Map<string, maplibregl.LayerSpecification>): maplibregl.LayerSpecification {
     return !!layersMap ? layersMap.get(value) : undefined;
   }
 }
 
 @Pipe({ name: 'getCollection' })
 export class GetCollectionPipe implements PipeTransform {
-  public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): string {
+  public transform(value: string, layersMap?: Map<string, maplibregl.LayerSpecification>): string {
     let collection: string;
-    if (!!layersMap && !!layersMap.get(value).metadata) {
-      if (!!layersMap.get(value).metadata.collectionDisplayName) {
-        collection = layersMap.get(value).metadata.collectionDisplayName;
-      } else if (!!layersMap.get(value).metadata.collection) {
-        collection = layersMap.get(value).metadata.collection;
+    const md = layersMap.get(value).metadata as any;
+    if (!!layersMap && !!md) {
+      if (!!md.collectionDisplayName) {
+        collection = md.collectionDisplayName;
+      } else if (!!md.collection) {
+        collection = md.collection;
       }
     }
     return collection;

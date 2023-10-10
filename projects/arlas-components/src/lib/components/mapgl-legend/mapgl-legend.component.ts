@@ -24,12 +24,11 @@ import { curveLinear, area, line } from 'd3-shape';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { StyleFunction, Expression } from 'mapbox-gl';
 import * as tinycolor from 'tinycolor2';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, LayerMetadata, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
-import * as mapboxgl from 'mapbox-gl';
+import * as maplibregl from 'maplibre-gl';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -51,7 +50,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Layer object
    */
-  @Input() public layer: mapboxgl.Layer;
+  @Input() public layer: maplibregl.LayerSpecification;
   /**
    * @Input : Angular
    * @description Collection of the layer
@@ -86,7 +85,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public visibilityStatus: Subject<boolean> = new Subject();
 
-  @Output() public downloadSourceEmitter: Subject<{layer: mapboxgl.Layer; downloadType: string;}> = new Subject();
+  @Output() public downloadSourceEmitter: Subject<{layer: maplibregl.LayerSpecification; downloadType: string;}> = new Subject();
   @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
@@ -139,7 +138,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
         && !this.layer.id.startsWith(SELECT_LAYER_PREFIX)) {
         this.visibleMode = this.enabled;
-        if (!!this.layer.metadata && this.layer.metadata.showLegend === false) {
+        if (!!this.layer.metadata && (this.layer.metadata as any).showLegend === false) {
           this.visibleMode = false;
         }
       }
@@ -164,7 +163,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  public downloadLayerSource(layer: mapboxgl.Layer, downloadType: string): void {
+  public downloadLayerSource(layer: maplibregl.LayerSpecification, downloadType: string): void {
     const download = {
       layer,
       downloadType
@@ -185,11 +184,12 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   private drawLegends(visibileMode: boolean): void {
     const type = this.layer.type;
     const paint = this.layer.paint;
-    const metadata = this.layer.metadata;
+    const metadata = this.layer.metadata as any;
     switch (type) {
     case 'circle': {
-      const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-      const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
+      const p: maplibregl.CirclePaintProps = (paint as maplibregl.CirclePaintProps);
+      const colors = MapglLegendComponent.buildColorLegend(p['circle-color'], visibileMode, this.legendData,
+       (this.layer as maplibregl.CircleLayerSpecification).filter, this.translate);
       const strokeColors = MapglLegendComponent.buildColorLegend(p['circle-stroke-color'], visibileMode, this.legendData,
         this.layer.filter, this.translate);
       this.buildCircleRadiusLegend(p['circle-radius']);
@@ -200,7 +200,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       break;
     }
     case 'line': {
-      const p: mapboxgl.LinePaint = (paint as mapboxgl.LinePaint);
+      const p: maplibregl.LinePaintProps = (paint as maplibregl.LinePaintProps);
       const colors = MapglLegendComponent.buildColorLegend(p['line-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.buildWidthLegend(p['line-width']);
       this.lineDasharray = p['line-dasharray'];
@@ -209,7 +209,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       break;
     }
     case 'fill': {
-      const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
+      const p: maplibregl.FillPaintProps = (paint as maplibregl.FillPaintProps);
       const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
@@ -222,8 +222,9 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       break;
     }
     case 'heatmap': {
-      const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-      const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
+      const p: maplibregl.HeatmapPaintProps = (paint as maplibregl.HeatmapPaintProps);
+      const colors = MapglLegendComponent.buildColorLegend(p['heatmap-color'] as any
+      , visibileMode, this.legendData, this.layer.filter, this.translate);
       this.buildCircleRadiusLegend(p['heatmap-radius']);
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
@@ -233,11 +234,11 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
       break;
     }
     case 'symbol': {
-      const p: mapboxgl.SymbolPaint = (paint as mapboxgl.SymbolPaint);
+      const p: maplibregl.SymbolPaintProps = (paint as maplibregl.SymbolPaintProps);
       const colors = MapglLegendComponent.buildColorLegend(p['text-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
       this.colorLegend = colors[0];
       this.colorsPalette = colors[1];
-      const l: mapboxgl.SymbolLayout = (paint as mapboxgl.SymbolLayout);
+      const l: maplibregl.SymbolLayoutProps = (paint as maplibregl.SymbolLayoutProps);
       this.buildWidthLegend(l['text-size']);
       break;
     }
@@ -279,8 +280,8 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
-  public static buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
-    legendData: Map<string, LegendData>, filter?: any[] , translate?: TranslateService): [Legend, string] {
+  public static buildColorLegend(colorExpression: maplibregl.DataDrivenProperty<any>, visibleMode: boolean,
+    legendData: Map<string, LegendData>, filter?: any , translate?: TranslateService): [Legend, string] {
     const colorLegend: Legend = { visible: true };
     let colorsPalette = '';
     if (typeof colorExpression === 'string') {
@@ -413,7 +414,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     return [colorLegend, colorsPalette];
   }
 
-  private buildWidthLegend(lineWidth: number | StyleFunction | Expression): void {
+  private buildWidthLegend(lineWidth: any): void {
     /** if the line width is fix then it is not added to the legend*/
     if (Array.isArray(lineWidth)) {
       if (lineWidth.length >= 3) {
@@ -445,7 +446,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private buildCircleRadiusLegend(circleRadius: number | StyleFunction | Expression): void {
+  private buildCircleRadiusLegend(circleRadius: any): void {
     if (Array.isArray(circleRadius)) {
       if (circleRadius.length >= 3) {
         if (circleRadius[0] === INTERPOLATE) {
@@ -479,7 +480,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
-  private buildCircleStrokeLegend(circleStroke: number | StyleFunction | Expression): void {
+  private buildCircleStrokeLegend(circleStroke: any): void {
     if (Array.isArray(circleStroke)) {
       if (circleStroke.length >= 3) {
         if (circleStroke[0] === INTERPOLATE) {

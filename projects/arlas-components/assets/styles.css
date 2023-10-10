@@ -20,7 +20,7 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
-@import '../node_modules/mapbox-gl/dist/mapbox-gl.css';
+@import '../node_modules/maplibre-gl/dist/maplibre-gl.css';
 
 body {
   font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
