@@ -17,10 +17,24 @@
  * under the License.
  */
 
-import { AnyLayer } from 'mapbox-gl';
+import { CircleLayerSpecification, FillLayerSpecification, HeatmapLayerSpecification,
+  LayerSpecification, LineLayerSpecification, SymbolLayerSpecification } from 'maplibre-gl';
+
+export type Layer = FillLayerSpecification | LineLayerSpecification | SymbolLayerSpecification |
+  CircleLayerSpecification | HeatmapLayerSpecification;
+export interface BasemapStyle {
+  name: string;
+  styleFile: string | maplibregl.StyleSpecification;
+  image?: string;
+}
+
+export interface BasemapStylesGroup {
+  basemapStyles: Array<BasemapStyle>;
+  selectedBasemapStyle: BasemapStyle;
+}
 
 export interface MapLayers {
-  layers: Array<AnyLayer>;
+  layers: Array<LayerSpecification>;
   externalEventLayers?: Array<ExternalEventLayer>;
   events: LayerEvents;
 }

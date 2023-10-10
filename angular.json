@@ -28,7 +28,7 @@
             ],
             "styles": [
               "src/styles.css",
-              "node_modules/mapbox-gl/dist/mapbox-gl.css",
+              "node_modules/maplibre-gl/dist/maplibre-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
             ]
@@ -93,7 +93,7 @@
             "scripts": [],
             "styles": [
               "src/styles.css",
-              "node_modules/mapbox-gl/dist/mapbox-gl.css",
+              "node_modules/maplibre-gl/dist/maplibre-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
             ],
@@ -156,7 +156,7 @@
             "karmaConfig": "projects/arlas-components/karma.conf.js",
             "styles": [
               "src/styles.css",
-              "node_modules/mapbox-gl/dist/mapbox-gl.css",
+              "node_modules/maplibre-gl/dist/maplibre-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
             ]

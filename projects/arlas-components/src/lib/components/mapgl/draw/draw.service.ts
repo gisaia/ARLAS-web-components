@@ -18,7 +18,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import area from '@turf/area';
 import { Feature, FeatureCollection, lineString } from '@turf/helpers';
@@ -29,7 +28,7 @@ import {AoiEdition, AoiDimensions, BboxDrawCommand, Corner, EditionState } from 
 
 @Injectable()
 export class MapboxAoiDrawService {
-  private map: mapboxgl.Map;
+  private map: maplibregl.Map;
   private mapDraw: MapboxDraw;
   private editionId: string;
   private registeringMode: boolean;
@@ -97,7 +96,7 @@ export class MapboxAoiDrawService {
     this.bboxEditionState.isEditing = false;
   }
 
-  public setMap(map: mapboxgl.Map) {
+  public setMap(map: maplibregl.Map) {
     this.map = map;
     this.onSelectionChange();
     this.onRender();
@@ -105,7 +104,7 @@ export class MapboxAoiDrawService {
     this.onStop();
   }
 
-  public setMapboxDraw(mapboxDraw: mapboxgl.Map) {
+  public setMapboxDraw(mapboxDraw: maplibregl.Map) {
     this.mapDraw = mapboxDraw;
   }
 

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import Point from '@mapbox/point-geometry';
 
 import {
   AfterViewInit, Component, EventEmitter,
@@ -39,11 +40,11 @@ import { Feature, Polygon, Feature as TurfFeature, polygon } from '@turf/helpers
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
-import * as mapboxgl from 'mapbox-gl';
+import * as maplibregl from 'maplibre-gl';
 import { FeatureCollection } from '@turf/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
+import { RequestTransformFunction } from 'maplibre-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
@@ -59,7 +60,7 @@ export const CROSS_LAYER_PREFIX = 'arlas_cross';
 export interface OnMoveResult {
   zoom: number;
   zoomStart: number;
-  center: Array<number>;
+  center: Array<number> | maplibregl.LngLat;
   centerWithOffset: Array<number>;
   extend: Array<number>;
   extendWithOffset: Array<number>;
@@ -102,7 +103,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: any;
+  public map: maplibregl.Map;
   public draw: any;
   public zoom: number;
   public legendOpen = true;
@@ -119,12 +120,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private canvas: HTMLElement;
   private box: HTMLElement;
   // points which xy coordinates are in screen referential
-  private start: mapboxgl.Point;
-  private current: mapboxgl.Point;
+  private start: Point;
+  private current: Point;
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
-  private startlngLat: mapboxgl.LngLat;
-  private endlngLat: mapboxgl.LngLat;
-  private movelngLat: mapboxgl.LngLat;
+  private startlngLat: maplibregl.LngLat;
+  private endlngLat: maplibregl.LngLat;
+  private movelngLat: maplibregl.LngLat;
 
   private savedEditFeature = null;
 
@@ -168,7 +169,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description Unit of the scale.
    */
-  @Input() public unitScale = 'metric';
+  @Input() public unitScale: maplibregl.Unit = 'metric';
   /**
    * @Input : Angular
    * @description Default style of the base map
@@ -282,7 +283,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-  @Input() public transformRequest: TransformRequestFunction;
+  @Input() public transformRequest: RequestTransformFunction;
 
   /**
    * @Input : Angular
@@ -413,7 +414,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }> = new Subject();
 
   public showBasemapsList = false;
-  public layersMap: Map<string, mapboxgl.Layer>;
+  public layersMap: Map<string, maplibregl.Layer>;
 
   public currentLat: string;
   public currentLng: string;
@@ -483,7 +484,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       });
       layersSet.forEach(ll => {
-        (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
+        (this.map as maplibregl.Map).setLayoutProperty(ll, 'visibility', 'none');
         this.setStrokeLayoutVisibility(ll, 'none');
         this.setScrollableLayoutVisibility(ll, 'none');
       });
@@ -494,7 +495,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       if (this.visualisationsSets.status.get(v)) {
         ls.forEach(l => {
           layers.add(l);
-          (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
+          (this.map as maplibregl.Map).setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
           this.setScrollableLayoutVisibility(l, 'visible');
         });
@@ -504,12 +505,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.reorderLayers();
   }
 
-  public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string; }): void {
+  public downloadLayerSource(downaload: { layer: maplibregl.LayerSpecification; downloadType: string; }): void {
     const downlodedSource = {
       layerId: downaload.layer.id,
       layerName: getLayerName(downaload.layer.id),
-      collection: downaload.layer.metadata.collection,
-      sourceName: downaload.layer.source as string,
+      collection: (downaload.layer.metadata as LayerMetadata).collection,
+      sourceName: (downaload.layer as any).source as string,
       downloadType: downaload.downloadType
     };
     this.downloadSourceEmitter.next(downlodedSource);
@@ -521,9 +522,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @param layers List of actual layers that are declared in `visualisation` object
    * @param sources List of sources that these external `layers` use.
    */
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<maplibregl.LayerSpecification>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
-      this.map.addSource(s.id, s.source);
+      this.map.addSource(s.id, s.source as maplibregl.SourceSpecification);
     });
     this.visualisationSetsConfig.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
@@ -652,7 +653,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
         this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-          this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
+          // this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -662,7 +663,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         const width = positionInfo.width;
         this.map.fitBounds(newBoundsToFit, {
           maxZoom: this.fitBoundsMaxZoom,
-          offset: this.fitBoundsOffSet
+          offset: (this.fitBoundsOffSet as maplibregl.PointLike)
         });
       }
       if (changes['featureToHightLight'] !== undefined
@@ -699,7 +700,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   public declareMap() {
-    this.map = new mapboxgl.Map({
+    this.map = new maplibregl.Map({
       container: this.id,
       style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
       center: this.initCenter,
@@ -716,10 +717,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       transformRequest: this.transformRequest,
       attributionControl: false
     });
-    (<mapboxgl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
+    (<maplibregl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
     this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
-      const bounds = (<mapboxgl.Map>this.map).getBounds();
+      const bounds = (<maplibregl.Map>this.map).getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
       this.onMapClosed.next(mapExtend);
     });
@@ -729,14 +730,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     /** Whether to display scale */
     if (this.displayScale) {
-      const scale = new mapboxgl.ScaleControl({
+      const scale = new maplibregl.ScaleControl({
         maxWidth: this.maxWidthScale,
         unit: this.unitScale,
       });
       this.map.addControl(scale, 'bottom-right');
     }
 
-    const navigationControllButtons = new mapboxgl.NavigationControl();
+    const navigationControllButtons = new maplibregl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
     const removeAoisButton = new ControlButton('removeaois');
 
@@ -845,7 +846,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
-            const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
+            const features = (this.map as maplibregl.Map).queryRenderedFeatures(e.point);
             const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
             if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
               this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
@@ -895,7 +896,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
                 }
               });
               if (layerInVisualisations) {
-                (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
+                (this.map as maplibregl.Map).setLayoutProperty(l, 'visibility', 'none');
                 this.setStrokeLayoutVisibility(l, 'none');
                 this.setScrollableLayoutVisibility(l, 'none');
               }
@@ -1140,7 +1141,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.east = this.map.getBounds().getEast();
       this.north = this.map.getBounds().getNorth();
       this.zoom = this.map.getZoom();
-      const offsetPoint = new mapboxgl.Point((this.offset.east + this.offset.west) / 2, (this.offset.north + this.offset.south) / 2);
+      const offsetPoint = new Point((this.offset.east + this.offset.west) / 2, (this.offset.north + this.offset.south) / 2);
       const centerOffsetPoint = this.map.project(this.map.getCenter()).add(offsetPoint);
       const centerOffSetLatLng = this.map.unproject(centerOffsetPoint);
 
@@ -1151,8 +1152,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       const height = bottomLeft.y;
       const width = topRght.x;
 
-      const bottomLeftOffset = bottomLeft.add(new mapboxgl.Point(this.offset.west, this.offset.south));
-      const topRghtOffset = topRght.add(new mapboxgl.Point(this.offset.east, this.offset.north));
+      const bottomLeftOffset = bottomLeft.add(new Point(this.offset.west, this.offset.south));
+      const topRghtOffset = topRght.add(new Point(this.offset.east, this.offset.north));
 
       const bottomLeftOffsetLatLng = this.map.unproject(bottomLeftOffset);
       const topRghtOffsetLatLng = this.map.unproject(topRghtOffset);
@@ -1223,15 +1224,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.map.fitBounds(this.map.getBounds());
 
     // Mouse events
-    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousedown', (e: maplibregl.MapMouseEvent) => {
       this.startlngLat = e.lngLat;
       this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mouseup', (e: maplibregl.MapMouseEvent) => {
       this.endlngLat = e.lngLat;
       this.drawService.stopBboxDrawing();
     });
-    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousemove', (e: maplibregl.MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.displayCurrentCoordinates) {
         const displayedLngLat = this.wrapLatLng ? lngLat.wrap() : lngLat;
@@ -1275,9 +1276,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (!!this.redrawSource) {
       this.redrawSource.subscribe(sd => {
         if (this.map.getSource(sd.source) !== undefined) {
-          this.map.getSource(sd.source).setData({
+          (this.map.getSource(sd.source) as maplibregl.GeoJSONSource).setData({
             'type': 'FeatureCollection',
-            'features': sd.data
+            'features': sd.data as any
           });
         }
       });
@@ -1422,11 +1423,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       left: this.offset.west + this.fitBoundsPadding,
       right: this.offset.east + this.fitBoundsPadding
     };
-    (<mapboxgl.Map>this.map).fitBounds(bounds, paddedOptions);
+    (<maplibregl.Map>this.map).fitBounds(bounds, paddedOptions);
   }
 
   public moveToCoordinates(lngLat: [number, number]) {
-    (this.map as mapboxgl.Map).setCenter(lngLat);
+    (this.map as maplibregl.Map).setCenter(lngLat);
   }
 
   private latLngToWKT(features) {
@@ -1573,7 +1574,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.map.getLayer(layer.id) !== undefined) {
           let originalLayerIsVisible = false;
-          const fullLayer = this.layersMap.get(layer.id);
+          const fullLayer = this.layersMap.get(layer.id) as Layer;
           const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
@@ -1581,9 +1582,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
               originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
             }
             const layerFilter: Array<any> = [];
-            const externalEventLayer = this.layersMap.get(layer.id);
+            const externalEventLayer = this.layersMap.get(layer.id) as Layer;
             if (!!externalEventLayer && !!externalEventLayer.filter) {
-              externalEventLayer.filter.forEach(f => {
+             ( externalEventLayer.filter as Array<any>).forEach(f => {
                 layerFilter.push(f);
               });
             }
@@ -1593,7 +1594,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             if (visibilityCondition && originalLayerIsVisible) {
               const condition = visibilityFilter;
               layerFilter.push(condition);
-              this.map.setFilter(layer.id, layerFilter);
+              this.map.setFilter(layer.id, layerFilter as any);
               this.map.setLayoutProperty(layer.id, 'visibility', 'visible');
             } else {
               this.map.setFilter(layer.id, (layer as any).filter);
@@ -1617,7 +1618,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     document.addEventListener('mouseup', this.mouseup);
     // Capture the first xy coordinates
     const rect = this.canvas.getBoundingClientRect();
-    this.start = new mapboxgl.Point(
+    this.start = new Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
@@ -1626,7 +1627,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
     const rect = this.canvas.getBoundingClientRect();
-    this.current = new mapboxgl.Point(
+    this.current = new Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
@@ -1651,7 +1652,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   private mouseup = (e) => {
     const rect = this.canvas.getBoundingClientRect();
-    const f = new mapboxgl.Point(
+    const f = new Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );

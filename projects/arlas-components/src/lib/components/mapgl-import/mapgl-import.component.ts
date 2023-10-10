@@ -11,6 +11,7 @@ import * as extent_ from 'turf-extent';
 import { parse } from 'wellknown';
 import { valid } from 'geojson-validation';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
+import { GeoJSONSource } from 'maplibre-gl';
 const gpsi = gpsi_.default;
 const shp = shp_.default;
 const extent = extent_.default;
@@ -575,7 +576,7 @@ export class MapglImportComponent {
     this.featureIndex = 0;
     this.mapComponent.onAoiChanged.next(<FeatureCollection>this.emptyData);
     if (labelSource !== undefined) {
-      labelSource.setData(this.emptyData);
+      (labelSource as GeoJSONSource).setData(this.emptyData as any);
     }
   }
 

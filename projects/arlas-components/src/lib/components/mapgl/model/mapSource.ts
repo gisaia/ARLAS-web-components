@@ -17,9 +17,9 @@
  * under the License.
  */
 
+import { SourceSpecification } from 'maplibre-gl';
+
 export class MapSource {
   public id: string;
-  public source: string | mapboxgl.AnySourceData | mapboxgl.VectorSource | mapboxgl.RasterSource |
-    mapboxgl.GeoJSONSource | mapboxgl.GeoJSONSourceRaw |
-    mapboxgl.CanvasSource | mapboxgl.ImageSource | mapboxgl.VideoSource;
+  public source: string  | SourceSpecification;
 }
