@@ -333,6 +333,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    */
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
+  /**
+   * @Input : Angular
+   * @description Position of the map attribution
+   */
+  @Input() public mapAttributionPosition: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'bottom-right';
+
   public visualisationsSets: {
     visualisations: Map<string, Set<string>>;
     status: Map<string, boolean>;
@@ -742,8 +748,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
         'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
       },
-      transformRequest: this.transformRequest
+      transformRequest: this.transformRequest,
+      attributionControl: false
     });
+    (<mapboxgl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
+
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
