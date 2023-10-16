@@ -52,6 +52,9 @@ export interface FieldsConfiguration {
   urlThumbnailTemplate?: string;
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
+  /**
+   * @deprecated
+   */
   icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
