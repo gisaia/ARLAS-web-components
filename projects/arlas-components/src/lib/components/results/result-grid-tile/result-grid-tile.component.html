@@ -2,29 +2,21 @@
   <div class="resultgrid--container resultgrid--container-highlight-{{gridTile?.ishighLight}}" color="primary"[style.border-color]="gridTile?.color ? gridTile?.color : 'none'">
     <mat-icon *ngIf="gridTile?.isChecked && !gridTile?.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box</mat-icon>
     <mat-icon *ngIf="!gridTile?.isChecked && !gridTile?.isindeterminated" (click)="setSelectedItem()" class="primary resultgrid__icon_check mat-icon material-icons">check_box_outline_blank</mat-icon>
-       <mat-icon *ngIf="gridTile?.isindeterminated" (click)="determinateItem()" class="primary resultgrid__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
-      <div id="{{'grid-tile-' + gridTile?.identifier}}" (click)="setClickedOnItem()" (mouseover)="showCellTooltip()" #cellTooltip="matTooltip" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img {{gridTile?.iconCssClass}}">
-        <img [defaultImage]="options?.defautlImgUrl"  [lazyLoad]="gridTile?.urlThumbnail" 
-          [class.contain_thumbnail]="thumbnailFit === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit === ThumbnailFitEnum.height"
-          [class.width_thumbnail]="thumbnailFit === ThumbnailFitEnum.width">
-        <div *ngIf="options?.showActionsOnhover" class="grid_actions">
-          <button *ngFor="let action of gridTile?.actions" (mouseover)="hideCellTooltip($event)" (click)="triggerActionOnItem($event, action)" matTooltip="{{action.tooltip | translate}}"
-            class="resultitem-grid__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
-            {{action.label | translate}}
-          </button>
-        </div>
+    <mat-icon *ngIf="gridTile?.isindeterminated" (click)="determinateItem()" class="primary resultgrid__icon_check mat-icon material-icons">indeterminate_check_box</mat-icon>
+    <div id="{{'grid-tile-' + gridTile?.identifier}}" (click)="setClickedOnItem()" (mouseover)="showCellTooltip()" #cellTooltip="matTooltip" matTooltip="{{SHOW_IMAGE | translate}}"  class="resultgrid__img {{gridTile?.iconCssClass}}">
+      <img [defaultImage]="options?.defautlImgUrl"  [lazyLoad]="gridTile?.urlThumbnail" 
+        [class.contain_thumbnail]="thumbnailFit === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit === ThumbnailFitEnum.height"
+        [class.width_thumbnail]="thumbnailFit === ThumbnailFitEnum.width">
+      <div *ngIf="options?.showActionsOnhover" class="grid_actions">
+        <button *ngFor="let action of gridTile?.actions" (mouseover)="hideCellTooltip($event)" (click)="triggerActionOnItem($event, action)" matTooltip="{{action.tooltip | translate}}"
+          class="resultitem-grid__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
+          {{action.label | translate}}
+        </button>
       </div>
-      <div class="resultgrid__title-highlight-{{gridTile?.ishighLight}}">
-      <mat-icon *ngIf="gridTile?.color; else colorNotDefined" class="primary mat-icon material-icons resultgrid__icon_title"
-        [style.color]="gridTile?.color" matTooltip="{{gridTile?.tooltip}}">{{gridTile?.icon}}
-      </mat-icon>
-      <ng-template #colorNotDefined>
-        <mat-icon class="primary mat-icon material-icons resultgrid__icon_title  resultgrid__icon_title-{{gridTile?.iconCssClass}}"
-          matTooltip="{{gridTile?.tooltip}}">{{gridTile?.icon}}
-        </mat-icon>
-      </ng-template>
+    </div>
+    <div class="resultgrid__title-highlight-{{gridTile?.ishighLight}}">
+      <span *ngIf="gridTile?.color" class="tablet" [style.background-color]="gridTile?.color"></span>
       <span class="resultgrid__title  resultgrid__title-{{gridTile?.iconCssClass}}" > {{gridTile?.title}} </span>
     </div>
   </div>
-
 </div>
