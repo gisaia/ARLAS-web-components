@@ -31,6 +31,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { MapboxAoiDrawService } from './draw/draw.service';
 
 describe('MapglComponent', () => {
   let component: MapglComponent;
@@ -53,7 +54,8 @@ describe('MapglComponent', () => {
         DragDropModule
       ],
       providers: [
-        HttpClient
+        HttpClient,
+        MapboxAoiDrawService
       ]
     })
       .compileComponents();
