@@ -29,7 +29,7 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
 @Component({
   selector: 'arlas-result-grid-tile',
   templateUrl: './result-grid-tile.component.html',
-  styleUrls: ['./result-grid-tile.component.css']
+  styleUrls: ['./result-grid-tile.component.scss']
 })
 export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public SHOW_IMAGE = 'Click to show details';
