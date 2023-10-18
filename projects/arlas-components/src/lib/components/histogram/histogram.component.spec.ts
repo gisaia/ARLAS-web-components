@@ -21,9 +21,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HistogramComponent } from './histogram.component';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { ColorGeneratorLoader } from '../componentsUtils';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 
 describe('HistogramComponent', () => {
   let component: HistogramComponent;
@@ -31,14 +32,19 @@ describe('HistogramComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HistogramComponent ],
+      declarations: [HistogramComponent],
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
-        MatTooltipModule
+        MatTooltipModule,
+        ColorGeneratorModule.forRoot({
+          loader: {
+            provide: ColorGeneratorLoader,
+            useClass: AwcColorGeneratorLoader
+          }
+        })
       ],
       providers: [
-        ArlasColorService,
-        ColorGeneratorLoader
+        ArlasColorService
       ]
     })
       .compileComponents();

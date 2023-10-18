@@ -21,7 +21,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultListComponent } from './result-list.component';
 import { ArlasColorService } from '../../../services/color.generator.service';
-import { ColorGeneratorLoader } from '../../componentsUtils';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
 import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatGridListModule } from '@angular/material/grid-list';
@@ -31,6 +31,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
+import { ColorGeneratorModule } from '../../../services/color.generator.module';
 
 describe('ResultListComponent', () => {
   let component: ResultListComponent;
@@ -38,10 +39,9 @@ describe('ResultListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultListComponent, ResultScrollDirective ],
+      declarations: [ResultListComponent, ResultScrollDirective],
       providers: [
-        ArlasColorService,
-        ColorGeneratorLoader
+        ArlasColorService
       ],
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
@@ -51,7 +51,13 @@ describe('ResultListComponent', () => {
         MatSelectModule,
         MatOptionModule,
         MatCheckboxModule,
-        FormsModule
+        FormsModule,
+        ColorGeneratorModule.forRoot({
+          loader: {
+            provide: ColorGeneratorLoader,
+            useClass: AwcColorGeneratorLoader
+          }
+        })
       ]
     })
       .compileComponents();
