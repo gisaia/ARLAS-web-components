@@ -99,6 +99,7 @@ export class Item {
   public position: number;
   /**
    * @description The material grid icon.
+   * @deprecated
    */
   public icon: string;
   /**
