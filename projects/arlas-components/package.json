@@ -43,7 +43,8 @@
     "shpjs": "^4.0.4",
     "turf-extent": "1.0.4",
     "wellknown": "0.5.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "pmtiles": "^2.11.0"
   },
   "exports": {
     "./assets/i18n/en.json": {
