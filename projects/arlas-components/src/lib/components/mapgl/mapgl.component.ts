@@ -18,11 +18,9 @@
  */
 
 import {
-  AfterContentInit,
   AfterViewInit, Component, EventEmitter,
-  HostListener, Input,
+  HostListener, Input, ViewEncapsulation,
   OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
-  ViewEncapsulation
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Subscription, fromEvent } from 'rxjs';
@@ -32,7 +30,7 @@ import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.contr
 import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import {
-  MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
+  MapLayers, ExternalEvent,
   ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET
 } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
@@ -52,6 +50,9 @@ import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { AoiDimensions } from './draw/draw.models';
+import { BasemapStyle, BasemapsConfig } from './basemaps/basemap.config';
+import { MapboxBasemapService } from './basemaps/basemap.service';
+import { ArlasBasemaps } from './basemaps/basemaps';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -99,7 +100,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
   styleUrls: ['./mapgl.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterContentInit, OnDestroy {
+export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public map: any;
   public draw: any;
@@ -129,9 +130,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public FINISH_DRAWING = 'Double click to finish drawing';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
   private ICONS_BASE_PATH = 'assets/icons/';
-
+  private offlineBasemapChangeSubscription!: Subscription;
   /**
    * @Input : Angular
    * @description element identifier given to map container
@@ -172,6 +172,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   /**
    * @Input : Angular
    * @description Default style of the base map
+   * @deprecated Use [basemapConfig] instead
    */
   @Input() public defaultBasemapStyle: BasemapStyle = {
     name: 'Positron Style',
@@ -180,8 +181,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   /**
    * @Input : Angular
    * @description List of styles to apply to the base map
+   * @deprecated Use [basemapConfig] instead
    */
   @Input() public basemapStyles = new Array<BasemapStyle>();
+
+  @Input() public basemapConfig: BasemapsConfig;
   /**
    * @Input : Angular
    * @description Zoom of the map when it's initialized
@@ -413,7 +417,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public showBasemapsList = false;
   public layersMap: Map<string, mapboxgl.Layer>;
-  public basemapStylesGroup: BasemapStylesGroup;
 
   public currentLat: string;
   public currentLng: string;
@@ -445,6 +448,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   private aoiEditSubscription: Subscription;
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
+    private basemapService: MapboxBasemapService,
     private _snackBar: MatSnackBar, private translate: TranslateService) {
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
   }
@@ -552,7 +556,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     return mapglJsonSchema;
   }
 
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.offlineBasemapChangeSubscription = this.basemapService.offlineBasemapChanged$.subscribe(() => this.reorderLayers());
+  }
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
@@ -617,6 +623,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         }
       }
     }
+    this.map.getStyle().layers
+      .map(layer => layer.id)
+      .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0).forEach(id => this.map.moveLayer(id));
+
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -665,56 +675,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     }
   }
 
-  public setBaseMapStyle(style: string | mapboxgl.Style) {
-    if (this.map) {
-      if (typeof this.basemapStylesGroup.selectedBasemapStyle.styleFile === 'string') {
-        this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe((s: any) => this.setStyle(s, style));
-      } else {
-        this.setStyle(this.basemapStylesGroup.selectedBasemapStyle.styleFile, style);
-      }
-    }
-  }
-
-  public setStyle(s: mapboxgl.Style, style: string | mapboxgl.Style) {
-    const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
-    const sources = (<mapboxgl.Map>this.map).getStyle().sources;
-    if (s.layers) {
-      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
-    }
-    const layersToSave = new Array<mapboxgl.Layer>();
-    const sourcesToSave = new Array<MapSource>();
-    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
-      layersToSave.push(l);
-      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
-      }
-    });
-    const sourcesToSaveSet = new Set<string>();
-    sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
-    if (this.mapSources) {
-      this.mapSources.forEach(mapSource => {
-        if (!sourcesToSaveSet.has(mapSource.id)) {
-          sourcesToSave.push(mapSource);
-        }
-      });
-    }
-    this.map.setStyle(style).once('styledata', () => {
-      this.addSourcesToMap(sourcesToSave, this.map);
-      layersToSave.forEach(l => this.map.addLayer(l));
-      this.onBasemapChanged.next(true);
-    });
-  }
-
-  public ngAfterContentInit(): void {
-    /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
-    this.setBasemapStylesGroup(this.getAfterViewInitBasemapStyle());
-  }
-
   public ngAfterViewInit() {
-
-    const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
-
     /** init values */
     if (!this.initCenter) {
       this.initCenter = [0, 0];
@@ -728,10 +689,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (this.minZoom === undefined || this.minZoom === null) {
       this.maxZoom = 0;
     }
-
+    this.basemapService.setBasemaps(new ArlasBasemaps(this.basemapConfig, this.defaultBasemapStyle, this.basemapStyles));
     this.map = new mapboxgl.Map({
       container: this.id,
-      style: afterViewInitbasemapStyle.styleFile,
+      style: this.basemapService.getInitStyle(),
       center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
@@ -747,7 +708,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       attributionControl: false
     });
     (<mapboxgl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
-
     this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
@@ -801,6 +761,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
+      this.basemapService.addOfflineBasemap(this.map);
       this.draw.changeMode('static');
       if (this.icons) {
         this.icons.forEach(icon => {
@@ -1338,10 +1299,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.deleteSelectedItem();
   }
 
-  public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
-    this.setBaseMapStyle(selectedStyle.styleFile);
-    localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(selectedStyle));
-    this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
+  public onChangeBasemapStyle() {
+    this.onBasemapChanged.next(true);
   }
 
   /**
@@ -1420,7 +1379,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   }
 
   public ngOnDestroy(): void {
-    this.aoiEditSubscription.unsubscribe();
+    if (!!this.aoiEditSubscription) {
+      this.aoiEditSubscription.unsubscribe();
+    }
+    if (!!this.offlineBasemapChangeSubscription) {
+      this.offlineBasemapChangeSubscription.unsubscribe();
+    }
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
@@ -1535,6 +1499,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
         }
       });
+      this.reorderLayers();
     }
   }
 
@@ -1542,55 +1507,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.mapLayers.layers
       .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
       .forEach(l => this.addLayer(l.id));
-
-
-  }
-
-  private getAllBasemapStyles(): Array<BasemapStyle> {
-    const allBasemapStyles = new Array<BasemapStyle>();
-    if (this.basemapStyles) {
-      this.basemapStyles.forEach(b => allBasemapStyles.push(b));
-      /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
-      if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
-        allBasemapStyles.push(this.defaultBasemapStyle);
-      }
-    } else {
-      allBasemapStyles.push(this.defaultBasemapStyle);
-    }
-    return allBasemapStyles;
-  }
-
-  /**
-   * @description returns the basemap style that is displayed when the map is loaded for the first time
-   */
-  private getAfterViewInitBasemapStyle(): BasemapStyle {
-    if (!this.defaultBasemapStyle) {
-      throw new Error('[defaultBasemapStyle] input is null or undefined.');
-    }
-    const allBasemapStyles = this.getAllBasemapStyles();
-    const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
-    /** check if a basemap style is saved in local storage and that it exists in [allBasemapStyles] list */
-    if (localStorageBasemapStyle && allBasemapStyles.filter(b => b.name === localStorageBasemapStyle.name
-      && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
-      return localStorageBasemapStyle;
-    } else {
-      localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(this.defaultBasemapStyle));
-      return this.defaultBasemapStyle;
-    }
-  }
-
-  /**
-   * @param selectedBasemapStyle the selected basemap style
-   * @description This method sets the [basemapStylesGroup] object that includes the list of basemapStyles
-   * and which basemapStyle is selected.
-   */
-  private setBasemapStylesGroup(selectedBasemapStyle: BasemapStyle) {
-    const allBasemapStyles = this.getAllBasemapStyles();
-    /** basemapStylesGroup object includes the list of basemap styles and which one is selected */
-    this.basemapStylesGroup = {
-      basemapStyles: allBasemapStyles,
-      selectedBasemapStyle: selectedBasemapStyle
-    };
   }
 
   private addLayer(layerId: string): void {
@@ -1783,8 +1699,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       }
     }
   }
-
-
 
   private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
     const layer = this.layersMap.get(layerId);

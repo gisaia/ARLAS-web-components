@@ -19,17 +19,6 @@
 
 import { AnyLayer } from 'mapbox-gl';
 
-export interface BasemapStyle {
-  name: string;
-  styleFile: string | mapboxgl.Style;
-  image?: string;
-}
-
-export interface BasemapStylesGroup {
-  basemapStyles: Array<BasemapStyle>;
-  selectedBasemapStyle: BasemapStyle;
-}
-
 export interface MapLayers {
   layers: Array<AnyLayer>;
   externalEventLayers?: Array<ExternalEventLayer>;
