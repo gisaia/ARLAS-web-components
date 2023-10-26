@@ -18,9 +18,7 @@ export {
   MapLayers, ARLAS_VSET, LayerEvents, FILLSTROKE_LAYER_PREFIX, ARLAS_ID, PaintValue,
   ExternalEventLayer, ExternalEvent, SCROLLABLE_ARLAS_ID, FillStroke, LayerMetadata, PaintColor, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
 } from './lib/components/mapgl/model/mapLayers';
-export {
-  BasemapStyle, BasemapsConfig, OfflineBasemapTheme, OfflineBasemapsConfig, OnlineBasemapConfig
-} from './lib/components/mapgl/basemaps/basemap.config';
+export { BasemapStyle } from './lib/components/mapgl/basemaps/basemap.config';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
 export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE } from './lib/components/mapgl/mapgl.component.util';
 export { AoiDimensions as AoiEdition } from './lib/components/mapgl/draw/draw.models';

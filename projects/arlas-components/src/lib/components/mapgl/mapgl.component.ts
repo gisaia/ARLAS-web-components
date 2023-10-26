@@ -24,7 +24,7 @@ import {
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subject, Subscription, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, finalize } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
@@ -50,7 +50,7 @@ import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { AoiDimensions } from './draw/draw.models';
-import { BasemapStyle, BasemapsConfig } from './basemaps/basemap.config';
+import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
 
@@ -172,20 +172,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   /**
    * @Input : Angular
    * @description Default style of the base map
-   * @deprecated Use [basemapConfig] instead
    */
   @Input() public defaultBasemapStyle: BasemapStyle = {
     name: 'Positron Style',
-    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json',
   };
   /**
    * @Input : Angular
    * @description List of styles to apply to the base map
-   * @deprecated Use [basemapConfig] instead
    */
   @Input() public basemapStyles = new Array<BasemapStyle>();
 
-  @Input() public basemapConfig: BasemapsConfig;
   /**
    * @Input : Angular
    * @description Zoom of the map when it's initialized
@@ -557,7 +554,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   public ngOnInit() {
-    this.offlineBasemapChangeSubscription = this.basemapService.offlineBasemapChanged$.subscribe(() => this.reorderLayers());
+    this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
   }
 
   /** puts the visualisation set list in the new order after dropping */
@@ -689,10 +686,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (this.minZoom === undefined || this.minZoom === null) {
       this.maxZoom = 0;
     }
-    this.basemapService.setBasemaps(new ArlasBasemaps(this.basemapConfig, this.defaultBasemapStyle, this.basemapStyles));
+    this.basemapService.setBasemaps(new ArlasBasemaps(this.defaultBasemapStyle, this.basemapStyles));
+    this.basemapService.fetchSources$()
+      .pipe(finalize(() => this.declareMap()))
+      .subscribe();
+  }
+
+  public declareMap() {
     this.map = new mapboxgl.Map({
       container: this.id,
-      style: this.basemapService.getInitStyle(),
+      style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
       center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
@@ -761,7 +764,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
-      this.basemapService.addOfflineBasemap(this.map);
+      this.basemapService.declareProtomapProtocol(this.map);
+      this.basemapService.addProtomapBasemap(this.map);
       this.draw.changeMode('static');
       if (this.icons) {
         this.icons.forEach(icon => {
