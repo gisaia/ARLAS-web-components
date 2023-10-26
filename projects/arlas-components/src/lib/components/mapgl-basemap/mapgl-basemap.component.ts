@@ -5,9 +5,8 @@ import { MapSource } from '../mapgl/model/mapSource';
 import { MapglService } from '../../services/mapgl.service';
 import { HttpClient } from '@angular/common/http';
 import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
-import { BasemapStyle, OfflineBasemapTheme } from '../mapgl/basemaps/basemap.config';
-import { OfflineBasemap } from '../mapgl/basemaps/offline-basemap';
-import { OnlineBasemap } from '../mapgl/basemaps/online-basemap';
+import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
+import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
 
 @Component({
   selector: 'arlas-mapgl-basemap',
@@ -24,9 +23,8 @@ export class MapglBasemapComponent implements OnInit {
   @Output() public blur = new Subject<void>();
 
   public showList = false;
-  public isOnline = true;
-  public onlineBasemaps: OnlineBasemap;
-  public offlineBasemaps: OfflineBasemap;
+  public basemaps: ArlasBasemaps;
+
 
   public constructor(
     private mapglService: MapglService,
@@ -34,59 +32,42 @@ export class MapglBasemapComponent implements OnInit {
     private http: HttpClient) { }
 
   public ngOnInit(): void {
-    this.isOnline = this.basemapService.isOnline();
-    if (this.isOnline) {
-      this.initOnlineBasemaps();
-    } else {
-      this.initOfflineBasemaps();
-    }
+    this.initBasemaps();
   }
 
-  private initOnlineBasemaps() {
-    this.onlineBasemaps = this.basemapService.onlineBasemaps;
-    const styles = this.onlineBasemaps.styles();
-    if (!!this.onlineBasemaps && !!styles) {
-      this.showList = styles.length > 1;
-      styles.filter(bm => !bm.image).forEach(bm => {
-        const splitUrl = bm.styleFile.toString().split('/style.json?key=');
-        if (splitUrl.length === 2) {
-          bm.image = `${splitUrl[0]}/0/0/0.png?key=${splitUrl[1]}`;
-        }
-      });
-    }
-  }
-
-  private initOfflineBasemaps() {
-    this.offlineBasemaps = this.basemapService.offlineBasemaps;
-    if (!!this.offlineBasemaps && !!this.offlineBasemaps.themes()) {
-      this.showList = this.offlineBasemaps.themes().length > 1;
-    }
-  }
-
-  public onChangeOfflineBasemap(selectedTheme: OfflineBasemapTheme) {
-    this.basemapService.changeOfflineBasemap(this.map, selectedTheme);
-  }
-
-  public onChangeOnlineBasemap(selectedStyle: BasemapStyle) {
-    this.setBaseMapStyle(selectedStyle.styleFile);
-    localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(selectedStyle));
-    this.onlineBasemaps.setSelected(selectedStyle);
-  }
-
-  public setBaseMapStyle(style: string | mapboxgl.Style) {
-    if (this.map) {
-      const selectedStyle = this.onlineBasemaps.getSelected();
-      if (typeof selectedStyle.styleFile === 'string') {
-        this.http.get(selectedStyle.styleFile).subscribe((s: any) => {
-          this.setStyle(s, style);
+  private initBasemaps() {
+    this.basemaps = this.basemapService.basemaps;
+    if (!!this.basemaps) {
+      const styles = this.basemaps.styles();
+      if (!!styles) {
+        this.showList = styles.length > 1;
+        styles.filter(bm => !bm.image).forEach(bm => {
+          if (bm.type !== 'protomap') {
+            const splitUrl = bm.styleFile.toString().split('/style.json?key=');
+            if (splitUrl.length === 2) {
+              bm.image = `${splitUrl[0]}/0/0/0.png?key=${splitUrl[1]}`;
+            }
+          }
         });
-      } else {
-        this.setStyle(selectedStyle.styleFile, style);
       }
     }
   }
 
-  public setStyle(s: mapboxgl.Style, style: string | mapboxgl.Style) {
+  public onChangeBasemap(newBasemap: BasemapStyle) {
+    const selectedBasemap = this.basemaps.getSelected();
+    if (selectedBasemap.type === 'protomap') {
+      this.basemapService.removeProtomapBasemap(this.map);
+    }
+    this.setBaseMapStyle(newBasemap);
+  }
+
+  public setBaseMapStyle(newBasemap: BasemapStyle) {
+    if (this.map) {
+      this.setStyle(this.basemaps.getSelected().styleFile as mapboxgl.Style, newBasemap);
+    }
+  }
+
+  public setStyle(s: mapboxgl.Style, newBasemap: BasemapStyle) {
     const selectedBasemapLayersSet = new Set<string>();
     const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
     const sources = (<mapboxgl.Map>this.map).getStyle().sources;
@@ -95,7 +76,7 @@ export class MapglBasemapComponent implements OnInit {
     }
     const layersToSave = new Array<mapboxgl.Layer>();
     const sourcesToSave = new Array<MapSource>();
-    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
+    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
       layersToSave.push(l);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
         sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
@@ -110,9 +91,16 @@ export class MapglBasemapComponent implements OnInit {
         }
       });
     }
-    this.map.setStyle(style).once('styledata', () => {
+    const initStyle = this.basemapService.getInitStyle(newBasemap);
+    this.map.setStyle(initStyle).once('styledata', () => {
       this.mapglService.addSourcesToMap(sourcesToSave, this.map);
       layersToSave.forEach(l => this.map.addLayer(l as AnyLayer));
+      localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
+      this.basemaps.setSelected(newBasemap);
+      if (newBasemap.type === 'protomap') {
+        this.basemapService.addProtomapBasemap(this.map);
+        this.basemapService.notifyProtomapAddition();
+      }
       this.basemapChanged.emit();
     });
   }

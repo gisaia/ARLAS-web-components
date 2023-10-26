@@ -21,97 +21,99 @@ import { Injectable } from '@angular/core';
 import { ArlasBasemaps } from './basemaps';
 import * as pmtiles from 'pmtiles';
 import { CustomProtocol } from '../custom-protocol/mapbox-gl-custom-protocol';
-import { OfflineBasemapTheme } from './basemap.config';
+import { BasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
-import { OfflineBasemap } from './offline-basemap';
-import { Subject } from 'rxjs';
-import { OnlineBasemap } from './online-basemap';
+import { Observable, Subject, forkJoin, of, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapboxBasemapService {
-  private basemaps: ArlasBasemaps;
-  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+  public basemaps: ArlasBasemaps;
 
-  public onlineBasemaps: OnlineBasemap;
-  public offlineBasemaps: OfflineBasemap;
+  private protomapBasemapAddedSource = new Subject<boolean>();
+  public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  private offlineBasemapChangedSource = new Subject<boolean>();
-  public offlineBasemapChanged$ = this.offlineBasemapChangedSource.asObservable();
+  public constructor(private http: HttpClient) {}
 
   public setBasemaps(basemaps: ArlasBasemaps) {
     this.basemaps = basemaps;
-    this.onlineBasemaps = basemaps.onlineBasemaps;
-    this.offlineBasemaps = basemaps.offlineBasemaps;
   }
 
-  /** Add offline basemap only if configured. */
-  public addOfflineBasemap(map: mapboxgl.Map) {
-    if (!!this.basemaps && this.basemaps.isOnline) {
-      return;
+  public addProtomapBasemap(map: mapboxgl.Map) {
+    const selectedBasemap = this.basemaps.getSelected();
+    if (selectedBasemap.type === 'protomap') {
+      const styleFile = selectedBasemap.styleFile as mapboxgl.Style;
+      const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
+      if (pmtilesSource) {
+        map.addSource('arlas_protomaps_source', pmtilesSource as any);
+        styleFile.layers.forEach(l =>{
+          if (!!map.getLayer(l.id)) {
+            map.removeLayer(l.id);
+          }
+          map.addLayer(l as any);
+        });
+      }
+    } else {
+      /** no action needed. The base map has been added already thanks to getInitStyle */
     }
+  }
+
+  public notifyProtomapAddition() {
+    this.protomapBasemapAddedSource.next(true);
+  }
+
+  public removeProtomapBasemap(map: mapboxgl.Map) {
+    const selectedBasemap = this.basemaps.getSelected();
+    if (selectedBasemap.type === 'protomap') {
+      (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
+        if (!!map.getLayer(l.id)) {
+          map.removeLayer(l.id);
+        }
+      });
+      map.removeSource('arlas_protomaps_source');
+    }
+  }
+
+  public declareProtomapProtocol(map: mapboxgl.Map) {
     const protocol = new pmtiles.Protocol();
     /** addSourceType is private */
     (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));
     (mapboxgl as any).addProtocol('pmtiles', protocol.tile);
-    const pmtilesUrl = this.offlineBasemaps.getUrl();
-    map.addSource('protomaps_source', {
-      'type': 'pmtiles-type',
-      'tiles': ['pmtiles://' + pmtilesUrl + '/{z}/{x}/{y}'],
-      'maxzoom': 21
-    } as any);
+  }
 
-    if (this.offlineBasemaps && !!this.offlineBasemaps.getSelected()) {
-      this.offlineBasemaps.getSelected().layers.forEach(l =>{
-        map.addLayer(l as any);
-      });
+  public getInitStyle(selected: BasemapStyle) {
+    if (selected.type === 'protomap') {
+      /** This is necessaty to make it work for mapbox. */
+      const clonedStyleFile: mapboxgl.Style = Object.assign({}, selected.styleFile as mapboxgl.Style);
+      clonedStyleFile.sources = {};
+      clonedStyleFile.layers = [{
+        id: 'backgrounds',
+        type: 'background',
+        paint: {
+          'background-color': 'rgba(0,0,0,0)'
+        }
+      }];
+      return clonedStyleFile;
     }
+    return selected.styleFile;
   }
 
-  public changeOfflineBasemap(map: mapboxgl.Map, newTheme: OfflineBasemapTheme) {
-    const currentTheme = this.offlineBasemaps.getSelected();
-    currentTheme.layers.forEach(l => {
-      if (!!map.getLayer(l.id)) {
-        map.removeLayer(l.id);
-      }
-    });
-    this.offlineBasemaps.setSelected(newTheme).getSelected().layers.forEach(l =>{
-      map.addLayer(l as any);
-    });
-    this.offlineBasemapChangedSource.next(true);
+
+  public fetchSources$() {
+    const sources$: Observable<mapboxgl.Style>[] = [];
+    this.basemaps.styles().forEach(s => sources$.push(this.getStyleFile(s).pipe(
+      tap(sf => s.styleFile = sf as mapboxgl.Style)
+    )));
+    return forkJoin(sources$);
   }
 
-  public isOnline(): boolean {
-    if (!this.basemaps) {
-      throw new Error('No basemap configuration is set');
-    }
-    return !!this.basemaps && this.basemaps.isOnline;
-  }
-
-  public getInitStyle() {
-    if (this.basemaps.isOnline) {
-      const initStyle = this.onlineBasemaps.getSelected();
-      return initStyle.styleFile;
+  private getStyleFile(b: BasemapStyle): Observable<mapboxgl.Style> {
+    if (typeof b.styleFile === 'string') {
+      return this.http.get(b.styleFile) as Observable<mapboxgl.Style>;
     } else {
-      return {
-        version: 8,
-        name: 'Empty',
-        metadata: {
-          'mapbox:autocomposite': true
-        },
-        glyphs: this.offlineBasemaps.getGlyphs(),
-        sources: {},
-        layers: [
-          {
-            id: 'backgrounds',
-            type: 'background',
-            paint: {
-              'background-color': 'rgba(0,0,0,0)'
-            }
-          }
-        ]
-      } as mapboxgl.Style;
+      return of(b.styleFile);
     }
   }
 }

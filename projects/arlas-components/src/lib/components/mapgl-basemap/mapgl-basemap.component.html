@@ -1,6 +1,6 @@
 <div *ngIf="showList" class="basemap-container">
-  <ng-container *ngIf="isOnline; else offline">
-    <div *ngFor="let style of onlineBasemaps?._styles" class="basemap" [class.selected]="style.name === onlineBasemaps?._selectedStyle?.name" (click)="onChangeOnlineBasemap(style)">
+  <ng-container>
+    <div *ngFor="let style of basemaps?._styles" class="basemap" [class.selected]="style.name === basemaps?._selectedStyle?.name" (click)="onChangeBasemap(style)">
       <div class="image">
         <img *ngIf="!!style?.image && style?.image !== ''" src="{{style?.image}}" (error)="style.image = null" />
         <div *ngIf="!style?.image || (!!style?.image && style?.image === '')" class="no-image">
@@ -10,14 +10,4 @@
       </div>
     </div>
   </ng-container>
-  <ng-template #offline>
-    <div *ngFor="let theme of offlineBasemaps?._themes" class="basemap" [class.selected]="theme.name === offlineBasemaps?._selectedTheme?.name" (click)="onChangeOfflineBasemap(theme)">
-      <div class="image">
-        <div class="no-image">
-          <mat-icon>wallpaper</mat-icon>
-        </div>
-        <div class="name">{{theme.name | translate}}</div>
-      </div>
-    </div>
-  </ng-template>
 </div>
