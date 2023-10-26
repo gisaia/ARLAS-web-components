@@ -18,38 +18,10 @@
  */
 
 
-// DISCLAIMER
-// -- The word 'Style' is reserved to online basemaps.
-// -- The word 'Theme' is reserved to offline basemaps.
-
-export interface BasemapsConfig {
-  isOnline: boolean;
-  onlineConfig?: OnlineBasemapConfig;
-  offlineConfig?: OfflineBasemapsConfig;
-}
-
-export interface OnlineBasemapConfig {
-  styles: BasemapStyle[];
-  defaultStyle: BasemapStyle;
-}
-
-export interface OfflineBasemapsConfig {
-  /** Path to pmtiles file */
-  url: string;
-  glyphsUrl: string;
-  themes: OfflineBasemapTheme[];
-  defaultTheme: OfflineBasemapTheme;
-}
-
-
-export interface OfflineBasemapTheme {
-  layers: mapboxgl.Layer[];
-  name: string;
-}
-
 export interface BasemapStyle {
   name: string;
   styleFile: string | mapboxgl.Style;
   image?: string;
+  type?: 'protomap' | 'mapbox';
 }
 

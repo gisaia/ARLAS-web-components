@@ -1,50 +1,65 @@
-import { BasemapStyle, BasemapsConfig, OfflineBasemapsConfig } from './basemap.config';
-import { OfflineBasemap } from './offline-basemap';
-import { OnlineBasemap } from './online-basemap';
+import { BasemapStyle } from './basemap.config';
 
 export class ArlasBasemaps {
-  private config: BasemapsConfig;
-  public isOnline;
-  public onlineBasemaps: OnlineBasemap;
-  public offlineBasemaps: OfflineBasemap;
-  public constructor(config: BasemapsConfig, defaultBasemapStyle?: BasemapStyle, basemapStyles?: BasemapStyle[]) {
-    if (defaultBasemapStyle && basemapStyles && !config) {
-      /** Retrocompatibility code. To be removed in v25.0.0 */
-      this.isOnline = true;
-      this.onlineBasemaps = new OnlineBasemap({
-        styles: basemapStyles,
-        defaultStyle: defaultBasemapStyle
-      });
+  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+  public _selectedStyle: BasemapStyle;
+  public _styles: BasemapStyle[];
+  private defaultBasemapStyle: BasemapStyle;
+  private basemapStyles?: BasemapStyle[];
+
+  public constructor(defaultBasemapStyle?: BasemapStyle, basemapStyles?: BasemapStyle[]) {
+    if (defaultBasemapStyle && basemapStyles) {
+      this.defaultBasemapStyle = defaultBasemapStyle;
+      this.basemapStyles = basemapStyles;
     } else {
-      this.config = config;
-      this.throwErrorBasemapAbscense();
-      this.throwErrorOnlineAbscense();
-      this.throwErrorOfflineAbscense();
-      this.isOnline = config.isOnline;
-      if (this.isOnline) {
-        this.onlineBasemaps = new OnlineBasemap(this.config.onlineConfig);
+      // todo throw error ?
+    }
+  }
+
+  public styles(): BasemapStyle[] {
+    if (!this._styles) {
+      this._styles = this.getAllBasemapStyles(this.defaultBasemapStyle, this.basemapStyles);
+    }
+    return this._styles;
+  }
+
+  public setSelected(styele: BasemapStyle) {
+    this._selectedStyle = styele;
+    return this;
+  }
+
+  public getSelected(): BasemapStyle {
+    if (!this._selectedStyle) {
+      const styles = this.styles();
+      const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
+      if (localStorageBasemapStyle && styles.filter(b => b.name === localStorageBasemapStyle.name
+        && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
+        this._selectedStyle = localStorageBasemapStyle;
+        return this._selectedStyle;
+      }
+      if (styles && styles.length > 0) {
+        this._selectedStyle = styles[0];
       } else {
-        this.offlineBasemaps = new OfflineBasemap(this.config.offlineConfig);
+        throw new Error('No Style is defined for the online basemap');
       }
     }
+    return this._selectedStyle;
   }
 
-  private throwErrorBasemapAbscense() {
-    if (!this.config) {
-      throw new Error('Basemap configuration is not set.');
-    }
-  }
 
-  private throwErrorOnlineAbscense() {
-    if (this.config.isOnline && !this.config.onlineConfig) {
-      throw new Error('Online basemap configuration is not set.');
+  private getAllBasemapStyles(defaultBasemapTheme: BasemapStyle, basemapStyles: BasemapStyle[]): Array<BasemapStyle> {
+    const allBasemapStyles = new Array<BasemapStyle>();
+    if (basemapStyles) {
+      basemapStyles.forEach(b => allBasemapStyles.push(b));
+      if (defaultBasemapTheme) {
+        if (basemapStyles.map(b => b.name).filter(n => n === defaultBasemapTheme.name).length === 0) {
+          allBasemapStyles.push(defaultBasemapTheme);
+        }
+      }
+    } else if (defaultBasemapTheme) {
+      allBasemapStyles.push(defaultBasemapTheme);
     }
-  }
-
-  private throwErrorOfflineAbscense() {
-    if (this.config.isOnline && !this.config.offlineConfig) {
-      throw new Error('Offline basemap configuration is not set.');
-    }
+    return allBasemapStyles;
   }
 }
 
