@@ -1,8 +1,16 @@
 # Change Log
 
-## [v24.3.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.3) (2023-10-26)
+## [v24.3.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.4) (2023-10-31)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.3...v24.3.0-beta.4)
+
+## [v24.3.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.3) (2023-10-27)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.2...v24.3.0-beta.3)
+
+**Miscellaneous:**
+
+- Display bbox/polygons area and width/height [\#753](https://github.com/gisaia/ARLAS-web-components/issues/753) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v24.3.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.2) (2023-10-18)
 
