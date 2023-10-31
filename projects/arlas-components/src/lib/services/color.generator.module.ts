@@ -36,8 +36,7 @@ export class ColorGeneratorModule {
     return {
       ngModule: ColorGeneratorModule,
       providers: [
-        config.loader || {provide: ColorGeneratorLoader, useClass: AwcColorGeneratorLoader},
-        ArlasColorService
+        config.loader || {provide: ColorGeneratorLoader, useClass: AwcColorGeneratorLoader}
       ]
     };
   }
@@ -46,8 +45,7 @@ export class ColorGeneratorModule {
     return {
       ngModule: ColorGeneratorModule,
       providers: [
-        config.loader || {provide: ColorGeneratorLoader, useClass: AwcColorGeneratorLoader},
-        ArlasColorService
+        config.loader || {provide: ColorGeneratorLoader, useClass: AwcColorGeneratorLoader}
       ]
     };
   }
