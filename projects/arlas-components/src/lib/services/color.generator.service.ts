@@ -21,7 +21,9 @@ import { Injectable } from '@angular/core';
 import { ColorGeneratorLoader } from '../components/componentsUtils';
 import { Subject } from 'rxjs';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ArlasColorService {
 
   private changekeysToColors =  new Subject<void>();
