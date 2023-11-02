@@ -509,15 +509,6 @@ export class MapglDemoComponent implements OnInit {
   public constructor() { }
 
   public ngOnInit(): void {
-    if (!!this.mapComponent.onPolygonError) {
-      this.mapComponent.onPolygonError.subscribe(error => {
-        console.log(error);
-      });
-    }
-  }
-
-  public onPolygonError(event) {
-    console.log(event);
   }
 
   public polygonChange(event) {
