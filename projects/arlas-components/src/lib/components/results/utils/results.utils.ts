@@ -83,3 +83,5 @@ export interface AdditionalInfo {
   actions?: Array<Action>;
   attachments?: Array<Attachment>;
 }
+
+export const QUICKLOOK_HEADER = 'Quicklook-Call';

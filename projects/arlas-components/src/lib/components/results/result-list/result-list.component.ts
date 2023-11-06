@@ -322,6 +322,12 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
 
   /**
+   * @Input : Angular
+   * @description Whether to use a http request to query detailed image instead of relying on img tag internal mechanism.
+   */
+  @Input() public useHttpForDetailedImage: string;
+
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */

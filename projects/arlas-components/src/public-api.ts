@@ -29,7 +29,7 @@ export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/th
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { DetailedDataRetriever } from './lib/components/results/utils/detailed-data-retriever';
 export {
-  Action, ElementIdentifier, FieldsConfiguration, ResultListOptions, Attachment, AdditionalInfo, Field, PageQuery
+  Action, ElementIdentifier, FieldsConfiguration, ResultListOptions, Attachment, AdditionalInfo, Field, PageQuery, QUICKLOOK_HEADER
 } from './lib/components/results/utils/results.utils';
 export { Item } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
