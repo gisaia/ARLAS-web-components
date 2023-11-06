@@ -17,8 +17,10 @@
  * under the License.
  */
 
-import { ChangeDetectorRef, Component,
-  ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  ChangeDetectorRef, Component,
+  ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+} from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
 import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
@@ -88,7 +90,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
  */
   @Output() public closeDetail: Subject<boolean> = new Subject();
 
-  @ViewChild('image_detail', { static: false}) public imageViewer: ElementRef;
+  @ViewChild('image_detail', { static: false }) public imageViewer: ElementRef;
 
 
   public isDetailedDataShowed = false;
@@ -140,7 +142,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], {responseType: 'blob'})
+      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { responseType: 'blob' })
         .pipe(take(1))
         .subscribe({
           next: (image: Blob) => {
@@ -154,11 +156,11 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
             if (image) {
               reader.readAsDataURL(image);
             }
-        }, error: (err) => {
-          console.error(err);
-          this.isLoading = false;
-        }
-      });
+          }, error: (err) => {
+            console.error(err);
+            this.isLoading = false;
+          }
+        });
     } else {
       this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
       this.resetViewer();
@@ -194,6 +196,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     }, 0);
   }
 
+
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
@@ -221,7 +224,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     if (actionsInfos) {
       viewerContainer = actionsInfos[0].parentElement;
       const elements = actionsInfos.length;
-      for (let i=0; i < elements; i++) {
+      for (let i = 0; i < elements; i++) {
         // The element is removed from the list once retrieved
         fullScreenContainer.appendChild(actionsInfos.item(0));
       }
@@ -232,7 +235,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
       if (viewerContainer) {
         const actionsInfosFullScreen = fullScreenContainer.getElementsByClassName('viewer_actions-infos');
         const elements = actionsInfosFullScreen.length;
-        for (let i=0; i < elements; i++) {
+        for (let i = 0; i < elements; i++) {
           // The element is removed from the list once retrieved
           viewerContainer.appendChild(actionsInfosFullScreen.item(0));
         }
