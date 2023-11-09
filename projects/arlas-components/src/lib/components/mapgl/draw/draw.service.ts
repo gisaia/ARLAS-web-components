@@ -25,7 +25,7 @@ import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
-import { AoiDimensions, EditionState } from './draw.models';
+import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -37,6 +37,9 @@ export class MapboxAoiDrawService {
 
   private editAoiSource = new Subject<AoiDimensions>();
   public editAoi$ = this.editAoiSource.asObservable();
+
+  private drawBboxSource = new Subject<BboxDrawCommand>();
+  public drawBbox$ = this.drawBboxSource.asObservable();
 
   public bboxEditionState: EditionState;
   public polygonEditionState: EditionState;
@@ -52,6 +55,19 @@ export class MapboxAoiDrawService {
       isDrawing: false,
       isEditing: false
     };
+  }
+
+  public drawBbox(fCorner: Corner, sCorner: Corner) {
+    const west = Math.min(fCorner.lng, sCorner.lng);
+    const east = Math.max(fCorner.lng, sCorner.lng);
+    const south = Math.min(fCorner.lat, sCorner.lat);
+    const north = Math.max(fCorner.lat, sCorner.lat);
+    this.drawBboxSource.next({
+      west,
+      east,
+      south,
+      north
+    });
   }
 
   public enableBboxEdition() {

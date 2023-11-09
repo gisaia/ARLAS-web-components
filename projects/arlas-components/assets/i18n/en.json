@@ -75,5 +75,14 @@
 	"None": "None",
 	"Fit the whole thumbnail to the tile": "Fit the whole thumbnail to the tile",
 	"Fit the thumbnail's width to the tile": "Fit the thumbnail's width to the tile",
-	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile"
+	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile",
+	"Enter coordinates in decimal or sexagesimal degrees": "Enter coordinates in decimal or sexagesimal degrees.",
+	"BBox generator": "Generate a bbox",
+	"First corner": "First corner",
+	"Second corner": "Second corner",
+	"You must enter a coordinate": "Enter a coordinate",
+	"Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")": "Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")",
+	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Decimal: 1.1 or Sexagesimal: 1°6'3\" coordinate",
+	"Both corners have the same latitudes, change one of them.": "Both corners have the same latitudes, modify one of them.",
+	"Generate AOI": "Generate the bbox"
 }

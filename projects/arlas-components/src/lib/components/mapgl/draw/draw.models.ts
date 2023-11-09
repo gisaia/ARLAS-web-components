@@ -32,3 +32,15 @@ export interface EditionState {
   isDrawing: boolean;
   isEditing: boolean;
 }
+
+export interface Corner {
+  lat: number;
+  lng: number;
+}
+
+export interface BboxDrawCommand {
+  east: number;
+  west: number;
+  north: number;
+  south: number;
+}
