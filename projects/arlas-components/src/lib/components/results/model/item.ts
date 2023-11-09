@@ -27,9 +27,13 @@ export class Item {
    */
   public identifier: string;
   /**
-   * @description Url that links the item's image.
+   * @description List of urls pointing to the item's images.
    */
-  public urlImage: string;
+  public urlImages: Array<string>;
+  /**
+   * @description List of descriptions of the images.
+   */
+  public descriptions: Array<string>;
   /**
    * @description If image is enabled (to avoid 404 not found)
    */

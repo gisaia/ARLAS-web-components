@@ -48,7 +48,11 @@ export interface ElementIdentifier {
 
 export interface FieldsConfiguration {
   idFieldName: string;
+  /**
+   * @deprecated
+   */
   urlImageTemplate?: string;
+  urlImageTemplates?: Array<DescribedUrl>;
   urlThumbnailTemplate?: string;
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
@@ -60,6 +64,11 @@ export interface FieldsConfiguration {
   icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
+}
+
+export interface DescribedUrl {
+  url: string;
+  description: string;
 }
 
 export interface Field {
@@ -87,3 +96,17 @@ export interface AdditionalInfo {
 }
 
 export const QUICKLOOK_HEADER = 'Quicklook-Call';
+
+/**
+ * @param data A dictionnary of data to retrieve information
+ * @param template The template of the desired string. Contains variable keys between brackets
+ * @returns A string with the regex replaced by the data
+ */
+export function matchAndReplace(data: Map<string, string | number | Date>, template: string) {
+  let replaced = template;
+  template.match(/{(.+?)}/g)?.forEach(t => {
+    const key: string = t.replace('{', '').replace('}', '');
+    replaced = replaced.replace(t, data.get(key).toString());
+  });
+  return replaced;
+}

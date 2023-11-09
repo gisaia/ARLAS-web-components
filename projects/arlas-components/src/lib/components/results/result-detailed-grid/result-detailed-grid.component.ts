@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { AfterViewInit, ChangeDetectorRef, Component,
+import { ChangeDetectorRef, Component,
   ElementRef, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject } from 'rxjs';
+import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ElementIdentifier, QUICKLOOK_HEADER } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
@@ -28,9 +28,9 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'arlas-result-detailed-grid',
   templateUrl: './result-detailed-grid.component.html',
-  styleUrls: ['./result-detailed-grid.component.css']
+  styleUrls: ['./result-detailed-grid.component.scss']
 })
-export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterViewInit {
+export class ResultDetailedGridComponent implements OnInit, OnChanges {
   public SHOW_DETAILS = 'Show details';
   public VIEW_IMAGE = 'View quicklook';
   public SHOW_IMAGE = 'Show image';
@@ -93,9 +93,25 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
 
   public isDetailedDataShowed = false;
 
+  /**
+   * @description The image source to display. Either is an url or the content of the image.
+   */
   public imgSrc: string | ArrayBuffer;
 
+  /**
+   * @description Whether the request for the image is being processed
+   */
   public isLoading = false;
+
+  /**
+   * @description In the case of multiple images, indicates which one is selected
+   */
+  public currentImageIndex = 0;
+
+  /**
+   * @description Whether the viewer is in full screen mode
+   */
+  public isFullScreen = false;
 
   private viewer;
 
@@ -106,30 +122,41 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
 
   public ngOnInit() {
     this.getImage();
+    console.log(this.gridTile.urlImages);
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      if (this.viewer) {
-        this.viewer = this.viewer.destroy();
-      }
-      setTimeout(() => {
-        if (!!this.imageViewer) {
-          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-        }
-        this.getImage();
-      }, 0);
+      this.resetViewer();
     }
   }
 
+  private resetViewer() {
+    if (this.viewer) {
+      this.viewer = this.viewer.destroy();
+    }
+    this.getImage();
+    setTimeout(() => {
+      if (this.isFullScreen) {
+        this.fullScreenViewer.show(this.imgSrc);
+      } else {
+        if (!!this.imageViewer) {
+          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
+        }
+      }
+    }, 0);
+  }
+
   private getImage() {
-    if (!this.gridTile || (this.gridTile && !this.gridTile.urlImage)) {
+    if (!this.gridTile || (this.gridTile && !this.gridTile.urlImages)) {
+      this.imgSrc = this.noViewImg;
       return;
     }
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImage, {headers: {[QUICKLOOK_HEADER]: 'true'}, responseType: 'blob'})
+      this.http.get(this.gridTile.urlImages[this.currentImageIndex], {headers: {[QUICKLOOK_HEADER]: 'true'}, responseType: 'blob'})
+        .pipe(take(1))
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
@@ -147,7 +174,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
         }
       });
     } else {
-      this.imgSrc = this.gridTile.urlImage;
+      this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
     }
   }
 
@@ -159,19 +186,10 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
     this.gridTile.imageEnabled = false;
   }
 
-  public ngAfterViewInit(): void {}
-
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
-    setTimeout(() => {
-      if (!!this.imageViewer) {
-        this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-      }
-    }, 0);
+    this.resetViewer();
   }
 
   public closeDetailedData() {
@@ -184,7 +202,52 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
     this.actionOnItemEvent.next(actionOnItem);
   }
 
-  public showOverlay(url) {
-    this.fullScreenViewer.show(url);
+  public showOverlay() {
+    this.isFullScreen = true;
+    this.resetViewer();
+
+    let viewerContainer: HTMLElement | undefined;
+    const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
+
+    // eslint-disable-next-line max-len
+    const description = document.getElementsByClassName('resultgrid__img description') ? document.getElementsByClassName('resultgrid__img description')[0] : undefined;
+    if (description) {
+      viewerContainer = description.parentElement.parentElement;
+      fullScreenContainer.appendChild(description);
+    }
+    if (this.gridTile.urlImages && this.gridTile.urlImages.length > 1) {
+      const previous = document.getElementsByClassName('navigate-button previous')[0];
+      viewerContainer = previous.parentElement;
+      fullScreenContainer.appendChild(previous);
+      fullScreenContainer.appendChild(document.getElementsByClassName('navigate-button next')[0]);
+    }
+    document.querySelector('.iv-fullscreen-close').addEventListener('click', () => {
+      this.isFullScreen = false;
+      if (viewerContainer) {
+        viewerContainer.appendChild(document.getElementsByClassName('navigate-button previous')[0]);
+        viewerContainer.appendChild(document.getElementsByClassName('navigate-button next')[0]);
+
+        if (description) {
+          viewerContainer.querySelector('.resultgrid_img').appendChild(description);
+        }
+      }
+      this.resetViewer();
+    });
+  }
+
+  public onPrevious() {
+    this.currentImageIndex -= 1;
+    if (this.currentImageIndex < 0) {
+      this.currentImageIndex = this.gridTile.urlImages.length - 1;
+    }
+    this.resetViewer();
+  }
+
+  public onNext() {
+    this.currentImageIndex += 1;
+    if (this.currentImageIndex >= this.gridTile.urlImages.length) {
+      this.currentImageIndex = 0;
+    }
+    this.resetViewer();
   }
 }
