@@ -1,0 +1,60 @@
+<div class="wrapper">
+    <div class="title-wrapper">
+        <span>{{'BBox generator' | translate}}</span>
+        <mat-icon>clear</mat-icon>
+    </div>
+    <div class="content">
+        <div class="description">
+            <mat-icon>info</mat-icon>
+            <span>{{DESCRIPTION | translate}}</span>
+        </div>
+        <div class="section" *ngIf="bboxForm?.firstCorner" [formGroup]="bboxForm?.firstCorner">
+            <div class="title">{{'First corner' | translate}}</div>
+            <div class="coordinate">
+                <mat-form-field appearance="outline" >
+                    <mat-label>{{'Latitude'}}</mat-label>
+                    <input class="input"  matInput [formControl]="bboxForm.firstCorner.latitude" [placeholder]="placeHolder | translate">
+                    <mat-error *ngIf="bboxForm.firstCorner.latitude.invalid">{{getErrorMessage(bboxForm.firstCorner.latitude) | translate}}</mat-error>
+                </mat-form-field>
+            </div>
+            <div class="coordinate">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'Longitude'}}</mat-label>
+                    <input class="input"  matInput [formControl]="bboxForm.firstCorner.longitude" [placeholder]="placeHolder | translate">
+                    <mat-error *ngIf="bboxForm.firstCorner.longitude.invalid">{{getErrorMessage(bboxForm.firstCorner.longitude) | translate}}</mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="section" *ngIf="bboxForm?.secondCorner" [formGroup]="bboxForm?.secondCorner">
+            <div class="title">{{'Second corner' | translate}}</div>
+            <div class="coordinate">
+                <mat-form-field appearance="outline" >
+                    <mat-label>{{'Latitude'}}</mat-label>
+                    <input class="input"  matInput [formControl]="bboxForm.secondCorner.latitude" [placeholder]="placeHolder | translate">
+                    <mat-error *ngIf="bboxForm.secondCorner.latitude.invalid">{{getErrorMessage(bboxForm.secondCorner.latitude) | translate}} </mat-error>
+                </mat-form-field>
+            </div>
+            <div class="coordinate">
+                <mat-form-field appearance="outline">
+                    <mat-label>{{'Longitude'}}</mat-label>
+                    <input class="input"  matInput [formControl]="bboxForm.secondCorner.longitude" [placeholder]="placeHolder | translate">
+                    <mat-error *ngIf="bboxForm.secondCorner.longitude.invalid">{{getErrorMessage(bboxForm.secondCorner.longitude) | translate}}</mat-error>
+                </mat-form-field>
+            </div>
+            
+            
+        </div>
+        <div class="errors" *ngIf="bboxForm.latitudeErrors">
+            <mat-icon>report</mat-icon>
+            <mat-error>{{getErrorMessage(bboxForm) | translate}}</mat-error>
+        </div>        
+    </div>
+    <div class="actions">
+        <button mat-button [mat-dialog-close]="null">{{'Close' | translate}}
+        </button>
+        <button class="create-action" mat-stroked-button (click)="generateBbox()"
+            [disabled]="bboxForm.invalid || bboxForm.latitudeErrors">
+            <span class="label">{{'Generate AOI' | translate}}</span>
+        </button>
+    </div>
+</div>
