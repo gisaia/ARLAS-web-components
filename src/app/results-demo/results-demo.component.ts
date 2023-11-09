@@ -51,8 +51,11 @@ export class ResultsDemoComponent implements OnInit {
       this.options.hideDetailIconName = 'keyboard_arrow_up';
       this.options.showDetailIconName = 'keyboard_arrow_down';
       this.fieldsConfiguration = {
-        idFieldName: 'id', urlImageTemplate:
-        'urlImage', urlThumbnailTemplate: 'urlImage', titleFieldNames: [{ fieldPath: 'source', process: '' }]
+        idFieldName: 'id',
+        urlImageTemplate: 'urlImage',
+        urlThumbnailTemplate: 'urlImage',
+        titleFieldNames: [{ fieldPath: 'source', process: '' }],
+        useHttpQuicklooks: true
       };
       this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>();
 
