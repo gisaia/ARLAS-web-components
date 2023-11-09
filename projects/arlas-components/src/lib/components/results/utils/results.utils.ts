@@ -52,6 +52,8 @@ export interface FieldsConfiguration {
   urlThumbnailTemplate?: string;
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
+  useHttpQuicklooks?: boolean;
+
   /**
    * @deprecated
    */

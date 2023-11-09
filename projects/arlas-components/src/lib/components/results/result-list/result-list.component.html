@@ -112,7 +112,7 @@
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
           [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
-          [useHttp]="useHttpForDetailedImage" (closeDetail)=closeDetail($event)>
+          [useHttp]="fieldsConfiguration.useHttpQuicklooks" (closeDetail)=closeDetail($event)>
         </arlas-result-detailed-grid>
       </td>
     </tr>
