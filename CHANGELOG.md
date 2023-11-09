@@ -2,7 +2,7 @@
 
 ## [v24.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1) (2023-11-21)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.1-beta.2...v24.2.1)
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.0...v24.2.1)
 
 ## [v24.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.0) (2023-09-29)
 
