@@ -43,6 +43,7 @@ import { ResultGridTileComponent } from './result-grid-tile/result-grid-tile.com
 import { ResultItemComponent } from './result-item/result-item.component';
 import { ResultListComponent } from './result-list/result-list.component';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   imports: [
@@ -59,6 +60,7 @@ import { FormatNumberModule } from '../../pipes/format-number/format-number.modu
     MatSlideToggleModule,
     MatTooltipModule,
     MatRadioModule,
+    MatProgressSpinnerModule,
     FormsModule,
     LazyLoadImageModule,
     NgxLoadingModule,
