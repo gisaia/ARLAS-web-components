@@ -49,7 +49,7 @@ import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
 import { MapboxAoiDrawService } from './draw/draw.service';
-import { AoiDimensions } from './draw/draw.models';
+import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
@@ -443,11 +443,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
   private aoiEditSubscription: Subscription;
+  private drawBboxSubscription: Subscription;
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
     private basemapService: MapboxBasemapService,
     private _snackBar: MatSnackBar, private translate: TranslateService) {
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
+    this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
+      next: (bboxDC: BboxDrawCommand) => {
+        this.drawBbox(bboxDC.east, bboxDC.south, bboxDC.west, bboxDC.north);
+      }
+    });
   }
 
 
@@ -1389,6 +1395,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (!!this.offlineBasemapChangeSubscription) {
       this.offlineBasemapChangeSubscription.unsubscribe();
     }
+    if (!!this.drawBboxSubscription) {
+      this.drawBboxSubscription.unsubscribe();
+    }
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
@@ -1668,40 +1677,45 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       const north = Math.max(startlat, endlat);
       const east = Math.max(startlng, endlng);
       const south = Math.min(startlat, endlat);
-      const coordinates = [[
-        [east, south],
-        [east, north],
-        [west, north],
-        [west, south],
-        [east, south],
-      ]];
-      const polygonGeojson = {
-        type: 'Feature',
-        properties: {
-          source: 'bbox'
-        },
-        geometry: {
-          type: 'Polygon',
-          coordinates: coordinates
-        }
-      };
-      const geoboxdata = Object.assign({}, this.emptyData);
-      geoboxdata.features = [];
-      if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
-        this.drawData.features.forEach(df => geoboxdata.features.push(df));
-      }
-      geoboxdata.features.push(<any>polygonGeojson);
-      /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
-      this.drawService.addFeatures(geoboxdata, /** deleteOld */ true);
-      this.onAoiChanged.next(geoboxdata);
-      this.isDrawingBbox = false;
-      this.drawService.disableBboxEdition();
-      this.drawService.endDimensionsEmission();
+      this.drawBbox(east, south, west, north);
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
     }
+  }
+
+
+  private drawBbox(east, south, west, north) {
+    const coordinates = [[
+      [east, south],
+      [east, north],
+      [west, north],
+      [west, south],
+      [east, south],
+    ]];
+    const polygonGeojson = {
+      type: 'Feature',
+      properties: {
+        source: 'bbox'
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: coordinates
+      }
+    };
+    const geoboxdata = Object.assign({}, this.emptyData);
+    geoboxdata.features = [];
+    if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
+      this.drawData.features.forEach(df => geoboxdata.features.push(df));
+    }
+    geoboxdata.features.push(<any>polygonGeojson);
+    /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
+    this.drawService.addFeatures(geoboxdata, /** deleteOld */ true);
+    this.onAoiChanged.next(geoboxdata);
+    this.isDrawingBbox = false;
+    this.drawService.disableBboxEdition();
+    this.drawService.endDimensionsEmission();
   }
 
   private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
