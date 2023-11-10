@@ -45,8 +45,8 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     if (!!this.data && !this.data.initCorner) {
       this.data.initCorner = {
-        lat: 32,
-        lng: -8
+        lat: 0,
+        lng: 0
       };
     }
     this.bboxForm = new BboxFormGroup(this.data.initCorner);
