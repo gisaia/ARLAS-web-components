@@ -82,7 +82,7 @@
 	"Second corner": "Deuxième coin",
 	"You must enter a coordinate": "Saisir une coordonnée",
 	"Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")": "Saisir une coordonnée en décimal (1.1) ou en sexagésimal (1° 6' 3\")",
-	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Coordonnée en décimal: 1.1 or sexagésimal: 1°6'3\"",
-	"Both corners have the same latitudes, modify one of them.": "Les deux coins ont les mêmes latitudes, modifiez l'un d'entre eux.",
+	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Coordonnée en décimal: 1.1 ou en sexagésimal: 1°6'3\"",
+	"Both corners have the same latitudes, modify one of them.": "Les deux coins ont la même latitude, modifiez l'une d'entre elles.",
 	"Generate AOI": "Générer la bbox"
 }
