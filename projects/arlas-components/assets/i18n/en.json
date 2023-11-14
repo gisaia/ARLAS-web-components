@@ -84,5 +84,8 @@
 	"Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")": "Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")",
 	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Decimal: 1.1 or Sexagesimal: 1°6'3\" coordinate",
 	"Both corners have the same latitudes, change one of them.": "Both corners have the same latitudes, modify one of them.",
-	"Generate AOI": "Generate the bbox"
+	"Generate AOI": "Generate the bbox",
+	"1.1 or 1°6'3\"": "1.1 or 1°6'3\"",
+	"Move to": "Centre",
+	"Enter coordinates and centre the map": "Enter coordinates and centre the map"
 }
