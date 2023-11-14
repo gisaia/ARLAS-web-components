@@ -1,28 +1,33 @@
-<div class="current-coordinate" (click)="switchToEditionMode()" [matTooltip]="'Enter coordinates and centre the map'" matTooltipPosition="above" *ngIf="!editionMode; else editing">
-    <span class="lat"> Lat : {{currentLat | number:'1.5-5'}} </span>
-    <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
+<div class="current-coordinate" (click)="switchToEditionMode()" [matTooltip]="'Enter coordinates and centre the map'"
+  matTooltipPosition="above" *ngIf="!editionMode; else editing">
+  <span class="lat"> Lat : {{currentLat | number:'1.5-5'}} </span>
+  <span class="lng"> Lng : {{currentLng | number:'1.5-5'}} </span>
 </div>
 <ng-template #editing>
   <div class="current-coordinate-edition">
     <div class="section" [formGroup]="coordinatesForm">
       <div>
-          <mat-form-field appearance="outline" >
-              <mat-label>{{'Latitude'}}</mat-label>
-              <input class="input"  matInput [formControl]="coordinatesForm.latitude" [placeholder]="placeHolder | translate">
-              <mat-error *ngIf="coordinatesForm.latitude.invalid">{{getErrorMessage(coordinatesForm.latitude) | translate}} </mat-error>
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Latitude'}}</mat-label>
+          <input class="input" matInput [formControl]="coordinatesForm.latitude"
+            [placeholder]="placeHolder | translate">
+          <mat-error *ngIf="coordinatesForm.latitude.invalid">{{getErrorMessage(coordinatesForm.latitude) | translate}}
+          </mat-error>
+        </mat-form-field>
       </div>
       <div class="coordinate">
-          <mat-form-field appearance="outline">
-              <mat-label>{{'Longitude'}}</mat-label>
-              <input class="input"  matInput [formControl]="coordinatesForm.longitude" [placeholder]="placeHolder | translate">
-              <mat-error *ngIf="coordinatesForm.longitude.invalid">{{getErrorMessage(coordinatesForm.longitude) | translate}}</mat-error>
-          </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{'Longitude'}}</mat-label>
+          <input class="input" matInput [formControl]="coordinatesForm.longitude"
+            [placeholder]="placeHolder | translate">
+          <mat-error *ngIf="coordinatesForm.longitude.invalid">{{getErrorMessage(coordinatesForm.longitude) |
+            translate}}</mat-error>
+        </mat-form-field>
       </div>
       <button class="move" mat-stroked-button (click)="moveToCoordinates()"
-            [disabled]="coordinatesForm.invalid || coordinatesForm.latitudeErrors">
-            <span class="label">{{'Move to' | translate}}</span>
-        </button>
+        [disabled]="coordinatesForm.invalid || coordinatesForm.latitudeErrors">
+        <span class="label">{{'Move to' | translate}}</span>
+      </button>
+    </div>
   </div>
-</div>
 </ng-template>
