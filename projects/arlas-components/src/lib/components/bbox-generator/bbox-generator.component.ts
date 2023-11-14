@@ -23,6 +23,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Observable, merge, mergeMap, of } from 'rxjs';
 import { MapboxAoiDrawService } from '../mapgl/draw/draw.service';
 import { Corner } from '../mapgl/draw/draw.models';
+import { Coordinate, PointFormGroup } from '../../tools/coordinates.tools';
 
 @Component({
   selector: 'arlas-bbox-generator',
@@ -92,7 +93,7 @@ export class BboxFormGroup extends FormGroup {
       this.firstCornerLatitude = v;
       this.secondCornerLatitude = this.secondCorner.latitude.value;
       if (this.secondCornerLatitude !== undefined) {
-        if (this.parse(this.firstCornerLatitude) === this.parse(this.secondCornerLatitude)) {
+        if (Coordinate.parse(this.firstCornerLatitude) === Coordinate.parse(this.secondCornerLatitude)) {
           this.latitudeErrors = true;
         } else {
           this.latitudeErrors = false;
@@ -104,7 +105,7 @@ export class BboxFormGroup extends FormGroup {
       this.secondCornerLatitude = v;
       this.firstCornerLatitude = this.firstCorner.latitude.value;
       if (this.firstCornerLatitude !== undefined) {
-        if (this.parse(this.firstCornerLatitude) === this.parse(this.secondCornerLatitude)) {
+        if (Coordinate.parse(this.firstCornerLatitude) === Coordinate.parse(this.secondCornerLatitude)) {
           this.latitudeErrors = true;
         } else {
           this.latitudeErrors = false;
@@ -115,75 +116,17 @@ export class BboxFormGroup extends FormGroup {
 
   public getFirstCorner(): Corner {
     return {
-      lat: this.parse(this.firstCorner.latitude.value),
-      lng: this.parse(this.firstCorner.longitude.value)
+      lat: Coordinate.parse(this.firstCorner.latitude.value),
+      lng: Coordinate.parse(this.firstCorner.longitude.value)
     };
   }
 
   public getSecondCorner(): Corner {
     return {
-      lat: this.parse(this.secondCorner.latitude.value),
-      lng: this.parse(this.secondCorner.longitude.value)
+      lat: Coordinate.parse(this.secondCorner.latitude.value),
+      lng: Coordinate.parse(this.secondCorner.longitude.value)
     };
   }
-
-  private parse(value: string) {
-    // eslint-disable-next-line max-len
-    const coordinatesRegex = '^(?<decimal>[+-]?([0-9]*[.])?[0-9]+)$|^(?<degrees>(-?)[0-9]+)°[ ]*((?<minutes>[0-9]+)\'[ ]*((?<seconds>[0-9]+)\")?)?$';
-    const parsedCoordinates = (String(value)).match(coordinatesRegex);
-    if (parsedCoordinates && parsedCoordinates.groups) {
-      const groups = parsedCoordinates.groups;
-      if (groups.decimal) {
-        return +groups.decimal;
-      } else {
-        const degrees = +groups.degrees;
-        const minutes = +groups.minutes;
-        const seconds = +groups.seconds;
-        return this.dmsToDd(degrees, minutes, seconds);
-      }
-    }
-  }
-
-  private dmsToDd(degrees: number, minutes: number, seconds: number) {
-    const isNegative = (degrees < 0);
-    if (!minutes) {
-      minutes = 0;
-    }
-    if (!seconds) {
-      seconds = 0;
-    }
-    const dd = Math.abs(degrees) + minutes / 60 + seconds / 3600;
-    return isNegative ? -dd : dd;
-  }
-}
-
-export class PointFormGroup extends FormGroup {
-
-  public latitude: FormControl;
-  public longitude: FormControl;
-
-  public latitudeChanges$: Observable<any>;
-  public longitudesChanges$: Observable<any>;
-
-  public constructor(initLat: number, initLng: number) {
-    // eslint-disable-next-line max-len
-    const coordinatesRegex = '^(?<decimal>[+-]?([0-9]*[.])?[0-9]+)$|^(?<degrees>(-?)[0-9]+)°[ ]*((?<minutes>[0-9]+)\'[ ]*((?<seconds>[0-9]+)\")?)?$';
-    const latitude = new FormControl(String(initLat), [
-      Validators.required,
-      Validators.pattern(coordinatesRegex)
-    ]);
-    const longitude = new FormControl(String(initLng), [
-      Validators.required,
-      Validators.pattern(coordinatesRegex),
-    ]);
-    super({
-      latitude,
-      longitude
-    });
-    this.latitude = latitude;
-    this.longitude = longitude;
-  }
-
 }
 
 

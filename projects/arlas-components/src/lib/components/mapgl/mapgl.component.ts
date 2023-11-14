@@ -1425,6 +1425,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     (<mapboxgl.Map>this.map).fitBounds(bounds, paddedOptions);
   }
 
+  public moveToCoordinates(lngLat: [number, number]) {
+    (this.map as mapboxgl.Map).setCenter(lngLat);
+  }
+
   private latLngToWKT(features) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {
