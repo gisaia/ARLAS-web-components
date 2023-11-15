@@ -1,5 +1,9 @@
 # Change Log
 
+## [v24.3.0-beta.7](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.7) (2023-11-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.6...v24.3.0-beta.7)
+
 ## [v24.3.0-beta.6](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.6) (2023-11-10)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.5...v24.3.0-beta.6)
