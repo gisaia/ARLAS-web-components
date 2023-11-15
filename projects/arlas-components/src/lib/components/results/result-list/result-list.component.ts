@@ -965,18 +965,24 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
       item.urlImage = this.fieldsConfiguration.urlImageTemplate;
       /** match : => ["{field1}", "{field2}"] */
-      this.fieldsConfiguration.urlImageTemplate.match(/{(.+?)}/g).forEach(t => {
-        const key: string = t.replace('{', '').replace('}', '');
-        item.urlImage = item.urlImage.replace(t, itemData.get(key).toString());
-      });
+      const matches = this.fieldsConfiguration.urlImageTemplate.match(/{(.+?)}/g);
+      if (matches) {
+        matches.forEach(t => {
+          const key: string = t.replace('{', '').replace('}', '');
+          item.urlImage = item.urlImage.replace(t, itemData.get(key).toString());
+        });
+      }
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
       /** match : => ["{field1}", "{field2}"] */
-      this.fieldsConfiguration.urlThumbnailTemplate.match(/{(.+?)}/g).forEach(t => {
-        const key: string = t.replace('{', '').replace('}', '');
-        item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
-      });
+      const matches = this.fieldsConfiguration.urlThumbnailTemplate.match(/{(.+?)}/g);
+      if (matches) {
+        matches.forEach(t => {
+          const key: string = t.replace('{', '').replace('}', '');
+          item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
+        });
+      }
     }
 
     item.position = this.items.length + 1;

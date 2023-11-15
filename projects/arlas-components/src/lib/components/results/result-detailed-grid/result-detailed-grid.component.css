@@ -63,6 +63,7 @@
 .image_view {
   max-height: 100%;
   max-width: 100%;
+  cursor: pointer
 }
 
 ::ng-deep .iv-image-mode {
