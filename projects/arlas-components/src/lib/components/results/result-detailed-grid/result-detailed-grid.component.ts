@@ -20,7 +20,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component,
   ElementRef, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject } from 'rxjs';
+import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ElementIdentifier, QUICKLOOK_HEADER } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
@@ -30,7 +30,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './result-detailed-grid.component.html',
   styleUrls: ['./result-detailed-grid.component.css']
 })
-export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterViewInit {
+export class ResultDetailedGridComponent implements OnInit, OnChanges {
   public SHOW_DETAILS = 'Show details';
   public VIEW_IMAGE = 'View quicklook';
   public SHOW_IMAGE = 'Show image';
@@ -113,16 +113,12 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
       if (this.viewer) {
         this.viewer = this.viewer.destroy();
       }
-      setTimeout(() => {
-        if (!!this.imageViewer) {
-          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-        }
-        this.getImage();
-      }, 0);
+      this.getImage();
     }
   }
 
   private getImage() {
+    this.imgSrc = undefined;
     if (!this.gridTile || (this.gridTile && !this.gridTile.urlImage)) {
       return;
     }
@@ -130,6 +126,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
     if (this.useHttp) {
       this.isLoading = true;
       this.http.get(this.gridTile.urlImage, {headers: {[QUICKLOOK_HEADER]: 'true'}, responseType: 'blob'})
+        .pipe(take(1))
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
@@ -137,6 +134,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
               this.imgSrc = reader.result;
               this.gridTile.imageEnabled = true;
               this.isLoading = false;
+              this.resetViewer();
             }, false);
             if (image) {
               reader.readAsDataURL(image);
@@ -148,7 +146,16 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
       });
     } else {
       this.imgSrc = this.gridTile.urlImage;
+      this.resetViewer();
     }
+  }
+
+  private resetViewer() {
+    setTimeout(() => {
+      if (!!this.imageViewer && !this.viewer) {
+        this.viewer = new ImageViewer(this.imageViewer.nativeElement);
+      }
+    }, 0);
   }
 
   public destroyViewer(event): void {
@@ -158,8 +165,6 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
     }
     this.gridTile.imageEnabled = false;
   }
-
-  public ngAfterViewInit(): void {}
 
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
