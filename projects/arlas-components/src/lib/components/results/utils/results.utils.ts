@@ -69,6 +69,12 @@ export interface FieldsConfiguration {
 export interface DescribedUrl {
   url: string;
   description: string;
+  filter?: FieldFilter;
+}
+
+export interface FieldFilter {
+  field: string;
+  values: Array<string>;
 }
 
 export interface Field {

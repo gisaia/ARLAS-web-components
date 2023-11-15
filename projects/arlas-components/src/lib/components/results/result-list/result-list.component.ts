@@ -973,8 +973,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       item.urlImages = new Array<string>();
       item.descriptions = new Array<string>();
       this.fieldsConfiguration.urlImageTemplates.forEach(descUrl => {
-        item.urlImages.push(matchAndReplace(itemData, descUrl.url));
-        item.descriptions.push(matchAndReplace(itemData, descUrl.description));
+        if (!descUrl.filter || (descUrl.filter && descUrl.filter.values.includes(itemData.get(descUrl.filter.field).toString()))) {
+          item.urlImages.push(matchAndReplace(itemData, descUrl.url));
+          item.descriptions.push(matchAndReplace(itemData, descUrl.description));
+        }
       });
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {

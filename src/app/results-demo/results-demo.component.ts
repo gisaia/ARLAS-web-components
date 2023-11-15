@@ -52,8 +52,21 @@ export class ResultsDemoComponent implements OnInit {
       this.options.showDetailIconName = 'keyboard_arrow_down';
       this.fieldsConfiguration = {
         idFieldName: 'id',
-        // urlImageTemplate: 'assets/logo-gisaia.png',
-        urlImageTemplates: [{ description: 'Satellite', url:'{urlImage}' }, { description:'Arlas', url: 'assets/logo-arlas.png' }],
+        // urlImageTemplate: 'assets/logo-gisaia.png', // Old configuration
+        urlImageTemplates: [ // Newer configuration
+          {
+            description: 'Satellite',
+            url:'{urlImage}'
+          },
+          {
+            description:'Gisaïa',
+            url: 'assets/logo-gisaia.png',
+            filter: {
+              field: 'source',
+              values: ['Pleiades']
+            }
+          }
+        ],
         urlThumbnailTemplate: 'urlImage',
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
         useHttpQuicklooks: true
@@ -77,14 +90,15 @@ export class ResultsDemoComponent implements OnInit {
       this.data = new Array<Map<string, string | number | Date>>();
       for (let i = 0; i < 50; i++) {
         const map = new Map<string, string | number | Date>();
-        map.set('source', 'SPOT' + (i + 1));
         map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
         map.set('cloud', (i + 1) + '.0');
         map.set('imageEnabled', 'true');
         if (i % 2 === 0) {
+          map.set('source', 'Perusat');
           map.set('urlImage', 'https://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Per%f9sat/Per%faSAT-1%20-%20premi%e8res%20images%20-%20first%20images%20-%20Huamanga%20-%20Ayacucho%20-%20CONIDA%20-%202016.jpg');
         } else {
+          map.set('source', 'Pleiades');
           map.set('urlImage', 'http://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Pleiades%20-%20La%20suite/Airbus%20-%20Si%C3%A8ge%20Groupe%20-%20Toulouse%20-%20Pl%C3%A9iades%2'
             + '0-%20VHR%20-%20Tr%C3%A8s%20haute%20r%C3%A9solution%20-%20satellite.JPG');
