@@ -52,7 +52,8 @@ export class ResultsDemoComponent implements OnInit {
       this.options.showDetailIconName = 'keyboard_arrow_down';
       this.fieldsConfiguration = {
         idFieldName: 'id',
-        urlImageTemplate: '{urlImage}',
+        // urlImageTemplate: 'assets/logo-gisaia.png',
+        urlImageTemplates: [{ description: 'Satellite', url:'{urlImage}' }, { description:'Arlas', url: 'assets/logo-arlas.png' }],
         urlThumbnailTemplate: 'urlImage',
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
         useHttpQuicklooks: true

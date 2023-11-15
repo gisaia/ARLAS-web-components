@@ -4,10 +4,19 @@
       <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
         <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" onerror="this.onerror=null;" (error)="destroyViewer($event)">
         <img *ngIf="!gridTile.imageEnabled && !isLoading" src="{{noViewImg}}">
-        <mat-progress-spinner *ngIf="isLoading" [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight/2 : detailWidth/2" [mode]="'indeterminate'"></mat-progress-spinner>
+        <mat-progress-spinner *ngIf="isLoading" [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>
       </div>
+
+      <button mat-icon-button class="viewer_actions-infos navigate-button previous" *ngIf="gridTile.urlImages && gridTile.urlImages.length > 1" matTooltip="{{'Previous image' | translate}}" (click)="onPrevious()">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </button>
+      <div class="viewer_actions-infos description" *ngIf="gridTile.descriptions">{{ gridTile.descriptions[currentImageIndex] }}</div>
+      <button mat-icon-button class="viewer_actions-infos navigate-button next" *ngIf="gridTile.urlImages && gridTile.urlImages.length > 1" matTooltip="{{'Next image' | translate}}" (click)="onNext()">
+        <mat-icon>keyboard_arrow_right</mat-icon>
+      </button>
+
       <div class="resultgrid__info-button">
-        <button id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}" class="resultgrid__info-view-button" mat-mini-fab color="primary" (click)="showOverlay(gridTile.urlImage)">
+        <button id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}" class="resultgrid__info-view-button" mat-mini-fab color="primary" (click)="showOverlay()">
           <mat-icon class="resultgrid__info_outline">fit_screen</mat-icon>
         </button>
         <button id="show_details_gridmode_btn" matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
@@ -16,27 +25,22 @@
         <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
             <mat-icon class="resultgrid__close">close</mat-icon>
         </button>
+      </div>
     </div>
-    </div>
+
     <div [hidden]="!isDetailedDataShowed">
-        <div class="resultgrid__info-button">
-
-      <button id="show_image_gridmode_btn" matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
-        <mat-icon class="resultgrid__image">image</mat-icon>
-
-      </button>
-      <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+      <div class="resultgrid__info-button">
+        <button id="show_image_gridmode_btn" matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+          <mat-icon class="resultgrid__image">image</mat-icon>
+        </button>
+        <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
           <mat-icon class="resultgrid__close">close</mat-icon>
-      </button>
-    </div>
+        </button>
+      </div>
       <div arlas-result-detailed-item class="resultgrid--detailed-item"
-                            [rowItem]="gridTile"
-                            [containerType]="'grid'"
-                            [idFieldName]="idFieldName"
-                            [style.width.px]="detailWidth - 5"
-                            [style.height.px]="detailHeight"
-                            [showEmptyGroup]= "showEmptyGroup"
-                            (actionOnItemEvent)="triggerActionOnItem($event)">
+        [rowItem]="gridTile" [containerType]="'grid'" [idFieldName]="idFieldName"
+        [style.width.px]="detailWidth" [style.height.px]="detailHeight"
+        [showEmptyGroup]= "showEmptyGroup" (actionOnItemEvent)="triggerActionOnItem($event)">
       </div>
     </div>
   </div>

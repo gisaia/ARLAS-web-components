@@ -35,7 +35,7 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions } from '../utils/results.utils';
+import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -959,19 +959,23 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         item.iconCssClass = item.iconCssClass.trim();
       }
     }
-    item.imageEnabled = itemData.get('imageEnabled') === 'true';
+    item.imageEnabled = true; // itemData.get('imageEnabled') === 'true';
     item.thumbnailEnabled = itemData.get('thumbnailEnabled') === 'true';
 
+    /** Retro-compatibility code */
     if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
-      item.urlImage = this.fieldsConfiguration.urlImageTemplate;
-      /** match : => ["{field1}", "{field2}"] */
-      const matches = this.fieldsConfiguration.urlImageTemplate.match(/{(.+?)}/g);
-      if (matches) {
-        matches.forEach(t => {
-          const key: string = t.replace('{', '').replace('}', '');
-          item.urlImage = item.urlImage.replace(t, itemData.get(key).toString());
-        });
-      }
+      item.urlImages = new Array<string>();
+      item.urlImages.push(matchAndReplace(itemData, this.fieldsConfiguration.urlImageTemplate));
+    }
+    /** End of retro-compatibility code */
+
+    if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplates && this.fieldsConfiguration.urlImageTemplates.length > 0) {
+      item.urlImages = new Array<string>();
+      item.descriptions = new Array<string>();
+      this.fieldsConfiguration.urlImageTemplates.forEach(descUrl => {
+        item.urlImages.push(matchAndReplace(itemData, descUrl.url));
+        item.descriptions.push(matchAndReplace(itemData, descUrl.description));
+      });
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
