@@ -52,6 +52,11 @@ export interface FieldsConfiguration {
   urlThumbnailTemplate?: string;
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
+  useHttpQuicklooks?: boolean;
+
+  /**
+   * @deprecated
+   */
   icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
@@ -80,3 +85,5 @@ export interface AdditionalInfo {
   actions?: Array<Action>;
   attachments?: Array<Attachment>;
 }
+
+export const QUICKLOOK_HEADER = 'Quicklook-Call';

@@ -20,21 +20,23 @@
 import { AfterViewInit, ChangeDetectorRef, Component,
   ElementRef, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject } from 'rxjs';
+import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier } from '../utils/results.utils';
+import { Action, ElementIdentifier, QUICKLOOK_HEADER } from '../utils/results.utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'arlas-result-detailed-grid',
   templateUrl: './result-detailed-grid.component.html',
   styleUrls: ['./result-detailed-grid.component.css']
 })
-export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterViewInit {
+export class ResultDetailedGridComponent implements OnInit, OnChanges {
   public SHOW_DETAILS = 'Show details';
   public VIEW_IMAGE = 'View quicklook';
   public SHOW_IMAGE = 'Show image';
   public CLOSE_DETAILS = 'Close details';
   private fullScreenViewer = new FullScreenViewer();
+  private noViewImg = './assets/no-view.png';
 
   /**
    * @Input
@@ -66,6 +68,13 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
    * @description Whether display group with no detail.
    */
   @Input() public showEmptyGroup = false;
+
+  /**
+   * @Input : Angular
+   * @description Whether to use a http request to query detailed image instead of relying on img tag internal mechanism.
+   */
+  @Input() public useHttp = false;
+
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
@@ -84,11 +93,19 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
 
   public isDetailedDataShowed = false;
 
+  public imgSrc: string | ArrayBuffer;
+
+  public isLoading = false;
+
   private viewer;
 
-  public constructor(private changeDetectorRef: ChangeDetectorRef) { }
+  public constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private http: HttpClient
+  ) { }
 
   public ngOnInit() {
+    this.getImage();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
@@ -96,22 +113,58 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
       if (this.viewer) {
         this.viewer = this.viewer.destroy();
       }
-      setTimeout(() => {
-        if (!!this.imageViewer) {
-          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-        }
-      }, 0);
+      this.getImage();
     }
   }
 
-  public destroyViewer(): void {
+  private getImage() {
+    this.imgSrc = undefined;
+    if (!this.gridTile || (this.gridTile && !this.gridTile.urlImage)) {
+      return;
+    }
+
+    if (this.useHttp) {
+      this.isLoading = true;
+      this.http.get(this.gridTile.urlImage, {headers: {[QUICKLOOK_HEADER]: 'true'}, responseType: 'blob'})
+        .pipe(take(1))
+        .subscribe({
+          next: (image: Blob) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+              this.imgSrc = reader.result;
+              this.gridTile.imageEnabled = true;
+              this.isLoading = false;
+              this.resetViewer();
+            }, false);
+            if (image) {
+              reader.readAsDataURL(image);
+            }
+        }, error: (err) => {
+          console.error(err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.imgSrc = this.gridTile.urlImage;
+      this.resetViewer();
+    }
+  }
+
+  private resetViewer() {
+    setTimeout(() => {
+      if (!!this.imageViewer && !this.viewer) {
+        this.viewer = new ImageViewer(this.imageViewer.nativeElement);
+      }
+    }, 0);
+  }
+
+  public destroyViewer(event): void {
+    this.imgSrc = this.noViewImg;
     if (this.viewer) {
       this.viewer = this.viewer.destroy();
     }
     this.gridTile.imageEnabled = false;
   }
-
-  public ngAfterViewInit(): void {}
 
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;

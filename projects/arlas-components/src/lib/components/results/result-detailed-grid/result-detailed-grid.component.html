@@ -1,9 +1,10 @@
 <div class="resultgrid" *ngIf=isDetailShowed>
   <div class="resultgrid--container">
     <div [hidden]="isDetailedDataShowed">
-      <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth - 5">
-        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{gridTile.urlImage}}"  onerror="this.onerror=null;this.src='./assets/no-view.png';" (error)="destroyViewer()" style="cursor: pointer">
-        <img *ngIf="!gridTile.imageEnabled" src="./assets/no-view.png">
+      <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
+        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" onerror="this.onerror=null;" (error)="destroyViewer($event)">
+        <img *ngIf="!gridTile.imageEnabled && !isLoading" src="{{noViewImg}}">
+        <mat-progress-spinner *ngIf="isLoading" [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight/2 : detailWidth/2" [mode]="'indeterminate'"></mat-progress-spinner>
       </div>
       <div class="resultgrid__info-button">
         <button id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}" class="resultgrid__info-view-button" mat-mini-fab color="primary" (click)="showOverlay(gridTile.urlImage)">

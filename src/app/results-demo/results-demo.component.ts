@@ -51,8 +51,11 @@ export class ResultsDemoComponent implements OnInit {
       this.options.hideDetailIconName = 'keyboard_arrow_up';
       this.options.showDetailIconName = 'keyboard_arrow_down';
       this.fieldsConfiguration = {
-        idFieldName: 'id', urlImageTemplate:
-        'urlImage', urlThumbnailTemplate: 'urlImage', titleFieldNames: [{ fieldPath: 'source', process: '' }]
+        idFieldName: 'id',
+        urlImageTemplate: '{urlImage}',
+        urlThumbnailTemplate: 'urlImage',
+        titleFieldNames: [{ fieldPath: 'source', process: '' }],
+        useHttpQuicklooks: true
       };
       this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>();
 
@@ -76,12 +79,14 @@ export class ResultsDemoComponent implements OnInit {
         map.set('source', 'SPOT' + (i + 1));
         map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
         map.set('cloud', (i + 1) + '.0');
+        map.set('imageEnabled', 'true');
         if (i % 2 === 0) {
-          map.set('urlImage', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-9QP6CIX2F41m5fztAivya8_JPWTFqdYQg345dJXl4E1Q0JYEMQ');
+          map.set('urlImage', 'https://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
+            'Per%f9sat/Per%faSAT-1%20-%20premi%e8res%20images%20-%20first%20images%20-%20Huamanga%20-%20Ayacucho%20-%20CONIDA%20-%202016.jpg');
         } else {
           map.set('urlImage', 'http://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
-          'Pleiades%20-%20La%20suite/Airbus%20-%20Si%C3%A8ge%20Groupe%20-%20Toulouse%20-%20Pl%C3%A9iades%2'
-          + '0-%20VHR%20-%20Tr%C3%A8s%20haute%20r%C3%A9solution%20-%20satellite.JPG');
+            'Pleiades%20-%20La%20suite/Airbus%20-%20Si%C3%A8ge%20Groupe%20-%20Toulouse%20-%20Pl%C3%A9iades%2'
+            + '0-%20VHR%20-%20Tr%C3%A8s%20haute%20r%C3%A9solution%20-%20satellite.JPG');
 
         }
         map.set('incidence', (i + 10));
