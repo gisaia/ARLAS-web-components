@@ -1,4 +1,9 @@
 {
+	"BBox generator": "BBox generator",
+	"First corner": "First corner",
+	"Second corner": "Second corner",
+	"Close": "Close",
+	"Generate AOI": "Generate AOI",
 	"Import file": "Import file",
 	"Shape": "Shape",
 	"KML / KMZ": "KML / KMZ",
@@ -17,6 +22,7 @@
 	"geo_query_collection": "geo_query_collection",
 	"Apply geo-queries": "Apply geo-queries",
 	"Set geo-queries": "Set geo-queries",
+	"Move to": "Move to",
 	"Manage layers": "Manage layers",
 	"show_layers": "show_layers",
 	"include": "include",
