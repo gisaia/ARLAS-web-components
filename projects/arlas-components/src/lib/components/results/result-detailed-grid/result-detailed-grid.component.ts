@@ -189,7 +189,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
-  public showOverlay(url) {
-    this.fullScreenViewer.show(url);
+  public showOverlay() {
+    this.fullScreenViewer.show(this.imgSrc);
   }
 }
