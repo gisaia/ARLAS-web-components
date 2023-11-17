@@ -1,3 +1,4 @@
+import mapboxgl from 'mapbox-gl';
 import { BasemapStyle } from './basemap.config';
 
 export class ArlasBasemaps {
@@ -23,8 +24,8 @@ export class ArlasBasemaps {
     return this._styles;
   }
 
-  public setSelected(styele: BasemapStyle) {
-    this._selectedStyle = styele;
+  public setSelected(style: BasemapStyle) {
+    this._selectedStyle = style;
     return this;
   }
 
@@ -33,11 +34,12 @@ export class ArlasBasemaps {
       const styles = this.styles();
       const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
       if (localStorageBasemapStyle && styles.filter(b => b.name === localStorageBasemapStyle.name
-        && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
+        && 'name' in (b.styleFile as mapboxgl.Style) && 'name' in (localStorageBasemapStyle.styleFile as mapboxgl.Style)
+        && (b.styleFile as mapboxgl.Style)?.name === (localStorageBasemapStyle.styleFile as mapboxgl.Style)?.name).length > 0) {
         this._selectedStyle = localStorageBasemapStyle;
-        return this._selectedStyle;
-      }
-      if (styles && styles.length > 0) {
+      } else if (!!this.defaultBasemapStyle) {
+        this._selectedStyle = this.defaultBasemapStyle;
+      } else if (styles && styles.length > 0) {
         this._selectedStyle = styles[0];
       } else {
         throw new Error('No Style is defined for the online basemap');

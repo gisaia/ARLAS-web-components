@@ -47,6 +47,8 @@ export class MapboxBasemapService {
       const styleFile = selectedBasemap.styleFile as mapboxgl.Style;
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       if (pmtilesSource) {
+        // eslint-disable-next-line max-len
+        pmtilesSource['attribution'] = '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>';
         map.addSource('arlas_protomaps_source', pmtilesSource as any);
         styleFile.layers.forEach(l => {
           if (!!map.getLayer(l.id)) {
@@ -88,7 +90,7 @@ export class MapboxBasemapService {
       /** This is necessaty to make it work for mapbox. */
       const clonedStyleFile: mapboxgl.Style = Object.assign({}, selected.styleFile as mapboxgl.Style);
       clonedStyleFile.sources = {
-        protomap_attribution: {
+        protomaps_attribution: {
           'type': 'vector',
           // eslint-disable-next-line max-len
           'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>'
@@ -97,6 +99,7 @@ export class MapboxBasemapService {
       clonedStyleFile.layers = [{
         id: 'backgrounds',
         type: 'background',
+        source: 'protomaps_attribution',
         paint: {
           'background-color': 'rgba(0,0,0,0)'
         }
