@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Action, Attachment } from '../utils/results.utils';
+import { Action, Attachment, ItemDataType } from '../utils/results.utils';
 import { Column } from './column';
 
 export class Item {
@@ -61,7 +61,7 @@ export class Item {
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
-  public itemData: Map<string, string | number | Date>;
+  public itemData: Map<string, ItemDataType>;
 
   /**
    * @description More data organized in groups.
@@ -114,7 +114,7 @@ export class Item {
    */
   public color: string;
 
-  public constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
+  public constructor(columns: Array<Column>, itemData: Map<string, ItemDataType>) {
     this.columns = columns;
     this.itemData = itemData;
   }

@@ -22,6 +22,7 @@ import { Observable, from } from 'rxjs';
 import { Action, Column, FieldsConfiguration, ModeEnum, ResultListComponent,
   ResultListOptions, SortEnum } from '../../../projects/arlas-components/src/public-api';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
+import { ItemDataType } from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class ResultsDemoComponent implements OnInit {
 
     @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
 
-    public data: Array<Map<string, string | number | Date>>;
+    public data: Array<Map<string, ItemDataType>>;
     public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>;
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
     public fieldsConfiguration: FieldsConfiguration;
@@ -87,9 +88,9 @@ export class ResultsDemoComponent implements OnInit {
 
 
       this.globalActionsList.push({ id: '1', label: 'Download', actionBus: null, tooltip: 'Download' });
-      this.data = new Array<Map<string, string | number | Date>>();
+      this.data = new Array();
       for (let i = 0; i < 50; i++) {
-        const map = new Map<string, string | number | Date>();
+        const map = new Map<string, ItemDataType>();
         map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
         map.set('cloud', (i + 1) + '.0');
         map.set('imageEnabled', 'true');
@@ -114,7 +115,7 @@ export class ResultsDemoComponent implements OnInit {
       setTimeout(() => {
         if (this.count < 2) {
           for (let i = 50; i < 100; i++) {
-            const map = new Map<string, string | number | Date>();
+            const map = new Map<string, ItemDataType>();
             map.set('source', 'SPOT' + (i + 1));
             map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
             map.set('cloud', (i + 1) + '.0');
@@ -124,9 +125,9 @@ export class ResultsDemoComponent implements OnInit {
           }
           this.count++;
         } else {
-          this.data = new Array<Map<string, string | number | Date>>();
+          this.data = new Array();
           for (let i = 50; i < 150; i++) {
-            const map = new Map<string, string | number | Date>();
+            const map = new Map<string, ItemDataType>();
             map.set('source', 'SPOT' + (i + 1));
             map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
             map.set('cloud', (i + 1) + '.0');
@@ -140,11 +141,10 @@ export class ResultsDemoComponent implements OnInit {
     }
 
     public updateData() {
-      this.data = new Array<Map<string, string | number | Date>>();
       setTimeout(() => {
-        this.data = new Array<Map<string, string | number | Date>>();
+        this.data = new Array();
         for (let i = 0; i < 50; i++) {
-          const map = new Map<string, string | number | Date>();
+          const map = new Map<string, ItemDataType>();
           map.set('source', 'SPOT' + (i + 1));
           map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
           map.set('cloud', (i + 1) + '.0');
@@ -156,7 +156,7 @@ export class ResultsDemoComponent implements OnInit {
     }
 
     public addData() {
-      const map = new Map<string, string | number | Date>();
+      const map = new Map<string, ItemDataType>();
       map.set('source', 'SPOT' + (5 + 1));
       map.set('acquired', '2017-0' + (5 + 1) + '-' + (5 + 3));
       map.set('cloud', (5 + 1) + '.0');
@@ -176,9 +176,9 @@ export class ResultsDemoComponent implements OnInit {
       this.fieldsList.push({ columnName: 'Test3', fieldName: 'test_3', dataType: '°C' });
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
-      this.data = new Array<Map<string, string | number | Date>>();
+      this.data = new Array();
       for (let i = 0; i < 5; i++) {
-        const map = new Map<string, string | number | Date>();
+        const map = new Map<string, ItemDataType>();
         map.set('source', 'SPOT' + (i + 1));
         map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
         map.set('cloud', (i + 1) + '.0');
@@ -191,11 +191,11 @@ export class ResultsDemoComponent implements OnInit {
       }
     }
 
-    public setFilters(fieldsToFilter: Map<string, string | number | Date>) {
+    public setFilters(fieldsToFilter: Map<string, ItemDataType>) {
       setTimeout(() => {
         if (this.count < 2) {
           for (let i = 50; i < 100; i++) {
-            const map = new Map<string, string | number | Date>();
+            const map = new Map<string, ItemDataType>();
             map.set('source', 'SPOT' + (i + 1));
             map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
             map.set('cloud', (i + 1) + '.0');
@@ -205,9 +205,9 @@ export class ResultsDemoComponent implements OnInit {
           }
           this.count++;
         } else {
-          this.data = new Array<Map<string, string | number | Date>>();
+          this.data = new Array<Map<string, ItemDataType>>();
           for (let i = 50; i < 60; i++) {
-            const map = new Map<string, string | number | Date>();
+            const map = new Map<string, ItemDataType>();
             map.set('source', 'SPOT' + (i + 1));
             map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
             map.set('cloud', (i + 1) + '.0');

@@ -35,7 +35,8 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { Action, ElementIdentifier, FieldsConfiguration, PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
+import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
+  PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -142,7 +143,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid.
    * @note In order to apply `selectInBetween` method properly, this list must be ascendingly sorted on the item identifier.
    */
-  @Input() public rowItemList: Array<Map<string, string | number | Date>>;
+  @Input() public rowItemList: Array<Map<string, ItemDataType>>;
 
   /**
    * @Input : Angular
@@ -257,7 +258,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description A fieldName-fieldValue map of fields to filter.
    */
 
-  @Input() public filtersMap: Map<string, string | number | Date>;
+  @Input() public filtersMap: Map<string, ItemDataType>;
 
   /**
    * @Input : Angular
@@ -357,7 +358,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the filtred fields map (fieldName-fieldValue map).
    */
-  @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+  @Output() public setFiltersEvent: Subject<Map<string, ItemDataType>> = new Subject();
 
   /**
    * @Output : Angular
@@ -630,7 +631,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @param referenceIdentifier : item identifier used as reference to fetch the next/previous page
    * @param whichPage : Whether to fetch the `next` or `previous` page
    */
-  public paginate(itemData: Map<string, string | number | Date>, whichPage: PageEnum) {
+  public paginate(itemData: Map<string, ItemDataType>, whichPage: PageEnum) {
     this.isNextPageRequested = whichPage === PageEnum.next;
     this.isPreviousPageRequested = whichPage === PageEnum.previous;
     this.scrollDebouncer.next({ reference: itemData, whichPage: whichPage });
@@ -663,7 +664,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Sets and emits the [fieldName, filterValue] map of filtered fields
    */
   // Emits a map of only filtered fields
-  public setFilters(filtersMap: Map<string, string | number | Date>): void {
+  public setFilters(filtersMap: Map<string, ItemDataType>): void {
     this.filtersMap = filtersMap;
     this.setFiltersEvent.next(this.filtersMap);
   }
@@ -922,7 +923,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.columns.push(toggleColumn);
   }
 
-  private onAddItems(itemData: Map<string, string | number | Date>, addOnTop: boolean, index: number) {
+  private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
     const item = new Item(this.columns, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     item.imageEnabled = true;
@@ -973,7 +974,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       item.urlImages = new Array<string>();
       item.descriptions = new Array<string>();
       this.fieldsConfiguration.urlImageTemplates.forEach(descUrl => {
-        if (!descUrl.filter || (descUrl.filter && descUrl.filter.values.includes(itemData.get(descUrl.filter.field).toString()))) {
+        let condition = !descUrl.filter;
+        if (descUrl.filter) {
+          const data = itemData.get(descUrl.filter.field);
+          if (Array.isArray(data)) {
+            condition = data.some(v => descUrl.filter.values.includes(v));
+          } else {
+            condition = descUrl.filter.values.includes(data.toString());
+          }
+        }
+        if (condition) {
           item.urlImages.push(matchAndReplace(itemData, descUrl.url));
           item.descriptions.push(matchAndReplace(itemData, descUrl.description));
         }

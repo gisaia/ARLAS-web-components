@@ -83,7 +83,7 @@ export interface Field {
 }
 
 export interface PageQuery {
-  reference: Map<string, string | number | Date>;
+  reference: Map<string, ItemDataType>;
   whichPage: PageEnum;
 }
 
@@ -101,6 +101,8 @@ export interface AdditionalInfo {
   attachments?: Array<Attachment>;
 }
 
+export type ItemDataType = string | number | Date | Array<string>;
+
 export const QUICKLOOK_HEADER = 'Quicklook-Call';
 
 /**
@@ -108,7 +110,7 @@ export const QUICKLOOK_HEADER = 'Quicklook-Call';
  * @param template The template of the desired string. Contains variable keys between brackets
  * @returns A string with the regex replaced by the data
  */
-export function matchAndReplace(data: Map<string, string | number | Date>, template: string) {
+export function matchAndReplace(data: Map<string, ItemDataType>, template: string) {
   let replaced = template;
   template.match(/{(.+?)}/g)?.forEach(t => {
     const key: string = t.replace('{', '').replace('}', '');
