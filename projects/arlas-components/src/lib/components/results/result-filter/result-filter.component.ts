@@ -21,6 +21,7 @@ import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@ang
 import { MatSelectChange } from '@angular/material/select';
 import { Subject } from 'rxjs';
 import { Column } from '../model/column';
+import { ItemDataType } from '../utils/results.utils';
 
 @Component({
   selector: '[arlas-result-filter]',
@@ -39,7 +40,7 @@ export class ResultFilterComponent implements OnInit, OnChanges {
    * @description A map of columns to filter : key = column (or field) name & value = field value.
    * This components sets directly this map.
    */
-  @Input() public filtersMap: Map<string, string | number | Date> = new Map<string, string | number | Date>();
+  @Input() public filtersMap: Map<string, ItemDataType> = new Map();
   /**
    * @Input
    * @description The filter value.
@@ -54,7 +55,7 @@ export class ResultFilterComponent implements OnInit, OnChanges {
    * @Output
    * @description Emits the map of filtered columns and the filters values (fieldName-fieldValue map).
    */
-  @Output() public setFiltersEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+  @Output() public setFiltersEvent: Subject<Map<string, ItemDataType>> = new Subject();
 
   /**
    * @Output

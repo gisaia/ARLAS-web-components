@@ -21,6 +21,7 @@ import { Directive, ElementRef, HostListener, Input, OnChanges, Output, SimpleCh
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
+import { ItemDataType } from '../utils/results.utils';
 
 @Directive({
   selector: '[arlasResultScroll]',
@@ -34,8 +35,8 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public fetchState: { endListUp: true; endListDown: false; };
   @Input() public scrollOptions: { maintainScrollUpPosition: boolean; maintainScrollDownPosition: boolean; nbLines: number; };
 
-  @Output() public nextDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
-  @Output() public previousDataEvent: Subject<Map<string, string | number | Date>> = new Subject<Map<string, string | number | Date>>();
+  @Output() public nextDataEvent: Subject<Map<string, ItemDataType>> = new Subject();
+  @Output() public previousDataEvent: Subject<Map<string, ItemDataType>> = new Subject();
   @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
 
   private lastScrollTop = 0;

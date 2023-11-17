@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Action, Attachment } from '../utils/results.utils';
+import { Action, Attachment, ItemDataType } from '../utils/results.utils';
 import { Column } from './column';
 
 export class Item {
@@ -27,9 +27,13 @@ export class Item {
    */
   public identifier: string;
   /**
-   * @description Url that links the item's image.
+   * @description List of urls pointing to the item's images.
    */
-  public urlImage: string;
+  public urlImages: Array<string>;
+  /**
+   * @description List of descriptions of the images.
+   */
+  public descriptions: Array<string>;
   /**
    * @description If image is enabled (to avoid 404 not found)
    */
@@ -57,7 +61,7 @@ export class Item {
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
-  public itemData: Map<string, string | number | Date>;
+  public itemData: Map<string, ItemDataType>;
 
   /**
    * @description More data organized in groups.
@@ -110,7 +114,7 @@ export class Item {
    */
   public color: string;
 
-  public constructor(columns: Array<Column>, itemData: Map<string, string | number | Date>) {
+  public constructor(columns: Array<Column>, itemData: Map<string, ItemDataType>) {
     this.columns = columns;
     this.itemData = itemData;
   }

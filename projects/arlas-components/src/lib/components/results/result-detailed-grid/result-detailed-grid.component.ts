@@ -17,24 +17,26 @@
  * under the License.
  */
 
-import { AfterViewInit, ChangeDetectorRef, Component,
+import { ChangeDetectorRef, Component,
   ElementRef, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject } from 'rxjs';
+import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier } from '../utils/results.utils';
+import { Action, ElementIdentifier, QUICKLOOK_HEADER } from '../utils/results.utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'arlas-result-detailed-grid',
   templateUrl: './result-detailed-grid.component.html',
-  styleUrls: ['./result-detailed-grid.component.css']
+  styleUrls: ['./result-detailed-grid.component.scss']
 })
-export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterViewInit {
+export class ResultDetailedGridComponent implements OnInit, OnChanges {
   public SHOW_DETAILS = 'Show details';
   public VIEW_IMAGE = 'View quicklook';
   public SHOW_IMAGE = 'Show image';
   public CLOSE_DETAILS = 'Close details';
   private fullScreenViewer = new FullScreenViewer();
+  private noViewImg = './assets/no-view.png';
 
   /**
    * @Input
@@ -66,6 +68,13 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
    * @description Whether display group with no detail.
    */
   @Input() public showEmptyGroup = false;
+
+  /**
+   * @Input : Angular
+   * @description Whether to use a http request to query detailed image instead of relying on img tag internal mechanism.
+   */
+  @Input() public useHttp = false;
+
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
@@ -84,46 +93,103 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
 
   public isDetailedDataShowed = false;
 
+  /**
+   * @description The image source to display. Either is an url or the content of the image.
+   */
+  public imgSrc: string | ArrayBuffer;
+
+  /**
+   * @description Whether the request for the image is being processed
+   */
+  public isLoading = false;
+
+  /**
+   * @description In the case of multiple images, indicates which one is selected
+   */
+  public currentImageIndex = 0;
+
+  /**
+   * @description Whether the viewer is in full screen mode
+   */
+  public isFullScreen = false;
+
   private viewer;
 
-  public constructor(private changeDetectorRef: ChangeDetectorRef) { }
+  public constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private http: HttpClient
+  ) { }
 
   public ngOnInit() {
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      if (this.viewer) {
-        this.viewer = this.viewer.destroy();
-      }
-      setTimeout(() => {
-        if (!!this.imageViewer) {
-          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-        }
-      }, 0);
+      this.currentImageIndex = 0;
+      this.getImage();
     }
   }
 
-  public destroyViewer(): void {
+  private getImage() {
+    this.imgSrc = undefined;
+    if (!this.gridTile || (this.gridTile && !this.gridTile.urlImages)) {
+      return;
+    }
+
+    if (this.useHttp) {
+      this.isLoading = true;
+      this.http.get(this.gridTile.urlImages[this.currentImageIndex], {responseType: 'blob'})
+        .pipe(take(1))
+        .subscribe({
+          next: (image: Blob) => {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+              this.imgSrc = reader.result;
+              this.gridTile.imageEnabled = true;
+              this.isLoading = false;
+              this.resetViewer();
+            }, false);
+            if (image) {
+              reader.readAsDataURL(image);
+            }
+        }, error: (err) => {
+          console.error(err);
+          this.isLoading = false;
+        }
+      });
+    } else {
+      this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
+      this.resetViewer();
+    }
+  }
+
+  private resetViewer() {
+    if (this.viewer) {
+      this.viewer = this.viewer.destroy();
+    }
+    setTimeout(() => {
+      if (this.isFullScreen) {
+        this.fullScreenViewer.show(this.imgSrc);
+      } else {
+        if (!!this.imageViewer && !this.viewer) {
+          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
+        }
+      }
+    }, 0);
+  }
+
+  public destroyViewer(event): void {
+    this.imgSrc = this.noViewImg;
     if (this.viewer) {
       this.viewer = this.viewer.destroy();
     }
     this.gridTile.imageEnabled = false;
   }
 
-  public ngAfterViewInit(): void {}
-
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
-    setTimeout(() => {
-      if (!!this.imageViewer) {
-        this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-      }
-    }, 0);
+    this.resetViewer();
   }
 
   public closeDetailedData() {
@@ -136,7 +202,50 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges, AfterView
     this.actionOnItemEvent.next(actionOnItem);
   }
 
-  public showOverlay(url) {
-    this.fullScreenViewer.show(url);
+  public showOverlay() {
+    this.isFullScreen = true;
+    this.resetViewer();
+
+    let viewerContainer: HTMLElement | undefined;
+    const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
+
+    const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
+    if (actionsInfos) {
+      viewerContainer = actionsInfos[0].parentElement;
+      const elements = actionsInfos.length;
+      for (let i=0; i < elements; i++) {
+        // The element is removed from the list once retrieved
+        fullScreenContainer.appendChild(actionsInfos.item(0));
+      }
+    }
+
+    document.querySelector('.iv-fullscreen-close').addEventListener('click', () => {
+      this.isFullScreen = false;
+      if (viewerContainer) {
+        const actionsInfosFullScreen = fullScreenContainer.getElementsByClassName('viewer_actions-infos');
+        const elements = actionsInfosFullScreen.length;
+        for (let i=0; i < elements; i++) {
+          // The element is removed from the list once retrieved
+          viewerContainer.appendChild(actionsInfosFullScreen.item(0));
+        }
+      }
+      this.resetViewer();
+    });
+  }
+
+  public onPrevious() {
+    this.currentImageIndex -= 1;
+    if (this.currentImageIndex < 0) {
+      this.currentImageIndex = this.gridTile.urlImages.length - 1;
+    }
+    this.getImage();
+  }
+
+  public onNext() {
+    this.currentImageIndex += 1;
+    if (this.currentImageIndex >= this.gridTile.urlImages.length) {
+      this.currentImageIndex = 0;
+    }
+    this.getImage();
   }
 }

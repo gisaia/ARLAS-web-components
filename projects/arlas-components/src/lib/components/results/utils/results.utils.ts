@@ -48,13 +48,33 @@ export interface ElementIdentifier {
 
 export interface FieldsConfiguration {
   idFieldName: string;
+  /**
+   * @deprecated
+   */
   urlImageTemplate?: string;
+  urlImageTemplates?: Array<DescribedUrl>;
   urlThumbnailTemplate?: string;
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
+  useHttpQuicklooks?: boolean;
+
+  /**
+   * @deprecated
+   */
   icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
+}
+
+export interface DescribedUrl {
+  url: string;
+  description: string;
+  filter?: FieldFilter;
+}
+
+export interface FieldFilter {
+  field: string;
+  values: Array<string>;
 }
 
 export interface Field {
@@ -63,7 +83,7 @@ export interface Field {
 }
 
 export interface PageQuery {
-  reference: Map<string, string | number | Date>;
+  reference: Map<string, ItemDataType>;
   whichPage: PageEnum;
 }
 
@@ -79,4 +99,22 @@ export interface AdditionalInfo {
   details?: Map<string, Map<string, string>>;
   actions?: Array<Action>;
   attachments?: Array<Attachment>;
+}
+
+export type ItemDataType = string | number | Date | Array<string>;
+
+export const QUICKLOOK_HEADER = 'Quicklook-Call';
+
+/**
+ * @param data A dictionnary of data to retrieve information
+ * @param template The template of the desired string. Contains variable keys between brackets
+ * @returns A string with the regex replaced by the data
+ */
+export function matchAndReplace(data: Map<string, ItemDataType>, template: string) {
+  let replaced = template;
+  template.match(/{(.+?)}/g)?.forEach(t => {
+    const key: string = t.replace('{', '').replace('}', '');
+    replaced = replaced.replace(t, data.get(key).toString());
+  });
+  return replaced;
 }

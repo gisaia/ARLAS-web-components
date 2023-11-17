@@ -107,12 +107,12 @@
         </th>
       </ng-container>
     </tr>
-    <tr class="resultlist__grid-detail resultlist__thead__tr" *ngIf="selectedGridItem != null
+    <tr class="resultlist__grid-detail resultlist__thead__tr" *ngIf="selectedGridItem !== null
     && resultMode==ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
-          [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]=showEmptyGroup
-          (closeDetail)=closeDetail($event)>
+          [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
+          [useHttp]="fieldsConfiguration.useHttpQuicklooks" (closeDetail)=closeDetail($event)>
         </arlas-result-detailed-grid>
       </td>
     </tr>

@@ -17,6 +17,9 @@
  * under the License.
  */
 
+$default-icon-size: 24px;
+$sm-spacing: 5px;
+
 .resultgrid__img {
   overflow-y: hidden;
   overflow-x: hidden;
@@ -25,6 +28,41 @@
   background-color: #000;
   display: flex;
   justify-content: center;
+  align-items: center;
+}
+
+.viewer_actions-infos {
+  position: absolute;
+  bottom: $sm-spacing;
+  z-index: 999;
+
+  &.description {
+    color: white;
+    background-color: #6d6d6d99;
+    padding: 0 $sm-spacing;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  &.navigate-button {
+    height: $default-icon-size;
+    width: $default-icon-size;
+    background-color: white;
+    border: 1px solid #a1a1a1;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    &.previous {
+      left: $sm-spacing;
+    }
+  
+    &.next {
+      right: $sm-spacing;
+    }
+  }
 }
 
 .resultgrid {
@@ -62,6 +100,12 @@
 .image_view {
   max-height: 100%;
   max-width: 100%;
+  cursor: pointer
+}
+
+.full-screen {
+  height: 100vh;
+  width: 100vw;
 }
 
 ::ng-deep .iv-image-mode {
