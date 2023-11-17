@@ -35,7 +35,7 @@ export class MapboxBasemapService {
   private protomapBasemapAddedSource = new Subject<boolean>();
   public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  public constructor(private http: HttpClient) {}
+  public constructor(private http: HttpClient) { }
 
   public setBasemaps(basemaps: ArlasBasemaps) {
     this.basemaps = basemaps;
@@ -48,7 +48,7 @@ export class MapboxBasemapService {
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       if (pmtilesSource) {
         map.addSource('arlas_protomaps_source', pmtilesSource as any);
-        styleFile.layers.forEach(l =>{
+        styleFile.layers.forEach(l => {
           if (!!map.getLayer(l.id)) {
             map.removeLayer(l.id);
           }
@@ -87,7 +87,13 @@ export class MapboxBasemapService {
     if (selected.type === 'protomap') {
       /** This is necessaty to make it work for mapbox. */
       const clonedStyleFile: mapboxgl.Style = Object.assign({}, selected.styleFile as mapboxgl.Style);
-      clonedStyleFile.sources = {};
+      clonedStyleFile.sources = {
+        protomap_attribution: {
+          'type': 'vector',
+          // eslint-disable-next-line max-len
+          'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>'
+        }
+      };
       clonedStyleFile.layers = [{
         id: 'backgrounds',
         type: 'background',
