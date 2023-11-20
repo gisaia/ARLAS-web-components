@@ -1,6 +1,54 @@
 # Change Log
 
-## [v24.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.0) (2023-09-28)
+## [v24.2.1-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1-beta.1) (2023-11-17)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.8...v24.2.1-beta.1)
+
+## [v24.3.0-beta.8](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.8) (2023-11-16)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.7...v24.3.0-beta.8)
+
+## [v24.3.0-beta.7](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.7) (2023-11-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.6...v24.3.0-beta.7)
+
+## [v24.3.0-beta.6](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.6) (2023-11-10)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.5...v24.3.0-beta.6)
+
+## [v24.3.0-beta.5](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.5) (2023-11-09)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.4...v24.3.0-beta.5)
+
+## [v24.3.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.4) (2023-10-31)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.3...v24.3.0-beta.4)
+
+## [v24.3.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.3) (2023-10-27)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.2...v24.3.0-beta.3)
+
+**Miscellaneous:**
+
+- Display bbox/polygons area and width/height [\#753](https://github.com/gisaia/ARLAS-web-components/issues/753) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v24.3.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.2) (2023-10-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.1...v24.3.0-beta.2)
+
+## [v24.3.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.1) (2023-10-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.4-beta.2...v24.3.0-beta.1)
+
+## [v24.1.4-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.4-beta.2) (2023-10-18)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.4-beta.1...v24.1.4-beta.2)
+
+## [v24.1.4-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.4-beta.1) (2023-10-12)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.0...v24.1.4-beta.1)
+
+## [v24.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.0) (2023-09-29)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.3...v24.2.0)
 
