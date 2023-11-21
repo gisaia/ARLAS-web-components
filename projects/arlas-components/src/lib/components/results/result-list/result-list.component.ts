@@ -979,8 +979,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
           const data = itemData.get(descUrl.filter.field);
           if (Array.isArray(data)) {
             condition = data.some(v => descUrl.filter.values.includes(v));
-          } else {
+          } else if (data) {
             condition = descUrl.filter.values.includes(data.toString());
+          } else {
+            condition = false;
           }
         }
         if (condition) {

@@ -57,7 +57,6 @@ export interface FieldsConfiguration {
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
   useHttpQuicklooks?: boolean;
-
   /**
    * @deprecated
    */
