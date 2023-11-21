@@ -18,11 +18,11 @@
  */
 
 import { ChangeDetectorRef, Component,
-  ElementRef, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+  ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
 import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier, QUICKLOOK_HEADER } from '../utils/results.utils';
+import { Action, ElementIdentifier } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -30,7 +30,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './result-detailed-grid.component.html',
   styleUrls: ['./result-detailed-grid.component.scss']
 })
-export class ResultDetailedGridComponent implements OnInit, OnChanges {
+export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   public SHOW_DETAILS = 'Show details';
   public VIEW_IMAGE = 'View quicklook';
   public SHOW_IMAGE = 'Show image';
@@ -120,11 +120,13 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
     private http: HttpClient
   ) { }
 
-  public ngOnInit() {
+  public ngOnDestroy(): void {
+    this.destroyViewer();
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
+      this.destroyViewer();
       this.currentImageIndex = 0;
       this.getImage();
     }
@@ -132,7 +134,7 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
 
   private getImage() {
     this.imgSrc = undefined;
-    if (!this.gridTile || (this.gridTile && !this.gridTile.urlImages)) {
+    if (!this.gridTile || (this.gridTile && this.gridTile.urlImages.length === 0)) {
       return;
     }
 
@@ -178,12 +180,18 @@ export class ResultDetailedGridComponent implements OnInit, OnChanges {
     }, 0);
   }
 
-  public destroyViewer(event): void {
-    this.imgSrc = this.noViewImg;
+  public destroyViewer(): void {
     if (this.viewer) {
       this.viewer = this.viewer.destroy();
     }
-    this.gridTile.imageEnabled = false;
+    // Add a delay to allow for the viewer to be destroyed properly
+    // before removing it due to visibility rules in the template
+    setTimeout(() => {
+      this.imgSrc = undefined;
+      if (this.gridTile) {
+        this.gridTile.imageEnabled = false;
+      }
+    }, 0);
   }
 
   public showHideDetailedData() {

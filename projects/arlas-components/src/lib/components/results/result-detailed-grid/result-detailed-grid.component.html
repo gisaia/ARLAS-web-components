@@ -2,7 +2,7 @@
   <div class="resultgrid--container">
     <div [hidden]="isDetailedDataShowed">
       <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
-        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" onerror="this.onerror=null;" (error)="destroyViewer($event)">
+        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" onerror="this.onerror=null;" (error)="destroyViewer()">
         <img *ngIf="!gridTile.imageEnabled && !isLoading" src="{{noViewImg}}">
         <mat-progress-spinner *ngIf="isLoading" [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>
       </div>
@@ -16,7 +16,8 @@
       </button>
 
       <div class="resultgrid__info-button">
-        <button id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}" class="resultgrid__info-view-button" mat-mini-fab color="primary" (click)="showOverlay()">
+        <button [disabled]="!gridTile.imageEnabled || isLoading" id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}"
+          class="resultgrid__info-view-button" mat-mini-fab (click)="showOverlay()">
           <mat-icon class="resultgrid__info_outline">fit_screen</mat-icon>
         </button>
         <button id="show_details_gridmode_btn" matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">

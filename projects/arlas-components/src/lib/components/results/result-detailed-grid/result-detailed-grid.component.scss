@@ -85,6 +85,10 @@ $sm-spacing: 5px;
   top: 5px;
   right: 0px;
   background-color: transparent;
+
+  ::ng-deep .mat-mini-fab.mat-button-disabled {
+    background-color: white;
+  }
 }
 
 .resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button{
