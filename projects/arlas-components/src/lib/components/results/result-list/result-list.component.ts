@@ -520,6 +520,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
+      // Reset selected items when data change (ie a filter is applied/removed or pagination occur)
+      this.selectedItems = new Set<string>();
       this.isPreviousPageRequested = false;
       this.onChangeItems.next(changes['rowItemList'].currentValue);
       this.closeDetail(true);

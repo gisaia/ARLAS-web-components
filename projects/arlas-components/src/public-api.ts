@@ -1,5 +1,5 @@
 /*
- * Public API Surface of arlas-components
+ * Public API Surface of arlas-web-components
  */
 export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TreeNode, TimelineData } from 'arlas-d3';
 export { ArlasComponentsComponent } from './lib/arlas-components.component';
@@ -11,16 +11,20 @@ export { DonutModule } from './lib/components/donut/donut.module';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { HistogramModule } from './lib/components/histogram/histogram.module';
 export { MapglImportComponent, MapglImportDialogComponent } from './lib/components/mapgl-import/mapgl-import.component';
+export { CoordinatesComponent } from './lib/components/mapgl/coordinates/coordinates.component';
+export { Coordinate, PointFormGroup } from './lib/tools/coordinates.tools';
 export { MapglImportModule } from './lib/components/mapgl-import/mapgl-import.module';
 export { MapglLayerIconComponent } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.component';
 export { MapglLayerIconModule } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.module';
 export {
-  MapLayers, BasemapStyle, ARLAS_VSET, LayerEvents, BasemapStylesGroup,
-  ExternalEventLayer, ExternalEvent, SCROLLABLE_ARLAS_ID, FillStroke, LayerMetadata, PaintColor, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX,
-  FILLSTROKE_LAYER_PREFIX, ARLAS_ID, PaintValue
+  MapLayers, ARLAS_VSET, LayerEvents, FILLSTROKE_LAYER_PREFIX, ARLAS_ID, PaintValue,
+  ExternalEventLayer, ExternalEvent, SCROLLABLE_ARLAS_ID, FillStroke, LayerMetadata, PaintColor, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
 } from './lib/components/mapgl/model/mapLayers';
+export { BasemapStyle } from './lib/components/mapgl/basemaps/basemap.config';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
 export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE } from './lib/components/mapgl/mapgl.component.util';
+export { AoiDimensions as AoiEdition } from './lib/components/mapgl/draw/draw.models';
+export { MapboxAoiDrawService } from './lib/components/mapgl/draw/draw.service';
 export { PowerBar } from './lib/components/powerbars/model/powerbar';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';
 export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/thumbnailFitEnum';
@@ -45,11 +49,12 @@ export { MapglLegendModule } from './lib/components/mapgl-legend/mapgl-legend.mo
 export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-settings.module';
 export { MetricComponent } from './lib/components/metric/metric.component';
 export { MetricModule } from './lib/components/metric/metric.module';
+export { BboxGeneratorComponent } from './lib/components/bbox-generator/bbox-generator.component';
+export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
 export {
-  MapglSettingsComponent, MapSettingsService, GeoQuery,
-  GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent,
+  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent,
 } from './lib/components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';

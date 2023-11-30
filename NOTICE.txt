@@ -1,19 +1,22 @@
 ARLAS-web-components
-Copyright 2017-2022 and onwards Gisaïa
+Copyright 2017-2023 and onwards Gisaïa
 
 
 ARLAS-web-components embeds the following components and their dependencies :
 
 + Angular
     - Angular               (The MIT License - https://angular.io/)
-    - Angular Material       (The MIT License - https://material.angular.io/)
+    - Angular Material      (The MIT License - https://material.angular.io/)
 
 + Geo Tools
-    - mapboxgl              (Copyright (c) 2016, Mapbox - https://github.com/mapbox/mapbox-gl-js)
+    - mapboxgl              (Copyright (c) 2020, Mapbox - https://github.com/mapbox/mapbox-gl-js)
     - node-geohash          (The MIT License - https://github.com/sunng87/node-geohash)
+    - Turfjs                (The MIT License - https://github.com/Turfjs/turf)
+    - PMTiles               (Copyright 2021 Protomaps LLC (The BSD-3-Clause license) - https://github.com/protomaps/PMTiles/blob/main/LICENSE)
+    - protomaps/basemaps    (The MIT, BSD-3-Clause, Tile Schema, Vector Design licenses - https://github.com/protomaps/basemaps/blob/main/LICENSE.md)
 
 + Chart Tools
-    - D3.js                 (Copyright 2010-2017 Mike Bostock - https://d3js.org/)
+    - D3.js                 (Copyright 2010-2023 Mike Bostock - https://d3js.org/)
 
 
 -------------------------------------------------------------------------------

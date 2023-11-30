@@ -18,26 +18,24 @@
  */
 
 import {
-  AfterContentInit,
   AfterViewInit, Component, EventEmitter,
-  HostListener, Input,
-  OnChanges, OnInit, Output, SimpleChanges,
-  ViewEncapsulation
+  HostListener, Input, ViewEncapsulation,
+  OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Subject, Subscription, fromEvent } from 'rxjs';
+import { debounceTime, finalize } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
 import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import {
-  MapLayers, BasemapStyle, BasemapStylesGroup, ExternalEvent,
+  MapLayers, ExternalEvent,
   ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET
 } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Feature as TurfFeature, polygon } from '@turf/helpers';
+import { Feature, Polygon, Feature as TurfFeature, polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
@@ -50,6 +48,11 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
+import { MapboxAoiDrawService } from './draw/draw.service';
+import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
+import { BasemapStyle } from './basemaps/basemap.config';
+import { MapboxBasemapService } from './basemaps/basemap.service';
+import { ArlasBasemaps } from './basemaps/basemaps';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -97,7 +100,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
   styleUrls: ['./mapgl.component.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterContentInit {
+export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public map: any;
   public draw: any;
@@ -113,19 +116,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   private west: number;
   private south: number;
   private isDrawingBbox = false;
-  private start: mapboxgl.Point;
   private canvas: HTMLElement;
   private box: HTMLElement;
+  // points which xy coordinates are in screen referential
+  private start: mapboxgl.Point;
   private current: mapboxgl.Point;
-  private startlngLat: any;
-  private endlngLat: any;
+  // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
+  private startlngLat: mapboxgl.LngLat;
+  private endlngLat: mapboxgl.LngLat;
+  private movelngLat: mapboxgl.LngLat;
+
   private savedEditFeature = null;
 
   public FINISH_DRAWING = 'Double click to finish drawing';
   private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
   private ICONS_BASE_PATH = 'assets/icons/';
-
+  private offlineBasemapChangeSubscription!: Subscription;
   /**
    * @Input : Angular
    * @description element identifier given to map container
@@ -169,13 +175,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    */
   @Input() public defaultBasemapStyle: BasemapStyle = {
     name: 'Positron Style',
-    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json'
+    styleFile: 'http://demo.arlas.io:82/styles/positron/style.json',
   };
   /**
    * @Input : Angular
    * @description List of styles to apply to the base map
    */
   @Input() public basemapStyles = new Array<BasemapStyle>();
+
   /**
    * @Input : Angular
    * @description Zoom of the map when it's initialized
@@ -258,7 +265,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    * @Input : Angular
    * @description Features drawn at component start
    */
-  @Input() public drawData: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
+  @Input() public drawData: FeatureCollection = Object.assign({}, this.emptyData);
 
   /**
    * @Input : Angular
@@ -356,6 +363,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   */
   @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
 
+
   /**
    * @Output : Angular
    * @description Emits the event of moving the map.
@@ -374,21 +382,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    * @description Emits the event of hovering feature.
    */
   @Output() public onFeatureOver: EventEmitter<any> = new EventEmitter<any>();
-  /**
-   * @Output : Angular
-   * @description Emit the event of updating the draw polygon
-   */
-  @Output() public onPolygonChange: EventEmitter<Array<Object>> = new EventEmitter<Array<Object>>();
-  /**
-   * @Output : Angular
-   * @description Emit the event of invalid geometry creation
-   */
-  @Output() public onPolygonError: EventEmitter<Object> = new EventEmitter<Object>();
-  /**
-   * @Output : Angular
-   * @description Emit the event of selecting polygon
-   */
-  @Output() public onPolygonSelect: EventEmitter<any> = new EventEmitter<any>();
+
   /**
    * @Output :  Angular
    * @description Emits the map extend on Tab close/refresh
@@ -398,7 +392,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    * @Output :  Angular
    * @description Emits the geojson of an aoi added to the map
    */
-  @Output() public onAoiChanged: Subject<FeatureCollection> = new Subject<FeatureCollection>();
+  @Output() public onAoiChanged: EventEmitter<FeatureCollection> = new EventEmitter();
+  @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
   /**
    * @Output :  Angular
    * @description Emits the geojson of an aoi added to the map
@@ -419,7 +414,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
   public showBasemapsList = false;
   public layersMap: Map<string, mapboxgl.Layer>;
-  public basemapStylesGroup: BasemapStylesGroup;
 
   public currentLat: string;
   public currentLng: string;
@@ -427,8 +421,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   // Polygon
   public nbPolygonVertice = 0;
   public polygonlabeldata: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
-  private indexId = 0;
-  private customIds = new Map<number, string>();
   private isDrawingPolygon = false;
   private isInSimpleDrawMode = false;
   public firstDrawLayer = '';
@@ -450,8 +442,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   public drawClickCounter = 0;
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
+  private aoiEditSubscription: Subscription;
+  private drawBboxSubscription: Subscription;
 
-  public constructor(private http: HttpClient, private _snackBar: MatSnackBar, private translate: TranslateService) { }
+  public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
+    private basemapService: MapboxBasemapService,
+    private _snackBar: MatSnackBar, private translate: TranslateService) {
+    this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
+    this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
+      next: (bboxDC: BboxDrawCommand) => {
+        this.drawBbox(bboxDC.east, bboxDC.south, bboxDC.west, bboxDC.north);
+      }
+    });
+  }
 
 
   /**
@@ -556,7 +559,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     return mapglJsonSchema;
   }
 
-  public ngOnInit() { }
+  public ngOnInit() {
+    this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
+  }
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
@@ -621,6 +626,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         }
       }
     }
+    this.map.getStyle().layers
+      .map(layer => layer.id)
+      .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0).forEach(id => this.map.moveLayer(id));
+
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -629,7 +638,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
-          const poly = polygon(feature.geometry.coordinates);
+          const poly = polygon((feature.geometry as Polygon).coordinates);
           const cent = centroid(poly);
           cent.properties.arlas_id = feature.properties.arlas_id;
           centroides.push(cent);
@@ -639,8 +648,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
           features: centroides
         };
         if (!this.drawSelectionChanged) {
-          this.draw.deleteAll();
-          this.draw.add(this.drawData);
+          this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         }
         this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
@@ -670,56 +678,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     }
   }
 
-  public setBaseMapStyle(style: string | mapboxgl.Style) {
-    if (this.map) {
-      if (typeof this.basemapStylesGroup.selectedBasemapStyle.styleFile === 'string') {
-        this.http.get(this.basemapStylesGroup.selectedBasemapStyle.styleFile).subscribe((s: any) => this.setStyle(s, style));
-      } else {
-        this.setStyle(this.basemapStylesGroup.selectedBasemapStyle.styleFile, style);
-      }
-    }
-  }
-
-  public setStyle(s: mapboxgl.Style, style: string | mapboxgl.Style) {
-    const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
-    const sources = (<mapboxgl.Map>this.map).getStyle().sources;
-    if (s.layers) {
-      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
-    }
-    const layersToSave = new Array<mapboxgl.Layer>();
-    const sourcesToSave = new Array<MapSource>();
-    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
-      layersToSave.push(l);
-      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
-      }
-    });
-    const sourcesToSaveSet = new Set<string>();
-    sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
-    if (this.mapSources) {
-      this.mapSources.forEach(mapSource => {
-        if (!sourcesToSaveSet.has(mapSource.id)) {
-          sourcesToSave.push(mapSource);
-        }
-      });
-    }
-    this.map.setStyle(style).once('styledata', () => {
-      this.addSourcesToMap(sourcesToSave, this.map);
-      layersToSave.forEach(l => this.map.addLayer(l));
-      this.onBasemapChanged.next(true);
-    });
-  }
-
-  public ngAfterContentInit(): void {
-    /** [basemapStylesGroup] object includes the list of basemap styles and which one is selected */
-    this.setBasemapStylesGroup(this.getAfterViewInitBasemapStyle());
-  }
-
   public ngAfterViewInit() {
-
-    const afterViewInitbasemapStyle: BasemapStyle = this.getAfterViewInitBasemapStyle();
-
     /** init values */
     if (!this.initCenter) {
       this.initCenter = [0, 0];
@@ -733,10 +692,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (this.minZoom === undefined || this.minZoom === null) {
       this.maxZoom = 0;
     }
+    this.basemapService.setBasemaps(new ArlasBasemaps(this.defaultBasemapStyle, this.basemapStyles));
+    this.basemapService.fetchSources$()
+      .pipe(finalize(() => this.declareMap()))
+      .subscribe();
+  }
 
+  public declareMap() {
     this.map = new mapboxgl.Map({
       container: this.id,
-      style: afterViewInitbasemapStyle.styleFile,
+      style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
       center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
@@ -752,7 +717,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       attributionControl: false
     });
     (<mapboxgl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
-
+    this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<mapboxgl.Map>this.map).getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
@@ -769,17 +734,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         unit: this.unitScale,
       });
       this.map.addControl(scale, 'bottom-right');
-    }
-
-    if (this.displayCurrentCoordinates) {
-      this.map.on('mousemove', (e) => {
-        let lngLat = e.lngLat;
-        if (this.wrapLatLng) {
-          lngLat = lngLat.wrap();
-        }
-        this.currentLng = String(Math.round(lngLat.lng * 100000) / 100000);
-        this.currentLat = String(Math.round(lngLat.lat * 100000) / 100000);
-      });
     }
 
     const navigationControllButtons = new mapboxgl.NavigationControl();
@@ -807,6 +761,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     const drawControl = new DrawControl(drawOptions, this.drawButtonEnabled);
     this.map.addControl(drawControl, 'top-right');
     this.draw = drawControl.mapboxDraw;
+    this.drawService.setMapboxDraw(this.draw);
     addGeoBoxButton.btn.onclick = () => {
       this.addGeoBox();
     };
@@ -815,6 +770,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
+      this.basemapService.declareProtomapProtocol(this.map);
+      this.basemapService.addProtomapBasemap(this.map);
       this.draw.changeMode('static');
       if (this.icons) {
         this.icons.forEach(icon => {
@@ -966,16 +923,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         });
       }
       this.map.showTileBoundaries = false;
-      this.map.on('mousemove', (e) => {
-        if (this.isDrawingBbox || this.isDrawingPolygon) {
-          this.map.getCanvas().style.cursor = 'crosshair';
-        }
-      });
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.map.on('draw.create', (e) => {
-        this.addCustomId(e.features[0].id);
-        this.onChangePolygonDraw();
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
@@ -996,10 +946,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
             features[0].geometry.coordinates[0].forEach(f => this.savedEditFeature.coordinates[0].push(f));
           }
         }
-        this.onChangePolygonDraw();
       });
-      this.map.on('draw.delete', () => {
-        this.onChangePolygonDraw();
+      this.map.on('draw.delete', (e) => {
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
@@ -1020,8 +968,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
         }
         this.drawClickCounter++;
       });
-
-      this.map.on('draw.onStop', () => {
+      this.map.on('draw.onStart', (e) => {
+        window.removeEventListener('mousemove', mouseMoveForDraw);
+        this.drawClickCounter = 0;
+        this.map.getCanvas().style.cursor = '';
+      });
+      this.map.on('draw.onStop', (e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.map.getCanvas().style.cursor = '';
@@ -1048,7 +1000,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
           this.draw.add(currentFeature);
         }
         this.openInvalidGeometrySnackBar();
-        this.onPolygonError.next(e);
         this.map.getCanvas().style.cursor = '';
       });
 
@@ -1061,11 +1012,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       this.map.on('draw.selectionchange', (e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
-          this.onPolygonSelect.emit({ edition: true });
           this.isDrawPolyonSelected = true;
         } else {
           this.savedEditFeature = null;
-          this.onPolygonSelect.emit({ edition: false });
           this.isDrawPolyonSelected = false;
           this.onAoiChanged.next(
             {
@@ -1272,11 +1221,55 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     });
     // Fit bounds on current bounds to emit init position in moveend bus
     this.map.fitBounds(this.map.getBounds());
-    this.map.on('mousedown', (e) => {
+
+    // Mouse events
+    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
       this.startlngLat = e.lngLat;
+      this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e) => {
+    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
       this.endlngLat = e.lngLat;
+      this.drawService.stopBboxDrawing();
+    });
+    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+      const lngLat = e.lngLat;
+      if (this.displayCurrentCoordinates) {
+        const displayedLngLat = this.wrapLatLng ? lngLat.wrap() : lngLat;
+        this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
+        this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
+      }
+      if (this.isDrawingBbox || this.isDrawingPolygon) {
+        this.map.getCanvas().style.cursor = 'crosshair';
+        this.movelngLat = lngLat;
+      }
+      if (this.drawService.bboxEditionState.isDrawing) {
+        const startlng: number = this.startlngLat.lng;
+        const endlng: number = this.movelngLat.lng;
+        const startlat: number = this.startlngLat.lat;
+        const endlat: number = this.movelngLat.lat;
+        const west = Math.min(startlng, endlng);
+        const north = Math.max(startlat, endlat);
+        const east = Math.max(startlng, endlng);
+        const south = Math.min(startlat, endlat);
+        const coordinates = [[
+          [east, south],
+          [east, north],
+          [west, north],
+          [west, south],
+          [east, south],
+        ]];
+        const polygonGeojson = {
+          type: 'Feature',
+          properties: {
+            source: 'bbox'
+          },
+          geometry: {
+            type: 'Polygon',
+            coordinates: coordinates
+          }
+        };
+        this.drawService.emitDimensions(polygonGeojson as Feature);
+      }
     });
 
     if (!!this.redrawSource) {
@@ -1303,6 +1296,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
    */
   public addGeoBox() {
     this.map.getCanvas().style.cursor = 'crosshair';
+    this.drawService.enableBboxEdition();
     this.isDrawingBbox = true;
   }
 
@@ -1315,30 +1309,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.deleteSelectedItem();
   }
 
-  public onChangePolygonDraw() {
-    this.onPolygonChange.next(this.draw.getAll().features);
-
-    const centroides = new Array<any>();
-    this.draw.getAll().features.forEach(feature => {
-      const poly = polygon(feature.geometry.coordinates);
-      const cent = centroid(poly);
-      cent.properties.arlas_id = feature.properties.arlas_id;
-      centroides.push(cent);
-    });
-
-    this.polygonlabeldata = {
-      type: 'FeatureCollection',
-      features: centroides
-    };
-    if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-      this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
-    }
-  }
-
-  public onChangeBasemapStyle(selectedStyle: BasemapStyle) {
-    this.setBaseMapStyle(selectedStyle.styleFile);
-    localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(selectedStyle));
-    this.basemapStylesGroup.selectedBasemapStyle = selectedStyle;
+  public onChangeBasemapStyle() {
+    this.onBasemapChanged.next(true);
   }
 
   /**
@@ -1375,19 +1347,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     return polygon;
   }
 
-  public getPolygonById(id: number, mode: 'wkt' | 'geojson') {
-    let polygon;
-    if (mode === 'wkt') {
-      polygon = this.latLngToWKT([this.draw.get(this.customIds.get(id))]);
-    } else {
-      polygon = {
-        'type': 'FeatureCollection',
-        'features': [this.draw.get(this.customIds.get(id))]
-      };
-    }
-    return polygon;
-  }
-
   public switchToDrawMode() {
     this.draw.changeMode('draw_polygon');
     this.isDrawingPolygon = true;
@@ -1406,11 +1365,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (this.isDrawPolyonSelected) {
       this.draw.trash();
     } else {
-      this.draw.deleteAll();
+      this.drawService.deleteAll();
     }
-    this.onPolygonSelect.emit({ edition: false });
     this.isDrawPolyonSelected = false;
-    this.onChangePolygonDraw();
     this.onAoiChanged.next(this.draw.getAll());
   }
 
@@ -1419,6 +1376,27 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     if (event.key === 'Escape' && this.isDrawingBbox) {
       this.map.getCanvas().style.cursor = '';
       this.isDrawingBbox = false;
+      document.removeEventListener('mousemove', this.mousemove);
+      document.removeEventListener('mouseup', this.mouseup);
+      this.map.getCanvas().style.cursor = '';
+      if (this.box) {
+        this.box.parentNode.removeChild(this.box);
+        this.box = undefined;
+      }
+      this.map.dragPan.enable();
+      this.drawService.endDimensionsEmission();
+    }
+  }
+
+  public ngOnDestroy(): void {
+    if (!!this.aoiEditSubscription) {
+      this.aoiEditSubscription.unsubscribe();
+    }
+    if (!!this.offlineBasemapChangeSubscription) {
+      this.offlineBasemapChangeSubscription.unsubscribe();
+    }
+    if (!!this.drawBboxSubscription) {
+      this.drawBboxSubscription.unsubscribe();
     }
   }
 
@@ -1445,6 +1423,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       right: this.offset.east + this.fitBoundsPadding
     };
     (<mapboxgl.Map>this.map).fitBounds(bounds, paddedOptions);
+  }
+
+  public moveToCoordinates(lngLat: [number, number]) {
+    (this.map as mapboxgl.Map).setCenter(lngLat);
   }
 
   private latLngToWKT(features) {
@@ -1534,6 +1516,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
 
         }
       });
+      this.reorderLayers();
     }
   }
 
@@ -1541,55 +1524,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     this.mapLayers.layers
       .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
       .forEach(l => this.addLayer(l.id));
-
-
-  }
-
-  private getAllBasemapStyles(): Array<BasemapStyle> {
-    const allBasemapStyles = new Array<BasemapStyle>();
-    if (this.basemapStyles) {
-      this.basemapStyles.forEach(b => allBasemapStyles.push(b));
-      /** Check whether to add [defaultBasemapStyle] to [allBasemapStyles] list*/
-      if (this.basemapStyles.map(b => b.name).filter(n => n === this.defaultBasemapStyle.name).length === 0) {
-        allBasemapStyles.push(this.defaultBasemapStyle);
-      }
-    } else {
-      allBasemapStyles.push(this.defaultBasemapStyle);
-    }
-    return allBasemapStyles;
-  }
-
-  /**
-   * @description returns the basemap style that is displayed when the map is loaded for the first time
-   */
-  private getAfterViewInitBasemapStyle(): BasemapStyle {
-    if (!this.defaultBasemapStyle) {
-      throw new Error('[defaultBasemapStyle] input is null or undefined.');
-    }
-    const allBasemapStyles = this.getAllBasemapStyles();
-    const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
-    /** check if a basemap style is saved in local storage and that it exists in [allBasemapStyles] list */
-    if (localStorageBasemapStyle && allBasemapStyles.filter(b => b.name === localStorageBasemapStyle.name
-      && b.styleFile === localStorageBasemapStyle.styleFile).length > 0) {
-      return localStorageBasemapStyle;
-    } else {
-      localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(this.defaultBasemapStyle));
-      return this.defaultBasemapStyle;
-    }
-  }
-
-  /**
-   * @param selectedBasemapStyle the selected basemap style
-   * @description This method sets the [basemapStylesGroup] object that includes the list of basemapStyles
-   * and which basemapStyle is selected.
-   */
-  private setBasemapStylesGroup(selectedBasemapStyle: BasemapStyle) {
-    const allBasemapStyles = this.getAllBasemapStyles();
-    /** basemapStylesGroup object includes the list of basemap styles and which one is selected */
-    this.basemapStylesGroup = {
-      basemapStyles: allBasemapStyles,
-      selectedBasemapStyle: selectedBasemapStyle
-    };
   }
 
   private addLayer(layerId: string): void {
@@ -1707,7 +1641,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
     const maxX = Math.max(this.start.x, this.current.x);
     const minY = Math.min(this.start.y, this.current.y);
     const maxY = Math.max(this.start.y, this.current.y);
-
     // Adjust width and xy position of the box element ongoing
     const pos = 'translate(' + minX + 'px,' + minY + 'px)';
     this.box.style.transform = pos;
@@ -1722,29 +1655,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
+    document.removeEventListener('mousemove', this.mousemove);
+    document.removeEventListener('mouseup', this.mouseup);
+    this.map.getCanvas().style.cursor = '';
+    this.map.dragPan.enable();
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
       this.finish([[this.start, f], [e.lngLat]]);
     } else {
-      document.removeEventListener('mousemove', this.mousemove);
-      document.removeEventListener('mouseup', this.mouseup);
-      this.map.getCanvas().style.cursor = '';
-      this.isDrawingBbox = false;
-      this.map.dragPan.enable();
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
     }
+    this.drawService.endDimensionsEmission();
   };
 
   private finish(bbox?) {
-    // Remove these events now that finish has been called.
-    document.removeEventListener('mousemove', this.mousemove);
-    document.removeEventListener('mouseup', this.mouseup);
     if (bbox) {
-      this.map.getCanvas().style.cursor = '';
-      this.map.dragPan.enable();
       const startlng: number = this.startlngLat.lng;
       const endlng: number = this.endlngLat.lng;
       const startlat: number = this.startlngLat.lat;
@@ -1753,34 +1681,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
       const north = Math.max(startlat, endlat);
       const east = Math.max(startlng, endlng);
       const south = Math.min(startlat, endlat);
-      const coordinates = [[
-        [east, south],
-        [east, north],
-        [west, north],
-        [west, south],
-        [east, south],
-      ]];
-      const polygonGeojson = {
-        type: 'Feature',
-        properties: {
-          source: 'bbox'
-        },
-        geometry: {
-          type: 'Polygon',
-          coordinates: coordinates
-        }
-      };
-      const geoboxdata = Object.assign({}, this.emptyData);
-      geoboxdata.features = [];
-      if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
-        this.drawData.features.forEach(df => geoboxdata.features.push(df));
-      }
-      geoboxdata.features.push(<any>polygonGeojson);
-      /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
-      this.draw.deleteAll();
-      this.draw.add(geoboxdata);
-      this.onAoiChanged.next(geoboxdata);
-      this.isDrawingBbox = false;
+      this.drawBbox(east, south, west, north);
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
@@ -1789,14 +1690,36 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, AfterCo
   }
 
 
-  private getNextFeatureId() {
-    return ++this.indexId;
-  }
-
-  private addCustomId(featureId: string) {
-    const id = this.getNextFeatureId();
-    this.draw.setFeatureProperty(featureId, 'arlas_id', id);
-    this.customIds.set(id, featureId);
+  private drawBbox(east, south, west, north) {
+    const coordinates = [[
+      [east, south],
+      [east, north],
+      [west, north],
+      [west, south],
+      [east, south],
+    ]];
+    const polygonGeojson = {
+      type: 'Feature',
+      properties: {
+        source: 'bbox'
+      },
+      geometry: {
+        type: 'Polygon',
+        coordinates: coordinates
+      }
+    };
+    const geoboxdata = Object.assign({}, this.emptyData);
+    geoboxdata.features = [];
+    if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
+      this.drawData.features.forEach(df => geoboxdata.features.push(df));
+    }
+    geoboxdata.features.push(<any>polygonGeojson);
+    /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
+    this.drawService.addFeatures(geoboxdata, /** deleteOld */ true);
+    this.onAoiChanged.next(geoboxdata);
+    this.isDrawingBbox = false;
+    this.drawService.disableBboxEdition();
+    this.drawService.endDimensionsEmission();
   }
 
   private setStrokeLayoutVisibility(layerId: string, visibility: string): void {

@@ -18,27 +18,29 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ColorGeneratorLoader } from '../components/componentsUtils';
-import { Subject } from 'rxjs';
+import { MapSource } from '../components/mapgl/model/mapSource';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArlasColorService {
+export class MapglService {
 
-  private changekeysToColors =  new Subject<void>();
-  public changekeysToColors$ = this.changekeysToColors.asObservable();
-  public constructor(public colorGenerator: ColorGeneratorLoader) {
-    this.colorGenerator.changekeysToColors$.subscribe(() => this.changekeysToColors.next());
-
-  }
-
-  public getColor(key: string, keysToColors?: Array<[string, string]>, colorsSaturationWeight?: number): string {
-    return this.colorGenerator.getColor(key, keysToColors, colorsSaturationWeight);
-  }
-
-  public getTextColor(color): string {
-    return this.colorGenerator.getTextColor(color);
+  /**
+   * @description Add map sources
+   */
+  public addSourcesToMap(sources: Array<MapSource>, map: any) {
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, MapSource>();
+    if (sources) {
+      sources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        if (map.getSource(id) === undefined) {
+          map.addSource(id, mapSource.source);
+        }
+      });
+    }
   }
 
 }

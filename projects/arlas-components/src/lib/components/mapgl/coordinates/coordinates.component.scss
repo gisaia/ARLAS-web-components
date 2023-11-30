@@ -1,0 +1,31 @@
+.current-coordinate,
+.current-coordinate-edition {
+    position: absolute;
+    right: 110px;
+    bottom: 26px;
+}
+
+.current-coordinate {
+    cursor: pointer;
+}
+
+.current-coordinate-edition {
+    .section {
+        display: flex;
+        align-items: center;
+
+        .coordinate {
+            padding: 0 5px;
+        }
+
+        ::ng-deep.mat-form-field-wrapper {
+            padding-bottom: 12px !important;
+            padding-top: 12px !important;
+        }
+
+        ::ng-deep.mat-form-field-infix {
+            padding: 7px 0;
+            width: 130px;
+        }
+    }
+}

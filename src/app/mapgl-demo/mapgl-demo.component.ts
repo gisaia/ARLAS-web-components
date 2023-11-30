@@ -509,15 +509,6 @@ export class MapglDemoComponent implements OnInit {
   public constructor() { }
 
   public ngOnInit(): void {
-    if (!!this.mapComponent.onPolygonError) {
-      this.mapComponent.onPolygonError.subscribe(error => {
-        console.log(error);
-      });
-    }
-  }
-
-  public onPolygonError(event) {
-    console.log(event);
   }
 
   public polygonChange(event) {
@@ -532,9 +523,6 @@ export class MapglDemoComponent implements OnInit {
     case 'selected':
       console.log(this.mapComponent.getSelectedPolygon('wkt'));
       break;
-    case 'id':
-      console.log(this.mapComponent.getPolygonById(this.idToSelect, 'wkt'));
-      break;
     }
   }
 
@@ -545,9 +533,6 @@ export class MapglDemoComponent implements OnInit {
       break;
     case 'selected':
       console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
-      break;
-    case 'id':
-      console.log(JSON.stringify(this.mapComponent.getPolygonById(this.idToSelect, 'geojson')));
       break;
     }
   }
