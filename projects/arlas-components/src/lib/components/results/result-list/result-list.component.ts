@@ -928,8 +928,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
     const item = new Item(this.columns, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
-    item.imageEnabled = true;
-    item.thumbnailEnabled = true;
     if (this.fieldsConfiguration.titleFieldNames) {
       item.title = this.fieldsConfiguration.titleFieldNames
         .map(field => <string>itemData.get(field.fieldPath + '_title'))
@@ -962,7 +960,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         item.iconCssClass = item.iconCssClass.trim();
       }
     }
-    item.imageEnabled = true; // itemData.get('imageEnabled') === 'true';
+    item.imageEnabled = itemData.get('imageEnabled') === 'true';
     item.thumbnailEnabled = itemData.get('thumbnailEnabled') === 'true';
 
     /** Retro-compatibility code */
@@ -994,15 +992,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       });
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
-      item.urlThumbnail = this.fieldsConfiguration.urlThumbnailTemplate;
-      /** match : => ["{field1}", "{field2}"] */
-      const matches = this.fieldsConfiguration.urlThumbnailTemplate.match(/{(.+?)}/g);
-      if (matches) {
-        matches.forEach(t => {
-          const key: string = t.replace('{', '').replace('}', '');
-          item.urlThumbnail = item.urlThumbnail.replace(t, itemData.get(key).toString());
-        });
-      }
+      item.urlThumbnail = matchAndReplace(itemData, this.fieldsConfiguration.urlThumbnailTemplate);
     }
 
     item.position = this.items.length + 1;

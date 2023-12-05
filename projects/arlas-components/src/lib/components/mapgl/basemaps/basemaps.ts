@@ -33,10 +33,9 @@ export class ArlasBasemaps {
     if (!this._selectedStyle) {
       const styles = this.styles();
       const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
-      if (localStorageBasemapStyle && styles.filter(b => b.name === localStorageBasemapStyle.name
-        && 'name' in (b.styleFile as mapboxgl.Style) && 'name' in (localStorageBasemapStyle.styleFile as mapboxgl.Style)
-        && (b.styleFile as mapboxgl.Style)?.name === (localStorageBasemapStyle.styleFile as mapboxgl.Style)?.name).length > 0) {
-        this._selectedStyle = localStorageBasemapStyle;
+      const sameNameBasemaps = localStorageBasemapStyle ? styles.filter(b => b.name === localStorageBasemapStyle.name) : [];
+      if (sameNameBasemaps.length > 0) {
+        this._selectedStyle = sameNameBasemaps[0];
       } else if (!!this.defaultBasemapStyle) {
         this._selectedStyle = this.defaultBasemapStyle;
       } else if (styles && styles.length > 0) {

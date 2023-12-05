@@ -136,7 +136,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   private getImage() {
     this.imgSrc = undefined;
-    if (!this.gridTile || (this.gridTile && this.gridTile.urlImages.length === 0)) {
+    if (!this.gridTile || (this.gridTile && (!this.gridTile.urlImages || this.gridTile.urlImages.length === 0))) {
       return;
     }
 
