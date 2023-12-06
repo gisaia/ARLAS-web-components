@@ -2,8 +2,8 @@
   <div class="resultgrid--container">
     <div [hidden]="isDetailedDataShowed">
       <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
-        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" onerror="this.onerror=null;" (error)="destroyViewer()">
-        <img *ngIf="!gridTile.imageEnabled && !isLoading" src="{{noViewImg}}">
+        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" (error)="destroyViewer()">
+        <img *ngIf="(!gridTile.imageEnabled || !imgSrc) && !isLoading" src="{{noViewImg}}">
         <mat-progress-spinner *ngIf="isLoading" [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>
       </div>
 

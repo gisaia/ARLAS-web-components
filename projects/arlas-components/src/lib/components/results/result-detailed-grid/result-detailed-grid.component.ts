@@ -123,12 +123,15 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   ) { }
 
   public ngOnDestroy(): void {
-    this.destroyViewer();
+    this.destroyViewer(true);
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      this.destroyViewer();
+      if (this.viewer) {
+        this.viewer = this.viewer.destroy();
+      }
+      this.isFullScreen = false;
       this.currentImageIndex = 0;
       this.getImage();
     }
@@ -163,6 +166,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
         });
     } else {
       this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
+      this.gridTile.imageEnabled = true;
       this.resetViewer();
     }
   }
@@ -182,9 +186,12 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     }, 0);
   }
 
-  public destroyViewer(): void {
+  public destroyViewer(isComponentDestroy?: boolean): void {
     if (this.viewer) {
       this.viewer = this.viewer.destroy();
+    }
+    if (isComponentDestroy && this.fullScreenViewer) {
+      this.fullScreenViewer.destroy();
     }
     // Add a delay to allow for the viewer to be destroyed properly
     // before removing it due to visibility rules in the template
