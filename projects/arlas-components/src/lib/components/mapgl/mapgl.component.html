@@ -33,8 +33,9 @@
   </div>
 </div>
 
-<ng-container *ngIf="displayCurrentCoordinates">
-  <arlas-coordinates [currentLat]="currentLat" [currentLng]="currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>>
+<ng-container>
+  <arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="currentLat"
+    [currentLng]="currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
 </ng-container>
 <arlas-mapgl-basemap *ngIf="showBasemapsList" [mapSources]="mapSources" [map]="map"
 (mouseleave)="hideBasemapSwitcher()" (basemapChanged)="onChangeBasemapStyle()"></arlas-mapgl-basemap>
