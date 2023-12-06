@@ -113,7 +113,9 @@ export function matchAndReplace(data: Map<string, ItemDataType>, template: strin
   let replaced = template;
   template.match(/{(.+?)}/g)?.forEach(t => {
     const key: string = t.replace('{', '').replace('}', '');
-    replaced = replaced.replace(t, data.get(key).toString());
+    if (!!data.get(key)) {
+      replaced = replaced.replace(t, data.get(key).toString());
+    }
   });
   return replaced;
 }
