@@ -1,8 +1,22 @@
 # Change Log
 
+## [v24.3.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-rc.2) (2023-12-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-rc.1...v24.3.0-rc.2)
+
 ## [v24.3.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-rc.1) (2023-11-30)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.1...v24.3.0-rc.1)
+
+**New stuff:**
+
+- Integrate protomap basemaps [\#749](https://github.com/gisaia/ARLAS-web-components/issues/749) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Add polygon from coordinates [\#272](https://github.com/gisaia/ARLAS-web-components/issues/272) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Fixed bugs:**
+
+- chosen basemap is not stored in localstorage anymore [\#763](https://github.com/gisaia/ARLAS-web-components/issues/763)
+- ColorService is instantiated several times in case of using it in lazy loaded modules [\#755](https://github.com/gisaia/ARLAS-web-components/issues/755)
 
 ## [v24.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1) (2023-11-22)
 
