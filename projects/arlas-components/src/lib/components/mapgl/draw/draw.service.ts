@@ -74,6 +74,7 @@ export class MapboxAoiDrawService {
     this.bboxEditionState.enabled = true;
     this.bboxEditionState.isDrawing = false;
     this.bboxEditionState.isEditing = false;
+    this.emitStartBBox();
   }
 
   public startBboxDrawing() {
@@ -204,6 +205,18 @@ export class MapboxAoiDrawService {
           this.emitDimensions(feature);
         }
       }
+    });
+  }
+
+  public emitStartBBox() {
+    this.editAoiSource.next({
+      area: 0,
+      areaMessage: 'Start draging to draw a bbox.',
+      envelope: {
+        width: 0,
+        height: 0
+      },
+      show: true
     });
   }
 
