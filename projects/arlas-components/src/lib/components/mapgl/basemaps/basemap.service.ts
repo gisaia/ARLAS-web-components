@@ -80,9 +80,11 @@ export class MapboxBasemapService {
 
   public declareProtomapProtocol(map: mapboxgl.Map) {
     const protocol = new pmtiles.Protocol();
-    /** addSourceType is private */
-    (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));
-    (mapboxgl as any).addProtocol('pmtiles', protocol.tile);
+    if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
+      /** addSourceType is private */
+      (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));
+      (mapboxgl as any).addProtocol('pmtiles', protocol.tile);
+    }
   }
 
   public getInitStyle(selected: BasemapStyle) {
