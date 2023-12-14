@@ -40,7 +40,7 @@ export class MapglBasemapComponent implements OnInit {
     if (!!this.basemaps) {
       const styles = this.basemaps.styles();
       if (!!styles) {
-        this.showList = styles.length > 1;
+        this.showList = styles.length > 0;
         styles.filter(bm => !bm.image).forEach(bm => {
           if (bm.type !== 'protomap') {
             const splitUrl = bm.styleFile.toString().split('/style.json?key=');

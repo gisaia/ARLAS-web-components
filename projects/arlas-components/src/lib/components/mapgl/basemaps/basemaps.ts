@@ -21,12 +21,16 @@ export class ArlasBasemaps {
     if (!this._styles) {
       this._styles = this.getAllBasemapStyles(this.defaultBasemapStyle, this.basemapStyles);
     }
-    return this._styles;
+    return this._styles.filter(b => !b.errored);
   }
 
   public setSelected(style: BasemapStyle) {
     this._selectedStyle = style;
     return this;
+  }
+
+  public getStyle(b: BasemapStyle) {
+    return this.styles().find(s => s.name === b?.name);
   }
 
   public getSelected(): BasemapStyle {
@@ -36,12 +40,27 @@ export class ArlasBasemaps {
       const sameNameBasemaps = localStorageBasemapStyle ? styles.filter(b => b.name === localStorageBasemapStyle.name) : [];
       if (sameNameBasemaps.length > 0) {
         this._selectedStyle = sameNameBasemaps[0];
-      } else if (!!this.defaultBasemapStyle) {
+      } else if (!!this.getStyle(this.defaultBasemapStyle)) {
         this._selectedStyle = this.defaultBasemapStyle;
       } else if (styles && styles.length > 0) {
         this._selectedStyle = styles[0];
       } else {
-        throw new Error('No Style is defined for the online basemap');
+        this._selectedStyle = {
+          name: 'Background',
+          styleFile: {
+            version: 8,
+            sources: {},
+            layers: [
+              {
+                id: 'backgrounds',
+                type: 'background',
+                paint: {
+                  'background-color': 'rgba(0,0,0,0)'
+                }
+              }
+            ]
+          }
+        };
       }
     }
     return this._selectedStyle;
