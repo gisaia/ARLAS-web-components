@@ -23,7 +23,7 @@ import * as pmtiles from 'pmtiles';
 import { CustomProtocol } from '../custom-protocol/mapbox-gl-custom-protocol';
 import { BasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
-import { Observable, Subject, forkJoin, of, tap } from 'rxjs';
+import { Observable, Subject, catchError, forkJoin, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -114,9 +114,15 @@ export class MapboxBasemapService {
 
   public fetchSources$() {
     const sources$: Observable<mapboxgl.Style>[] = [];
-    this.basemaps.styles().forEach(s => sources$.push(this.getStyleFile(s).pipe(
-      tap(sf => s.styleFile = sf as mapboxgl.Style)
-    )));
+    this.basemaps.styles().forEach(s => {
+      sources$.push(this.getStyleFile(s).pipe(
+        tap(sf => s.styleFile = sf as mapboxgl.Style),
+        catchError(() => {
+          s.errored = true;
+          return of();
+        })
+      ));
+    });
     return forkJoin(sources$);
   }
 
