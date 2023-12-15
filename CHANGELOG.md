@@ -1,8 +1,20 @@
 # Change Log
 
-## [v24.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0) (2023-12-08)
+## [v24.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.1) (2023-12-14)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0...v24.3.1)
+
+**Fixed bugs:**
+
+- An error is thrown when we attempt to re-add the same source type to mapbox library [\#774](https://github.com/gisaia/ARLAS-web-components/issues/774)
+
+## [v24.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0) (2023-12-11)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-rc.2...v24.3.0)
+
+**Fixed bugs:**
+
+- Not coherent behavior of area/lenght div with polygons/bbox [\#771](https://github.com/gisaia/ARLAS-web-components/issues/771)
 
 ## [v24.3.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-rc.2) (2023-12-07)
 
