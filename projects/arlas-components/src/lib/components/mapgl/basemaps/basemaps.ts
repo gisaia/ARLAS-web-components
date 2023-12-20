@@ -41,7 +41,7 @@ export class ArlasBasemaps {
       if (sameNameBasemaps.length > 0) {
         this._selectedStyle = sameNameBasemaps[0];
       } else if (!!this.getStyle(this.defaultBasemapStyle)) {
-        this._selectedStyle = this.defaultBasemapStyle;
+        this._selectedStyle = this.getStyle(this.defaultBasemapStyle);
       } else if (styles && styles.length > 0) {
         this._selectedStyle = styles[0];
       } else {
