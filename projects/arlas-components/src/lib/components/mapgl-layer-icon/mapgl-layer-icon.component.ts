@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
-import { select } from 'd3-selection';
-import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
+import {Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges} from '@angular/core';
+import {select} from 'd3-selection';
+import {Legend, PROPERTY_SELECTOR_SOURCE} from '../mapgl/mapgl.component.util';
 
 @Component({
   selector: 'arlas-mapgl-layer-icon',
@@ -14,9 +14,10 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public widthLegend: Legend = {};
   @Input() public radiusLegend: Legend = {};
   @Input() public lineDasharray;
-  @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
+  @ViewChild('layer_icon', {read: ElementRef, static: false}) public layerIconElement: ElementRef;
 
-  public constructor() { }
+  public constructor() {
+  }
 
   public ngOnInit() {
   }
@@ -40,45 +41,46 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
     const paint = this.layer.paint;
     const source: string = this.layer.source as string;
     switch (type) {
-    case 'circle': {
-      const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
-      if (source.startsWith('feature-metric')) {
-        drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
-      } else if (source.startsWith('feature')) {
-        drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
-      } else if (source.startsWith('cluster')) {
-        drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+      case 'circle':
+      case 'circle-heatmap': {
+        const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
+        if (source.startsWith('feature-metric')) {
+          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
+        } else if (source.startsWith('feature')) {
+          drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+        } else if (source.startsWith('cluster')) {
+          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+        }
+        break;
       }
-      break;
-    }
-    case 'line': {
-      if (source.startsWith('feature-metric')) {
-        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray, true);
-      } else {
-        drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray);
+      case 'line': {
+        if (source.startsWith('feature-metric')) {
+          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray, true);
+        } else {
+          drawLineIcon(this.layerIconElement.nativeElement, this.colorLegend, this.lineDasharray);
+        }
+        break;
       }
-      break;
-    }
-    case 'fill': {
-      if (source.startsWith('cluster')) {
-        drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
-      } else if (source.startsWith('feature-metric')) {
-        drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
-      } else {
-        drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+      case 'fill': {
+        if (source.startsWith('cluster')) {
+          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+        } else if (source.startsWith('feature-metric')) {
+          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
+        } else {
+          drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+        }
+        break;
       }
-      break;
-    }
-    case 'heatmap': {
-      drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer.source.toString().startsWith('feature-metric'));
-      break;
-    }
-    case 'symbol': {
-      const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
-      if (l['text-field']) {
-        drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
+      case 'heatmap': {
+        drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer.source.toString().startsWith('feature-metric'));
+        break;
       }
-    }
+      case 'symbol': {
+        const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
+        if (l['text-field']) {
+          drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
+        }
+      }
     }
   }
 
@@ -129,12 +131,12 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, st
   if (strokeColorLegend) {
     strokeColor = getOneColor(strokeColorLegend);
   }
-  const polygon = [{ 'x': 0, 'y': 0 },
-    { 'x': 18, 'y': 0 },
-    { 'x': 13, 'y': 15 },
-    { 'x': 1, 'y': 15 },
-    { 'x': 8, 'y': 7 },
-    { 'x': 0, 'y': 0 }];
+  const polygon = [{'x': 0, 'y': 0},
+    {'x': 18, 'y': 0},
+    {'x': 13, 'y': 15},
+    {'x': 1, 'y': 15},
+    {'x': 8, 'y': 7},
+    {'x': 0, 'y': 0}];
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').selectAll('polygon')
@@ -173,6 +175,7 @@ export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
   svg.append('g').append('text').text(' T ').attr('transform', ' translate(5 0)')
     .attr('y', 14).attr('font-size', '0.9em').attr('font-family', 'Garamond').attr('fill', colorLegend.fixValue);
 }
+
 /**
  * draws the heatmap icon for cluster mode
  * @param svgNode SVG element on which we append the heamap circles using d3.
@@ -231,6 +234,7 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
       .attr('filter', 'url(#blur)');
   }
 }
+
 /**
  * draws the line icon for feature mode
  * @param svgNode SVG element on which we append the line using d3.
@@ -285,6 +289,7 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray
       .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
   }
 }
+
 /**
  * draws the circle icon for feature mode
  * @param svgNode SVG element on which we append the circles using d3.
@@ -401,7 +406,6 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
     .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);
 }
-
 
 
 export function populateListFromLegend(list: Array<string | number>, legend: Legend) {
