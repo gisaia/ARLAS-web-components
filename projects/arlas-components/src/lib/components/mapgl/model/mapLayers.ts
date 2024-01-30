@@ -51,8 +51,12 @@ export interface LayerMetadata {
   collectionDisplayName?: string;
   stroke?: FillStroke;
   isScrollableLayer?: boolean;
-
+  hiddenProps?: MetadataHiddenProps;
 }
+export interface MetadataHiddenProps {
+  geomType?: string;
+}
+
 export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
 
 export interface PaintColor {
