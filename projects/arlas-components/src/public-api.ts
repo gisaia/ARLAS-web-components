@@ -53,6 +53,8 @@ export { BboxGeneratorComponent } from './lib/components/bbox-generator/bbox-gen
 export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
+export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
+export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
 export {
   MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent,
 } from './lib/components/mapgl-settings/mapgl-settings.component';
