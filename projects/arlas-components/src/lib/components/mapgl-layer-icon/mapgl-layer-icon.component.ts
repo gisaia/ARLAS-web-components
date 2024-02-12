@@ -49,7 +49,8 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         } else if (source.startsWith('feature')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
         } else if (source.startsWith('cluster')) {
-          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
+          const addBlur =  type === 'circle-heatmap';
+          drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, addBlur);
         }
         break;
       }
@@ -358,8 +359,10 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
  * draws the circle icon for cluster mode
  * @param svgNode SVG element on which we append the circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
+ * @param strokeColorLegend
+ * @param addBlur
  */
-export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend) {
+export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, addBlur = false) {
   // todo include radius legend in drawing icons
   const colorsList = [];
   const strokeColorsList = [];
@@ -367,6 +370,14 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
   populateListFromLegend(strokeColorsList, strokeColorLegend);
   const svg = select(svgNode);
   svg.selectAll('circle').remove();
+  svg.append('defs')
+    .append('filter')
+    .attr('id', 'blurHeatmapCircle')
+    .attr('x', '-10%')
+    .attr('y', '-40%')
+    .attr('width', '160%')
+    .attr('height', '160%')
+    .append('feGaussianBlur').attr('stdDeviation', 1.9);
   svg.selectAll('circle')
     .data(colorsList).enter()
     .append('circle')
@@ -405,6 +416,11 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
     })
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
     .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);
+
+  if(addBlur){
+    svg.selectAll('circle').attr('filter', 'url(#blurHeatmapCircle)');
+  }
+
 }
 
 
