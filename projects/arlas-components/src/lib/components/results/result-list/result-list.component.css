@@ -310,6 +310,30 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   width: 15px;
 }
 
+.mat-radio-group.sort-option-close {
+  position: sticky;
+  z-index: 1;
+  opacity: 1;
+  margin-top: 5px;
+  pointer-events: all;
+  display: flex;
+  justify-content: end;
+}
+
+.sort-option-close_button{
+  display: flex;
+  align-items: center;
+}
+.sort-option-close_button:hover {
+  cursor: pointer;
+}
+.sort-option-close_button mat-icon {
+  font-size: 15px;
+  height: 15px;
+  width: 15px;
+}
+
+
 .resultlist__tools--sort-group .mat-optgroup-label {
   line-height: 30px !important;
   height: 30px !important;
