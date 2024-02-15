@@ -32,7 +32,7 @@ import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import {
   MapLayers, ExternalEvent,
-  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET
+  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET, Layer, LayerMetadata
 } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
@@ -252,7 +252,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   @Input() public featuresToSelect: Array<ElementIdentifier>;
   /**
   * @Input : Angular
-  * @description List of mapboxgl sources to add to the map.
+  * @description List of maplibregl sources to add to the map.
   */
   @Input() public mapSources: Array<MapSource>;
 
@@ -414,7 +414,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }> = new Subject();
 
   public showBasemapsList = false;
-  public layersMap: Map<string, maplibregl.Layer>;
+  public layersMap: Map<string, maplibregl.LayerSpecification>;
 
   public currentLat: string;
   public currentLng: string;
@@ -653,6 +653,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
         this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
+          // TODO: check why it was commented
           // this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
         }
       }
@@ -717,7 +718,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       transformRequest: this.transformRequest,
       attributionControl: false
     });
-    (<maplibregl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
+    (<maplibregl.Map>this.map).addControl(new maplibregl.AttributionControl(), this.mapAttributionPosition);
     this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
       const bounds = (<maplibregl.Map>this.map).getBounds();
@@ -771,8 +772,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
-      this.basemapService.declareProtomapProtocol(this.map);
-      this.basemapService.addProtomapBasemap(this.map);
+      // TODO : do not work with maplibre
+      //  this.basemapService.declareProtomapProtocol(this.map);
+      //  this.basemapService.addProtomapBasemap(this.map);
       this.draw.changeMode('static');
       if (this.icons) {
         this.icons.forEach(icon => {
@@ -1415,7 +1417,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   /**
    * Wrapper method to fit the map to the given bounds with enough padding to properly visualize the area
    */
-  public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
+  public paddedFitBounds(bounds: maplibregl.LngLatBoundsLike, options?: maplibregl.FitBoundsOptions) {
     const paddedOptions = Object.assign({}, options);
     paddedOptions.padding = {
       top: this.offset.north + this.fitBoundsPadding,

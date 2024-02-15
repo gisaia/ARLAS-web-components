@@ -1,5 +1,4 @@
-import mapboxgl from 'mapbox-gl';
-import { BasemapStyle } from './basemap.config';
+import {BasemapStyle} from './basemap.config';
 
 export class ArlasBasemaps {
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';

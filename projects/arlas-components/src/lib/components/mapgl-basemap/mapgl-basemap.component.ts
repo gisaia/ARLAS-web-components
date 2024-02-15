@@ -1,12 +1,13 @@
-import { Component, Input, OnInit, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
-import { Subject } from 'rxjs/internal/Subject';
-import mapboxgl, { AnyLayer } from 'mapbox-gl';
-import { MapSource } from '../mapgl/model/mapSource';
-import { MapglService } from '../../services/mapgl.service';
-import { HttpClient } from '@angular/common/http';
-import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
-import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
-import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Subject} from 'rxjs/internal/Subject';
+import {MapSource} from '../mapgl/model/mapSource';
+import {MapglService} from '../../services/mapgl.service';
+import {HttpClient} from '@angular/common/http';
+import {MapboxBasemapService} from '../mapgl/basemaps/basemap.service';
+import {BasemapStyle} from '../mapgl/basemaps/basemap.config';
+import {ArlasBasemaps} from '../mapgl/basemaps/basemaps';
+import * as maplibregl from 'maplibre-gl';
+import {Layer} from '../mapgl/model/mapLayers';
 
 @Component({
   selector: 'arlas-mapgl-basemap',
@@ -16,7 +17,7 @@ import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
 export class MapglBasemapComponent implements OnInit {
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
-  @Input() public map: mapboxgl.Map;
+  @Input() public map: maplibregl.Map;
   @Input() public mapSources: Array<MapSource>;
 
   @Output() public basemapChanged = new EventEmitter<void>();
@@ -63,23 +64,23 @@ export class MapglBasemapComponent implements OnInit {
 
   public setBaseMapStyle(newBasemap: BasemapStyle) {
     if (this.map) {
-      this.setStyle(this.basemaps.getSelected().styleFile as mapboxgl.Style, newBasemap);
+      this.setStyle(this.basemaps.getSelected().styleFile as maplibregl.StyleSpecification, newBasemap);
     }
   }
 
-  public setStyle(s: mapboxgl.Style, newBasemap: BasemapStyle) {
+  public setStyle(s: maplibregl.StyleSpecification, newBasemap: BasemapStyle) {
     const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
-    const sources = (<mapboxgl.Map>this.map).getStyle().sources;
+    const layers: Array<maplibregl.LayerSpecification> = (<maplibregl.Map>this.map).getStyle().layers;
+    const sources = (<maplibregl.Map>this.map).getStyle().sources;
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
     }
-    const layersToSave = new Array<mapboxgl.Layer>();
+    const layersToSave = new Array<maplibregl.LayerSpecification>();
     const sourcesToSave = new Array<MapSource>();
-    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
+    layers.filter((l: maplibregl.LayerSpecification) => !selectedBasemapLayersSet.has(l.id) && !!(<Layer>l).source).forEach(l => {
       layersToSave.push(l);
-      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
+      if (sourcesToSave.filter(ms => ms.id === (<Layer>l).source.toString()).length === 0) {
+        sourcesToSave.push({ id: (<Layer>l).source.toString(), source: sources[(<Layer>l).source.toString()] });
       }
     });
     const sourcesToSaveSet = new Set<string>();
@@ -94,7 +95,7 @@ export class MapglBasemapComponent implements OnInit {
     const initStyle = this.basemapService.getInitStyle(newBasemap);
     this.map.setStyle(initStyle).once('styledata', () => {
       this.mapglService.addSourcesToMap(sourcesToSave, this.map);
-      layersToSave.forEach(l => this.map.addLayer(l as AnyLayer));
+      layersToSave.forEach(l => this.map.addLayer(l));
       localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
       this.basemaps.setSelected(newBasemap);
       if (newBasemap.type === 'protomap') {

@@ -17,10 +17,10 @@
  * under the License.
  */
 
-
+import {StyleSpecification} from 'maplibre-gl';
 export interface BasemapStyle {
   name: string;
-  styleFile: string | mapboxgl.Style;
+  styleFile: string | StyleSpecification;
   image?: string;
   type?: 'protomap' | 'mapbox';
   errored?: boolean;

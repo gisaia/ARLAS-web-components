@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import { ArlasBasemaps } from './basemaps';
+import {Injectable} from '@angular/core';
+import {ArlasBasemaps} from './basemaps';
 import * as pmtiles from 'pmtiles';
-import { CustomProtocol } from '../custom-protocol/mapbox-gl-custom-protocol';
-import { BasemapStyle } from './basemap.config';
-import mapboxgl from 'mapbox-gl';
-import { Observable, Subject, catchError, forkJoin, of, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import {CustomProtocol} from '../custom-protocol/mapbox-gl-custom-protocol';
+import {BasemapStyle} from './basemap.config';
+import * as maplibregl from 'maplibre-gl';
+import {catchError, forkJoin, Observable, of, Subject, tap} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -41,10 +41,10 @@ export class MapboxBasemapService {
     this.basemaps = basemaps;
   }
 
-  public addProtomapBasemap(map: mapboxgl.Map) {
+  public addProtomapBasemap(map: maplibregl.Map) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
-      const styleFile = selectedBasemap.styleFile as mapboxgl.Style;
+      const styleFile = selectedBasemap.styleFile as maplibregl.StyleSpecification;
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       if (pmtilesSource) {
         // eslint-disable-next-line max-len
@@ -66,10 +66,10 @@ export class MapboxBasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: mapboxgl.Map) {
+  public removeProtomapBasemap(map: maplibregl.Map) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
-      (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
+      (selectedBasemap.styleFile as maplibregl.StyleSpecification).layers.forEach(l => {
         if (!!map.getLayer(l.id)) {
           map.removeLayer(l.id);
         }
@@ -78,19 +78,19 @@ export class MapboxBasemapService {
     }
   }
 
-  public declareProtomapProtocol(map: mapboxgl.Map) {
+  public declareProtomapProtocol(map: maplibregl.Map) {
     const protocol = new pmtiles.Protocol();
-    if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
+    if (!(maplibregl as any).Style.getSourceType('pmtiles-type')) {
       /** addSourceType is private */
-      (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));
-      (mapboxgl as any).addProtocol('pmtiles', protocol.tile);
+      (map as any).addSourceType('pmtiles-type', CustomProtocol(maplibregl).vector, (e) => e && console.error('There was an error', e));
+      (maplibregl as any).addProtocol('pmtiles', protocol.tile);
     }
   }
 
   public getInitStyle(selected: BasemapStyle) {
     if (selected.type === 'protomap') {
       /** This is necessaty to make it work for mapbox. */
-      const clonedStyleFile: mapboxgl.Style = Object.assign({}, selected.styleFile as mapboxgl.Style);
+      const clonedStyleFile: maplibregl.StyleSpecification = Object.assign({}, selected.styleFile as maplibregl.StyleSpecification);
       clonedStyleFile.sources = {
         protomaps_attribution: {
           'type': 'vector',
@@ -105,7 +105,7 @@ export class MapboxBasemapService {
         paint: {
           'background-color': 'rgba(0,0,0,0)'
         }
-      }];
+      } as any];
       return clonedStyleFile;
     }
     return selected.styleFile;
@@ -113,10 +113,10 @@ export class MapboxBasemapService {
 
 
   public fetchSources$() {
-    const sources$: Observable<mapboxgl.Style>[] = [];
+    const sources$: Observable<maplibregl.StyleSpecification>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
-        tap(sf => s.styleFile = sf as mapboxgl.Style),
+        tap(sf => s.styleFile = sf as maplibregl.StyleSpecification),
         catchError(() => {
           s.errored = true;
           return of();
@@ -126,9 +126,9 @@ export class MapboxBasemapService {
     return forkJoin(sources$);
   }
 
-  private getStyleFile(b: BasemapStyle): Observable<mapboxgl.Style> {
+  private getStyleFile(b: BasemapStyle): Observable<maplibregl.StyleSpecification> {
     if (typeof b.styleFile === 'string') {
-      return this.http.get(b.styleFile) as Observable<mapboxgl.Style>;
+      return this.http.get(b.styleFile) as Observable<maplibregl.StyleSpecification>;
     } else {
       return of(b.styleFile);
     }
