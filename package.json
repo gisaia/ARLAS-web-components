@@ -10,11 +10,12 @@
     "build:stats": "ng build --stats-json",
     "test": "ng test arlas-web-components",
     "lint": "ng lint arlas-web-components",
-    "build-release": "ng build arlas-web-components --configuration production",
+    "build-release": "ng build arlas-web-components --configuration production  && cp -r patches dist/arlas-web-components",
     "e2e": "ng e2e",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
-    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr}.json --format json"
+    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr}.json --format json",
+    "postinstall": "patch-package"
   },
   "private": true,
   "dependencies": {
@@ -91,5 +92,8 @@
     "ts-node": "~10.4.0",
     "typescript": "~4.6.0",
     "webpack-bundle-analyzer": "^4.6.1"
+  },
+  "overrides": {
+    "socks":"2.7.3"
   }
 }

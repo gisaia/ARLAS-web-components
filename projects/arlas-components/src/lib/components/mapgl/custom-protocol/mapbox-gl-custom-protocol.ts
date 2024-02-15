@@ -1,4 +1,4 @@
-const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming) => new Promise((res, rej) => {
+const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming, transformRequestFunction) => new Promise((res, rej) => {
   const requestParameters: any = {
     url: rawUrl,
     type: type === ('vector' || 'raster') ? 'arrayBuffer' : 'string',
@@ -13,6 +13,14 @@ const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming) => new Pro
       'Content-Encoding': 'gzip'
     };
   }
+  if (!!transformRequestFunction) {
+    const customHeaders = transformRequestFunction(rawUrl, 'Tile').headers;
+    if (!!customHeaders) {
+      for (const [key, value] of Object.entries(customHeaders)) {
+        requestParameters.headers[key] = value;
+      }
+    }
+  }
   const urlCallback = (error, data, cacheControl, expires) => {
     if (error) {
       rej(error);
@@ -21,7 +29,7 @@ const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming) => new Pro
       if (data instanceof Uint8Array) {
         preparedData = new Uint8Array(data);
       } else {
-          preparedData = JSON.stringify(data);
+        preparedData = JSON.stringify(data);
       }
       const blob = new Blob([preparedData]);
       const url = URL.createObjectURL(blob);
@@ -63,19 +71,20 @@ export const CustomProtocol = (mapLibrary) => {
         const protocol = rawUrl.substring(0, rawUrl.indexOf('://'));
         if (!alreadySupported && ((_a = mapLibrary._protocols) === null || _a === void 0 ? void 0 : _a.has(protocol))) {
           const loadFn = (_b = mapLibrary._protocols) === null || _b === void 0 ? void 0 : _b.get(protocol);
-          getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming).then((url: string) => {
-            tile.tileID.canonical.url = function () {
-              delete tile.tileID.canonical.url;
-              return url;
-            };
-            super.loadTile(tile, function () {
-              URL.revokeObjectURL(url);
-              callback(...arguments);
+          getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming,
+            this.map._requestManager._transformRequestFn.bind(this)).then((url: string) => {
+              tile.tileID.canonical.url = function () {
+                delete tile.tileID.canonical.url;
+                return url;
+              };
+              super.loadTile(tile, function () {
+                URL.revokeObjectURL(url);
+                callback(...arguments);
+              });
+            }).catch((e) => {
+              console.error('Error loading tile', e.message);
+              throw e;
             });
-          }).catch((e) => {
-            console.error('Error loading tile', e.message);
-            throw e;
-          });
         } else {
           super.loadTile(tile, callback);
         }
@@ -94,19 +103,20 @@ export const CustomProtocol = (mapLibrary) => {
         const protocol = rawUrl.substring(0, rawUrl.indexOf('://'));
         if (!alreadySupported && ((_a = mapLibrary._protocols) === null || _a === void 0 ? void 0 : _a.has(protocol))) {
           const loadFn = (_b = mapLibrary._protocols) === null || _b === void 0 ? void 0 : _b.get(protocol);
-          getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming).then((url: string) => {
-            tile.tileID.canonical.url = function () {
-              delete tile.tileID.canonical.url;
-              return url;
-            };
-            super.loadTile(tile, function () {
-              URL.revokeObjectURL(url);
-              callback(...arguments);
+          getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming,
+            this.map._requestManager._transformRequestFn.bind(this)).then((url: string) => {
+              tile.tileID.canonical.url = function () {
+                delete tile.tileID.canonical.url;
+                return url;
+              };
+              super.loadTile(tile, function () {
+                URL.revokeObjectURL(url);
+                callback(...arguments);
+              });
+            }).catch((e) => {
+              console.error('Error loading tile', e.message);
+              throw e;
             });
-          }).catch((e) => {
-            console.error('Error loading tile', e.message);
-            throw e;
-          });
         } else {
           super.loadTile(tile, callback);
         }
@@ -136,10 +146,11 @@ export const CustomProtocol = (mapLibrary) => {
           const protocol = data.substring(0, data.indexOf('://'));
           if (!alreadySupported && ((_a = mapLibrary._protocols) === null || _a === void 0 ? void 0 : _a.has(protocol))) {
             const loadFn = (_b = mapLibrary._protocols) === null || _b === void 0 ? void 0 : _b.get(protocol);
-            getReqObjectUrl(loadFn, data, this.type, this._collectResourceTiming).then((url) => {
-              that._data = url;
-              done(url);
-            });
+            getReqObjectUrl(loadFn, data, this.type, this._collectResourceTiming,
+              this.map._requestManager._transformRequestFn.bind(this)).then((url) => {
+                that._data = url;
+                done(url);
+              });
           } else {
             // Use the build in code
             done(undefined);
