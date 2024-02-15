@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/ng-packagr/package.schema.json",
   "name": "arlas-web-components-demo",
-  "version": "24.4.0-dev0",
+  "version": "24.3.3",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
@@ -94,6 +94,6 @@
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "overrides": {
-    "socks":"2.7.3"
+    "socks": "2.7.3"
   }
 }
