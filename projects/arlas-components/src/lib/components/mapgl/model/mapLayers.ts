@@ -20,8 +20,9 @@
 import { CircleLayerSpecification, FillLayerSpecification, HeatmapLayerSpecification,
   LayerSpecification, LineLayerSpecification, SymbolLayerSpecification } from 'maplibre-gl';
 
+
 export type Layer = FillLayerSpecification | LineLayerSpecification | SymbolLayerSpecification |
-  CircleLayerSpecification | HeatmapLayerSpecification;
+  CircleLayerSpecification | HeatmapLayerSpecification ;
 export interface BasemapStyle {
   name: string;
   styleFile: string | maplibregl.StyleSpecification;

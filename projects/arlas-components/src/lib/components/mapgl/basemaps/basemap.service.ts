@@ -20,11 +20,11 @@
 import {Injectable} from '@angular/core';
 import {ArlasBasemaps} from './basemaps';
 import * as pmtiles from 'pmtiles';
-import {CustomProtocol} from '../custom-protocol/mapbox-gl-custom-protocol';
 import {BasemapStyle} from './basemap.config';
 import * as maplibregl from 'maplibre-gl';
 import {catchError, forkJoin, Observable, of, Subject, tap} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
+import mapboxgl from "mapbox-gl";
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,7 @@ export class MapboxBasemapService {
     this.basemaps = basemaps;
   }
 
-  public addProtomapBasemap(map: maplibregl.Map) {
+  public addProtomapBasemap(map: maplibregl.Map | mapboxgl.Map) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       const styleFile = selectedBasemap.styleFile as maplibregl.StyleSpecification;
@@ -66,7 +66,7 @@ export class MapboxBasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: maplibregl.Map) {
+  public removeProtomapBasemap(map: maplibregl.Map | mapboxgl.Map) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as maplibregl.StyleSpecification).layers.forEach(l => {
@@ -78,13 +78,18 @@ export class MapboxBasemapService {
     }
   }
 
-  public declareProtomapProtocol(map: maplibregl.Map) {
+  public declareProtomapProtocol(map: maplibregl.Map | mapboxgl.Map) {
     const protocol = new pmtiles.Protocol();
-    if (!(maplibregl as any).Style.getSourceType('pmtiles-type')) {
-      /** addSourceType is private */
-      (map as any).addSourceType('pmtiles-type', CustomProtocol(maplibregl).vector, (e) => e && console.error('There was an error', e));
-      (maplibregl as any).addProtocol('pmtiles', protocol.tile);
+    // TODO: we have to find the good implementation
+    if(!map.getSource('pmtiles-type')) {
+      (maplibregl as any).addProtocol('pmtiles', protocol.tile)
     }
+    // TODO: do not wrok because this methode do not exist on map libre its  a mapbox implementation
+   // if (!(maplibregl as any).Style.getSourceType('pmtiles-type')) {
+      /** addSourceType is private */
+    //  (map as any).addSourceType('pmtiles-type', CustomProtocol(maplibregl).vector, (e) => e && console.error('There was an error', e));
+     // (maplibregl as any).addProtocol('pmtiles', protocol.tile);
+    //}
   }
 
   public getInitStyle(selected: BasemapStyle) {
@@ -112,11 +117,11 @@ export class MapboxBasemapService {
   }
 
 
-  public fetchSources$() {
-    const sources$: Observable<maplibregl.StyleSpecification>[] = [];
+  public fetchSources$<T>() {
+    const sources$: Observable<T>[] = [];
     this.basemaps.styles().forEach(s => {
-      sources$.push(this.getStyleFile(s).pipe(
-        tap(sf => s.styleFile = sf as maplibregl.StyleSpecification),
+      sources$.push(this.getStyleFile<T>(s).pipe(
+        tap(sf => s.styleFile = <any>sf ),
         catchError(() => {
           s.errored = true;
           return of();
@@ -126,11 +131,11 @@ export class MapboxBasemapService {
     return forkJoin(sources$);
   }
 
-  private getStyleFile(b: BasemapStyle): Observable<maplibregl.StyleSpecification> {
+  private getStyleFile<T>(b: BasemapStyle): Observable<T> {
     if (typeof b.styleFile === 'string') {
-      return this.http.get(b.styleFile) as Observable<maplibregl.StyleSpecification>;
+      return this.http.get(b.styleFile) as Observable<T>;
     } else {
-      return of(b.styleFile);
+      return of(b.styleFile as unknown as T);
     }
   }
 }

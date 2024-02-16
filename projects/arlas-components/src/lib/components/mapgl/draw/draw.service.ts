@@ -18,17 +18,18 @@
  */
 
 import { Injectable } from '@angular/core';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import MapboxDraw from '@mapbox/mapbox-gl-draw'; // TODO: they use the same in maplibre to draw polygon
 import area from '@turf/area';
 import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import bbox from '@turf/bbox';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
 import {AoiEdition, AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
+import mapboxgl from "mapbox-gl";
 
 @Injectable()
 export class MapboxAoiDrawService {
-  private map: maplibregl.Map;
+  private map: maplibregl.Map | mapboxgl.Map;
   private mapDraw: MapboxDraw;
   private editionId: string;
   private registeringMode: boolean;
@@ -54,6 +55,11 @@ export class MapboxAoiDrawService {
       isDrawing: false,
       isEditing: false
     };
+
+    // TODO: only when its maplibre
+    MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
+    MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
+    MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
   }
 
   public drawBbox(fCorner: Corner, sCorner: Corner) {
@@ -96,7 +102,7 @@ export class MapboxAoiDrawService {
     this.bboxEditionState.isEditing = false;
   }
 
-  public setMap(map: maplibregl.Map) {
+  public setMap(map: maplibregl.Map  | mapboxgl.Map) {
     this.map = map;
     this.onSelectionChange();
     this.onRender();
@@ -104,7 +110,7 @@ export class MapboxAoiDrawService {
     this.onStop();
   }
 
-  public setMapboxDraw(mapboxDraw: maplibregl.Map) {
+  public setMapboxDraw(mapboxDraw: maplibregl.Map | mapboxgl.Map) {
     this.mapDraw = mapboxDraw;
   }
 

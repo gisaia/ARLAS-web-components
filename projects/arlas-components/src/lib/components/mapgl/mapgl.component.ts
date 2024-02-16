@@ -45,6 +45,7 @@ import { FeatureCollection } from '@turf/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { RequestTransformFunction } from 'maplibre-gl';
+import { TransformRequestFunction } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
@@ -54,6 +55,7 @@ import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
+import * as mapboxgl from 'mapbox-gl'
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -103,7 +105,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: maplibregl.Map;
+  public map: maplibregl.Map | mapboxgl.Map; //TODO : can create a same type here
   public draw: any;
   public zoom: number;
   public legendOpen = true;
@@ -120,12 +122,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private canvas: HTMLElement;
   private box: HTMLElement;
   // points which xy coordinates are in screen referential
-  private start: Point;
-  private current: Point;
+  private start: maplibregl.PointLike | mapboxgl.PointLike; //TODO : can create a same type here
+  private current: maplibregl.PointLike | mapboxgl.PointLike; //TODO : can create a same type here
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
-  private startlngLat: maplibregl.LngLat;
-  private endlngLat: maplibregl.LngLat;
-  private movelngLat: maplibregl.LngLat;
+  private startlngLat: maplibregl.LngLat | mapboxgl.LngLat; //TODO : can create a same type here
+  private endlngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
+  private movelngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
 
   private savedEditFeature = null;
 
@@ -169,7 +171,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description Unit of the scale.
    */
-  @Input() public unitScale: maplibregl.Unit = 'metric';
+  @Input() public unitScale: maplibregl.Unit | string = 'metric'; //TODO : can create a same type here
   /**
    * @Input : Angular
    * @description Default style of the base map
@@ -283,7 +285,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-  @Input() public transformRequest: RequestTransformFunction;
+  @Input() public transformRequest: RequestTransformFunction | TransformRequestFunction; //TODO : can create a same type here
 
   /**
    * @Input : Angular
@@ -505,7 +507,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.reorderLayers();
   }
 
-  public downloadLayerSource(downaload: { layer: maplibregl.LayerSpecification; downloadType: string; }): void {
+  public downloadLayerSource(downaload: { layer: Layer; downloadType: string; }): void {
     const downlodedSource = {
       layerId: downaload.layer.id,
       layerName: getLayerName(downaload.layer.id),
@@ -522,7 +524,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @param layers List of actual layers that are declared in `visualisation` object
    * @param sources List of sources that these external `layers` use.
    */
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<maplibregl.LayerSpecification>, sources: Array<MapSource>): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<Layer>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
       this.map.addSource(s.id, s.source as maplibregl.SourceSpecification);
     });
@@ -700,6 +702,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       .subscribe();
   }
 
+
   public declareMap() {
     this.map = new maplibregl.Map({
       container: this.id,
@@ -718,10 +721,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       transformRequest: this.transformRequest,
       attributionControl: false
     });
-    (<maplibregl.Map>this.map).addControl(new maplibregl.AttributionControl(), this.mapAttributionPosition);
+    this.map.addControl(new maplibregl.AttributionControl(), this.mapAttributionPosition);
     this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
-      const bounds = (<maplibregl.Map>this.map).getBounds();
+      const bounds = this.map.getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
       this.onMapClosed.next(mapExtend);
     });
@@ -731,6 +734,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     /** Whether to display scale */
     if (this.displayScale) {
+      // TODO: to externalyze
       const scale = new maplibregl.ScaleControl({
         maxWidth: this.maxWidthScale,
         unit: this.unitScale,
@@ -772,9 +776,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     };
     this.map.boxZoom.disable();
     this.map.on('load', () => {
-      // TODO : do not work with maplibre
-      //  this.basemapService.declareProtomapProtocol(this.map);
-      //  this.basemapService.addProtomapBasemap(this.map);
+      // TODO : works with maplibre so need
+      this.basemapService.declareProtomapProtocol(this.map);
+      this.basemapService.addProtomapBasemap(this.map);
       this.draw.changeMode('static');
       if (this.icons) {
         this.icons.forEach(icon => {
@@ -981,7 +985,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.drawClickCounter = 0;
         this.map.getCanvas().style.cursor = '';
       });
-
       this.map.on('draw.invalidGeometry', (e) => {
         if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
@@ -1005,13 +1008,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.openInvalidGeometrySnackBar();
         this.map.getCanvas().style.cursor = '';
       });
-
       this.map.on('draw.edit.saveInitialFeature', (edition) => {
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
-
       this.map.on('draw.selectionchange', (e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
@@ -1071,7 +1072,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           }
         }
       });
-
       this.map.on('click', (e) => {
         if (this.isDrawingPolygon) {
           this.nbPolygonVertice++;
