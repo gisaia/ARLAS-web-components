@@ -25,6 +25,7 @@ import * as maplibregl from 'maplibre-gl';
 import {catchError, forkJoin, Observable, of, Subject, tap} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import mapboxgl from "mapbox-gl";
+import {MapLibreGL, StyleSpecification} from "maplibre-gl";
 
 @Injectable({
   providedIn: 'root'
@@ -82,7 +83,7 @@ export class MapboxBasemapService {
     const protocol = new pmtiles.Protocol();
     // TODO: we have to find the good implementation
     if(!map.getSource('pmtiles-type')) {
-      (maplibregl as any).addProtocol('pmtiles', protocol.tile)
+      MapLibreGL.addProtocol('pmtiles', protocol.tile);
     }
     // TODO: do not wrok because this methode do not exist on map libre its  a mapbox implementation
    // if (!(maplibregl as any).Style.getSourceType('pmtiles-type')) {
@@ -121,7 +122,7 @@ export class MapboxBasemapService {
     const sources$: Observable<T>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile<T>(s).pipe(
-        tap(sf => s.styleFile = <any>sf ),
+        tap(sf => (s as any).styleFile = sf ),
         catchError(() => {
           s.errored = true;
           return of();

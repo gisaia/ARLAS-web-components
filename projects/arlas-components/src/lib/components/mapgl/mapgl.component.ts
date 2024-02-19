@@ -105,7 +105,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: maplibregl.Map | mapboxgl.Map; //TODO : can create a same type here
+  public map: maplibregl.Map; //TODO : can create a same type here
   public draw: any;
   public zoom: number;
   public legendOpen = true;
@@ -122,8 +122,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private canvas: HTMLElement;
   private box: HTMLElement;
   // points which xy coordinates are in screen referential
-  private start: maplibregl.PointLike | mapboxgl.PointLike; //TODO : can create a same type here
-  private current: maplibregl.PointLike | mapboxgl.PointLike; //TODO : can create a same type here
+  private start: Point; //TODO : can create a same type here
+  private current: Point; //TODO : can create a same type here
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
   private startlngLat: maplibregl.LngLat | mapboxgl.LngLat; //TODO : can create a same type here
   private endlngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
@@ -171,7 +171,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description Unit of the scale.
    */
-  @Input() public unitScale: maplibregl.Unit | string = 'metric'; //TODO : can create a same type here
+  @Input() public unitScale: maplibregl.Unit; //TODO : can create a same type here
   /**
    * @Input : Angular
    * @description Default style of the base map
@@ -486,7 +486,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       });
       layersSet.forEach(ll => {
-        (this.map as maplibregl.Map).setLayoutProperty(ll, 'visibility', 'none');
+        this.map.setLayoutProperty(ll, 'visibility', 'none');
         this.setStrokeLayoutVisibility(ll, 'none');
         this.setScrollableLayoutVisibility(ll, 'none');
       });
@@ -497,7 +497,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       if (this.visualisationsSets.status.get(v)) {
         ls.forEach(l => {
           layers.add(l);
-          (this.map as maplibregl.Map).setLayoutProperty(l, 'visibility', 'visible');
+          this.map.setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
           this.setScrollableLayoutVisibility(l, 'visible');
         });
@@ -737,7 +737,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       // TODO: to externalyze
       const scale = new maplibregl.ScaleControl({
         maxWidth: this.maxWidthScale,
-        unit: this.unitScale,
+        unit: this.unitScale  ,
       });
       this.map.addControl(scale, 'bottom-right');
     }
