@@ -30,7 +30,7 @@ import {AoiDimensions} from './draw/draw.models';
 import {BasemapStyle} from './basemaps/basemap.config';
 import {MapglMapblibreComponent} from "./mapgl-maps/mapgl-mapblibre/mapgl-mapblibre.component";
 import {MapglMapboxComponent} from "./mapgl-maps/mapgl-mapbox/mapgl-mapbox.component";
-import {IconConfig, OnMoveResult, VisualisationSetConfig} from "./mapg.interface";
+import {IconConfig, OnMoveResult, VisualisationSetConfig} from "./mapgl.interface";
 
 
 /**

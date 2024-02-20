@@ -67,7 +67,7 @@ import {
   VisualisationSetConfig,
   ZOOM_IN,
   ZOOM_OUT
-} from "../mapg.interface";
+} from "../mapgl.interface";
 
 
 /**
