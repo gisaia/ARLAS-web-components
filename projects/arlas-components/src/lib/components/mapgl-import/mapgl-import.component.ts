@@ -1,17 +1,18 @@
-import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {Component, ElementRef, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
 import JSZip from 'jszip';
-import { MapglComponent } from '../mapgl/mapgl.component';
-import { FeatureCollection, polygon} from '@turf/helpers';
-import { Subject } from 'rxjs';
+import {FeatureCollection, polygon} from '@turf/helpers';
+import {Subject} from 'rxjs';
 import * as shp_ from 'shpjs/dist/shp';
 import * as extent_ from 'turf-extent';
-import { parse } from 'wellknown';
-import { valid } from 'geojson-validation';
+import {parse} from 'wellknown';
+import {valid} from 'geojson-validation';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
-import { GeoJSONSource } from 'maplibre-gl';
+import {GeoJSONSource} from 'maplibre-gl';
+import {MapglMapCommonComponent} from "../mapgl/mapgl-maps/mapgl-map-common.component";
+
 const gpsi = gpsi_.default;
 const shp = shp_.default;
 const extent = extent_.default;
@@ -112,7 +113,7 @@ export class MapglImportComponent {
   };
   private featureIndex = 0;
 
-  @Input() public mapComponent: MapglComponent;
+  @Input() public mapComponent: MapglMapCommonComponent;
   @Input() public maxVertexByPolygon: number;
   @Input() public maxFeatures?: number;
   @Input() public maxFileSize?: number;

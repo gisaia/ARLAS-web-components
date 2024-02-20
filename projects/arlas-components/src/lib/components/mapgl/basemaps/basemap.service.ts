@@ -83,7 +83,9 @@ export class MapboxBasemapService {
     const protocol = new pmtiles.Protocol();
     // TODO: we have to find the good implementation
     if(!map.getSource('pmtiles-type')) {
-      MapLibreGL.addProtocol('pmtiles', protocol.tile);
+      // TODO: Maplibregl is undefied  Cannot read properties of undefined (reading 'addProtocol')
+      console.error(MapLibreGL)
+      // MapLibreGL.addProtocol('pmtiles', protocol.tile);
     }
     // TODO: do not wrok because this methode do not exist on map libre its  a mapbox implementation
    // if (!(maplibregl as any).Style.getSourceType('pmtiles-type')) {

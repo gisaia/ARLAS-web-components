@@ -38,6 +38,9 @@ import { CoordinatesComponent } from './coordinates/coordinates.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MapglMapboxComponent } from './mapgl-maps/mapgl-mapbox/mapgl-mapbox.component';
+import { MapglMapblibreComponent } from './mapgl-maps/mapgl-mapblibre/mapgl-mapblibre.component';
+import {MapglMapCommonComponent} from "./mapgl-maps/mapgl-map-common.component";
 
 
 @NgModule({
@@ -62,7 +65,7 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     DragDropModule,
   ],
-  declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe, CoordinatesComponent],
+  declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe, CoordinatesComponent, MapglMapboxComponent, MapglMapblibreComponent, MapglMapCommonComponent],
   providers: [
     MapboxAoiDrawService
   ],

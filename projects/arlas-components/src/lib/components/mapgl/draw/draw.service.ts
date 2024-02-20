@@ -56,10 +56,10 @@ export class MapboxAoiDrawService {
       isEditing: false
     };
 
-    // TODO: only when its maplibre
-    MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
+    // TODO: only when its maplibe. In maplibre docs but cause error when implemented. no classes attributes
+    /*MapboxDraw.constants.classes.CONTROL_BASE  = 'maplibregl-ctrl';
     MapboxDraw.constants.classes.CONTROL_PREFIX = 'maplibregl-ctrl-';
-    MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';
+    MapboxDraw.constants.classes.CONTROL_GROUP = 'maplibregl-ctrl-group';*/
   }
 
   public drawBbox(fCorner: Corner, sCorner: Corner) {
