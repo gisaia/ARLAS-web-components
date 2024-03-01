@@ -1,6 +1,6 @@
 .container {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
 }
 
 .container ::ng-deep .mat-checkbox-inner-container{
@@ -8,7 +8,7 @@
     width: 10px !important;
 }
 .checkbox {
-    margin-right: 5px; 
+    margin-right: 5px;
     padding-bottom: 5px;
 }
 
@@ -79,7 +79,7 @@
     position:relative;
     display: inline-block;
     white-space: nowrap;
-    text-align: right; 
+    text-align: right;
 }
 
 .powerbar__powerbar--selected
@@ -97,4 +97,3 @@
 .powerbars__powerbar--selected-no-mounted-bar {
     background-color: #fff;
 }
-  
