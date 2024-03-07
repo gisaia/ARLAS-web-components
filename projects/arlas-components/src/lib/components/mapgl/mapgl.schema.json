@@ -213,7 +213,7 @@
           },
           "layers": {
             "description": "List of layers ids grouped in this visualisation set",
-            "type": "string",
+            "type": "array",
             "items": {
               "description": "layer id",
               "type": "string"
