@@ -591,7 +591,7 @@ export class MapglImportComponent {
     if (this.tooManyVertex) {
       throw new Error('Too many vertices in a polygon');
     } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
-      throw new Error('Too much features');
+      throw new Error('Too many features');
     } else {
       if (importedResult.geojson.features.length > 0) {
         this.dialogRef.componentInstance.isRunning = false;
@@ -629,7 +629,7 @@ export class MapglImportComponent {
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;
     switch (this.dialogRef.componentInstance.errorMessage) {
-    case 'Too much features':
+    case 'Too many features':
       this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
       break;
     case 'Too many vertices in a polygon':

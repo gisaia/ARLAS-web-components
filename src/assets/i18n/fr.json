@@ -66,7 +66,7 @@
 	"Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`": "Le fichier zip doit contenir au minimum un fichier `*.shp`, `*.shx` et `*.dbf` OU un fichier `*.json`",
 	"Too many vertices in a polygon": "Un polygone contient trop de sommets",
 	"No polygon to display in this file": "Aucun polygone à afficher",
-	"Too much features": "Le fichier contient trop d'éléments",
+	"Too many features": "Le fichier contient trop d'éléments",
 	"File is too large": "Le fichier est trop volumineux",
 	"Column": "Colonne",
 	"Direction": "Sens",

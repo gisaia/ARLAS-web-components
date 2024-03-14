@@ -27,6 +27,8 @@
 	"show_layers": "show_layers",
 	"include": "include",
 	"exclude": "exclude",
+	"Previous image": "Previous image",
+	"Next image": "Next image",
 	"Attachments": "Attachments",
 	"ASC": "ASC",
 	"DESC": "DESC",
