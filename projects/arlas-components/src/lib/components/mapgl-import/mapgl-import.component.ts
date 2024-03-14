@@ -10,6 +10,7 @@ import * as shp_ from 'shpjs/dist/shp';
 import * as extent_ from 'turf-extent';
 import { parse } from 'wellknown';
 import { valid } from 'geojson-validation';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 const gpsi = gpsi_.default;
 const shp = shp_.default;
@@ -589,9 +590,9 @@ export class MapglImportComponent {
 
   public setImportedData(importedResult) {
     if (this.tooManyVertex) {
-      throw new Error('Too many vertices in a polygon');
+      throw new Error(marker('Too many vertices in a polygon'));
     } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
-      throw new Error('Too much features');
+      throw new Error(marker('Too many features'));
     } else {
       if (importedResult.geojson.features.length > 0) {
         this.dialogRef.componentInstance.isRunning = false;
@@ -629,7 +630,7 @@ export class MapglImportComponent {
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;
     switch (this.dialogRef.componentInstance.errorMessage) {
-    case 'Too much features':
+    case 'Too many features':
       this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
       break;
     case 'Too many vertices in a polygon':
