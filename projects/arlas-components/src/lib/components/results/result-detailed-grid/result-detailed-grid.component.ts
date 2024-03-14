@@ -26,6 +26,7 @@ import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ElementIdentifier } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-result-detailed-grid',
@@ -36,7 +37,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   public SHOW_DETAILS = 'Show details';
   public VIEW_IMAGE = 'View quicklook';
   public SHOW_IMAGE = 'Show image';
-  public CLOSE_DETAILS = 'Close details';
+  public CLOSE_DETAILS = marker('Close details');
   private fullScreenViewer = new FullScreenViewer();
   private noViewImg = './assets/no-view.png';
 
