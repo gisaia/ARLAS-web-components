@@ -27,6 +27,8 @@
 	"show_layers": "show_layers",
 	"include": "include",
 	"exclude": "exclude",
+	"Previous image": "Previous image",
+	"Next image": "Next image",
 	"Attachments": "Attachments",
 	"ASC": "ASC",
 	"DESC": "DESC",
@@ -40,7 +42,10 @@
 	"Unable to preview this style for this layer": "Unable to preview this style for this layer",
 	"Preview": "Preview",
 	"View": "View",
+	"Too many vertices in a polygon": "Too many vertices in a polygon",
+	"Too many features": "Too many features",
 	"Invalid geometry": "Invalid geometry",
 	"Ok": "Ok",
+	"Close details": "Close details",
 	"Link": "Link"
 }
