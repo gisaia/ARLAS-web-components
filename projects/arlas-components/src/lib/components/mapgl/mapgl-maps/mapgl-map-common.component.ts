@@ -87,32 +87,32 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
   public draw: any;
   public zoom: number;
   public legendOpen = true;
-  private emptyData: FeatureCollection = {
+  protected emptyData: FeatureCollection = {
     'type': 'FeatureCollection',
     'features': []
   };
-  private index: any;
-  private north: number;
-  private east: number;
-  private west: number;
-  private south: number;
-  private isDrawingBbox = false;
-  private canvas: HTMLElement;
-  private box: HTMLElement;
+  protected index: any;
+  protected north: number;
+  protected east: number;
+  protected west: number;
+  protected south: number;
+  protected isDrawingBbox = false;
+  protected canvas: HTMLElement;
+  protected box: HTMLElement;
   // points which xy coordinates are in screen referential
-  private start: Point; //TODO : can create a same type here
-  private current: Point; //TODO : can create a same type here
+  protected start: Point; //TODO : can create a same type here
+  protected current: Point; //TODO : can create a same type here
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
-  private startlngLat: maplibregl.LngLat | mapboxgl.LngLat; //TODO : can create a same type here
-  private endlngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
-  private movelngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
+  protected startlngLat: maplibregl.LngLat | mapboxgl.LngLat; //TODO : can create a same type here
+  protected endlngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
+  protected movelngLat: maplibregl.LngLat | mapboxgl.LngLat;//TODO : can create a same type here
 
-  private savedEditFeature = null;
+  protected savedEditFeature = null;
 
   public FINISH_DRAWING = 'Double click to finish drawing';
-  private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private ICONS_BASE_PATH = 'assets/icons/';
-  private offlineBasemapChangeSubscription!: Subscription;
+  protected POLYGON_LABEL_SOURCE = 'polygon_label';
+  protected ICONS_BASE_PATH = 'assets/icons/';
+  protected offlineBasemapChangeSubscription!: Subscription;
   /**
    * @Input : Angular
    * @description element identifier given to map container
@@ -405,8 +405,8 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
   // Polygon
   public nbPolygonVertice = 0;
   public polygonlabeldata: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
-  private isDrawingPolygon = false;
-  private isInSimpleDrawMode = false;
+  protected isDrawingPolygon = false;
+  protected isInSimpleDrawMode = false;
   public firstDrawLayer = '';
 
   // Drag start position
@@ -424,10 +424,10 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
   public visibilityStatus = new Map();
   public isDrawPolyonSelected = false;
   public drawClickCounter = 0;
-  private drawSelectionChanged = false;
-  private finishDrawTooltip: HTMLElement;
-  private aoiEditSubscription: Subscription;
-  private drawBboxSubscription: Subscription;
+  protected drawSelectionChanged = false;
+  protected finishDrawTooltip: HTMLElement;
+  protected aoiEditSubscription: Subscription;
+  protected drawBboxSubscription: Subscription;
 
   public constructor(protected http: HttpClient, protected drawService: MapboxAoiDrawService,
                      protected basemapService: MapboxBasemapService,
@@ -1413,7 +1413,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     (this.map as maplibregl.Map).setCenter(lngLat);
   }
 
-  private latLngToWKT(features) {
+  protected latLngToWKT(features) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {
       wktType = 'MULTIPOLYGON([###])';
@@ -1441,7 +1441,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
   /**
    * @description Add map sources
    */
-  private addSourcesToMap(sources: Array<MapSource>, map: any) {
+  protected addSourcesToMap(sources: Array<MapSource>, map: any) {
     // Add sources defined as input in mapSources;
     const mapSourcesMap = new Map<string, MapSource>();
     if (sources) {
@@ -1456,7 +1456,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private addVisuLayers() {
+  protected addVisuLayers() {
     if (!!this.visualisationSetsConfig) {
       for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
         const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
@@ -1504,13 +1504,13 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private addExternalEventLayers() {
+  protected addExternalEventLayers() {
     this.mapLayers.layers
       .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
       .forEach(l => this.addLayer(l.id));
   }
 
-  private addLayer(layerId: string): void {
+  protected addLayer(layerId: string): void {
     const layer = this.layersMap.get(layerId);
     if (layer !== undefined && layer.id === layerId) {
       /** Add the layer if it is not already added */
@@ -1527,7 +1527,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
+  protected highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
       const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
       if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
@@ -1539,7 +1539,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
+  protected selectFeatures(elementToSelect: Array<ElementIdentifier>) {
     if (elementToSelect) {
       const ids = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => {
@@ -1551,7 +1551,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
+  protected updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
     collection?: string): void {
     if (this.mapLayers && this.mapLayers.externalEventLayers) {
       this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
@@ -1589,7 +1589,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private mousedown = (e) => {
+  protected mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
     if (!this.isDrawingBbox) {
       return;
@@ -1607,7 +1607,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     );
   };
 
-  private mousemove = (e) => {
+  protected mousemove = (e) => {
     // Capture the ongoing xy coordinates
     const rect = this.canvas.getBoundingClientRect();
     this.current = new Point(
@@ -1633,7 +1633,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     this.box.style.height = maxY - minY + 'px';
   };
 
-  private mouseup = (e) => {
+  protected mouseup = (e) => {
     const rect = this.canvas.getBoundingClientRect();
     const f = new Point(
       e.clientX - rect.left - this.canvas.clientLeft,
@@ -1656,7 +1656,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
   };
 
 
-  private finish(bbox?) {
+  protected finish(bbox?) {
     if (bbox) {
       const startlng: number = this.startlngLat.lng;
       const endlng: number = this.endlngLat.lng;
@@ -1675,7 +1675,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
   }
 
 
-  private drawBbox(east, south, west, north) {
+  protected drawBbox(east, south, west, north) {
     const coordinates = [[
       [east, south],
       [east, north],
@@ -1707,7 +1707,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     this.drawService.endDimensionsEmission();
   }
 
-  private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
+  protected setStrokeLayoutVisibility(layerId: string, visibility: string): void {
     const layer = this.layersMap.get(layerId);
     if (layer.type === 'fill') {
       const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
@@ -1718,7 +1718,7 @@ export class MapglMapCommonComponent implements OnInit, AfterViewInit, OnChanges
     }
   }
 
-  private setScrollableLayoutVisibility(layerId: string, visibility: string): void {
+  protected setScrollableLayoutVisibility(layerId: string, visibility: string): void {
     const layer = this.layersMap.get(layerId);
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollbaleLayer = this.layersMap.get(scrollableId);

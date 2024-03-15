@@ -69,7 +69,7 @@ import {MapglMapCommonComponent} from "./mapgl-maps/mapgl-map-common.component";
   providers: [
     MapboxAoiDrawService
   ],
-  exports: [MapglComponent]
+  exports: [MapglComponent,  MapglMapboxComponent, MapglMapblibreComponent, MapglMapCommonComponent]
 })
 export class MapglModule {
 

@@ -181,6 +181,8 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    * - line width evolution
    * - circle radius evolution
    */
+
+
   private drawLegends(visibileMode: boolean): void {
     const type = this.layer.type;
     const paint = this.layer.paint;

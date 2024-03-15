@@ -518,10 +518,10 @@ export class MapglDemoComponent implements OnInit {
   public getWKT() {
     switch (this.modeChoice) {
     case 'all':
-      console.log(this.mapComponent.getAllPolygon('wkt'));
+      console.log(this.mapComponent.map.getAllPolygon('wkt'));
       break;
     case 'selected':
-      console.log(this.mapComponent.getSelectedPolygon('wkt'));
+      console.log(this.mapComponent.map.getSelectedPolygon('wkt'));
       break;
     }
   }
@@ -529,20 +529,20 @@ export class MapglDemoComponent implements OnInit {
   public getGeojson() {
     switch (this.modeChoice) {
     case 'all':
-      console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
+      console.log(JSON.stringify(this.mapComponent.map.getAllPolygon('geojson')));
       break;
     case 'selected':
-      console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
+      console.log(JSON.stringify(this.mapComponent.map.getSelectedPolygon('geojson')));
       break;
     }
   }
 
   public switchToDrawMode() {
-    this.mapComponent.switchToDrawMode();
+    this.mapComponent.map.switchToDrawMode();
   }
 
   public delete() {
-    this.mapComponent.deleteSelectedItem();
+    this.mapComponent.map.deleteSelectedItem();
   }
 
   public polygonSelect(event) {

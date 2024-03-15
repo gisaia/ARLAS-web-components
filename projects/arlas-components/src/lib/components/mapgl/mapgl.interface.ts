@@ -5,7 +5,7 @@ export const CROSS_LAYER_PREFIX = 'arlas_cross';
 export interface OnMoveResult {
   zoom: number;
   zoomStart: number;
-  center: Array<number> | maplibregl.LngLat;
+  center: Array<number> | any;
   centerWithOffset: Array<number>;
   extend: Array<number>;
   extendWithOffset: Array<number>;

@@ -6,7 +6,6 @@ import {HttpClient} from '@angular/common/http';
 import {MapboxBasemapService} from '../mapgl/basemaps/basemap.service';
 import {BasemapStyle} from '../mapgl/basemaps/basemap.config';
 import {ArlasBasemaps} from '../mapgl/basemaps/basemaps';
-import * as maplibregl from 'maplibre-gl';
 import {Layer} from '../mapgl/model/mapLayers';
 
 @Component({
@@ -17,7 +16,7 @@ import {Layer} from '../mapgl/model/mapLayers';
 export class MapglBasemapComponent implements OnInit {
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
-  @Input() public map: maplibregl.Map;
+  @Input() public map: any;
   @Input() public mapSources: Array<MapSource>;
 
   @Output() public basemapChanged = new EventEmitter<void>();

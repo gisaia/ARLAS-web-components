@@ -37,6 +37,9 @@ export { Item } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
 export { VisualisationSetConfig, IconConfig, OnMoveResult, CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.interface'
 export { MapglModule } from './lib/components/mapgl/mapgl.module';
+export { MapglMapboxComponent } from './lib/components/mapgl/mapgl-maps/mapgl-mapbox/mapgl-mapbox.component'
+export { MapglMapblibreComponent } from './lib/components/mapgl/mapgl-maps/mapgl-mapblibre/mapgl-mapblibre.component'
+export { MapglMapCommonComponent } from './lib/components/mapgl/mapgl-maps/mapgl-map-common.component'
 export { MapglComponent } from './lib/components/mapgl/mapgl.component'
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';

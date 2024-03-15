@@ -45,7 +45,7 @@ import {IconConfig, OnMoveResult, VisualisationSetConfig} from "./mapgl.interfac
 })
 export class MapglComponent {
 
-  @ViewChild('mapRef') map: MapglMapblibreComponent | MapglMapboxComponent;
+  @ViewChild('mapRef') map: any;
 
   /**
    * @Input : Angular
@@ -54,7 +54,7 @@ export class MapglComponent {
   @Input() protected id = 'mapgl';
 
 
-  @Input() protected providerType: 'mapbox' | 'maplibre' = 'mapbox';
+  @Input() protected providerType: 'mapbox' | 'maplibre' | null = null;
 
   /**
    * @Input : Angular
@@ -86,7 +86,7 @@ export class MapglComponent {
    * @Input : Angular
    * @description Unit of the scale.
    */
-  @Input() protected unitScale: maplibregl.Unit; //TODO : can create a same type here
+  @Input() protected unitScale: any; //TODO : can create a same type here
   /**
    * @Input : Angular
    * @description Default style of the base map
@@ -200,7 +200,7 @@ export class MapglComponent {
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-  @Input() protected transformRequest: RequestTransformFunction | TransformRequestFunction; //TODO : can create a same type here
+  @Input() protected transformRequest: any; //TODO : can create a same type here
 
   /**
    * @Input : Angular
@@ -329,6 +329,10 @@ export class MapglComponent {
     sourceName: string;
     downloadType: string;
   }> = new Subject();
+
+  constructor() {
+
+  }
 
 
   protected changeVisualisationWrapper($event: Set<string>) {

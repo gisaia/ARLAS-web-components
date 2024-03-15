@@ -2,6 +2,7 @@
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/arlas-web-components",
   "assets": ["./assets"],
+  "keepLifecycleScripts": true,
   "allowedNonPeerDependencies": ["."],
   "lib": {
     "entryFile": "src/public-api.ts"

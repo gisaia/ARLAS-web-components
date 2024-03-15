@@ -25,7 +25,6 @@ import * as maplibregl from 'maplibre-gl';
 import {catchError, forkJoin, Observable, of, Subject, tap} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import mapboxgl from "mapbox-gl";
-import {MapLibreGL, StyleSpecification} from "maplibre-gl";
 
 @Injectable({
   providedIn: 'root'
@@ -67,10 +66,10 @@ export class MapboxBasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: maplibregl.Map | mapboxgl.Map) {
+  public removeProtomapBasemap(map: any) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
-      (selectedBasemap.styleFile as maplibregl.StyleSpecification).layers.forEach(l => {
+      (selectedBasemap.styleFile as any).layers.forEach(l => {
         if (!!map.getLayer(l.id)) {
           map.removeLayer(l.id);
         }
@@ -79,12 +78,11 @@ export class MapboxBasemapService {
     }
   }
 
-  public declareProtomapProtocol(map: maplibregl.Map | mapboxgl.Map) {
+  public declareProtomapProtocol(map: any) {
     const protocol = new pmtiles.Protocol();
     // TODO: we have to find the good implementation
     if(!map.getSource('pmtiles-type')) {
       // TODO: Maplibregl is undefied  Cannot read properties of undefined (reading 'addProtocol')
-      console.error(MapLibreGL)
       // MapLibreGL.addProtocol('pmtiles', protocol.tile);
     }
     // TODO: do not wrok because this methode do not exist on map libre its  a mapbox implementation
@@ -98,7 +96,7 @@ export class MapboxBasemapService {
   public getInitStyle(selected: BasemapStyle) {
     if (selected.type === 'protomap') {
       /** This is necessaty to make it work for mapbox. */
-      const clonedStyleFile: maplibregl.StyleSpecification = Object.assign({}, selected.styleFile as maplibregl.StyleSpecification);
+      const clonedStyleFile: any = Object.assign({}, selected.styleFile as any);
       clonedStyleFile.sources = {
         protomaps_attribution: {
           'type': 'vector',

@@ -30,10 +30,11 @@
     ],
     "lib": [
       "es2015",
+      "es2020",
       "es6",
       "dom"
     ],
-    "module": "es2015"
+    "module": "es2020"
   },
   "exclude": [
     "node_modules",
