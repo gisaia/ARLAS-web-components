@@ -14,7 +14,7 @@
     "e2e": "ng e2e",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
-    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr}.json --format json",
+    "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr,es}.json --format json",
     "postinstall": "patch-package"
   },
   "private": true,
