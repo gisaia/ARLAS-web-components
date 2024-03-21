@@ -26,8 +26,11 @@
 
 ## [v24.3.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.3) (2024-02-15)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.2...v24.3.3)
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.1...v24.3.3)
 
+## [v25.0.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.1) (2024-02-15)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.2...v25.0.0-beta.1)
 
 ## [v24.3.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.2) (2023-12-20)
 
