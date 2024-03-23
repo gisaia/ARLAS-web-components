@@ -94,7 +94,7 @@ const SIMPLE_GEOMETRY_OBJECT = [ 'Polygon', 'Point', 'LineString'];
   selector: 'arlas-mapgl-import',
   styleUrls: ['./mapgl-import.component.css']
 })
-export class MapglImportComponent implements OnInit{
+export class MapglImportComponent {
 
   public SHP = 'shp';
   public KML = 'kml';
@@ -133,10 +133,6 @@ export class MapglImportComponent implements OnInit{
     public dialog: MatDialog
   ) { }
 
-  ngOnInit() {
-    this.buildAllowedGeometryForFileType();
-  }
-
   public promiseTimeout(ms, promise) {
 
     // Create a promise that rejects in <ms> milliseconds
@@ -154,15 +150,16 @@ export class MapglImportComponent implements OnInit{
     ]);
   }
 
-  private buildAllowedGeometryForFileType(){
+  private buildAllowedGeometryForImportType(importType: string){
+    this._currentAllowedGeom = [];
     this.allowedGeometryObjectType.forEach(allowed => {
-      this._allowedGeomForKMZ.concat(this.getAllowedGeom(allowed));
-      this._allowedGeomForShapefile.concat(this.getAllowedGeom(allowed));
-      this._allowedGeomForGeoJson.concat(this.getAllowedGeom(allowed));
-      this._allowedGeomForWKT.concat(this.getAllowedGeom(allowed));
+      this._currentAllowedGeom.concat(this.getAllowedGeom(allowed));
     });
-    this._allowedGeomForKMZ.push('GeometryCollection', 'MultiGeometry');
-    this._allowedGeomForWKT.push('GeometryCollection');
+    if(importType === this.KML){
+      this._currentAllowedGeom.push('GeometryCollection', 'MultiGeometry');
+    } else if(importType === this.WKT) {
+      this._currentAllowedGeom.push('GeometryCollection');
+    }
   }
 
   private getAllowedGeom(allowed: AllowedGeometry): string[] {
@@ -182,6 +179,7 @@ export class MapglImportComponent implements OnInit{
     });
     this.dialogRef.componentInstance.importRun.subscribe(importOptions => {
       this.fitResult = importOptions.fitResult;
+      this.buildAllowedGeometryForImportType(importOptions.type);
       this.import(importOptions.type, importOptions.wktContent);
     });
   }
@@ -192,16 +190,12 @@ export class MapglImportComponent implements OnInit{
     this.jszip = new JSZip();
     let processPromise: Promise<void>;
     if (importType === this.SHP) {
-      this._currentAllowedGeom = this._allowedGeomForShapefile;
       processPromise = this.processAllShape();
     } else if (importType === this.KML) {
-      this._currentAllowedGeom = this._allowedGeomForKMZ;
       processPromise = this.processAllKml();
     } else if (importType === this.WKT) {
-      this._currentAllowedGeom = this._allowedGeomForWKT;
       processPromise = this.processWKT(content);
     } else if (importType === this.GEOJSON) {
-      this._currentAllowedGeom = this._allowedGeomForGeoJson;
       processPromise = this.processJson();
     }
     this.promiseTimeout(this.maxLoadingTime, processPromise).catch(error => {
@@ -228,42 +222,42 @@ export class MapglImportComponent implements OnInit{
     return f;
   }
 
-  handleSimpleGeometry(feature, centroides, importedGeojson){
+  handleSimpleGeometry(feature, centroids, importedGeojson){
     if (gpsi(feature).geometry.coordinates.length === 0) {
-      this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
+      this.addFeature(feature, centroids, importedGeojson, ++this.featureIndex);
     } else {
       throw new Error('Geometry is not valid due to self-intersection');
     }
   }
 
-  handleMultiGeometry(feature, centroides, importedGeojson){
+  handleMultiGeometry(feature, centroids, importedGeojson){
     // Create a new Polygon feature for each polygon in the MultiPolygon
     // All properties of the MultiPolygon are copied in each feature created
     const geomType = (feature.geometry.type === 'MultiPolygon') ? 'Polygon' : 'Point';
     feature.geometry.coordinates.forEach(geom => {
       const newFeature = this.buildFeature(geom, feature, geomType,true);
-      this.handleSimpleGeometry(newFeature, centroides, importedGeojson);
+      this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
     });
   }
 
-  handleGeometryCollection(feature, centroides, importedGeojson){
+  handleGeometryCollection(feature, centroids, importedGeojson){
     // Create a new Polygon feature for each polygon in the MultiPolygon
     // All properties of the MultiPolygon are copied in each feature created
     const simpleGeometry = this._currentAllowedGeom.filter(g => SIMPLE_GEOMETRY_OBJECT.includes(g));
     feature.geometry.geometries.filter(geom => simpleGeometry.includes(geom.type)).forEach(geom => {
       const newFeature = this.buildFeature(geom, feature);
-      this.handleSimpleGeometry(newFeature, centroides, importedGeojson);
+      this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
     });
   }
 
-  handleFeatureCollection(feature, centroides, importedGeojson){
+  handleFeatureCollection(feature, centroids, importedGeojson){
     feature.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
       .forEach((feature) => {
         const multiGeometry =  this._currentAllowedGeom.filter(g => !SIMPLE_GEOMETRY_OBJECT.includes(g));
         if (multiGeometry.includes(feature.geometry.type)) {
-          this.handleMultiGeometry(feature,  centroides, importedGeojson);
+          this.handleMultiGeometry(feature,  centroids, importedGeojson);
         } else {
-          this.handleSimpleGeometry(feature, centroides, importedGeojson);
+          this.handleSimpleGeometry(feature, centroids, importedGeojson);
         }
       });
   }
@@ -323,7 +317,7 @@ export class MapglImportComponent implements OnInit{
           type: 'FeatureCollection',
           features: []
         };
-        geojson.features.filter(feature => this._allowedGeomForKMZ.includes(feature.geometry.type))
+        geojson.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
           .forEach((feature) => {
             try {
               if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'MultiGeometry') {
@@ -382,7 +376,7 @@ export class MapglImportComponent implements OnInit{
     const readJsonFile = this.readJsonFile();
     const parseJson = readJsonFile.then((fileContent: string) => new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
       const feature = JSON.parse(fileContent);
-      if (valid(feature) && (this._allowedGeomForGeoJson.includes(feature.geometry) || feature.geometry === 'FeatureCollection')) {
+      if (valid(feature) && (this._currentAllowedGeom.includes(feature.geometry) || feature.geometry === 'FeatureCollection')) {
         const centroides = new Array<any>();
         const importedGeojson = {
           type: 'FeatureCollection',
@@ -472,7 +466,7 @@ export class MapglImportComponent implements OnInit{
       };
       if (valid(geojson)) {
         try  {
-          geojson.features.filter(feature => this._allowedGeomForShapefile.includes(feature.geometry.type))
+          geojson.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
             .forEach((feature) => {
               if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'MultiPoint') {
                 // Create a new Polygon feature for each polygon in the MultiPolygon
@@ -509,7 +503,7 @@ export class MapglImportComponent implements OnInit{
         type: 'FeatureCollection',
         features: []
       };
-      if (geojsonWKT && valid(geojsonWKT) && this._allowedGeomForWKT.includes(geojsonWKT.type)) {
+      if (geojsonWKT && valid(geojsonWKT) && this._currentAllowedGeom.includes(geojsonWKT.type)) {
         const feature = {
           type: 'Feature',
           geometry: geojsonWKT,
