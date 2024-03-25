@@ -56,5 +56,10 @@
     "./assets/i18n/es.json": {
       "default": "./assets/i18n/es.json"
     }
+  },
+  "overrides": {
+    "@angular-devkit/build-angular": {
+      "webpack-dev-middleware": "~5.3.4"
+    }
   }
 }
