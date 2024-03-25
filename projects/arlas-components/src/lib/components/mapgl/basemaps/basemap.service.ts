@@ -30,6 +30,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class MapboxBasemapService {
+  private POWERED_BY_ARLAS = ' Powered by ARLAS.';
   public basemaps: ArlasBasemaps;
 
   private protomapBasemapAddedSource = new Subject<boolean>();
@@ -49,6 +50,7 @@ export class MapboxBasemapService {
       if (pmtilesSource) {
         // eslint-disable-next-line max-len
         pmtilesSource['attribution'] = '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>';
+        pmtilesSource['attribution'] = pmtilesSource['attribution'] + this.POWERED_BY_ARLAS;
         map.addSource('arlas_protomaps_source', pmtilesSource as any);
         styleFile.layers.forEach(l => {
           if (!!map.getLayer(l.id)) {
@@ -95,7 +97,7 @@ export class MapboxBasemapService {
         protomaps_attribution: {
           'type': 'vector',
           // eslint-disable-next-line max-len
-          'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>'
+          'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>' + this.POWERED_BY_ARLAS
         }
       };
       clonedStyleFile.layers = [{
@@ -116,7 +118,17 @@ export class MapboxBasemapService {
     const sources$: Observable<mapboxgl.Style>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
-        tap(sf => s.styleFile = sf as mapboxgl.Style),
+        tap(sf => {
+          Object.keys(sf.sources).forEach(k => {
+            const attribution = sf.sources[k]['attribution'];
+            if (!!attribution) {
+              sf.sources[k]['attribution'] = attribution + this.POWERED_BY_ARLAS;
+            } else {
+              sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
+            }
+          });
+          s.styleFile = sf as mapboxgl.Style;
+        }),
         catchError(() => {
           s.errored = true;
           return of();
