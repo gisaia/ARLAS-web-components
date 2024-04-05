@@ -56,6 +56,10 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit {
     this.cdr.detectChanges();
   }
 
+  public close() {
+    this.dialogRef.close();
+  }
+
   public getErrorMessage(formControl: FormControl | FormGroup) {
     if (formControl.hasError('required')) {
       return 'You must enter a coordinate';

@@ -9,6 +9,9 @@
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
+        .clear {
+            cursor: pointer;
+        }
     }
     .content {
         display: flex;
