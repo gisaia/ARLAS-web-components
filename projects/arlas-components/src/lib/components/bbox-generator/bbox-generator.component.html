@@ -12,14 +12,14 @@
             <div class="title">{{'First corner' | translate}}</div>
             <div class="coordinate">
                 <mat-form-field appearance="outline" >
-                    <mat-label>{{'Latitude'}}</mat-label>
+                    <mat-label>{{'Latitude' |translate}}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.firstCorner.latitude" [placeholder]="placeHolder | translate">
                     <mat-error *ngIf="bboxForm.firstCorner.latitude.invalid">{{getErrorMessage(bboxForm.firstCorner.latitude) | translate}}</mat-error>
                 </mat-form-field>
             </div>
             <div class="coordinate">
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'Longitude'}}</mat-label>
+                    <mat-label>{{'Longitude'|translate }}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.firstCorner.longitude" [placeholder]="placeHolder | translate">
                     <mat-error *ngIf="bboxForm.firstCorner.longitude.invalid">{{getErrorMessage(bboxForm.firstCorner.longitude) | translate}}</mat-error>
                 </mat-form-field>
