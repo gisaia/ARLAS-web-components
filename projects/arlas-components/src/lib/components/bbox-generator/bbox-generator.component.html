@@ -29,14 +29,14 @@
             <div class="title">{{'Second corner' | translate}}</div>
             <div class="coordinate">
                 <mat-form-field appearance="outline" >
-                    <mat-label>{{'Latitude'}}</mat-label>
+                    <mat-label>{{'Latitude' | translate}}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.secondCorner.latitude" [placeholder]="placeHolder | translate">
                     <mat-error *ngIf="bboxForm.secondCorner.latitude.invalid">{{getErrorMessage(bboxForm.secondCorner.latitude) | translate}} </mat-error>
                 </mat-form-field>
             </div>
             <div class="coordinate">
                 <mat-form-field appearance="outline">
-                    <mat-label>{{'Longitude'}}</mat-label>
+                    <mat-label>{{'Longitude' | translate}}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.secondCorner.longitude" [placeholder]="placeHolder | translate">
                     <mat-error *ngIf="bboxForm.secondCorner.longitude.invalid">{{getErrorMessage(bboxForm.secondCorner.longitude) | translate}}</mat-error>
                 </mat-form-field>

@@ -92,5 +92,7 @@
 	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Coordenada en decimal: 1,1 o sexagesimal: 1°6'3\".",
 	"Both corners have the same latitudes, modify one of them.": "Las dos esquinas tienen la misma latitud, así que cambia una de ellas.",
 	"1.1 or 1°6'3\"": "1.1 o 1°6'3\"",
-	"Enter coordinates and centre the map": "Introduzca las coordenadas y centre el mapa."
+	"Enter coordinates and centre the map": "Introduzca las coordenadas y centre el mapa.",
+	"Latitude": "Latitud",
+	"Longitude": "Longitud"
 }
