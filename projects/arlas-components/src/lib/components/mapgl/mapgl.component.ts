@@ -53,6 +53,9 @@ import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
+import circleMode from './draw/modes/circles/circle.mode';
+import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
+import directModeOverride from './draw/modes/directSelectOverride';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -418,6 +421,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public currentLat: string;
   public currentLng: string;
 
+  // Point
+  private isDrawingCircle = false;
+
   // Polygon
   public nbPolygonVertice = 0;
   public polygonlabeldata: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
@@ -438,7 +444,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public yMoveRatio = 0;
   public zoomStart: number;
   public visibilityStatus = new Map();
-  public isDrawPolyonSelected = false;
+  public isDrawSelected = false;
   public drawClickCounter = 0;
   private drawSelectionChanged = false;
   private finishDrawTooltip: HTMLElement;
@@ -745,15 +751,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeAoisButton, 'top-right');
+    const modes = MapboxDraw.modes;
     const drawOptions = {
       ...this.drawOption, ...{
         styles: styles.default,
         modes: Object.assign(
-          MapboxDraw.modes,
+          modes,
           {
             static: StaticMode,
             limit_vertex: limitVertexDirectSelectMode,
-            draw_polygon: validGeomDrawPolygonMode
+            draw_polygon: validGeomDrawPolygonMode,
+            draw_circle: circleMode,
+            direct_select: directModeOverride,
+            simple_select: simpleSelectModeOverride
           })
       }
     };
@@ -847,7 +857,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.map.on('click', layerId, (e) => {
             const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
             const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
-            if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
+            if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
               this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
             }
           });
@@ -926,14 +936,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.map.on('draw.create', (e) => {
+        console.log(e);
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
-            'features': this.draw.getAll().features.filter(fc => {
-              const coordinates = fc.geometry.coordinates;
-              return fc.geometry.type === 'Polygon' && coordinates && coordinates[0] !== (null && undefined)
-                && coordinates[0][0] !== (null && undefined);
-            })
+            'features': this.draw.getAll().features.filter(fc =>
+              this.drawService.isValidPolygon(fc) ||
+              this.drawService.isValidCircle(fc)
+            )
           });
       });
 
@@ -951,7 +961,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
-            'features': this.draw.getAll().features.filter(fc => fc.geometry.type === 'Polygon')
+            'features': this.draw.getAll().features.filter(fc =>
+              this.drawService.isPolygon(fc) ||
+              this.drawService.isCircle(fc)
+            )
           });
       });
 
@@ -1012,37 +1025,37 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.map.on('draw.selectionchange', (e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
-          this.isDrawPolyonSelected = true;
+          this.isDrawSelected = true;
         } else {
           this.savedEditFeature = null;
-          this.isDrawPolyonSelected = false;
+          this.isDrawSelected = false;
           this.onAoiChanged.next(
             {
               'type': 'FeatureCollection',
-              'features': this.draw.getAll().features.filter(fc => {
-                const coordinates = fc.geometry.coordinates;
-                return fc.geometry.type === 'Polygon' && coordinates && coordinates[0] !== (null && undefined)
-                  && coordinates[0][0] !== (null && undefined);
-              })
+              'features': this.draw.getAll().features.filter(fc =>
+                this.drawService.isValidPolygon(fc) ||
+                this.drawService.isValidCircle(fc)
+              )
             });
           this.isDrawingBbox = false;
           this.isDrawingPolygon = false;
+          this.isDrawingCircle = false;
           this.isInSimpleDrawMode = false;
           this.draw.changeMode('static');
           this.map.getCanvas().style.cursor = '';
         }
       });
       this.map.on('draw.modechange', (e) => {
-        if (e.mode === 'draw_polygon') {
-          this.isDrawingPolygon = true;
+        console.log(e);
+        this.isDrawingPolygon = e.mode === 'draw_polygon';
+        this.isDrawingCircle = e.mode === 'draw_circle';
+        if (this.isDrawingPolygon || this.isDrawingCircle || e.mode === 'static') {
           this.isInSimpleDrawMode = false;
         }
         if (e.mode === 'simple_select') {
           this.isInSimpleDrawMode = true;
         }
         if (e.mode === 'static') {
-          this.isDrawingPolygon = false;
-          this.isInSimpleDrawMode = false;
           this.map.getCanvas().style.cursor = '';
         }
         if (e.mode === 'direct_select') {
@@ -1063,6 +1076,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             }
           } else {
             this.isDrawingPolygon = false;
+            this.isDrawingCircle = false;
             this.isInSimpleDrawMode = false;
             this.map.getCanvas().style.cursor = '';
           }
@@ -1070,6 +1084,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       });
 
       this.map.on('click', (e) => {
+        if (this.isDrawingCircle) {
+          return;
+        }
+
         if (this.isDrawingPolygon) {
           this.nbPolygonVertice++;
           if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
@@ -1092,7 +1110,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
                 featureIds: [id]
               });
               this.isInSimpleDrawMode = true;
-
             }
           }
         }
@@ -1284,6 +1301,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
+
+
   /**
    * @description Display the basemapswitcher
    */
@@ -1320,11 +1339,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getAllPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getAll().features);
+      polygon = this.latLngToWKT(this.draw.getAll().filter(this.drawService.isPolygon));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getAll().features
+        'features': this.draw.getAll().features.filter(this.drawService.isPolygon)
       };
     }
     return polygon;
@@ -1337,20 +1356,30 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getSelected().features);
+      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(this.drawService.isPolygon));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getSelected().features
+        'features': this.draw.getSelected().features.filter(this.drawService.isPolygon)
       };
     }
     return polygon;
   }
 
-  public switchToDrawMode() {
-    this.draw.changeMode('draw_polygon');
-    this.isDrawingPolygon = true;
+  public switchToDrawMode(mode?: string, option?: any) {
+    const selectedMode = mode ?? this.draw.modes.DRAW_POLYGON;
+    this.isDrawingCircle = selectedMode === 'draw_circle';
+    this.isDrawingPolygon = selectedMode === this.draw.modes.DRAW_POLYGON;
     this.isInSimpleDrawMode = false;
+    this.draw.changeMode(selectedMode, option ?? {});
+  }
+
+  public switchToDirectSelectMode(option?: { featureIds: Array<string>; allowCircleResize: boolean; }
+    | { featureId: string; allowCircleResize: boolean; }) {
+    this.draw.changeMode('direct_select', option);
+    this.isInSimpleDrawMode = false;
+    this.isDrawingCircle = false;
+    this.isDrawingPolygon = false;
   }
 
   public switchToEditMode() {
@@ -1358,16 +1387,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       featureIds: this.draw.getAll().features.map(f => f.id)
     });
     this.isInSimpleDrawMode = true;
+    this.isDrawingCircle = false;
     this.isDrawingPolygon = false;
   }
 
   public deleteSelectedItem() {
-    if (this.isDrawPolyonSelected) {
+    if (this.isDrawSelected) {
       this.draw.trash();
     } else {
       this.drawService.deleteAll();
     }
-    this.isDrawPolyonSelected = false;
+    this.isDrawSelected = false;
     this.onAoiChanged.next(this.draw.getAll());
   }
 
