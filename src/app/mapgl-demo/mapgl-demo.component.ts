@@ -537,8 +537,8 @@ export class MapglDemoComponent implements OnInit {
     }
   }
 
-  public switchToDrawMode() {
-    this.mapComponent.switchToDrawMode();
+  public switchToDrawMode(mode?,opts?) {
+    this.mapComponent.switchToDrawMode(mode, opts);
   }
 
   public delete() {
