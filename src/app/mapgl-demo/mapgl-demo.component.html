@@ -1,4 +1,5 @@
 <div class="polygon-tools" *ngIf="this.drawEnabled">
+  <button mat-raised-button (click)="switchToDrawMode('draw_radius_circle',{isFixedRadius:true,initialRadiusInKm:1000})">CIRCLE</button>
   <button mat-raised-button (click)="switchToDrawMode()">DRAW</button>
   <button mat-raised-button (click)="delete()">DELETE</button>
   <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>

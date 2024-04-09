@@ -1,10 +1,7 @@
-import DirectSelect from '@mapbox/mapbox-gl-draw/src/modes/direct_select';
-import createSupplementaryPoints from '@mapbox/mapbox-gl-draw/src/lib/create_supplementary_points';
-import doubleClickZoom from '@mapbox/mapbox-gl-draw/src/lib/double_click_zoom';
-import { activeStates, geojsonTypes } from '@mapbox/mapbox-gl-draw/src/constants';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as jsts from 'jsts/dist/jsts.min';
 
-const limitVertexDirectSelectMode = DirectSelect;
+const limitVertexDirectSelectMode = MapboxDraw.modes.direct_select;
 const reader = new jsts.io.GeoJSONReader();
 
 limitVertexDirectSelectMode.fireInvalidGeom = function (feature) {
@@ -22,15 +19,15 @@ limitVertexDirectSelectMode.fireInitialFeature = function (feature) {
 
 limitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
   if (state.featureId === geojson.properties.id) {
-    geojson.properties.active = activeStates.ACTIVE;
+    geojson.properties.active = MapboxDraw.constants.activeStates.ACTIVE;
     push(geojson);
-    createSupplementaryPoints(geojson, {
+    MapboxDraw.lib.createSupplementaryPoints(geojson, {
       map: this.map,
       midpoints: geojson.geometry.coordinates[0].length >= state.maxVertexByPolygon + 1 ? false : true,
       selectedPaths: state.selectedCoordPaths
     }).forEach(push);
   } else {
-    geojson.properties.active = activeStates.INACTIVE;
+    geojson.properties.active = MapboxDraw.constants.activeStates.INACTIVE;
     push(geojson);
   }
   this.fireActionable(state);
@@ -76,7 +73,7 @@ limitVertexDirectSelectMode.onSetup = function (opts) {
     maxVertexByPolygon = 100;
   }
 
-  if (feature.type === geojsonTypes.POINT) {
+  if (feature.type === MapboxDraw.constants.geojsonTypes.POINT) {
     throw new TypeError('direct_select mode doesn\'t handle point features');
   }
 
@@ -92,7 +89,7 @@ limitVertexDirectSelectMode.onSetup = function (opts) {
 
   this.setSelectedCoordinates(this.pathsToCoordinates(featureId, state.selectedCoordPaths));
   this.setSelected(featureId);
-  doubleClickZoom.disable(this);
+  MapboxDraw.lib.doubleClickZoom.disable(this);
 
   this.setActionableState({
     trash: true
