@@ -698,7 +698,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       .subscribe();
   }
 
+  /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
+  public initTransformRequest() {
+    if (!this.transformRequest) {
+      this.transformRequest = (url: string, resourceType: mapboxgl.ResourceType) => ({
+        url,
+      });
+    }
+  }
+
   public declareMap() {
+    this.initTransformRequest();
     this.map = new mapboxgl.Map({
       container: this.id,
       style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
