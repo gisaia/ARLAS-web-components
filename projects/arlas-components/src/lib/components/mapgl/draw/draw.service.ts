@@ -304,4 +304,26 @@ export class MapboxAoiDrawService {
     }
     return false;
   }
+
+  /**
+   * Chck if its a valid circle
+   * @param feature
+   */
+  public isValidCircle(feature): boolean {
+    const coordinates = feature.geometry.coordinates;
+    return this.isCircle(feature) && coordinates && coordinates[0] !== null && feature.properties.center;
+  }
+
+  public isValidPolygon(feature): boolean {
+    const coordinates = feature.geometry.coordinates;
+    return this.isPolygon(feature) && coordinates && coordinates[0] !== null && coordinates[0][0] !== null;
+  }
+
+  public isPolygon(feature): boolean {
+   return feature.geometry.type === 'Polygon' && !this.isCircle(feature);
+  }
+
+  public isCircle(feature): boolean {
+    return feature.properties?.isCircle;
+  }
 }
