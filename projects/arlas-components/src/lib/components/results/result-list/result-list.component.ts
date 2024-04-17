@@ -349,10 +349,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   /**
    * @Output : Angular
-   * @description Emits one item identifier that is hovered, selected or clicked on it
-   * for consultation purposes.
+   * @description Emits one item identifier that is hovered..
    */
   @Output() public consultedItemEvent: Subject<ElementIdentifier> = new Subject<ElementIdentifier>();
+
+  /**
+   * @Output : Angular
+   * @description Emits the item that is clicked on.
+   */
+  @Output() public clickOnItemEvent = new Subject<ElementIdentifier>();
 
   /**
    * @Output : Angular
@@ -770,6 +775,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public onLeaveItem(item: Item): void {
     this.setConsultedItem('leave-' + item.identifier);
+  }
+
+  /**
+   * @description Called when item is clicked. It is instant compared to other events
+   * @param item Item clicked on
+   */
+  public onClickItem(item: Item): void {
+    const elementidentifier: ElementIdentifier = {
+      idFieldName: this.fieldsConfiguration.idFieldName,
+      idValue: item.identifier
+    };
+    this.clickOnItemEvent.next(elementidentifier);
   }
 
   /**
