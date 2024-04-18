@@ -44,6 +44,7 @@ import { ResultItemComponent } from './result-item/result-item.component';
 import { ResultListComponent } from './result-list/result-list.component';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ReplaceModule } from '../../pipes/replace/replace.module';
 
 @NgModule({
   imports: [
@@ -65,7 +66,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     LazyLoadImageModule,
     NgxLoadingModule,
     TranslateModule,
-    FormatNumberModule
+    FormatNumberModule,
+    ReplaceModule
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,

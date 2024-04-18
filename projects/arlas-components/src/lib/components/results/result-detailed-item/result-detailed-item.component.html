@@ -1,22 +1,24 @@
 <td class="checkboxcell" [colSpan]="1">
 </td>
 <td class="resultdetaileditem" [class.grid-container]="containerType === 'grid'" [colSpan]="detailColspan - 1">
-  <span *ngFor="let group of getGroups()">
-    <span class="group-item-title {{group.group.toLowerCase().replace(' ','-')}}-item-detail">{{group.group | translate}}</span>
-    <br>
-    <span *ngFor="let detail of group.details" class="detail-item {{detail.key}}-item-detail">
-      <span class="resultdetaileditem-key">{{detail.key | translate}}</span> :
-      <span class="resultdetaileditem-value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
+  <ng-container *ngFor="let group of rowItem?.itemDetailedData">
+    <span *ngIf="showEmptyGroup || group.details.length > 0">
+      <span class="group-item-title {{ group.group | replace : ' ' : '-' | lowercase }}-item-detail">{{group.group | translate}}</span>
+      <br>
+      <span *ngFor="let detail of group.details" class="detail-item {{detail.key}}-item-detail">
+        <span class="resultdetaileditem-key">{{detail.key | translate}}</span> :
+        <span class="resultdetaileditem-value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
+      </span>
+      <br>
     </span>
-    <br>
-    <br />
-  </span>
+  </ng-container>
+
   <button mat-raised-button *ngFor="let action of rowItem?.actions" (click)="triggerActionOnItem(action)" matTooltip="{{action.tooltip | translate}}"
     class="resultdetaileditem__actions {{action.id}}-action {{action.cssClass}}-action">
     {{action.label | translate}}
   </button>
   <br>
-  <br />
+  <br/>
   <span class="result-attachments-list" *ngIf="rowItem?.attachments && rowItem?.attachments.length > 0">
     <span class="result-attachments-title">{{'Attachments' | translate}}</span>
     <br>

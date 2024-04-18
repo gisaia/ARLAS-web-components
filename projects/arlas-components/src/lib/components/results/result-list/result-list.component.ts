@@ -558,11 +558,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     if (changes['highlightItems'] !== undefined) {
       if (this.highlightItems.size > 0) {
         this.items.forEach(item => {
-          if (this.highlightItems.has(item.identifier)) {
-            item.ishighLight = true;
-          } else {
-            item.ishighLight = false;
-          }
+          item.ishighLight = this.highlightItems.has(item.identifier);
         });
       } else {
         this.items.forEach(item => {

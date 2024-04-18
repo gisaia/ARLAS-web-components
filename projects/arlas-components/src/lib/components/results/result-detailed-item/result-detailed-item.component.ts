@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Subject } from 'rxjs';
@@ -29,7 +29,7 @@ import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
   templateUrl: './result-detailed-item.component.html',
   styleUrls: ['./result-detailed-item.component.css']
 })
-export class ResultDetailedItemComponent implements OnInit {
+export class ResultDetailedItemComponent {
   /**
    * @Input
    * @description Number of columns in the parent table so that this component occupies the entire line.
@@ -67,15 +67,9 @@ export class ResultDetailedItemComponent implements OnInit {
 
   public constructor(public translate: TranslateService) { }
 
-  public ngOnInit() {}
-
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {
     this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
-  }
-
-  public getGroups() {
-    return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
   }
 
   public getAttachmentUrl(url: string): string {
