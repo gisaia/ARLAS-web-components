@@ -1,12 +1,12 @@
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import circle from '@turf/circle';
-
+import { polygon, point } from '@turf/helpers';
+import rhumbDestination from '@turf/rhumb-destination';
+import rhumbBearing from '@turf/rhumb-bearing';
 import length from '@turf/length';
-import * as numeral_ from 'numeral';
-const numeral = numeral_;
-const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
+import transformRotate from '@turf/transform-rotate';
 
+const stripMode = { ...MapboxDraw.modes.draw_line_string };
 
 function createVertex(parentId, coordinates, path, selected) {
     return {
@@ -24,44 +24,36 @@ function createVertex(parentId, coordinates, path, selected) {
     };
 }
 
-function getDisplayMeasurements(feature) {
-    // should log both metric and standard display strings for the current drawn feature
+export function rotateStrip(start, end, state, currentMaxBearing = 0, options: any = {}) {
+    const properties = options.properties ? options.properties : {};
+    const startPoint = point(start);
+    const endPoint = point(end);
+    const bearing = rhumbBearing(startPoint, endPoint);
+    const rotatedPoly = transformRotate(state.strip, bearing - currentMaxBearing, { pivot: start });
+    state.currentMaxBearing = bearing;
+    return polygon(rotatedPoly.coordinates, properties);
+}
 
-    // metric calculation
-    const drawnLength = length(feature) * 1000; // meters
-
-    let metricUnits = 'm';
-    let metricFormat = '0,0';
-    let metricMeasurement;
-
-    let standardUnits = 'feet';
-    let standardFormat = '0,0';
-    let standardMeasurement;
-
-    metricMeasurement = drawnLength;
-    if (drawnLength >= 1000) {
-        // if over 1000 meters, upgrade metric
-        metricMeasurement = drawnLength / 1000;
-        metricUnits = 'km';
-        metricFormat = '0.00';
-    }
-
-    standardMeasurement = drawnLength * 3.28084;
-    if (standardMeasurement >= 5280) {
-        // if over 5280 feet, upgrade standard
-        standardMeasurement /= 5280;
-        standardUnits = 'mi';
-        standardFormat = '0.00';
-    }
-
-    const displayMeasurements = {
-        metric: `${numeral(metricMeasurement).format(metricFormat)} ${metricUnits}`,
-        standard: `${numeral(standardMeasurement).format(
-            standardFormat
-        )} ${standardUnits}`,
-    };
-
-    return displayMeasurements;
+export function buildStrip(start, end, halfSwath, options: any = {}) {
+    const properties = options.properties ? options.properties : {};
+    // main
+    const coordinates = [];
+    const startPoint = point(start);
+    const endPoint = point(end);
+    // build polygone
+    const bearing = rhumbBearing(startPoint, endPoint);
+    const corner1 = rhumbDestination(startPoint, halfSwath, bearing - 90);
+    const corner2 = rhumbDestination(startPoint, halfSwath, bearing + 90);
+    const corner3 = rhumbDestination(endPoint, halfSwath, bearing + 90);
+    const corner4 = rhumbDestination(endPoint, halfSwath, bearing - 90);
+    coordinates.push(corner1.geometry.coordinates);
+    coordinates.push(corner2.geometry.coordinates);
+    coordinates.push(corner3.geometry.coordinates);
+    coordinates.push(corner4.geometry.coordinates);
+    coordinates.push(coordinates[0]);
+    properties.start = start;
+    properties.end = end;
+    return polygon([coordinates], properties);
 }
 
 const doubleClickZoom = {
@@ -85,15 +77,26 @@ const doubleClickZoom = {
         }, 0);
     },
 };
-radiusCircleMode.onSetup = function (opts) {
+stripMode.onSetup = function (opts) {
+    const halfSwath = opts.halfSwath;
+    const maxLenght = opts.maxLenght;
+
+    if (!halfSwath) {
+        throw new Error('You must provide a valid halfSwath to enter strip_direct mode');
+    }
+    if (!maxLenght) {
+        throw new Error('You must provide a valid maxLenght to enter strip_direct mode');
+    }
     const props = MapboxDraw.modes.draw_line_string.onSetup.call(this, opts);
     const polygon = this.newFeature({
         type: MapboxDraw.constants.geojsonTypes.FEATURE,
         properties: {
-            meta: 'radius',
-            isFixedRadius: opts.isFixedRadius !== undefined ? opts.isFixedRadius : false,
-            isCircle: true,
-            center: opts.center !== undefined ? opts.center : []
+            meta: 'strip',
+            isCircle: false,
+            isStrip: true,
+            halfSwath: opts.halfSwath,
+            maxLenght: opts.maxLenght
+
         },
         geometry: {
             type: MapboxDraw.constants.geojsonTypes.POLYGON,
@@ -105,15 +108,20 @@ radiusCircleMode.onSetup = function (opts) {
 
     return {
         ...props,
-        circle:polygon,
+        strip: polygon,
+        halfSwath,
+        maxLenght,
+        meta: 'strip'
     };
 };
 
-radiusCircleMode.clickAnywhere = function (state, e) {
+stripMode.clickAnywhere = function (state, e) {
     // this ends the drawing after the user creates a second point, triggering this.onStop
     if (state.currentVertexPosition === 1) {
         state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
-        return this.changeMode('simple_select', { featureIds: [state.line.id] });
+        return this.changeMode('simple_select', {
+            featureIds: [state.line.id]
+        });
     }
     this.updateUIClasses({ mouse: 'add' });
     state.line.updateCoordinate(
@@ -135,20 +143,33 @@ radiusCircleMode.clickAnywhere = function (state, e) {
     return null;
 };
 
-radiusCircleMode.onMouseMove = function (state, e) {
+stripMode.onMouseMove = function (state, e) {
     MapboxDraw.modes.draw_line_string.onMouseMove.call(this, state, e);
     const geojson = state.line.toGeoJSON();
-    const center = geojson.geometry.coordinates[0];
-    const radiusInKm = length(geojson, { units: 'kilometers' });
-    const circleFeature = circle(center, radiusInKm);
-    circleFeature.properties.parent = state.line.id;
-    (circleFeature.properties as any).meta = 'radius';
-    state.circle.setCoordinates(circleFeature.geometry.coordinates);
+    const stripLenght = length(geojson, { units: 'kilometers' });
+    const start = geojson.geometry.coordinates[0];
+    const end = [e.lngLat.lng, e.lngLat.lat];
+    if (stripLenght <= state.maxLenght) {
+        const stripFeature = buildStrip(start, end, state.halfSwath);
+        stripFeature.properties.parent = state.line.id;
+        (stripFeature.properties as any).meta = 'strip';
+        state.strip.setCoordinates(stripFeature.geometry.coordinates);
+        const startPoint = point(start);
+        const endPoint = point(end);
+        const bearing = rhumbBearing(startPoint, endPoint);
+        state.currentMaxBearing = bearing;
+    } else {
+        const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
+        stripFeature.properties.parent = state.line.id;
+        (stripFeature.properties as any).meta = 'strip';
+        state.strip.setCoordinates(stripFeature.geometry.coordinates);
+
+    }
 };
 
 // creates the final geojson point feature with a radius property
 // triggers draw.create
-radiusCircleMode.onStop = function (state) {
+stripMode.onStop = function (state) {
     doubleClickZoom.enable(this);
 
     this.activateUIButton();
@@ -165,7 +186,7 @@ radiusCircleMode.onStop = function (state) {
         this.deleteFeature([state.line.id], { silent: true });
 
         this.map.fire('draw.create', {
-            features: [state.circle.toGeoJSON()],
+            features: [state.strip.toGeoJSON()],
         });
     } else {
         this.deleteFeature([state.line.id], { silent: true });
@@ -173,7 +194,7 @@ radiusCircleMode.onStop = function (state) {
     }
 };
 
-radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
+stripMode.toDisplayFeatures = function (state, geojson, display) {
     const isActiveLine = geojson.properties.id === state.line.id;
     geojson.properties.active = isActiveLine ? 'true' : 'false';
     if (!isActiveLine) {
@@ -209,15 +230,11 @@ radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
     // displays the line as it is drawn
     display(geojson);
 
-    const displayMeasurements = getDisplayMeasurements(geojson);
-
     // create custom feature for the current pointer position
     const currentVertex = {
         type: 'Feature',
         properties: {
             meta: 'currentPosition',
-            radiusMetric: displayMeasurements.metric,
-            radiusStandard: displayMeasurements.standard,
             parent: state.line.id,
         },
         geometry: {
@@ -230,4 +247,4 @@ radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
     return null;
 };
 
-export default radiusCircleMode;
+export default stripMode;
