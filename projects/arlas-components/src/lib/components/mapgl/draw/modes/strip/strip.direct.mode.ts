@@ -15,7 +15,7 @@ export const stripDirectSelectMode: any = {};
 stripDirectSelectMode.onSetup = function (opts) {
     const featureId = opts.featureId;
     const halfSwath = opts.halfSwath;
-    const maxLenght = opts.maxLenght;
+    const maxLength = opts.maxLength;
     const feature = this.getFeature(featureId);
 
     if (!featureId) {
@@ -24,8 +24,8 @@ stripDirectSelectMode.onSetup = function (opts) {
     if (!halfSwath) {
         throw new Error('You must provide a valid halfSwath to enter strip_direct mode');
     }
-    if (!maxLenght) {
-        throw new Error('You must provide a valid maxLenght to enter strip_direct mode');
+    if (!maxLength) {
+        throw new Error('You must provide a valid maxLength to enter strip_direct mode');
     }
 
     if (feature.type !== MapboxDraw.constants.geojsonTypes.POLYGON) {
@@ -41,7 +41,7 @@ stripDirectSelectMode.onSetup = function (opts) {
         featureId,
         feature,
         halfSwath,
-        maxLenght,
+        maxLength,
         resizePointRadius: opts.resizePointRadius !== undefined ? opts.resizePointRadius : 1,
         rotationPointRadius: opts.rotationPointRadius !== undefined ? opts.rotationPointRadius : 1.0,
         canSelectFeatures: opts.canSelectFeatures !== undefined ? opts.canSelectFeatures : true,
@@ -303,7 +303,7 @@ stripDirectSelectMode.dragResizePoint = function (state, e, delta) {
     }
     const dist = distance(point(state.start), point(end), { units: 'kilometers' });
     const newPolygon = buildStrip(state.start, end, state.halfSwath);
-    if (dist <= state.maxLenght) {
+    if (dist <= state.maxLength) {
         state.feature.setCoordinates(newPolygon.geometry.coordinates);
         this.fireUpdate();
     }

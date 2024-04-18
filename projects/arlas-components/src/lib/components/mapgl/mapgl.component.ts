@@ -1110,7 +1110,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             }else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
               this.draw.changeMode('direct_strip', {
                 featureId: selectedIds[0],
-                maxLenght: selectedFeatures[0].properties.maxLenght,
+                maxLength: selectedFeatures[0].properties.maxLength,
                 halfSwath: selectedFeatures[0].properties.halfSwath,
               });
               this.isInSimpleDrawMode = false;
@@ -1148,7 +1148,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
               if (candidatesProperties.user_meta === 'strip') {
                 this.draw.changeMode('direct_strip', {
                   featureId: candidatesProperties.id,
-                  maxLenght: candidatesProperties.user_maxLenght,
+                  maxLength: candidatesProperties.user_maxLength,
                   halfSwath: candidatesProperties.user_halfSwath
                 });
                 this.isInSimpleDrawMode = false;
