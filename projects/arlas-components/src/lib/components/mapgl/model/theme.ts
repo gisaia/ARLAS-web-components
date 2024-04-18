@@ -223,5 +223,149 @@ export default [
       'circle-radius': 5,
       'circle-color': '#404040'
     }
+  },
+  {
+    'id': 'gl-draw-line-rotate-point',
+    'type': 'line',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'rotation'],
+      ['==', '$type', 'LineString'],
+      ['!=', 'mode', 'static']
+      // ['==', 'active', 'true']
+    ],
+    'layout': {
+      'line-cap': 'round',
+      'line-join': 'round'
+    },
+    'paint': {
+      'line-color': '#fbb03b',
+      'line-dasharray': [0.2, 2],
+      'line-width': 2
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-rotate-point-stroke',
+    'type': 'circle',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'rotation'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static']
+    ],
+    'paint': {
+      'circle-radius': 4,
+      'circle-color': '#fff'
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-rotate-point',
+    'type': 'circle',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'rotation'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static']
+    ],
+    'paint': {
+      'circle-radius': 2,
+      'circle-color': '#fbb03b'
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-rotate-point-icon',
+    'type': 'symbol',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'rotation'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static']
+    ],
+    'layout': {
+      'icon-image': 'rotate',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+      'icon-rotation-alignment': 'map',
+      'icon-rotate': ['get', 'heading']
+    },
+    'paint': {
+      'icon-opacity': 1.0,
+      'icon-opacity-transition': {
+        'delay': 0,
+        'duration': 0
+      }
+    }
+  },
+  {
+    'id': 'gl-draw-line-resize-point',
+    'type': 'line',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'rotation'],
+      ['==', '$type', 'LineString'],
+      ['!=', 'mode', 'static']
+      // ['==', 'active', 'true']
+    ],
+    'layout': {
+      'line-cap': 'round',
+      'line-join': 'round'
+    },
+    'paint': {
+      'line-color': '#fbb03b',
+      'line-dasharray': [0.2, 2],
+      'line-width': 2
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-resize-point-stroke',
+    'type': 'circle',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'resize'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static']
+    ],
+    'paint': {
+      'circle-radius': 5,
+      'circle-color': '#fff'
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-resize-point',
+    'type': 'circle',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'resize'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static']
+    ],
+    'paint': {
+      'circle-radius': 6,
+      'circle-color': '#fbb03b'
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-resize-point-icon',
+    'type': 'symbol',
+    'filter': ['all',
+      ['==', 'meta', 'midpoint'],
+      ['==', 'actionType', 'resize'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static']
+    ],
+    'layout': {
+      'icon-image': 'resize',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+      'icon-rotation-alignment': 'map',
+      'icon-rotate': ['get', 'heading']
+    },
+    'paint': {
+      'icon-opacity': 1.0,
+      'icon-opacity-transition': {
+        'delay': 0,
+        'duration': 0
+      }
+    }
   }
 ];
