@@ -58,6 +58,8 @@ import circleMode from './draw/modes/circles/circle.mode';
 import radiusCircleMode from './draw/modes/circles/radius.circle.mode';
 import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
 import directModeOverride from './draw/modes/directSelectOverride';
+import stripMode from './draw/modes/strip/strip.mode';
+import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -428,6 +430,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   // Circle
   private isDrawingCircle = false;
+  // Strip
+  private isDrawingStrip = false;
 
   // Polygon
   public nbPolygonVertice = 0;
@@ -766,10 +770,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
     this.map.addControl(addGeoBoxButton, 'top-right');
     this.map.addControl(removeAoisButton, 'top-right');
+    this.map.loadImage('assets/rotate/01.png', (error, image) => {
+      this.map.addImage('rotate', image);
+    });
+    this.map.loadImage('assets/resize/01.png', (error, image) => {
+      this.map.addImage('resize', image);
+    });
+
     const modes = MapboxDraw.modes;
+    const drawStyles = styles.default;
     const drawOptions = {
       ...this.drawOption, ...{
-        styles: styles.default,
+        styles: drawStyles,
         modes: Object.assign(
           modes,
           {
@@ -778,6 +790,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             draw_polygon: validGeomDrawPolygonMode,
             draw_circle: circleMode,
             draw_radius_circle: radiusCircleMode,
+            draw_strip: stripMode,
+            direct_strip: stripDirectSelectMode,
             direct_select: directModeOverride,
             simple_select: simpleSelectModeOverride
           })
@@ -789,6 +803,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.draw = drawControl.mapboxDraw;
     this.draw.modes.DRAW_CIRCLE = 'draw_circle';
     this.draw.modes.DRAW_RADIUS_CIRCLE = 'draw_radius_circle';
+    this.draw.modes.DRAW_STRIP = 'draw_strip';
+    this.draw.modes.DIRECT_STRIP = 'direct_strip';
 
     this.drawService.setMapboxDraw(this.draw);
     addGeoBoxButton.btn.onclick = () => {
@@ -1058,6 +1074,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.isDrawingBbox = false;
           this.isDrawingPolygon = false;
           this.isDrawingCircle = false;
+          this.isDrawingStrip = false;
           this.isInSimpleDrawMode = false;
           this.draw.changeMode('static');
           this.map.getCanvas().style.cursor = '';
@@ -1065,8 +1082,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       });
       this.map.on('draw.modechange', (e) => {
         this.isDrawingPolygon = e.mode === this.draw.modes.DRAW_POLYGON;
-        this.isDrawingCircle = e.mode === this.draw.modes.DRAW_CIRCLE || e.mode === this.draw.modes.DRAW_RADIUS_CIRCLE ;
-        if (this.isDrawingPolygon || this.isDrawingCircle || e.mode === 'static') {
+        this.isDrawingStrip = e.mode === this.draw.modes.DIRECT_STRIP;
+        this.isDrawingCircle = e.mode === this.draw.modes.DRAW_CIRCLE || e.mode === this.draw.modes.DRAW_RADIUS_CIRCLE;
+        if (this.isDrawingPolygon || this.isDrawingCircle || this.isDrawingStrip ||e.mode === 'static') {
           this.isInSimpleDrawMode = false;
         }
         if (e.mode === 'simple_select') {
@@ -1082,12 +1100,20 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
                 featureIds: [selectedIds[0]]
               });
               this.isInSimpleDrawMode = true;
-            } else if (this.drawPolygonVerticesLimit) {
+            } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta !== 'strip') {
               this.draw.changeMode('limit_vertex', {
                 featureId: selectedIds[0],
                 maxVertexByPolygon: this.drawPolygonVerticesLimit,
                 selectedCoordPaths: selectedFeatures[0].geometry.coordinates
               });
+              this.isInSimpleDrawMode = false;
+            }else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
+              this.draw.changeMode('direct_strip', {
+                featureId: selectedIds[0],
+                maxLenght: selectedFeatures[0].properties.maxLenght,
+                halfSwath: selectedFeatures[0].properties.halfSwath,
+              });
+              this.isInSimpleDrawMode = false;
             }
           } else {
             this.isInSimpleDrawMode = false;
@@ -1117,12 +1143,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           if (editCondition) {
             const candidates = features.filter(f => f.source.startsWith('mapbox-gl-draw'));
             // edit only on click on the border of the polygon
-            const id = candidates.filter(f => f.layer.id?.indexOf('stroke') >= 0)[0]?.properties?.id;
-            if (!!id) {
-              this.draw.changeMode('simple_select', {
-                featureIds: [id]
-              });
-              this.isInSimpleDrawMode = true;
+            const candidatesProperties = candidates.filter(f => f.layer.id?.indexOf('stroke') >= 0)[0]?.properties;
+            if (candidatesProperties && !!candidatesProperties.id) {
+              if (candidatesProperties.user_meta === 'strip') {
+                this.draw.changeMode('direct_strip', {
+                  featureId: candidatesProperties.id,
+                  maxLenght: candidatesProperties.user_maxLenght,
+                  halfSwath: candidatesProperties.user_halfSwath
+                });
+                this.isInSimpleDrawMode = false;
+              } else {
+                this.draw.changeMode('simple_select', {
+                  featureIds: [candidatesProperties.id]
+                });
+                this.isInSimpleDrawMode = true;
+              }
+
             }
           }
         }
@@ -1390,6 +1426,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.draw.changeMode('direct_select', option);
     this.isInSimpleDrawMode = false;
     this.isDrawingCircle = false;
+    this.isDrawingStrip = false;
     this.isDrawingPolygon = false;
   }
 
@@ -1399,6 +1436,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     });
     this.isInSimpleDrawMode = true;
     this.isDrawingCircle = false;
+    this.isDrawingStrip = false;
     this.isDrawingPolygon = false;
   }
 
