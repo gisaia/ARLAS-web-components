@@ -79,13 +79,13 @@ const doubleClickZoom = {
 };
 stripMode.onSetup = function (opts) {
     const halfSwath = opts.halfSwath;
-    const maxLenght = opts.maxLenght;
+    const maxLength = opts.maxLength;
 
     if (!halfSwath) {
         throw new Error('You must provide a valid halfSwath to enter strip_direct mode');
     }
-    if (!maxLenght) {
-        throw new Error('You must provide a valid maxLenght to enter strip_direct mode');
+    if (!maxLength) {
+        throw new Error('You must provide a valid maxLength to enter strip_direct mode');
     }
     const props = MapboxDraw.modes.draw_line_string.onSetup.call(this, opts);
     const polygon = this.newFeature({
@@ -95,7 +95,7 @@ stripMode.onSetup = function (opts) {
             isCircle: false,
             isStrip: true,
             halfSwath: opts.halfSwath,
-            maxLenght: opts.maxLenght
+            maxLength: opts.maxLength
 
         },
         geometry: {
@@ -110,7 +110,7 @@ stripMode.onSetup = function (opts) {
         ...props,
         strip: polygon,
         halfSwath,
-        maxLenght,
+        maxLength,
         meta: 'strip'
     };
 };
@@ -149,7 +149,7 @@ stripMode.onMouseMove = function (state, e) {
     const stripLenght = length(geojson, { units: 'kilometers' });
     const start = geojson.geometry.coordinates[0];
     const end = [e.lngLat.lng, e.lngLat.lat];
-    if (stripLenght <= state.maxLenght) {
+    if (stripLenght <= state.maxLength) {
         const stripFeature = buildStrip(start, end, state.halfSwath);
         stripFeature.properties.parent = state.line.id;
         (stripFeature.properties as any).meta = 'strip';
