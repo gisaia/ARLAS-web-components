@@ -24,7 +24,7 @@ import {
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
 import { Subject, take } from 'rxjs';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier } from '../utils/results.utils';
+import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
@@ -146,8 +146,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { responseType: 'blob' })
-        .pipe(take(1))
+      this.http.get(this.gridTile.urlImages[this.currentImageIndex], {headers: {[PROTECTED_IMAGE_HEADER]: 'true'}, responseType: 'blob' })
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
