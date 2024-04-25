@@ -22,7 +22,7 @@ import {
   ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject, take } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
@@ -34,12 +34,23 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
   styleUrls: ['./result-detailed-grid.component.scss']
 })
 export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
-  public SHOW_DETAILS = 'Show details';
-  public VIEW_IMAGE = 'View quicklook';
-  public SHOW_IMAGE = 'Show image';
+  /**
+   * @constant
+   */
+  public SHOW_DETAILS = marker('Show details');
+  /**
+   * @constant
+   */
+  public VIEW_IMAGE = marker('View in full screen');
+  /**
+   * @constant
+   */
+  public SHOW_IMAGE = marker('Show image');
+  /**
+   * @constant
+   */
   public CLOSE_DETAILS = marker('Close details');
   private fullScreenViewer = new FullScreenViewer();
-  private noViewImg = './assets/no-view.png';
 
   /**
    * @Input

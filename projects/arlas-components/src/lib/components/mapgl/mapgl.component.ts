@@ -53,6 +53,7 @@ import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -128,7 +129,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   private savedEditFeature = null;
 
-  public FINISH_DRAWING = 'Double click to finish drawing';
+  /**
+   * @constant
+   */
+  public FINISH_DRAWING = marker('Double click to finish drawing');
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private ICONS_BASE_PATH = 'assets/icons/';
   private offlineBasemapChangeSubscription!: Subscription;

@@ -1,6 +1,8 @@
 {
 	"BBox generator": "BBox generator",
 	"First corner": "First corner",
+	"Latitude": "Latitude",
+	"Longitude": "Longitude",
 	"Second corner": "Second corner",
 	"Close": "Close",
 	"Generate AOI": "Generate AOI",
@@ -46,6 +48,20 @@
 	"Too many features": "Too many features",
 	"Invalid geometry": "Invalid geometry",
 	"Ok": "Ok",
+	"Show details": "Show details",
+	"View in full screen": "View in full screen",
+	"Show image": "Show image",
 	"Close details": "Close details",
-	"Link": "Link"
+	"Link": "Link",
+	"Click to show details": "Click to show details",
+	"Hide details": "Hide details",
+	"Filter on": "Filter on",
+	"Global actions": "Global actions",
+	"Geo sort action": "Geo sort action",
+	"Grid mode": "Grid mode",
+	"List mode": "List mode",
+	"Fit the whole thumbnail to the tile": "Fit the whole thumbnail to the tile",
+	"Fit the thumbnail's width to the tile": "Fit the thumbnail's width to the tile",
+	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile",
+	"Geo-sort": "Geo-sort"
 }
