@@ -4,6 +4,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { SelectFormControl, ColorGeneratorLoader } from '../componentsUtils';
 import { ArlasColorService } from '../../services/color.generator.service';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 export interface GeometrySelectModel {
   path: string;
@@ -39,8 +40,7 @@ export class MapglSettingsDialogComponent implements OnInit {
   public geoQueryEmitter: Subject<Map<string, GeoQuery>> = new Subject<Map<string, GeoQuery>>();
   public emittedGeoQueries: Map<string, GeoQuery> = new Map();
   /** Constants */
-  public GEO_QUERIES_DESCRIPTION = 'Draw a bbox or a polygon that';
-  public GEO_QUERIES_GEOMETRY_DESCRIPTION = 'the following geometry';
+  public GEO_QUERIES_DESCRIPTION = marker('Draw a bbox or a polygon that');
   public OP_CONSTANTS = {
     WITHIN: 'within',
     NOTWITHIN: 'notwithin',

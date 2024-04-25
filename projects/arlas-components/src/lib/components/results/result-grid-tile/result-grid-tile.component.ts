@@ -25,6 +25,7 @@ import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-result-grid-tile',
@@ -32,7 +33,10 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
   styleUrls: ['./result-grid-tile.component.scss']
 })
 export class ResultGridTileComponent extends ItemComponent implements OnInit {
-  public SHOW_IMAGE = 'Click to show details';
+  /**
+   * @constant
+   */
+  public SHOW_IMAGE = marker('Click to show details');
 
   @ViewChild('cellTooltip', { static: true })
   public cellTooltip: MatTooltip;

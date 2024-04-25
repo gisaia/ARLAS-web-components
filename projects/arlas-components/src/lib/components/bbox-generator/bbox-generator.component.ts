@@ -24,6 +24,7 @@ import { Observable, merge, mergeMap, of } from 'rxjs';
 import { MapboxAoiDrawService } from '../mapgl/draw/draw.service';
 import { Corner } from '../mapgl/draw/draw.models';
 import { Coordinate, PointFormGroup } from '../../tools/coordinates.tools';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-bbox-generator',
@@ -31,9 +32,15 @@ import { Coordinate, PointFormGroup } from '../../tools/coordinates.tools';
   styleUrls: ['./bbox-generator.component.scss']
 })
 export class BboxGeneratorComponent implements OnInit, AfterViewInit {
-  public DESCRIPTION = 'Enter coordinates in decimal or sexagesimal degrees';
+  /**
+   * @constant
+   */
+  public DESCRIPTION = marker('Enter coordinates in decimal or sexagesimal degrees');
   public bboxForm: BboxFormGroup;
-  public placeHolder = 'Decimal: 1.1 or Sexagesimal 1°6\'3" coordinate';
+  /**
+   * @constant
+   */
+  public placeHolder = marker('Decimal: 1.1 or Sexagesimal 1°6\'3" coordinate');
   public constructor(
     private drawService: MapboxAoiDrawService,
     private cdr: ChangeDetectorRef,
@@ -62,11 +69,11 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit {
 
   public getErrorMessage(formControl: FormControl | FormGroup) {
     if (formControl.hasError('required')) {
-      return 'You must enter a coordinate';
+      return marker('You must enter a coordinate');
     } else if ((formControl as BboxFormGroup).latitudeErrors) {
-      return 'Both corners have the same latitudes, modify one of them.';
+      return marker('Both corners have the same latitudes, modify one of them.');
     }
-    return formControl.hasError('pattern') ? 'Enter a coordinate in decimal (1.1) or sexagesimal (1° 6\' 3")' : '';
+    return formControl.hasError('pattern') ? marker('Enter a coordinate in decimal (1.1) or sexagesimal (1° 6\' 3")') : '';
   }
 
   public generateBbox() {
