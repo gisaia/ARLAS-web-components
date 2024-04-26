@@ -1,9 +1,8 @@
-import { Component, Input, OnInit, Output, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Subject } from 'rxjs/internal/Subject';
 import mapboxgl, { AnyLayer } from 'mapbox-gl';
 import { MapSource } from '../mapgl/model/mapSource';
 import { MapglService } from '../../services/mapgl.service';
-import { HttpClient } from '@angular/common/http';
 import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
@@ -26,10 +25,7 @@ export class MapglBasemapComponent implements OnInit {
   public basemaps: ArlasBasemaps;
 
 
-  public constructor(
-    private mapglService: MapglService,
-    private basemapService: MapboxBasemapService,
-    private http: HttpClient) { }
+  public constructor(private mapglService: MapglService, private basemapService: MapboxBasemapService) { }
 
   public ngOnInit(): void {
     this.initBasemaps();
@@ -53,6 +49,9 @@ export class MapglBasemapComponent implements OnInit {
     }
   }
 
+  /** Removes the old basemap and set the new one that is given as a parameter
+   * @param newBasemap: Basemap selected by the user
+   */
   public onChangeBasemap(newBasemap: BasemapStyle) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
@@ -67,6 +66,10 @@ export class MapglBasemapComponent implements OnInit {
     }
   }
 
+  /**  Set mapbox new style.
+   * !!NOTE: mapbox setStyle removes all added layers from the map; thus the following description :
+   * This method saves all the currently added layers to the map, applies the 'map.setStyle' and adds all the saved layers afterwards.
+  */
   public setStyle(s: mapboxgl.Style, newBasemap: BasemapStyle) {
     const selectedBasemapLayersSet = new Set<string>();
     const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
@@ -93,15 +96,22 @@ export class MapglBasemapComponent implements OnInit {
     }
     const initStyle = this.basemapService.getInitStyle(newBasemap);
     this.map.setStyle(initStyle).once('styledata', () => {
-      this.mapglService.addSourcesToMap(sourcesToSave, this.map);
-      layersToSave.forEach(l => this.map.addLayer(l as AnyLayer));
-      localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
-      this.basemaps.setSelected(newBasemap);
-      if (newBasemap.type === 'protomap') {
-        this.basemapService.addProtomapBasemap(this.map);
-        this.basemapService.notifyProtomapAddition();
-      }
-      this.basemapChanged.emit();
+      setTimeout(() => {
+        /** the timeout fixes a mapboxgl big related to layer placement*/
+        this.mapglService.addSourcesToMap(sourcesToSave, this.map);
+        layersToSave.forEach(l => {
+          if (!this.map.getLayer(l.id)) {
+            this.map.addLayer(l as AnyLayer);
+          }
+        });
+        localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
+        this.basemaps.setSelected(newBasemap);
+        if (newBasemap.type === 'protomap') {
+          this.basemapService.addProtomapBasemap(this.map);
+          this.basemapService.notifyProtomapAddition();
+        }
+        this.basemapChanged.emit();
+      }, 0);
     });
   }
 }
