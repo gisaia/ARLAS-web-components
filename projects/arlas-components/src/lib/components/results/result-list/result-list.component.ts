@@ -47,7 +47,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 @Component({
   selector: 'arlas-result-list',
   templateUrl: './result-list.component.html',
-  styleUrls: ['./result-list.component.css'],
+  styleUrls: ['./result-list.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
