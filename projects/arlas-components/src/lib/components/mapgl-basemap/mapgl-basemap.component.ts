@@ -97,7 +97,7 @@ export class MapglBasemapComponent implements OnInit {
     const initStyle = this.basemapService.getInitStyle(newBasemap);
     this.map.setStyle(initStyle).once('styledata', () => {
       setTimeout(() => {
-        /** the timeout fixes a mapboxgl big related to layer placement*/
+        /** the timeout fixes a mapboxgl bug related to layer placement*/
         this.mapglService.addSourcesToMap(sourcesToSave, this.map);
         layersToSave.forEach(l => {
           if (!this.map.getLayer(l.id)) {
