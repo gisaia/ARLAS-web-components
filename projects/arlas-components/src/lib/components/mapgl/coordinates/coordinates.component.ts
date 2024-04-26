@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Coordinate, PointFormGroup } from '../../../tools/coordinates.tools';
 import { FormControl, FormGroup } from '@angular/forms';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-coordinates',
@@ -11,7 +12,10 @@ export class CoordinatesComponent implements OnInit {
   @Input() public currentLat: string;
   @Input() public currentLng: string;
 
-  public placeHolder = '1.1 or 1°6\'3"';
+  /**
+   * @constant
+   */
+  public placeHolder = marker('1.1 or 1°6\'3"');
 
   @Output() public moveToCoordinates$: EventEmitter<[number, number]> = new EventEmitter();
   public coordinatesForm: PointFormGroup;
@@ -29,7 +33,7 @@ export class CoordinatesComponent implements OnInit {
 
   public getErrorMessage(formControl: FormControl | FormGroup) {
     if (formControl.hasError('required')) {
-      return 'You must enter a coordinate';
+      return marker('You must enter a coordinate');
     }
     return formControl.hasError('pattern') ? this.placeHolder : '';
   }

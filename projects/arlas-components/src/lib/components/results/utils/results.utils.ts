@@ -57,6 +57,7 @@ export interface FieldsConfiguration {
   titleFieldNames?: Array<Field>;
   tooltipFieldNames?: Array<Field>;
   useHttpQuicklooks?: boolean;
+  useHttpThumbnails?: boolean;
   /**
    * @deprecated
    */
@@ -102,7 +103,7 @@ export interface AdditionalInfo {
 
 export type ItemDataType = string | number | Date | Array<string>;
 
-export const QUICKLOOK_HEADER = 'Quicklook-Call';
+export const PROTECTED_IMAGE_HEADER = 'Protected-Image-Header';
 
 /**
  * @param data A dictionnary of data to retrieve information
