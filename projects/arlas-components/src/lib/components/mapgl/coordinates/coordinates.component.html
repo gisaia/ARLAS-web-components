@@ -7,7 +7,7 @@
   <div class="current-coordinate-edition">
     <div class="section" [formGroup]="coordinatesForm">
       <mat-form-field appearance="outline">
-        <mat-label>{{'Latitude'}}</mat-label>
+        <mat-label>{{'Latitude' | translate}}</mat-label>
         <input class="input" matInput [formControl]="coordinatesForm.latitude"
           [placeholder]="placeHolder | translate">
         <mat-error *ngIf="coordinatesForm.latitude.invalid">{{getErrorMessage(coordinatesForm.latitude) | translate}}
