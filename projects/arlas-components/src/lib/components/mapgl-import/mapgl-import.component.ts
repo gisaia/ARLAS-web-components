@@ -4,7 +4,7 @@ import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
 import JSZip from 'jszip';
 import { MapglComponent } from '../mapgl/mapgl.component';
-import { FeatureCollection, polygon} from '@turf/helpers';
+import { FeatureCollection, polygon } from '@turf/helpers';
 import { Subject } from 'rxjs';
 import * as shp_ from 'shpjs/dist/shp';
 import * as extent_ from 'turf-extent';
@@ -12,6 +12,7 @@ import { parse } from 'wellknown';
 import { valid } from 'geojson-validation';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
+import { Feature } from 'geojson';
 const gpsi = gpsi_.default;
 const shp = shp_.default;
 const extent = extent_.default;
@@ -86,6 +87,8 @@ export class MapglImportDialogComponent implements OnInit {
   }
 }
 
+export type AllowedImportGeometry = 'Polygon' | 'Point';
+const SIMPLE_GEOMETRY_OBJECT = ['Polygon', 'Point', 'LineString'];
 @Component({
   templateUrl: './mapgl-import.component.html',
   selector: 'arlas-mapgl-import',
@@ -101,7 +104,7 @@ export class MapglImportComponent {
   public SELF_INTERSECT = marker('Geometry is not valid due to self-intersection');
   public PARSING_ISSUE = marker('Problem parsing input file');
   public FILE_TOO_LARGE = marker('File is too large');
-  public GEOMETRY_INVALID = marker('Geometry is not valid');
+  public INVALID_GEOMETRY = marker('Geometry is not valid');
   public TOO_MANY_VERTICES = marker('Too many vertices in a polygon');
   public TOO_MANY_FEATURES = marker('Too many features');
   public TIMEOUT = marker('Timeout');
@@ -126,9 +129,10 @@ export class MapglImportComponent {
   @Input() public maxFileSize?: number;
   @Input() public maxLoadingTime = 20000;
   @Input() public allowedImportType = [this.SHP, this.KML, this.WKT, this.GEOJSON];
+  @Input() public allowedGeometryObjectType: Array<AllowedImportGeometry> = ['Polygon'];
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
-
+  private _currentAllowedGeom: string[];
   public constructor(
     public dialog: MatDialog
   ) { }
@@ -150,6 +154,27 @@ export class MapglImportComponent {
     ]);
   }
 
+  private buildAllowedGeometryForImportType(importType: string) {
+    this._currentAllowedGeom = [];
+    this.allowedGeometryObjectType.forEach(allowed => {
+      this._currentAllowedGeom = this._currentAllowedGeom.concat(this.getAllowedGeom(allowed));
+    });
+    if (importType === this.KML) {
+      this._currentAllowedGeom.push('GeometryCollection', 'MultiGeometry');
+    } else if (importType === this.WKT) {
+      this._currentAllowedGeom.push('GeometryCollection');
+    }
+  }
+
+  private getAllowedGeom(allowed: AllowedImportGeometry): string[] {
+    if (allowed === 'Polygon') {
+      return ['Polygon', 'MultiPolygon'];
+    }
+    if (allowed === 'Point') {
+      return ['Point', 'MultiPoint'];
+    }
+  }
+
   public openDialog() {
     this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
     this.dialogRef.componentInstance.allowedImportType = this.allowedImportType;
@@ -158,6 +183,7 @@ export class MapglImportComponent {
     });
     this.dialogRef.componentInstance.importRun.subscribe(importOptions => {
       this.fitResult = importOptions.fitResult;
+      this.buildAllowedGeometryForImportType(importOptions.type);
       this.import(importOptions.type, importOptions.wktContent);
     });
   }
@@ -182,6 +208,63 @@ export class MapglImportComponent {
       }
       this.throwError(error);
     });
+  }
+
+  public buildFeature(geom: any, feature: Feature | any, geometryType?: string, bbox?: boolean) {
+    const f = {
+      type: 'Feature',
+      geometry: {
+        coordinates: geom,
+        type: geometryType ?? geom.type
+      },
+      properties: feature.properties
+    };
+
+    if (bbox) {
+      f.geometry['bbox'] = feature.geometry.bbox;
+    }
+    return f;
+  }
+
+  public handleSimpleGeometry(feature, centroids, importedGeojson) {
+    // avoid self intersect control for point
+    if (feature.geometry.type === 'Point' || gpsi(feature).geometry.coordinates.length === 0) {
+      this.addFeature(feature, centroids, importedGeojson, ++this.featureIndex);
+    } else {
+      throw new Error(this.SELF_INTERSECT);
+    }
+  }
+
+  public handleMultiGeometry(feature, centroids, importedGeojson) {
+    // Create a new Polygon feature for each polygon in the MultiPolygon
+    // All properties of the MultiPolygon are copied in each feature created
+    const geomType = (feature.geometry.type === 'MultiPolygon') ? 'Polygon' : 'Point';
+    feature.geometry.coordinates.forEach(geom => {
+      const newFeature = this.buildFeature(geom, feature, geomType, true);
+      this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
+    });
+  }
+
+  public handleGeometryCollection(feature, centroids, importedGeojson) {
+    // Create a new Polygon feature for each polygon in the MultiPolygon
+    // All properties of the MultiPolygon are copied in each feature created
+    const simpleGeometry = this._currentAllowedGeom.filter(g => SIMPLE_GEOMETRY_OBJECT.includes(g));
+    feature.geometry.geometries.filter(geom => simpleGeometry.includes(geom.type)).forEach(geom => {
+      const newFeature = this.buildFeature(geom, feature);
+      this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
+    });
+  }
+
+  public handleFeatureCollection(feature, centroids, importedGeojson) {
+    feature.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
+      .forEach((feature) => {
+        const multiGeometry = this._currentAllowedGeom.filter(g => !SIMPLE_GEOMETRY_OBJECT.includes(g));
+        if (multiGeometry.includes(feature.geometry.type)) {
+          this.handleMultiGeometry(feature, centroids, importedGeojson);
+        } else {
+          this.handleSimpleGeometry(feature, centroids, importedGeojson);
+        }
+      });
   }
 
   /** *************/
@@ -232,66 +315,8 @@ export class MapglImportComponent {
       const geojson = toGeoJSON.kml((new DOMParser()).parseFromString(file, 'text/xml'));
       resolve(geojson);
     }));
-
     const geojsonParserPromise = parseKml.then((geojson: any) => new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
-      if (valid(geojson)) {
-        const centroides = new Array<any>();
-        const importedGeojson = {
-          type: 'FeatureCollection',
-          features: []
-        };
-        geojson.features.filter(feature => feature.geometry.type === 'Polygon'
-            || feature.geometry.type === 'GeometryCollection'
-            || feature.geometry.type === 'MultiGeometry'
-            || feature.geometry.type === 'MultiPolygon')
-          .forEach((feature) => {
-            if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'MultiGeometry') {
-              // Create a new Polygon feature for each polygon in the MultiPolygon
-              // All properties of the MultiPolygon are copied in each feature created
-              feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
-                const newFeature = {
-                  type: 'Feature',
-                  geometry: {
-                    coordinates: geom.coordinates,
-                    type: 'Polygon'
-                  },
-                  properties: feature.properties
-                };
-                if (gpsi(newFeature).geometry.coordinates.length === 0) {
-                  this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-                } else {
-                  reject(new Error(this.SELF_INTERSECT));
-                }
-              });
-            } else if (feature.geometry.type === 'MultiPolygon') {
-              feature.geometry.coordinates.forEach(geom => {
-                const newFeature = {
-                  type: 'Feature',
-                  geometry: {
-                    coordinates: geom,
-                    type: 'Polygon'
-                  },
-                  properties: feature.properties
-                };
-                if (gpsi(newFeature).geometry.coordinates.length === 0) {
-                  this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-                } else {
-                  reject(new Error(this.SELF_INTERSECT));
-                }
-              });
-            } else {
-              if (gpsi(feature).geometry.coordinates.length === 0) {
-                this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
-              } else {
-                reject(new Error(this.SELF_INTERSECT));
-              }
-
-            }
-          });
-        resolve({ geojson: importedGeojson, centroides: centroides });
-      } else {
-        reject(new Error(this.GEOMETRY_INVALID));
-      }
+      this.computeGeojson(geojson, reject, resolve);
     }));
 
     return Promise.all<{ geojson: any; centroides: any; }>([geojsonParserPromise])
@@ -299,6 +324,8 @@ export class MapglImportComponent {
         this.setImportedData(importedResult);
       });
   }
+
+
   /** *************/
   /** * GEOJSON ***/
   /** *************/
@@ -329,73 +356,28 @@ export class MapglImportComponent {
 
   public processJson() {
     const readJsonFile = this.readJsonFile();
-
     const parseJson = readJsonFile.then((fileContent: string) => new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
       const feature = JSON.parse(fileContent);
-      if (valid(feature)) {
+      if (valid(feature) && (this._currentAllowedGeom.includes(feature.geometry) || feature.type === 'FeatureCollection')) {
         const centroides = new Array<any>();
         const importedGeojson = {
           type: 'FeatureCollection',
           features: []
         };
-        if (feature.geometry && feature.geometry.type === 'Polygon') {
-          if (gpsi(feature).geometry.coordinates.length === 0) {
-            this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
-          } else {
-            reject(new Error(this.SELF_INTERSECT));
+        try {
+          if (feature.geometry && (feature.geometry.type === 'Polygon' || feature.geometry.type === 'Point')) {
+            this.handleSimpleGeometry(feature, centroides, importedGeojson);
+          } else if (feature.geometry && (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'MultiPoint')) {
+            this.handleMultiGeometry(feature, centroides, importedGeojson);
+          } else if (feature.type && feature.type === 'FeatureCollection') {
+            this.handleFeatureCollection(feature, centroides, importedGeojson);
           }
-        } else if (feature.geometry && feature.geometry.type === 'MultiPolygon') {
-          feature.geometry.coordinates.forEach(geom => {
-            const newFeature = {
-              type: 'Feature',
-              geometry: {
-                coordinates: geom,
-                type: 'Polygon'
-              },
-              properties: feature.properties
-            };
-            if (gpsi(newFeature).geometry.coordinates.length === 0) {
-              this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-            } else {
-              reject(new Error(this.SELF_INTERSECT));
-            }
-          });
-
-        } else if (feature.type && feature.type === 'FeatureCollection') {
-          feature.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
-            .forEach((feature) => {
-
-              if (feature.geometry.type === 'MultiPolygon') {
-                // Create a new Polygon feature for each polygon in the MultiPolygon
-                // All properties of the MultiPolygon are copied in each feature created
-                feature.geometry.coordinates.forEach(geom => {
-                  const newFeature = {
-                    type: 'Feature',
-                    geometry: {
-                      bbox: feature.geometry.bbox,
-                      coordinates: geom,
-                      type: 'Polygon'
-                    },
-                    properties: feature.properties
-                  };
-                  if (gpsi(newFeature).geometry.coordinates.length === 0) {
-                    this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-                  } else {
-                    reject(new Error(this.SELF_INTERSECT));
-                  }
-                });
-              } else {
-                if (gpsi(feature).geometry.coordinates.length === 0) {
-                  this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
-                } else {
-                  reject(new Error(this.SELF_INTERSECT));
-                }
-              }
-            });
+          resolve({ geojson: importedGeojson, centroides: centroides });
+        } catch (e) {
+          reject(e);
         }
-        resolve({ geojson: importedGeojson, centroides: centroides });
       } else {
-        reject(new Error(this.GEOMETRY_INVALID));
+        reject(new Error(this.INVALID_GEOMETRY));
       }
     }));
 
@@ -446,7 +428,7 @@ export class MapglImportComponent {
         const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
         if (
           !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
-            !(testArray.filter(elem => elem === 'json').length === 1)
+          !(testArray.filter(elem => elem === 'json').length === 1)
         ) {
           reject(new Error(marker('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`')));
         } else {
@@ -459,47 +441,7 @@ export class MapglImportComponent {
       .then(buffer => shp(buffer));
 
     const geojsonParserPromise = shapeParserPromise.then(geojson => new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
-
-      const centroides = new Array<any>();
-      const importedGeojson = {
-        type: 'FeatureCollection',
-        features: []
-      };
-      if (valid(geojson)) {
-        geojson.features.filter(feature => feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon')
-          .forEach((feature) => {
-            if (feature.geometry.type === 'MultiPolygon') {
-              // Create a new Polygon feature for each polygon in the MultiPolygon
-              // All properties of the MultiPolygon are copied in each feature created
-              feature.geometry.coordinates.forEach(geom => {
-                const newFeature = {
-                  type: 'Feature',
-                  geometry: {
-                    bbox: feature.geometry.bbox,
-                    coordinates: geom,
-                    type: 'Polygon'
-                  },
-                  properties: feature.properties
-                };
-                if (gpsi(newFeature).geometry.coordinates.length === 0) {
-                  this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-                } else {
-                  reject(new Error(this.SELF_INTERSECT));
-                }
-              });
-            } else {
-              if (gpsi(feature).geometry.coordinates.length === 0) {
-                this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
-              } else {
-                reject(new Error(this.SELF_INTERSECT));
-              }
-            }
-
-          });
-        resolve({ geojson: importedGeojson, centroides: centroides });
-      } else {
-        reject(new Error(this.GEOMETRY_INVALID));
-      }
+      this.computeGeojson(geojson, reject, resolve);
     }));
 
     return Promise.all([fileReaderPromise, zipLoaderPromise, shapeParserPromise, geojsonParserPromise])
@@ -520,53 +462,16 @@ export class MapglImportComponent {
         type: 'FeatureCollection',
         features: []
       };
-      if (geojsonWKT && valid(geojsonWKT)) {
+      if (geojsonWKT && valid(geojsonWKT) && this._currentAllowedGeom.includes(geojsonWKT.type)) {
         const feature = {
           type: 'Feature',
           geometry: geojsonWKT,
           properties: { arlas_id: null }
         };
-
-        if (feature.geometry.type === 'Polygon') {
-          if (gpsi(feature).geometry.coordinates.length === 0) {
-            this.addFeature(feature, centroides, importedGeojson, ++this.featureIndex);
-          } else {
-            reject(new Error(this.SELF_INTERSECT));
-          }
-        } else if (feature.geometry.type === 'MultiPolygon') {
-          feature.geometry.coordinates.forEach(geom => {
-            const newFeature = {
-              type: 'Feature',
-              geometry: {
-                coordinates: geom,
-                type: 'Polygon'
-              },
-              properties: feature.properties
-            };
-            if (gpsi(newFeature).geometry.coordinates.length === 0) {
-              this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-            } else {
-              reject(new Error(this.SELF_INTERSECT));
-            }
-          });
-        } else if (feature.geometry.type === 'GeometryCollection') {
-          feature.geometry.geometries.filter(geom => geom.type === 'Polygon').forEach(geom => {
-            const newFeature = {
-              type: 'Feature',
-              geometry: geom,
-              properties: feature.properties
-            };
-            if (gpsi(newFeature).geometry.coordinates.length === 0) {
-              this.addFeature(newFeature, centroides, importedGeojson, ++this.featureIndex);
-            } else {
-              reject(new Error(this.SELF_INTERSECT));
-            }
-          });
-        }
-
+        this.handleGeom(feature, centroides, importedGeojson, reject);
         resolve({ geojson: importedGeojson, centroides: centroides });
       } else {
-        reject(new Error(this.GEOMETRY_INVALID));
+        reject(new Error(this.INVALID_GEOMETRY));
       }
     });
 
@@ -621,14 +526,20 @@ export class MapglImportComponent {
   }
 
   public calcCentroid(feature) {
-    if (!this.maxVertexByPolygon) {
-      this.maxVertexByPolygon = 100;
+    let cent;
+    if (feature.type === 'Point') {
+      cent = centroid(feature);
+    } else {
+      if (!this.maxVertexByPolygon) {
+        this.maxVertexByPolygon = 100;
+      }
+      if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length - 1 > this.maxVertexByPolygon) {
+        this.tooManyVertex = true;
+      }
+      const poly = polygon(feature.geometry.coordinates);
+      cent = centroid(poly);
     }
-    if (this.maxVertexByPolygon && feature.geometry.coordinates[0].length - 1 > this.maxVertexByPolygon) {
-      this.tooManyVertex = true;
-    }
-    const poly = polygon(feature.geometry.coordinates);
-    const cent = centroid(poly);
+
     cent.properties.arlas_id = feature.properties.arlas_id;
     return cent;
   }
@@ -638,20 +549,20 @@ export class MapglImportComponent {
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;
     switch (this.dialogRef.componentInstance.errorMessage) {
-    case this.TOO_MANY_FEATURES:
-      this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
-      break;
-    case this.TOO_MANY_VERTICES:
-      this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
-      break;
-    case this.FILE_TOO_LARGE:
-      this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
-      break;
-    case this.TIMEOUT:
-      this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
-      break;
-    default:
-      this.dialogRef.componentInstance.errorThreshold = '';
+      case this.TOO_MANY_FEATURES:
+        this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
+        break;
+      case this.TOO_MANY_VERTICES:
+        this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
+        break;
+      case this.FILE_TOO_LARGE:
+        this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
+        break;
+      case this.TIMEOUT:
+        this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
+        break;
+      default:
+        this.dialogRef.componentInstance.errorThreshold = '';
     }
     if (this.dialogRef.componentInstance.fileInput) {
       this.dialogRef.componentInstance.fileInput.nativeElement.value = '';
@@ -671,5 +582,39 @@ export class MapglImportComponent {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
+  private computeGeojson(geojson: any, reject: (reason?: any) => void,
+    resolve: (value: { geojson: any; centroides: any; } | PromiseLike<{ geojson: any; centroides: any; }>) => void) {
+    if (valid(geojson)) {
+      const centroides = new Array<any>();
+      const importedGeojson = {
+        type: 'FeatureCollection',
+        features: []
+      };
+      geojson.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
+        .forEach((feature) => {
+          this.handleGeom(feature, centroides, importedGeojson, reject);
+        });
+      resolve({ geojson: importedGeojson, centroides: centroides });
+    } else {
+      reject(new Error(this.INVALID_GEOMETRY));
+    }
+  }
+
+  private handleGeom(feature: any, centroides: any[], importedGeojson: { type: string; features: any[]; }, reject: (reason?: any) => void) {
+    try {
+      if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'MultiGeometry') {
+        // Create a new Polygon feature for each polygon in the MultiPolygon
+        // All properties of the MultiPolygon are copied in each feature created
+        this.handleGeometryCollection(feature, centroides, importedGeojson);
+      } else if (feature.geometry.type === 'MultiPolygon' || feature.geometry.type === 'MultiPoint') {
+        this.handleMultiGeometry(feature, centroides, importedGeojson);
+      } else {
+        this.handleSimpleGeometry(feature, centroides, importedGeojson);
+      }
+    } catch (e) {
+      reject(new Error('Error during import'));
+    }
   }
 }
