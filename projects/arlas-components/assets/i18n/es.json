@@ -24,6 +24,9 @@
 	"geo_query_collection": ".",
 	"Apply geo-queries": "Ejecutar",
 	"Set geo-queries": "Ok",
+	"Lat:": "Lat:",
+	"Lng:": "Lng:",
+	"Enter coordinates and centre the map": "Introduzca las coordenadas y centre el mapa.",
 	"Move to": "Mover a",
 	"Manage layers": "Gestionar las capas",
 	"show_layers": "Mostrar/ocultar estas capas",
@@ -101,6 +104,5 @@
 	"country": "Pais",
 	"Column": "Columna",
 	"Direction": "Dirección",
-	"None": "Ninguna",
-	"Enter coordinates and centre the map": "Introduzca las coordenadas y centre el mapa."
+	"None": "Ninguna"
 }
