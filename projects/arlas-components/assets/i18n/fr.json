@@ -24,6 +24,9 @@
 	"geo_query_collection": ".",
 	"Apply geo-queries": "Appliquer",
 	"Set geo-queries": "Ok",
+	"Lat:": "Lat :",
+	"Lng:": "Lng :",
+	"Enter coordinates and centre the map": "Saisir des coordonnées et centrer la carte",
 	"Move to": "Centrer",
 	"Manage layers": "Gérer les couches cartographiques",
 	"show_layers": "Afficher/masquer ces couches",
@@ -101,6 +104,5 @@
 	"country": "Pays",
 	"Column": "Colonne",
 	"Direction": "Sens",
-	"None": "Aucune",
-	"Enter coordinates and centre the map": "Saisir des coordonnées et centrer la carte"
+	"None": "Aucune"
 }
