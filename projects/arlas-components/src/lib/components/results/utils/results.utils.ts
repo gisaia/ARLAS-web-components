@@ -39,6 +39,8 @@ export interface Action {
   actionBus?: Subject<{ idFieldName: string; idValue: string; }>;
   cssClass?: string | string[];
   tooltip?: string;
+  /** for global actions, even if no item is selected, the action will be enabled */
+  alwaysEnabled?: boolean;
 }
 
 export interface ElementIdentifier {
