@@ -101,6 +101,14 @@ export class MapglImportComponent {
   public WKT = 'wkt';
   public GEOJSON = 'geojson';
 
+  public SELF_INTERSECT = marker('Geometry is not valid due to self-intersection');
+  public PARSING_ISSUE = marker('Problem parsing input file');
+  public FILE_TOO_LARGE = marker('File is too large');
+  public GEOMETRY_INVALID = marker('Geometry is not valid');
+  public TOO_MANY_VERTICES = marker('Too many vertices in a polygon');
+  public TOO_MANY_FEATURES = marker('Too many features');
+  public TIMEOUT = marker('Timeout');
+
   public currentFile: File;
   public dialogRef: MatDialogRef<MapglImportDialogComponent>;
   public reader: FileReader;
@@ -135,7 +143,7 @@ export class MapglImportComponent {
     const timeout = new Promise((resolve, reject) => {
       const id = setTimeout(() => {
         clearTimeout(id);
-        reject(new Error('Timeout'));
+        reject(new Error(this.TIMEOUT));
       }, ms);
     });
 
@@ -271,18 +279,18 @@ export class MapglImportComponent {
       };
       reader.onerror = () => {
         reader.abort();
-        reject(new Error('Problem parsing input file'));
+        reject(new Error(this.PARSING_ISSUE));
       };
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
-        reject(new Error('File is too large'));
+        reject(new Error(this.FILE_TOO_LARGE));
       } else {
         if (this.currentFile.name.split('.').pop().toLowerCase() === this.KML) {
           reader.readAsText(this.currentFile);
         } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
           reader.readAsArrayBuffer(this.currentFile);
         } else {
-          reject(new Error('Only `kml` or `zip` file is allowed'));
+          reject(new Error(marker('Only `kml` or `zip` file is allowed')));
         }
       }
     });
@@ -330,17 +338,17 @@ export class MapglImportComponent {
       };
       reader.onerror = () => {
         reader.abort();
-        reject(new Error('Problem parsing input file'));
+        reject(new Error(this.PARSING_ISSUE));
       };
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
-        reject(new Error('File is too large'));
+        reject(new Error(this.FILE_TOO_LARGE));
       } else {
         const extension = this.currentFile.name.split('.').pop().toLowerCase();
         if (extension === 'json' || extension === 'geojson') {
           reader.readAsText(this.currentFile);
         } else {
-          reject(new Error('Only `json` or `geojson` file is allowed'));
+          reject(new Error(marker('Only `json` or `geojson` file is allowed')));
         }
       }
     });
@@ -369,7 +377,7 @@ export class MapglImportComponent {
           reject(e);
         }
       } else {
-        reject(new Error('Geometry is not valid'));
+        reject(new Error(this.GEOMETRY_INVALID));
       }
     }));
 
@@ -390,21 +398,21 @@ export class MapglImportComponent {
         const resultToArray = new Uint8Array(<ArrayBuffer>reader.result);
         if (resultToArray.length === 0) {
           reader.abort();
-          reject(new Error('File is empty'));
+          reject(new Error(marker('File is empty')));
         } else {
           resolve(reader.result);
         }
       };
       reader.onerror = () => {
         reader.abort();
-        reject(new Error('Problem parsing input file'));
+        reject(new Error(this.PARSING_ISSUE));
       };
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
-        reject(new Error('File is too large'));
+        reject(new Error(this.FILE_TOO_LARGE));
       } else {
         if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
-          reject(new Error('Only `zip` file is allowed'));
+          reject(new Error(marker('Only `zip` file is allowed')));
         } else {
           reader.readAsArrayBuffer(this.currentFile);
         }
@@ -422,7 +430,7 @@ export class MapglImportComponent {
           !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
           !(testArray.filter(elem => elem === 'json').length === 1)
         ) {
-          reject(new Error('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`'));
+          reject(new Error(marker('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`')));
         } else {
           resolve(buffer);
         }
@@ -463,7 +471,7 @@ export class MapglImportComponent {
         this.handleGeom(feature, centroides, importedGeojson, reject);
         resolve({ geojson: importedGeojson, centroides: centroides });
       } else {
-        reject(new Error('Geometry is not valid'));
+        reject(new Error(this.GEOMETRY_INVALID));
       }
     });
 
@@ -495,9 +503,9 @@ export class MapglImportComponent {
 
   public setImportedData(importedResult) {
     if (this.tooManyVertex) {
-      throw new Error(marker('Too many vertices in a polygon'));
+      throw new Error(this.TOO_MANY_VERTICES);
     } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
-      throw new Error(marker('Too many features'));
+      throw new Error(this.TOO_MANY_FEATURES);
     } else {
       if (importedResult.geojson.features.length > 0) {
         this.dialogRef.componentInstance.isRunning = false;
@@ -512,7 +520,7 @@ export class MapglImportComponent {
         this.mapComponent.onAoiChanged.next(importedResult.geojson);
         this.dialogRef.close();
       } else {
-        throw new Error('No polygon to display in this file');
+        throw new Error(marker('No polygon to display in this file'));
       }
     }
   }
@@ -541,20 +549,20 @@ export class MapglImportComponent {
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;
     switch (this.dialogRef.componentInstance.errorMessage) {
-      case 'Too many features':
-        this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
-        break;
-      case 'Too many vertices in a polygon':
-        this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
-        break;
-      case 'File is too large':
-        this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
-        break;
-      case 'Timeout':
-        this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
-        break;
-      default:
-        this.dialogRef.componentInstance.errorThreshold = '';
+    case this.TOO_MANY_FEATURES:
+      this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
+      break;
+    case this.TOO_MANY_VERTICES:
+      this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
+      break;
+    case this.FILE_TOO_LARGE:
+      this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
+      break;
+    case this.TIMEOUT:
+      this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
+      break;
+    default:
+      this.dialogRef.componentInstance.errorThreshold = '';
     }
     if (this.dialogRef.componentInstance.fileInput) {
       this.dialogRef.componentInstance.fileInput.nativeElement.value = '';

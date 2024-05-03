@@ -27,6 +27,7 @@ import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundSty
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 import { TranslateService } from '@ngx-translate/core';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 
 @Component({
@@ -36,8 +37,14 @@ import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 
-  public HIDE_DETAILS = 'Hide details';
-  public SHOW_DETAILS = 'Show details';
+  /**
+   * @constant
+   */
+  public HIDE_DETAILS = marker('Hide details');
+  /**
+   * @constant
+   */
+  public SHOW_DETAILS = marker('Show details');
   public CellBackgroundStyleEnum = CellBackgroundStyleEnum;
 
   /**

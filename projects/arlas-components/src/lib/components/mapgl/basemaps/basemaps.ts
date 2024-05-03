@@ -1,4 +1,3 @@
-import mapboxgl from 'mapbox-gl';
 import { BasemapStyle } from './basemap.config';
 
 export class ArlasBasemaps {

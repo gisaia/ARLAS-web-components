@@ -33,11 +33,10 @@
   </div>
 </div>
 
-<ng-container>
-  <arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="currentLat"
-    [currentLng]="currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
-</ng-container>
+<arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="currentLat"
+  [currentLng]="currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
+
 <arlas-mapgl-basemap *ngIf="showBasemapsList" [mapSources]="mapSources" [map]="map"
-(mouseleave)="hideBasemapSwitcher()" (basemapChanged)="onChangeBasemapStyle()"></arlas-mapgl-basemap>
+  (mouseleave)="hideBasemapSwitcher()" (basemapChanged)="onChangeBasemapStyle()"></arlas-mapgl-basemap>
 <div id="polygon-finish-draw-tooltip" class="hide_finish_draw_tooltip"
   [class.show_finish_draw_tooltip]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>

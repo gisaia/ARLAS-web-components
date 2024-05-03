@@ -37,6 +37,7 @@ import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -46,7 +47,7 @@ import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
 @Component({
   selector: 'arlas-result-list',
   templateUrl: './result-list.component.html',
-  styleUrls: ['./result-list.component.css'],
+  styleUrls: ['./result-list.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
@@ -59,52 +60,63 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @constant
    */
-  public SORT_DESCENDING = 'click for descending sort';
-  /**
-   * @constant
-   */
-  public SORT_ASCENDING = 'click for ascending sort';
-  /**
-   * @constant
-   */
-  public FILTER_ON = 'Filter on';
-  /**
-   * @constant
-   */
-  public CHECK_INBETWEEN = 'Check in between';
-  /**
-   * @constant
-   */
-  public CHECK_ALL = 'Check all visible items';
-  /**
-   * @constant
-   */
-  public GLOBAL_ACTIONS = 'Global actions';
-  /**
-   * @constant
-   */
-  public GEOSORT_ACTION = 'Geo sort action';
-  /**
-   * @constant
-   */
-  public GRID_MODE = 'Grid mode';
-  /**
-   * @constant
-   */
-  public LIST_MODE = 'List mode';
-
-
-  public CONTAIN_FIT = 'Fit the whole thumbnail to the tile';
-  public WIDTH_FIT = 'Fit the thumbnail\'s width to the tile';
-  public HEIGHT_FIT = 'Fit the thumbnail\'s height to the tile';
+  public FILTER_ON = marker('Filter on');
 
   /**
    * @constant
    */
-  public GEOSORT_BUTTON = 'Geo-sort';
+  public GLOBAL_ACTIONS = marker('Global actions');
+  /**
+   * @constant
+   */
+  public GEOSORT_ACTION = marker('Geo sort action');
+  /**
+   * @constant
+   */
+  public GRID_MODE = marker('Grid mode');
+  /**
+   * @constant
+   */
+  public LIST_MODE = marker('List mode');
+
+  /**
+   * @constant
+   */
+  public CONTAIN_FIT = marker('Fit the whole thumbnail to the tile');
+
+  /**
+   * @constant
+   */
+  public WIDTH_FIT = marker('Fit the thumbnail\'s width to the tile');
+
+  /**
+   * @constant
+   */
+  public HEIGHT_FIT = marker('Fit the thumbnail\'s height to the tile');
+
+  /**
+   * @constant
+   */
+  public GEOSORT_BUTTON = marker('Geo-sort');
+
+  /**
+   * @constant
+   */
   public COLUMN_ACTIONS_HEIGHT = 52;
+
+  /**
+   * @constant
+   */
   public COLUMN_NAME_HEIGHT = 27;
+
+  /**
+   * @constant
+   */
   public FILTERS_HEIGHT = 50;
+
+  /**
+   * @constant
+   */
   public TAIL_HEIGHT = 30;
 
 

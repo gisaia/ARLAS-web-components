@@ -31,17 +31,17 @@
           <div class="resultlist__tools--menu">
               <mat-icon id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
               <mat-menu #menu="matMenu">
-                <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
+                <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="!action.alwaysEnabled && selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
                   <span>{{action.label | translate}}</span>
                 </button>
               </mat-menu>
           </div>
-          <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort" id="resultlist_geosort">
-            <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
-          </div>
         </div>
         <div class="resultlist__tools--separator">|</div>
         <div class="resultlist__tools--sort" id="resultlist_sort">
+          <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort" id="resultlist_geosort">
+            <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
+          </div>
           <mat-select [compareWith]="byFieldName" (selectionChange)="setSortedColumn($event)" [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
               <mat-select-trigger>
                 <span *ngIf="this.sortedColumn && this.sortedColumn.fieldName !== ''">

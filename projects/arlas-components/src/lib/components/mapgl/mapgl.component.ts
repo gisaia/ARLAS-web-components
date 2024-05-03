@@ -53,6 +53,7 @@ import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import circleMode from './draw/modes/circles/circle.mode';
 import radiusCircleMode from './draw/modes/circles/radius.circle.mode';
 import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
@@ -134,7 +135,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   private savedEditFeature = null;
 
-  public FINISH_DRAWING = 'Double click to finish drawing';
+  /**
+   * @constant
+   */
+  public FINISH_DRAWING = marker('Double click to finish drawing');
   private POLYGON_LABEL_SOURCE = 'polygon_label';
   private ICONS_BASE_PATH = 'assets/icons/';
   private offlineBasemapChangeSubscription!: Subscription;
@@ -709,7 +713,17 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       .subscribe();
   }
 
+  /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
+  public initTransformRequest() {
+    if (!this.transformRequest) {
+      this.transformRequest = (url: string, resourceType: mapboxgl.ResourceType) => ({
+        url,
+      });
+    }
+  }
+
   public declareMap() {
+    this.initTransformRequest();
     this.map = new mapboxgl.Map({
       container: this.id,
       style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),

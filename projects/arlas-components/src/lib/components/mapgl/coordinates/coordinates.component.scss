@@ -6,10 +6,20 @@
 }
 
 .current-coordinate {
+    background-color: white;
+    border: 1px solid #a1a1a1;
+    border-radius: 4px;
+    padding: 5px;
+
     cursor: pointer;
 }
 
 .current-coordinate-edition {
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 4px;
+    padding: 5px;
+
     .section {
         display: flex;
         align-items: center;
@@ -19,13 +29,36 @@
         }
 
         ::ng-deep.mat-form-field-wrapper {
-            padding-bottom: 12px !important;
-            padding-top: 12px !important;
+            padding-bottom: 5px !important;
+            padding-top: 5px !important;
         }
 
         ::ng-deep.mat-form-field-infix {
             padding: 7px 0;
             width: 130px;
         }
+    }
+
+    .exit {
+        $radius: 10px;
+        $icon-size: calc($radius * 1.5);
+
+        cursor: pointer;
+        position: absolute;
+        top: -$radius;
+        right: -$radius;
+        border-radius: $radius;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc($radius * 2);
+        height: calc($radius * 2);
+        mat-icon {
+            font-size: $icon-size;
+            height: $icon-size;
+            width: $icon-size;
+        }
+
+        background-color: white;
     }
 }
