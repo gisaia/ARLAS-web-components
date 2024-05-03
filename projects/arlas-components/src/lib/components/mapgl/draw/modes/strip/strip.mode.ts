@@ -95,7 +95,8 @@ stripMode.onSetup = function (opts) {
             isCircle: false,
             isStrip: true,
             halfSwath: opts.halfSwath,
-            maxLength: opts.maxLength
+            maxLength: opts.maxLength,
+            bearingAngle: 0
 
         },
         geometry: {
@@ -158,12 +159,13 @@ stripMode.onMouseMove = function (state, e) {
         const endPoint = point(end);
         const bearing = rhumbBearing(startPoint, endPoint);
         state.currentMaxBearing = bearing;
+        state.strip.properties['bearingAngle'] = bearing;
     } else {
         const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
         stripFeature.properties.parent = state.line.id;
         (stripFeature.properties as any).meta = 'strip';
         state.strip.setCoordinates(stripFeature.geometry.coordinates);
-
+        state.strip.properties['bearingAngle'] = state.currentMaxBearing;
     }
 };
 

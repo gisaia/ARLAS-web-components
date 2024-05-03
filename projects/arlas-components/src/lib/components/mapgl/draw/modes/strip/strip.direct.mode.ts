@@ -283,6 +283,7 @@ stripDirectSelectMode.dragRotatePoint = function (state, e, delta) {
         });
     state.start = undefined;
     state.feature.incomingCoords(rotatedFeature.geometry.coordinates);
+    state.feature.properties['bearingAngle'] =  heading1;
     this.fireUpdate();
 };
 
