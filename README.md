@@ -22,11 +22,11 @@ Please find the documentation of all the components [here](https://docs.arlas.io
 ## Build
 
 To build the project you need to have installed
-- [Node](https://nodejs.org/en/) version >= 8.0.0 
-- [npm](https://github.com/npm/npm) version >= 5.2.0
-- [Angular CLI](https://github.com/angular/angular-cli) version 7.0.2
+- [Node](https://nodejs.org/en/) version ^16.0.0 
+- [npm](https://github.com/npm/npm) version ^8.0.0
+- [Angular CLI](https://github.com/angular/angular-cli) version ^14.2.13
   ```
-  $ npm install -g @angular/cli@7.0.2
+  $ npm install -g @angular/cli@^14.2.13
   ```
 
 Then, clone the project
