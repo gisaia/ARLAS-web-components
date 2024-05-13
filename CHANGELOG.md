@@ -1,8 +1,20 @@
 # Change Log
 
+## [v25.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-rc.1) (2024-05-13)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-rc.0...v25.0.0-rc.1)
+
 ## [v25.0.0-rc.0](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-rc.0) (2024-05-03)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.7...v25.0.0-rc.0)
+
+**Fixed bugs:**
+
+- transformRequest Input should have a default value [\#785](https://github.com/gisaia/ARLAS-web-components/issues/785)
+
+**Miscellaneous:**
+
+- Use markers to detect all texts to be translated [\#811](https://github.com/gisaia/ARLAS-web-components/issues/811)
 
 ## [v25.0.0-beta.7](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.7) (2024-05-02)
 
