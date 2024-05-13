@@ -1386,11 +1386,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getAllPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getAll().features.filter(this.drawService.isPolygon));
+      polygon = this.latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f)));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getAll().features.filter(this.drawService.isPolygon)
+        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f))
       };
     }
     return polygon;
@@ -1403,11 +1403,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(this.drawService.isPolygon));
+      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f)));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getSelected().features.filter(this.drawService.isPolygon)
+        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f))
       };
     }
     return polygon;
