@@ -271,20 +271,20 @@ stripDirectSelectMode.dragRotatePoint = function (state, e, delta) {
     const n = state.rotation.centers.length;
     const cIdx = (this.coordinateIndex(state.selectedCoordPaths) + 1) % n;
     const cCenter = state.rotation.centers[cIdx];
-    const center = point(cCenter);
-    const heading1 = rhumbBearing(center, m1);
+    const cp = point(cCenter);
+    const heading1 = rhumbBearing(cp, m1);
     const heading0 = state.rotation.headings[cIdx];
     const rotateAngle = heading1 - heading0; // in degrees
     const rotatedFeature = transformRotate(state.rotation.feature0,
         rotateAngle,
         {
-            pivot: center,
+            pivot: cp,
             mutate: false,
         });
     state.start = undefined;
     state.feature.incomingCoords(rotatedFeature.geometry.coordinates);
-    console.log(state.rotation)
-    state.feature.properties['bearingAngle'] = bearingToAzimuth(heading1) ;
+    const bearingAngle = rhumbBearing(point(rotatedFeature.geometry.coordinates[0][0]), point(rotatedFeature.geometry.coordinates[0][3]));
+    state.feature.properties['bearingAngle'] = bearingToAzimuth(bearingAngle);
     this.fireUpdate();
 };
 
