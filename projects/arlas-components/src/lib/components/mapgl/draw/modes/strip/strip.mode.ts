@@ -1,6 +1,6 @@
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { polygon, point } from '@turf/helpers';
+import { polygon, point, bearingToAzimuth } from '@turf/helpers';
 import rhumbDestination from '@turf/rhumb-destination';
 import rhumbBearing from '@turf/rhumb-bearing';
 import length from '@turf/length';
@@ -159,13 +159,13 @@ stripMode.onMouseMove = function (state, e) {
         const endPoint = point(end);
         const bearing = rhumbBearing(startPoint, endPoint);
         state.currentMaxBearing = bearing;
-        state.strip.properties['bearingAngle'] = bearing;
+        state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
     } else {
         const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
         stripFeature.properties.parent = state.line.id;
         (stripFeature.properties as any).meta = 'strip';
         state.strip.setCoordinates(stripFeature.geometry.coordinates);
-        state.strip.properties['bearingAngle'] = state.currentMaxBearing;
+        state.strip.properties['bearingAngle'] = bearingToAzimuth(state.currentMaxBearing);
     }
 };
 

@@ -1,5 +1,5 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { point } from '@turf/helpers';
+import { bearingToAzimuth, point } from '@turf/helpers';
 import center from '@turf/center';
 import midpoint from '@turf/midpoint';
 import distance from '@turf/distance';
@@ -283,7 +283,8 @@ stripDirectSelectMode.dragRotatePoint = function (state, e, delta) {
         });
     state.start = undefined;
     state.feature.incomingCoords(rotatedFeature.geometry.coordinates);
-    state.feature.properties['bearingAngle'] =  heading1;
+    console.log(state.rotation)
+    state.feature.properties['bearingAngle'] = bearingToAzimuth(heading1) ;
     this.fireUpdate();
 };
 
