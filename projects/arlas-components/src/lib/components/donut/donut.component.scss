@@ -41,8 +41,8 @@
   fill-rule: evenodd;
   stroke: #fff;
   stroke-width: 0.4px;
-}
 
-.donut__arc:hover {
-  cursor: pointer;
+  &:hover {
+    cursor: pointer;
+  }
 }
