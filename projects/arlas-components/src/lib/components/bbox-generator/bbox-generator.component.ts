@@ -67,15 +67,6 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit {
     this.dialogRef.close();
   }
 
-  public getErrorMessage(formControl: FormControl | FormGroup) {
-    if (formControl.hasError('required')) {
-      return marker('You must enter a coordinate');
-    } else if ((formControl as BboxFormGroup).latitudeErrors) {
-      return marker('Both corners have the same latitudes, modify one of them.');
-    }
-    return formControl.hasError('pattern') ? marker('Enter a coordinate in decimal (1.1) or sexagesimal (1° 6\' 3")') : '';
-  }
-
   public generateBbox() {
     this.drawService.drawBbox(this.bboxForm.getFirstCorner(), this.bboxForm.getSecondCorner());
     this.dialogRef.close();
