@@ -91,10 +91,10 @@ export interface IconConfig {
   recolorable?: boolean;
 }
 
-export const ZOOM_IN = 'Zoom in';
-export const ZOOM_OUT = 'Zoom out';
-export const RESET_BEARING = 'Reset bearing to north';
-export const LAYER_SWITCHER_TOOLTIP = 'Manage layers';
+export const ZOOM_IN = marker('Zoom in');
+export const ZOOM_OUT = marker('Zoom out');
+export const RESET_BEARING = marker('Reset bearing to north');
+export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 export const GEOJSON_SOURCE_TYPE = 'geojson';
 
 /**
