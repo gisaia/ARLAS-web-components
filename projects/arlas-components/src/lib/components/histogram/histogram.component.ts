@@ -157,6 +157,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
    * @description Chart's label for the x axis (Visible when there is one bucket on the histogram).
    */
   @Input() public chartXLabel = '';
+
+  /**
+   * @Input : Angular
+   * @description Chart's label for the y axis (Visible when there is one bucket on the histogram).
+   */
+  @Input() public chartYLabel = '';
   /**
    * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
@@ -583,6 +589,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
       .subscribe(t => {
         t.title = this.chartTitle;
         t.xLabel = this.chartXLabel;
+        t.yLabel = this.chartYLabel;
         t.xUnit = this.xUnit;
         t.yUnit = this.yUnit;
         this.tooltipEvent.next(t);
