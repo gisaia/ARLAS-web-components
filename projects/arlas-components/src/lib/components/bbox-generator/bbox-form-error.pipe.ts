@@ -1,7 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { BboxFormGroup } from './bbox-generator.component';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { FormControl, FormGroup } from '@angular/forms';
+import { BboxFormGroup } from './bbox-generator.utils';
 
 @Pipe({
   name: 'bboxFormError'

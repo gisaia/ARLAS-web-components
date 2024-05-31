@@ -53,6 +53,7 @@ export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-setti
 export { MetricComponent } from './lib/components/metric/metric.component';
 export { MetricModule } from './lib/components/metric/metric.module';
 export { BboxGeneratorComponent } from './lib/components/bbox-generator/bbox-generator.component';
+export { BboxFormErrorPipe } from './lib/components/bbox-generator/bbox-form-error.pipe';
 export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';

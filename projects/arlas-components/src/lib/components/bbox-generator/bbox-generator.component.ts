@@ -18,13 +18,11 @@
  */
 
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable, merge, mergeMap, of } from 'rxjs';
 import { MapboxAoiDrawService } from '../mapgl/draw/draw.service';
 import { Corner } from '../mapgl/draw/draw.models';
-import { Coordinate, PointFormGroup } from '../../tools/coordinates.tools';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { BboxFormGroup } from './bbox-generator.utils';
 
 @Component({
   selector: 'arlas-bbox-generator',
@@ -73,62 +71,3 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit {
   }
 
 }
-
-export class BboxFormGroup extends FormGroup {
-
-  private firstCornerLatitude;
-  private secondCornerLatitude;
-  public firstCorner: PointFormGroup;
-  public secondCorner: PointFormGroup;
-  public latitudeErrors = false;
-  public constructor(corner: Corner) {
-    const firstCorner = new PointFormGroup(corner.lat - 0.5, corner.lng - 0.5);
-    const secondCorner = new PointFormGroup(corner.lat + 0.5, corner.lng + 0.5);
-    super({
-      firstCorner,
-      secondCorner
-    });
-    this.firstCorner = firstCorner;
-    this.secondCorner = secondCorner;
-
-    this.firstCorner.latitude.valueChanges.subscribe(v => {
-      this.firstCornerLatitude = v;
-      this.secondCornerLatitude = this.secondCorner.latitude.value;
-      if (this.secondCornerLatitude !== undefined) {
-        if (Coordinate.parse(this.firstCornerLatitude) === Coordinate.parse(this.secondCornerLatitude)) {
-          this.latitudeErrors = true;
-        } else {
-          this.latitudeErrors = false;
-        }
-      }
-    });
-
-    this.secondCorner.latitude.valueChanges.subscribe(v => {
-      this.secondCornerLatitude = v;
-      this.firstCornerLatitude = this.firstCorner.latitude.value;
-      if (this.firstCornerLatitude !== undefined) {
-        if (Coordinate.parse(this.firstCornerLatitude) === Coordinate.parse(this.secondCornerLatitude)) {
-          this.latitudeErrors = true;
-        } else {
-          this.latitudeErrors = false;
-        }
-      }
-    });
-  }
-
-  public getFirstCorner(): Corner {
-    return {
-      lat: Coordinate.parse(this.firstCorner.latitude.value),
-      lng: Coordinate.parse(this.firstCorner.longitude.value)
-    };
-  }
-
-  public getSecondCorner(): Corner {
-    return {
-      lat: Coordinate.parse(this.secondCorner.latitude.value),
-      lng: Coordinate.parse(this.secondCorner.longitude.value)
-    };
-  }
-}
-
-
