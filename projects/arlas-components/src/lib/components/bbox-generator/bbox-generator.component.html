@@ -14,14 +14,14 @@
                 <mat-form-field appearance="outline" >
                     <mat-label>{{'Latitude' |translate}}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.firstCorner.latitude" [placeholder]="placeHolder | translate">
-                    <mat-error *ngIf="bboxForm.firstCorner.latitude.invalid">{{getErrorMessage(bboxForm.firstCorner.latitude) | translate}}</mat-error>
+                    <mat-error *ngIf="bboxForm.firstCorner.latitude.invalid">{{bboxForm.firstCorner.latitude | bboxFormError | translate}}</mat-error>
                 </mat-form-field>
             </div>
             <div class="coordinate">
                 <mat-form-field appearance="outline">
                     <mat-label>{{'Longitude'|translate }}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.firstCorner.longitude" [placeholder]="placeHolder | translate">
-                    <mat-error *ngIf="bboxForm.firstCorner.longitude.invalid">{{getErrorMessage(bboxForm.firstCorner.longitude) | translate}}</mat-error>
+                    <mat-error *ngIf="bboxForm.firstCorner.longitude.invalid">{{bboxForm.firstCorner.longitude | bboxFormError | translate}}</mat-error>
                 </mat-form-field>
             </div>
         </div>
@@ -31,23 +31,23 @@
                 <mat-form-field appearance="outline" >
                     <mat-label>{{'Latitude' | translate}}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.secondCorner.latitude" [placeholder]="placeHolder | translate">
-                    <mat-error *ngIf="bboxForm.secondCorner.latitude.invalid">{{getErrorMessage(bboxForm.secondCorner.latitude) | translate}} </mat-error>
+                    <mat-error *ngIf="bboxForm.secondCorner.latitude.invalid">{{bboxForm.secondCorner.latitude | bboxFormError | translate}} </mat-error>
                 </mat-form-field>
             </div>
             <div class="coordinate">
                 <mat-form-field appearance="outline">
                     <mat-label>{{'Longitude' | translate}}</mat-label>
                     <input class="input"  matInput [formControl]="bboxForm.secondCorner.longitude" [placeholder]="placeHolder | translate">
-                    <mat-error *ngIf="bboxForm.secondCorner.longitude.invalid">{{getErrorMessage(bboxForm.secondCorner.longitude) | translate}}</mat-error>
+                    <mat-error *ngIf="bboxForm.secondCorner.longitude.invalid">{{bboxForm.secondCorner.longitude | bboxFormError | translate}}</mat-error>
                 </mat-form-field>
             </div>
-            
-            
+
+
         </div>
         <div class="errors" *ngIf="bboxForm.latitudeErrors">
             <mat-icon>report</mat-icon>
-            <mat-error>{{getErrorMessage(bboxForm) | translate}}</mat-error>
-        </div>        
+            <mat-error>{{bboxForm | bboxFormError | translate}}</mat-error>
+        </div>
     </div>
     <div class="actions">
         <button mat-button [mat-dialog-close]="null">{{'Close' | translate}}

@@ -18,10 +18,11 @@
  */
 
 import {
-  Component, OnChanges, Input, Output, SimpleChanges, ViewContainerRef, ElementRef, ViewEncapsulation
+  Component, OnChanges, Input, Output, SimpleChanges, ViewContainerRef, ElementRef, ViewEncapsulation,
+  OnDestroy
 } from '@angular/core';
 import { Subject, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode, ARLASDonutTooltip } from 'arlas-d3';
 import * as donutJsonSchema from './donut.schema.json';
 import { ArlasColorService } from '../../services/color.generator.service';
@@ -31,10 +32,10 @@ import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 @Component({
   selector: 'arlas-donut',
   templateUrl: './donut.component.html',
-  styleUrls: ['./donut.component.css'],
+  styleUrls: ['./donut.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class DonutComponent implements OnChanges {
+export class DonutComponent implements OnChanges, OnDestroy {
   /**
    * @Input : Angular
    * @description Data tree to plot in the donut.
@@ -69,7 +70,7 @@ export class DonutComponent implements OnChanges {
    * @Input : Angular
    * @description id of the donut
    */
-  @Input() public id;
+  @Input() public id: string;
 
   /**
    * @Input : Angular
@@ -124,18 +125,30 @@ export class DonutComponent implements OnChanges {
 
   public donut: AbstractDonut;
 
-  public constructor(private el: ElementRef,
-    private colorService: ArlasColorService, private translate: TranslateService) {
+  private _onDestroy$ = new Subject<boolean>();
+
+  public constructor(
+    private el: ElementRef,
+    private colorService: ArlasColorService,
+    private translate: TranslateService
+  ) {
     fromEvent(window, 'resize')
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500), takeUntil(this._onDestroy$))
       .subscribe((event: Event) => {
         this.donut.resize(this.el.nativeElement.childNodes[0]);
       });
-      this.colorService.changekeysToColors$.subscribe(() => {
+    this.colorService.changekeysToColors$
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(() => {
         this.donut.donutParams.keysToColors = this.colorService.colorGenerator.keysToColors;
         this.donut.donutParams.donutNodeColorizer = this.colorService;
         this.donut.resize(this.el.nativeElement.childNodes[0]);
-    });
+      });
+  }
+
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {

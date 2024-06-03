@@ -28,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { BboxGeneratorComponent } from './bbox-generator.component';
 import { NgModule } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
+import { BboxFormErrorPipe } from './bbox-form-error.pipe';
 
 @NgModule({
   imports: [
@@ -42,8 +43,8 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     TranslateModule
   ],
-  declarations: [BboxGeneratorComponent],
-  exports: [BboxGeneratorComponent]
+  declarations: [BboxGeneratorComponent, BboxFormErrorPipe],
+  exports: [BboxGeneratorComponent, BboxFormErrorPipe]
 })
 export class BboxGeneratorModule {
 

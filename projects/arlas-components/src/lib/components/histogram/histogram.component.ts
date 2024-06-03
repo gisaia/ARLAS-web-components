@@ -19,33 +19,28 @@
 
 import {
   Component, OnInit, Input, Output, ViewEncapsulation,
-  ViewContainerRef, ElementRef, OnChanges, SimpleChanges, AfterViewChecked, ViewChild
+  ElementRef, OnChanges, SimpleChanges, AfterViewChecked, ViewChild,
+  OnDestroy
 } from '@angular/core';
 
 import {
-  ChartType, DataType, SelectedInputValues, SelectedOutputValues, Position, SwimlaneMode,
-  HistogramUtils,
-  ChartCurve,
-  SelectionType
+  AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
+  ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position,
+  SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles,
+  SwimlaneMode
 } from 'arlas-d3';
 
 import { Subject, fromEvent } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
+import { TranslateService } from '@ngx-translate/core';
 import {
-  HistogramParams, AbstractHistogram, ChartArea, ChartBars, ChartOneDimension, SwimlaneCircles, SwimlaneBars
-  , AbstractSwimlane, AbstractChart
-} from 'arlas-d3';
-
+  HistogramData, HistogramTooltip, SwimlaneData, SwimlaneOptions, SwimlaneRepresentation
+} from 'arlas-d3/histograms/utils/HistogramUtils';
+import { ArlasColorService } from '../../services/color.generator.service';
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
-import {
-  HistogramData, SwimlaneData, SwimlaneRepresentation, SwimlaneOptions,
-  HistogramTooltip
-} from 'arlas-d3/histograms/utils/HistogramUtils';
-import { TranslateService } from '@ngx-translate/core';
-import { ArlasColorService } from '../../services/color.generator.service';
 
 /**
  * The Histogram web component allows you to display your numeric and temporal data in charts or swimlanes.
@@ -57,10 +52,10 @@ import { ArlasColorService } from '../../services/color.generator.service';
 @Component({
   selector: 'arlas-histogram',
   templateUrl: './histogram.component.html',
-  styleUrls: ['./histogram.component.css'],
+  styleUrls: ['./histogram.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
+export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, OnDestroy {
 
   @ViewChild('left', { read: ElementRef, static: false }) public lt: ElementRef;
   @ViewChild('right', { read: ElementRef, static: false }) public rt: ElementRef;
@@ -317,7 +312,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
    */
   @Input() public swimlaneHeight: number = null;
 
-  @Input() public id;
+  @Input() public id: string;
   /**
    * @Input : Angular
    * @description Term's list of powerbars to select
@@ -357,14 +352,21 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
   public histogram: AbstractHistogram;
   public chart: AbstractChart;
   public ChartType = ChartType;
-  public Array = Array;
+  public Position = Position;
+
+  private _onDestroy$ = new Subject<boolean>();
 
   public constructor(private colorService: ArlasColorService, private el: ElementRef, private translate: TranslateService) {
     fromEvent(window, 'resize')
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500), takeUntil(this._onDestroy$))
       .subscribe((event: Event) => {
         this.resizeHistogram();
       });
+  }
+
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
 
   public static getHistogramJsonSchema(): Object {
@@ -576,12 +578,14 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked {
     this.histogram.histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
     this.histogram.histogramParams.colorGenerator = this.colorService;
     this.histogram.histogramParams.mainChartId = this.mainChartId;
-    this.histogram.histogramParams.tooltipEvent.subscribe(t => {
-      t.title = this.chartTitle;
-      t.xLabel = this.chartXLabel;
-      t.xUnit = this.xUnit;
-      t.yUnit = this.yUnit;
-      this.tooltipEvent.next(t);
-    });
+    this.histogram.histogramParams.tooltipEvent
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(t => {
+        t.title = this.chartTitle;
+        t.xLabel = this.chartXLabel;
+        t.xUnit = this.xUnit;
+        t.yUnit = this.yUnit;
+        this.tooltipEvent.next(t);
+      });
   }
 }
