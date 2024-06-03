@@ -20,6 +20,7 @@
 import { FormGroup } from '@angular/forms';
 import { Coordinate, PointFormGroup } from '../../tools/coordinates.tools';
 import { Corner } from '../mapgl/draw/draw.models';
+import { Subscription } from 'rxjs';
 
 
 export class BboxFormGroup extends FormGroup {
@@ -29,6 +30,9 @@ export class BboxFormGroup extends FormGroup {
   public firstCorner: PointFormGroup;
   public secondCorner: PointFormGroup;
   public latitudeErrors = false;
+
+  public subscriptions = new Array<Subscription>();
+
   public constructor(corner: Corner) {
     const firstCorner = new PointFormGroup(corner.lat - 0.5, corner.lng - 0.5);
     const secondCorner = new PointFormGroup(corner.lat + 0.5, corner.lng + 0.5);
@@ -39,7 +43,7 @@ export class BboxFormGroup extends FormGroup {
     this.firstCorner = firstCorner;
     this.secondCorner = secondCorner;
 
-    this.firstCorner.latitude.valueChanges.subscribe(v => {
+    const latSub = this.firstCorner.latitude.valueChanges.subscribe(v => {
       this.firstCornerLatitude = v;
       this.secondCornerLatitude = this.secondCorner.latitude.value;
       if (this.secondCornerLatitude !== undefined) {
@@ -50,8 +54,9 @@ export class BboxFormGroup extends FormGroup {
         }
       }
     });
+    this.subscriptions.push(latSub);
 
-    this.secondCorner.latitude.valueChanges.subscribe(v => {
+    const lonSub = this.secondCorner.latitude.valueChanges.subscribe(v => {
       this.secondCornerLatitude = v;
       this.firstCornerLatitude = this.firstCorner.latitude.value;
       if (this.firstCornerLatitude !== undefined) {
@@ -62,6 +67,7 @@ export class BboxFormGroup extends FormGroup {
         }
       }
     });
+    this.subscriptions.push(lonSub);
   }
 
   public getFirstCorner(): Corner {

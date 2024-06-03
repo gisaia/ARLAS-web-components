@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MapboxAoiDrawService } from '../mapgl/draw/draw.service';
 import { Corner } from '../mapgl/draw/draw.models';
@@ -29,7 +29,7 @@ import { BboxFormGroup } from './bbox-generator.utils';
   templateUrl: './bbox-generator.component.html',
   styleUrls: ['./bbox-generator.component.scss']
 })
-export class BboxGeneratorComponent implements OnInit, AfterViewInit {
+export class BboxGeneratorComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
    * @constant
    */
@@ -59,6 +59,10 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit {
   }
   public ngAfterViewInit(): void {
     this.cdr.detectChanges();
+  }
+
+  public ngOnDestroy(): void {
+    this.bboxForm.subscriptions.forEach(s => s.unsubscribe());
   }
 
   public close() {
