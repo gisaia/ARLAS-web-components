@@ -104,7 +104,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 @Component({
   selector: 'arlas-mapgl',
   templateUrl: './mapgl.component.html',
-  styleUrls: ['./mapgl.component.css'],
+  styleUrls: ['./mapgl.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
