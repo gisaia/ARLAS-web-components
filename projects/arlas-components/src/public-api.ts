@@ -94,3 +94,5 @@ export { ShortenNumberModule } from './lib/pipes/shorten-number/shorten-number.m
 export { ShortenNumberPipe } from './lib/pipes/shorten-number/shorten-number.pipe';
 export { CalendarTimelineComponent, TranslationDirection } from './lib/components/calendar-timeline/calendar-timeline.component';
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
+export { GetValueModule } from './lib/pipes/get-value/get-value.module';
+export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';

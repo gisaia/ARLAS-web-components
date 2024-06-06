@@ -452,7 +452,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public xMoveRatio = 0;
   public yMoveRatio = 0;
   public zoomStart: number;
-  public visibilityStatus = new Map();
+  public visibilityStatus = new Map<string, boolean>();
   public isDrawSelected = false;
   public drawClickCounter = 0;
   private drawSelectionChanged = false;
@@ -473,15 +473,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
 
   /**
-   *
+   * Update the visibility status of the layer and emit that update
    * @param visualisation visualisation set name
    * @param l layer id
    * @param visible whether the layer is enabled and visible in the visualisation set
    */
   public emitLegendVisibility(visualisation: string, l: string, visible: boolean): void {
+    // Copy the map so the pipe updates the values
+    this.visibilityStatus = new Map(this.visibilityStatus);
     this.visibilityStatus.set(visualisation + ARLAS_VSET + l, visible);
     this.legendVisibiltyStatus.next(this.visibilityStatus);
   }
+
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
@@ -558,7 +561,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @param visibility Map of layerId, and its visibility status as boolean (true = visible)
    */
   public updateLayerVisibility(visibility: Map<string, boolean>) {
-
     this.visibilityUpdater.next(visibility);
   }
 
@@ -1600,9 +1602,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   private addExternalEventLayers() {
-    this.mapLayers.layers
-      .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-      .forEach(l => this.addLayer(l.id));
+    if (!!this.mapLayers.externalEventLayers) {
+      this.mapLayers.layers
+        .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+        .forEach(l => this.addLayer(l.id));
+    }
   }
 
   private addLayer(layerId: string): void {

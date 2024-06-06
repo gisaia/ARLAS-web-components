@@ -19,9 +19,12 @@
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import {
+  ARLAS_VSET,
   GeometrySelectModel, MapglComponent, MapglImportComponent, MapglSettingsComponent,
-  MapSettingsService, OperationSelectModel
+  MapSettingsService, OperationSelectModel,
+  VisualisationSetConfig
 } from '../../../projects/arlas-components/src/public-api';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -112,7 +115,233 @@ export class MapglDemoComponent implements OnInit {
   };
 
   public mapLayers = {
-    layers: [],
+    layers: [{
+      id: 'arlas_id:Latest products:1677155839933',
+      type: 'fill',
+      source: 'feature-_geometry_wkt-window-demo_eo',
+      minzoom: 0,
+      maxzoom: 22,
+      layout: {
+        visibility: 'visible'
+      },
+      paint: {
+        'fill-opacity': 0,
+        'fill-color': [
+          'match',
+          [
+            'get',
+            'metadata_ObservationContext_processusUsed_platform'
+          ],
+          'SENTINEL 2',
+          '#ff61ec',
+          'PLEIADES',
+          '#ec4040',
+          'SPOT 6',
+          '#0087e9',
+          'SPOT 5',
+          '#0041ff',
+          'SPOT 4',
+          '#00b4ff',
+          'SPOT 7',
+          '#1102c6',
+          'TerraSAR-X 1',
+          '#5e5e5e',
+          'ALOS2',
+          '#00c926',
+          'SENTINEL 2A',
+          '#ff0094',
+          'DRONE',
+          '#ffe300',
+          '#9d9ca9'
+        ]
+      },
+      metadata: {
+        collection: 'demo_eo',
+        'collection-display-name': 'demo_eo',
+        stroke: {
+          'color': [
+            'get',
+            'metadata_ObservationContext_processusUsed_platform_arlas__color'
+          ],
+          'width': 3,
+          'opacity': 0.7
+        },
+        'is-scrollable-layer': true
+      },
+      filter: [
+        'all',
+        [
+          'all'
+        ]
+      ]
+    },
+    {
+      id: 'arlas_id:Density of products:1677155972496',
+      type: 'circle',
+      source: 'cluster-_centroid_wkt-Coarse-tile-centroid-demo_eo',
+      minzoom: 0,
+      maxzoom: 15,
+      layout: {
+        'visibility': 'visible'
+      },
+      paint: {
+        'circle-opacity': [
+          'interpolate',
+          [
+            'linear'
+          ],
+          [
+            'get',
+            'count_:normalized'
+          ],
+          0,
+          0,
+          0.2,
+          0.02,
+          0.4,
+          0.04,
+          0.6,
+          0.06000000000000001,
+          0.8,
+          0.08,
+          1,
+          0.1
+        ],
+        'circle-color': [
+          'interpolate',
+          [
+            'linear'
+          ],
+          [
+            'get',
+            'count_:normalized'
+          ],
+          0,
+          '#fffa83',
+          0.45,
+          '#ffcc26',
+          0.9,
+          '#ff7700',
+          1,
+          '#ff5700'
+        ],
+        'circle-radius': [
+          'interpolate',
+          [
+            'linear'
+          ],
+          [
+            'get',
+            'count_:normalized'
+          ],
+          0,
+          5,
+          0.2,
+          14,
+          0.4,
+          23,
+          0.6,
+          32,
+          0.8,
+          41,
+          1,
+          50
+        ],
+        'circle-stroke-width': 2,
+        'circle-stroke-color': [
+          'interpolate',
+          [
+            'linear'
+          ],
+          [
+            'get',
+            'count_:normalized'
+          ],
+          0,
+          '#fff500',
+          0.8,
+          '#ffa700',
+          1,
+          '#ff5418'
+        ],
+        'circle-stroke-opacity': 1
+      },
+      metadata: {
+        collection: 'demo_eo',
+        'collection-display-name': 'demo_eo'
+      },
+      filter: [
+        'all',
+        [
+          'all'
+        ]
+      ]
+    },
+    {
+      id: 'arlas_id:Number of products:1677155990578',
+      type: 'symbol',
+      source: 'cluster-_centroid_wkt-Coarse-tile-centroid-demo_eo',
+      minzoom: 0,
+      maxzoom: 15,
+      layout: {
+        visibility: 'visible',
+        'text-field': [
+          'get',
+          'count_:_arlas__short_format'
+        ],
+        'text-font': [
+          'Open Sans Bold',
+          'Arial Unicode MS Bold'
+        ],
+        'text-size': [
+          'interpolate',
+          [
+            'linear'
+          ],
+          [
+            'get',
+            'count_:normalized'
+          ],
+          0,
+          8,
+          0.2,
+          13.2,
+          0.4,
+          18.4,
+          0.6,
+          23.6,
+          0.8,
+          28.8,
+          1,
+          34
+        ],
+        'text-rotate': 0,
+        'text-allow-overlap': true,
+        'text-anchor': 'center',
+        'symbol-placement': 'point'
+      },
+      paint: {
+        'text-color': '#ffffff',
+        'text-opacity': 1,
+        'text-halo-color': '#000',
+        'text-halo-width': 1.3,
+        'text-halo-blur': 2,
+        'text-translate': [
+          0,
+          0
+        ]
+      },
+      metadata: {
+        'collection': 'demo_eo',
+        'collection-display-name': 'demo_eo'
+      },
+      filter: [
+        'all',
+        [
+          'all'
+        ]
+      ]
+    }],
     events: {
       zoomOnClick: [],
       emitOnClick: [],
@@ -501,6 +730,117 @@ export class MapglDemoComponent implements OnInit {
     ]
   };
 
+  public mapDataSources = new Set(['feature-_geometry_wkt-window-demo_eo', 'cluster-_centroid_wkt-Coarse-tile-centroid-demo_eo']);
+
+  public mapSources = [
+    {
+      'id': 'arlas_id:Latest products:1677155839933',
+      'name': 'Latest products',
+      'source': 'feature-_geometry_wkt-window-demo_eo',
+      'minzoom': 0,
+      'maxzoom': 22,
+      'include_fields': [
+        'metadata.ObservationContext.processusUsed.platform'
+      ],
+      'short_form_fields': [],
+      'colors_from_fields': [
+        'metadata.ObservationContext.processusUsed.platform'
+      ],
+      'provided_fields': [],
+      'normalization_fields': [],
+      'metrics': [],
+      'returned_geometry': '_geometry_wkt',
+      'render_mode': 'window'
+    },
+    {
+      'id': 'arlas_id:Density of products:1677155972496',
+      'name': 'Density of products',
+      'source': 'cluster-_centroid_wkt-Coarse-tile-centroid-demo_eo',
+      'minzoom': 0,
+      'maxzoom': 15,
+      'include_fields': [],
+      'short_form_fields': [],
+      'colors_from_fields': [],
+      'provided_fields': [],
+      'normalization_fields': [],
+      'metrics': [
+        {
+          'field': '',
+          'metric': 'count',
+          'normalize': true
+        },
+        {
+          'field': '',
+          'metric': 'count',
+          'normalize': true
+        },
+        {
+          'field': '',
+          'metric': 'count',
+          'normalize': true
+        },
+        {
+          'field': '',
+          'metric': 'count',
+          'normalize': true
+        }
+      ],
+      'agg_geo_field': '_centroid_wkt',
+      'aggType': 'tile',
+      'granularity': 'Coarse',
+      'minfeatures': 1000,
+      'aggregated_geometry': 'centroid'
+    },
+    {
+      'id': 'arlas_id:Number of products:1677155990578',
+      'name': 'Number of products',
+      'source': 'cluster-_centroid_wkt-Coarse-tile-centroid-demo_eo',
+      'minzoom': 0,
+      'maxzoom': 15,
+      'include_fields': [],
+      'short_form_fields': [],
+      'colors_from_fields': [],
+      'provided_fields': [],
+      'normalization_fields': [],
+      'metrics': [
+        {
+          'field': '',
+          'metric': 'count',
+          'normalize': true
+        },
+        {
+          'field': '',
+          'metric': 'count',
+          'normalize': false,
+          'short_format': true
+        }
+      ],
+      'agg_geo_field': '_centroid_wkt',
+      'aggType': 'tile',
+      'granularity': 'Coarse',
+      'minfeatures': 1000,
+      'aggregated_geometry': 'centroid'
+    }
+  ];
+
+  public visualisationSets: Array<VisualisationSetConfig> = [{
+      'name': 'Latest products',
+      'layers': [
+        'arlas_id:Latest products:1677155839933'
+      ],
+      'enabled': true
+    },
+    {
+      'name': 'All products',
+      'layers': [
+        'arlas_id:Number of products:1677155990578',
+        'arlas_id:Density of products:1677155972496'
+      ],
+      'enabled': true
+    }];
+
+  public visibilityUpdater = new Subject<Map<string, boolean>>();
+
   public drawData = {
     'type': 'FeatureCollection',
     'features': []
@@ -560,6 +900,12 @@ export class MapglDemoComponent implements OnInit {
 
   public openSettings() {
     this.mapSettings.openDialog(new MapSettings());
+  }
+
+  public onMapLoaded() {
+    this.mapComponent.visibilityStatus = new Map();
+    this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET + 'arlas_id:Number of products:1677155990578', true);
+    this.mapComponent.visibilityStatus.set('Latest products' + ARLAS_VSET + 'arlas_id:Latest products:1677155839933', false);
   }
 }
 
