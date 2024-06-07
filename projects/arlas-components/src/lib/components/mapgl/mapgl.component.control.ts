@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 
@@ -46,7 +47,7 @@ export class PitchToggle {
     this.btn.className = 'mapboxgl-ctrl-icon mapboxgl-ctrl-pitch';
     this.btn.style.backgroundImage = this.image3D;
     this.btn.type = 'button';
-    this.btn['aria-label'] = 'Toggle Pitch';
+    this.btn['aria-label'] = marker('Toggle Pitch');
     this.btn.onclick = () => {
       if (map.getPitch() === 0) {
         const options = { pitch: this.pitch, bearing: this.bearing, minpitchzoom: null };
