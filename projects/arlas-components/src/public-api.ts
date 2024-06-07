@@ -41,7 +41,7 @@ export { BasemapStyle } from './lib/components/mapgl/basemaps/basemap.config';
 export { MapboxBasemapService } from './lib/components/mapgl/basemaps/basemap.service';
 export { ArlasBasemaps } from './lib/components/mapgl/basemaps/basemaps';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
-export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE } from './lib/components/mapgl/mapgl.component.util';
+export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE, ArlasAnyLayer } from './lib/components/mapgl/mapgl.component.util';
 export { AoiDimensions as AoiEdition } from './lib/components/mapgl/draw/draw.models';
 export { MapboxAoiDrawService } from './lib/components/mapgl/draw/draw.service';
 export { PowerBar } from './lib/components/powerbars/model/powerbar';
