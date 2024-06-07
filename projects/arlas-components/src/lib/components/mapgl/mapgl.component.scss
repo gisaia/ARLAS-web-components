@@ -212,3 +212,8 @@
 .cdk-drag-animating {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
+
+// Remove draw icons if another draw "section" is defined
+.draw-control-disabled {
+  display: none;
+}

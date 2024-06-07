@@ -110,7 +110,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public map: any;
-  public draw: any;
+  public draw: MapboxDraw;
   public zoom: number;
   public legendOpen = true;
   private emptyData: FeatureCollection = {
