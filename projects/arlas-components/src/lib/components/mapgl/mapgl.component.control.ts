@@ -35,7 +35,7 @@ export class PitchToggle {
     'CI+ICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHN0eWxlPSJmb250LXNpemU6IDE0cHg7IGZvbnQtZmFtaWx5OiAnSGVsdmV0aWNhIE5ldWUnLEFyaWF' +
     'sLEhlbHZldGljYSxzYW5zLXNlcmlmOyBmb250LXdlaWdodDogYm9sZDsgdGV4dC1hbmNob3I6IG1pZGRsZTsiPjJEPC90ZXh0Pjwvc3ZnPg==)';
 
-    public constructor(bearing, pitch, minpitchzoom) {
+  public constructor(bearing, pitch, minpitchzoom) {
     this.bearing = bearing;
     this.pitch = pitch;
     this.minpitchzoom = minpitchzoom;

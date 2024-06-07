@@ -33,8 +33,10 @@
 	"Previous image": "Imagen anterior",
 	"Next image": "Imagen siguiente",
 	"Attachments": "Enlaces",
+	"Column": "Columna",
 	"ASC": "Ascendente",
 	"DESC": "Descendente",
+	"Direction": "Dirección",
 	"Sort on": "Ordenar por",
 	"Layers and style": "Capas y estilos",
 	"Informations": "Información",
@@ -69,6 +71,7 @@
 	"No polygon to display in this file": "No hay polígonos para mostrar",
 	"Draw a bbox or a polygon that": "Dibuje un cuadro delimitador o polígono que",
 	"1.1 or 1°6'3\"": "1.1 o 1°6'3\"",
+	"Toggle Pitch": "Activar/Quitar inclinación del mapa",
 	"Invalid geometry": "Geometría inválida",
 	"Ok": "Ok",
 	"Zoom in": "Acercarse",
@@ -107,7 +110,5 @@
 	"Download": "Descargar",
 	"Cloud": "Nube",
 	"country": "Pais",
-	"Column": "Columna",
-	"Direction": "Dirección",
 	"None": "Ninguna"
 }
