@@ -707,6 +707,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (this.minZoom === undefined || this.minZoom === null) {
       this.maxZoom = 0;
     }
+    if (typeof this.defaultBasemapStyle.styleFile === 'string') {
+      this.defaultBasemapStyle.url = this.defaultBasemapStyle.styleFile;
+    }
+    this.basemapStyles.forEach(bm => {
+      if (typeof bm.styleFile === 'string') {
+        bm.url = (bm.styleFile as string);
+      }
+    });
     this.basemapService.setBasemaps(new ArlasBasemaps(this.defaultBasemapStyle, this.basemapStyles));
     this.basemapService.fetchSources$()
       .pipe(finalize(() => this.declareMap()))
