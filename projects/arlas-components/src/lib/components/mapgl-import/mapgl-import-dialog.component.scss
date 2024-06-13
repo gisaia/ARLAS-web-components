@@ -1,28 +1,30 @@
-.mapgl-import-body{
-  min-width:  500px;
+.mapgl-import-body {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
-.mapgl-import-section{
+.mapgl-import-zoom {
   display: flex;
   align-content: center;
   align-items: center;
   height: 60px;
 }
 
-.mapgl-import-error{
+.mapgl-import-error {
   color: #f44336;
   font-size: 75%;
 }
 
-.mapgl-import-upload:focus{
+.mapgl-import-upload:focus {
   outline: none;
 }
 
-.mapgl-import-radio-button{
+.mapgl-import-radio-button {
   padding: 10px;
 }
 
-.mapgl-import-textxarea{
+.mapgl-import-text-area {
   width: 100%;
   height: 200px;
   resize: vertical;

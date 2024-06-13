@@ -14,7 +14,8 @@
   position: relative;
   justify-content: space-between;
   padding-left: 15px;
-  padding-top: 3px;
+  padding-top: 2.5px;
+  padding-bottom: 2.5px;
 
 }
 .layer_icon_container {

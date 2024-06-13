@@ -66,6 +66,9 @@ export interface MapExtend {
   zoom: number;
 }
 
+/**
+ * @deprecated Use GetValuePipe instead which performs the same operation, but generically
+ */
 @Pipe({ name: 'getLayer' })
 export class GetLayerPipe implements PipeTransform {
   public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): mapboxgl.Layer {

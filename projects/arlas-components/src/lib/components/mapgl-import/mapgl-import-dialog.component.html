@@ -1,26 +1,22 @@
 <h1 mat-dialog-title class="mapgl-import-title">{{ 'Import file' | translate}}</h1>
 <div mat-dialog-content class="mapgl-import-body">
-  <div>
-    <mat-radio-group class="mapgl-import-radio-group" [(ngModel)]="importType" (change)="changeType()">
-      <mat-radio-button [value]="SHP" *ngIf="allowedImportType.indexOf(SHP) > -1" class="mapgl-import-radio-button">{{ 'Shape' | translate}}</mat-radio-button>
-      <mat-radio-button [value]="KML" *ngIf="allowedImportType.indexOf(KML) > -1" class="mapgl-import-radio-button">{{ 'KML / KMZ' | translate}}</mat-radio-button>
-      <mat-radio-button [value]="GEOJSON" *ngIf="allowedImportType.indexOf(GEOJSON) > -1" class="mapgl-import-radio-button">{{ 'GeoJson' | translate}}</mat-radio-button>
-      <mat-radio-button [value]="WKT" *ngIf="allowedImportType.indexOf(WKT) > -1" class="mapgl-import-radio-button">{{ 'WKT' | translate}}</mat-radio-button>
-    </mat-radio-group>
-  </div>
-  <div *ngIf="importType !== WKT">
-    <input type="file" class="mapgl-import-upload" #fileInput accept="{{allowedFileExtension}}" (change)="onFileChange($event.target.files)">
-  </div>
-  <div *ngIf="importType === WKT">
-      <textarea class="mapgl-import-textxarea" [(ngModel)]="wktContent" placeholder="{{'Paste your WKT' | translate}}" (change)="onTextChange()"></textarea>
-  </div>
-  <div class="mapgl-import-section">
-    <mat-checkbox class="" [(ngModel)]="fitResult">{{ 'Zoom to result' | translate}}</mat-checkbox>
+  <mat-radio-group class="mapgl-import-radio-group" [(ngModel)]="importType" (change)="changeType()">
+    <mat-radio-button *ngFor="let type of allowedImportType" [value]="type" class="mapgl-import-radio-button">
+      {{ type | translate }}
+    </mat-radio-button>
+  </mat-radio-group>
+
+  <input *ngIf="importType !== WKT" type="file" class="mapgl-import-upload" #fileInput accept="{{allowedFileExtension}}" (change)="onFileChange($event.target.files)">
+  <textarea *ngIf="importType === WKT" class="mapgl-import-text-area" [(ngModel)]="wktContent" placeholder="{{'Paste your WKT' | translate}}" (change)="onTextChange()"></textarea>
+
+  <div class="mapgl-import-zoom">
+    <mat-checkbox [(ngModel)]="fitResult">{{ 'Zoom to result' | translate}}</mat-checkbox>
   </div>
   <div *ngIf="displayError" class="mapgl-import-error">
-    {{ errorMessage | translate}} <ng-container *ngIf="errorThreshold !== ''"> - (Max : {{errorThreshold}})</ng-container>
+    {{ errorMessage | translate}} <ng-container *ngIf="errorThreshold !== ''"> - ({{'Max:' | translate }} {{errorThreshold}})</ng-container>
   </div>
 </div>
+
 <div mat-dialog-actions class="mapgl-import-actions">
   <button mat-button (click)="onCancel()">{{ 'Cancel' | translate}}</button>
   <button mat-button [disabled]="((importType === SHP || importType === KML || importType === GEOJSON) && !currentFile) || isRunning || (importType === WKT && wktContent === '')" (click)="import()">{{ 'Import' | translate}}</button>

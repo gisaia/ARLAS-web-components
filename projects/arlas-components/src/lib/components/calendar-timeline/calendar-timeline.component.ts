@@ -17,10 +17,9 @@
  * under the License.
  */
 
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
-import { debounceTime, fromEvent, Subject } from 'rxjs';
-import * as timelineJsonSchema from './calendar-timeline.schema.json';
+import { debounceTime, fromEvent, Subject, takeUntil } from 'rxjs';
 
 export enum TranslationDirection {
   past = 'past',
@@ -30,14 +29,14 @@ export enum TranslationDirection {
 @Component({
   selector: 'arlas-calendar-timeline',
   templateUrl: './calendar-timeline.component.html',
-  styleUrls: ['./calendar-timeline.component.css']
+  styleUrls: ['./calendar-timeline.component.scss']
 })
 /**
  * todo : documentation of the component
  */
-export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
+export class CalendarTimelineComponent implements AfterViewInit, OnChanges, OnDestroy {
 
-  @Input() public id;
+  @Input() public id: string;
   @Input() public granularity: Granularity;
   @Input() public climatological: boolean;
   @Input() public boundDates: Date[] = [];
@@ -55,11 +54,13 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
 
   private timeline: Timeline;
 
+  private _onDestroy$ = new Subject<boolean>();
+
   @ViewChild('timeline_container', { static: false }) private timelineContainer: ElementRef;
 
   public constructor() {
     fromEvent(window, 'resize')
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500), takeUntil(this._onDestroy$))
       .subscribe((event: Event) => {
         const element: HTMLElement = this.timelineContainer.nativeElement;
         const margins = (new Margins()).setBottom(5).setTop(5).setRight(5).setLeft(5);
@@ -72,6 +73,7 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
         }
       });
   }
+
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && this.timeline) {
       this.timeline.setData(this.data);
@@ -93,6 +95,7 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
       this.timeline.moveCursor(this.cursorPosition);
     }
   }
+
   public ngAfterViewInit(): void {
     const element: HTMLElement = this.timelineContainer.nativeElement;
     const svg = element.querySelector('svg');
@@ -104,12 +107,21 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges {
     this.timeline.setDimensions(dimensions);
     this.timeline.setBoundDates(this.boundDates);
 
-    this.timeline.hoveredData.subscribe(r => {
-      this.hoveredData.next(r);
-    });
-    this.timeline.selectedData.subscribe(r => {
-      this.selectedData.next(r);
-    });
+    this.timeline.hoveredData
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(r => {
+        this.hoveredData.next(r);
+      });
+    this.timeline.selectedData
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(r => {
+        this.selectedData.next(r);
+      });
+  }
+
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
 
   public plot(): void {

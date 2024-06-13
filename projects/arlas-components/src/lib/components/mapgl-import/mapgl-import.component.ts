@@ -1,5 +1,5 @@
-import { Component, ElementRef, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Component, ElementRef, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
 import JSZip from 'jszip';
@@ -13,13 +13,17 @@ import { valid } from 'geojson-validation';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { Feature } from 'geojson';
+
+
 const gpsi = gpsi_.default;
 const shp = shp_.default;
 const extent = extent_.default;
+
+
 @Component({
   templateUrl: './mapgl-import-dialog.component.html',
   selector: 'arlas-mapgl-import-dialog',
-  styleUrls: ['./mapgl-import-dialog.component.css']
+  styleUrls: ['./mapgl-import-dialog.component.scss']
 })
 export class MapglImportDialogComponent implements OnInit {
   public displayError = false;
@@ -34,18 +38,22 @@ export class MapglImportDialogComponent implements OnInit {
   public allowedImportType: string[];
   public wktContent = '';
 
-  public SHP = 'shp';
-  public KML = 'kml';
-  public WKT = 'wkt';
-  public GEOJSON = 'geojson';
+  public SHP: string = marker('shp');
+  public KML: string = marker('kml');
+  public WKT: string = marker('wkt');
+  public GEOJSON: string = marker('geojson');
 
   @Output() public file = new Subject<File>();
   @Output() public importRun = new Subject<any>();
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
-  public constructor(private dialogRef: MatDialogRef<MapglImportDialogComponent>) { }
+  public constructor(
+    private dialogRef: MatDialogRef<MapglImportDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) private data: { allowedImportType: Array<string>; }
+  ) {
+    this.allowedImportType = this.data.allowedImportType.filter(t => [this.SHP, this.KML, this.WKT, this.GEOJSON].includes(t));
+    console.log(this.allowedImportType);
 
-  public ngOnInit(): void {
     if (this.allowedImportType.indexOf(this.SHP) > -1) {
       this.importType = this.SHP;
     } else if (this.allowedImportType.indexOf(this.KML) > -1) {
@@ -58,6 +66,8 @@ export class MapglImportDialogComponent implements OnInit {
     this.changeType();
   }
 
+  public ngOnInit(): void { }
+
   public onFileChange(files: FileList) {
     this.file.next(files.item(0));
     this.currentFile = files.item(0);
@@ -68,9 +78,7 @@ export class MapglImportDialogComponent implements OnInit {
     this.importRun.next({ type: this.importType, fitResult: this.fitResult, wktContent: this.wktContent });
   }
 
-  public onTextChange() {
-
-  }
+  public onTextChange() { }
 
   public changeType() {
     if (this.importType === this.SHP) {
@@ -92,7 +100,7 @@ const SIMPLE_GEOMETRY_OBJECT = ['Polygon', 'Point', 'LineString'];
 @Component({
   templateUrl: './mapgl-import.component.html',
   selector: 'arlas-mapgl-import',
-  styleUrls: ['./mapgl-import.component.css']
+  styleUrls: ['./mapgl-import.component.scss']
 })
 export class MapglImportComponent {
 
@@ -176,8 +184,7 @@ export class MapglImportComponent {
   }
 
   public openDialog() {
-    this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: null });
-    this.dialogRef.componentInstance.allowedImportType = this.allowedImportType;
+    this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: { allowedImportType: this.allowedImportType } });
     this.dialogRef.componentInstance.file.subscribe((file: File) => {
       this.currentFile = file;
     });

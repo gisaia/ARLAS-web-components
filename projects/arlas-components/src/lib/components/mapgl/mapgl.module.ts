@@ -38,6 +38,7 @@ import { CoordinatesComponent } from './coordinates/coordinates.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { GetValueModule } from '../../pipes/get-value/get-value.module';
 
 
 @NgModule({
@@ -61,6 +62,7 @@ import { MatInputModule } from '@angular/material/input';
     MatInputModule,
     ReactiveFormsModule,
     DragDropModule,
+    GetValueModule
   ],
   declarations: [MapglComponent, GetCollectionPipe, GetLayerPipe, CoordinatesComponent],
   providers: [
