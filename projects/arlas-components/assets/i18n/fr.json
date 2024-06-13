@@ -33,8 +33,10 @@
 	"Previous image": "Image précédente",
 	"Next image": "Image suivante",
 	"Attachments": "Liens",
+	"Column": "Colonne",
 	"ASC": "Croissant",
 	"DESC": "Décroissant",
+	"Direction": "Sens",
 	"Sort on": "Tri par",
 	"Layers and style": "Couche et style",
 	"Informations": "Informations",
@@ -69,6 +71,7 @@
 	"No polygon to display in this file": "Aucun polygone à afficher",
 	"Draw a bbox or a polygon that": "Dessiner une bbox ou un polygone qui",
 	"1.1 or 1°6'3\"": "1.1 ou 1°6'3\"",
+	"Toggle Pitch": "Activer/Enlever l'inclinaison",
 	"Invalid geometry": "Géométrie invalide",
 	"Ok": "Ok",
 	"Zoom in": "Zoomer",
@@ -107,7 +110,5 @@
 	"Download": "Télécharger",
 	"Cloud": "Nuage",
 	"country": "Pays",
-	"Column": "Colonne",
-	"Direction": "Sens",
 	"None": "Aucune"
 }

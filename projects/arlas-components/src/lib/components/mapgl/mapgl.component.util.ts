@@ -118,3 +118,5 @@ export enum PROPERTY_SELECTOR_SOURCE {
   metric_on_field = 'Metric on field',
   heatmap_density = 'Density'
 }
+
+export type ArlasAnyLayer = mapboxgl.CircleLayer | mapboxgl.FillLayer | mapboxgl.HeatmapLayer | mapboxgl.LineLayer | mapboxgl.SymbolLayer;

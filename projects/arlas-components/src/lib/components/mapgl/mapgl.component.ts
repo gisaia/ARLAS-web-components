@@ -27,7 +27,7 @@ import { Subject, Subscription, fromEvent } from 'rxjs';
 import { debounceTime, finalize } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
-import { paddedBounds, MapExtend, LegendData } from './mapgl.component.util';
+import { paddedBounds, MapExtend, LegendData, ArlasAnyLayer } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import {
   MapLayers, ExternalEvent,
@@ -35,12 +35,11 @@ import {
 } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Feature, Polygon, Feature as TurfFeature, polygon } from '@turf/helpers';
+import { Feature, Polygon, polygon, FeatureCollection, Geometry } from '@turf/helpers';
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
-import { FeatureCollection } from '@turf/helpers';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
@@ -109,11 +108,12 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: any;
+  public map: mapboxgl.Map;
   public draw: MapboxDraw;
   public zoom: number;
   public legendOpen = true;
-  private emptyData: FeatureCollection = {
+  // GeometryCollection ?
+  private emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
     'features': []
   };
@@ -240,7 +240,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description The padding added in the top-left and bottom-right corners of a map container that shouldn't be accounted
    * for when setting the view to fit bounds.
    */
-  @Input() public fitBoundsOffSet: Array<number> = [0, 0];
+  @Input() public fitBoundsOffSet: [number, number] = [0, 0];
   /**
    * @Input : Angular
    * @description The maximum zoom level so that the bounds fit the map view.
@@ -275,7 +275,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description Features drawn at component start
    */
-  @Input() public drawData: FeatureCollection = Object.assign({}, this.emptyData);
+  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
 
   /**
    * @Input : Angular
@@ -320,8 +320,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`.
    */
-  @Input() public redrawSource: Subject<{ source: string; data: TurfFeature[]; }> =
-    new Subject<{ source: string; data: TurfFeature[]; }>();
+  @Input() public redrawSource = new Subject<{ source: string; data: Feature<GeoJSON.Geometry>[]; }>();
 
   /**
    * @Input : Angular
@@ -386,12 +385,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Output : Angular
    * @description Emits the event of clicking on a feature.
    */
-  @Output() public onFeatureClic: EventEmitter<any> = new EventEmitter<any>();
+  @Output() public onFeatureClic = new EventEmitter<{ features: Array<mapboxgl.MapboxGeoJSONFeature>; point: [number, number]; }>();
   /**
    * @Output : Angular
    * @description Emits the event of hovering feature.
    */
-  @Output() public onFeatureOver: EventEmitter<any> = new EventEmitter<any>();
+  @Output() public onFeatureOver = new EventEmitter<{ features: Array<mapboxgl.MapboxGeoJSONFeature>; point: [number, number]; } | {}>();
 
   /**
    * @Output :  Angular
@@ -402,7 +401,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Output :  Angular
    * @description Emits the geojson of an aoi added to the map
    */
-  @Output() public onAoiChanged: EventEmitter<FeatureCollection> = new EventEmitter();
+  @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
   @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
   /**
    * @Output :  Angular
@@ -423,7 +422,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }> = new Subject();
 
   public showBasemapsList = false;
-  public layersMap: Map<string, mapboxgl.Layer>;
+  public layersMap: Map<string, ArlasAnyLayer>;
 
   public currentLat: string;
   public currentLng: string;
@@ -435,7 +434,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   // Polygon
   public nbPolygonVertice = 0;
-  public polygonlabeldata: { type: string; features: Array<any>; } = Object.assign({}, this.emptyData);
+  public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
   private isDrawingPolygon = false;
   private isInSimpleDrawMode = false;
   public firstDrawLayer = '';
@@ -501,7 +500,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       });
       layersSet.forEach(ll => {
-        (this.map as mapboxgl.Map).setLayoutProperty(ll, 'visibility', 'none');
+        this.map.setLayoutProperty(ll, 'visibility', 'none');
         this.setStrokeLayoutVisibility(ll, 'none');
         this.setScrollableLayoutVisibility(ll, 'none');
       });
@@ -512,7 +511,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       if (this.visualisationsSets.status.get(v)) {
         ls.forEach(l => {
           layers.add(l);
-          (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'visible');
+          this.map.setLayoutProperty(l, 'visibility', 'visible');
           this.setStrokeLayoutVisibility(l, 'visible');
           this.setScrollableLayoutVisibility(l, 'visible');
         });
@@ -541,7 +540,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    */
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
-      this.map.addSource(s.id, s.source);
+      if (typeof(s.source) !== 'string') {
+        this.map.addSource(s.id, s.source);
+      }
     });
     this.visualisationSetsConfig.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
@@ -669,7 +670,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
         this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-          this.map.getSource(this.POLYGON_LABEL_SOURCE).setData(this.polygonlabeldata);
+          (this.map.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -751,10 +752,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       transformRequest: this.transformRequest,
       attributionControl: false
     });
-    (<mapboxgl.Map>this.map).addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
+    this.map.addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
     this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
-      const bounds = (<mapboxgl.Map>this.map).getBounds();
+      const bounds = this.map.getBounds();
       const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
       this.onMapClosed.next(mapExtend);
     });
@@ -900,7 +901,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
         this.mapLayers.events.emitOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
-            const features = (this.map as mapboxgl.Map).queryRenderedFeatures(e.point);
+            const features = this.map.queryRenderedFeatures(e.point);
             const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
             if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
               this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
@@ -935,7 +936,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           });
 
           this.map.on('mouseleave', layerId, (e) => {
-            this.onFeatureOver.next([]);
+            this.onFeatureOver.next({});
           });
         });
 
@@ -950,7 +951,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
                 }
               });
               if (layerInVisualisations) {
-                (this.map as mapboxgl.Map).setLayoutProperty(l, 'visibility', 'none');
+                this.map.setLayoutProperty(l, 'visibility', 'none');
                 this.setStrokeLayoutVisibility(l, 'none');
                 this.setScrollableLayoutVisibility(l, 'none');
               }
@@ -1186,16 +1187,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     const dragstart = fromEvent(this.map, 'dragstart')
       .pipe(debounceTime(750));
     dragstart.subscribe(e => {
-      this.dragStartX = (<any>e).originalEvent.clientX;
-      this.dragStartY = (<any>e).originalEvent.clientY;
+      this.dragStartX = e.originalEvent.clientX;
+      this.dragStartY = e.originalEvent.clientY;
     });
     const dragend = fromEvent(this.map, 'dragend')
       .pipe(debounceTime(750));
     dragend.subscribe(e => {
-      this.dragEndX = (<any>e).originalEvent.clientX;
-      this.dragEndY = (<any>e).originalEvent.clientY;
-      this.xMoveRatio = Math.abs(this.dragEndX - this.dragStartX) / (<any>e).target._canvas.clientWidth;
-      this.yMoveRatio = Math.abs(this.dragEndY - this.dragStartY) / (<any>e).target._canvas.clientHeight;
+      this.dragEndX = e.originalEvent.clientX;
+      this.dragEndY = e.originalEvent.clientY;
+      this.xMoveRatio = Math.abs(this.dragEndX - this.dragStartX) / e.target._canvas.clientWidth;
+      this.yMoveRatio = Math.abs(this.dragEndY - this.dragStartY) / e.target._canvas.clientHeight;
     });
 
     this.visualisationsSets = {
@@ -1220,8 +1221,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       const centerOffsetPoint = this.map.project(this.map.getCenter()).add(offsetPoint);
       const centerOffSetLatLng = this.map.unproject(centerOffsetPoint);
 
-      const southWest = this.map.getBounds()._sw;
-      const northEast = this.map.getBounds()._ne;
+      const southWest = this.map.getBounds().getSouthWest();
+      const northEast = this.map.getBounds().getNorthEast();
       const bottomLeft = this.map.project(southWest);
       const topRght = this.map.project(northEast);
       const height = bottomLeft.y;
@@ -1251,7 +1252,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       const onMoveData: OnMoveResult = {
         zoom: this.zoom,
         zoomStart: this.zoomStart,
-        center: this.map.getCenter(),
+        center: this.map.getCenter().toArray(),
         centerWithOffset: [centerOffSetLatLng.lng, centerOffSetLatLng.lat],
         extendWithOffset: [wrapNorthOffset, wrapWestOffset, wrapSouthOffset, wrapEastOffset],
         rawExtendWithOffset: [rawNorthOffset, rawWestOffset, rawSouthOffset, rawEastOffset],
@@ -1351,7 +1352,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (!!this.redrawSource) {
       this.redrawSource.subscribe(sd => {
         if (this.map.getSource(sd.source) !== undefined) {
-          this.map.getSource(sd.source).setData({
+          (this.map.getSource(sd.source) as mapboxgl.GeoJSONSource).setData({
             'type': 'FeatureCollection',
             'features': sd.data
           });
@@ -1511,11 +1512,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       left: this.offset.west + this.fitBoundsPadding,
       right: this.offset.east + this.fitBoundsPadding
     };
-    (<mapboxgl.Map>this.map).fitBounds(bounds, paddedOptions);
+    this.map.fitBounds(bounds, paddedOptions);
   }
 
   public moveToCoordinates(lngLat: [number, number]) {
-    (this.map as mapboxgl.Map).setCenter(lngLat);
+    this.map.setCenter(lngLat);
   }
 
   private latLngToWKT(features) {
@@ -1546,7 +1547,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   /**
    * @description Add map sources
    */
-  private addSourcesToMap(sources: Array<MapSource>, map: any) {
+  private addSourcesToMap(sources: Array<MapSource>, map: mapboxgl.Map) {
     // Add sources defined as input in mapSources;
     const mapSourcesMap = new Map<string, MapSource>();
     if (sources) {
@@ -1554,7 +1555,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         mapSourcesMap.set(mapSource.id, mapSource);
       });
       mapSourcesMap.forEach((mapSource, id) => {
-        if (map.getSource(id) === undefined) {
+        if (map.getSource(id) === undefined && typeof(mapSource.source) !== 'string') {
           map.addSource(id, mapSource.source);
         }
       });
@@ -1669,7 +1670,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
             if (this.map.getLayer(originalLayerId) !== undefined) {
-              originalLayerIsVisible = this.map.getLayer(originalLayerId).visibility === 'visible';
+              originalLayerIsVisible = (this.map.getLayer(originalLayerId) as ArlasAnyLayer).layout.visibility === 'visible';
             }
             const layerFilter: Array<any> = [];
             const externalEventLayer = this.layersMap.get(layer.id);
@@ -1789,7 +1790,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       [west, south],
       [east, south],
     ]];
-    const polygonGeojson = {
+    const polygonGeojson: Feature<GeoJSON.Geometry> = {
       type: 'Feature',
       properties: {
         source: 'bbox'
@@ -1804,7 +1805,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
       this.drawData.features.forEach(df => geoboxdata.features.push(df));
     }
-    geoboxdata.features.push(<any>polygonGeojson);
+    geoboxdata.features.push(polygonGeojson);
     /** This allows to keep the drawn box on the map. It will be overriden in ngOnChanges `changes['drawData']` */
     this.drawService.addFeatures(geoboxdata, /** deleteOld */ true);
     this.onAoiChanged.next(geoboxdata);

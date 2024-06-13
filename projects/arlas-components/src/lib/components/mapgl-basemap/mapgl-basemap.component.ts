@@ -10,7 +10,7 @@ import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
 @Component({
   selector: 'arlas-mapgl-basemap',
   templateUrl: './mapgl-basemap.component.html',
-  styleUrls: ['./mapgl-basemap.component.css']
+  styleUrls: ['./mapgl-basemap.component.scss']
 })
 export class MapglBasemapComponent implements OnInit {
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
