@@ -38,8 +38,8 @@ export class MapglBasemapComponent implements OnInit {
       if (!!styles) {
         this.showList = styles.length > 0;
         styles.filter(bm => !bm.image).forEach(bm => {
-          if (bm.type !== 'protomap') {
-            const splitUrl = bm.styleFile.toString().split('/style.json?key=');
+          if (bm.type !== 'protomap' && !!bm.url) {
+            const splitUrl = bm.url.split('/style.json?key=');
             if (splitUrl.length === 2) {
               bm.image = `${splitUrl[0]}/0/0/0.png?key=${splitUrl[1]}`;
             }

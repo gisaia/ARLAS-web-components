@@ -21,6 +21,7 @@
 export interface BasemapStyle {
   name: string;
   styleFile: string | mapboxgl.Style;
+  url?: string;
   image?: string;
   type?: 'protomap' | 'mapbox';
   errored?: boolean;
