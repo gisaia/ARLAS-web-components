@@ -1,0 +1,35 @@
+:host {
+  min-width: 200px;
+}
+
+.header-indicator {
+  height: 10px;
+  width: 10px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+
+.multi-bar {
+  font-size: 0.8em;
+  border-spacing: 0;
+  width: 100%;
+
+  th {
+    max-width: 100px;
+  }
+  &__header {
+    font-size: 0.8em;
+    padding: 0 6px;
+    text-align: center;
+    &-indicator {
+      padding: 0 6px 6px 6px;
+    }
+  }
+  &__header-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-weight: normal;
+  }
+}

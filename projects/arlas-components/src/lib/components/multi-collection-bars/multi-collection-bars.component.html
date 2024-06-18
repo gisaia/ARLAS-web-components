@@ -1,0 +1,27 @@
+<table class="multi-bar">
+  <thead>
+  <tr>
+    <th></th>
+    <th class="multi-bar__header" *ngFor="let header of multiBarTable.header; let i = index">
+      <div class="multi-bar__header-item">
+        {{ header.subTitle }} ({{ header.metric }})
+      </div>
+    </th>
+  </tr>
+  <tr>
+    <th></th>
+    <th class="multi-bar__header-indicator" *ngFor="let header of multiBarTable.header; let i = index">
+      <div class="header-indicator" [style]="{'background': colors[i]}" [matTooltip]="header.title"></div>
+    </th>
+  </tr>
+  </thead>
+  <arlas-multi-bars-row
+    *ngFor="let row of multiBarTable.data; let index = index;"
+    [multiBarRowData]="row"
+    [colors]="colors"
+    [powerBars]="powerBarList.get(index)"
+    [displayCheckBox]="selectWithCheckbox"
+    [pendingMode]="pendingMode"
+    (rowSelected)="addRowItem($event)">
+  </arlas-multi-bars-row>
+</table>

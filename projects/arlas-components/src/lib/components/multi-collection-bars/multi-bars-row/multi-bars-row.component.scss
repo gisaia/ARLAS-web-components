@@ -1,0 +1,71 @@
+:host {
+  display: contents;
+  ::ng-deep {
+    arlas-powerbar {
+      .powerbar__powerbar--count {
+        text-align: left;
+      }
+
+      .powerbars__powerbar--neutral-state:hover,
+      .powerbars__powerbar--selected-bar:hover,
+      .powerbars__powerbar--unselected-bar:hover {
+        opacity: 1;
+        cursor: pointer;
+      }
+    }
+    mat-checkbox .mat-checkbox-inner-container{
+      height: 10px;
+      width: 10px;
+    }
+    .checkbox {
+      margin-right: 5px;
+      padding-bottom: 5px;
+    }
+
+    .checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
+      border-color: rgba(0,0,0,.04) !important;
+    }
+
+  }
+}
+
+.multi-bar-row {
+  &--selected {
+    font-weight: bold;
+    opacity: 1;
+    .header {
+      font-weight: bold!important;
+    }
+  }
+  &--unselected {
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+  &--pending {
+    opacity: 0.8;
+  }
+  &__header {
+    padding:  0 6px;
+    font-size: 0.6em;
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-weight: normal;
+    }
+  }
+  &__data {
+    padding: 0 6px;
+  }
+
+  td {
+    min-width: 80px;
+    max-width: 80px;
+  }
+
+  &__data--disable {
+    background: rgba(0, 0, 0, 0.042)
+  }
+}

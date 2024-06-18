@@ -42,13 +42,14 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   DonutModule, HistogramModule, MapglImportModule,
   MapglLayerIconModule, MapglLegendModule, MapglModule, MapglSettingsModule,
-  MetricModule, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
+  MetricModule, MultiCollectionBarsComponent, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
   WmtsLayerManagertDialogComponent
 } from '../../projects/arlas-components/src/public-api';
 import { MapglImportDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
 import { MapglSettingsDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
 import { CalendarTimelineModule } from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
 import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
+import { MultiBarDemoComponent } from './multi-bar-demo/multi-bar-demo.component';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -62,7 +63,8 @@ const routes: Routes = [
   { path: 'powerbars', component: PowerbarsDemoComponent },
   { path: 'calendar-timeline', component: CalendarTimelineDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
-  { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent }
+  { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
+  { path: 'multi-collection', component: MultiBarDemoComponent }
 ];
 
 @NgModule({
@@ -74,7 +76,8 @@ const routes: Routes = [
     PowerbarsDemoComponent,
     DonutDemoComponent,
     WmtsLayerManagerDemoComponent,
-    CalendarTimelineDemoComponent
+    CalendarTimelineDemoComponent,
+    MultiBarDemoComponent
   ],
   imports: [
     BrowserModule,
@@ -95,6 +98,7 @@ const routes: Routes = [
     HistogramModule,
     DonutModule,
     ResultsModule,
+    MultiCollectionBarsComponent,
     MetricModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,

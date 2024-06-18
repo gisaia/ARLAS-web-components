@@ -1,0 +1,21 @@
+<tr [ngClass]="{
+'multi-bar-row--unselected': !selected,
+'multi-bar-row--selected': selected,
+'multi-bar-row--pending': !selected && pendingMode
+}" (click)="selectRow()" class="multi-bar-row">
+  <th scope="row" class="multi-bar-row__header">
+    <div class="header">
+      <section *ngIf="displayCheckBox"  (click)="$event.stopPropagation()">
+        <mat-checkbox  [checked]="selected" (change)="onCheck()"></mat-checkbox>
+      </section>
+      <span>
+           {{multiBarRowData.header | uppercase}}
+         </span>
+    </div>
+  </th>
+  <td  [ngClass]="{'multi-bar-row__data--disable': powerBar.count === 0}" *ngFor="let powerBar of powerBars">
+    <div  class="multi-bar-row__data">
+      <arlas-powerbar [useColorFromData]="true" *ngIf="powerBar.count !== 0" [powerbar]="powerBar"></arlas-powerbar>
+    </div>
+  </td>
+</tr>
