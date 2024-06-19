@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MultiCollectionBarsComponent } from './multi-collection-bars.component';
+import { MultiBarsRowComponent } from "./multi-bars-row/multi-bars-row.component";
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from "@ngx-translate/core";
 
 describe('MultiCollectionBarsComponent', () => {
   let component: MultiCollectionBarsComponent;
@@ -8,7 +10,9 @@ describe('MultiCollectionBarsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MultiCollectionBarsComponent ]
+     imports: [MultiBarsRowComponent,
+       MultiCollectionBarsComponent,
+       TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),]
     })
     .compileComponents();
 

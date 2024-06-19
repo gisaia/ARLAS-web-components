@@ -8,7 +8,7 @@ describe('MultiBarsRowComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MultiBarsRowComponent ]
+      imports: [ MultiBarsRowComponent ]
     })
     .compileComponents();
 
