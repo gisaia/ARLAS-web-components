@@ -24,7 +24,7 @@ export interface MetricsTableData {
 }
 
 export interface MetricsTableRow {
-  header: string;
+  term: string;
   data: MetricsTableData[];
 }
 
@@ -56,7 +56,7 @@ export class MetricsTableComponent implements OnInit {
     ],
     data: [
       {
-        header: 'pneo', data: [
+        term: 'pneo', data: [
           {value: 800, maxValue: 1000},
           {value: 0, maxValue: 0},
           {value: 500, maxValue: 1000}, {
@@ -65,7 +65,7 @@ export class MetricsTableComponent implements OnInit {
           }]
       },
       {
-        header: 'dede', data: [
+        term: 'dede', data: [
           {value: 600, maxValue: 1000},
           {value: 300, maxValue: 1000},
           {value: 500, maxValue: 1000},
@@ -74,20 +74,20 @@ export class MetricsTableComponent implements OnInit {
           ]
       },
       {
-        header: 'toto', data: [
+        term: 'toto', data: [
           {value: 600, maxValue: 1000},
           {value: 500, maxValue: 1000},
           {value: 0, maxValue: 0}, {value: 500, maxValue: 1000}]
       },
       {
-        header: 'titi', data: [
+        term: 'titi', data: [
           {value: 600, maxValue: 1000},
           {value: 550, maxValue: 1000},
           {value: 1000, maxValue: 1000},
           {value: 500, maxValue: 1000}]
       },
       {
-        header: 'deto', data: [
+        term: 'deto', data: [
           {value: 750, maxValue: 1000},
           {value: 40, maxValue: 1000},
           {value: 230, maxValue: 1000},

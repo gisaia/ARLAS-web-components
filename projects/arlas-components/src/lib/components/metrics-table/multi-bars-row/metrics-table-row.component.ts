@@ -35,12 +35,12 @@ export class MetricsTableRowComponent implements OnInit {
 
   public selectRow() {
     this.selected = !this.selected;
-    this.rowSelected.emit(this.multiBarRowData.header);
+    this.rowSelected.emit(this.multiBarRowData.term);
   }
 
 
   public  onCheck() {
     this.selected = !this.selected;
-    this.rowSelected.emit(this.multiBarRowData.header);
+    this.rowSelected.emit(this.multiBarRowData.term);
   }
 }
