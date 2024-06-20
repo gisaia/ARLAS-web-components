@@ -13,9 +13,12 @@
          </span>
     </div>
   </th>
-  <td  [ngClass]="{'multi-bar-row__data--disable': powerBar.count === 0}" *ngFor="let powerBar of powerBars">
-    <div  class="multi-bar-row__data">
-      <arlas-powerbar [useColorFromData]="true" *ngIf="powerBar.count !== 0" [powerbar]="powerBar"></arlas-powerbar>
+  <td class="multi-bar-row__data" *ngFor="let powerBar of powerBars">
+    <div  >
+      <arlas-powerbar [useColorFromData]="true" *ngIf="powerBar.count !== 0; else noData" [powerbar]="powerBar"></arlas-powerbar>
+      <ng-template #noData>
+        <div class="empty-cell"></div>
+      </ng-template>
     </div>
   </td>
 </tr>

@@ -44,11 +44,12 @@
     }
   }
   &--pending {
-    opacity: 0.8;
+    opacity: 0.5;
   }
   &__header {
     padding:  0 6px;
     font-size: 0.6em;
+    vertical-align: middle;
     .header {
       display: flex;
       align-items: center;
@@ -58,14 +59,16 @@
   }
   &__data {
     padding: 0 6px;
+    vertical-align: middle;
   }
 
   td {
     min-width: 80px;
     max-width: 80px;
   }
+}
 
-  &__data--disable {
-    background: rgba(0, 0, 0, 0.042)
-  }
+.empty-cell{
+  height: 10px;
+  background: rgba(0, 0, 0, 0.042)
 }

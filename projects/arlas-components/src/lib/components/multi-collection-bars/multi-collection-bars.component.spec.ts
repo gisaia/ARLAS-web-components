@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MultiCollectionBarsComponent } from './multi-collection-bars.component';
-import { MultiBarsRowComponent } from "./multi-bars-row/multi-bars-row.component";
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from "@ngx-translate/core";
+import { MultiBarsRowComponent } from './multi-bars-row/multi-bars-row.component';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 describe('MultiCollectionBarsComponent', () => {
   let component: MultiCollectionBarsComponent;
