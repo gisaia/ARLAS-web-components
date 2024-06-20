@@ -5,33 +5,33 @@ import { NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { PowerBar } from '../powerbars/model/powerbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule } from '@ngx-translate/core';
-import { MultiBarsRowComponent } from './multi-bars-row/multi-bars-row.component';
+import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.component';
 
-interface MultiBarTable {
-  header: MultiBarHeader[];
-  data: MultiBarRow[];
+export interface MetricsTable {
+  header: MetricsTableHeader[];
+  data: MetricsTableRow[];
 }
 
-interface MultiBarHeader {
+export interface MetricsTableHeader {
   title: string;
   subTitle: string;
   metric: string;
 }
 
-interface MultiBarData {
+export interface MetricsTableData {
   value: number;
   maxValue: number;
 }
 
-export interface MultiBarRow {
+export interface MetricsTableRow {
   header: string;
-  data: MultiBarData[];
+  data: MetricsTableData[];
 }
 
 @Component({
-  selector: 'arlas-multi-collection-bars',
-  templateUrl: './multi-collection-bars.component.html',
-  styleUrls: ['./multi-collection-bars.component.scss'],
+  selector: 'arlas-metrics-table',
+  templateUrl: './metrics-table.component.html',
+  styleUrls: ['./metrics-table.component.scss'],
   imports: [
     PowerbarModule,
     MatTooltipModule,
@@ -41,13 +41,13 @@ export interface MultiBarRow {
     UpperCasePipe,
     MatCheckboxModule,
     TranslateModule,
-    MultiBarsRowComponent
+    MetricsTableRowComponent
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MultiCollectionBarsComponent implements OnInit {
-  @Input() public multiBarTable: MultiBarTable = {
+export class MetricsTableComponent implements OnInit {
+  @Input() public multiBarTable: MetricsTable = {
     header: [
       {title: 'produit', subTitle: ' couverture nuageuse', metric: 'avg'},
       {title: 'flikr', subTitle: ' couverture', metric: 'min'},

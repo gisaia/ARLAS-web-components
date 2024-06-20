@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MultiBarDemoComponent } from './multi-bar-demo.component';
+import { MetricsTableRowComponent } from './metrics-table-row.component';
 
-describe('MultiBarDemoComponent', () => {
-  let component: MultiBarDemoComponent;
-  let fixture: ComponentFixture<MultiBarDemoComponent>;
+describe('MultiBarsRowComponent', () => {
+  let component: MetricsTableRowComponent;
+  let fixture: ComponentFixture<MetricsTableRowComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MultiBarDemoComponent ]
+      imports: [ MetricsTableRowComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MultiBarDemoComponent);
+    fixture = TestBed.createComponent(MetricsTableRowComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

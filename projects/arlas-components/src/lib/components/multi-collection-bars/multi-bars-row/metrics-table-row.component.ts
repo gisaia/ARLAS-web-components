@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MultiBarRow } from '../multi-collection-bars.component';
+import { MetricsTableRow } from '../metrics-table.component';
 import { PowerBar } from '../../powerbars/model/powerbar';
 import { NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { PowerbarModule } from '../../powerbars/powerbar/powerbar.module';
 
 @Component({
   selector: 'arlas-multi-bars-row',
-  templateUrl: './multi-bars-row.component.html',
-  styleUrls: ['./multi-bars-row.component.scss'],
+  templateUrl: './metrics-table-row.component.html',
+  styleUrls: ['./metrics-table-row.component.scss'],
   imports: [
     MatCheckboxModule,
     NgClass,
@@ -19,9 +19,9 @@ import { PowerbarModule } from '../../powerbars/powerbar/powerbar.module';
   ],
   standalone: true
 })
-export class MultiBarsRowComponent implements OnInit {
+export class MetricsTableRowComponent implements OnInit {
   @Input() public displayCheckBox: boolean;
-  @Input() public multiBarRowData: MultiBarRow;
+  @Input() public multiBarRowData: MetricsTableRow;
   @Input() public colors: string[];
   @Input() public pendingMode = false;
   @Input() public powerBars: PowerBar[] = [];

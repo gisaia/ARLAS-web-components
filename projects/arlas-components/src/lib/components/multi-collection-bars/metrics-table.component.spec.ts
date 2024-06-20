@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MultiCollectionBarsComponent } from './multi-collection-bars.component';
-import { MultiBarsRowComponent } from './multi-bars-row/multi-bars-row.component';
+import { MetricsTableComponent } from './metrics-table.component';
+import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.component';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 describe('MultiCollectionBarsComponent', () => {
-  let component: MultiCollectionBarsComponent;
-  let fixture: ComponentFixture<MultiCollectionBarsComponent>;
+  let component: MetricsTableComponent;
+  let fixture: ComponentFixture<MetricsTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-     imports: [MultiBarsRowComponent,
-       MultiCollectionBarsComponent,
+     imports: [MetricsTableRowComponent,
+       MetricsTableComponent,
        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(MultiCollectionBarsComponent);
+    fixture = TestBed.createComponent(MetricsTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

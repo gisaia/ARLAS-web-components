@@ -24,7 +24,7 @@ export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMo
 export { ArlasComponentsService } from './lib/arlas-components.service';
 export { AwcColorGeneratorLoader, ColorGeneratorLoader, numberToShortValue } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
-export  { MultiCollectionBarsComponent } from './lib/components/multi-collection-bars/multi-collection-bars.component';
+export  { MetricsTableComponent } from './lib/components/multi-collection-bars/metrics-table.component';
 export { DonutModule } from './lib/components/donut/donut.module';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { HistogramModule } from './lib/components/histogram/histogram.module';
