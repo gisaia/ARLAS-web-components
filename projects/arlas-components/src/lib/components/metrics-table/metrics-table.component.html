@@ -1,3 +1,14 @@
+<div class="tools">
+  <div *ngIf="filterOperator && filterOperator?.display" class="include_exclude">
+    <div class="operation" [class.selected_operation]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">
+      {{'include' | translate}}</div>
+    <div class="operation" [class.selected_operation]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">
+      {{'exclude' | translate}}</div>
+  </div>
+  <div *ngIf="filterOperator && !filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
+    <div class="operation" [class.exclude]="filterOperator?.value === 'Neq'">{{'exclude' | translate}}</div>
+  </div>
+</div>
 <table class="multi-bar">
   <thead>
   <tr>

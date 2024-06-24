@@ -254,4 +254,11 @@ export class MetricsTableComponent implements OnInit {
   public static getJsonSchema(): Object {
     return metricTableJsonSchema;
   }
+
+  public setOperator(op: 'Eq' | 'Neq'): void {
+    if (this.filterOperator.value !== op) {
+      this.filterOperator.value = op;
+      this.filterOperatorEvent.next(op);
+    }
+  }
 }
