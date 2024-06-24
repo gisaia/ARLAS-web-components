@@ -5,10 +5,15 @@
 .header-indicator {
   height: 10px;
   width: 10px;
+  display: inline-block;
   border-radius: 10px;
   margin: 0 auto;
 }
 
+.separator {
+  margin: 0 2px;
+  display: inline-block;
+}
 
 .multi-bar {
   font-size: 0.8em;
@@ -20,16 +25,31 @@
   }
   &__header {
     font-size: 0.8em;
-    padding: 0 6px;
+    padding: 0 6px 6px 6px;
     text-align: center;
     &-indicator {
       padding: 0 6px 6px 6px;
+      text-align: center;
+      line-height: 10px;
+    }
+    &-title {
+      font-size: 0.8em;
+      text-overflow: ellipsis;
+      max-width: 52px;
+      display: inline-block;
+      overflow: hidden;
     }
   }
   &__header-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
     font-weight: normal;
+    margin: 0 auto;
+    word-wrap: break-word;
+    &-title {
+      display: inline-block;
+      max-width: 50px;
+      max-height: 50px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }

@@ -1,3 +1,6 @@
 <div class="shortcut">
-  <arlas-metrics-table></arlas-metrics-table>
+  <arlas-metrics-table [multiBarTable]="multiBarTableSameTitle" [useColorService]="false" [headerDisplayMode]="'indicator'" [applyColorTo]="'row'" [keysToColors]="[['pneo', 'FF0000']]"></arlas-metrics-table>
+  <arlas-metrics-table [multiBarTable]="multiBarTDiffTittle" [useColorService]="true" [keysToColors]="[['pneo', 'FF0000']]"></arlas-metrics-table>
+  <arlas-metrics-table [applyColorTo]="'row'" [multiBarTable]="multiBarTDiffTittle"  [useColorService]="true"></arlas-metrics-table>
+  <arlas-metrics-table  [multiBarTable]="multiBarTDiffTittle" [headerDisplayMode]="'full'"  [useColorService]="true"></arlas-metrics-table>
 </div>

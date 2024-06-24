@@ -8,16 +8,19 @@
       <section *ngIf="displayCheckBox"  (click)="$event.stopPropagation()">
         <mat-checkbox  [checked]="selected" (change)="onCheck()"></mat-checkbox>
       </section>
-      <span>
+      <span class="header-title">
            {{multiBarRowData?.term | uppercase}}
-         </span>
+      </span>
     </div>
   </th>
   <td class="multi-bar-row__data" *ngFor="let powerBar of powerBars">
     <div  >
-      <arlas-powerbar [useColorFromData]="true" *ngIf="powerBar.count !== 0; else noData" [powerbar]="powerBar"></arlas-powerbar>
+      <arlas-powerbar [useColorFromData]="useColorFromData" [useColorService]="useColorService" *ngIf="powerBar.count !== null; else noData" [powerbar]="powerBar"></arlas-powerbar>
       <ng-template #noData>
-        <div class="empty-cell"></div>
+        <div class="empty-cell">
+          <span class="empty"></span>
+          <span class="empty"></span>
+        </div>
       </ng-template>
     </div>
   </td>

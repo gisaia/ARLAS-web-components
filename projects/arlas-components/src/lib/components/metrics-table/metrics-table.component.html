@@ -2,24 +2,36 @@
   <thead>
   <tr>
     <th></th>
-    <th class="multi-bar__header" *ngFor="let header of multiBarTable.header; let i = index">
-      <div class="multi-bar__header-item">
-        {{ header.subTitle }} ({{ header.metric }})
+    <th class="multi-bar__header" *ngFor="let header of multiBarTable?.header; let i = index">
+      <div  class="multi-bar__header-item multi-bar__header-item-title">
+        {{ header.subTitle | formatLongTitle:20}}
       </div>
+      <div class="multi-bar__header-item "> ({{ header.metric }})</div>
     </th>
   </tr>
   <tr>
     <th></th>
-    <th class="multi-bar__header-indicator" *ngFor="let header of multiBarTable.header; let i = index">
-      <div class="header-indicator" [style]="{'background': colors[i]}" [matTooltip]="header.title"></div>
-    </th>
+    <ng-container *ngIf="titleAreDifferent; else displayOneTitle">
+      <th class="multi-bar__header-indicator" *ngFor="let header of multiBarTable?.header; let i = index">
+        <div  *ngIf="headerDisplayMode === 'indicator' || headerDisplayMode === 'full'"
+              class="header-indicator" [style]="{'background': shortcutColor[i]}" [matTooltip]="header.title"></div>
+        <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
+        <span class="multi-bar__header-title" *ngIf="headerDisplayMode === 'titleOnly' || headerDisplayMode === 'full'">{{header.title}}</span>
+      </th>
+    </ng-container>
+    <ng-template #displayOneTitle>
+      <th class="multi-bar__header-title" [attr.colspan]="multiBarTable.header.length">
+        <span>{{multiBarTable.header[0].title}}</span>
+      </th>
+    </ng-template>
   </tr>
   </thead>
   <arlas-multi-bars-row
-    *ngFor="let row of multiBarTable.data; let index = index;"
+    *ngFor="let row of multiBarTable?.data; let index = index;"
     [multiBarRowData]="row"
-    [colors]="colors"
-    [powerBars]="powerBarList.get(index)"
+    [useColorFromData]="keysToColors && !useColorService"
+    [useColorService]="useColorService"
+    [powerBars]="powerBarsList.get(index)"
     [displayCheckBox]="selectWithCheckbox"
     [pendingMode]="pendingMode"
     (rowSelected)="addRowItem($event)">

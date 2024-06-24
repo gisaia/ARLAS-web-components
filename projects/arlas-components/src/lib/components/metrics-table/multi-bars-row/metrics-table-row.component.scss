@@ -6,6 +6,10 @@
         text-align: left;
       }
 
+      .powerbar__powerbar--term{
+        display: none;
+      }
+
       .powerbars__powerbar--neutral-state:hover,
       .powerbars__powerbar--selected-bar:hover,
       .powerbars__powerbar--unselected-bar:hover {
@@ -55,6 +59,13 @@
       align-items: center;
       gap: 16px;
       font-weight: normal;
+      max-width: 70px;
+    }
+    .header-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: 60px;
+      display: inline-block;
     }
   }
   &__data {
@@ -70,5 +81,13 @@
 
 .empty-cell{
   height: 10px;
-  background: rgba(0, 0, 0, 0.042)
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+.empty {
+  display: inline-block;
+  width: 6px;
+  border:solid 1px rgba(0,0,0, 0.2);
 }

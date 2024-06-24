@@ -22,6 +22,8 @@ import { PowerbarModule } from '../../powerbars/powerbar/powerbar.module';
 export class MetricsTableRowComponent implements OnInit {
   @Input() public displayCheckBox: boolean;
   @Input() public multiBarRowData: MetricsTableRow;
+  @Input() public useColorService = false;
+  @Input() public useColorFromData = false;
   @Input() public colors: string[];
   @Input() public pendingMode = false;
   @Input() public powerBars: PowerBar[] = [];
@@ -31,6 +33,8 @@ export class MetricsTableRowComponent implements OnInit {
   public constructor() { }
 
   public ngOnInit(): void {
+    console.error(this.useColorService);
+    console.error(this.useColorFromData);
   }
 
   public selectRow() {
