@@ -43,8 +43,11 @@ export class MetricsTableRowComponent implements OnInit {
   }
 
 
-  public  onCheck() {
+  public onCheck() {
     this.selected = !this.selected;
     this.rowSelected.emit(this.multiBarRowData.term);
   }
+
+  /** TODO : the selection state should be saved an propagated to the parent component.
+   */
 }

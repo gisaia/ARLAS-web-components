@@ -31,6 +31,7 @@ export { HistogramModule } from './lib/components/histogram/histogram.module';
 export { MapglImportComponent, MapglImportDialogComponent } from './lib/components/mapgl-import/mapgl-import.component';
 export { CoordinatesComponent } from './lib/components/mapgl/coordinates/coordinates.component';
 export { Coordinate, PointFormGroup } from './lib/tools/coordinates.tools';
+export { FilterOperator } from './lib/tools/models/term-filters';
 export { MapglImportModule } from './lib/components/mapgl-import/mapgl-import.module';
 export { MapglLayerIconComponent } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.component';
 export { MapglLayerIconModule } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.module';

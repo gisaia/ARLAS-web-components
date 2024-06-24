@@ -1,3 +1,22 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -9,6 +28,8 @@ import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.com
 import * as tinycolor from 'tinycolor2';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { FormatLongTitlePipe } from '../../pipes/format-title/format-long-title.pipe';
+import * as metricTableJsonSchema from './metrics-table.schema.json';
+import { FilterOperator } from '../../tools/models/term-filters';
 
 export interface MetricsTable {
   header: MetricsTableHeader[];
@@ -29,6 +50,7 @@ export interface MetricsTableData {
 export interface MetricsTableRow {
   term: string;
   data: MetricsTableData[];
+  selected?: boolean;
 }
 
 @Component({
@@ -56,6 +78,24 @@ export class MetricsTableComponent implements OnInit {
    * @description Data to build the table.
    */
   @Input() public multiBarTable: MetricsTable;
+
+  /**
+     * @Input : Angular
+     * @description Options about how to apply filters on metrics table
+     * - value : The default value.
+     *           if 'Eq', the selected line is included in the ARLAS filter.
+     *           if 'Neq', the selected line is excluded in the ARLAS filter.
+     * - display: Whether to display a switcher between 'Eq' and 'Neq' or keep the default operator all the time
+     */
+  @Input() public filterOperator: FilterOperator = {
+    value: 'Eq',
+    display: true
+  };
+  /**
+   * @Output : Angular
+   * @description Emits the filter operator
+   */
+  @Output() public filterOperatorEvent: EventEmitter<'Neq' | 'Eq'> = new EventEmitter();
 
   /**
    * @Input : Angular
@@ -118,31 +158,31 @@ export class MetricsTableComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if(this.multiBarTable) {
+    if (this.multiBarTable) {
       this.buildPowerBars();
       this.buildIndicators();
       this.verifyIfSameTitle();
     }
   }
 
-  public verifyIfSameTitle(){
-    this.titleAreDifferent = this.multiBarTable.header.every((current, i) =>{
-      if(i === this.multiBarTable.header.length - 1){
+  public verifyIfSameTitle() {
+    this.titleAreDifferent = this.multiBarTable.header.every((current, i) => {
+      if (i === this.multiBarTable.header.length - 1) {
         return true;
       }
-      const nextTitle =   this.multiBarTable.header[i + 1].title;
+      const nextTitle = this.multiBarTable.header[i + 1].title;
       return current.title !== nextTitle;
     });
 
-    if(!this.titleAreDifferent) {
+    if (!this.titleAreDifferent) {
       this.headerDisplayMode = 'titleOnly';
     }
 
   }
 
-  public buildIndicators(){
+  public buildIndicators() {
     this.powerBarsList.forEach(powerBarList => {
-      if(!this.useColorService && !this.keysToColors || this.applyColorTo === 'row') {
+      if (!this.useColorService && !this.keysToColors || this.applyColorTo === 'row') {
         this.shortcutColor.push('#88c9c3');
       } else {
         powerBarList.forEach(powerBars => {
@@ -157,24 +197,24 @@ export class MetricsTableComponent implements OnInit {
       this.powerBarsList.set(rowIndex, []);
       merticsRow.data.forEach((item, i) => {
         let powerBar;
-        if(this.applyColorTo === 'row') {
+        if (this.applyColorTo === 'row') {
           powerBar = new PowerBar(merticsRow.term, merticsRow.term, item.value);
-        } else if(this.applyColorTo === 'column') {
+        } else if (this.applyColorTo === 'column') {
           const header = this.multiBarTable.header[i];
           powerBar = new PowerBar(header.title, header.title, item.value);
         }
 
         powerBar.progression = (item.value / item.maxValue) * 100;
-        if(this.keysToColors && !this.useColorService) {
-         const keyColorPair = this.keysToColors.find(keyColorPair =>
-           keyColorPair[0].toLowerCase() === powerBar.term.toLowerCase());
-         if(keyColorPair){
-           powerBar.color = '#'+keyColorPair[1];
-         } else {
-           powerBar.color = '#88c9c3';
-         }
+        if (this.keysToColors && !this.useColorService) {
+          const keyColorPair = this.keysToColors.find(keyColorPair =>
+            keyColorPair[0].toLowerCase() === powerBar.term.toLowerCase());
+          if (keyColorPair) {
+            powerBar.color = '#' + keyColorPair[1];
+          } else {
+            powerBar.color = '#88c9c3';
+          }
         }
-        if(this.useColorService) {
+        if (this.useColorService) {
           this.definePowerBarColor(powerBar);
         }
         this.powerBarsList.get(rowIndex).push(powerBar);
@@ -194,20 +234,24 @@ export class MetricsTableComponent implements OnInit {
     } else {
       this.selectedKey.add(key);
     }
-    this.onSelect.next(this.selectedKey);
+    this.onSelect.emit(this.selectedKey);
   }
 
-  public togglePendingMode(){
+  public togglePendingMode() {
     this.pendingMode = this.selectedKey.size !== 0;
   }
 
-  private definePowerBarColor(powerBar: PowerBar){
-      const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
-        this.colorsSaturationWeight)).toRgb();
-      powerBar.color = this.getPowerbarColor(rgbaColor);
+  private definePowerBarColor(powerBar: PowerBar) {
+    const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
+      this.colorsSaturationWeight)).toRgb();
+    powerBar.color = this.getPowerbarColor(rgbaColor);
   }
 
-  private getPowerbarColor(rgbaColor: tinycolor.ColorFormats.RGBA): string{
+  private getPowerbarColor(rgbaColor: tinycolor.ColorFormats.RGBA): string {
     return 'rgba(' + [rgbaColor.r, rgbaColor.g, rgbaColor.b, 0.7].join(',') + ')';
+  }
+
+  public static getJsonSchema(): Object {
+    return metricTableJsonSchema;
   }
 }

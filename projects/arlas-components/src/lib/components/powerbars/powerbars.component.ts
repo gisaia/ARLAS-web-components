@@ -22,11 +22,12 @@ import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitte
 import { SimpleNode, TreeNode } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { FilterOperator, PowerBar } from './model/powerbar';
+import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as tinycolor from 'tinycolor2';
 import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
+import { FilterOperator } from '../../tools/models/term-filters';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -122,7 +123,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
      * @description Options about how to apply filters on powerbars
      * - value : The default value.
      *           if 'Eq', the selected powerbar is included in the ARLAS filter.
-     *           if 'Neq', the selected powerbar is included in the ARLAS filter.
+     *           if 'Neq', the selected powerbar is excluded in the ARLAS filter.
      * - display: Whether to display a switcher between 'Eq' and 'Neq' or keep the default operator all the time
      */
   @Input() public filterOperator: FilterOperator = {
