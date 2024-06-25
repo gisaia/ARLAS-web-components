@@ -117,8 +117,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @constant
    */
-  public TAIL_HEIGHT = 30;
-
+  // + 40 due to the new header bar in arlas wui;
+  // NEED TO BE CHALLENGED
+  public TAIL_HEIGHT = 30 + 40;
 
   public loadAnimationConfig = {
     animationType: ngxLoadingAnimationTypes.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
