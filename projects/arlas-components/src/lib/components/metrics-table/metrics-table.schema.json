@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "title": "Metric Table inputs configuration",
+    "description": "The inputs configuration input of a metrics table.",
+    "type": "object",
+    "$id": "metrics-table.schema.json",
+    "properties": {
+        "filterOperator": {
+            "description": "Options about how to apply filters on the metric table.",
+            "type": "object",
+            "properties": {
+                "value": {
+                    "description": "The default operator value. \n if 'Eq', the selected line of the table is included in the ARLAS filter. \n if 'Neq', the selected line is marked as excluded in the ARLAS filter.",
+                    "type": "string",
+                    "enum": ["Eq", "Neq"]
+                },
+                "display": {
+                    "description": "Whether to display a switcher between 'Eq' and 'Neq' or keep the default operator all the time",
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "required": []
+}
