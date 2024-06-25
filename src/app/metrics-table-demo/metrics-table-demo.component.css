@@ -1,3 +1,10 @@
 .shortcut{
   width: 150px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demo{
+  height: 200px;
 }

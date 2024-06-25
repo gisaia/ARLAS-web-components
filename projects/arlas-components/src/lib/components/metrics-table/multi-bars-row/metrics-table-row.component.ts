@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MetricsTableRow } from '../metrics-table.component';
 import { PowerBar } from '../../powerbars/model/powerbar';
@@ -17,7 +17,8 @@ import { PowerbarModule } from '../../powerbars/powerbar/powerbar.module';
     NgIf,
     NgForOf
   ],
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MetricsTableRowComponent implements OnInit {
   @Input() public displayCheckBox: boolean;
@@ -27,14 +28,20 @@ export class MetricsTableRowComponent implements OnInit {
   @Input() public colors: string[];
   @Input() public pendingMode = false;
   @Input() public powerBars: PowerBar[] = [];
+  @Input() public selected: boolean;
+  @Input() public defaultSelection: string[];
   @Output() public rowSelected = new EventEmitter();
 
-  public selected: boolean;
+
   public constructor() { }
 
   public ngOnInit(): void {
-    console.error(this.useColorService);
-    console.error(this.useColorFromData);
+    const isSelected = this.defaultSelection && this.defaultSelection.find( term =>
+      term.toLowerCase().trim() === this.multiBarRowData.term.toLowerCase().trim());
+    if(isSelected){
+      this.selected = true;
+      this.rowSelected.emit(this.multiBarRowData.term);
+    }
   }
 
   public selectRow() {

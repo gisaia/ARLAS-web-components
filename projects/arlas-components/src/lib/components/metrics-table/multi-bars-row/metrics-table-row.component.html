@@ -14,8 +14,11 @@
     </div>
   </th>
   <td class="multi-bar-row__data" *ngFor="let powerBar of powerBars">
-    <div  >
-      <arlas-powerbar [useColorFromData]="useColorFromData" [useColorService]="useColorService" *ngIf="powerBar.count !== null; else noData" [powerbar]="powerBar"></arlas-powerbar>
+    <div>
+    <arlas-powerbar [useColorFromData]="useColorFromData"
+                      [useColorService]="useColorService"
+                      *ngIf="powerBar.count !== null; else noData"
+                      [powerbar]="powerBar"></arlas-powerbar>
       <ng-template #noData>
         <div class="empty-cell">
           <span class="empty"></span>

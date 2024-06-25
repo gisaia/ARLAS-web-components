@@ -40,6 +40,7 @@ export interface MetricsTableHeader {
   title: string;
   subTitle: string;
   metric: string;
+  span?: number;
 }
 
 export interface MetricsTableData {
@@ -99,6 +100,12 @@ export class MetricsTableComponent implements OnInit {
 
   /**
    * @Input : Angular
+   * @description Default term selected.
+   */
+  @Input() public defaultSelection: string[] = ['pneo'];
+
+  /**
+   * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
   @Input() public keysToColors: Array<[string, string]>;
@@ -144,6 +151,7 @@ export class MetricsTableComponent implements OnInit {
   protected pendingMode = false;
   protected shortcutColor = [];
   protected titleAreDifferent = true;
+  protected uniqueTitles: MetricsTableHeader[];
 
   public constructor(private colorService: ArlasColorService) {
     this.colorService.changekeysToColors$.subscribe(() => {
@@ -161,23 +169,24 @@ export class MetricsTableComponent implements OnInit {
     if (this.multiBarTable) {
       this.buildPowerBars();
       this.buildIndicators();
-      this.verifyIfSameTitle();
+      this.buildHeaders();
     }
   }
 
-  public verifyIfSameTitle() {
-    this.titleAreDifferent = this.multiBarTable.header.every((current, i) => {
-      if (i === this.multiBarTable.header.length - 1) {
-        return true;
+  public buildHeaders(){
+    this.uniqueTitles = [];
+    this.multiBarTable.header.forEach(header => {
+      const includes = this.uniqueTitles.find(includeHeader => includeHeader.title === header.title);
+      if(!includes) {
+        header.span = 1;
+        this.uniqueTitles.push(header);
+      } else {
+        includes.span++;
       }
-      const nextTitle = this.multiBarTable.header[i + 1].title;
-      return current.title !== nextTitle;
     });
-
-    if (!this.titleAreDifferent) {
-      this.headerDisplayMode = 'titleOnly';
+    this.titleAreDifferent = this.uniqueTitles.length === this.multiBarTable.data[0].data.length;
+    if(!this.titleAreDifferent) {
     }
-
   }
 
   public buildIndicators() {
@@ -203,18 +212,8 @@ export class MetricsTableComponent implements OnInit {
           const header = this.multiBarTable.header[i];
           powerBar = new PowerBar(header.title, header.title, item.value);
         }
-
         powerBar.progression = (item.value / item.maxValue) * 100;
-        if (this.keysToColors && !this.useColorService) {
-          const keyColorPair = this.keysToColors.find(keyColorPair =>
-            keyColorPair[0].toLowerCase() === powerBar.term.toLowerCase());
-          if (keyColorPair) {
-            powerBar.color = '#' + keyColorPair[1];
-          } else {
-            powerBar.color = '#88c9c3';
-          }
-        }
-        if (this.useColorService) {
+        if(this.useColorService) {
           this.definePowerBarColor(powerBar);
         }
         this.powerBarsList.get(rowIndex).push(powerBar);

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
 :host {
   min-width: 200px;
 }
@@ -39,12 +39,12 @@
       color: #555;
       font-weight: bold;
     }
-    
+
     .exclude {
       color: #555;
       font-weight: bold;
       cursor: unset ;
-    
+
     }
   }
 }
@@ -70,17 +70,19 @@
   th {
     max-width: 100px;
   }
+
   &__header {
     font-size: 12px;
     padding: 0 6px 6px 6px;
     text-align: center;
+    vertical-align: bottom;
     &-indicator {
       padding: 0 6px 6px 6px;
       text-align: center;
-      line-height: 10px;
+      line-height: 12px;
     }
     &-title {
-      font-size: 0.8em;
+      font-size: 12px;
       text-overflow: ellipsis;
       max-width: 52px;
       display: inline-block;
@@ -91,9 +93,10 @@
     font-weight: normal;
     margin: 0 auto;
     word-wrap: break-word;
+    text-align: center;
     &-title {
       display: inline-block;
-      max-width: 50px;
+      max-width: 57px;
       max-height: 50px;
       overflow: hidden;
       text-overflow: ellipsis;
