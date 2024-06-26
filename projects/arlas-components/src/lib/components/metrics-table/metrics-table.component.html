@@ -46,7 +46,7 @@
   </thead>
   <tbody [style]="{height: tbodyHeight}">
   <arlas-multi-bars-row
-    *ngFor="let item of (s | async)|keyvalue; let index = index;trackBy: trackByFn"
+    *ngFor="let item of selectedRow|keyvalue; let index = index;trackBy: trackByFn"
     [metricsTableRow]="item.value"
     [useColorFromData]="false"
     [hideSelection]="false"

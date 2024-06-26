@@ -169,7 +169,6 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
   protected titleAreDifferent = true;
   protected uniqueTitles: MetricsTableHeader[];
   protected tbodyHeight: string;
-  protected s = new BehaviorSubject<any>([]);
 
 
   public constructor(private colorService: ArlasColorService, private cdr: ChangeDetectorRef) {
@@ -219,8 +218,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
   private updateSelectedTermWithDefaultValue(){
     if(this.defaultSelection && this.defaultSelection.length >0) {
       this.defaultSelection.forEach(selectedTerm => {
-        setTimeout(() => {this.selectedKey.add(selectedTerm)},0)
-        ;
+        this.selectedKey.add(selectedTerm);
       });
     }
     this.togglePendingMode();
@@ -248,7 +246,6 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
         this.powerBarsList.get(merticsRow.term).push(powerBar);
       });
     });
-    this.s.next(this.selectedRow)
   }
 
 
@@ -274,11 +271,10 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
       this.selectedRow.delete(key);
     } else {
       if(row){
+        row.selected = true;
         this.selectedRow.set(key, row);
       }
     }
-    this.s.next(this.selectedRow)
-   console.error(this.metricsTable.data)
   }
 
   public togglePendingMode() {
