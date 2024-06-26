@@ -154,7 +154,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
 
   @Output() public onSelect = new EventEmitter();
 
-  @ViewChild('tableHeader') header: ElementRef;
+  @ViewChild('tableHeader') protected header: ElementRef;
 
 
   // keep it time complexity o(1) with get.
