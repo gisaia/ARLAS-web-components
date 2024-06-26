@@ -16,7 +16,7 @@
   <tr>
     <th></th>
     <ng-container *ngIf="titleAreDifferent; else displayOneTitle">
-      <th class="multi-bar__header-indicator" *ngFor="let header of multiBarTable?.header; let i = index">
+      <th class="multi-bar__header-indicator" *ngFor="let header of metricsTable?.header; let i = index">
         <div *ngIf="headerDisplayMode === 'indicator' || headerDisplayMode === 'full'" class="header-indicator"
              [style]="{'background': shortcutColor[i]}" [matTooltip]="header.title"></div>
         <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
@@ -36,7 +36,7 @@
   <!-- Sub Title area -->
   <tr>
     <th></th>
-    <th class="multi-bar__header" *ngFor="let header of multiBarTable?.header; let i = index">
+    <th class="multi-bar__header" *ngFor="let header of metricsTable?.header; let i = index">
       <div class="multi-bar__header-item multi-bar__header-item-title">
         {{ header.subTitle | formatLongTitle:20 }}
       </div>
@@ -46,15 +46,26 @@
   </thead>
   <tbody [style]="{height: tbodyHeight}">
   <arlas-multi-bars-row
-    *ngFor="let row of multiBarTable?.data; let index = index;"
-    [multiBarRowData]="row"
-    [defaultSelection]="defaultSelection"
+    *ngFor="let item of (s | async)|keyvalue; let index = index;trackBy: trackByFn"
+    [metricsTableRow]="item.value"
+    [useColorFromData]="false"
+    [hideSelection]="false"
+    [useColorService]="useColorService"
+    [powerBars]="powerBarsList.get(item.value.term)"
+    [displayCheckBox]="selectWithCheckbox"
+    (rowSelected)="addTermToSelectedList($event)">
+  </arlas-multi-bars-row>
+  <arlas-multi-bars-row
+    *ngFor="let row of metricsTable.data; let index = index;trackBy: trackByFn"
+    [metricsTableRow]="row"
+    [selected]="row.selected"
+    [hideSelection]="true"
     [useColorFromData]="false"
     [useColorService]="useColorService"
-    [powerBars]="powerBarsList.get(index)"
+    [powerBars]="powerBarsList.get(row.term)"
     [displayCheckBox]="selectWithCheckbox"
     [pendingMode]="pendingMode"
-    (rowSelected)="addRowItem($event)">
+    (rowSelected)="addTermToSelectedList($event)">
   </arlas-multi-bars-row>
   </tbody>
 </table>
