@@ -17,7 +17,17 @@
  * under the License.
  */
 
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output, Renderer2,
+  ViewChild
+} from '@angular/core';
 import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
@@ -73,7 +83,7 @@ export interface MetricsTableRow {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MetricsTableComponent implements OnInit {
+export class MetricsTableComponent implements OnInit, AfterViewInit {
   /**
    * @Input : Angular
    * @description Data to build the table.
@@ -144,6 +154,8 @@ export class MetricsTableComponent implements OnInit {
 
   @Output() public onSelect = new EventEmitter();
 
+  @ViewChild('tableHeader') header: ElementRef;
+
 
   // keep it time complexity o(1) with get.
   protected powerBarsList: Map<number, PowerBar[]> = new Map();
@@ -152,8 +164,9 @@ export class MetricsTableComponent implements OnInit {
   protected shortcutColor = [];
   protected titleAreDifferent = true;
   protected uniqueTitles: MetricsTableHeader[];
+  protected tbodyHeight: string;
 
-  public constructor(private colorService: ArlasColorService) {
+  public constructor(private colorService: ArlasColorService, private render: Renderer2) {
     this.colorService.changekeysToColors$.subscribe(() => {
       this.powerBarsList.forEach(powerbarsRow => {
         powerbarsRow.forEach(p => {
@@ -171,6 +184,10 @@ export class MetricsTableComponent implements OnInit {
       this.buildIndicators();
       this.buildHeaders();
     }
+  }
+
+  public ngAfterViewInit(){
+    this.tbodyHeight = `calc(100% - ${this.header.nativeElement.offsetHeight}px`;
   }
 
   public buildHeaders(){

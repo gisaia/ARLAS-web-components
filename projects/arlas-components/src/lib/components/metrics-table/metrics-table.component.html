@@ -9,8 +9,9 @@
     <div class="operation" [class.exclude]="filterOperator?.value === 'Neq'">{{'exclude' | translate}}</div>
   </div>
 </div>
+<div class="table-overflow-wrapper">
 <table class="multi-bar">
-  <thead>
+  <thead #tableHeader>
   <!-- Title area -->
   <tr>
     <th></th>
@@ -43,7 +44,7 @@
     </th>
   </tr>
   </thead>
-  <tbody>
+  <tbody [style]="{height: tbodyHeight}">
   <arlas-multi-bars-row
     *ngFor="let row of multiBarTable?.data; let index = index;"
     [multiBarRowData]="row"
@@ -57,3 +58,4 @@
   </arlas-multi-bars-row>
   </tbody>
 </table>
+</div>
