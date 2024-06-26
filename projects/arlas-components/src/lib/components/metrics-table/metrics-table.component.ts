@@ -40,7 +40,7 @@ import { ArlasColorService } from '../../services/color.generator.service';
 import { FormatLongTitlePipe } from '../../pipes/format-title/format-long-title.pipe';
 import * as metricTableJsonSchema from './metrics-table.schema.json';
 import { FilterOperator } from '../../tools/models/term-filters';
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export interface MetricsTable {
   header: MetricsTableHeader[];
@@ -281,7 +281,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
     this.pendingMode = this.selectedKey.size !== 0;
   }
 
-  trackByFn(index, item) {
+  public trackByFn(index, item) {
     return item.term; // Use the 'id' property as the unique identifier
   }
 
