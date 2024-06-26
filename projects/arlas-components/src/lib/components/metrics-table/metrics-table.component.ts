@@ -171,7 +171,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
       this.powerBarsList.forEach(powerbarsRow => {
         powerbarsRow.forEach(p => {
           if (this.useColorService) {
-            this.definePowerBarColor(p);
+            this.defineColor(p.term);
           }
         });
       });
@@ -181,7 +181,6 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
   public ngOnInit(): void {
     if (this.multiBarTable) {
       this.buildPowerBars();
-      this.buildIndicators();
       this.buildHeaders();
     }
   }
@@ -200,6 +199,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
       } else {
         includes.span++;
       }
+      this.shortcutColor.push(this.defineColor(header.title));
     });
     this.titleAreDifferent = this.uniqueTitles.length === this.multiBarTable.data[0].data.length;
     if(!this.titleAreDifferent) {
@@ -231,7 +231,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
         }
         powerBar.progression = (item.value / item.maxValue) * 100;
         if(this.useColorService) {
-          this.definePowerBarColor(powerBar);
+          powerBar.color = this.defineColor(powerBar.term);
         }
         this.powerBarsList.get(rowIndex).push(powerBar);
       });
@@ -257,10 +257,10 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
     this.pendingMode = this.selectedKey.size !== 0;
   }
 
-  private definePowerBarColor(powerBar: PowerBar) {
-    const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
+  private defineColor(key: string) {
+    const rgbaColor = tinycolor.default(this.colorService.getColor(key, this.keysToColors,
       this.colorsSaturationWeight)).toRgb();
-    powerBar.color = this.getPowerbarColor(rgbaColor);
+    return this.getPowerbarColor(rgbaColor);
   }
 
   private getPowerbarColor(rgbaColor: tinycolor.ColorFormats.RGBA): string {
