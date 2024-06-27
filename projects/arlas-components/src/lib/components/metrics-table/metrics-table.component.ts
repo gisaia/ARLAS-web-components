@@ -24,8 +24,10 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output, Renderer2,
+  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
@@ -41,52 +43,17 @@ import { FormatLongTitlePipe } from '../../pipes/format-title/format-long-title.
 import * as metricTableJsonSchema from './metrics-table.schema.json';
 import { FilterOperator } from '../../tools/models/term-filters';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { MetricsTable, MetricsTableHeader, MetricsTableRow } from './model/metrics-table';
 
-export interface MetricsTable {
-  header: MetricsTableHeader[];
-  data: MetricsTableRow[];
-}
 
-export interface MetricsTableHeader {
-  title: string;
-  subTitle: string;
-  metric: string;
-  span?: number;
-}
-
-export interface MetricsTableData {
-  value: number;
-  maxValue: number;
-}
-
-export interface MetricsTableRow {
-  term: string;
-  data: MetricsTableData[];
-  selected?: boolean;
-}
 
 @Component({
   selector: 'arlas-metrics-table',
   templateUrl: './metrics-table.component.html',
   styleUrls: ['./metrics-table.component.scss'],
-  imports: [
-    PowerbarModule,
-    MatTooltipModule,
-    NgForOf,
-    NgClass,
-    NgIf,
-    UpperCasePipe,
-    MatCheckboxModule,
-    TranslateModule,
-    MetricsTableRowComponent,
-    FormatLongTitlePipe,
-    AsyncPipe,
-    KeyValuePipe
-  ],
-  standalone: true,
- // changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
-export class MetricsTableComponent implements OnInit, AfterViewInit {
+export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * @Input : Angular
    * @description Data to build the table.
@@ -198,11 +165,20 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  public buildHeaders(){
+  public ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if (changes.multiBarTable) {
+      if (this.metricsTable !== undefined && this.metricsTable !== null) {
+       this.ngOnInit();
+      }
+    }
+  }
+
+  public buildHeaders() {
     this.uniqueTitles = [];
     this.metricsTable.header.forEach(header => {
       const includes = this.uniqueTitles.find(includeHeader => includeHeader.title === header.title);
-      if(!includes) {
+      if (!includes) {
         header.span = 1;
         this.uniqueTitles.push(header);
       } else {
@@ -230,13 +206,15 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
       merticsRow.data.forEach((item, i) => {
         let powerBar;
         if (this.applyColorTo === 'row') {
-          powerBar = new PowerBar(merticsRow.term, merticsRow.term, item.value);
+          powerBar = new PowerBar(merticsRow.term, merticsRow.term, item?.value);
         } else if (this.applyColorTo === 'column') {
           const header = this.metricsTable.header[i];
-          powerBar = new PowerBar(header.title, header.title, item.value);
+          powerBar = new PowerBar(header.title, header.title, item?.value);
         }
-        powerBar.progression = (item.value / item.maxValue) * 100;
-        if(this.useColorService) {
+        if (item) {
+          powerBar.progression = (item.value / item.maxValue) * 100;
+        }
+        if (this.useColorService) {
           powerBar.color = this.defineColor(powerBar.term);
         }
         if(this.selectedKey.has(merticsRow.term)){

@@ -80,7 +80,6 @@
   }
 
   tbody {
-    display: block;
     height: 100% ;
     overflow-y: auto;
     overflow-x: hidden;
@@ -90,7 +89,6 @@
   }
 
   thead, tbody tr {
-    display: table;
     width: 100%;
     table-layout: fixed;/* even columns width , fix width of table too*/
   }
@@ -108,8 +106,6 @@
     &-title {
       font-size: 12px;
       text-overflow: ellipsis;
-      max-width: 52px;
-      display: inline-block;
       overflow: hidden;
     }
   }
@@ -120,10 +116,10 @@
     text-align: center;
     &-title {
       display: inline-block;
-      max-width: 57px;
       max-height: 50px;
       overflow: hidden;
       text-overflow: ellipsis;
+      width: 100%;
     }
   }
 }

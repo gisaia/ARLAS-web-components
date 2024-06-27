@@ -24,7 +24,6 @@ export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMo
 export { ArlasComponentsService } from './lib/arlas-components.service';
 export { AwcColorGeneratorLoader, ColorGeneratorLoader, numberToShortValue } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
-export  { MetricsTableComponent } from './lib/components/metrics-table/metrics-table.component';
 export { DonutModule } from './lib/components/donut/donut.module';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { HistogramModule } from './lib/components/histogram/histogram.module';
@@ -76,6 +75,8 @@ export { BboxFormErrorPipe } from './lib/components/bbox-generator/bbox-form-err
 export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
+export { MetricsTableModule} from './lib/components/metrics-table/metrics-table.module';
+export { MetricsTableComponent } from './lib/components/metrics-table/metrics-table.component';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
 export {

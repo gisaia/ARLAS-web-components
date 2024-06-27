@@ -17,7 +17,7 @@
     <div>
     <arlas-powerbar [useColorFromData]="useColorFromData"
                       [useColorService]="useColorService"
-                      *ngIf="powerBar.count !== null; else noData"
+                      *ngIf="powerBar.count !== null && powerBar.count !== undefined; else noData"
                       [powerbar]="powerBar"></arlas-powerbar>
       <ng-template #noData>
         <div class="empty-cell">
