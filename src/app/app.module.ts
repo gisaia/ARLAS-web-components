@@ -42,7 +42,7 @@ import { MatButtonModule } from '@angular/material/button';
 import {
   DonutModule, HistogramModule, MapglImportModule,
   MapglLayerIconModule, MapglLegendModule, MapglModule, MapglSettingsModule,
-  MetricModule, MetricsTableComponent, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
+  MetricModule, MetricsTableComponent, MetricsTableModule, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
   WmtsLayerManagertDialogComponent
 } from '../../projects/arlas-components/src/public-api';
 import { MapglImportDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
@@ -98,8 +98,8 @@ const routes: Routes = [
     HistogramModule,
     DonutModule,
     ResultsModule,
-    MetricsTableComponent,
     MetricModule,
+    MetricsTableModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,

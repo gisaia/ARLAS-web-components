@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  MetricsTable
-} from "../../../projects/arlas-components/src/lib/components/metrics-table/metrics-table.component";
-
+import { MetricsTable } from "../../../projects/arlas-components/src/lib/components/metrics-table/model/metrics-table";
 @Component({
   selector: 'arlas-multi-bar-demo',
   templateUrl: './metrics-table-demo.component.html',
