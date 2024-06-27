@@ -162,7 +162,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   public ngAfterViewInit(){
     setTimeout(() => {
-      console.error(this.header.nativeElement.offsetHeight)
+      console.error(this.header.nativeElement.offsetHeight);
       this.tbodyHeight = `calc(255px - ${this.header.nativeElement.offsetHeight}px)`;
     }, 0);
   }
@@ -200,7 +200,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.it = this.selectedKey.values();
     }
 
-    console.error(this.it)
+    console.error(this.it);
     this.togglePendingMode();
   }
 
@@ -269,9 +269,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   // preserve order of insertion
-  public originalOrder = (a: KeyValue<string, MetricsTableRow>, b: KeyValue<string, MetricsTableRow>): number => {
-    return 0;
-  }
+  public originalOrder = (a: KeyValue<string, MetricsTableRow>, b: KeyValue<string, MetricsTableRow>): number => 0;
 
   private defineColor(key: string) {
     const rgbaColor = tinycolor.default(this.colorService.getColor(key, this.keysToColors,
