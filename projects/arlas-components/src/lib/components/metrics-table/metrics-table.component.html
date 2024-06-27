@@ -56,7 +56,7 @@
     (rowSelected)="addTermToSelectedList($event)">
   </arlas-multi-bars-row>
   <arlas-multi-bars-row
-    *ngFor="let row of metricsTable.data; let index = index;trackBy: trackByFn"
+    *ngFor="let row of metricsTable?.data; let index = index;trackBy: trackByFn"
     [metricsTableRow]="row"
     [selected]="row.selected"
     [hideSelection]="true"
