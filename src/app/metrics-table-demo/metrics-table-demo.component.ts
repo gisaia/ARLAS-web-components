@@ -53,6 +53,162 @@ export class MetricsTableDemoComponent implements OnInit {
           {value: 500, maxValue: 1000}
         ]
       },
+      {
+        term: 'pneo', data: [
+          {value: 800, maxValue: 1000},
+          {value: 0, maxValue: 1000},
+          {value: 500, maxValue: 1000}, {
+            value: 500,
+            maxValue: 1000
+          }]
+      },
+      {
+        term: 'dede', data: [
+          {value: 600, maxValue: 1000},
+          {value: 300, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 500, maxValue: 1000
+          }
+        ]
+      },
+      {
+        term: 'toto', data: [
+          {value: 600, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 0, maxValue: 1000}, {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'titi', data: [
+          {value: 600, maxValue: 1000},
+          {value: 550, maxValue: 1000},
+          {value: 1000, maxValue: 1000},
+          {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'deto', data: [
+          {value: 750, maxValue: 1000},
+          {value: 40, maxValue: 1000},
+          {value: 230, maxValue: 1000},
+          {value: 500, maxValue: 1000}
+        ]
+      },
+      {
+        term: 'pneo', data: [
+          {value: 800, maxValue: 1000},
+          {value: 0, maxValue: 1000},
+          {value: 500, maxValue: 1000}, {
+            value: 500,
+            maxValue: 1000
+          }]
+      },
+      {
+        term: 'dede', data: [
+          {value: 600, maxValue: 1000},
+          {value: 300, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 500, maxValue: 1000
+          }
+        ]
+      },
+      {
+        term: 'toto', data: [
+          {value: 600, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 0, maxValue: 1000}, {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'titi', data: [
+          {value: 600, maxValue: 1000},
+          {value: 550, maxValue: 1000},
+          {value: 1000, maxValue: 1000},
+          {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'deto', data: [
+          {value: 750, maxValue: 1000},
+          {value: 40, maxValue: 1000},
+          {value: 230, maxValue: 1000},
+          {value: 500, maxValue: 1000}
+        ]
+      },
+      {
+        term: 'pneo', data: [
+          {value: 800, maxValue: 1000},
+          {value: 0, maxValue: 1000},
+          {value: 500, maxValue: 1000}, {
+            value: 500,
+            maxValue: 1000
+          }]
+      },
+      {
+        term: 'dede', data: [
+          {value: 600, maxValue: 1000},
+          {value: 300, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 500, maxValue: 1000
+          }
+        ]
+      },
+      {
+        term: 'toto', data: [
+          {value: 600, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 0, maxValue: 1000}, {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'titi', data: [
+          {value: 600, maxValue: 1000},
+          {value: 550, maxValue: 1000},
+          {value: 1000, maxValue: 1000},
+          {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'deto', data: [
+          {value: 750, maxValue: 1000},
+          {value: 40, maxValue: 1000},
+          {value: 230, maxValue: 1000},
+          {value: 500, maxValue: 1000}
+        ]
+      },
+      {
+        term: 'pneo', data: [
+          {value: 800, maxValue: 1000},
+          {value: 0, maxValue: 1000},
+          {value: 500, maxValue: 1000}, {
+            value: 500,
+            maxValue: 1000
+          }]
+      },
+      {
+        term: 'dede', data: [
+          {value: 600, maxValue: 1000},
+          {value: 300, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 500, maxValue: 1000
+          }
+        ]
+      },
+      {
+        term: 'toto', data: [
+          {value: 600, maxValue: 1000},
+          {value: 500, maxValue: 1000},
+          {value: 0, maxValue: 1000}, {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'titi', data: [
+          {value: 600, maxValue: 1000},
+          {value: 550, maxValue: 1000},
+          {value: 1000, maxValue: 1000},
+          {value: 500, maxValue: 1000}]
+      },
+      {
+        term: 'deto', data: [
+          {value: 750, maxValue: 1000},
+          {value: 40, maxValue: 1000},
+          {value: 230, maxValue: 1000},
+          {value: 500, maxValue: 1000}
+        ]
+      },
     ]
   };
 
