@@ -26,24 +26,17 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output, Renderer2,
+  Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { AsyncPipe, KeyValue, KeyValuePipe, NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { PowerBar } from '../powerbars/model/powerbar';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { TranslateModule } from '@ngx-translate/core';
-import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.component';
 import * as tinycolor from 'tinycolor2';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { FormatLongTitlePipe } from '../../pipes/format-title/format-long-title.pipe';
 import * as metricTableJsonSchema from './metrics-table.schema.json';
 import { FilterOperator } from '../../tools/models/term-filters';
-import { BehaviorSubject, Subject } from 'rxjs';
 import { MetricsTable, MetricsTableHeader, MetricsTableRow } from './model/metrics-table';
+import { KeyValue } from '@angular/common';
 
 
 
@@ -99,7 +92,8 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
 
   /**
    * @Input : Angular
-   * @description Whether to allow colorizing the bar according to its column term or row term
+   * @description Choose how to apply colors to the table. By column : all the bars in same column will have the same color.
+   * By row : all the bars in the same row, will have the same color.
    */
   @Input() public applyColorTo: 'column' | 'row' = 'column';
 
@@ -122,14 +116,14 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public headerDisplayMode: 'indicator' | 'titleOnly' | 'full' = 'indicator';
 
 
-  @Output() public onSelect = new EventEmitter();
+  @Output() public onSelect = new EventEmitter<Set<string>>();
 
   @ViewChild('tableHeader') protected header: ElementRef;
 
 
   // keep it time complexity o(1) with get.
   protected powerBarsList: Map<string, PowerBar[]> = new Map();
-  protected selectedKey: Set<string> = new Set();
+  protected selectedKeys: Set<string> = new Set();
   protected selectedRow: Map<string, MetricsTableRow>= new Map();
   protected pendingMode = false;
   protected shortcutColor = [];
@@ -173,6 +167,9 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
        this.ngOnInit();
       }
     }
+    if (changes.defaultSelection && this.defaultSelection !== undefined && this.defaultSelection !== null) {
+      this.updateSelection(this.defaultSelection);
+    }
   }
 
   public buildHeaders() {
@@ -195,9 +192,9 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   private updateSelectedTermWithDefaultValue(){
     if(this.defaultSelection && this.defaultSelection.length >0) {
       this.defaultSelection.forEach(selectedTerm => {
-        this.selectedKey.add(selectedTerm);
+        this.selectedKeys.add(selectedTerm);
       });
-      this.it = this.selectedKey.values();
+      this.it = this.selectedKeys.values();
     }
 
     console.error(this.it);
@@ -208,10 +205,10 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
     this.metricsTable.data.forEach((merticsRow, rowIndex) => {
       this.powerBarsList.set(merticsRow.term, []);
       merticsRow.data.forEach((item, i) => {
-        let powerBar;
+        let powerBar: PowerBar;
         if (this.applyColorTo === 'row') {
           powerBar = new PowerBar(merticsRow.term, merticsRow.term, item?.value);
-        } else if (this.applyColorTo === 'column') {
+        } else {
           const header = this.metricsTable.header[i];
           powerBar = new PowerBar(header.title, header.title, item?.value);
         }
@@ -221,7 +218,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
         if (this.useColorService) {
           powerBar.color = this.defineColor(powerBar.term);
         }
-        if(this.selectedKey.has(merticsRow.term)){
+        if(this.selectedKeys.has(merticsRow.term)){
           merticsRow.selected = true;
           this.selectedRow.set(merticsRow.term, merticsRow);
         }
@@ -230,7 +227,16 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
+  public updateSelection(keys: string[]) {
+    this.selectedKeys = new Set(keys);
+    this.clearAll();
+    keys.forEach(key => this.updateSelectedRow(key));
+  }
 
+  public clearAll() {
+    this.metricsTable.data.forEach(row => row.selected = false);
+    this.selectedRow.clear();
+  }
   public addTermToSelectedList(key: string) {
     this.updateSelectedRow(key);
     this.updateSelectedTerm(key);
@@ -238,14 +244,15 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public updateSelectedTerm(key: string) {
-    if (this.selectedKey.has(key)) {
-      this.selectedKey.delete(key);
+    if (this.selectedKeys.has(key)) {
+      this.selectedKeys.delete(key);
     } else {
-      this.selectedKey.add(key);
+      this.selectedKeys.add(key);
     }
-    this.it = this.selectedKey.values();
-    this.onSelect.emit(this.selectedKey);
+    this.it = this.selectedKeys.values();
+    this.onSelect.emit(this.selectedKeys);
   }
+
 
   public updateSelectedRow(key: string) {
     const row = this.metricsTable.data.find(row => row.term === key);
@@ -261,7 +268,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public togglePendingMode() {
-    this.pendingMode = this.selectedKey.size !== 0;
+    this.pendingMode = this.selectedKeys.size !== 0;
   }
 
   public trackByFn(index, item) {
