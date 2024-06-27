@@ -11,10 +11,10 @@ import {
 export class MetricsTableDemoComponent implements OnInit {
   public multiBarTableSameTitle: MetricsTable = {
     header: [
-      {title: 'produit', subTitle: ' couverture nuageuse', metric: 'avg'},
-      {title: 'produit', subTitle: ' couverture', metric: 'min'},
-      {title: 'produit', subTitle: ' couverture', metric: 'min'},
-      {title: 'produit', subTitle: ' couverture', metric: 'min'},
+      {title: 'produit de la casa par tu', subTitle: ' couverture nuageuse', metric: 'avg'},
+      {title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min'},
+      {title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min'},
+      {title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min'},
     ],
     data: [
       {

@@ -30,7 +30,7 @@ import {
 } from '@angular/core';
 import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, KeyValue, KeyValuePipe, NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { PowerBar } from '../powerbars/model/powerbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule } from '@ngx-translate/core';
@@ -169,6 +169,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
   protected titleAreDifferent = true;
   protected uniqueTitles: MetricsTableHeader[];
   protected tbodyHeight: string;
+  protected it: any;
 
 
   public constructor(private colorService: ArlasColorService, private cdr: ChangeDetectorRef) {
@@ -194,7 +195,8 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
 
   public ngAfterViewInit(){
     setTimeout(() => {
-      this.tbodyHeight = `calc(100% - ${this.header.nativeElement.offsetHeight}px)`;
+      console.error(this.header.nativeElement.offsetHeight)
+      this.tbodyHeight = `calc(255px - ${this.header.nativeElement.offsetHeight}px)`;
     }, 0);
   }
 
@@ -220,7 +222,10 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
       this.defaultSelection.forEach(selectedTerm => {
         this.selectedKey.add(selectedTerm);
       });
+      this.it = this.selectedKey.values();
     }
+
+    console.error(this.it)
     this.togglePendingMode();
   }
 
@@ -243,7 +248,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
           merticsRow.selected = true;
           this.selectedRow.set(merticsRow.term, merticsRow);
         }
-        this.powerBarsList.get(merticsRow.term).push(powerBar);
+        this.powerBarsList.get(merticsRow.term).unshift(powerBar);
       });
     });
   }
@@ -261,6 +266,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
     } else {
       this.selectedKey.add(key);
     }
+    this.it = this.selectedKey.values();
     this.onSelect.emit(this.selectedKey);
   }
 
@@ -283,6 +289,11 @@ export class MetricsTableComponent implements OnInit, AfterViewInit {
 
   public trackByFn(index, item) {
     return item.term; // Use the 'id' property as the unique identifier
+  }
+
+  // preserve order of insertion
+  public originalOrder = (a: KeyValue<string, MetricsTableRow>, b: KeyValue<string, MetricsTableRow>): number => {
+    return 0;
   }
 
   private defineColor(key: string) {

@@ -51,6 +51,7 @@
 
 .table-overflow-wrapper{
   overflow-x: auto;
+  overflow-y: hidden;
   height: 100%;
   max-width: 100%;
 }
@@ -79,14 +80,15 @@
     max-width: 100px;
   }
 
+  tbody, thead {
+    display: block;
+  }
+
   tbody {
     display: block;
     height: 100% ;
     overflow-y: auto;
     overflow-x: hidden;
-    tr {
-      display: table;
-    }
   }
 
   thead, tbody tr {
@@ -107,8 +109,9 @@
     }
     &-title {
       font-size: 12px;
-      text-overflow: ellipsis;
       max-width: 52px;
+      max-height: 37px;
+      word-break: break-word;
       display: inline-block;
       overflow: hidden;
     }

@@ -27,7 +27,7 @@
     <ng-template #displayOneTitle>
       <th *ngFor="let header of uniqueTitles" class="multi-bar__header-indicator" [attr.colspan]="header.span">
         <div class="multi-bar__header-title">
-          {{ header.title }}
+          {{ header.title | formatLongTitle:23 }}
         </div>
 
       </th>
@@ -46,7 +46,7 @@
   </thead>
   <tbody [style]="{height: tbodyHeight}">
   <arlas-multi-bars-row
-    *ngFor="let item of selectedRow|keyvalue; let index = index;trackBy: trackByFn"
+    *ngFor="let item of selectedRow | keyvalue: originalOrder; let index = index;trackBy: trackByFn"
     [metricsTableRow]="item.value"
     [useColorFromData]="false"
     [hideSelection]="false"
