@@ -166,8 +166,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-    if (changes.multiBarTable) {
+    if (changes.metricsTable) {
       if (this.metricsTable !== undefined && this.metricsTable !== null) {
        this.ngOnInit();
       }

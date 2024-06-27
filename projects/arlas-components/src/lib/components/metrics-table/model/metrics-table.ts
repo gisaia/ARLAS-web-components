@@ -10,13 +10,13 @@ export interface MetricsTableHeader {
     span?: number;
 }
 
-export interface MetricsTableData {
+export interface MetricsTableCell {
     value: number;
     maxValue: number;
 }
 
 export interface MetricsTableRow {
     term: string;
-    data: MetricsTableData[];
+    data: MetricsTableCell[];
     selected?: boolean;
 }
