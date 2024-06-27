@@ -8,7 +8,7 @@ describe('MultiBarsRowComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ MetricsTableRowComponent ]
+      declarations: [ MetricsTableRowComponent ]
     })
     .compileComponents();
 
