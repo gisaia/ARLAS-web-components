@@ -44,7 +44,6 @@
     </th>
   </tr>
   </thead>
-  <tbody [style]="{height: tbodyHeight}">
   <arlas-multi-bars-row
     *ngFor="let item of selectedRow | keyvalue: originalOrder; let index = index;trackBy: trackByFn"
     [metricsTableRow]="item.value"
@@ -67,6 +66,5 @@
     [pendingMode]="pendingMode"
     (rowSelected)="addTermToSelectedList($event)">
   </arlas-multi-bars-row>
-  </tbody>
 </table>
 </div>

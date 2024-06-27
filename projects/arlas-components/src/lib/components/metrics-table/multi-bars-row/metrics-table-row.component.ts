@@ -6,8 +6,7 @@ import { MetricsTableRow } from '../model/metrics-table';
 @Component({
   selector: 'arlas-multi-bars-row',
   templateUrl: './metrics-table-row.component.html',
-  styleUrls: ['./metrics-table-row.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  styleUrls: ['./metrics-table-row.component.scss']
 })
 export class MetricsTableRowComponent implements OnInit {
   @Input() public displayCheckBox: boolean;

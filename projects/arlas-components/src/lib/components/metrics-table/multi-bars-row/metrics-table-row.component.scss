@@ -1,5 +1,5 @@
 :host {
-  display: contents;
+  display: table-row-group;
   ::ng-deep {
     arlas-powerbar {
       .powerbar__powerbar--count {
@@ -59,7 +59,7 @@
       align-items: center;
       gap: 16px;
       font-weight: normal;
-      max-width: 70px;
+      max-width: 100px;
     }
     .header-title {
       text-overflow: ellipsis;

@@ -19,7 +19,8 @@
 
 import {
   AfterViewInit,
-  ChangeDetectionStrategy, ChangeDetectorRef,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -30,21 +31,19 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
+import { KeyValue } from '@angular/common';
 import { PowerBar } from '../powerbars/model/powerbar';
 import * as tinycolor from 'tinycolor2';
 import { ArlasColorService } from '../../services/color.generator.service';
 import * as metricTableJsonSchema from './metrics-table.schema.json';
 import { FilterOperator } from '../../tools/models/term-filters';
 import { MetricsTable, MetricsTableHeader, MetricsTableRow } from './model/metrics-table';
-import { KeyValue } from '@angular/common';
-
 
 
 @Component({
   selector: 'arlas-metrics-table',
   templateUrl: './metrics-table.component.html',
-  styleUrls: ['./metrics-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  styleUrls: ['./metrics-table.component.scss']
 })
 export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   /**
