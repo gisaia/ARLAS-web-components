@@ -45,7 +45,7 @@ import { MetricsTable, MetricsTableHeader, MetricsTableRow } from './model/metri
   templateUrl: './metrics-table.component.html',
   styleUrls: ['./metrics-table.component.scss']
 })
-export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
+export class MetricsTableComponent implements OnInit, OnChanges {
   /**
    * @Input : Angular
    * @description Data to build the table.
@@ -128,8 +128,6 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   protected shortcutColor = [];
   protected titleAreDifferent = true;
   protected uniqueTitles: MetricsTableHeader[];
-  protected tbodyHeight: string;
-  protected it: any;
 
 
   public constructor(private colorService: ArlasColorService, private cdr: ChangeDetectorRef) {
@@ -145,19 +143,11 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngOnInit(): void {
-    this.tbodyHeight = '';
     if (this.metricsTable) {
       this.updateSelectedTermWithDefaultValue();
       this.buildPowerBars();
       this.buildHeaders();
     }
-  }
-
-  public ngAfterViewInit(){
-    setTimeout(() => {
-      console.error(this.header.nativeElement.offsetHeight);
-      this.tbodyHeight = `calc(255px - ${this.header.nativeElement.offsetHeight}px)`;
-    }, 0);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -193,10 +183,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
       this.defaultSelection.forEach(selectedTerm => {
         this.selectedKeys.add(selectedTerm);
       });
-      this.it = this.selectedKeys.values();
     }
-
-    console.error(this.it);
     this.togglePendingMode();
   }
 
@@ -221,7 +208,7 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
           merticsRow.selected = true;
           this.selectedRow.set(merticsRow.term, merticsRow);
         }
-        this.powerBarsList.get(merticsRow.term).unshift(powerBar);
+        this.powerBarsList.get(merticsRow.term).push(powerBar);
       });
     });
   }
@@ -248,7 +235,6 @@ export class MetricsTableComponent implements OnInit, AfterViewInit, OnChanges {
     } else {
       this.selectedKeys.add(key);
     }
-    this.it = this.selectedKeys.values();
     this.onSelect.emit(this.selectedKeys);
   }
 

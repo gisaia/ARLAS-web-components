@@ -212,6 +212,170 @@ export class MetricsTableDemoComponent implements OnInit {
     ]
   };
 
+  public multiBarTDiffTittletesT = {
+  "data": [
+    {
+      "data": [
+        {
+          "maxValue": 111392232433.07695,
+          'value': 80970456.34897614,
+          "metric": "sum",
+          "column": "demo_ais_flow",
+          "field": "course.distance.gps.travelled_m"
+        },
+        {
+          "maxValue": 265079,
+          "value": 318,
+          "metric": "count",
+          "column": "demo_ais_flow"
+        },
+        {
+          "maxValue": 5329,
+          "value": 10,
+          "metric": "count",
+          "column": "demo_ais_course"
+        }
+      ],
+      "term": "Norway"
+    },
+    {
+      "data": [
+        {
+          "maxValue": 111392232433.07695,
+          "value": 1147598646.3789253,
+          "metric": "sum",
+          "column": "demo_ais_flow",
+          "field": "course.distance.gps.travelled_m"
+        },
+        {
+          "maxValue": 265079,
+          "value": 1797,
+          "metric": "count",
+          "column": "demo_ais_flow"
+        },
+        {
+          "maxValue": 5329,
+          "value": 14,
+          "metric": "count",
+          "column": "demo_ais_course"
+        }
+      ],
+      "term": "Poland"
+    },
+    {
+      "data": [
+        {
+          "maxValue": 111392232433.07695,
+          "value": 10926580355.695827,
+          "metric": "sum",
+          "column": "demo_ais_flow",
+          "field": "course.distance.gps.travelled_m"
+        },
+        {
+          "maxValue": 265079,
+          "value": 56955,
+          "metric": "count",
+          "column": "demo_ais_flow"
+        },
+        {
+          "maxValue": 5329,
+          "value": 2239,
+          "metric": "count",
+          "column": "demo_ais_course"
+        }
+      ],
+      "term": "Sweden"
+    },
+    {
+      "data": [
+        {
+          "maxValue": 111392232433.07695,
+          "value": 19779345592.82676,
+          "metric": "sum",
+          "column": "demo_ais_flow",
+          "field": "course.distance.gps.travelled_m"
+        },
+        {
+          "maxValue": 265079,
+          "value": 69655,
+          "metric": "count",
+          "column": "demo_ais_flow"
+        },
+        {
+          "maxValue": 5329,
+          "value": 2269,
+          "metric": "count",
+          "column": "demo_ais_course"
+        }
+      ],
+      "term": "Germany"
+    },
+    {
+      "data": [
+        {
+          "maxValue": 111392232433.07695,
+          "value": 26525471402.52526,
+          "metric": "sum",
+          "column": "demo_ais_flow",
+          "field": "course.distance.gps.travelled_m"
+        },
+        {
+          "maxValue": 265079,
+          "value": 150356,
+          "metric": "count",
+          "column": "demo_ais_flow"
+        },
+        {
+          "maxValue": 5329,
+          "value": 5329,
+          "metric": "count",
+          "column": "demo_ais_course"
+        }
+      ],
+      "term": "Denmark"
+    },
+    {
+      "data": [
+        {
+          "maxValue": 111392232433.07695,
+          "value": 111392232433.07695,
+          "metric": "sum",
+          "column": "demo_ais_flow",
+          "field": "course.distance.gps.travelled_m"
+        },
+        {
+          "maxValue": 265079,
+          "value": 265079,
+          "metric": "count",
+          "column": "demo_ais_flow"
+        },
+        {
+          "maxValue": 5329,
+          "value": 4276,
+          "metric": "count",
+          "column": "demo_ais_course"
+        }
+      ],
+      "term": "Unknown"
+    }
+  ],
+  "header": [
+    {
+      "title": "demo_ais_flow",
+      "subTitle": "course.distance.gps.travelled_m",
+      "metric": "sum"
+    },
+    {
+      "title": "demo_ais_flow",
+      "metric": "count"
+    },
+    {
+      "title": "demo_ais_course",
+      "metric": "count"
+    }
+  ]
+}
+
   public multiBarTDiffTittle: MetricsTable = {
     header: [
       {title: 'produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg'},
