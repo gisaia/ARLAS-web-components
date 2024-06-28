@@ -361,12 +361,12 @@ export class MetricsTableDemoComponent implements OnInit {
   ],
   "header": [
     {
-      "title": "demo_ais_flow",
+      "title": "demo_ais_flow_demo_ais_flow",
       "subTitle": "course.distance.gps.travelled_m",
       "metric": "sum"
     },
     {
-      "title": "demo_ais_flow",
+      "title": "demo_ais_flow_demo_ais_flow",
       "metric": "count"
     },
     {
@@ -378,7 +378,7 @@ export class MetricsTableDemoComponent implements OnInit {
 
   public multiBarTDiffTittle: MetricsTable = {
     header: [
-      {title: 'produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg'},
+      {title: 'produit produit produit produit produit produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg'},
       {title: 'satellite', subTitle: ' couverture nuageuse', metric: 'min'},
       {title: 'produit', subTitle: ' couverture not min', metric: 'min'},
       {title: 'cost', subTitle: ' couverture', metric: 'min'},

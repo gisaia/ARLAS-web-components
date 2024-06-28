@@ -18,8 +18,6 @@
  */
 
 import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -74,7 +72,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description Default term selected.
    */
-  @Input() public defaultSelection: string[] = ['pneo'];
+  @Input() public defaultSelection: string[];
 
   /**
    * @Input : Angular
