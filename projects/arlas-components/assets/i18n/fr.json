@@ -109,5 +109,13 @@
 	"country": "Pays",
 	"Column": "Colonne",
 	"Direction": "Sens",
-	"None": "Aucune"
+	"None": "Aucune",
+	"COUNT_COLUMN_TITLE": "nombre d'éléments",
+	"METRIC_COLUMN_TITLE": "{{field}} {{metric}}",
+	"avg": "moyen(ne)",
+	"sum": "total(e)",
+	"min": "minimal(e)",
+	"max": "maxiaml(e)",
+	"cardinality": "cardinalité"
+
 }

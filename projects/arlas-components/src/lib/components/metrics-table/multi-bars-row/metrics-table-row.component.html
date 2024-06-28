@@ -3,7 +3,7 @@
 'multi-bar-row--selected': metricsTableRow?.selected,
 'multi-bar-row--pending': !metricsTableRow?.selected && pendingMode
 }" (click)="selectRow()" class="multi-bar-row">
-  <th scope="row" class="multi-bar-row__header">
+  <th style="width: 100px;" scope="row" class="multi-bar-row__header">
     <div class="header">
       <section *ngIf="displayCheckBox"  (click)="$event.stopPropagation()">
         <mat-checkbox  [checked]="metricsTableRow?.selected" (change)="onCheck()"></mat-checkbox>
@@ -13,7 +13,7 @@
       </span>
     </div>
   </th>
-  <td class="multi-bar-row__data" *ngFor="let powerBar of powerBars">
+  <td style="width: 80px;" class="multi-bar-row__data" *ngFor="let powerBar of powerBars">
     <div>
     <arlas-powerbar [useColorFromData]="useColorFromData"
                       [useColorService]="useColorService"

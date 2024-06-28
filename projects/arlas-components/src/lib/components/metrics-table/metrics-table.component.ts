@@ -215,6 +215,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
     this.selectedKeys = new Set(keys);
     this.clearAll();
     keys.forEach(key => this.updateSelectedRow(key));
+    this.togglePendingMode();
   }
 
   public clearAll() {

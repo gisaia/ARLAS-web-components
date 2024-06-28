@@ -28,6 +28,7 @@
   .include_exclude {
     display: flex;
     align-items: baseline;
+
     .operation {
       font-size: 12px;
       color: #aaa;
@@ -37,6 +38,7 @@
       cursor: pointer;
       padding-bottom: 3px;
     }
+
     .selected_operation {
       color: #555;
       font-weight: bold;
@@ -45,12 +47,12 @@
     .exclude {
       color: #555;
       font-weight: bold;
-      cursor: unset ;
+      cursor: unset;
     }
   }
 }
 
-.table-overflow-wrapper{
+.table-overflow-wrapper {
   overflow-x: auto;
   overflow-y: auto;
   height: 100%;
@@ -74,45 +76,63 @@
   font-size: 12px;
   border-spacing: 0;
   width: 100%;
-  max-height:100%;
+  table-layout: fixed;
+  max-height: 100%;
   position: relative;
   border-collapse: collapse;
 
-  thead  {
+  thead {
     position: sticky;
-    max-width: 100px;
     background: white;
-    top:0;
+    top: 0;
     z-index: 1;
+
+    .terms-head {
+      width: 80px;
+    }
+    .column-head {
+      width: 70px;
+    }
+    
+  }
+
+  td,
+  th {
+    white-space: nowrap;
+    /* Prevents text wrapping */
+
   }
 
   &__header {
     font-size: 12px;
-    padding: 0 6px 6px 6px;
+    padding: 0 6px 6px;
     text-align: center;
     vertical-align: bottom;
+    border-bottom: 1px solid #dadada;
+
     &-indicator {
-      padding: 0 6px 6px 6px;
+      padding: 6px 0;
       text-align: center;
       line-height: 12px;
+      border-right: 2px solid #ffff;
+      background: #e5e5e554;
+      box-sizing: border-box;
     }
+
     &-title {
       font-size: 12px;
-      max-width: 52px;
-      max-height: 37px;
-      word-break: break-word;
-      display: inline-block;
       overflow: hidden;
+
     }
   }
+
   &__header-item {
     font-weight: normal;
     margin: 0 auto;
     word-wrap: break-word;
     text-align: center;
+
     &-title {
-      display: inline-block;
-      max-width: 57px;
       max-height: 50px;
       overflow: hidden;
       text-overflow: ellipsis;
