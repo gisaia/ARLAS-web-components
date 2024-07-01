@@ -508,6 +508,9 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
     if (!this.chartXLabel) {
       this.chartXLabel = '';
     }
+    if (!this.chartYLabel) {
+      this.chartYLabel = '';
+    }
     if (!this.xUnit && this.dataUnit) {
       this.xUnit = this.dataUnit;
     } else if (!this.xUnit) {
