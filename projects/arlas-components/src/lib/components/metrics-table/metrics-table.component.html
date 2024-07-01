@@ -38,11 +38,11 @@
       <!-- Sub Title area -->
       <tr>
         <th class="terms-head"></th>
-        <th class="column_head multi-bar__header" *ngFor="let header of metricsTable?.header; let i = index">
+        <th class="column-head multi-bar__header" *ngFor="let header of metricsTable?.header; let i = index">
           <div *ngIf="header.metric !== 'count'"
-            [matTooltip]="'METRIC_COLUMN_TITLE' | translate:  { metric: header.metric | translate, field : header.subTitle | translate }"
+            [matTooltip]="'METRIC_COLUMN_TITLE' | translate:  { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle | translate }"
             class="multi-bar__header-item multi-bar__header-item-title">
-            {{'METRIC_COLUMN_TITLE' | translate: { metric: header.metric | translate, field : header.subTitle |
+            {{'METRIC_COLUMN_TITLE' | translate: { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle |
             translate } }}
           </div>
           <div *ngIf="header.metric === 'count'" [matTooltip]="'COUNT_COLUMN_TITLE' | translate"

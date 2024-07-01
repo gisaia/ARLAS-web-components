@@ -112,9 +112,9 @@
 	"None": "None",
 	"COUNT_COLUMN_TITLE": "count",
 	"METRIC_COLUMN_TITLE": "{{metric}} {{field}}",
-	"avg": "average",
-	"sum": "total",
-	"min": "minimal",
-	"max": "maximal",
-	"cardinality": "cardinality of"
+	"METRIC_COLUMN_avg": "average",
+	"METRIC_COLUMN_sum": "total",
+	"METRIC_COLUMN_min": "minimal",
+	"METRIC_COLUMN_max": "maximal",
+	"METRIC_COLUMN_cardinality": "cardinality of"
 }

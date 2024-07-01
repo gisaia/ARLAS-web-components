@@ -112,10 +112,10 @@
 	"None": "Aucune",
 	"COUNT_COLUMN_TITLE": "nombre d'éléments",
 	"METRIC_COLUMN_TITLE": "{{field}} {{metric}}",
-	"avg": "moyen(ne)",
-	"sum": "total(e)",
-	"min": "minimal(e)",
-	"max": "maxiaml(e)",
-	"cardinality": "cardinalité"
+	"METRIC_COLUMN_avg": "moyen(ne)",
+	"METRIC_COLUMN_sum": "total(e)",
+	"METRIC_COLUMN_min": "minimal(e)",
+	"METRIC_COLUMN_max": "maxiaml(e)",
+	"METRIC_COLUMN_cardinality": "cardinalité"
 
 }
