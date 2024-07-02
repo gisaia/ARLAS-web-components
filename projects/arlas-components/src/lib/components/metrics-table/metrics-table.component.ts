@@ -70,9 +70,9 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
   /**
    * @Input : Angular
-   * @description Default term selected.
+   * @description selected terms list.
    */
-  @Input() public defaultSelection: string[];
+  @Input() public selectedTerms: string[];
 
   /**
    * @Input : Angular
@@ -155,8 +155,8 @@ export class MetricsTableComponent implements OnInit, OnChanges {
         this.ngOnInit();
       }
     }
-    if (changes.defaultSelection && this.defaultSelection !== undefined && this.defaultSelection !== null) {
-      this.updateSelection(this.defaultSelection);
+    if (changes.defaultSelection && this.selectedTerms !== undefined && this.selectedTerms !== null) {
+      this.updateSelection(this.selectedTerms);
     }
   }
 
@@ -178,8 +178,8 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   }
 
   private updateSelectedTermWithDefaultValue() {
-    if (this.defaultSelection && this.defaultSelection.length > 0) {
-      this.defaultSelection.forEach(selectedTerm => {
+    if (this.selectedTerms && this.selectedTerms.length > 0) {
+      this.selectedTerms.forEach(selectedTerm => {
         this.selectedKeys.add(selectedTerm);
       });
     }
