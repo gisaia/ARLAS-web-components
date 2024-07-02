@@ -60,9 +60,3 @@ export class PowerBar {
     this.count = count;
   }
 }
-
-
-export interface FilterOperator {
-  value: 'Neq' | 'Eq';
-  display: boolean;
-}
