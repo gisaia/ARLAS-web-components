@@ -109,5 +109,12 @@
 	"country": "country",
 	"Column": "Column",
 	"Direction": "Direction",
-	"None": "None"
+	"None": "None",
+	"COUNT_COLUMN_TITLE": "count",
+	"METRIC_COLUMN_TITLE": "{{metric}} {{field}}",
+	"METRIC_COLUMN_avg": "average",
+	"METRIC_COLUMN_sum": "total",
+	"METRIC_COLUMN_min": "minimal",
+	"METRIC_COLUMN_max": "maximal",
+	"METRIC_COLUMN_cardinality": "cardinality of"
 }
