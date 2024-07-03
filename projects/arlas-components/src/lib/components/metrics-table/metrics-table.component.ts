@@ -70,9 +70,9 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
   /**
    * @Input : Angular
-   * @description Default term selected.
+   * @description selected terms list.
    */
-  @Input() public defaultSelection: string[];
+  @Input() public selectedTerms: string[];
 
   /**
    * @Input : Angular
@@ -119,9 +119,10 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
 
   // keep it time complexity o(1) with get.
-  protected powerBarsList: Map<string, PowerBar[]> = new Map();
+  /** Map of <term-list.of.powerbars.corresponding.to.this.term.> */
+  protected powerBarsMap: Map<string, PowerBar[]> = new Map();
   protected selectedKeys: Set<string> = new Set();
-  protected selectedRow: Map<string, MetricsTableRow>= new Map();
+  protected selectedRows: Map<string, MetricsTableRow> = new Map();
   protected pendingMode = false;
   protected shortcutColor = [];
   protected titleAreDifferent = true;
@@ -130,7 +131,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
   public constructor(private colorService: ArlasColorService, private cdr: ChangeDetectorRef) {
     this.colorService.changekeysToColors$.subscribe(() => {
-      this.powerBarsList.forEach(powerbarsRow => {
+      this.powerBarsMap.forEach(powerbarsRow => {
         powerbarsRow.forEach(p => {
           if (this.useColorService) {
             this.defineColor(p.term);
@@ -151,11 +152,11 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.metricsTable) {
       if (this.metricsTable !== undefined && this.metricsTable !== null) {
-       this.ngOnInit();
+        this.ngOnInit();
       }
     }
-    if (changes.defaultSelection && this.defaultSelection !== undefined && this.defaultSelection !== null) {
-      this.updateSelection(this.defaultSelection);
+    if (changes.defaultSelection && this.selectedTerms !== undefined && this.selectedTerms !== null) {
+      this.updateSelection(this.selectedTerms);
     }
   }
 
@@ -171,14 +172,14 @@ export class MetricsTableComponent implements OnInit, OnChanges {
       }
       this.shortcutColor.push(this.defineColor(header.title));
     });
-    this.titleAreDifferent = this.uniqueTitles.length === this.metricsTable.data[0].data.length;
-    if(!this.titleAreDifferent) {
+    this.titleAreDifferent = this.uniqueTitles.length === this.metricsTable?.data[0]?.data.length;
+    if (!this.titleAreDifferent) {
     }
   }
 
-  private updateSelectedTermWithDefaultValue(){
-    if(this.defaultSelection && this.defaultSelection.length >0) {
-      this.defaultSelection.forEach(selectedTerm => {
+  private updateSelectedTermWithDefaultValue() {
+    if (this.selectedTerms && this.selectedTerms.length > 0) {
+      this.selectedTerms.forEach(selectedTerm => {
         this.selectedKeys.add(selectedTerm);
       });
     }
@@ -186,8 +187,10 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   }
 
   public buildPowerBars() {
-    this.metricsTable.data.forEach((merticsRow, rowIndex) => {
-      this.powerBarsList.set(merticsRow.term, []);
+    this.powerBarsMap.clear();
+    this.clearAll();
+    this.metricsTable.data?.forEach((merticsRow, rowIndex) => {
+      this.powerBarsMap.set(merticsRow.term, []);
       merticsRow.data.forEach((item, i) => {
         let powerBar: PowerBar;
         if (this.applyColorTo === 'row') {
@@ -202,11 +205,11 @@ export class MetricsTableComponent implements OnInit, OnChanges {
         if (this.useColorService) {
           powerBar.color = this.defineColor(powerBar.term);
         }
-        if(this.selectedKeys.has(merticsRow.term)){
+        if (this.selectedKeys.has(merticsRow.term)) {
           merticsRow.selected = true;
-          this.selectedRow.set(merticsRow.term, merticsRow);
+          this.selectedRows.set(merticsRow.term, merticsRow);
         }
-        this.powerBarsList.get(merticsRow.term).push(powerBar);
+        this.powerBarsMap.get(merticsRow.term).push(powerBar);
       });
     });
   }
@@ -215,11 +218,12 @@ export class MetricsTableComponent implements OnInit, OnChanges {
     this.selectedKeys = new Set(keys);
     this.clearAll();
     keys.forEach(key => this.updateSelectedRow(key));
+    this.togglePendingMode();
   }
 
   public clearAll() {
-    this.metricsTable.data.forEach(row => row.selected = false);
-    this.selectedRow.clear();
+    this.metricsTable?.data?.forEach(row => row.selected = false);
+    this.selectedRows.clear();
   }
   public addTermToSelectedList(key: string) {
     this.updateSelectedRow(key);
@@ -239,13 +243,15 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
   public updateSelectedRow(key: string) {
     const row = this.metricsTable.data.find(row => row.term === key);
-    if (this.selectedRow.has(key)) {
+    if (this.selectedRows.has(key)) {
       row.selected = false;
-      this.selectedRow.delete(key);
+      this.selectedRows.delete(key);
     } else {
-      if(row){
+      if (row) {
         row.selected = true;
-        this.selectedRow.set(key, row);
+        this.selectedRows.set(key, row);
+      } else {
+        /** If we select a row that does not exists, it means we data is not  */
       }
     }
   }
