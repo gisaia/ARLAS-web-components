@@ -114,7 +114,7 @@ export class MapboxAoiDrawService {
    * @param fc Featurecollection to be added to mapboxdraw object.
    * @param deleteOld if true, the mapboxdraw object is purged first, before adding the new given feature collection.
    */
-  public addFeatures(fc: FeatureCollection, deleteOld = false) {
+  public addFeatures(fc: FeatureCollection<GeoJSON.Geometry>, deleteOld = false) {
     if (deleteOld) {
       this.mapDraw.deleteAll();
     }
