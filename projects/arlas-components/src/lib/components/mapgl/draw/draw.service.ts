@@ -26,6 +26,7 @@ import bbox from '@turf/bbox';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -197,8 +198,9 @@ export class MapboxAoiDrawService {
       if (this.mapDraw) {
         this.registerAll();
         const unregisteredFeatures = this.getUnregistredFeatures();
-        if (unregisteredFeatures && unregisteredFeatures.length === 1) {
-          this.editionId = unregisteredFeatures[0].id + '';
+        if (unregisteredFeatures && (unregisteredFeatures.length === 1 || unregisteredFeatures.length === 2)) {
+          const index = unregisteredFeatures.length - 1;
+          this.editionId = unregisteredFeatures[index].id + '';
         }
         if (this.editionId) {
           const feature = this.getFeature(this.editionId, this.mapDraw);
@@ -211,7 +213,7 @@ export class MapboxAoiDrawService {
   public emitStartBBox() {
     this.editAoiSource.next({
       area: 0,
-      areaMessage: 'Start draging to draw a bbox.',
+      areaMessage: marker('Start draging to draw a bbox.'),
       envelope: {
         width: 0,
         height: 0
@@ -226,7 +228,7 @@ export class MapboxAoiDrawService {
     const wh = this.calculateEnvelopeDimension(feature);
     this.editAoiSource.next({
       area: a,
-      areaMessage: a > 0 ? '': 'Draw at least 2 points.',
+      areaMessage: a > 0 ? '' : marker('Draw at least 2 points.'),
       envelope: {
         width: wh[0],
         height: wh[1]
@@ -320,7 +322,7 @@ export class MapboxAoiDrawService {
   }
 
   public isPolygon(feature): boolean {
-   return feature.geometry.type === 'Polygon' && !this.isCircle(feature);
+    return feature.geometry.type === 'Polygon' && !this.isCircle(feature);
   }
 
   public isCircle(feature): boolean {

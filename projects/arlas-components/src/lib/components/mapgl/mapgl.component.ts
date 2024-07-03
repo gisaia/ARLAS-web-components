@@ -60,6 +60,7 @@ import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
 import directModeOverride from './draw/modes/directSelectOverride';
 import stripMode from './draw/modes/strip/strip.mode';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
+import cleanCoords from '@turf/clean-coords';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -987,7 +988,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             'features': this.draw.getAll().features.filter(fc =>
               this.drawService.isValidPolygon(fc) ||
               this.drawService.isValidCircle(fc)
-            )
+            ).map(f => cleanCoords(f))
           });
       });
 
@@ -1008,7 +1009,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             'features': this.draw.getAll().features.filter(fc =>
               this.drawService.isPolygon(fc) ||
               this.drawService.isCircle(fc)
-            )
+            ).map(f => cleanCoords(f))
           });
       });
 
@@ -1079,7 +1080,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
               'features': this.draw.getAll().features.filter(fc =>
                 this.drawService.isValidPolygon(fc) ||
                 this.drawService.isValidCircle(fc)
-              )
+              ).map(f => cleanCoords(f))
             });
           this.isDrawingBbox = false;
           this.isDrawingPolygon = false;
@@ -1396,11 +1397,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getAllPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f)));
+      polygon = this.latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f)||
+      this.drawService.isCircle(f)).map(f => cleanCoords(f)));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f))
+        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f)||
+        this.drawService.isCircle(f)).map(f => cleanCoords(f))
       };
     }
     return polygon;
@@ -1413,11 +1416,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f)));
+      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f)||
+      this.drawService.isCircle(f)));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f))
+        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f)||
+        this.drawService.isCircle(f))
       };
     }
     return polygon;
