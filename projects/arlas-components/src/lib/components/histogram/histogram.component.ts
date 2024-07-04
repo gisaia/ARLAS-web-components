@@ -490,20 +490,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
     (<AbstractChart>this.histogram).removeSelectInterval(id);
   }
 
-  /**
-   * @description Displays the "Remove" tooltip
-   */
-  public overRemove(e) {
-    (<AbstractChart>this.histogram).overRemove(e);
-  }
-
-  /**
-   * @description Hides the "Remove" tooltip
-   */
-  public leaveRemove() {
-    (<AbstractChart>this.histogram).leaveRemove();
-  }
-
   private setHistogramParameters() {
     if (!this.chartXLabel) {
       this.chartXLabel = '';
