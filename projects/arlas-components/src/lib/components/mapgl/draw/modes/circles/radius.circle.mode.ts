@@ -1,12 +1,14 @@
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import circle from '@turf/circle';
-
 import length from '@turf/length';
-import * as numeral_ from 'numeral';
-const numeral = numeral_;
+import numeral from 'numeral';
 const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
+
+radiusCircleMode.fireOnStop = function () {
+    this.map.fire('draw.onStop', 'draw end');
+  };
 
 function createVertex(parentId, coordinates, path, selected) {
     return {
@@ -106,6 +108,8 @@ radiusCircleMode.onSetup = function (opts) {
     return {
         ...props,
         circle:polygon,
+        steps: opts.steps || 64,
+        units: opts.units || 'kilometers'
     };
 };
 
@@ -140,7 +144,8 @@ radiusCircleMode.onMouseMove = function (state, e) {
     const geojson = state.line.toGeoJSON();
     const center = geojson.geometry.coordinates[0];
     const radiusInKm = length(geojson, { units: 'kilometers' });
-    const circleFeature = circle(center, radiusInKm);
+    const options =  {steps: state.steps, units: state.units};
+    const circleFeature = circle(center, radiusInKm, options);
     circleFeature.properties.parent = state.line.id;
     (circleFeature.properties as any).meta = 'radius';
     state.circle.setCoordinates(circleFeature.geometry.coordinates);
@@ -171,6 +176,7 @@ radiusCircleMode.onStop = function (state) {
         this.deleteFeature([state.line.id], { silent: true });
         this.changeMode('simple_select', {}, { silent: true });
     }
+    this.fireOnStop();
 };
 
 radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {

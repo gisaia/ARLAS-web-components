@@ -32,6 +32,8 @@ circleMode.onSetup = function (opts) {
 
     return {
         initialRadiusInKm: opts.initialRadiusInKm || DEFAULT_RADIUS_IN_KM,
+        steps: opts.steps || 64,
+        units: opts.units || 'kilometers',
         polygon,
         currentVertexPosition: 0
     };
@@ -42,7 +44,8 @@ circleMode.clickAnywhere = function (state, e) {
     if (state.currentVertexPosition === 0) {
         state.currentVertexPosition++;
         const center = [e.lngLat.lng, e.lngLat.lat];
-        const circleFeature = circle(center, state.initialRadiusInKm);
+        const options =  {steps: state.steps, units: state.units};
+        const circleFeature = circle(center, state.initialRadiusInKm, options);
         state.polygon.incomingCoords(circleFeature.geometry.coordinates);
         state.polygon.properties.center = center;
         state.polygon.properties.radiusInKm = state.initialRadiusInKm;
