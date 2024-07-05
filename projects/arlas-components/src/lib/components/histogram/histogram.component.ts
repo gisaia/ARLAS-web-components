@@ -446,6 +446,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
       if (changes.intervalListSelection.currentValue) {
         this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
         (<AbstractChart>this.histogram).redrawSelectedIntervals();
+        this.dataPlottedEvent.next('INTERVAL_REDRAWN');
       }
     }
 
