@@ -1,5 +1,13 @@
 # Change Log
 
+## [v25.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.0) (2024-07-05)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.2...v25.1.0)
+
+**Miscellaneous:**
+
+- Add a new input `chartYLabel` \(chartXLabel already exists\) [\#799](https://github.com/gisaia/ARLAS-web-components/issues/799) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
 ## [v25.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.2) (2024-06-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.1...v25.0.2)
