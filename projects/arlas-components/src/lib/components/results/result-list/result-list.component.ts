@@ -1062,7 +1062,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   private setTableHeight(nbTrials = 0) {
     const tableElement = this.el.nativeElement.parentElement as HTMLElement;
-    if (tableElement.getBoundingClientRect().height !== 0) {
+    if (!!tableElement && tableElement.getBoundingClientRect().height !== 0) {
       this.theadHeight = this.COLUMN_ACTIONS_HEIGHT +
         // Only in list mode
         this.COLUMN_NAME_HEIGHT * (this.resultMode === ModeEnum.list ? 1 : 0) +
