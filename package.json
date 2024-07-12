@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/ng-packagr/package.schema.json",
   "name": "arlas-web-components-demo",
-  "version": "25.1.2",
+  "version": "25.2.0-dev0",
   "license": "Apache-2.0",
   "scripts": {
     "ng": "ng",
