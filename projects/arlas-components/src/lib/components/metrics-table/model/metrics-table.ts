@@ -8,11 +8,16 @@ export interface MetricsTableHeader {
     subTitle: string;
     metric: string;
     span?: number;
+    rowfield: string;
 }
 
 export interface MetricsTableCell {
     value: number;
-    maxValue: number;
+    maxColumnValue: number;
+    maxTableValue: number;
+    metric: string;
+    column: string;
+    field: string;
 }
 
 export interface MetricsTableRow {

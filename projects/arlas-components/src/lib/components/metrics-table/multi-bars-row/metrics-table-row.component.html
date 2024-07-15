@@ -8,7 +8,7 @@
       <section *ngIf="displayCheckBox"  (click)="$event.stopPropagation()">
         <mat-checkbox  [checked]="metricsTableRow?.selected" (change)="onCheck()"></mat-checkbox>
       </section>
-      <span class="header-title">
+      <span class="header-title" [matTooltip]="metricsTableRow?.term">
            {{metricsTableRow?.term | uppercase}}
       </span>
     </div>
