@@ -108,7 +108,7 @@
       </ng-container>
     </tr>
     <tr class="resultlist__grid-detail resultlist__thead__tr"
-        *ngIf="selectedGridItem !== null && resultMode == ModeEnum.grid && isDetailledGridOpen">
+        *ngIf="selectedGridItem !== null && resultMode === ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
           [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
@@ -124,7 +124,7 @@
     [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState" [resultMode]="resultMode" (visibleItems)="emitVisibleItems($event)" (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)">
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
-        <ng-container *ngIf="resultMode==ModeEnum.list; else grid_mode">
+        <ng-container *ngIf="resultMode === ModeEnum.list; else grid_mode">
           <tr arlas-result-item id="{{rowItem.identifier}}" class="resultlist__body--item-hover-{{rowItem.ishighLight}}" [options]="options" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)" (click)="onClickItem(rowItem)"
             [idFieldName]="fieldsConfiguration.idFieldName" [tableWidth]="tableWidth" [rowItem]="rowItem" [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle" [keysToColors]="keysToColors"
             [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
@@ -137,7 +137,7 @@
 
         </ng-container>
         <ng-template #grid_mode>
-          <mat-grid-tile *ngIf="resultMode==ModeEnum.grid" class="resultlist__md-grid-tile">
+          <mat-grid-tile *ngIf="resultMode === ModeEnum.grid" class="resultlist__md-grid-tile">
             <arlas-result-grid-tile [thumbnailFit]="thumbnailFit" id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
               (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
@@ -147,7 +147,7 @@
       </ng-container>
     </mat-grid-list>
   </tbody>
-  <div *ngIf="resultMode==ModeEnum.grid" class="resultlist-thumbnails-fit" >
+  <div *ngIf="resultMode === ModeEnum.grid" class="resultlist-thumbnails-fit" >
     <mat-button-toggle-group [name]="'thumbnailFitGroup'" (change)="emitThumbnailsFitStatus($event)" class="fit-group">
       <mat-button-toggle matTooltip="{{WIDTH_FIT | translate}}" value="{{ThumbnailFitEnum.width}}" [checked]="thumbnailFit==ThumbnailFitEnum.width">
         <mat-icon style="transform: rotate(-90deg)" class="fit-icon">expand</mat-icon>

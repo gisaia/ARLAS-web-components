@@ -1,4 +1,4 @@
-import { Component, ElementRef, Inject, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
@@ -124,7 +124,7 @@ export class MapglImportComponent {
   private fitResult = false;
   private jszip: JSZip;
   private SOURCE_NAME_POLYGON_LABEL = 'polygon_label';
-  private emptyData = {
+  private emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
     'features': []
   };
@@ -491,9 +491,9 @@ export class MapglImportComponent {
   /** *************/
   public clearPolygons() {
     // Clean source of imported polygons
-    const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
+    const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL) as mapboxgl.GeoJSONSource;
     this.featureIndex = 0;
-    this.mapComponent.onAoiChanged.next(<FeatureCollection>this.emptyData);
+    this.mapComponent.onAoiChanged.next(this.emptyData);
     if (labelSource !== undefined) {
       labelSource.setData(this.emptyData);
     }

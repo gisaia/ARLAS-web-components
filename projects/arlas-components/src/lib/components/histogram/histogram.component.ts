@@ -157,6 +157,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
    * @description Chart's label for the x axis (Visible when there is one bucket on the histogram).
    */
   @Input() public chartXLabel = '';
+
+  /**
+   * @Input : Angular
+   * @description Chart's label for the y axis (Visible when there is one bucket on the histogram).
+   */
+  @Input() public chartYLabel = '';
   /**
    * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
@@ -484,23 +490,12 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
     (<AbstractChart>this.histogram).removeSelectInterval(id);
   }
 
-  /**
-   * @description Displays the "Remove" tooltip
-   */
-  public overRemove(e) {
-    (<AbstractChart>this.histogram).overRemove(e);
-  }
-
-  /**
-   * @description Hides the "Remove" tooltip
-   */
-  public leaveRemove() {
-    (<AbstractChart>this.histogram).leaveRemove();
-  }
-
   private setHistogramParameters() {
     if (!this.chartXLabel) {
       this.chartXLabel = '';
+    }
+    if (!this.chartYLabel) {
+      this.chartYLabel = '';
     }
     if (!this.xUnit && this.dataUnit) {
       this.xUnit = this.dataUnit;
@@ -583,6 +578,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
       .subscribe(t => {
         t.title = this.chartTitle;
         t.xLabel = this.chartXLabel;
+        t.yLabel = this.chartYLabel;
         t.xUnit = this.xUnit;
         t.yUnit = this.yUnit;
         this.tooltipEvent.next(t);
