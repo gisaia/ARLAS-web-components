@@ -110,8 +110,7 @@
 	"Download": "Download",
 	"Cloud": "Cloud",
 	"country": "country",
-	"Column": "Column",
-	"Direction": "Direction",
+
 	"COUNT_COLUMN_TITLE": "count",
 	"METRIC_COLUMN_TITLE": "{{metric}} {{field}}",
 	"METRIC_COLUMN_avg": "average",

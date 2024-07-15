@@ -110,8 +110,6 @@
 	"Download": "Télécharger",
 	"Cloud": "Nuage",
 	"country": "Pays",
-	"Column": "Colonne",
-	"Direction": "Sens",
 	"COUNT_COLUMN_TITLE": "nombre d'éléments",
 	"METRIC_COLUMN_TITLE": "{{field}} {{metric}}",
 	"METRIC_COLUMN_avg": "moyen(ne)",
