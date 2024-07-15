@@ -108,10 +108,15 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   @Input() public selectWithCheckbox = true;
 
   /**
-   * @description Allow to select display mode for this component
+   * @description Allow to select display mode for headers.
    */
-  @Input() public headerDisplayMode: 'indicator' | 'titleOnly' | 'full' = 'indicator';
+  @Input() public headerDisplayMode: 'chip' | 'title' | 'full' = 'chip';
 
+  /**
+   * @description Normalise bars progression based on the maximum value of each column OR of the whole table
+   */
+  @Input() public normaliseBy: 'column' | 'table' = 'table';
+  @Input() public showRowField = true;
 
   @Output() public onSelect = new EventEmitter<Set<string>>();
 
@@ -163,7 +168,8 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   public buildHeaders() {
     this.uniqueTitles = [];
     this.metricsTable.header.forEach(header => {
-      const includes = this.uniqueTitles.find(includeHeader => includeHeader.title === header.title);
+      const includes = this.uniqueTitles.find(includeHeader => (includeHeader.title +
+        includeHeader.rowfield)  === (header.title + header.rowfield));
       if (!includes) {
         header.span = 1;
         this.uniqueTitles.push(header);
@@ -200,7 +206,13 @@ export class MetricsTableComponent implements OnInit, OnChanges {
           powerBar = new PowerBar(header.title, header.title, item?.value);
         }
         if (item) {
-          powerBar.progression = (item.value / item.maxValue) * 100;
+          let maxValue;
+          if (this.normaliseBy === 'table') {
+            maxValue = item.maxTableValue;
+          } else {
+            maxValue = item.maxColumnValue;
+          }
+          powerBar.progression = (item.value / maxValue) * 100;
         }
         if (this.useColorService) {
           powerBar.color = this.defineColor(powerBar.term);

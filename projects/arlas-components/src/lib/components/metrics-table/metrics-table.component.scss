@@ -136,6 +136,13 @@
       text-overflow: ellipsis;
       width: calc(100% - 20px);
     }
+    &-rowfield {
+      font-weight: 200;
+      margin: auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
   }
 
   &__header-item {
