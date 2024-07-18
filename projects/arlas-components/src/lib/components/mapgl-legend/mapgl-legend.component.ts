@@ -91,7 +91,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
 
   public colorLegend: Legend = {};
-  public lineDasharray;
+  public lineDasharray: Array<number>;
   public strokeColorLegend: Legend = {};
   public widthLegend: Legend = {};
   public radiusLegend: Legend = {};
