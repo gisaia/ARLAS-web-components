@@ -31,6 +31,20 @@
             "description": "Choose how to apply colors to the table. By column : all the bars in same column will have the same color. By row : all the bars in the same row, will have the same color.",
             "type": "string",
             "enum": ["column", "row"]
+        },
+        "headerDisplayMode": {
+            "description": "Allows to choose what level of details to display in headers. 'chip' only displays a circular chip. 'title' only displays the title. 'full' displays both.",
+            "type": "string",
+            "enum": ["chip", "title", "full"]
+        },
+        "normaliseBy": {
+            "description": "Normalise bars progression based on the maximum value of each column OR of the whole table",
+            "type": "string",
+            "enum": ["table", "column"]
+        },
+        "selectWithCheckbox": {
+            "description": "Display a checkbox next to the terms that allows to select the row.",
+            "type": "boolean"
         }
     },
     "required": []
