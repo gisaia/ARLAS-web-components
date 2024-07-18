@@ -9,6 +9,7 @@ export interface MetricsTableHeader {
     metric: string;
     span?: number;
     rowfield: string;
+    color: string;
 }
 
 export interface MetricsTableCell {

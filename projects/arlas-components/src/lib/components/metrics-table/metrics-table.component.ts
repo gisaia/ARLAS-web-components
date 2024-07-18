@@ -129,7 +129,6 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   protected selectedKeys: Set<string> = new Set();
   protected selectedRows: Map<string, MetricsTableRow> = new Map();
   protected pendingMode = false;
-  protected shortcutColor = [];
   protected titleAreDifferent = true;
   protected uniqueTitles: MetricsTableHeader[];
 
@@ -167,16 +166,19 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
   public buildHeaders() {
     this.uniqueTitles = [];
-    this.metricsTable.header.forEach(header => {
-      const includes = this.uniqueTitles.find(includeHeader => (includeHeader.title +
-        includeHeader.rowfield)  === (header.title + header.rowfield));
-      if (!includes) {
+    let previousId = '';
+    let nextIndex = 0;
+    this.metricsTable.header.forEach((header, i) => {
+      header.color = this.defineColor(header.title);
+      const currentId = header.title + header.rowfield;
+      if (currentId !== previousId) {
         header.span = 1;
         this.uniqueTitles.push(header);
+        nextIndex++;
+        previousId = currentId;
       } else {
-        includes.span++;
+        this.uniqueTitles[nextIndex - 1].span++;
       }
-      this.shortcutColor.push(this.defineColor(header.title));
     });
     this.titleAreDifferent = this.uniqueTitles.length === this.metricsTable?.data[0]?.data.length;
     if (!this.titleAreDifferent) {

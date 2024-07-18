@@ -20,21 +20,31 @@
             <div>
               <div class="container">
                 <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
-                  [style]="{'background': shortcutColor[i]}" [matTooltip]="header.title | translate"></div>
+                  [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
                 <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
                 <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
-                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}</div>
+                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}
+                </div>
               </div>
-              <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">{{ header.rowfield | translate }}</div>
-  
+              <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">{{
+                header.rowfield | translate }}</div>
+
             </div>
           </th>
         </ng-container>
         <ng-template #displayOneTitle>
           <th *ngFor="let header of uniqueTitles" class="multi-bar__header-indicator"
             [style.width.px]="header.span * 70" [attr.colspan]="header.span">
-              <div class="multi-bar__header-title" [matTooltip]="header.title | translate">{{header.title | translate}}</div>
-              <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">{{header.rowfield | translate}}</div>
+            <div class="container">
+              <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
+                [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
+              <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
+              <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
+                *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}
+              </div>
+            </div>
+            <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">
+              {{header.rowfield | translate}}</div>
           </th>
         </ng-template>
       </tr>
@@ -45,7 +55,8 @@
           <div *ngIf="header.metric !== 'count'"
             [matTooltip]="'METRIC_COLUMN_TITLE' | translate:  { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle | translate }"
             class="multi-bar__header-item multi-bar__header-item-title">
-            {{'METRIC_COLUMN_TITLE' | translate: { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle |
+            {{'METRIC_COLUMN_TITLE' | translate: { metric: 'METRIC_COLUMN_' + header.metric | translate, field :
+            header.subTitle |
             translate } }}
           </div>
           <div *ngIf="header.metric === 'count'" [matTooltip]="'COUNT_COLUMN_TITLE' | translate"
