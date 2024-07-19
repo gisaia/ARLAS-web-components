@@ -96,3 +96,5 @@ export { CalendarTimelineComponent, TranslationDirection } from './lib/component
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
 export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
+export { GetColorModule } from './lib/pipes/get-color/get-color.module';
+export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';

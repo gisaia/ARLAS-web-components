@@ -17,19 +17,19 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, AfterViewInit, SimpleChanges, OnChanges, ElementRef, ViewChild, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { AfterViewInit, Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { curveLinear, area, line } from 'd3-shape';
+import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { StyleFunction, Expression } from 'mapbox-gl';
+import { area, curveLinear, line } from 'd3-shape';
+import * as mapboxgl from 'mapbox-gl';
+import { Subject, takeUntil } from 'rxjs';
 import * as tinycolor from 'tinycolor2';
 import { ArlasColorService } from '../../services/color.generator.service';
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
-import * as mapboxgl from 'mapbox-gl';
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
+import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.component';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -44,7 +44,7 @@ export const HEATMAP_DENSITY = 'Heatmap-density';
 @Component({
   selector: 'arlas-mapgl-legend',
   templateUrl: './mapgl-legend.component.html',
-  styleUrls: ['./mapgl-legend.component.css']
+  styleUrls: ['./mapgl-legend.component.scss']
 })
 export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   /**
@@ -86,9 +86,14 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public visibilityStatus: Subject<boolean> = new Subject();
 
+  /**
+   * @Output : Angular
+   * @description Notifies the parent component that the user wants to download the layer
+   */
   @Output() public downloadSourceEmitter: Subject<{ layer: mapboxgl.Layer; downloadType: string; }> = new Subject();
-  @ViewChild('width_svg', { read: ElementRef, static: false }) public lineWidthLegendElement: ElementRef;
-  @ViewChild('radius_svg', { read: ElementRef, static: false }) public circleRadiusLegendElement: ElementRef;
+
+  @ViewChild('width_legend', { static: false }) public lineWidthLegend: MapglLegendItemComponent;
+  @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: MapglLegendItemComponent;
 
   public colorLegend: Legend = {};
   public lineDasharray: Array<number>;
@@ -103,53 +108,60 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
   private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
   private LEGEND_WIDTH = 210;
-  public colorsPalette = '';
+  public colorPalette = '';
   public strokeColorPalette = '';
 
-  public constructor(public translate: TranslateService, private el: ElementRef,
+  private _onDestroy$ = new Subject<boolean>();
+
+  public constructor(
+    public translate: TranslateService,
     public colorService: ArlasColorService) { }
 
 
   public ngOnInit() {
-    this.legendUpdater.subscribe(legendDataPerCollection => {
-      this.legendData = legendDataPerCollection.get(this.collection);
-      if (!!this.layer) {
-        this.drawLegends(this.visibleMode);
-      }
-    });
-    this.visibilityUpdater.subscribe(visibilityUpdater => {
-      /** check legend visibility according to Data source status (mapcontirbutor) */
-      if (!!this.layer) {
-        /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
-        this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
-      } else {
-        this.visibleMode = false;
-      }
-      /** check legend visibility according to VisibilityRules */
-      if (this.visibleMode && this.layer && !!this.layer.minzoom && !!this.layer.maxzoom) {
-        this.visibleMode = (this.zoom <= this.layer.maxzoom && this.zoom >= this.layer.minzoom);
-      }
-      /** check legend visibility according to legend enabled or not */
-      if (!this.enabled) {
-        this.visibleMode = false;
-      }
-      if (!this.visibleMode) {
-        this.detail = this.visibleMode;
-      }
-      /** check legend visibility for external layers that are not set by config nor map contributors */
-      if (this.layer && !this.layer.id.startsWith(ARLAS_ID) &&
-        !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
-        && !this.layer.id.startsWith(SELECT_LAYER_PREFIX)) {
-        this.visibleMode = this.enabled;
-        if (!!this.layer.metadata && this.layer.metadata.showLegend === false) {
+    this.legendUpdater
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(legendDataPerCollection => {
+        this.legendData = legendDataPerCollection.get(this.collection);
+        if (!!this.layer) {
+          this.drawLegends(this.visibleMode);
+        }
+      });
+    this.visibilityUpdater
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(visibilityUpdater => {
+        /** check legend visibility according to Data source status (mapcontirbutor) */
+        if (!!this.layer) {
+          /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
+          this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
+        } else {
           this.visibleMode = false;
         }
-      }
-      if (!!this.layer) {
-        this.drawLegends(this.visibleMode);
-      }
-      this.visibilityStatus.next(this.visibleMode);
-    });
+        /** check legend visibility according to VisibilityRules */
+        if (this.visibleMode && this.layer && !!this.layer.minzoom && !!this.layer.maxzoom) {
+          this.visibleMode = (this.zoom <= this.layer.maxzoom && this.zoom >= this.layer.minzoom);
+        }
+        /** check legend visibility according to legend enabled or not */
+        if (!this.enabled) {
+          this.visibleMode = false;
+        }
+        if (!this.visibleMode) {
+          this.detail = this.visibleMode;
+        }
+        /** check legend visibility for external layers that are not set by config nor map contributors */
+        if (this.layer && !this.layer.id.startsWith(ARLAS_ID) &&
+          !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
+          && !this.layer.id.startsWith(SELECT_LAYER_PREFIX)) {
+          this.visibleMode = this.enabled;
+          if (!!this.layer.metadata && this.layer.metadata.showLegend === false) {
+            this.visibleMode = false;
+          }
+        }
+        if (!!this.layer) {
+          this.drawLegends(this.visibleMode);
+        }
+        this.visibilityStatus.next(this.visibleMode);
+      });
   }
 
   public ngAfterViewInit() {
@@ -164,6 +176,11 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.drawLegends(this.visibleMode);
       }
     }
+  }
+
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
 
   public downloadLayerSource(layer: mapboxgl.Layer, downloadType: string): void {
@@ -197,7 +214,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.buildCircleRadiusLegend(p['circle-radius']);
         this.colorLegend = colors[0];
         this.strokeColorLegend = strokeColors[0];
-        this.colorsPalette = colors[1];
+        this.colorPalette = colors[1];
         this.strokeColorPalette = strokeColors[1];
         break;
       }
@@ -207,14 +224,14 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.buildWidthLegend(p['line-width']);
         this.lineDasharray = p['line-dasharray'];
         this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
+        this.colorPalette = colors[1];
         break;
       }
       case 'fill': {
         const p: mapboxgl.FillPaint = (paint as mapboxgl.FillPaint);
         const colors = MapglLegendComponent.buildColorLegend(p['fill-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
         this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
+        this.colorPalette = colors[1];
         if (!!metadata && !!metadata.stroke) {
           const strokeColors = MapglLegendComponent.buildColorLegend(metadata.stroke.color, visibileMode, this.legendData,
             this.layer.filter, this.translate);
@@ -230,7 +247,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         );
         this.buildCircleRadiusLegend(p['heatmap-radius']);
         this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
+        this.colorPalette = colors[1];
         if (this.layer.source.toString().startsWith('feature-metric')) {
           this.colorLegend.visible = false;
         }
@@ -240,7 +257,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
         const p: mapboxgl.SymbolPaint = (paint as mapboxgl.SymbolPaint);
         const colors = MapglLegendComponent.buildColorLegend(p['text-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
         this.colorLegend = colors[0];
-        this.colorsPalette = colors[1];
+        this.colorPalette = colors[1];
         const l: mapboxgl.SymbolLayout = (paint as mapboxgl.SymbolLayout);
         this.buildWidthLegend(l['text-size']);
         break;
@@ -283,10 +300,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     });
   }
 
-  public static buildColorLegend(colorExpression: string | StyleFunction | Expression, visibleMode: boolean,
+  public static buildColorLegend(colorExpression: string | mapboxgl.StyleFunction | mapboxgl.Expression, visibleMode: boolean,
     legendData: Map<string, LegendData>, filter?: any[], translate?: TranslateService): [Legend, string] {
     const colorLegend: Legend = { visible: true };
-    let colorsPalette = '';
+    let colorPalette = '';
     if (typeof colorExpression === 'string') {
       colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
       colorLegend.fixValue = colorExpression;
@@ -408,16 +425,16 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               p.value = tinycolor.default(p.value.toString()).greyscale().lighten(20).toHexString();
             });
           }
-          colorsPalette = palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');
+          colorPalette = palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');
         }
       }
     }
 
     colorLegend.visible = visibleMode;
-    return [colorLegend, colorsPalette];
+    return [colorLegend, colorPalette];
   }
 
-  private buildWidthLegend(lineWidth: number | StyleFunction | Expression): void {
+  private buildWidthLegend(lineWidth: number | mapboxgl.StyleFunction | mapboxgl.Expression): void {
     /** if the line width is fix then it is not added to the legend*/
     if (Array.isArray(lineWidth)) {
       if (lineWidth.length >= 3) {
@@ -442,14 +459,14 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawLineWidth(this.lineWidthLegendElement.nativeElement, lineWidthEvolution, this.colorLegend,
+          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
             this.LEGEND_WIDTH, this.MAX_LINE_WIDTH);
         }
       }
     }
   }
 
-  private buildCircleRadiusLegend(circleRadius: number | StyleFunction | Expression): void {
+  private buildCircleRadiusLegend(circleRadius: number | mapboxgl.StyleFunction | mapboxgl.Expression): void {
     if (Array.isArray(circleRadius)) {
       if (circleRadius.length >= 3) {
         if (circleRadius[0] === INTERPOLATE) {
@@ -476,47 +493,14 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend,
-            this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
+          if (!!this.circleRadiusLegend.interpolatedElement) {
+            drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend,
+              this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
+          }
         }
       }
     }
   }
-
-  private buildCircleStrokeLegend(circleStroke: number | StyleFunction | Expression): void {
-    if (Array.isArray(circleStroke)) {
-      if (circleStroke.length >= 3) {
-        if (circleStroke[0] === INTERPOLATE) {
-          const field = circleStroke[2][1];
-          const circleRadiusEvolution: Array<HistogramData> = new Array();
-          circleStroke.filter((w, i) => i >= 3).forEach((w, i) => {
-            if (i % 2 === 0) {
-              circleRadiusEvolution.push({ key: w, value: circleStroke[i + 1 + 3] });
-            }
-          });
-          this.radiusLegend.title = field;
-          if (this.legendData && this.legendData.get(field)) {
-            this.radiusLegend.minValue = this.legendData.get(field).minValue;
-            this.radiusLegend.maxValue = this.legendData.get(field).maxValue;
-          } else {
-            this.radiusLegend.minValue = circleRadiusEvolution[0].key + '';
-            this.radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
-          }
-          this.radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          const maxCircleRadius = getMax(circleRadiusEvolution);
-          if (maxCircleRadius > this.MAX_CIRLE_RADIUS) {
-            circleRadiusEvolution.map(lw => {
-              lw.value = lw.value * this.MAX_CIRLE_RADIUS / maxCircleRadius;
-              return lw;
-            });
-          }
-          drawCircleSupportLine(this.circleRadiusLegendElement.nativeElement, circleRadiusEvolution, this.colorLegend,
-            this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
-        }
-      }
-    }
-  }
-
 }
 
 /**
@@ -525,9 +509,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
  * @param lineWidths List of {key, linewidth}
  * @param cLegend Color legend, to give the drawn legend lines the same color on the map
  * @param legendWidth The width that the svg will take to draw the legend
+ * @param legendHeight The height that the svg will take to draw the legend
  */
-export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>, cLegend: Legend,
-  legendWidth: number, legendHeight: number) {
+export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>,
+    cLegend: Legend, legendWidth: number, legendHeight: number) {
   const maxHeight = getMax(lineWidths);
   const xDomain: any = (scaleLinear()).range([0, legendWidth]);
   const xDomainExtent = [lineWidths[0].key, lineWidths[lineWidths.length - 1].key];
@@ -584,9 +569,10 @@ export function getMiddleColor(colorLegend: Legend): string {
  * @param circlesRadiuses List of {key, circleradius}
  * @param cLegend Color legend, to give the drawn legend circles the same color on the map
  * @param legendWidth The width that the svg will take to draw the legend
+ * @param legendHeight The height that the svg will take to draw the legend
  */
-export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>, cLegend: Legend,
-  legendWidth: number, legendHeight: number) {
+export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>,
+    cLegend: Legend, legendWidth: number, legendHeight: number) {
   const circleDiameters = [];
   circlesRadiuses.forEach(cr => circleDiameters.push({ key: cr.key, value: cr.value * 2 }));
   const maxHeight = getMax(circleDiameters);
@@ -635,6 +621,3 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
 export function getMax(data: Array<HistogramData>): number {
   return Math.max(...data.map(hd => +hd.value));
 }
-
-
-

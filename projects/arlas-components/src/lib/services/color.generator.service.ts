@@ -42,5 +42,3 @@ export class ArlasColorService {
   }
 
 }
-
-

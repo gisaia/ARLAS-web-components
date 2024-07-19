@@ -28,6 +28,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { LayerIdToName } from './layer-name.pipe';
 import { MatMenuModule } from '@angular/material/menu';
+import { GetColorModule } from '../../pipes/get-color/get-color.module';
+import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.component';
 
 
 @NgModule({
@@ -39,9 +41,10 @@ import { MatMenuModule } from '@angular/material/menu';
     MatIconModule,
     MatMenuModule,
     MatTooltipModule,
-    FormatNumberModule
+    FormatNumberModule,
+    GetColorModule
   ],
-  declarations: [MapglLegendComponent, LayerIdToName],
+  declarations: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent],
   exports: [MapglLegendComponent, LayerIdToName]
 })
 export class MapglLegendModule {
