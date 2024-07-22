@@ -27,7 +27,7 @@ import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
 @Component({
   selector: '[arlas-result-detailed-item]',
   templateUrl: './result-detailed-item.component.html',
-  styleUrls: ['./result-detailed-item.component.css']
+  styleUrls: ['./result-detailed-item.component.scss']
 })
 export class ResultDetailedItemComponent implements OnInit {
   /**

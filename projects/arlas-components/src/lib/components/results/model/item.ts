@@ -114,6 +114,14 @@ export class Item {
    * @description color characterising the item
    */
   public color: string;
+  /**
+    * @description Title for the details section.
+    */
+  public detailsTitle: string;
+  /**
+   * @description If details item title is enabled
+   */
+  public detailsTitleEnabled: boolean;
 
   public constructor(columns: Array<Column>, itemData: Map<string, ItemDataType>) {
     this.columns = columns;
