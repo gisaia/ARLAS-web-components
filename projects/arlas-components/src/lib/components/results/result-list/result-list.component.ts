@@ -991,6 +991,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
     item.imageEnabled = itemData.get('imageEnabled') === 'true';
     item.thumbnailEnabled = itemData.get('thumbnailEnabled') === 'true';
+    item.detailsTitleEnabled = itemData.get('detailsTitleEnabled') === 'true';
 
     /** Retro-compatibility code */
     if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
@@ -1022,6 +1023,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = matchAndReplace(itemData, this.fieldsConfiguration.urlThumbnailTemplate);
+    }
+
+    if (item.detailsTitleEnabled && this.fieldsConfiguration.detailsTitleTemplate) {
+      item.detailsTitle = matchAndReplace(itemData, this.fieldsConfiguration.detailsTitleTemplate);
     }
 
     item.position = this.items.length + 1;
