@@ -78,13 +78,6 @@ export class ResultDetailedItemComponent implements OnInit {
     return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
   }
 
-  public getAttachmentUrl(url: string): string {
-    if (url && !url.startsWith('http')) {
-      return 'https://' + url;
-    }
-    return url;
-  }
-
   public getAttachmentLabel(attachment: Attachment, index: number): string {
     if (attachment.label && attachment.label.length > 0) {
       return attachment.label;
