@@ -63,6 +63,7 @@ export { ResultDetailedItemComponent } from './lib/components/results/result-det
 export { ResultsModule } from './lib/components/results/results.module';
 export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services/color.generator.module';
 export { ArlasColorService } from './lib/services/color.generator.service';
+export { CollectionService, BaseCollectionService } from './lib/services/collection.service';
 export { LayerIdToName } from './lib/components/mapgl-legend/layer-name.pipe';
 export { MapglLegendComponent } from './lib/components/mapgl-legend/mapgl-legend.component';
 export { MapglLegendModule } from './lib/components/mapgl-legend/mapgl-legend.module';
