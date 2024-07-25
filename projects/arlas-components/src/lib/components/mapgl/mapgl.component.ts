@@ -541,7 +541,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    */
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
-      if (typeof(s.source) !== 'string') {
+      if (typeof (s.source) !== 'string') {
         this.map.addSource(s.id, s.source);
       }
     });
@@ -750,9 +750,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
         'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
       },
+      pitchWithRotate: false,
       transformRequest: this.transformRequest,
       attributionControl: false
     });
+    // Disable map pitch and rotation with keyboard
+    this.map.keyboard.disableRotation();
+
     this.map.addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
     this.drawService.setMap(this.map);
     fromEvent(window, 'beforeunload').subscribe(() => {
@@ -1096,7 +1100,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.isDrawingPolygon = e.mode === this.draw.modes.DRAW_POLYGON;
         this.isDrawingStrip = e.mode === this.draw.modes.DIRECT_STRIP;
         this.isDrawingCircle = e.mode === this.draw.modes.DRAW_CIRCLE || e.mode === this.draw.modes.DRAW_RADIUS_CIRCLE;
-        if (this.isDrawingPolygon || this.isDrawingCircle || this.isDrawingStrip ||e.mode === 'static') {
+        if (this.isDrawingPolygon || this.isDrawingCircle || this.isDrawingStrip || e.mode === 'static') {
           this.isInSimpleDrawMode = false;
         }
         if (e.mode === 'simple_select') {
@@ -1119,7 +1123,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
                 selectedCoordPaths: selectedFeatures[0].geometry.coordinates
               });
               this.isInSimpleDrawMode = false;
-            }else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
+            } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
               this.draw.changeMode('direct_strip', {
                 featureId: selectedIds[0],
                 maxLength: selectedFeatures[0].properties.maxLength,
@@ -1398,13 +1402,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getAllPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f)||
-      this.drawService.isCircle(f)).map(f => cleanCoords(f)));
+      polygon = this.latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
+        this.drawService.isCircle(f)).map(f => cleanCoords(f)));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f)||
-        this.drawService.isCircle(f)).map(f => cleanCoords(f))
+        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
+          this.drawService.isCircle(f)).map(f => cleanCoords(f))
       };
     }
     return polygon;
@@ -1417,13 +1421,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f)||
-      this.drawService.isCircle(f)));
+      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
+        this.drawService.isCircle(f)));
     } else {
       polygon = {
         'type': 'FeatureCollection',
-        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f)||
-        this.drawService.isCircle(f))
+        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
+          this.drawService.isCircle(f))
       };
     }
     return polygon;
@@ -1560,7 +1564,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         mapSourcesMap.set(mapSource.id, mapSource);
       });
       mapSourcesMap.forEach((mapSource, id) => {
-        if (map.getSource(id) === undefined && typeof(mapSource.source) !== 'string') {
+        if (map.getSource(id) === undefined && typeof (mapSource.source) !== 'string') {
           map.addSource(id, mapSource.source);
         }
       });
