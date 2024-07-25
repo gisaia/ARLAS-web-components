@@ -1,17 +1,17 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
-import { SelectFormControl, ColorGeneratorLoader } from '../componentsUtils';
-import { ArlasColorService } from '../../services/color.generator.service';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { Subject } from 'rxjs';
+import { ArlasColorService } from '../../services/color.generator.service';
+import { SelectFormControl } from '../componentsUtils';
 
 export interface GeometrySelectModel {
   path: string;
   selected?: boolean;
 }
 export interface OperationSelectModel {
-  operation: string;
+  operation: GeoQueryOperator;
   selected?: boolean;
 }
 export interface GeoQuery {
@@ -19,54 +19,63 @@ export interface GeoQuery {
   geometry_path: string;
 }
 
-export interface MapSettingsService {
+export enum GeoQueryOperator {
+  WITHIN = 'within',
+  NOT_WITHIN = 'notwithin',
+  INTERSECTS = 'intersects',
+  NOT_INTERSECTS = 'notintersects'
+}
 
+export interface MapSettingsService {
   getGeoQueries(): Map<string, [Array<GeometrySelectModel>, Array<OperationSelectModel>, string]>;
 }
 
 @Component({
   selector: 'arlas-mapgl-settings-dialog',
   templateUrl: './mapgl-settings-dialog.component.html',
-  styleUrls: ['./mapgl-settings-dialog.component.css']
+  styleUrls: ['./mapgl-settings-dialog.component.scss']
 })
 export class MapglSettingsDialogComponent implements OnInit {
   /**
-   * @Angular
+   * @Output : Angular
    * Emits the geo-query to apply. A geo-query is defined by
    * - the operation ("within", "intersects", "notwithin", "notintersects")
    * - the geometry field to query
    */
-  @Output()
-  public geoQueryEmitter: Subject<Map<string, GeoQuery>> = new Subject<Map<string, GeoQuery>>();
-  public emittedGeoQueries: Map<string, GeoQuery> = new Map();
+  @Output() public geoQueryEmitter = new Subject<Map<string, GeoQuery>>();
+  public emittedGeoQueries = new Map<string, GeoQuery>();
   /** Constants */
   public GEO_QUERIES_DESCRIPTION = marker('Draw a bbox or a polygon that');
-  public OP_CONSTANTS = {
-    WITHIN: 'within',
-    NOTWITHIN: 'notwithin',
-    INTERSECTS: 'intersects',
-    NOTINTERSECTS: 'notintersects'
-  };
-  public geoQueriesFormGroups: UntypedFormGroup[] = [];
-  public collectionsColors: string[] = [];
-  public selectionsSnapshot: Map<string, string> = new Map();
 
-  public constructor(private dialogRef: MatDialogRef<MapglSettingsComponent>, private colorGeneratorLoader: ArlasColorService    ) { }
+  public geoQueriesFormGroups = new Array<UntypedFormGroup>();
+  public collectionsColors = new Array<string>();
+  public selectionsSnapshot = new Map<string, string>();
+
+  private _onDestroy$ = new Subject<boolean>();
+
+  public constructor(
+    private dialogRef: MatDialogRef<MapglSettingsComponent>,
+    private colorGeneratorLoader: ArlasColorService) { }
 
   public ngOnInit() { }
+
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
+  }
 
   /** Emits the geo-query to apply */
   public emitGeoFilter() {
     this.geoQueryEmitter.next(this.emittedGeoQueries);
   }
 
-  /** closes the dialog */
+  /** Closes the dialog */
   public onClose() {
     this.dialogRef.close();
   }
 
-  public createGeoQueryForm(collectionName: string, displayCollectionName: string ,filterGeometries: Array<GeometrySelectModel>,
-    operationsSelectModel: Array<OperationSelectModel>): void {
+  public createGeoQueryForm(collectionName: string, displayCollectionName: string,
+      filterGeometries: Array<GeometrySelectModel>, operationsSelectModel: Array<OperationSelectModel>): void {
     /** geometry */
     const geometryPaths = filterGeometries.map(fg => fg.path);
     const selectedGeometry = filterGeometries.find(fg => fg.selected);
@@ -74,7 +83,7 @@ export class MapglSettingsDialogComponent implements OnInit {
     /** operation */
     const operations = operationsSelectModel.map(osm => osm.operation);
     const selectedOperationSelectModel = operationsSelectModel.find(osm => osm.selected);
-    const selectedOperation = !!selectedOperationSelectModel ?  selectedOperationSelectModel.operation : this.OP_CONSTANTS.INTERSECTS;
+    const selectedOperation = !!selectedOperationSelectModel ?  selectedOperationSelectModel.operation : GeoQueryOperator.INTERSECTS;
     const geoQueryControls = {
       a_operation: new SelectFormControl(selectedOperation, '', operations),
       b_geometryPath: new SelectFormControl(selectedGeometryPath, '', geometryPaths),
@@ -86,7 +95,9 @@ export class MapglSettingsDialogComponent implements OnInit {
     this.emittedGeoQueries.clear();
     this.selectionsSnapshot.clear();
     this.selectionsSnapshot.set(collectionName, selectedGeometry + selectedOperation);
-    geoQueryForm.valueChanges.subscribe(vc => {
+    geoQueryForm.valueChanges
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(vc => {
       const selectionSnapShot = vc.b_geometryPath + vc.a_operation;
       /** ignore selection changes if the user go back to initial state of a control */
       const ignoreChange = selectionSnapShot === this.selectionsSnapshot.get(vc.c_collection);
@@ -107,18 +118,17 @@ export class MapglSettingsDialogComponent implements OnInit {
 @Component({
   selector: 'arlas-mapgl-settings',
   templateUrl: './mapgl-settings.component.html',
-  styleUrls: ['./mapgl-settings.component.css']
+  styleUrls: ['./mapgl-settings.component.scss']
 })
 export class MapglSettingsComponent implements OnInit {
 
   /**
-   * @Angular
+   * @Output : Angular
    * Emits the geo-query to apply. A geo-query is defined by
    * - the operation ("within", "intersects", "notwithin", "notintersects")
    * - the geometry field to query
    */
-  @Output()
-  public geoQueryEmitter: Subject<Map<string, GeoQuery>> = new Subject<Map<string, GeoQuery>>();
+  @Output() public geoQueryEmitter = new Subject<Map<string, GeoQuery>>();
 
   public dialogRef: MatDialogRef<MapglSettingsDialogComponent>;
 

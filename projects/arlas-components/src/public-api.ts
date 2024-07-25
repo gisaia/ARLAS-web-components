@@ -77,7 +77,7 @@ export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
 export {
-  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent,
+  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent, GeoQueryOperator
 } from './lib/components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';

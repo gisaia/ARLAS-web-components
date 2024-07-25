@@ -1,33 +1,38 @@
-<h1 mat-dialog-title class="mapgl-settings-title">{{ 'Geo-queries' | translate}}</h1>
-<div mat-dialog-content class="mapgl-settings-body">
-  <div class="geo-queries-description">{{GEO_QUERIES_DESCRIPTION | translate}}</div>
-  <div *ngFor="let formGroup of geoQueriesFormGroups; let i = index">
-    <div class="geo-queries-container" [formGroup]="formGroup" [style.borderLeftColor]="collectionsColors[i]">
-      <div class="geo-queries-steps">
-        <div *ngFor="let control of formGroup.controls | keyvalue" class="geo-queries-step">
-          <div *ngIf="control.key === 'd_displayCollectionName'">
-            {{  'of_collection' | translate}} {{control.value.value | translate}} {{'geo_query_collection' | translate}}
-          </div>
-          <mat-form-field *ngIf="control.key !== 'c_collection' && control.key !== 'color' && control.key !== 'd_displayCollectionName'">
-            <mat-label>{{control.key | translate}}</mat-label>
-            <mat-select  [formControl]="control.value">
-              <mat-option *ngFor="let option of control.value.syncOptions" [value]="option">
-                  {{option | translate}}
-                </mat-option>
-            </mat-select>
-          </mat-form-field>
+<h1 mat-dialog-title class="mapgl-settings__title">
+  {{ 'Geo-queries' | translate}}
+</h1>
+
+<div mat-dialog-content class="mapgl-settings">
+  <div class="mapgl-settings__description">
+    {{ GEO_QUERIES_DESCRIPTION | translate }}
+  </div>
+  <div class="mapgl-settings__form" *ngFor="let formGroup of geoQueriesFormGroups; let i = index"
+      [formGroup]="formGroup" [style.borderLeftColor]="collectionsColors[i]">
+    <div class="mapgl-settings__form__steps">
+      <div *ngFor="let control of formGroup.controls | keyvalue" class="mapgl-settings__form__steps__item">
+        <div *ngIf="control.key === 'd_displayCollectionName'">
+          {{ 'of_collection' | translate: { collection: (control.value.value | translate) } }}
         </div>
+        <mat-form-field *ngIf="control.key !== 'c_collection' && control.key !== 'color' && control.key !== 'd_displayCollectionName'">
+          <mat-label>{{ control.key | translate }}</mat-label>
+          <mat-select [formControl]="control.value">
+            <mat-option *ngFor="let option of control.value.syncOptions" [value]="option">
+              {{option | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
-
   </div>
 </div>
-<div mat-dialog-actions class="mapgl-settings-actions">
-  <button mat-button class="apply-displayed-geometries"
-    (click)="emitGeoFilter()">{{'Apply geo-queries' | translate}}</button>
-  <button mat-button class="apply-displayed-geometries"
-    (click)="emitGeoFilter();onClose()">{{'Set geo-queries' | translate}}</button>
-  <button mat-button class="cancel-map-settings" (click)="onClose()">{{ 'Cancel' | translate}}</button>
+
+<div mat-dialog-actions class="mapgl-settings__actions">
+  <button mat-button class="mapgl-settings__actions--apply"
+    (click)="emitGeoFilter()">{{ 'Apply geo-queries' | translate }}</button>
+  <button mat-button class="mapgl-settings__actions--apply"
+    (click)="emitGeoFilter();onClose()">{{ 'Set geo-queries' | translate }}</button>
+  <button mat-button class="mapgl-settings__actions--cancel"
+    (click)="onClose()">{{ 'Cancel' | translate}}</button>
 </div>
 
 

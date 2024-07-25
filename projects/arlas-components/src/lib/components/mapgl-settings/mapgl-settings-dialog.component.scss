@@ -1,0 +1,60 @@
+::ng-deep .map-settings-dialog .mat-dialog-container {
+  overflow: inherit;
+  position: relative;
+}
+
+.mapgl-settings__title {
+  margin: 0 0 10px 0 !important;
+}
+
+.mapgl-settings {
+  width: 800px;
+  min-width: 100px;
+  position: relative;
+  overflow: hidden;
+
+  &__description {
+    padding-right: 20px;
+    padding-bottom: 0.65em;
+  }
+
+  &__form {
+    display: flex;
+    margin-bottom: 15px;
+    flex-direction: column;
+    padding: 5px 15px 0px;
+    justify-content: flex-start;
+    box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+    border-left: 3px solid;
+
+    &__steps {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+
+      &__item {
+        padding-right: 20px;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.mapgl-settings__actions {
+  display: unset;
+  float: right;
+
+  &--apply {
+    color: #ff4081;
+    font-weight: bolder;
+    outline: none;
+  }
+
+  &--cancel {
+    color: #000;
+    margin: 2px;
+    outline: none;
+  }
+}
