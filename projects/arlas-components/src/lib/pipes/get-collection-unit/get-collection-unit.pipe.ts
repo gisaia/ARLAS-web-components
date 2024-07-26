@@ -6,13 +6,13 @@ import { CollectionService } from '../../services/collection.service';
 })
 export class GetCollectionUnitPipe implements PipeTransform {
 
-  public constructor(private collectionService: CollectionService) {
+  public constructor(private arlasCollectionService: CollectionService) {
   }
   public transform(value: string): unknown {
     if(!value) {
       return  '';
     }
-    return this.collectionService.getUnit(value);
+    return this.arlasCollectionService.getUnit(value);
   }
 
 }
