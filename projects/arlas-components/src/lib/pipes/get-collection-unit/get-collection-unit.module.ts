@@ -17,7 +17,7 @@
  * under the License.
  */
 import { NgModule } from '@angular/core';
-import { GetCollectionUnitPipe } from "./get-collection-unit.pipe";
+import { GetCollectionUnitPipe } from './get-collection-unit.pipe';
 
 @NgModule({
   imports: [

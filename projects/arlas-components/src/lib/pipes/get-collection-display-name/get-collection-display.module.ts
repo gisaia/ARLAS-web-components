@@ -17,7 +17,7 @@
  * under the License.
  */
 import { NgModule } from '@angular/core';
-import { GetCollectionDisplayNamePipe } from "./get-collection-display-name.pipe";
+import { GetCollectionDisplayNamePipe } from './get-collection-display-name.pipe';
 
 @NgModule({
   imports: [

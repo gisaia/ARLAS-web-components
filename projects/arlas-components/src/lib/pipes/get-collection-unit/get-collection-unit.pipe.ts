@@ -1,14 +1,14 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { CollectionService } from "../../services/collection.service";
+import { CollectionService } from '../../services/collection.service';
 
 @Pipe({
   name: 'getCollectionUnit'
 })
 export class GetCollectionUnitPipe implements PipeTransform {
 
-  constructor(private collectionService: CollectionService) {
+  public constructor(private collectionService: CollectionService) {
   }
-  transform(value: string): unknown {
+  public transform(value: string): unknown {
     if(!value) {
       return  '';
     }

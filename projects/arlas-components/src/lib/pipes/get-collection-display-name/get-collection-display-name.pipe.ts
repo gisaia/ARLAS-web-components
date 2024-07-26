@@ -1,16 +1,16 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { CollectionService } from "../../services/collection.service";
-import { Observable, of } from "rxjs";
+import { CollectionService } from '../../services/collection.service';
+import { Observable, of } from 'rxjs';
 
 @Pipe({
   name: 'getCollectionDisplayName'
 })
 export class GetCollectionDisplayNamePipe implements PipeTransform {
 
-  constructor(private collectionService: CollectionService) {
+  public constructor(private collectionService: CollectionService) {
   }
 
-  transform(value: string, ...args: unknown[]): string {
+  public transform(value: string, ...args: unknown[]): string {
     if(!value) {
       return  '';
     }
