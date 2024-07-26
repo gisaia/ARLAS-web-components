@@ -25,6 +25,7 @@ export abstract class BaseCollectionService {
   protected  abstract _initDisplayNames();
   public abstract  getDisplayName(collectionName: string): string;
   public abstract getUnit(collectionName: string): string;
+  public abstract getAllUnits(): any[];
 }
 
 
@@ -41,6 +42,11 @@ export class CollectionService  {
   public getUnit(collectionName: string): string {
      return this.baseCollectionService.getUnit(collectionName);
    };
+
+  public getAllUnits(){
+    return this.baseCollectionService.getAllUnits();
+  }
+
 }
 
 
