@@ -6,7 +6,7 @@
       <div class="geo-queries-steps">
         <div *ngFor="let control of formGroup.controls | keyvalue" class="geo-queries-step">
           <div *ngIf="control.key === 'd_displayCollectionName'">
-            {{  'of_collection' | translate}} {{control.value.value | translate}} {{'geo_query_collection' | translate}}
+            {{  'of_collection' | translate}} {{(control.value.value | getCollectionDisplayName) | translate}} {{'geo_query_collection' | translate}}
           </div>
           <mat-form-field *ngIf="control.key !== 'c_collection' && control.key !== 'color' && control.key !== 'd_displayCollectionName'">
             <mat-label>{{control.key | translate}}</mat-label>

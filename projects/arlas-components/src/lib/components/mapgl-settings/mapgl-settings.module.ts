@@ -31,24 +31,26 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglSettingsComponent, MapglSettingsDialogComponent } from './mapgl-settings.component';
+import { GetCollectionDisplayModule } from "../../pipes/get-collection-display-name/get-collection-display.module";
 
 
 @NgModule({
-  imports: [
-    CommonModule,
-    BrowserModule,
-    FormsModule,
-    MatTabsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatButtonToggleModule,
-    MatIconModule,
-    MatButtonModule,
-    MatRadioModule,
-    ReactiveFormsModule,
-    TranslateModule
-  ],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        FormsModule,
+        MatTabsModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatButtonToggleModule,
+        MatIconModule,
+        MatButtonModule,
+        MatRadioModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        GetCollectionDisplayModule
+    ],
   declarations: [MapglSettingsComponent, MapglSettingsDialogComponent],
   exports: [MapglSettingsComponent]
 })
