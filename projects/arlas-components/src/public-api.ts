@@ -97,3 +97,8 @@ export { CalendarTimelineComponent, TranslationDirection } from './lib/component
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
 export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
+export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
+export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
+export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
+export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
+
