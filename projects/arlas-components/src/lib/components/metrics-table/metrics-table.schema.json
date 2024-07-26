@@ -45,6 +45,10 @@
         "selectWithCheckbox": {
             "description": "Display a checkbox next to the terms that allows to select the row.",
             "type": "boolean"
+        },
+        "showRowField": {
+            "description": "Display the name of the field use to retrieve row values for each sub table.",
+            "type": "boolean"
         }
     },
     "required": []
