@@ -28,7 +28,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { LayerIdToName } from './layer-name.pipe';
 import { MatMenuModule } from '@angular/material/menu';
-import { GetCollectionDisplayModule } from "../../pipes/get-collection-display-name/get-collection-display.module";
+import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-name/get-collection-display.module';
 
 
 @NgModule({

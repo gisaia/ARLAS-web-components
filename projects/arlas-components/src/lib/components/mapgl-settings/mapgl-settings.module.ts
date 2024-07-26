@@ -31,7 +31,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglSettingsComponent, MapglSettingsDialogComponent } from './mapgl-settings.component';
-import { GetCollectionDisplayModule } from "../../pipes/get-collection-display-name/get-collection-display.module";
+import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-name/get-collection-display.module';
 
 
 @NgModule({
