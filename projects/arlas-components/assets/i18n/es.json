@@ -111,5 +111,15 @@
 	"Cloud": "Nube",
 	"country": "Pais",
 	"None": "Ninguna",
-	"Remove this selection":"Eliminar esta selección"
+	"Remove this selection":"Eliminar esta selección",
+  "legend": "{{metric}} de los {{field}} ({{normalized}})",
+  "legend without normalized": "{{metric}} de los {{field}}",
+  "legend without field": "{{metric}} ({{normalized}})",
+  "avg": "Media",
+  "sum": "Suma",
+  "min": "Mínimo",
+  "max": "Máximo",
+  "cardinality": "Cardinalidad",
+  "count": "Cuente",
+  "normalized": "normalizado"
 }
