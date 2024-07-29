@@ -112,16 +112,16 @@
       <ng-container *ngIf="titlePrefix">{{ titlePrefix | translate }} : </ng-container>
       <ng-container [ngSwitch]="legendResult.format">
         <ng-container *ngSwitchCase="'original'">
-          {{legendResult.translKey | translate}}
+          {{legendResult.translateKey | translate}}
         </ng-container>
         <ng-container *ngSwitchCase="'full'">
-          {{ legendResult.translKey | translate: {metric: (legendResult.metric | translate) , field: legendResult.field, normalized: (legendResult.normalized | translate)} }}
+          {{ legendResult.translateKey | translate: {metric: (legendResult.metric | translate) , field: legendResult.field | translate, normalized: (legendResult.normalized | translate)} }}
         </ng-container>
         <ng-container *ngSwitchCase="'metricField'">
-          {{ legendResult.translKey | translate: {metric: (legendResult.metric | translate) , field: legendResult.field} }}
+          {{ legendResult.translateKey | translate: {metric: (legendResult.metric | translate) , field: legendResult.field | translate} }}
         </ng-container>
         <ng-container *ngSwitchCase="'metricNormalised'">
-          {{ legendResult.translKey | translate: {metric: (legendResult.metric | translate), normalized: (legendResult.normalized | translate)} }}
+          {{ legendResult.translateKey | translate: {metric: (legendResult.metric | translate), normalized: (legendResult.normalized | translate)} }}
         </ng-container>
       </ng-container>
     </div>
