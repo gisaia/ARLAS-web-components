@@ -17,15 +17,15 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { NUMBER_FORMAT_CHAR, numberToShortValue } from '../componentsUtils';
 import * as metricJsonSchema from './metric.schema.json';
-import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 
 
 @Component({
   selector: 'arlas-metric',
   templateUrl: './metric.component.html',
-  styleUrls: ['./metric.component.css']
+  styleUrls: ['./metric.component.scss']
 })
 /**
  * This component will contain a phrase composed of 3 parts
@@ -43,7 +43,13 @@ export class MetricComponent implements OnInit, OnChanges {
   @Input() public afterValue = '';
   @Input() public customizedCssClass: string;
   @Input() public valuePrecision = 2;
+  /**
+   * Whether to shorten the metric value
+   */
   @Input() public shortValue = false;
+  /**
+   * Whether to display a '~' before the metric value
+   */
   @Input() public approximateValue = false;
 
   /**
@@ -81,44 +87,23 @@ export class MetricComponent implements OnInit, OnChanges {
     return metricJsonSchema;
   }
 
-
-
-  public static round(value, precision): number {
-    let multiplier;
+  public static round(value: number, precision: number): number {
     if (precision === 0 || precision === undefined) {
       return Math.round(value);
     } else {
-      multiplier = Math.pow(10, precision * 10 || 0);
+      const multiplier = Math.pow(10, precision * 10 || 0);
       return +(Math.round(value * multiplier) / multiplier).toFixed(precision);
     }
   }
 
   /**
-   * sets the value displayed in html
+   * Sets the value displayed in html
    */
   private setDisplayedValue(): void {
     if (this.shortValue) {
-      this.displayedValue = this.numberToShortValue(this.value, this.valuePrecision);
+      this.displayedValue = numberToShortValue(this.value, this.valuePrecision);
     } else {
       this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
     }
-  }
-
-  private numberToShortValue(number: number, p?: number): string {
-    // what tier? (determines SI symbol)
-
-    const suffixes = ['', 'k', 'M', 'b', 't'];
-    const suffixNum = Math.log10(Math.abs(number)) / 3 | 0;
-
-    if (suffixNum === 0) {
-      return number.toFixed(p).toString();
-    }
-    // get suffix and determine scale
-    const suffix = suffixes[suffixNum];
-    const scale = Math.pow(10, suffixNum * 3);
-    // scale the number
-    const scaled = number / scale;
-    // format number and add suffix
-    return scaled.toFixed(p) + suffix;
   }
 }

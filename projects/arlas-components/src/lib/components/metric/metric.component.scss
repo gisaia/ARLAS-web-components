@@ -17,23 +17,21 @@
  * under the License.
  */
 
+.arlas-metric /* @doc Style of the metric container.*/ {
+  &__title /* @doc Style of the metric title (above value).*/ {
+    text-align: center;
+    white-space: nowrap;
+  }
 
-.arlas-metric-value /* @doc Style of the metric value*/
-{
-  font-weight: 400;
-  font-size: 1.8em;
-  padding: 5px 0;
-  white-space: nowrap;
- }
+  &__value /* @doc Style of the metric value*/ {
+    font-weight: 400;
+    font-size: 1.8em;
+    padding: 5px 0;
+    white-space: nowrap;
+  }
 
-.arlas-metric-description /* @doc Style of metric description (below value).*/
-{
-  font-size: 1.3rem;
-  font-weight: 100;
-}
-
-.arlas-metric-title /* @doc Style of metric title (above value).*/
-{
-  text-align: center;
-  white-space: nowrap;
+  &__description /* @doc Style of the metric description (below value).*/ {
+    font-size: 1.3rem;
+    font-weight: 100;
+  }
 }
