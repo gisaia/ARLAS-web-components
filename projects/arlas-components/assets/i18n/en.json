@@ -115,11 +115,13 @@
   "legend": "{{metric}} of {{field}} ({{normalized}})",
   "legend without normalized": "{{metric}} of {{field}}",
   "legend without field": "{{metric}} ({{normalized}})",
-  "avg": "average",
+  "avg": "Average",
   "sum": "Sum",
   "min": "Minimum",
   "max": "Maximum",
   "cardinality": "Cardinality",
   "count": "Count",
-  "normalized": "normalized"
+  "normalized": "normalized",
+  "density": "Density",
+  "Radius":"Radius"
 }

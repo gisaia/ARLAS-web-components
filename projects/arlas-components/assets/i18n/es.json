@@ -121,5 +121,7 @@
   "max": "Máximo",
   "cardinality": "Cardinalidad",
   "count": "Cuente",
-  "normalized": "normalizado"
+  "normalized": "normalizado",
+  "density": "Densidad",
+  "Radius":"Radio"
 }

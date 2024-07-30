@@ -56,16 +56,17 @@ export class FormatLegendPipe implements PipeTransform {
     marker('count')
   ];
 
-  public transform(value: string): LegendParamsResult | null {
+  public transform(field: string): LegendParamsResult | null {
     let params: LegendParamsResult = {
-      translateKey: value,
+      translateKey: field,
       format: 'original'
     };
 
-    if (!value) {
+    if (!field) {
       return null;
     }
-    const parts = value.split(':');
+
+    const parts = field.split(':');
     if (parts.length === 2 || (parts.length === 1 && this.containsMetrics(parts[0]))) {
       const valueSplit = parts[0].split('_');
       if (valueSplit.length === 0) {
@@ -80,12 +81,16 @@ export class FormatLegendPipe implements PipeTransform {
       const field = this.getField(valueSplit);
       const normalised = parts[1] ?? '';
       params = this.buildInterpolatedParams(params, metric, field, normalised);
+    } else if (parts[0].endsWith('_arlas__color')){
+      params.translateKey = params.translateKey.replace('_arlas__color', '');
+    } else if(params.translateKey === 'Heatmap-density') {
+      params.translateKey = 'density';
     }
     return params;
   }
 
-  public buildInterpolatedParams(params, metric , field , normalised): LegendParamsResult {
-    const p = {
+  public buildInterpolatedParams(params: LegendParamsResult, metric: string, field: string, normalised: string): LegendParamsResult {
+    const legendParams = {
       ...params,
       field: '',
       normalized: '',
@@ -93,20 +98,20 @@ export class FormatLegendPipe implements PipeTransform {
     };
 
     if (field && normalised) {
-      params.field = field;
-      params.format = 'full';
-      params.translateKey =  marker('legend');
-    } else if(!field) {
-      params.field = field;
-      params.format = 'metricNormalised';
-      params.translateKey =  marker('legend without field');
-    } else if (!normalised){
-      params.field = field;
-      params.format = 'metricField';
-      params.translateKey =  marker('legend without normalized');
+      legendParams.field = field;
+      legendParams.format = 'full';
+      legendParams.translateKey = marker('legend');
+    } else if(field) {
+      legendParams.field = field;
+      legendParams.format = 'metricField';
+      legendParams.translateKey =  marker('legend without normalized');
+    } else if (normalised){
+      legendParams.field = field;
+      legendParams.format = 'metricNormalised';
+      legendParams.translateKey =  marker('legend without field');
     }
 
-    return p;
+    return legendParams;
   }
 
   public getMetric(valueSplit: string[]) {

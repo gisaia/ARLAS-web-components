@@ -121,5 +121,7 @@
   "max": "Maximum",
   "cardinality": "Cardinalité",
   "count": "Compte",
-  "normalized": "normalisé"
+  "normalized": "normalisé",
+  "density": "Densité",
+  "Radius":"Rayon"
 }

@@ -92,7 +92,7 @@
     </div>
     <!-- RADIUS SECTION -->
     <div [hidden]="!radiusLegend.type" class="legend-container">
-      <ng-container *ngTemplateOutlet="legend; context:{legend: radiusLegend}"></ng-container>
+      <ng-container *ngTemplateOutlet="legend; context:{legend: radiusLegend, titlePrefix: 'Radius'}"></ng-container>
       <div [hidden]="radiusLegend.type !== PROPERTY_SELECTOR_SOURCE.interpolated">
         <div class="interpolated-radius-container">
           <svg #radius_svg></svg>
