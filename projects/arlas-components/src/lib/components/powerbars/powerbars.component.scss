@@ -17,33 +17,40 @@
  * under the License.
  */
 
-.include_exclude {
-  display: flex;
-  align-items: baseline;
-}
-.operation {
-  font-size: 0.6em;
-  color: #aaa;
-  border-radius: 3px;
-  font-weight: bold;
-  margin-right: 5px;
-  cursor: pointer;
-  padding-bottom: 3px;
-}
-.selected_operation {
-  color: #555;
-  font-weight: bold;
-}
+.tools {
+  .powerbars--title {}
 
-.exclude {
-  color: #555;
-  font-weight: bold;
-  cursor: unset ;
+  .powerbars--search {
+    &-field {
+      width: 100%;
+    }
+    &-input {}
+  }
 
-}
+  .include_exclude {
+    display: flex;
+    align-items: baseline;
 
-.powerbars--search .mat-form-field {
-  width: 100%;
+    .operation {
+      font-size: 0.6em;
+      color: #aaa;
+      border-radius: 3px;
+      font-weight: bold;
+      margin-right: 5px;
+      cursor: pointer;
+      padding-bottom: 3px;
+
+      &--selected {
+        color: #555;
+        font-weight: bold;
+      }
+    }
+    .exclude {
+      color: #555;
+      font-weight: bold;
+      cursor: unset ;
+    }
+  }
 }
 
 .powerbars--container {
@@ -51,8 +58,30 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 5px;
-}
 
+  .powerbar-scrollable {
+    display: flex;
+    flex-direction: column;
+    max-height: 255px;
+  }
+
+  .powerbar-selected-scrollable {
+    // One powerbar is 26px, and we want to have 5 at maximum
+    max-height: 131px;
+    border-bottom: 1px solid rgb(209, 209, 209);
+    overflow-y: auto;
+    overflow-x: clip;
+    padding-bottom: 2px;
+    padding-right: 5px;
+  }
+
+  .powerbar-list-scrollable {
+    overflow-y: auto;
+    overflow-x: clip;
+    padding-right: 5px;
+    padding-bottom: 5px;
+  }
+}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -66,26 +95,4 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: #555;
-}
-
-.powerbar-scrollable {
-  display: flex;
-  flex-direction: column;
-  max-height: 255px;
-}
-
-.powerbar-selected-scrollable {
-  max-height: 126px;
-  border-bottom: 1px solid rgb(209, 209, 209);
-  overflow-y: auto;
-  overflow-x: clip;
-  padding-bottom: 2px;
-  padding-right: 10px;
-}
-
-.powerbar-list-scrollable {
-  overflow-y: auto;
-  overflow-x: clip;
-  padding-right: 10px;
-  padding-bottom: 10px;
 }

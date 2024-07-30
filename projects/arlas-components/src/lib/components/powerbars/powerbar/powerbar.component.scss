@@ -1,0 +1,94 @@
+.container {
+    display: flex;
+    align-items: flex-start;
+
+    ::ng-deep .mat-checkbox-inner-container{
+        height: 10px !important;
+        width: 10px !important;
+    }
+
+    .checkbox {
+        margin-right: 5px;
+        padding-bottom: 5px;
+
+        &-unselected-bar ::ng-deep .mat-checkbox-frame {
+            border-color: rgba(0,0,0,.04) !important;
+        }
+    }
+}
+
+.powerbars__powerbar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &--neutral-state, /* @doc Sets all powerbars containers when none of them is selected. A powerbar container's width is 100% of the component's container.*/
+    &--selected-bar, /* @doc Sets selected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+    &--unselected-bar, /* @doc Sets unselected powerbars containers. A powerbar container's width is 100% of the component's container.*/
+    &--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/ {
+        margin-top: 0px;
+        padding-bottom: 2.5px;
+    }
+
+    &--neutral-state:hover,
+    &--selected-bar:hover,
+    &--unselected-bar:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+
+    &--top-group {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &--progression-default-colour /* @doc Style of all powerbars progression bar when no color is specified.*/ {
+        background-color: #88c9c3;
+        height: 4px;
+        border-radius: 2px;
+    }
+
+    &--progression /* @doc Style of all powerbars rightband when none of them is selected.*/ {
+        height: 4px;
+        border-radius: 2px;
+    }
+
+    &--term /* @doc Style of terms.*/ {
+        font-size: 10px;
+        width: 70%;
+        cursor: pointer;
+        position: absolute;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: left;
+
+        &-unselected-bar {
+            color: #888;
+        }
+    }
+
+    &--count /* @doc Style of counts.*/ {
+        font-size: 10px;
+        width: 100%;
+        cursor: pointer;
+        position:relative;
+        display: inline-block;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    &--selected {
+        font-weight: bold;
+
+        &-bar,
+        &-no-mounted-bar {
+            background-color: #fff;
+        }
+    }
+}
