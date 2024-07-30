@@ -18,7 +18,6 @@
  */
 
 import { mix } from 'tinycolor2';
-import { isNumber } from 'util';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 
@@ -26,7 +25,7 @@ export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
-  if (+x + '' !== 'NaN' && isNumber(+x)) {
+  if (+x + '' !== 'NaN' && typeof +x === 'number') {
     const num = +x;
     const trunc = Math.trunc(num);
     const decimal = (num + '').split('.');
