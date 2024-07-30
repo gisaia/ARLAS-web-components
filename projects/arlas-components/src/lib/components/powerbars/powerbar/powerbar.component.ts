@@ -5,7 +5,7 @@ import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componen
 @Component({
     selector: 'arlas-powerbar',
     templateUrl: './powerbar.component.html',
-    styleUrls: ['./powerbar.component.css']
+    styleUrls: ['./powerbar.component.scss']
 })
 export class PowerbarComponent implements OnInit {
 
@@ -46,9 +46,7 @@ export class PowerbarComponent implements OnInit {
 
     @Output() public onCheckEvent: EventEmitter<boolean> = new EventEmitter();
 
-
     public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
-
 
     public ngOnInit(): void {
     }
@@ -56,5 +54,4 @@ export class PowerbarComponent implements OnInit {
     public onCheck() {
         this.onCheckEvent.emit(true);
     }
-
 }
