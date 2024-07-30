@@ -1,0 +1,81 @@
+<div class="tools">
+  <div *ngIf="filterOperator && filterOperator?.display" class="include_exclude">
+    <div class="operation" [class.selected_operation]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">
+      {{'include' | translate}}</div>
+    <div class="operation" [class.selected_operation]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">
+      {{'exclude' | translate}}</div>
+  </div>
+  <div *ngIf="filterOperator && !filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
+    <div class="operation" [class.exclude]="filterOperator?.value === 'Neq'">{{'exclude' | translate}}</div>
+  </div>
+</div>
+<div class="table-overflow-wrapper">
+  <table class="multi-bar">
+    <thead #tableHeader>
+      <!-- Title area -->
+      <tr>
+        <th class="terms-head"></th>
+        <ng-container *ngIf="titleAreDifferent; else displayOneTitle">
+          <th class="multi-bar__header-indicator" *ngFor="let header of metricsTable?.header; let i = index">
+            <div>
+              <div class="container">
+                <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
+                  [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
+                <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
+                <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
+                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}
+                </div>
+              </div>
+              <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">{{
+                header.rowfield | translate }}</div>
+
+            </div>
+          </th>
+        </ng-container>
+        <ng-template #displayOneTitle>
+          <th *ngFor="let header of uniqueTitles" class="multi-bar__header-indicator"
+            [style.width.px]="header.span * 70" [attr.colspan]="header.span">
+            <div class="container">
+              <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
+                [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
+              <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
+              <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
+                *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}
+              </div>
+            </div>
+            <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">
+              {{header.rowfield | translate}}</div>
+          </th>
+        </ng-template>
+      </tr>
+      <!-- Sub Title area -->
+      <tr>
+        <th class="terms-head"></th>
+        <th class="column-head multi-bar__header" *ngFor="let header of metricsTable?.header; let i = index">
+          <div *ngIf="header.metric !== 'count'"
+            [matTooltip]="'METRIC_COLUMN_TITLE' | translate:  { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle | translate }"
+            class="multi-bar__header-item multi-bar__header-item-title">
+            {{'METRIC_COLUMN_TITLE' | translate: { metric: 'METRIC_COLUMN_' + header.metric | translate, field :
+            header.subTitle |
+            translate } }}
+          </div>
+          <div *ngIf="header.metric === 'count'" [matTooltip]="'COUNT_COLUMN_TITLE' | translate"
+            class="multi-bar__header-item multi-bar__header-item-title">
+            {{'COUNT_COLUMN_TITLE' | translate }}
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <ng-container *ngFor="let item of metricsTable?.data; let index = index;trackBy: trackByFn">
+      <arlas-multi-bars-row *ngIf="item?.selected" [metricsTableRow]="item" [useColorFromData]="false"
+        [hideSelection]="false" [useColorService]="useColorService" [powerBars]="powerBarsMap.get(item.term)"
+        [displayCheckBox]="selectWithCheckbox" (rowSelected)="addTermToSelectedList($event)">
+      </arlas-multi-bars-row>
+    </ng-container>
+    <arlas-multi-bars-row *ngFor="let row of metricsTable?.data; let index = index;trackBy: trackByFn"
+      [metricsTableRow]="row" [selected]="row.selected" [hideSelection]="true" [useColorFromData]="false"
+      [useColorService]="useColorService" [powerBars]="powerBarsMap.get(row.term)"
+      [displayCheckBox]="selectWithCheckbox" [pendingMode]="pendingMode" (rowSelected)="addTermToSelectedList($event)">
+    </arlas-multi-bars-row>
+  </table>
+</div>

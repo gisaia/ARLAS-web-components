@@ -35,7 +35,8 @@ export class AppComponent implements OnInit {
     '/powerbars',
     '/calendar-timeline',
     '/list',
-    '/wmts-layer-manager'
+    '/wmts-layer-manager',
+    '/multi-collection'
   ];
 
   public constructor(private translate: TranslateService, private router: Router) {
