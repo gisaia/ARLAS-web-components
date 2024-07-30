@@ -40,7 +40,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import {
-  DonutModule, HistogramModule, MapglImportModule,
+  DonutModule, FormatLegendModule, FormatNumberModule, HistogramModule, MapglImportModule,
   MapglLayerIconModule, MapglLegendModule, MapglModule, MapglSettingsModule,
   MetricModule, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
   WmtsLayerManagertDialogComponent
@@ -78,6 +78,7 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
+    FormatLegendModule,
     BrowserAnimationsModule,
     CalendarTimelineModule,
     FormsModule,
