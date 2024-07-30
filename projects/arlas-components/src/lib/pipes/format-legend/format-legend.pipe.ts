@@ -67,13 +67,17 @@ export class FormatLegendPipe implements PipeTransform {
     }
 
     const parts = field.split(':');
-    if (parts.length === 2 || (parts.length === 1 && this.containsMetrics(parts[0]))) {
+    const containsNormalizedPartOrMetric = parts.length === 2 ||
+      (parts.length === 1 && this.containsMetrics(parts[0]));
+
+    if (containsNormalizedPartOrMetric) {
       const valueSplit = parts[0].split('_');
       if (valueSplit.length === 0) {
         return params;
       }
 
-      if (valueSplit[valueSplit.length - 1] === '') {
+      const hasExtraEmptyValue = valueSplit[valueSplit.length - 1] === '';
+      if (hasExtraEmptyValue) {
         valueSplit.splice(valueSplit.length - 1, 1);
       }
 
@@ -83,9 +87,8 @@ export class FormatLegendPipe implements PipeTransform {
       params = this.buildInterpolatedParams(params, metric, field, normalised);
     } else if (parts[0].endsWith('_arlas__color')){
       params.translateKey = params.translateKey.replace('_arlas__color', '');
-    } else if(params.translateKey === 'Heatmap-density') {
-      params.translateKey = 'density';
     }
+
     return params;
   }
 

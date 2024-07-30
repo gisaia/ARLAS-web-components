@@ -122,6 +122,6 @@
   "cardinality": "Cardinality",
   "count": "Count",
   "normalized": "normalized",
-  "density": "Density",
+  "Heatmap-density": "Density",
   "Radius":"Radius"
 }

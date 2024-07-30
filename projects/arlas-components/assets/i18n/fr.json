@@ -122,6 +122,6 @@
   "cardinality": "Cardinalité",
   "count": "Compte",
   "normalized": "normalisé",
-  "density": "Densité",
+  "Heatmap-density": "Densité",
   "Radius":"Rayon"
 }

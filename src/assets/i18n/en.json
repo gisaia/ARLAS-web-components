@@ -77,6 +77,5 @@
 	"exclude": "exclude",
 	"include": "include",
   "legend": "{{metric}} of {{field}} ({{normalised}})",
-  "legend without field": "{{metric}} ({{normalised}})",
-  "t": "tesot"
+  "legend without field": "{{metric}} ({{normalised}})"
 }
