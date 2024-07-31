@@ -60,6 +60,8 @@ import directModeOverride from './draw/modes/directSelectOverride';
 import stripMode from './draw/modes/strip/strip.mode';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 import cleanCoords from '@turf/clean-coords';
+import { BaseMapGL } from "./model/BaseMapGL";
+import { ArlasMapGl } from "./model/ArlasMapGL";
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -110,6 +112,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public map: mapboxgl.Map;
+  public mapProvider: BaseMapGL;
   public draw: MapboxDraw;
   public zoom: number;
   public legendOpen = true;
@@ -736,46 +739,41 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   public declareMap() {
     this.initTransformRequest();
-    this.map = new mapboxgl.Map({
-      container: this.id,
-      style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
-      center: this.initCenter,
-      zoom: this.initZoom,
-      maxZoom: this.maxZoom,
-      minZoom: this.minZoom,
-      renderWorldCopies: true,
-      preserveDrawingBuffer: this.preserveDrawingBuffer,
-      locale: {
-        'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
-        'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
-        'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
-      },
-      pitchWithRotate: false,
-      transformRequest: this.transformRequest,
-      attributionControl: false
-    });
-    // Disable map pitch and rotation with keyboard
-    this.map.keyboard.disableRotation();
+    this.mapProvider = new ArlasMapGl();
+    this.mapProvider.init(
+      {
+        mapProviderOptions: {
+          container: this.id,
+          style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
+          center: this.initCenter,
+          zoom: this.initZoom,
+          maxZoom: this.maxZoom,
+          minZoom: this.minZoom,
+          renderWorldCopies: true,
+          preserveDrawingBuffer: this.preserveDrawingBuffer,
+          locale: {
+            'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
+            'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
+            'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
+          },
+          pitchWithRotate: false,
+          transformRequest: this.transformRequest,
+          attributionControl: false,
+        },
+        mapAttributionPosition: this.mapAttributionPosition,
+        displayScale: this.displayScale
+      }
+    );
+    this.map = this.mapProvider.getMap();
+    this.mapProvider.initControls();
 
-    this.map.addControl(new mapboxgl.AttributionControl(), this.mapAttributionPosition);
-    this.drawService.setMap(this.map);
+    this.drawService.setMap(this.mapProvider.getMap());
     fromEvent(window, 'beforeunload').subscribe(() => {
-      const bounds = this.map.getBounds();
-      const mapExtend: MapExtend = { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.map.getZoom() };
-      this.onMapClosed.next(mapExtend);
+      this.onMapClosed.next(this.mapProvider.getMapExtend());
     });
 
     this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
 
-
-    /** Whether to display scale */
-    if (this.displayScale) {
-      const scale = new mapboxgl.ScaleControl({
-        maxWidth: this.maxWidthScale,
-        unit: this.unitScale,
-      });
-      this.map.addControl(scale, 'bottom-right');
-    }
 
     const navigationControllButtons = new mapboxgl.NavigationControl();
     const addGeoBoxButton = new ControlButton('addgeobox');
