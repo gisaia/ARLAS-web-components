@@ -17,10 +17,8 @@
  * under the License.
  */
 
-import { AnyLayer } from 'mapbox-gl';
-
-export interface MapLayers {
-  layers: Array<AnyLayer>;
+export interface MapLayers<T> {
+  layers: Array<T>;
   externalEventLayers?: Array<ExternalEventLayer>;
   events: LayerEvents;
 }
