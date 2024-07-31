@@ -36,7 +36,7 @@
     </div>
   </div>
   <div *ngIf="histogram?.histogramParams.dataLength === 1" class="histogram__no-chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight">
-    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{histogram?.histogramParams.startValue}} {{xUnit | translate}}</span>
+    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{data[0].key | histogramKey : histogram?.histogramParams }} {{xUnit | translate}}</span>
     <span class="histogram__no-chart__value">{{histogram?.histogramParams.chartTitle | translate}} {{data[0].value}} {{yUnit | translate}}</span>
   </div>
   <div *ngIf="descriptionPosition === Position.bottom" class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"

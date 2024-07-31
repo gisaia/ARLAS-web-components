@@ -16,21 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Pipe, PipeTransform } from '@angular/core';
+import { HistogramUtils } from 'arlas-d3';
 
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HistogramComponent } from './histogram.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { HistogramKeyPipe } from './histogram-key.pipe';
-
-@NgModule({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatTooltipModule
-  ],
-  declarations: [HistogramComponent, HistogramKeyPipe],
-  exports: [HistogramComponent]
+@Pipe({
+  name: 'histogramKey'
 })
-export class HistogramModule {}
+export class HistogramKeyPipe implements PipeTransform {
+
+  public transform(key: any, ...args: any[]): string {
+    return HistogramUtils.toString(key, args[0]);
+  }
+}
