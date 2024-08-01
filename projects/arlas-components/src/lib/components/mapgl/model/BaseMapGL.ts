@@ -1,24 +1,56 @@
 import { MapSource } from "./mapSource";
-import { VisualisationSetConfig } from "../mapgl.component";
+import { IconConfig, VisualisationSetConfig } from "../mapgl.component";
 import { FeatureCollection } from "@turf/helpers";
 import { MapExtend } from "../mapgl.component.util";
+import { ControlButton } from "../mapgl.component.control";
 
-export type AttributionPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+
+export interface ConfigControls {
+  enable: boolean,
+  position?:ControlPosition ,
+  config?: any,
+  overrideEvent?: any
+}
+export interface PitchToggleConfigControls extends ConfigControls {
+  enable: boolean,
+  position?:ControlPosition ,
+  config: {bearing: number, pitch: number, minpitchzoom: number},
+  overrideEvent?: any
+};
+export interface ControlsOption {
+  mapAttribution?:  ConfigControls;
+  scale?: ConfigControls;
+  pitchToggle?: PitchToggleConfigControls;
+  navigationControl?:  ConfigControls;
+}
+
+export interface DrawControlsOption {
+  draw: {control, position: ControlPosition};
+  addGeoBox?: DrawConfigControl;
+  removeAois: DrawConfigControl;
+}
+
+export interface DrawConfigControl extends ConfigControls {
+ name?:string;
+}
+
 
 export interface BaseMapGlConfig<T> {
+  icons: Array<IconConfig>,
   mapProviderOptions?: T,
-  mapAttributionPosition:AttributionPosition;
-  maxWidthScale: number;
-  unitScale: string;
-  displayScale?:boolean;
+  maxWidthScale?: number;
+  unitScale?: string;
   dataSources?: Set<string>;
   visualisationSetsConfig?: Array<VisualisationSetConfig>;
+  controls? : ControlsOption,
 }
 
 export abstract class BaseMapGL {
+  protected ICONS_BASE_PATH = 'assets/icons/';
   abstract mapProvider: unknown;
+  abstract drawProvider: unknown;
   config: BaseMapGlConfig<unknown>;
-  protected emptyData: FeatureCollection<GeoJSON.Geometry>;
   protected index: any;
   protected north: number;
   protected east: number;
@@ -41,4 +73,6 @@ export abstract class BaseMapGL {
 
   abstract getMap(): any;
   abstract getMapExtend(): MapExtend;
+  abstract addControl(control: unknown, position?: unknown,  eventOverrid?: unknown): MapExtend;
+
 }

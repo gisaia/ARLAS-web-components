@@ -23,7 +23,7 @@ import {
   OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Subscription, fromEvent } from 'rxjs';
+import { Subject, Subscription, fromEvent, config } from 'rxjs';
 import { debounceTime, finalize } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
 import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
@@ -112,7 +112,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public map: mapboxgl.Map;
-  public mapProvider: BaseMapGL;
+  public arlasMap: ArlasMapGl;
   public draw: MapboxDraw;
   public zoom: number;
   public legendOpen = true;
@@ -739,9 +739,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   public declareMap() {
     this.initTransformRequest();
-    this.mapProvider = new ArlasMapGl();
-    this.mapProvider.init(
+    this.arlasMap = new ArlasMapGl();
+    this.arlasMap.init(
       {
+        dataSources: this.dataSources,
+        icons: this.icons,
+        maxWidthScale: this.maxWidthScale,
+        unitScale:  this.unitScale,
         mapProviderOptions: {
           container: this.id,
           style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
@@ -760,36 +764,33 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           transformRequest: this.transformRequest,
           attributionControl: false,
         },
-        mapAttributionPosition: this.mapAttributionPosition,
-        displayScale: this.displayScale
+        controls: {
+          mapAttribution: {
+            enable: true,
+            position:
+            this.mapAttributionPosition
+          },
+          scale: {
+            enable: this.displayScale
+          },
+          navigationControl: {
+            enable: true
+          },
+          pitchToggle: {
+            enable: true,
+            config: {bearing: -20, pitch: 70, minpitchzoom: 11}
+          }
+        }
       }
     );
-    this.map = this.mapProvider.getMap();
-    this.mapProvider.initControls();
+    this.map = this.arlasMap.getMap();
 
-    this.drawService.setMap(this.mapProvider.getMap());
+    this.drawService.setMap(this.arlasMap.getMap());
     fromEvent(window, 'beforeunload').subscribe(() => {
-      this.onMapClosed.next(this.mapProvider.getMapExtend());
+      this.onMapClosed.next(this.arlasMap.getMapExtend());
     });
 
     this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
-
-
-    const navigationControllButtons = new mapboxgl.NavigationControl();
-    const addGeoBoxButton = new ControlButton('addgeobox');
-    const removeAoisButton = new ControlButton('removeaois');
-
-
-    this.map.addControl(navigationControllButtons, 'top-right');
-    this.map.addControl(new PitchToggle(-20, 70, 11), 'top-right');
-    this.map.addControl(addGeoBoxButton, 'top-right');
-    this.map.addControl(removeAoisButton, 'top-right');
-    this.map.loadImage('assets/rotate/01.png', (error, image) => {
-      this.map.addImage('rotate', image);
-    });
-    this.map.loadImage('assets/resize/01.png', (error, image) => {
-      this.map.addImage('resize', image);
-    });
 
     const modes = MapboxDraw.modes;
     const drawStyles = styles.default;
@@ -813,46 +814,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     };
 
     const drawControl = new DrawControl(drawOptions, this.drawButtonEnabled);
-    this.map.addControl(drawControl, 'top-right');
-    this.draw = drawControl.mapboxDraw;
-    this.draw.modes.DRAW_CIRCLE = 'draw_circle';
-    this.draw.modes.DRAW_RADIUS_CIRCLE = 'draw_radius_circle';
-    this.draw.modes.DRAW_STRIP = 'draw_strip';
-    this.draw.modes.DIRECT_STRIP = 'direct_strip';
+    this.arlasMap.setDrawProvider(drawControl.mapboxDraw)
+    this.arlasMap.initDrawControls(drawControl);
 
-    this.drawService.setMapboxDraw(this.draw);
-    addGeoBoxButton.btn.onclick = () => {
-      this.addGeoBox();
-    };
-    removeAoisButton.btn.onclick = () => {
-      this.removeAois();
-    };
-    this.map.boxZoom.disable();
-    this.map.on('load', () => {
+    this.drawService.setMapboxDraw(this.arlasMap.getMap());
+
+    this.arlasMap.onLoad( () => {
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
-      this.draw.changeMode('static');
-      if (this.icons) {
-        this.icons.forEach(icon => {
-          this.map.loadImage(
-            this.ICONS_BASE_PATH + icon.path,
-            (error, image) => {
-              if (error) {
-                console.warn('The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found');
-              } else {
-                this.map.addImage(icon.path.split('.')[0], image, { 'sdf': icon.recolorable });
-              }
-            });
-        });
-      }
-      this.firstDrawLayer = this.map.getStyle().layers
-        .map(layer => layer.id)
-        .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0)[0];
-      this.west = this.map.getBounds().getWest();
-      this.south = this.map.getBounds().getSouth();
-      this.east = this.map.getBounds().getEast();
-      this.north = this.map.getBounds().getNorth();
-      this.zoom = this.map.getZoom();
+      this.arlasMap.changeDrawStatic();
+      this.firstDrawLayer = this.arlasMap.getColdOrHotLayers()[0];
+      const mapBounds = this.arlasMap.getBounds();
+      this.west = this.arlasMap.getWestBounds();
+      this.south = this.arlasMap.getSouthBounds();
+      this.east = this.arlasMap.getEstBounds();
+      this.north = this.arlasMap.getNorthBounds();
+      this.zoom = this.arlasMap.getZoom();
 
       // Add Data_source
       if (this.dataSources) {
@@ -1551,7 +1528,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     return wkt;
   }
 
-  /**
+  /**<>
    * @description Add map sources
    */
   private addSourcesToMap(sources: Array<MapSource>, map: mapboxgl.Map) {
