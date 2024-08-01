@@ -543,22 +543,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @param sources List of sources that these external `layers` use.
    */
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
-    sources.forEach((s) => {
-      if (typeof (s.source) !== 'string') {
-        this.map.addSource(s.id, s.source);
-      }
-    });
-    this.visualisationSetsConfig.unshift(visualisation);
-    this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
-    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
-    layers.forEach(layer => {
-      this.map.addLayer(layer);
-    });
-    const layersMap = new Map();
-    this.mapLayers.layers.concat(layers).forEach(layer => layersMap.set(layer.id, layer));
-    this.layersMap = layersMap;
-
-    this.reorderLayers();
+    this.arlasMap.addVisualisation(visualisation, layers, sources);
   }
 
   /**
@@ -588,70 +573,21 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.visualisationSetsConfig, event.previousIndex, event.currentIndex);
-    this.reorderLayers();
+    this.arlasMap.reorderLayers();
   }
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    const layers = Array.from(this.visualisationSetsConfig.find(v => v.name === visuName).layers);
+    const layers = Array.from(this.arlasMap.findVisualisationSetLayer(visuName));
     moveItemInArray(layers, event.previousIndex, event.currentIndex);
-    this.visualisationSetsConfig.find(v => v.name === visuName).layers = layers;
-    this.reorderLayers();
+    this.arlasMap.setVisualisationSetLayers(visuName, layers);
+    this.arlasMap.reorderLayers();
   }
 
   /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
   public reorderLayers() {
     // parses the visulisation list from bottom in order to put the fist ones first
-    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-      if (!!visualisation.layers && visualisation.enabled) {
-        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-          const l = visualisation.layers[j];
-          const layer = this.layersMap.get(l);
-          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-          const scrollableLayer = this.layersMap.get(scrollableId);
-          if (!!scrollableLayer && !!this.map.getLayer(scrollableId)) {
-            this.map.moveLayer(scrollableId);
-          }
-          if (!!this.map.getLayer(l)) {
-            this.map.moveLayer(l);
-            if (layer.type === 'fill') {
-              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-              const strokeLayer = this.layersMap.get(strokeId);
-              if (!!strokeLayer && !!this.map.getLayer(strokeId)) {
-                this.map.moveLayer(strokeId);
-              }
-              if (!!strokeLayer && !!strokeLayer.id) {
-                const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-                const selectLayer = this.layersMap.get(selectId);
-                if (!!selectLayer && !!this.map.getLayer(selectId)) {
-                  this.map.moveLayer(selectId);
-                }
-                const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-                const hoverLayer = this.layersMap.get(hoverId);
-                if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
-                  this.map.moveLayer(hoverId);
-                }
-              }
-            }
-          }
-          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
-          const selectLayer = this.layersMap.get(selectId);
-          if (!!selectLayer && !!this.map.getLayer(selectId)) {
-            this.map.moveLayer(selectId);
-          }
-          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
-          const hoverLayer = this.layersMap.get(hoverId);
-          if (!!hoverLayer && !!this.map.getLayer(hoverId)) {
-            this.map.moveLayer(hoverId);
-          }
-        }
-      }
-    }
-    this.map.getStyle().layers
-      .map(layer => layer.id)
-      .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0).forEach(id => this.map.moveLayer(id));
-
+    this.arlasMap.reorderLayers();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -824,7 +760,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
       this.arlasMap.changeDrawStatic();
-      this.firstDrawLayer = this.arlasMap.getColdOrHotLayers()[0];
       this.west = this.arlasMap.getWestBounds();
       this.south = this.arlasMap.getSouthBounds();
       this.east = this.arlasMap.getEstBounds();
@@ -832,12 +767,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.zoom = this.arlasMap.getZoom();
 
       if (this.mapLayers !== null) {
-        const layersMap = new Map();
-        this.mapLayers.layers.forEach(layer => layersMap.set(layer.id, layer));
-        this.layersMap = layersMap;
-        this.addVisuLayers();
-        this.addExternalEventLayers();
-
         this.mapLayers.events.zoomOnClick.forEach(layerId => {
           this.map.on('click', layerId, (e) => {
             if (e.features[0].properties.cluster_id !== undefined) {
@@ -860,7 +789,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
                 newZoom = 12;
               }
               this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom });
-
             }
           });
         });
@@ -1580,13 +1508,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
-  private addExternalEventLayers() {
-    if (!!this.mapLayers.externalEventLayers) {
-      this.mapLayers.layers
-        .filter(layer => this.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-        .forEach(l => this.addLayer(l.id));
-    }
-  }
 
   private addLayer(layerId: string): void {
     const layer = this.layersMap.get(layerId);

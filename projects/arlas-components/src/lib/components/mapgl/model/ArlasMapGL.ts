@@ -1,12 +1,12 @@
 import { BaseMapGL, BaseMapGlConfig, DrawControlsOption } from "./BaseMapGL";
-import mapboxgl, { AnyLayer, AnySourceData, Control, IControl, MapboxOptions } from "mapbox-gl";
+import mapboxgl, { AnyLayer, AnySourceData, Control, FilterOptions, IControl, MapboxOptions } from "mapbox-gl";
 import { MapSource } from "./mapSource";
 import { MapExtend } from "../mapgl.component.util";
 import { ControlButton, PitchToggle } from "../mapgl.component.control";
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { ArlasDrawGL } from "./ArlasDrawGL";
-import { GEOJSON_SOURCE_TYPE, VisualisationSetConfig } from "../mapgl.component";
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from "./mapLayers";
+import { CROSS_LAYER_PREFIX, GEOJSON_SOURCE_TYPE, VisualisationSetConfig } from "../mapgl.component";
+import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from "./mapLayers";
 
 interface ArlasMapGlConfig extends BaseMapGlConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>,
@@ -39,8 +39,10 @@ export class ArlasMapGl extends BaseMapGL {
 
   initOnLoad(){
     this.onLoad(() => {
+      this.firstDrawLayer = this.getColdOrHotLayers()[0];
       this.loadIcons();
       this.initSources();
+      this.initMapLayers();
     })
   }
 
@@ -94,7 +96,39 @@ export class ArlasMapGl extends BaseMapGL {
   initMapLayers(){
     if(this.config?.mapLayers){
       this.setLayersMap(this.config.mapLayers as MapLayers<AnyLayer>);
+      this.addVisuLayers();
+      this.addExternalEventLayers();
+      this.bindMapLayersEventZoomOnClick();
+      this.bindMapLayersEventEmitOnClick();
+      this.bindMapLayersEventOnHover();
     }
+  }
+
+  bindMapLayersEventZoomOnClick(){
+    this.config.mapLayers.events.zoomOnClick.forEach(layerId => {
+      this.mapProvider.on('click', layerId, (e) => {
+        this.config.mapLayersEventBind.zoomOnClick(e);
+        this.defaultOnZoom(e);
+      });
+    });
+  }
+
+
+
+  bindMapLayersEventEmitOnClick(){
+    this.config.mapLayers.events.emitOnClick.forEach(layerId => {
+      this.mapProvider.on('click', layerId, (e) => {
+        this.config.mapLayersEventBind.emitOnClick(e);
+      });
+    });
+  }
+
+  bindMapLayersEventOnHover() {
+    this.config.mapLayers.events.onHover.forEach(layerId => {
+      this.mapProvider.on('mousemove', layerId, (e) => {
+        this.config.mapLayersEventBind.onHover(e);
+      });
+    });
   }
 
   private addVisuLayers() {
@@ -108,15 +142,15 @@ export class ArlasMapGl extends BaseMapGL {
             const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
             const scrollableLayer = this.layersMap.get(scrollableId);
             if (!!scrollableLayer) {
-              this.addLayer(scrollableId);
+              this.arlasAddLayer(scrollableId);
             }
-            this.addLayer(l);
+            this.arlasAddLayer(l);
             /** add stroke layer if the layer is a fill */
             if (layer.type === 'fill') {
               const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
               const strokeLayer = this.layersMap.get(strokeId);
               if (!!strokeLayer) {
-                this.addLayer(strokeId);
+                this.arlasAddLayer(strokeId);
               }
             }
           }
@@ -125,7 +159,7 @@ export class ArlasMapGl extends BaseMapGL {
       this.visualisationsSets.status.forEach((b, vs) => {
         if (!b) {
           this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.map.setLayoutProperty(l, 'visibility', 'none');
+            this.setLayoutProperty(l, 'visibility', 'none');
             this.setStrokeLayoutVisibility(l, 'none');
             this.setScrollableLayoutVisibility(l, 'none');
           });
@@ -134,7 +168,7 @@ export class ArlasMapGl extends BaseMapGL {
       this.visualisationsSets.status.forEach((b, vs) => {
         if (b) {
           this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.map.setLayoutProperty(l, 'visibility', 'visible');
+            this.setLayoutProperty(l, 'visibility', 'visible');
             this.setStrokeLayoutVisibility(l, 'visible');
             this.setScrollableLayoutVisibility(l, 'visible');
           });
@@ -142,6 +176,78 @@ export class ArlasMapGl extends BaseMapGL {
         }
       });
       this.reorderLayers();
+    }
+  }
+
+  public reorderLayers() {
+    // parses the visulisation list from bottom in order to put the fist ones first
+    for (let i = this.config.visualisationSetsConfig.length - 1; i >= 0; i--) {
+      const visualisation: VisualisationSetConfig = this.config.visualisationSetsConfig[i];
+      if (!!visualisation.layers && visualisation.enabled) {
+        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
+          const l = visualisation.layers[j];
+          const layer = this.layersMap.get(l);
+          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+          const scrollableLayer = this.layersMap.get(scrollableId);
+          if (!!scrollableLayer && !!this.getLayerFromMapProvider(scrollableId)) {
+            this.moveLayer(scrollableId);
+          }
+          if (!!this.getLayerFromMapProvider(l)) {
+            this.moveLayer(l);
+            if (layer.type === 'fill') {
+              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+              const strokeLayer = this.layersMap.get(strokeId);
+              if (!!strokeLayer && !!this.getLayerFromMapProvider(strokeId)) {
+                this.moveLayer(strokeId);
+              }
+              if (!!strokeLayer && !!strokeLayer.id) {
+                const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
+                const selectLayer = this.layersMap.get(selectId);
+                if (!!selectLayer && !!this.getLayerFromMapProvider(selectId)) {
+                  this.moveLayer(selectId);
+                }
+                const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
+                const hoverLayer = this.layersMap.get(hoverId);
+                if (!!hoverLayer && !!this.getLayerFromMapProvider(hoverId)) {
+                  this.moveLayer(hoverId);
+                }
+              }
+            }
+          }
+          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
+          const selectLayer = this.layersMap.get(selectId);
+          if (!!selectLayer && !!this.getLayerFromMapProvider(selectId)) {
+            this.moveLayer(selectId);
+          }
+          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
+          const hoverLayer = this.layersMap.get(hoverId);
+          if (!!hoverLayer && !!this.getLayerFromMapProvider(hoverId)) {
+            this.moveLayer(hoverId);
+          }
+        }
+      }
+    }
+
+    this.getColdOrHotLayers().forEach(id => this.moveLayer(id));
+  }
+
+  private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    if (layer.type === 'fill') {
+      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.layersMap.get(strokeId);
+      if (!!strokeLayer) {
+        this.setLayoutProperty(strokeId, 'visibility', visibility);
+      }
+    }
+  }
+
+  private setScrollableLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollbaleLayer = this.layersMap.get(scrollableId);
+    if (!!scrollbaleLayer) {
+      this.setLayoutProperty(scrollableId, 'visibility', visibility);
     }
   }
 
@@ -177,23 +283,26 @@ export class ArlasMapGl extends BaseMapGL {
     this.mapProvider.addSource(sourceId, source);
   }
 
-  setLayersMap(mapLayers: MapLayers<AnyLayer>){
+  setLayersMap(mapLayers: MapLayers<AnyLayer>, layers?: Array<AnyLayer>){
     if(mapLayers) {
+      let mapLayersCopy = mapLayers;
+      if(layers){
+        mapLayersCopy.layers = mapLayersCopy.layers.concat(layers);
+      }
       const layersMap = new Map();
-      mapLayers.layers.forEach(layer => layersMap.set(layer.id, layer));
+      mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
       this.layersMap = layersMap;
     }
-
   }
 
-  private addLayer(layerId: string, firstDrawLayer: string): void {
+  private arlasAddLayer(layerId: string,): void {
     const layer = this.layersMap.get(layerId);
     if (layer !== undefined && layer.id === layerId) {
       /** Add the layer if it is not already added */
       if (this.getLayerFromMapProvider(layerId) === undefined) {
-        if (firstDrawLayer.length > 0) {
+        if (this.firstDrawLayer.length > 0) {
           /** draw layers must be on the top of the layers */
-          this.mapProviderAddLayer(layer, firstDrawLayer);
+          this.mapProviderAddLayer(layer, this.firstDrawLayer);
         } else {
           this.mapProviderAddLayer(layer);
         }
@@ -222,6 +331,10 @@ export class ArlasMapGl extends BaseMapGL {
   }
   getLayerFromMapProvider(layerId: string){
    return this.mapProvider.getLayer(layerId);
+  }
+
+  moveLayer(id: string, before?:string){
+    this.mapProvider.moveLayer(id, before);
   }
 
   getSource(id: string){
@@ -274,6 +387,11 @@ export class ArlasMapGl extends BaseMapGL {
   }
 
 
+  public setLayoutProperty(layer: string, name: string, value: any, options?: FilterOptions){
+    this.mapProvider.setLayoutProperty(layer, name, value, options);
+  }
+
+
   public addControl(control: ControlButton, position?: "top-right" | "top-left" | "bottom-right" | "bottom-left",  eventOverrid?: {
     event: string, fn: () => void});
   public addControl(control: Control | IControl, position?: "top-right" | "top-left" | "bottom-right" | "bottom-left");
@@ -312,9 +430,52 @@ export class ArlasMapGl extends BaseMapGL {
     return this.mapProvider.getStyle().layers
   }
 
+  /***
+   * core arlas methode
+   *
+   * */
   public getColdOrHotLayers(){
     return this.getLayers().map(layer => layer.id)
       .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0);
+  }
+
+  public findVisualisationSetLayer(visuName:string){
+    return this.config.visualisationSetsConfig.find(v => v.name === visuName).layers;
+  }
+  public setVisualisationSetLayers(visuName:string, layers: string[]){
+    const f = this.config.visualisationSetsConfig.find(v => v.name === visuName);
+    if(f){
+      f.layers = layers;
+    }
+  }
+
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
+    sources.forEach((s) => {
+      if (typeof (s.source) !== 'string') {
+        this.addSource(s.id, s.source);
+      }
+    });
+    this.config.visualisationSetsConfig.unshift(visualisation);
+    this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
+    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
+    layers.forEach(layer => {
+      this.mapProviderAddLayer(layer);
+    });
+
+    this.setLayersMap(this.config.mapLayers as MapLayers<AnyLayer>, layers)
+    this.reorderLayers();
+  }
+
+  private addExternalEventLayers() {
+    if (!!this.config.mapLayers.externalEventLayers) {
+      this.config.mapLayers.layers
+        .filter(layer => this.config.mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+        .forEach(l => this.arlasAddLayer(l.id));
+    }
+  }
+
+  flyTo(center, zoom: number){
+    this.mapProvider.flyTo({ center, zoom });
   }
 
   public onLoad(fn: () => void): void {
@@ -323,6 +484,30 @@ export class ArlasMapGl extends BaseMapGL {
 
   public changeDrawStatic(){
   this.drawProvider.changeMode('static');
+  }
+
+  public defaultOnZoom (e){
+    if (e.features[0].properties.cluster_id !== undefined) {
+      const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
+      this.flyTo([e.lngLat.lng, e.lngLat.lat],  expansionZoom  );
+    } else {
+      const zoom = this.getZoom();
+      let newZoom: number;
+      if (zoom >= 0 && zoom < 3) {
+        newZoom = 4;
+      } else if (zoom >= 3 && zoom < 5) {
+        newZoom = 5;
+      } else if (zoom >= 5 && zoom < 7) {
+        newZoom = 7;
+      } else if (zoom >= 7 && zoom < 10) {
+        newZoom = 10;
+      } else if (zoom >= 10 && zoom < 11) {
+        newZoom = 11;
+      } else {
+        newZoom = 12;
+      }
+      this.flyTo([e.lngLat.lng, e.lngLat.lat],  newZoom  );
+    }
   }
 
 

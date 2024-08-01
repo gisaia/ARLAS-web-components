@@ -41,6 +41,11 @@ export interface BaseMapGlConfig<T> {
   icons: Array<IconConfig>,
   mapSources: Array<MapSource>,
   mapLayers: MapLayers<unknown>,
+  mapLayersEventBind: {
+    onHover: (e: any) => void;
+    emitOnClick: (e: any) => void;
+    zoomOnClick: (e: any) => void;
+  }
   mapProviderOptions?: T,
   maxWidthScale?: number;
   unitScale?: string;
@@ -56,8 +61,15 @@ export abstract class BaseMapGL {
     'type': 'FeatureCollection',
     'features': []
   }
+  public firstDrawLayer: string;
   public polygonlabeldata = Object.assign({}, this.emptyData)
-
+  public visualisationsSets: {
+    visualisations: Map<string, Set<string>>;
+    status: Map<string, boolean>;
+  } = {
+    visualisations: new Map(),
+    status: new Map()
+  };
   protected layersMap: Map<string, ArlasAnyLayer>;
   abstract mapProvider: unknown;
   abstract drawProvider: unknown;
