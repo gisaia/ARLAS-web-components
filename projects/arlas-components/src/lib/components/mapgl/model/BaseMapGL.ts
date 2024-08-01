@@ -1,8 +1,9 @@
 import { MapSource } from "./mapSource";
 import { IconConfig, VisualisationSetConfig } from "../mapgl.component";
 import { FeatureCollection } from "@turf/helpers";
-import { MapExtend } from "../mapgl.component.util";
+import { ArlasAnyLayer, MapExtend } from "../mapgl.component.util";
 import { ControlButton } from "../mapgl.component.control";
+import { MapLayers } from "./mapLayers";
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -38,6 +39,8 @@ export interface DrawConfigControl extends ConfigControls {
 
 export interface BaseMapGlConfig<T> {
   icons: Array<IconConfig>,
+  mapSources: Array<MapSource>,
+  mapLayers: MapLayers<unknown>,
   mapProviderOptions?: T,
   maxWidthScale?: number;
   unitScale?: string;
@@ -47,7 +50,15 @@ export interface BaseMapGlConfig<T> {
 }
 
 export abstract class BaseMapGL {
+  protected readonly POLYGON_LABEL_SOURCE = 'polygon_label';
   protected ICONS_BASE_PATH = 'assets/icons/';
+  protected emptyData : FeatureCollection<GeoJSON.Geometry> = {
+    'type': 'FeatureCollection',
+    'features': []
+  }
+  public polygonlabeldata = Object.assign({}, this.emptyData)
+
+  protected layersMap: Map<string, ArlasAnyLayer>;
   abstract mapProvider: unknown;
   abstract drawProvider: unknown;
   config: BaseMapGlConfig<unknown>;

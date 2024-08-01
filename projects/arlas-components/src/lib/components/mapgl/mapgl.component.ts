@@ -156,7 +156,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description List of mapgl layers
    */
-  @Input() public mapLayers: MapLayers;
+  @Input() public mapLayers: MapLayers<any>;
 
   /**
  * @Input : Angular
@@ -745,6 +745,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         dataSources: this.dataSources,
         icons: this.icons,
         maxWidthScale: this.maxWidthScale,
+        mapSources: this.mapSources,
         unitScale:  this.unitScale,
         mapProviderOptions: {
           container: this.id,
@@ -824,27 +825,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.basemapService.addProtomapBasemap(this.map);
       this.arlasMap.changeDrawStatic();
       this.firstDrawLayer = this.arlasMap.getColdOrHotLayers()[0];
-      const mapBounds = this.arlasMap.getBounds();
       this.west = this.arlasMap.getWestBounds();
       this.south = this.arlasMap.getSouthBounds();
       this.east = this.arlasMap.getEstBounds();
       this.north = this.arlasMap.getNorthBounds();
       this.zoom = this.arlasMap.getZoom();
 
-      // Add Data_source
-      if (this.dataSources) {
-        this.dataSources.forEach(source => {
-          this.map.addSource(source, {
-            type: GEOJSON_SOURCE_TYPE,
-            data: Object.assign({}, this.emptyData)
-          });
-        });
-      }
-      this.map.addSource(this.POLYGON_LABEL_SOURCE, {
-        'type': GEOJSON_SOURCE_TYPE,
-        'data': this.polygonlabeldata
-      });
-      this.addSourcesToMap(this.mapSources, this.map);
       if (this.mapLayers !== null) {
         const layersMap = new Map();
         this.mapLayers.layers.forEach(layer => layersMap.set(layer.id, layer));

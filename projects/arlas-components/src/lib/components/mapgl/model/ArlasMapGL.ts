@@ -1,15 +1,15 @@
-import { BaseMapGL, BaseMapGlConfig, ControlPosition, DrawControlsOption } from "./BaseMapGL";
-import mapboxgl, { AnySourceData, Control, IControl, MapboxOptions } from "mapbox-gl";
+import { BaseMapGL, BaseMapGlConfig, DrawControlsOption } from "./BaseMapGL";
+import mapboxgl, { AnyLayer, AnySourceData, Control, IControl, MapboxOptions } from "mapbox-gl";
 import { MapSource } from "./mapSource";
 import { MapExtend } from "../mapgl.component.util";
-import { ControlButton, DrawControl, PitchToggle } from "../mapgl.component.control";
+import { ControlButton, PitchToggle } from "../mapgl.component.control";
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { ArlasDrawGL } from "./ArlasDrawGL";
-import { GEOJSON_SOURCE_TYPE } from "../mapgl.component";
-import { FeatureCollection } from "@turf/helpers";
+import { GEOJSON_SOURCE_TYPE, VisualisationSetConfig } from "../mapgl.component";
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from "./mapLayers";
 
 interface ArlasMapGlConfig extends BaseMapGlConfig<MapboxOptions> {
-
+  mapLayers: MapLayers<AnyLayer>,
 }
 
 export class ArlasMapGl extends BaseMapGL {
@@ -22,11 +22,6 @@ export class ArlasMapGl extends BaseMapGL {
   startlngLat: mapboxgl.LngLat;
   endlngLat: mapboxgl.LngLat;
   movelngLat: mapboxgl.LngLat;
-  private emptyData: FeatureCollection<GeoJSON.Geometry> = {
-    'type': 'FeatureCollection',
-    'features': []
-  };
-
   init(config: ArlasMapGlConfig): void {
     this.mapProvider = new mapboxgl.Map(
       config.mapProviderOptions
@@ -45,7 +40,7 @@ export class ArlasMapGl extends BaseMapGL {
   initOnLoad(){
     this.onLoad(() => {
       this.loadIcons();
-      this.initDataSources();
+      this.initSources();
     })
   }
 
@@ -78,13 +73,79 @@ export class ArlasMapGl extends BaseMapGL {
     }
   }
 
-  initDataSources(){
+  initSources(){
     if(this.config.dataSources){
       this.config.dataSources.forEach(id => {
-        this.addSources(id, {type: GEOJSON_SOURCE_TYPE, data: this.emptyData })
+        this.addSource(id, {type: GEOJSON_SOURCE_TYPE, data:  Object.assign({}, this.emptyData) })
       });
     }
+
+    this.addSource(this.POLYGON_LABEL_SOURCE, {
+      'type': GEOJSON_SOURCE_TYPE,
+      'data': this.polygonlabeldata
+    });
+
+    if(this.config.mapSources){
+      this.addSourcesToMap(this.config.mapSources)
+    }
+
   }
+
+  initMapLayers(){
+    if(this.config?.mapLayers){
+      this.setLayersMap(this.config.mapLayers as MapLayers<AnyLayer>);
+    }
+  }
+
+  private addVisuLayers() {
+    if (!!this.config.visualisationSetsConfig) {
+      for (let i = this.config.visualisationSetsConfig.length - 1; i >= 0; i--) {
+        const visualisation: VisualisationSetConfig = this.config.visualisationSetsConfig[i];
+        if (!!visualisation.layers) {
+          for (let j = visualisation.layers.length - 1; j >= 0; j--) {
+            const l = visualisation.layers[j];
+            const layer = this.layersMap.get(l);
+            const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+            const scrollableLayer = this.layersMap.get(scrollableId);
+            if (!!scrollableLayer) {
+              this.addLayer(scrollableId);
+            }
+            this.addLayer(l);
+            /** add stroke layer if the layer is a fill */
+            if (layer.type === 'fill') {
+              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+              const strokeLayer = this.layersMap.get(strokeId);
+              if (!!strokeLayer) {
+                this.addLayer(strokeId);
+              }
+            }
+          }
+        }
+      }
+      this.visualisationsSets.status.forEach((b, vs) => {
+        if (!b) {
+          this.visualisationsSets.visualisations.get(vs).forEach(l => {
+            this.map.setLayoutProperty(l, 'visibility', 'none');
+            this.setStrokeLayoutVisibility(l, 'none');
+            this.setScrollableLayoutVisibility(l, 'none');
+          });
+        }
+      });
+      this.visualisationsSets.status.forEach((b, vs) => {
+        if (b) {
+          this.visualisationsSets.visualisations.get(vs).forEach(l => {
+            this.map.setLayoutProperty(l, 'visibility', 'visible');
+            this.setStrokeLayoutVisibility(l, 'visible');
+            this.setScrollableLayoutVisibility(l, 'visible');
+          });
+
+        }
+      });
+      this.reorderLayers();
+    }
+  }
+
+
 
   setDrawProvider(mapboxDraw: MapboxDraw){
     this.drawProvider = new ArlasDrawGL(mapboxDraw);
@@ -112,11 +173,59 @@ export class ArlasMapGl extends BaseMapGL {
     this.mapProvider.getCanvas().style.cursor = cursor;
   }
 
-  addSources(sourceId: string, source: AnySourceData) {
+  addSource(sourceId: string, source: AnySourceData) {
     this.mapProvider.addSource(sourceId, source);
   }
 
-  addSourcesToMap(sources: Array<MapSource>): void {
+  setLayersMap(mapLayers: MapLayers<AnyLayer>){
+    if(mapLayers) {
+      const layersMap = new Map();
+      mapLayers.layers.forEach(layer => layersMap.set(layer.id, layer));
+      this.layersMap = layersMap;
+    }
+
+  }
+
+  private addLayer(layerId: string, firstDrawLayer: string): void {
+    const layer = this.layersMap.get(layerId);
+    if (layer !== undefined && layer.id === layerId) {
+      /** Add the layer if it is not already added */
+      if (this.getLayerFromMapProvider(layerId) === undefined) {
+        if (firstDrawLayer.length > 0) {
+          /** draw layers must be on the top of the layers */
+          this.mapProviderAddLayer(layer, firstDrawLayer);
+        } else {
+          this.mapProviderAddLayer(layer);
+        }
+      }
+    } else {
+      throw new Error('The layer `' + layerId + '` is not declared in `mapLayers.layers`');
+    }
+  }
+
+  protected addSourcesToMap(sources: Array<MapSource>): void {
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, MapSource>();
+    if (sources) {
+      sources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        if (this.getSource(id) === undefined && typeof (mapSource.source) !== 'string') {
+          this.addSource(id, mapSource.source);
+        }
+      });
+    }
+  }
+  mapProviderAddLayer(layerId: AnyLayer, before?:string){
+    return this.mapProvider.addLayer(layerId, before);
+  }
+  getLayerFromMapProvider(layerId: string){
+   return this.mapProvider.getLayer(layerId);
+  }
+
+  getSource(id: string){
+    return this.mapProvider.getSource(id)
   }
 
   getMap(): mapboxgl.Map {
