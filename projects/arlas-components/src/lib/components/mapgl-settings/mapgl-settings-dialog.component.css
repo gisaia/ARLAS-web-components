@@ -1,4 +1,4 @@
-::ng-deep .map-settings-dialog .mat-dialog-container {
+::ng-deep .map-settings-dialog .mat-mdc-dialog-container {
   overflow: inherit;
   position: relative;
 }
@@ -55,14 +55,20 @@ fieldset {
   min-inline-size: min-content;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .displayed-geo-container .mat-form-field-wrapper {
   padding-bottom: 0;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .displayed-geo-container .mat-form-field-appearance-outline .mat-form-field-infix {
   padding: 0.6em 0 0.6em 0;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .displayed-geo-container .mat-form-field-appearance-legacy .mat-form-field-infix {
   padding: 0 0 1.4em 0;
 }
@@ -134,11 +140,15 @@ fieldset {
 .displayed-geo-select {
   position: relative;
 }
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version. */
 .mat-tab-body-content{
   overflow: hidden !important;
 }
 
 
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
 .mat-form-field-appearance-outline .mat-form-field-infix {
   padding: unset !important;
 }
@@ -177,20 +187,28 @@ fieldset {
   font-size: 0.9em;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
 .stylegroup-radio-button .mat-radio-label {
   margin: 0;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
 .stylegroup-radio-button .mat-radio-outer-circle {
   height: 15px;
   width: 15px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
 .stylegroup-radio-button .mat-radio-inner-circle {
   height: 15px;
   width: 15px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version. */
 .stylegroup-radio-button .mat-radio-label-content {
   padding-left: 2px;
 }

@@ -3,6 +3,8 @@
     align-items: flex-start;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 .container ::ng-deep .mat-checkbox-inner-container{
     height: 10px !important;
     width: 10px !important;
@@ -12,6 +14,8 @@
     padding-bottom: 5px;
 }
 
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
+/* TODO(mdc-migration): The following rule targets internal classes of checkbox that may no longer apply for the MDC version. */
 .checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
     border-color: rgba(0,0,0,.04) !important;
 }
