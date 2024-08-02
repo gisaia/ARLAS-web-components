@@ -201,6 +201,12 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   max-width: 90px;
 }
 
+/*
+ TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+ */
+/*
+ TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+ */
 .mat-button-toggle-label-content {
   line-height: 38px !important;
   padding: 0 8px !important;
@@ -265,18 +271,33 @@ tr:hover td.resultitem__cell.toggle .list_actions {
     height: 22px;
     margin-left: 5px;
   }
-
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
+ */
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
+ */
   .mat-slide-toggle-bar {
     height: 10px;
     width: 30px;
   }
-
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
+ */
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
+ */
   .mat-slide-toggle-thumb {
     height: 15px;
     width: 15px;
   }
-
-  .mat-slide-toggle .mat-slide-toggle-ripple {
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
+ */
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
+ */
+  .mat-mdc-slide-toggle .mat-slide-toggle-ripple {
     height: 35px;
     width: 35px;
   }
@@ -293,13 +314,29 @@ tr:hover td.resultitem__cell.toggle .list_actions {
     line-height: 30px !important;
     height: 30px !important;
 
-    .mat-radio-button {
+    .mat-mdc-radio-button {
       color: black;
-
+      /*
+ TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
+ */
+      /*
+ TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
+ */
+      /*
+ TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
+ */
+      /*
+ TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
+ */
       .mat-radio-container{
         width: 15px;
         height: 15px;
-
+        /*
+ TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
+ */
+        /*
+ TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
+ */
         .mat-radio-outer-circle,
         .mat-radio-inner-circle {
           height: 15px;
@@ -309,7 +346,7 @@ tr:hover td.resultitem__cell.toggle .list_actions {
     }
   }
 
-  &-group .mat-optgroup-label {
+  &-group .mat-mdc-optgroup-label {
     line-height: 30px !important;
     height: 30px !important;
     margin-bottom: 0;
