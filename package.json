@@ -15,7 +15,8 @@
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
     "i18n:extract": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr,es}.json --format json",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "license-check": "license-check-and-add check -f license-check-and-add.json"
   },
   "private": true,
   "dependencies": {
@@ -94,6 +95,7 @@
     "karma-coverage-istanbul-reporter": "~3.0.3",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0",
+    "license-check-and-add": "^4.0.5",
     "minimist": "~1.2.7",
     "ng-packagr": "^14.2.2",
     "node": "^16.18.1",
