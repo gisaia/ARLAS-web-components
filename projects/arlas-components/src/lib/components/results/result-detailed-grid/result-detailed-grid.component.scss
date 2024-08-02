@@ -86,8 +86,13 @@ $sm-spacing: 5px;
   right: 0px;
   background-color: transparent;
   z-index: 1;
-
-  ::ng-deep .mat-mini-fab.mat-button-disabled {
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+ */
+  /*
+ TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+ */
+  ::ng-deep .mat-mdc-mini-fab.mat-button-disabled {
     background-color: white;
   }
 }
@@ -141,6 +146,12 @@ $sm-spacing: 5px;
   font-size: 19px;
 }
 
+/*
+ TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+ */
+/*
+ TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
+ */
 .resultgrid__info-button ::ng-deep.mat-button-wrapper {
   display: block !important;
   padding: 2px 0 !important;
