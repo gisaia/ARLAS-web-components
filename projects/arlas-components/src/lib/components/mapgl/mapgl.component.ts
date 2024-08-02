@@ -60,8 +60,8 @@ import directModeOverride from './draw/modes/directSelectOverride';
 import stripMode from './draw/modes/strip/strip.mode';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 import cleanCoords from '@turf/clean-coords';
-import { BaseMapGL } from "./model/BaseMapGL";
-import { ArlasMapGl } from "./model/ArlasMapGL";
+import { BaseMapGL, ControlPosition, DrawControlsOption } from "./model/BaseMapGL";
+import { ArlasMapGl, ArlasMapGlConfig } from "./model/ArlasMapGL";
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -156,7 +156,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description List of mapgl layers
    */
-  @Input() public mapLayers: MapLayers<any>;
+  @Input() public mapLayers: MapLayers<AnyLayer>;
 
   /**
  * @Input : Angular
@@ -357,7 +357,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Input : Angular
    * @description Position of the map attribution
    */
-  @Input() public mapAttributionPosition: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' = 'bottom-right';
+  @Input() public mapAttributionPosition: ControlPosition = 'bottom-right';
 
   public visualisationsSets: {
     visualisations: Map<string, Set<string>>;
@@ -490,39 +490,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
-    const visuStatus = !this.visualisationsSets.status.get(visualisationName);
-    this.visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
-    if (!visuStatus) {
-      const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
-      this.visualisationsSets.visualisations.forEach((ls, v) => {
-        if (v !== visualisationName) {
-          ls.forEach(ll => {
-            if (layersSet && layersSet.has(ll)) {
-              layersSet.delete(ll);
-            }
-          });
-        }
-      });
-      layersSet.forEach(ll => {
-        this.map.setLayoutProperty(ll, 'visibility', 'none');
-        this.setStrokeLayoutVisibility(ll, 'none');
-        this.setScrollableLayoutVisibility(ll, 'none');
-      });
-    }
-    this.visualisationsSets.status.set(visualisationName, visuStatus);
-    const layers = new Set<string>();
-    this.visualisationsSets.visualisations.forEach((ls, v) => {
-      if (this.visualisationsSets.status.get(v)) {
-        ls.forEach(l => {
-          layers.add(l);
-          this.map.setLayoutProperty(l, 'visibility', 'visible');
-          this.setStrokeLayoutVisibility(l, 'visible');
-          this.setScrollableLayoutVisibility(l, 'visible');
-        });
-      }
-    });
+    const layers = this.arlasMap.updateLayoutVisibility(visualisationName)
     this.visualisations.emit(layers);
-    this.reorderLayers();
+    this.arlasMap.reorderLayers();
   }
 
   public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string; }): void {
@@ -609,16 +579,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         }
         this.drawSelectionChanged = false;
-        if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-          (this.map.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
+        if (this.arlasMap.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
+          (this.arlasMap.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
-        const canvas = this.map.getCanvasContainer();
+        const canvas = this.arlasMap.getCanvasContainer();
         const positionInfo = canvas.getBoundingClientRect();
         const width = positionInfo.width;
-        this.map.fitBounds(newBoundsToFit, {
+        this.arlasMap.getMap().fitBounds(newBoundsToFit, {
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
         });
@@ -673,53 +643,127 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
+  public defaultOnZoom (e){
+    if (e.features[0].properties.cluster_id !== undefined) {
+      const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
+      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat],  expansionZoom  );
+    } else {
+      const zoom = this.arlasMap.getZoom();
+      let newZoom: number;
+      if (zoom >= 0 && zoom < 3) {
+        newZoom = 4;
+      } else if (zoom >= 3 && zoom < 5) {
+        newZoom = 5;
+      } else if (zoom >= 5 && zoom < 7) {
+        newZoom = 7;
+      } else if (zoom >= 7 && zoom < 10) {
+        newZoom = 10;
+      } else if (zoom >= 10 && zoom < 11) {
+        newZoom = 11;
+      } else {
+        newZoom = 12;
+      }
+      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat],  newZoom  );
+    }
+  }
+
+  private queryRender(e){
+    const features = this.arlasMap.queryRenderedFeatures(e.point);
+    const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
+    if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
+      this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+    }
+  }
+
   public declareMap() {
     this.initTransformRequest();
-    this.arlasMap = new ArlasMapGl();
-    this.arlasMap.init(
-      {
-        dataSources: this.dataSources,
-        icons: this.icons,
-        maxWidthScale: this.maxWidthScale,
-        mapSources: this.mapSources,
-        unitScale:  this.unitScale,
-        mapProviderOptions: {
-          container: this.id,
-          style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
-          center: this.initCenter,
-          zoom: this.initZoom,
-          maxZoom: this.maxZoom,
-          minZoom: this.minZoom,
-          renderWorldCopies: true,
-          preserveDrawingBuffer: this.preserveDrawingBuffer,
-          locale: {
-            'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
-            'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
-            'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
+
+    const drawPolygonLayers =  [
+      'gl-draw-polygon-stroke-inactive',
+      'gl-draw-polygon-stroke-active',
+      'gl-draw-polygon-stroke-static'
+    ].map(layer => ['.cold', '.hot'].map( id => layer.concat(id)));
+
+    const config: ArlasMapGlConfig = {
+      mapLayers: this.mapLayers,
+      dataSources: this.dataSources,
+      icons: this.icons,
+      maxWidthScale: this.maxWidthScale,
+      mapSources: this.mapSources,
+      unitScale:  this.unitScale,
+      mapLayersEventBind: {
+        zoomOnClick: [{event:'click', fn: this.defaultOnZoom}],
+        onHover: [
+          {event: 'mousemove', fn: (e) => {
+              this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+            }
           },
-          pitchWithRotate: false,
-          transformRequest: this.transformRequest,
-          attributionControl: false,
-        },
-        controls: {
-          mapAttribution: {
-            enable: true,
-            position:
-            this.mapAttributionPosition
-          },
-          scale: {
-            enable: this.displayScale
-          },
-          navigationControl: {
-            enable: true
-          },
-          pitchToggle: {
-            enable: true,
-            config: {bearing: -20, pitch: 70, minpitchzoom: 11}
+          {event: 'mouseleave', fn: (e) => {
+              this.onFeatureOver.next({});
+            }
           }
+        ],
+        emitOnClick: [{event: 'click', fn: this.queryRender}],
+      },
+      customEventBind: [
+        { layers:drawPolygonLayers,
+          mapEventBinds:
+            [{
+              event:'mousemove',
+              fn: (e) => {
+                this.arlasMap.setCursorStyle('pointer');
+              }
+            }
+            ],
+
+        },
+        { layers:drawPolygonLayers,
+          mapEventBinds: [
+            {
+              event:'mouseleave',
+              fn: (e) => {
+                this.arlasMap.setCursorStyle('');
+              }
+            }
+          ]
+        },
+      ],
+      mapProviderOptions: {
+        container: this.id,
+        style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
+        center: this.initCenter,
+        zoom: this.initZoom,
+        maxZoom: this.maxZoom,
+        minZoom: this.minZoom,
+        renderWorldCopies: true,
+        preserveDrawingBuffer: this.preserveDrawingBuffer,
+        locale: {
+          'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
+          'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
+          'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
+        },
+        pitchWithRotate: false,
+        transformRequest: this.transformRequest,
+        attributionControl: false,
+      },
+      controls: {
+        mapAttribution: {
+          enable: true,
+          position: this.mapAttributionPosition
+        },
+        scale: {
+          enable: this.displayScale
+        },
+        navigationControl: {
+          enable: true
+        },
+        pitchToggle: {
+          enable: true,
+          config: {bearing: -20, pitch: 70, minpitchzoom: 11}
         }
       }
-    );
+    };
+    this.arlasMap = new ArlasMapGl(config);
     this.map = this.arlasMap.getMap();
 
     this.drawService.setMap(this.arlasMap.getMap());
@@ -751,131 +795,41 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     };
 
     const drawControl = new DrawControl(drawOptions, this.drawButtonEnabled);
-    this.arlasMap.setDrawProvider(drawControl.mapboxDraw)
-    this.arlasMap.initDrawControls(drawControl);
+    this.draw = drawControl.mapboxDraw;
+    this.draw.modes.DRAW_CIRCLE = 'draw_circle';
+    this.draw.modes.DRAW_RADIUS_CIRCLE = 'draw_radius_circle';
+    this.draw.modes.DRAW_STRIP = 'draw_strip';
+    this.draw.modes.DIRECT_STRIP = 'direct_strip';
 
+    // TODO : to have to add event override
+    const drawControlConfig: DrawControlsOption = {
+      addGeoBox: {
+        enable: true,
+        overrideEvent:
+          {event:'click', fn: this.addGeoBox}
+          },
+      draw: {control: drawControl},
+      removeAois: {
+        enable: true,
+        overrideEvent: {event:'click', fn: this.removeAois}}
+    }
+    this.arlasMap.initDrawControls(drawControlConfig);
     this.drawService.setMapboxDraw(this.arlasMap.getMap());
-
+    //TODO: think to handle this case to avoid init in parallel.
     this.arlasMap.onLoad( () => {
-      this.basemapService.declareProtomapProtocol(this.map);
-      this.basemapService.addProtomapBasemap(this.map);
-      this.arlasMap.changeDrawStatic();
-      this.west = this.arlasMap.getWestBounds();
-      this.south = this.arlasMap.getSouthBounds();
-      this.east = this.arlasMap.getEstBounds();
-      this.north = this.arlasMap.getNorthBounds();
-      this.zoom = this.arlasMap.getZoom();
+      this.basemapService.declareProtomapProtocol(this.arlasMap.getMap());
+      this.basemapService.addProtomapBasemap(this.arlasMap.getMap());
+      this.draw.changeMode('static');
 
       if (this.mapLayers !== null) {
-        this.mapLayers.events.zoomOnClick.forEach(layerId => {
-          this.map.on('click', layerId, (e) => {
-            if (e.features[0].properties.cluster_id !== undefined) {
-              const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-              this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: expansionZoom });
-            } else {
-              const zoom = this.map.getZoom();
-              let newZoom: number;
-              if (zoom >= 0 && zoom < 3) {
-                newZoom = 4;
-              } else if (zoom >= 3 && zoom < 5) {
-                newZoom = 5;
-              } else if (zoom >= 5 && zoom < 7) {
-                newZoom = 7;
-              } else if (zoom >= 7 && zoom < 10) {
-                newZoom = 10;
-              } else if (zoom >= 10 && zoom < 11) {
-                newZoom = 11;
-              } else {
-                newZoom = 12;
-              }
-              this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom });
-            }
-          });
-        });
-
-        this.mapLayers.events.emitOnClick.forEach(layerId => {
-          this.map.on('click', layerId, (e) => {
-            const features = this.map.queryRenderedFeatures(e.point);
-            const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
-            if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-              this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
-            }
-          });
-        });
-
-        [
-          'gl-draw-polygon-stroke-inactive',
-          'gl-draw-polygon-stroke-active',
-          'gl-draw-polygon-stroke-static'
-        ].forEach(layer =>
-          ['.cold', '.hot'].forEach(layerId =>
-            this.map.on('mousemove', layer.concat(layerId), (e) => {
-              this.map.getCanvas().style.cursor = 'pointer';
-            })
-          )
-        );
-        [
-          'gl-draw-polygon-stroke-inactive',
-          'gl-draw-polygon-stroke-active',
-          'gl-draw-polygon-stroke-static'
-        ].forEach(layer =>
-          ['.cold', '.hot'].forEach(layerId =>
-            this.map.on('mouseleave', layer.concat(layerId), (e) => {
-              this.map.getCanvas().style.cursor = '';
-            })));
-
-        this.mapLayers.events.onHover.forEach(layerId => {
-          this.map.on('mousemove', layerId, (e) => {
-            this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
-          });
-
-          this.map.on('mouseleave', layerId, (e) => {
-            this.onFeatureOver.next({});
-          });
-        });
-
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          visibilityStatus.forEach((visibilityStatus, l) => {
-            let layerInVisualisations = false;
-            if (!visibilityStatus) {
-              this.visualisationSetsConfig.forEach(v => {
-                const ls = new Set(v.layers);
-                if (!layerInVisualisations) {
-                  layerInVisualisations = ls.has(l);
-                }
-              });
-              if (layerInVisualisations) {
-                this.map.setLayoutProperty(l, 'visibility', 'none');
-                this.setStrokeLayoutVisibility(l, 'none');
-                this.setScrollableLayoutVisibility(l, 'none');
-              }
-            } else {
-              let oneVisualisationEnabled = false;
-              this.visualisationSetsConfig.forEach(v => {
-                const ls = new Set(v.layers);
-                if (!layerInVisualisations) {
-                  layerInVisualisations = ls.has(l);
-                }
-                if (ls.has(l) && v.enabled) {
-                  oneVisualisationEnabled = true;
-                  (this.map).setLayoutProperty(l, 'visibility', 'visible');
-                  this.setStrokeLayoutVisibility(l, 'visible');
-                  this.setScrollableLayoutVisibility(l, 'visible');
-                }
-              });
-              if (!oneVisualisationEnabled && layerInVisualisations) {
-                (this.map).setLayoutProperty(l, 'visibility', 'none');
-                this.setStrokeLayoutVisibility(l, 'none');
-                this.setScrollableLayoutVisibility(l, 'none');
-              }
-            }
-          });
+         this.arlasMap.updateVisibility(visibilityStatus)
         });
       }
-      this.map.showTileBoundaries = false;
-      this.canvas = this.map.getCanvasContainer();
+
+      this.canvas = this.arlasMap.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
-      this.map.on('draw.create', (e) => {
+      this.arlasMap.getMap().on('draw.create', (e) => {
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
@@ -886,7 +840,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           });
       });
 
-      this.map.on('draw.update', (e) => {
+      this.arlasMap.getMap().on('draw.update', (e) => {
         if (e) {
           const features = e.features;
           if (features && features.length > 0) {
@@ -896,7 +850,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           }
         }
       });
-      this.map.on('draw.delete', (e) => {
+      this.arlasMap.getMap().on('draw.delete', (e) => {
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
@@ -914,24 +868,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.finishDrawTooltip.style.left = (x + 20) + 'px';
       };
 
-      this.map.on('draw.onClick', (e) => {
+      this.arlasMap.getMap().on('draw.onClick', (e) => {
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
         this.drawClickCounter++;
       });
-      this.map.on('draw.onStart', (e) => {
+      this.arlasMap.getMap().on('draw.onStart', (e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.map.getCanvas().style.cursor = '';
+        this.arlasMap.setCursorStyle('');
       });
-      this.map.on('draw.onStop', (e) => {
+      this.arlasMap.getMap().on('draw.onStop', (e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.map.getCanvas().style.cursor = '';
+        this.arlasMap.setCursorStyle('');
       });
 
-      this.map.on('draw.invalidGeometry', (e) => {
+      this.arlasMap.getMap().on('draw.invalidGeometry', (e) => {
         if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
           if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
@@ -952,16 +906,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.draw.add(currentFeature);
         }
         this.openInvalidGeometrySnackBar();
-        this.map.getCanvas().style.cursor = '';
+        this.arlasMap.setCursorStyle('');
       });
 
-      this.map.on('draw.edit.saveInitialFeature', (edition) => {
+      this.arlasMap.getMap().on('draw.edit.saveInitialFeature', (edition) => {
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
-      this.map.on('draw.selectionchange', (e) => {
+      this.arlasMap.getMap().on('draw.selectionchange', (e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawSelected = true;
@@ -982,10 +936,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.isDrawingStrip = false;
           this.isInSimpleDrawMode = false;
           this.draw.changeMode('static');
-          this.map.getCanvas().style.cursor = '';
+          this.arlasMap.setCursorStyle('');
         }
       });
-      this.map.on('draw.modechange', (e) => {
+      this.arlasMap.getMap().on('draw.modechange', (e) => {
         this.isDrawingPolygon = e.mode === this.draw.modes.DRAW_POLYGON;
         this.isDrawingStrip = e.mode === this.draw.modes.DIRECT_STRIP;
         this.isDrawingCircle = e.mode === this.draw.modes.DRAW_CIRCLE || e.mode === this.draw.modes.DRAW_RADIUS_CIRCLE;
@@ -995,7 +949,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         if (e.mode === 'simple_select') {
           this.isInSimpleDrawMode = true;
         } else if (e.mode === 'static') {
-          this.map.getCanvas().style.cursor = '';
+          this.arlasMap.setCursorStyle('');
         } else if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelected().features;
           const selectedIds = this.draw.getSelectedIds();
@@ -1022,12 +976,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             }
           } else {
             this.isInSimpleDrawMode = false;
-            this.map.getCanvas().style.cursor = '';
+            this.arlasMap.setCursorStyle('');
           }
         }
       });
 
-      this.map.on('click', (e) => {
+      this.arlasMap.getMap().on('click', (e) => {
         if (this.isDrawingCircle) {
           return;
         }
@@ -1041,7 +995,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           }
         } else {
           this.nbPolygonVertice = 0;
-          const features = this.map.queryRenderedFeatures(e.point);
+          const features = this.arlasMap.queryRenderedFeatures(e.point);
           // edit polygon condition : no arlas feature && mapbox-gl-draw source present
           const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
             features.filter(f => f.source.startsWith('mapbox-gl-draw')).length > 0;
@@ -1071,153 +1025,29 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.onMapLoaded.next(true);
     });
 
-    const zoomstart = fromEvent(this.map, 'zoomstart')
-      .pipe(debounceTime(750));
-
-    zoomstart.subscribe(e => {
-      this.zoomStart = this.map.getZoom();
-    });
-
-    const dragstart = fromEvent(this.map, 'dragstart')
-      .pipe(debounceTime(750));
-    dragstart.subscribe(e => {
-      this.dragStartX = e.originalEvent.clientX;
-      this.dragStartY = e.originalEvent.clientY;
-    });
-    const dragend = fromEvent(this.map, 'dragend')
-      .pipe(debounceTime(750));
-    dragend.subscribe(e => {
-      this.dragEndX = e.originalEvent.clientX;
-      this.dragEndY = e.originalEvent.clientY;
-      this.xMoveRatio = Math.abs(this.dragEndX - this.dragStartX) / e.target._canvas.clientWidth;
-      this.yMoveRatio = Math.abs(this.dragEndY - this.dragStartY) / e.target._canvas.clientHeight;
-    });
-
-    this.visualisationsSets = {
-      visualisations: new Map(),
-      status: new Map()
-    };
-    if (this.visualisationSetsConfig) {
-      this.visualisationSetsConfig.forEach(visu => {
-        this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
-        this.visualisationsSets.status.set(visu.name, visu.enabled);
-      });
-    }
-    const moveend = fromEvent(this.map, 'moveend')
-      .pipe(debounceTime(750));
-    moveend.subscribe(e => {
-      this.west = this.map.getBounds().getWest();
-      this.south = this.map.getBounds().getSouth();
-      this.east = this.map.getBounds().getEast();
-      this.north = this.map.getBounds().getNorth();
-      this.zoom = this.map.getZoom();
-      const offsetPoint = new mapboxgl.Point((this.offset.east + this.offset.west) / 2, (this.offset.north + this.offset.south) / 2);
-      const centerOffsetPoint = this.map.project(this.map.getCenter()).add(offsetPoint);
-      const centerOffSetLatLng = this.map.unproject(centerOffsetPoint);
-
-      const southWest = this.map.getBounds().getSouthWest();
-      const northEast = this.map.getBounds().getNorthEast();
-      const bottomLeft = this.map.project(southWest);
-      const topRght = this.map.project(northEast);
-      const height = bottomLeft.y;
-      const width = topRght.x;
-
-      const bottomLeftOffset = bottomLeft.add(new mapboxgl.Point(this.offset.west, this.offset.south));
-      const topRghtOffset = topRght.add(new mapboxgl.Point(this.offset.east, this.offset.north));
-
-      const bottomLeftOffsetLatLng = this.map.unproject(bottomLeftOffset);
-      const topRghtOffsetLatLng = this.map.unproject(topRghtOffset);
-
-      const wrapWestOffset = bottomLeftOffsetLatLng.wrap().lng;
-      const wrapSouthOffset = bottomLeftOffsetLatLng.wrap().lat;
-      const wrapEastOffset = topRghtOffsetLatLng.wrap().lng;
-      const wrapNorthOffset = topRghtOffsetLatLng.wrap().lat;
-
-      const rawWestOffset = bottomLeftOffsetLatLng.lng;
-      const rawSouthOffset = bottomLeftOffsetLatLng.lat;
-      const rawEastOffset = topRghtOffsetLatLng.lng;
-      const rawNorthOffset = topRghtOffsetLatLng.lat;
-      const visibleLayers = new Set<string>();
-      this.visualisationsSets.status.forEach((b, vs) => {
-        if (b) {
-          this.visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
-        }
-      });
-      const onMoveData: OnMoveResult = {
-        zoom: this.zoom,
-        zoomStart: this.zoomStart,
-        center: this.map.getCenter().toArray(),
-        centerWithOffset: [centerOffSetLatLng.lng, centerOffSetLatLng.lat],
-        extendWithOffset: [wrapNorthOffset, wrapWestOffset, wrapSouthOffset, wrapEastOffset],
-        rawExtendWithOffset: [rawNorthOffset, rawWestOffset, rawSouthOffset, rawEastOffset],
-        extend: [this.north, this.west, this.south, this.east],
-        extendForLoad: [],
-        extendForTest: [],
-        rawExtendForLoad: [],
-        rawExtendForTest: [],
-        xMoveRatio: this.xMoveRatio,
-        yMoveRatio: this.yMoveRatio,
-        visibleLayers: visibleLayers
-      };
-
-      const panLoad = this.margePanForLoad * Math.max(height, width) / 100;
-      const panTest = this.margePanForTest * Math.max(height, width) / 100;
-      const extendForLoadLatLng = paddedBounds(panLoad, panLoad, panLoad, panLoad, this.map, southWest, northEast);
-      const extendForTestdLatLng = paddedBounds(panTest, panTest, panTest, panTest, this.map, southWest, northEast);
-      onMoveData.extendForLoad = [
-        extendForLoadLatLng[1].wrap().lat,
-        extendForLoadLatLng[0].wrap().lng,
-        extendForLoadLatLng[0].wrap().lat,
-        extendForLoadLatLng[1].wrap().lng
-      ];
-      onMoveData.extendForTest = [
-        extendForTestdLatLng[1].wrap().lat,
-        extendForTestdLatLng[0].wrap().lng,
-        extendForTestdLatLng[0].wrap().lat,
-        extendForTestdLatLng[1].wrap().lng
-      ];
-      onMoveData.rawExtendForLoad = [
-        extendForLoadLatLng[1].lat,
-        extendForLoadLatLng[0].lng,
-        extendForLoadLatLng[0].lat,
-        extendForLoadLatLng[1].lng,
-      ];
-      onMoveData.rawExtendForTest = [
-        extendForTestdLatLng[1].lat,
-        extendForTestdLatLng[0].lng,
-        extendForTestdLatLng[0].lat,
-        extendForTestdLatLng[1].lng,
-      ];
-      this.onMove.next(onMoveData);
-    });
-    // Fit bounds on current bounds to emit init position in moveend bus
-    this.map.fitBounds(this.map.getBounds());
+    this.arlasMap.onMoveEnd().subscribe((moveResult =>{
+      this.onMove.next(moveResult);
+    }))
 
     // Mouse events
-    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
-      this.startlngLat = e.lngLat;
+    this.arlasMap.getMap().on('mousedown', (e: mapboxgl.MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
-      this.endlngLat = e.lngLat;
+    this.arlasMap.getMap().on('mouseup', (e: mapboxgl.MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
-    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+
+    this.arlasMap.getMap().on('mousemove', (e: mapboxgl.MapMouseEvent) => {
       const lngLat = e.lngLat;
-      if (this.displayCurrentCoordinates) {
-        const displayedLngLat = this.wrapLatLng ? lngLat.wrap() : lngLat;
-        this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
-        this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
-      }
       if (this.isDrawingBbox || this.isDrawingPolygon) {
-        this.map.getCanvas().style.cursor = 'crosshair';
+        this.arlasMap.setCursorStyle('crosshair');
         this.movelngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
-        const startlng: number = this.startlngLat.lng;
-        const endlng: number = this.movelngLat.lng;
-        const startlat: number = this.startlngLat.lat;
-        const endlat: number = this.movelngLat.lat;
+        const startlng: number = this.arlasMap.startlngLat.lng;
+        const endlng: number = this.arlasMap.movelngLat.lng;
+        const startlat: number = this.arlasMap.startlngLat.lat;
+        const endlat: number = this.arlasMap.movelngLat.lat;
         const west = Math.min(startlng, endlng);
         const north = Math.max(startlat, endlat);
         const east = Math.max(startlng, endlng);
@@ -1245,12 +1075,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     if (!!this.redrawSource) {
       this.redrawSource.subscribe(sd => {
-        if (this.map.getSource(sd.source) !== undefined) {
-          (this.map.getSource(sd.source) as mapboxgl.GeoJSONSource).setData({
-            'type': 'FeatureCollection',
-            'features': sd.data
-          });
-        }
+        this.arlasMap.redrawSource(sd.source, sd.data);
       });
     }
   }
@@ -1266,7 +1091,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description Displays the geobox
    */
   public addGeoBox() {
-    this.map.getCanvas().style.cursor = 'crosshair';
+    this.arlasMap.setCursorStyle('crosshair');
     this.drawService.enableBboxEdition();
     this.isDrawingBbox = true;
   }
@@ -1275,7 +1100,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
   public removeAois() {
-    this.map.getCanvas().style.cursor = '';
+    this.arlasMap.setCursorStyle('');
     this.isDrawingBbox = false;
     this.deleteSelectedItem();
   }
@@ -1362,16 +1187,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape' && this.isDrawingBbox) {
-      this.map.getCanvas().style.cursor = '';
+      this.arlasMap.setCursorStyle('');
       this.isDrawingBbox = false;
       document.removeEventListener('mousemove', this.mousemove);
       document.removeEventListener('mouseup', this.mouseup);
-      this.map.getCanvas().style.cursor = '';
+      this.arlasMap.setCursorStyle('');
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
-      this.map.dragPan.enable();
+      this.arlasMap.enableDragPan();
       this.drawService.endDimensionsEmission();
     }
   }
@@ -1403,18 +1228,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * Wrapper method to fit the map to the given bounds with enough padding to properly visualize the area
    */
   public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
-    const paddedOptions = Object.assign({}, options);
-    paddedOptions.padding = {
-      top: this.offset.north + this.fitBoundsPadding,
-      bottom: this.offset.south + this.fitBoundsPadding,
-      left: this.offset.west + this.fitBoundsPadding,
-      right: this.offset.east + this.fitBoundsPadding
-    };
-    this.map.fitBounds(bounds, paddedOptions);
+    this.arlasMap.paddedFitBounds(bounds, options);
   }
 
   public moveToCoordinates(lngLat: [number, number]) {
-    this.map.setCenter(lngLat);
+    this.arlasMap.setCenter(lngLat);
   }
 
   private latLngToWKT(features) {
@@ -1442,90 +1260,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     return wkt;
   }
 
-  /**<>
-   * @description Add map sources
-   */
-  private addSourcesToMap(sources: Array<MapSource>, map: mapboxgl.Map) {
-    // Add sources defined as input in mapSources;
-    const mapSourcesMap = new Map<string, MapSource>();
-    if (sources) {
-      sources.forEach(mapSource => {
-        mapSourcesMap.set(mapSource.id, mapSource);
-      });
-      mapSourcesMap.forEach((mapSource, id) => {
-        if (map.getSource(id) === undefined && typeof (mapSource.source) !== 'string') {
-          map.addSource(id, mapSource.source);
-        }
-      });
-    }
-  }
-
-  private addVisuLayers() {
-    if (!!this.visualisationSetsConfig) {
-      for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-        const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-        if (!!visualisation.layers) {
-          for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-            const l = visualisation.layers[j];
-            const layer = this.layersMap.get(l);
-            const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-            const scrollableLayer = this.layersMap.get(scrollableId);
-            if (!!scrollableLayer) {
-              this.addLayer(scrollableId);
-            }
-            this.addLayer(l);
-            /** add stroke layer if the layer is a fill */
-            if (layer.type === 'fill') {
-              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-              const strokeLayer = this.layersMap.get(strokeId);
-              if (!!strokeLayer) {
-                this.addLayer(strokeId);
-              }
-            }
-          }
-        }
-      }
-      this.visualisationsSets.status.forEach((b, vs) => {
-        if (!b) {
-          this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.map.setLayoutProperty(l, 'visibility', 'none');
-            this.setStrokeLayoutVisibility(l, 'none');
-            this.setScrollableLayoutVisibility(l, 'none');
-          });
-        }
-      });
-      this.visualisationsSets.status.forEach((b, vs) => {
-        if (b) {
-          this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.map.setLayoutProperty(l, 'visibility', 'visible');
-            this.setStrokeLayoutVisibility(l, 'visible');
-            this.setScrollableLayoutVisibility(l, 'visible');
-          });
-
-        }
-      });
-      this.reorderLayers();
-    }
-  }
-
-
-  private addLayer(layerId: string): void {
-    const layer = this.layersMap.get(layerId);
-    if (layer !== undefined && layer.id === layerId) {
-      /** Add the layer if it is not already added */
-      if (this.map.getLayer(layerId) === undefined) {
-        if (this.firstDrawLayer.length > 0) {
-          /** draw layers must be on the top of the layers */
-          this.map.addLayer(layer, this.firstDrawLayer);
-        } else {
-          this.map.addLayer(layer);
-        }
-      }
-    } else {
-      throw new Error('The layer `' + layerId + '` is not declared in `mapLayers.layers`');
-    }
-  }
-
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
       const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
@@ -1546,47 +1280,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }, []) : [];
       const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
       const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-      this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
+      this.arlasMap.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }
 
-  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-    collection?: string): void {
-    if (this.mapLayers && this.mapLayers.externalEventLayers) {
-      this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
-        if (this.map.getLayer(layer.id) !== undefined) {
-          let originalLayerIsVisible = false;
-          const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
-          if (isCollectionCompatible) {
-            const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-            if (this.map.getLayer(originalLayerId) !== undefined) {
-              originalLayerIsVisible = (this.map.getLayer(originalLayerId) as ArlasAnyLayer).layout.visibility === 'visible';
-            }
-            const layerFilter: Array<any> = [];
-            const externalEventLayer = this.layersMap.get(layer.id);
-            if (!!externalEventLayer && !!externalEventLayer.filter) {
-              externalEventLayer.filter.forEach(f => {
-                layerFilter.push(f);
-              });
-            }
-            if (layerFilter.length === 0) {
-              layerFilter.push('all');
-            }
-            if (visibilityCondition && originalLayerIsVisible) {
-              const condition = visibilityFilter;
-              layerFilter.push(condition);
-              this.map.setFilter(layer.id, layerFilter);
-              this.map.setLayoutProperty(layer.id, 'visibility', 'visible');
-            } else {
-              this.map.setFilter(layer.id, (layer as any).filter);
-              this.map.setLayoutProperty(layer.id, 'visibility', 'none');
-            }
-          }
-        }
-      });
-    }
-  }
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
@@ -1594,7 +1291,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       return;
     }
     // Disable default drag zooming when we add a geobox.
-    this.map.dragPan.disable();
+    this.arlasMap.getMap().dragPan.disable();
     // Call functions for the following events
     document.addEventListener('mousemove', this.mousemove);
     document.addEventListener('mouseup', this.mouseup);
@@ -1640,8 +1337,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     );
     document.removeEventListener('mousemove', this.mousemove);
     document.removeEventListener('mouseup', this.mouseup);
-    this.map.getCanvas().style.cursor = '';
-    this.map.dragPan.enable();
+    this.arlasMap.setCursorStyle('');
+    this.arlasMap.getMap().dragPan.enable();
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
       this.finish([[this.start, f], [e.lngLat]]);
@@ -1711,7 +1408,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
       const strokeLayer = this.layersMap.get(strokeId);
       if (!!strokeLayer) {
-        this.map.setLayoutProperty(strokeId, 'visibility', visibility);
+        this.arlasMap.setLayoutProperty(strokeId, 'visibility', visibility);
       }
     }
   }
@@ -1721,7 +1418,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollbaleLayer = this.layersMap.get(scrollableId);
     if (!!scrollbaleLayer) {
-      this.map.setLayoutProperty(scrollableId, 'visibility', visibility);
+      this.arlasMap.setLayoutProperty(scrollableId, 'visibility', visibility);
     }
   }
 }
