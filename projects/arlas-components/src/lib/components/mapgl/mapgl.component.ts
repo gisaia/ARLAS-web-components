@@ -42,7 +42,7 @@ import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
+import { TransformRequestFunction, AnyLayer, MapLayerEventType } from 'mapbox-gl';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
@@ -60,7 +60,14 @@ import directModeOverride from './draw/modes/directSelectOverride';
 import stripMode from './draw/modes/strip/strip.mode';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 import cleanCoords from '@turf/clean-coords';
-import { BaseMapGL, ControlPosition, DrawControlsOption } from "./model/BaseMapGL";
+import {
+  ArlasMapOffset,
+  AbstractArlasMapGL,
+  BindLayerToEvent,
+  ControlPosition,
+  DrawControlsOption,
+  MapEventBinds
+} from "./model/AbstractArlasMapGL";
 import { ArlasMapGl, ArlasMapGlConfig } from "./model/ArlasMapGL";
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
@@ -159,9 +166,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   @Input() public mapLayers: MapLayers<AnyLayer>;
 
   /**
- * @Input : Angular
- * @description Whether the scale is displayed.
- */
+   * @Input : Angular
+   * @description Whether the scale is displayed.
+   */
   @Input() public displayScale = true;
   /**
    * @Input : Angular
@@ -169,9 +176,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    */
   @Input() public displayCurrentCoordinates = false;
   /**
- * @Input : Angular
- * @description Whether the coordinates should be wraped between -180 and 180.
- */
+   * @Input : Angular
+   * @description Whether the coordinates should be wraped between -180 and 180.
+   */
   @Input() public wrapLatLng = true;
   /**
    * @Input : Angular
@@ -264,9 +271,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
   /**
-  * @Input : Angular
-  * @description List of mapboxgl sources to add to the map.
-  */
+   * @Input : Angular
+   * @description List of mapboxgl sources to add to the map.
+   */
   @Input() public mapSources: Array<MapSource>;
 
   /**
@@ -311,8 +318,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description An object with noth,east,south,west properies which represent an offset in pixel
    * Origin is top-left and x axe is west to east and y axe north to south.
    */
-  @Input() public offset: { north: number; east: number; south: number; west: number; } =
-    { north: 0, east: 0, south: 0, west: 0 };
+  @Input() public offset: ArlasMapOffset =
+    {north: 0, east: 0, south: 0, west: 0};
 
   /**
    * @Input : Angular
@@ -373,7 +380,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   /**
    * @Output : Angular
    * @description Emits true after the map is loaded and all sources & layers are added.
-  */
+   */
   @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
 
 
@@ -389,12 +396,18 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @Output : Angular
    * @description Emits the event of clicking on a feature.
    */
-  @Output() public onFeatureClic = new EventEmitter<{ features: Array<mapboxgl.MapboxGeoJSONFeature>; point: [number, number]; }>();
+  @Output() public onFeatureClic = new EventEmitter<{
+    features: Array<mapboxgl.MapboxGeoJSONFeature>;
+    point: [number, number];
+  }>();
   /**
    * @Output : Angular
    * @description Emits the event of hovering feature.
    */
-  @Output() public onFeatureOver = new EventEmitter<{ features: Array<mapboxgl.MapboxGeoJSONFeature>; point: [number, number]; } | {}>();
+  @Output() public onFeatureOver = new EventEmitter<{
+    features: Array<mapboxgl.MapboxGeoJSONFeature>;
+    point: [number, number];
+  } | {}>();
 
   /**
    * @Output :  Angular
@@ -428,8 +441,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public showBasemapsList = false;
   public layersMap: Map<string, ArlasAnyLayer>;
 
-  public currentLat: string;
-  public currentLng: string;
 
   // Circle
   private isDrawingCircle = false;
@@ -464,8 +475,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private drawBboxSubscription: Subscription;
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
-    private basemapService: MapboxBasemapService,
-    private _snackBar: MatSnackBar, private translate: TranslateService) {
+                     private basemapService: MapboxBasemapService,
+                     private _snackBar: MatSnackBar, private translate: TranslateService) {
+    console.log(this.layersMap)
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
       next: (bboxDC: BboxDrawCommand) => {
@@ -643,10 +655,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
-  public defaultOnZoom (e){
+  public defaultOnZoom(e) {
     if (e.features[0].properties.cluster_id !== undefined) {
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat],  expansionZoom  );
+      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat], expansionZoom);
     } else {
       const zoom = this.arlasMap.getZoom();
       let newZoom: number;
@@ -663,42 +675,52 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       } else {
         newZoom = 12;
       }
-      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat],  newZoom  );
+      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat], newZoom);
     }
   }
 
-  private queryRender(e){
+  private queryRender(e) {
     const features = this.arlasMap.queryRenderedFeatures(e.point);
     const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
     if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-      this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
     }
   }
 
   public declareMap() {
     this.initTransformRequest();
 
-    const drawPolygonLayers =  [
+    const drawPolygonLayers = [
       'gl-draw-polygon-stroke-inactive',
       'gl-draw-polygon-stroke-active',
       'gl-draw-polygon-stroke-static'
-    ].map(layer => ['.cold', '.hot'].map( id => layer.concat(id)));
+    ].map(layer => ['.cold', '.hot']
+      .map(id => layer.concat(id)))
+      .reduce((p, ac) => ac.concat(p), []);
 
     const config: ArlasMapGlConfig = {
+      displayCurrentCoordinates: this.displayCurrentCoordinates,
+      fitBoundsPadding:  this.fitBoundsPadding,
+      margePanForLoad:  this.margePanForLoad,
+      margePanForTest: this.margePanForTest,
+      offset: this.offset,
+      wrapLatLng: this.wrapLatLng,
       mapLayers: this.mapLayers,
       dataSources: this.dataSources,
       icons: this.icons,
       maxWidthScale: this.maxWidthScale,
       mapSources: this.mapSources,
-      unitScale:  this.unitScale,
+      unitScale: this.unitScale,
       mapLayersEventBind: {
-        zoomOnClick: [{event:'click', fn: this.defaultOnZoom}],
+        zoomOnClick: [{event: 'click', fn: this.defaultOnZoom}],
         onHover: [
-          {event: 'mousemove', fn: (e) => {
-              this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+          {
+            event: 'mousemove', fn: (e) => {
+              this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
             }
           },
-          {event: 'mouseleave', fn: (e) => {
+          {
+            event: 'mouseleave', fn: (e) => {
               this.onFeatureOver.next({});
             }
           }
@@ -706,21 +728,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         emitOnClick: [{event: 'click', fn: this.queryRender}],
       },
       customEventBind: [
-        { layers:drawPolygonLayers,
+        {
+          layers: drawPolygonLayers,
           mapEventBinds:
             [{
-              event:'mousemove',
+              event: 'mousemove',
               fn: (e) => {
                 this.arlasMap.setCursorStyle('pointer');
               }
             }
             ],
-
         },
-        { layers:drawPolygonLayers,
+        {
+          layers: drawPolygonLayers,
           mapEventBinds: [
             {
-              event:'mouseleave',
+              event: 'mouseleave',
               fn: (e) => {
                 this.arlasMap.setCursorStyle('');
               }
@@ -763,7 +786,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       }
     };
+    console.log('declare')
     this.arlasMap = new ArlasMapGl(config);
+    console.log(this.arlasMap)
     this.map = this.arlasMap.getMap();
 
     this.drawService.setMap(this.arlasMap.getMap());
@@ -803,27 +828,31 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     // TODO : to have to add event override
     const drawControlConfig: DrawControlsOption = {
+      draw: {control: drawControl},
       addGeoBox: {
         enable: true,
         overrideEvent:
-          {event:'click', fn: this.addGeoBox}
-          },
-      draw: {control: drawControl},
+          {
+            event: 'click',
+            fn: this.addGeoBox
+          }
+      },
       removeAois: {
         enable: true,
-        overrideEvent: {event:'click', fn: this.removeAois}}
+        overrideEvent: {event: 'click', fn: this.removeAois}
+      }
     }
     this.arlasMap.initDrawControls(drawControlConfig);
-    this.drawService.setMapboxDraw(this.arlasMap.getMap());
+    this.drawService.setMapboxDraw(this.draw);
     //TODO: think to handle this case to avoid init in parallel.
-    this.arlasMap.onLoad( () => {
+    this.arlasMap.onLoad(() => {
       this.basemapService.declareProtomapProtocol(this.arlasMap.getMap());
       this.basemapService.addProtomapBasemap(this.arlasMap.getMap());
       this.draw.changeMode('static');
 
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
-         this.arlasMap.updateVisibility(visibilityStatus)
+          this.arlasMap.updateVisibility(visibilityStatus)
         });
       }
 
@@ -1025,7 +1054,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.onMapLoaded.next(true);
     });
 
-    this.arlasMap.onMoveEnd().subscribe((moveResult =>{
+    this.arlasMap.onMoveEnd().subscribe((moveResult => {
       this.onMove.next(moveResult);
     }))
 
@@ -1211,13 +1240,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (!!this.drawBboxSubscription) {
       this.drawBboxSubscription.unsubscribe();
     }
+   console.log(this.arlasMap)
+    this.arlasMap.unsubscribeEvents();
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
     const ids: Array<number | string> = features.map(f => f.idValue);
     const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-    this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+    this.arlasMap.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
   }
 
   public hideBasemapSwitcher() {
@@ -1268,7 +1299,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
       const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
         ['literal', ids]];
-      this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
+      this.arlasMap.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
     }
   }
 
@@ -1276,7 +1307,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (elementToSelect) {
       const ids = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => {
-          memo.push(element.idValue); return memo;
+          memo.push(element.idValue);
+          return memo;
         }, []) : [];
       const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
       const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
@@ -1400,25 +1432,5 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.isDrawingBbox = false;
     this.drawService.disableBboxEdition();
     this.drawService.endDimensionsEmission();
-  }
-
-  private setStrokeLayoutVisibility(layerId: string, visibility: string): void {
-    const layer = this.layersMap.get(layerId);
-    if (layer.type === 'fill') {
-      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = this.layersMap.get(strokeId);
-      if (!!strokeLayer) {
-        this.arlasMap.setLayoutProperty(strokeId, 'visibility', visibility);
-      }
-    }
-  }
-
-  private setScrollableLayoutVisibility(layerId: string, visibility: string): void {
-    const layer = this.layersMap.get(layerId);
-    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-    const scrollbaleLayer = this.layersMap.get(scrollableId);
-    if (!!scrollbaleLayer) {
-      this.arlasMap.setLayoutProperty(scrollableId, 'visibility', visibility);
-    }
   }
 }
