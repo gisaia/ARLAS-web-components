@@ -32,7 +32,7 @@
 </div>
 
 <arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="arlasMap?.currentLat"
-  [currentLng]="arlasMap?.currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
+                   [currentLng]="arlasMap?.currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
 
 <arlas-mapgl-basemap *ngIf="showBasemapsList" [mapSources]="arlasMap.mapSources" [map]="map"
   (mouseleave)="hideBasemapSwitcher()" (basemapChanged)="onChangeBasemapStyle()"></arlas-mapgl-basemap>

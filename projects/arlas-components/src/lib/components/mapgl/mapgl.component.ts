@@ -67,8 +67,8 @@ import {
   ControlPosition,
   DrawControlsOption,
   MapEventBinds
-} from "./model/AbstractArlasMapGL";
-import { ArlasMapGl, ArlasMapGlConfig } from "./model/ArlasMapGL";
+} from './model/AbstractArlasMapGL';
+import { ArlasMapGl, ArlasMapGlConfig } from './model/ArlasMapGL';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -129,10 +129,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     'features': []
   };
   private index: any;
-  private north: number;
-  private east: number;
-  private west: number;
-  private south: number;
   private isDrawingBbox = false;
   private canvas: HTMLElement;
   private box: HTMLElement;
@@ -142,7 +138,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
   private startlngLat: mapboxgl.LngLat;
   private endlngLat: mapboxgl.LngLat;
-  private movelngLat: mapboxgl.LngLat;
 
   private savedEditFeature = null;
 
@@ -366,11 +361,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    */
   @Input() public mapAttributionPosition: ControlPosition = 'bottom-right';
 
-  public visualisationsSets: {
-    visualisations: Map<string, Set<string>>;
-    status: Map<string, boolean>;
-  };
-
   /**
    * @Input : Angular
    * @description List of icons to add to the map and that can be used in layers.
@@ -452,20 +442,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
   private isDrawingPolygon = false;
   private isInSimpleDrawMode = false;
-  public firstDrawLayer = '';
 
-  // Drag start position
-  public dragStartY: number;
-  public dragStartX: number;
-
-  // Drag end position
-  public dragEndX: number;
-  public dragEndY: number;
-
-  // Moving ratio (using pixel)
-  public xMoveRatio = 0;
-  public yMoveRatio = 0;
-  public zoomStart: number;
   public visibilityStatus = new Map<string, boolean>();
   public isDrawSelected = false;
   public drawClickCounter = 0;
@@ -477,7 +454,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
                      private basemapService: MapboxBasemapService,
                      private _snackBar: MatSnackBar, private translate: TranslateService) {
-    console.log(this.layersMap)
+    console.log(this.layersMap);
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
       next: (bboxDC: BboxDrawCommand) => {
@@ -502,7 +479,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
-    const layers = this.arlasMap.updateLayoutVisibility(visualisationName)
+    const layers = this.arlasMap.updateLayoutVisibility(visualisationName);
     this.visualisations.emit(layers);
     this.arlasMap.reorderLayers();
   }
@@ -554,16 +531,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.visualisationSetsConfig, event.previousIndex, event.currentIndex);
-    this.arlasMap.reorderLayers();
+    this.arlasMap.drop(event);
   }
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    const layers = Array.from(this.arlasMap.findVisualisationSetLayer(visuName));
-    moveItemInArray(layers, event.previousIndex, event.currentIndex);
-    this.arlasMap.setVisualisationSetLayers(visuName, layers);
-    this.arlasMap.reorderLayers();
+    this.arlasMap.dropLayer(event, visuName);
   }
 
   /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
@@ -608,7 +581,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       if (changes['featureToHightLight'] !== undefined
         && changes['featureToHightLight'].currentValue !== changes['featureToHightLight'].previousValue) {
         const featureToHightLight = changes['featureToHightLight'].currentValue;
-        this.highlightFeature(featureToHightLight);
+        this.arlasMap.highlightFeature(featureToHightLight);
       }
       if (changes['featuresToSelect'] !== undefined
         && changes['featuresToSelect'].currentValue !== changes['featuresToSelect'].previousValue) {
@@ -657,6 +630,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   public defaultOnZoom(e) {
     if (e.features[0].properties.cluster_id !== undefined) {
+      // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
       this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat], expansionZoom);
     } else {
@@ -715,17 +689,23 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         zoomOnClick: [{event: 'click', fn: this.defaultOnZoom}],
         onHover: [
           {
-            event: 'mousemove', fn: (e) => {
+            event: 'mousemove',
+            fn: (e) => {
               this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
             }
           },
           {
-            event: 'mouseleave', fn: (e) => {
+            event: 'mouseleave',
+            fn: (e) => {
               this.onFeatureOver.next({});
             }
           }
         ],
-        emitOnClick: [{event: 'click', fn: this.queryRender}],
+        emitOnClick: [
+          {
+            event: 'click',
+            fn: this.queryRender
+          }],
       },
       customEventBind: [
         {
@@ -786,9 +766,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       }
     };
-    console.log('declare')
+    console.log('declare');
     this.arlasMap = new ArlasMapGl(config);
-    console.log(this.arlasMap)
+    console.log(this.arlasMap);
     this.map = this.arlasMap.getMap();
 
     this.drawService.setMap(this.arlasMap.getMap());
@@ -841,22 +821,31 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         enable: true,
         overrideEvent: {event: 'click', fn: this.removeAois}
       }
-    }
+    };
     this.arlasMap.initDrawControls(drawControlConfig);
     this.drawService.setMapboxDraw(this.draw);
-    //TODO: think to handle this case to avoid init in parallel.
+    /**
+     *  The other on load initialisation releated with the map are in
+     *  Arlasapgl in initOnLoad method
+     *  the code below can be executed in as the method executed in
+     *  this part do not need to be executed in specific order
+     *
+     *  !! If you see a better approche let me know.
+     */
     this.arlasMap.onLoad(() => {
+      // TODO: should change the
       this.basemapService.declareProtomapProtocol(this.arlasMap.getMap());
       this.basemapService.addProtomapBasemap(this.arlasMap.getMap());
       this.draw.changeMode('static');
 
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          this.arlasMap.updateVisibility(visibilityStatus)
+          this.arlasMap.updateVisibility(visibilityStatus);
         });
       }
 
       this.canvas = this.arlasMap.getCanvasContainer();
+
       this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.arlasMap.getMap().on('draw.create', (e) => {
         this.onAoiChanged.next(
@@ -1056,7 +1045,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     this.arlasMap.onMoveEnd().subscribe((moveResult => {
       this.onMove.next(moveResult);
-    }))
+    }));
 
     // Mouse events
     this.arlasMap.getMap().on('mousedown', (e: mapboxgl.MapMouseEvent) => {
@@ -1070,7 +1059,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       const lngLat = e.lngLat;
       if (this.isDrawingBbox || this.isDrawingPolygon) {
         this.arlasMap.setCursorStyle('crosshair');
-        this.movelngLat = lngLat;
+        this.arlasMap.movelngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
         const startlng: number = this.arlasMap.startlngLat.lng;
@@ -1240,15 +1229,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (!!this.drawBboxSubscription) {
       this.drawBboxSubscription.unsubscribe();
     }
-   console.log(this.arlasMap)
+
     this.arlasMap.unsubscribeEvents();
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    const ids: Array<number | string> = features.map(f => f.idValue);
-    const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
-    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-    this.arlasMap.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+    this.arlasMap.selectFeaturesByCollection(features, collection);
   }
 
   public hideBasemapSwitcher() {
@@ -1266,6 +1252,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.arlasMap.setCenter(lngLat);
   }
 
+  // TODO: put into utils class.
   private latLngToWKT(features) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {
@@ -1292,30 +1279,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    if (featureToHightLight && featureToHightLight.elementidentifier) {
-      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
-      if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
-        ids.push(+featureToHightLight.elementidentifier.idValue);
-      }
-      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
-        ['literal', ids]];
-      this.arlasMap.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
-    }
+    this.arlasMap.highlightFeature(featureToHightLight);
   }
 
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    if (elementToSelect) {
-      const ids = elementToSelect.length > 0 ?
-        elementToSelect.reduce((memo, element) => {
-          memo.push(element.idValue);
-          return memo;
-        }, []) : [];
-      const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
-      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-      this.arlasMap.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
-    }
+    this.arlasMap.selectFeatures(elementToSelect);
   }
-
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
@@ -1385,10 +1354,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   private finish(bbox?) {
     if (bbox) {
-      const startlng: number = this.startlngLat.lng;
-      const endlng: number = this.endlngLat.lng;
-      const startlat: number = this.startlngLat.lat;
-      const endlat: number = this.endlngLat.lat;
+      const startlng: number = this.arlasMap.startlngLat.lng;
+      const endlng: number = this.arlasMap.endlngLat.lng;
+      const startlat: number = this.arlasMap.startlngLat.lat;
+      const endlat: number = this.arlasMap.endlngLat.lat;
       const west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
       const east = Math.max(startlng, endlng);
@@ -1400,7 +1369,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
     }
   }
-
 
   private drawBbox(east, south, west, north) {
     const coordinates = [[
