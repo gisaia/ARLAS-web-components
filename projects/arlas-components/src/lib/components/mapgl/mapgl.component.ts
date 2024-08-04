@@ -135,9 +135,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   // points which xy coordinates are in screen referential
   private start: mapboxgl.Point;
   private current: mapboxgl.Point;
-  // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
-  private startlngLat: mapboxgl.LngLat;
-  private endlngLat: mapboxgl.LngLat;
+
 
   private savedEditFeature = null;
 
@@ -1230,7 +1228,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.drawBboxSubscription.unsubscribe();
     }
 
-    this.arlasMap.unsubscribeEvents();
+    if(!!this.arlasMap){
+      this.arlasMap.unsubscribeEvents();
+    }
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
