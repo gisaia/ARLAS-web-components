@@ -21,7 +21,6 @@
  * Public API Surface of arlas-web-components
  */
 export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TreeNode, TimelineData } from 'arlas-d3';
-export { ArlasComponentsService } from './lib/arlas-components.service';
 export { AwcColorGeneratorLoader, ColorGeneratorLoader, numberToShortValue } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
 export { DonutModule } from './lib/components/donut/donut.module';
