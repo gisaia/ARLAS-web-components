@@ -19,7 +19,7 @@
 
 .table-wrapper {
   width: 500px;
-  height: calc(100% - 40px);
+  height: calc(100% - 48px);
   overflow: hidden;
 }
 .example-container {

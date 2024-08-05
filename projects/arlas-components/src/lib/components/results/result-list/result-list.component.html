@@ -19,6 +19,7 @@
     <tr class="resultlist__tools resultlist__thead__tr">
       <td [style.width.px]="tableWidth" class="resultlist__tools__td">
         <div class="resultlist__tools--select">
+<<<<<<< 2023074447a9cf5859b82def07985f9c2746f2c7
           <div class="resultlist__tools--select-all">
             <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked"
               [indeterminate]="!allItemsChecked && this.selectedItems.size > 0"></mat-checkbox>
@@ -77,6 +78,59 @@
                 </mat-radio-group>
               </mat-option>
             </mat-optgroup>
+=======
+          <div class="resultgrid--checkbox">
+            <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked"
+              [indeterminate]="!allItemsChecked && selectedItems.size > 0"></mat-checkbox>
+            <div class="resultgrid--checkbox__count">
+              {{selectedItems.size}}
+            </div>
+          </div>
+          <div class="resultlist__tools--menu">
+              <mat-icon id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
+              <mat-menu #menu="matMenu">
+                <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="!action.alwaysEnabled && selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
+                  {{action.label | translate}}
+                </button>
+              </mat-menu>
+          </div>
+        </div>
+        <div class="resultlist__tools--separator">|</div>
+        <div class="resultlist__tools--sort-container" id="resultlist_sort">
+          <mat-slide-toggle *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort"
+            [disableRipple]="true" [checked]="isGeoSortActivated" [labelPosition]="'before'"
+            matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">
+            {{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
+          <mat-select class="resultlist__tools--sort" [panelClass]="'resultlist__tools--sort'"
+            [compareWith]="byFieldName" (selectionChange)="setSortedColumn($event)"
+            [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
+              <mat-select-trigger>
+                <span *ngIf="sortedColumn && sortedColumn.fieldName !== ''">
+                  {{lastSortedColumn.columnName | translate}} - {{(SortEnum[sortedColumn.sortDirection] | uppercase) + '_short' | translate}}
+                </span>
+              </mat-select-trigger>
+              <!-- TODO: find better sort descriptor than '- -' -->
+              <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>
+              <mat-optgroup [label]="'Column' | translate" class="resultlist__tools--sort-group">
+                <ng-container *ngFor="let column of columns">
+                  <mat-option *ngIf="!column.isIdField && !column.isToggleField" [value]="column" class="resultlist__tools--sort-option">
+                    {{column.columnName | translate}}
+                  </mat-option>
+                </ng-container>
+              </mat-optgroup>
+              <mat-optgroup [label]="'Direction' | translate" class="resultlist__tools--sort-group">
+                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
+                  <mat-radio-group>
+                    <mat-radio-button [value]="'asc'" [checked]="sortedColumn.sortDirection === SortEnum.asc" (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
+                  </mat-radio-group>
+                </mat-option>
+                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
+                  <mat-radio-group>
+                    <mat-radio-button [value]="'desc'" [checked]="sortedColumn.sortDirection === SortEnum.desc" (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
+                  </mat-radio-group>
+                </mat-option>
+              </mat-optgroup>
+>>>>>>> feat: update style for material 15
           </mat-select>
         </div>
         <ng-container *ngIf="hasGridMode">
