@@ -60,16 +60,6 @@
   align-items: center;
 }
 
-.resultgrid--checkbox__count /* @doc Sets the number of selected items style*/
-{
-  font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.7em;
-  font-weight: bold;
-  float: left;
-  padding: 2px 0px 0 8px;
-  min-width: 21px;
-}
-
 .resultlist__loading /* @doc Sets the loading-div style*/
 {
   width: 100%;
@@ -149,11 +139,8 @@ tr {
 }
 
 .resultlist__header, /* @doc Sets the header border style.*/
-
 .resultlist__filter, /* @doc Sets the filters container border style.*/
-
 .resultlist__tools, /* @doc Sets the border style of the tools list container (select-all, select-in-between, grid-list-mode, ...).*/
-
 .resultlist__grid-detail /* @doc Sets the detail grid border style.*/
 {
   border-top: 1px solid #e9ecef;
@@ -165,6 +152,13 @@ tr {
   align-items: center;
   justify-content: center;
   height: 30px;
+
+  .mat-button-toggle-label-content {
+    line-height: 36px;
+    height: 36px;
+    width: 36px;
+    padding: 0 !important;
+  }
 }
 
 .resultlist__tools {
@@ -175,15 +169,10 @@ tr {
 .resultlist__grid-detail {
   display: block;
   margin-bottom: 3px;
-}
 
-.resultlist__grid-detail--td {
-  padding: 0 !important;
-}
-
-.resultlist__mode__groupedButton {
-  display: table;
-  margin: 0 auto;
+  &--td {
+    padding: 0 !important;
+  }
 }
 
 .resultlist__tools--select /* @doc Sets the selection tools style.*/
@@ -191,10 +180,24 @@ tr {
   flex: 1;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  max-width: 140px;
 }
 
-.resultlist__tools--select-all {
+.resultgrid--checkbox /* @doc Sets the checkbox and count container style.*/ {
   float: left;
+  display: flex;
+  align-items: center;
+
+  --mdc-checkbox-state-layer-size: 18px;
+
+  &__count /* @doc Sets the number of selected items style*/ {
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 0.7em;
+    font-weight: bold;
+    padding: 2px 0px 0 8px;
+    min-width: 21px;
+  }
 }
 
 .resultlist__tools--menu /* @doc Sets the menu button container style.*/
@@ -204,22 +207,17 @@ tr {
   padding-top: 6px;
 }
 
-.resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/
-{
+.resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/ {
   flex: 1;
   text-align: right;
   max-width: 90px;
-}
 
-/*
- TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
- */
-/*
- TODO(mdc-migration): The following rule targets internal classes of button that may no longer apply for the MDC version.
- */
-.mat-button-toggle-label-content {
-  line-height: 38px !important;
-  padding: 0 8px !important;
+  .mat-button-toggle-label-content {
+    line-height: 36px;
+    height: 36px;
+    width: 36px;
+    padding: 0 !important;
+  }
 }
 
 .resultlist__grid-tile {
@@ -272,94 +270,36 @@ tr {
   cursor: pointer;
 }
 
-.resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */
-{
+.resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
   font-size: 14px;
   padding-right: 20px;
+  margin-left: 5px;
+  flex: 1;
+  // Correct label wrapping
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-  &--slide {
-    height: 22px;
-    margin-left: 5px;
-  }
-  /*
- TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
- */
-  /*
- TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
- */
-  .mat-slide-toggle-bar {
-    height: 10px;
-    width: 30px;
-  }
-  /*
- TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
- */
-  /*
- TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
- */
-  .mat-slide-toggle-thumb {
-    height: 15px;
-    width: 15px;
-  }
-  /*
- TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
- */
-  /*
- TODO(mdc-migration): The following rule targets internal classes of slide-toggle that may no longer apply for the MDC version.
- */
-  .mat-mdc-slide-toggle .mat-slide-toggle-ripple {
-    height: 35px;
-    width: 35px;
-  }
+  --mdc-switch-track-height: 10px;
+  --mdc-switch-handle-height: 15px;
+  --mdc-switch-handle-width: 15px;
+  --mdc-switch-selected-icon-size: 0;
+  --mdc-switch-unselected-icon-size: 0;
 }
 
-.resultlist__tools--sort /* @doc Sort section in the list header */
-{
+.resultlist__tools--sort-container /* @doc Sort section in the list header */ {
   flex: 1;
   font-size: 14px;
   display: flex;
   align-items: center;
 
-  &-option {
-    line-height: 30px !important;
-    height: 30px !important;
+  .resultlist__tools--sort {
+    flex: 1;
 
-    .mat-mdc-radio-button {
-      color: black;
-      /*
- TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
- */
-      /*
- TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
- */
-      /*
- TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
- */
-      /*
- TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
- */
-      .mat-radio-container{
-        width: 15px;
-        height: 15px;
-        /*
- TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
- */
-        /*
- TODO(mdc-migration): The following rule targets internal classes of radio that may no longer apply for the MDC version.
- */
-        .mat-radio-outer-circle,
-        .mat-radio-inner-circle {
-          height: 15px;
-          width: 15px;
-        }
-      }
+    &-option {
+      line-height: 30px !important;
+      height: 30px !important;
     }
-  }
-
-  &-group .mat-mdc-optgroup-label {
-    line-height: 30px !important;
-    height: 30px !important;
-    margin-bottom: 0;
   }
 }
 
@@ -385,7 +325,7 @@ tr {
 
 .contain-icon {
   position: absolute;
-  top: 11px;
+  top: 10px;
   transform: rotate(90deg);
 }
 
@@ -399,3 +339,23 @@ tr {
   position: relative;
 }
 
+// Style of the sort select panel
+.cdk-overlay-pane:has(.mat-mdc-select-panel.resultlist__tools--sort) {
+  width: auto !important;
+
+  .mat-mdc-optgroup-label,
+  .mat-mdc-option {
+    min-height: 30px;
+  }
+
+  .mat-mdc-optgroup-label .mdc-list-item__primary-text {
+    color: grey;
+  }
+
+  // Buttons are disabled to avoid the list closing when clicking
+  .mat-mdc-option.mdc-list-item--disabled {
+    opacity: unset;
+  }
+
+  --mdc-radio-state-layer-size: 20px;
+}
