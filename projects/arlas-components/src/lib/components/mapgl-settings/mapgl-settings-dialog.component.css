@@ -4,7 +4,6 @@
 }
 
 .mapgl-settings-body {
-  width: 800px;
   min-width: 100px;
   position: relative;
   overflow: hidden;
@@ -58,6 +57,11 @@
   display: flex;
   justify-content: left;
   align-items: center;
+}
+
+/* TODO: to test */
+.geo-queries-step .mat-mdc-select-value {
+  height: 15px;
 }
 
 .mapgl-settings-title {
