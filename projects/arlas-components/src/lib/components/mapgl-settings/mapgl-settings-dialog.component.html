@@ -10,7 +10,7 @@
           </div>
           <mat-form-field *ngIf="control.key !== 'c_collection' && control.key !== 'color' && control.key !== 'd_displayCollectionName'">
             <mat-label>{{control.key | translate}}</mat-label>
-            <mat-select  [formControl]="control.value">
+            <mat-select [formControl]="control.value">
               <mat-option *ngFor="let option of control.value.syncOptions" [value]="option">
                   {{option | translate}}
                 </mat-option>
