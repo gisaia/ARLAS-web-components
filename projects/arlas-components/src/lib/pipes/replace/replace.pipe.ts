@@ -17,14 +17,19 @@
  * under the License.
  */
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { Injectable, Pipe, PipeTransform } from '@angular/core';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+@Pipe({
+  name: 'replace'
+})
+@Injectable()
+export class ReplacePipe implements PipeTransform {
 
-if (environment.production) {
-  enableProdMode();
+  public transform(value: string, searchValue: string, replaceValue: string): string {
+    if (!!value) {
+      return value.replace(searchValue, replaceValue);
+    }
+    return value;
+  }
+
 }
-
-platformBrowserDynamic().bootstrapModule(AppModule);

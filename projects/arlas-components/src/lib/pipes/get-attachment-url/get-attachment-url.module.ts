@@ -17,14 +17,17 @@
  * under the License.
  */
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { NgModule } from '@angular/core';
+import { GetAttachmentUrlPipe } from './get-attachment-url.pipe';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
-
-if (environment.production) {
-  enableProdMode();
-}
-
-platformBrowserDynamic().bootstrapModule(AppModule);
+@NgModule({
+  imports: [
+  ],
+  declarations: [
+    GetAttachmentUrlPipe
+  ],
+  exports: [
+    GetAttachmentUrlPipe
+  ]
+})
+export class GetAttachmentUrlModule { }

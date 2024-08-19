@@ -17,14 +17,18 @@
  * under the License.
  */
 
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { Pipe, PipeTransform } from '@angular/core';
 
-import { AppModule } from './app/app.module';
-import { environment } from './environments/environment';
+@Pipe({
+  name: 'getAttachmentUrl'
+})
+export class GetAttachmentUrlPipe implements PipeTransform {
 
-if (environment.production) {
-  enableProdMode();
+  public transform(value: string): string {
+    if (value && !value.startsWith('http')) {
+      return 'https://' + value;
+    }
+    return value;
+  }
+
 }
-
-platformBrowserDynamic().bootstrapModule(AppModule);

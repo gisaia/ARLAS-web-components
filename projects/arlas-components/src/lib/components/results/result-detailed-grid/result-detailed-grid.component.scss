@@ -54,11 +54,11 @@ $sm-spacing: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
-  
+
     &.previous {
       left: $sm-spacing;
     }
-  
+
     &.next {
       right: $sm-spacing;
     }
@@ -85,6 +85,7 @@ $sm-spacing: 5px;
   top: 5px;
   right: 0px;
   background-color: transparent;
+  z-index: 1;
 
   ::ng-deep .mat-mini-fab.mat-button-disabled {
     background-color: white;

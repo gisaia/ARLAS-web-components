@@ -66,6 +66,7 @@ export interface FieldsConfiguration {
   icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
+  detailsTitleTemplate?: string;
 }
 
 export interface DescribedUrl {

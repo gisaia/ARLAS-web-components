@@ -1,0 +1,94 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.grid-container {
+  overflow-y: auto;
+  display: block;
+  height: 100%;
+  padding: 0;
+  .details-title {
+    background-color: white;
+    position: sticky;
+    top: 0px;
+  }
+}
+
+.details-title {
+  font-weight: 500;
+  font-size: 1.1em;
+  padding: 5px;
+}
+
+.resultdetaileditem /* @doc Sets all texts style.*/ {
+  font-family:
+    Roboto,
+    Helvetica Neue,
+    sans-serif;
+  font-size: 0.7em;
+  text-align: left;
+  padding: 0 5px;
+
+  &--group-title {
+    font-weight: bold;
+    color: #322d90;
+    font-size: 1.1em;
+  }
+
+  &--item {
+    font-weight: bold;
+    color: #444;
+
+    &--key /* @doc Sets key style. (key: value part)*/ {
+      font-weight: 520;
+    }
+
+    &--value /* @doc Sets value style (key: value part)*/ {
+      margin-right: 10px;
+    }
+  }
+
+  &__actions /* @doc Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/ {
+    font-family: "Roboto", "Helvetica Neue", sans-serif;
+    font-size: 0.9em;
+    margin: 3px;
+    padding: 5px 10px;
+    height: 25px;
+    line-height: 0;
+    cursor: pointer;
+    color: black;
+    background-color: white;
+    border: 1.5px solid black;
+    border-radius: 2px;
+  }
+}
+
+.result-attachments {
+  display: block;
+  max-width: 95%;
+
+  &--title /* @doc Sets the style of attachments section's title*/ {
+    font-weight: bold;
+    color: #322d90;
+    font-size: 1.1em;
+  }
+
+  &--item /* @doc Sets the style of the attachment in `li` tag */ {
+    padding-right: 5px;
+  }
+}
