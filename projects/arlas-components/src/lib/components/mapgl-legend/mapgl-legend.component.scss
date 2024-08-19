@@ -71,33 +71,7 @@
   display: flex;
 }
 
-.manual-color-wrapper {
-  display: flex;
-  flex-flow: wrap;
-  margin-top: 5px;
-  max-height: 160px;
-  overflow-y: auto;
-}
-.manual-color-container {
-  min-width: 50%;
-}
-
-.interpolated-width-container {
-  height: 15px;
-}
-
-.width-legend-svg {
-  fill: #dadada !important;
-  stroke: #dadada !important;
-}
-.interpolated-radius-container {
-  height: 20px;
-}
 .legend-wrapper {
   width: 210px;
   padding-left: 10px;
-}
-.legend-container {
-  display: block;
-  margin-top: 5px;
 }

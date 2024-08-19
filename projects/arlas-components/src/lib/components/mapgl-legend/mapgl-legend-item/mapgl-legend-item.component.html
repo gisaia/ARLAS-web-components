@@ -1,4 +1,4 @@
-<div *ngIf="legend.type && legend.visible" class="legend">
+<div *ngIf="legend && legend.type && legend.visible !== false" class="legend">
   <div *ngIf="legend?.title" class="legend__title">
     {{ title }} : {{legend?.title | translate}}
   </div>

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapglLegendItemComponent } from './mapgl-legend-item.component';
 
-describe('MapglLegendColorComponent', () => {
+describe('MapglLegendItemComponent', () => {
   let component: MapglLegendItemComponent;
   let fixture: ComponentFixture<MapglLegendItemComponent>;
 

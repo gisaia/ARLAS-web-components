@@ -45,7 +45,7 @@ import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.
     GetColorModule
   ],
   declarations: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent],
-  exports: [MapglLegendComponent, LayerIdToName]
+  exports: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent]
 })
 export class MapglLegendModule {
 

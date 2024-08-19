@@ -117,7 +117,6 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
     public translate: TranslateService,
     public colorService: ArlasColorService) { }
 
-
   public ngOnInit() {
     this.legendUpdater
       .pipe(takeUntil(this._onDestroy$))
@@ -459,8 +458,10 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
               return lw;
             });
           }
-          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
-            this.LEGEND_WIDTH, this.MAX_LINE_WIDTH);
+          if (!!this.lineWidthLegend.interpolatedElement) {
+            drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
+              this.LEGEND_WIDTH, this.MAX_LINE_WIDTH);
+          }
         }
       }
     }
