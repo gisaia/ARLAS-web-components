@@ -13,7 +13,8 @@ import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.modul
 import { MatMenuModule } from '@angular/material/menu';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { GetCollectionDisplayNamePipe } from '../../pipes/get-collection-display-name/get-collection-display-name.pipe';
-import { CollectionService } from '../../services/collection.service';
+import { AwcCollectionService, BaseCollectionService, CollectionService } from '../../services/collection.service';
+import { CollectionModule } from '../../services/collection.module';
 
 describe('MapglLegendComponent', () => {
   let component: MapglLegendComponent;
@@ -34,7 +35,14 @@ describe('MapglLegendComponent', () => {
             provide: ColorGeneratorLoader,
             useClass: AwcColorGeneratorLoader
           }
+        }),
+        CollectionModule.forRoot({
+          loader: {
+            provide: BaseCollectionService,
+            useClass: AwcCollectionService
+          }
         })
+
       ],
       providers: [
         ArlasColorService,

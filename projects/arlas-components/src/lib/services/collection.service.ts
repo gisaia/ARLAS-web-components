@@ -18,13 +18,24 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 
 export abstract class BaseCollectionService {
   protected  abstract _initUnits();
   protected  abstract _initDisplayNames();
   public abstract  getDisplayName(collectionName: string): string;
   public abstract getUnit(collectionName: string): string;
+}
+
+export class AwcCollectionService extends BaseCollectionService {
+  protected _initUnits() {}
+  protected _initDisplayNames() {}
+
+  public getDisplayName(collectionName: string): string {
+    return collectionName;
+  }
+  public getUnit(collectionName: string): string {
+    return collectionName;
+  }
 }
 
 
