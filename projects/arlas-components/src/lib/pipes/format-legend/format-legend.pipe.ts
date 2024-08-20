@@ -104,7 +104,7 @@ export class FormatLegendPipe implements PipeTransform {
       legendParams.field = field;
       legendParams.format = 'full';
       legendParams.translateKey = marker('legend');
-    } else if(field) {
+    } else if (field) {
       legendParams.field = field;
       legendParams.format = 'metricField';
       legendParams.translateKey =  marker('legend without normalized');

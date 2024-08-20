@@ -109,7 +109,7 @@
 <ng-template #legend let-legend='legend' let-titlePrefix="titlePrefix">
   <ng-container *ngIf="(legend.title | formatLegend) as legendResult ">
     <div class="legend-title">
-      <ng-container *ngIf="titlePrefix">{{ titlePrefix | translate }} : </ng-container>
+      <ng-container *ngIf="titlePrefix">{{ titlePrefix | translate }}</ng-container>
       <ng-container [ngSwitch]="legendResult.format">
         <ng-container *ngSwitchCase="'original'">
           {{legendResult.translateKey | translate}}
