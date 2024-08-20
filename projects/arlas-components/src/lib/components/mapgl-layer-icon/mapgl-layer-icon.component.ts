@@ -436,7 +436,7 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
     .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);
 
-  if(addBlur){
+  if (addBlur){
     svg.selectAll('circle').attr('filter', 'url(#blurHeatmapCircle)');
   }
 

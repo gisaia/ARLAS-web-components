@@ -75,5 +75,7 @@
 	"Fit the thumbnail's width to the tile": "Fit the thumbnail's width to the tile",
 	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile",
 	"exclude": "exclude",
-	"include": "include"
+	"include": "include",
+  "legend": "{{metric}} of {{field}} ({{normalised}})",
+  "legend without field": "{{metric}} ({{normalised}})"
 }

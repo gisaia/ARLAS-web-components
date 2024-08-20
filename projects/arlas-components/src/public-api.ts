@@ -95,3 +95,5 @@ export { CalendarTimelineComponent, TranslationDirection } from './lib/component
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
 export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
+export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
+export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';
