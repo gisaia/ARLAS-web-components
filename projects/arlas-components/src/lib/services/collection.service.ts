@@ -20,16 +20,19 @@
 import { Injectable } from '@angular/core';
 
 export abstract class BaseCollectionService {
-  protected  abstract _initUnits();
-  protected  abstract _initDisplayNames();
-  public abstract  getDisplayName(collectionName: string): string;
+  protected abstract _initUnits();
+  protected abstract _initDisplayNames();
+  public abstract getDisplayName(collectionName: string): string;
   public abstract getUnit(collectionName: string): string;
   public abstract getAllUnits(): any[];
 }
 
 export class AwcCollectionService extends BaseCollectionService {
-  protected _initUnits() {}
-  protected _initDisplayNames() {}
+  public getAllUnits(): string[] {
+    return [];
+  }
+  protected _initUnits() { }
+  protected _initDisplayNames() { }
 
   public getDisplayName(collectionName: string): string {
     return collectionName;
@@ -43,18 +46,18 @@ export class AwcCollectionService extends BaseCollectionService {
 @Injectable({
   providedIn: 'root'
 })
-export class CollectionService  {
+export class CollectionService {
 
   public constructor(private baseCollectionService: BaseCollectionService) {
   }
   public getDisplayName(collectionName: string): string {
-     return this.baseCollectionService.getDisplayName(collectionName);
-   };
+    return this.baseCollectionService.getDisplayName(collectionName);
+  };
   public getUnit(collectionName: string): string {
-     return this.baseCollectionService.getUnit(collectionName);
-   };
+    return this.baseCollectionService.getUnit(collectionName);
+  };
 
-  public getAllUnits(){
+  public getAllUnits() {
     return this.baseCollectionService.getAllUnits();
   }
 
