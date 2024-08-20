@@ -12,6 +12,8 @@ import { LayerIdToName } from './layer-name.pipe';
 import { MapglLayerIconModule } from '../mapgl-layer-icon/mapgl-layer-icon.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { FormatLegendPipe } from '../../pipes/format-legend/format-legend.pipe';
+import { GetColorPipe } from '../../pipes/get-color/get-color.pipe';
 
 describe('MapglLegendComponent', () => {
   let component: MapglLegendComponent;
@@ -19,7 +21,7 @@ describe('MapglLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MapglLegendComponent, FormatNumberPipe, LayerIdToName],
+      declarations: [MapglLegendComponent, FormatNumberPipe, LayerIdToName, FormatLegendPipe, GetColorPipe],
       imports: [
         MatButtonModule,
         MatIconModule,

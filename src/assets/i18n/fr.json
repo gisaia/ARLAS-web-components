@@ -74,5 +74,15 @@
 	"Fit the thumbnail's width to the tile": "Ajuster la largeur de la vignette à la tuile",
 	"Fit the thumbnail's height to the tile": "Ajuster la hauteur de la vignette à la tuile",
 	"exclude": "exclure",
-	"include": "inclure"
+	"include": "inclure",
+  "legend": "{{metric}} des {{field}} ({{normalized}})",
+  "legend without normalized": "{{metric}} des {{field}}",
+  "legend without field": "{{metric}} ({{normalized}})",
+  "avg": "Moyenne",
+  "sum": "Somme",
+  "min": "Minimum",
+  "max": "Maximum",
+  "cardinality": "Cardinalité",
+  "count": "Compte",
+  "normalized": "normalisé"
 }

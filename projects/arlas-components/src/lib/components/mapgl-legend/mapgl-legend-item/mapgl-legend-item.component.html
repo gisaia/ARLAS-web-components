@@ -1,7 +1,10 @@
 <div *ngIf="legend && legend.type && legend.visible !== false" class="legend">
-  <div *ngIf="legend?.title" class="legend__title">
-    {{ title }} : {{legend?.title | translate}}
-  </div>
+  <ng-container *ngIf="(legend.title | formatLegend) as legendResult ">
+    <div class="legend__title">
+      <!-- Title is already translated when declared -->
+      {{ title }} {{ legendResult.translateKey | translate: {metric: legendResult.metric | translate, field: legendResult.field | translate, normalized: legendResult.normalized | translate: {normalizedKey: legendResult.normalizedKey | translate} } }}
+    </div>
+  </ng-container>
 
   <div class="legend--manual" *ngIf="legend.type === PROPERTY_SELECTOR_SOURCE.manual
         || legend.type === PROPERTY_SELECTOR_SOURCE.generated

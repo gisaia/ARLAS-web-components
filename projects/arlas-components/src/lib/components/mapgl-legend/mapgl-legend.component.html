@@ -31,16 +31,15 @@
 
   <div [hidden]="!detail" class="legend-wrapper">
     <arlas-mapgl-legend-item [hidden]="!colorLegend.type" [legend]="colorLegend" [layer]="layer"
-      [title]="'Fill' | translate" [colorPalette]="colorPalette"></arlas-mapgl-legend-item>
+      [title]="'Fill:' | translate" [colorPalette]="colorPalette"></arlas-mapgl-legend-item>
 
     <arlas-mapgl-legend-item [hidden]="!strokeColorLegend.type" [legend]="strokeColorLegend" [layer]="layer"
-      [title]="'Stroke' | translate" [colorPalette]="colorPalette"></arlas-mapgl-legend-item>
+      [title]="'Stroke:' | translate" [colorPalette]="colorPalette"></arlas-mapgl-legend-item>
 
     <arlas-mapgl-legend-item [hidden]="!widthLegend.type" #width_legend [legend]="widthLegend" [layer]="layer"
-      [title]="'Width' | translate"></arlas-mapgl-legend-item>
+      [title]="'Width:' | translate"></arlas-mapgl-legend-item>
 
     <arlas-mapgl-legend-item [hidden]="!radiusLegend.type" #radius_legend [legend]="radiusLegend" [layer]="layer"
-      [title]="'Radius' | translate"></arlas-mapgl-legend-item>
+      [title]="'Radius:' | translate"></arlas-mapgl-legend-item>
   </div>
 </div>
-
