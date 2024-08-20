@@ -106,11 +106,12 @@ export class MetricComponent implements OnInit, OnChanges {
 
   private numberToShortValue(number: number, p?: number): string {
     // what tier? (determines SI symbol)
+
     const suffixes = ['', 'k', 'M', 'b', 't'];
     const suffixNum = Math.log10(Math.abs(number)) / 3 | 0;
 
     if (suffixNum === 0) {
-      return number.toString();
+      return number.toFixed(p).toString();
     }
     // get suffix and determine scale
     const suffix = suffixes[suffixNum];
@@ -120,5 +121,4 @@ export class MetricComponent implements OnInit, OnChanges {
     // format number and add suffix
     return scaled.toFixed(p) + suffix;
   }
-
 }

@@ -1,5 +1,5 @@
 <div class="layer_wrapper">
-  <div class=collection_color matTooltip="Collection: {{collection}}" [style.backgroundColor]="!!collection ? colorService.getColor(collection) : 'transparent'"></div>
+  <div class=collection_color [matTooltip]="'Collection:' | translate:{collection: (collection | getCollectionDisplayName)}" [style.backgroundColor]="!!collection ? colorService.getColor(collection) : 'transparent'"></div>
   <div class="layer_container" >
     <div class="layer_icon_container">
       <div class="layer_icon" >
@@ -28,7 +28,7 @@
   <div [hidden]="!detail" class="legend-wrapper">
     <!-- COLOR SECTION -->
     <div *ngIf="colorLegend.type && colorLegend.visible" class="legend-container">
-      <div *ngIf="colorLegend?.title" class="legend-title">{{'Fill' | translate}} : {{colorLegend?.title | translate}}</div>
+      <ng-container *ngTemplateOutlet="legend; context:{legend: colorLegend, titlePrefix: 'Fill'}"></ng-container>
       <div class="manual-color-wrapper" *ngIf="colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided">
         <div class="manual-color-container" *ngFor="let manualColor of colorLegend.manualValues | keyvalue">
           <div class="manual-color">
@@ -54,7 +54,7 @@
     </div>
     <!-- Stroke COLOR SECTION -->
     <div *ngIf="strokeColorLegend.type && strokeColorLegend.visible" class="legend-container">
-      <div *ngIf="strokeColorLegend?.title" class="legend-title">{{'Contour' | translate}} : {{strokeColorLegend?.title | translate}}</div>
+      <ng-container *ngTemplateOutlet="legend; context:{legend: strokeColorLegend, titlePrefix: 'Contour'}"></ng-container>
       <div class="manual-color-wrapper" *ngIf="strokeColorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || strokeColorLegend.type === PROPERTY_SELECTOR_SOURCE.generated || strokeColorLegend.type === PROPERTY_SELECTOR_SOURCE.provided">
         <div class="manual-color-container" *ngFor="let manualColor of strokeColorLegend.manualValues | keyvalue">
           <div class="manual-color-stroke">
@@ -79,7 +79,7 @@
     </div>
     <!-- WIDTH SECTION -->
     <div [hidden]="!widthLegend.type" class="legend-container">
-      <div class="legend-title">{{widthLegend?.title | translate}}</div>
+      <ng-container *ngTemplateOutlet="legend; context:{legend: widthLegend}"></ng-container>
       <div [hidden]="widthLegend.type !== PROPERTY_SELECTOR_SOURCE.interpolated">
         <div class="interpolated-width-container">
           <svg #width_svg></svg>
@@ -92,7 +92,7 @@
     </div>
     <!-- RADIUS SECTION -->
     <div [hidden]="!radiusLegend.type" class="legend-container">
-      <div class="legend-title">{{radiusLegend?.title | translate}}</div>
+      <ng-container *ngTemplateOutlet="legend; context:{legend: radiusLegend, titlePrefix: 'Radius'}"></ng-container>
       <div [hidden]="radiusLegend.type !== PROPERTY_SELECTOR_SOURCE.interpolated">
         <div class="interpolated-radius-container">
           <svg #radius_svg></svg>
@@ -106,3 +106,24 @@
   </div>
 </div>
 
+<ng-template #legend let-legend='legend' let-titlePrefix="titlePrefix">
+  <ng-container *ngIf="(legend.title | formatLegend) as legendResult ">
+    <div class="legend-title">
+      <ng-container *ngIf="titlePrefix">{{ titlePrefix | translate }}</ng-container>
+      <ng-container [ngSwitch]="legendResult.format">
+        <ng-container *ngSwitchCase="'original'">
+          {{legendResult.translateKey | translate}}
+        </ng-container>
+        <ng-container *ngSwitchCase="'full'">
+          {{ legendResult.translateKey | translate: {metric: (legendResult.metric | translate) , field: legendResult.field | translate, normalized: (legendResult.normalized | translate)} }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'metricField'">
+          {{ legendResult.translateKey | translate: {metric: (legendResult.metric | translate) , field: legendResult.field | translate} }}
+        </ng-container>
+        <ng-container *ngSwitchCase="'metricNormalised'">
+          {{ legendResult.translateKey | translate: {metric: (legendResult.metric | translate), normalized: (legendResult.normalized | translate)} }}
+        </ng-container>
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-template>

@@ -82,5 +82,15 @@
 	"METRIC_COLUMN_sum": "total(e)",
 	"METRIC_COLUMN_min": "minimal(e)",
 	"METRIC_COLUMN_max": "maxiaml(e)",
-	"METRIC_COLUMN_cardinality": "cardinalité"
+	"METRIC_COLUMN_cardinality": "cardinalité",
+  "legend": "{{metric}} des {{field}} ({{normalized}})",
+  "legend without normalized": "{{metric}} des {{field}}",
+  "legend without field": "{{metric}} ({{normalized}})",
+  "avg": "Moyenne",
+  "sum": "Somme",
+  "min": "Minimum",
+  "max": "Maximum",
+  "cardinality": "Cardinalité",
+  "count": "Compte",
+  "normalized": "normalisé"
 }
