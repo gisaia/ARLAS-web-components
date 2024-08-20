@@ -76,6 +76,14 @@
 	"Fit the thumbnail's height to the tile": "Fit the thumbnail's height to the tile",
 	"exclude": "exclude",
 	"include": "include",
+	"COUNT_COLUMN_TITLE": "count",
+	"METRIC_COLUMN_TITLE": "{{metric}} {{field}}",
+	"METRIC_COLUMN_avg": "average",
+	"METRIC_COLUMN_sum": "total",
+	"METRIC_COLUMN_min": "minimal",
+	"METRIC_COLUMN_max": "maximal",
+	"METRIC_COLUMN_cardinality": "cardinality of",
   "legend": "{{metric}} of {{field}} ({{normalised}})",
   "legend without field": "{{metric}} ({{normalised}})"
 }
+

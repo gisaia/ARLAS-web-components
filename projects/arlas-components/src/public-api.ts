@@ -29,6 +29,7 @@ export { HistogramModule } from './lib/components/histogram/histogram.module';
 export { MapglImportComponent, MapglImportDialogComponent } from './lib/components/mapgl-import/mapgl-import.component';
 export { CoordinatesComponent } from './lib/components/mapgl/coordinates/coordinates.component';
 export { Coordinate, PointFormGroup } from './lib/tools/coordinates.tools';
+export { FilterOperator } from './lib/tools/models/term-filters';
 export { MapglImportModule } from './lib/components/mapgl-import/mapgl-import.module';
 export { MapglLayerIconComponent } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.component';
 export { MapglLayerIconModule } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.module';
@@ -75,6 +76,8 @@ export { BboxFormErrorPipe } from './lib/components/bbox-generator/bbox-form-err
 export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
+export { MetricsTableModule} from './lib/components/metrics-table/metrics-table.module';
+export { MetricsTableComponent } from './lib/components/metrics-table/metrics-table.component';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
 export {
