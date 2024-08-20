@@ -27,7 +27,7 @@ import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
 @Component({
   selector: '[arlas-result-detailed-item]',
   templateUrl: './result-detailed-item.component.html',
-  styleUrls: ['./result-detailed-item.component.css']
+  styleUrls: ['./result-detailed-item.component.scss']
 })
 export class ResultDetailedItemComponent implements OnInit {
   /**
@@ -76,13 +76,6 @@ export class ResultDetailedItemComponent implements OnInit {
 
   public getGroups() {
     return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
-  }
-
-  public getAttachmentUrl(url: string): string {
-    if (url && !url.startsWith('http')) {
-      return 'https://' + url;
-    }
-    return url;
   }
 
   public getAttachmentLabel(attachment: Attachment, index: number): string {

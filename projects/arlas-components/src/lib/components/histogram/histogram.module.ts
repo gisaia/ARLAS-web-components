@@ -22,6 +22,7 @@ import { CommonModule } from '@angular/common';
 import { HistogramComponent } from './histogram.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { HistogramKeyPipe } from './histogram-key.pipe';
 
 @NgModule({
   imports: [
@@ -29,7 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TranslateModule,
     MatTooltipModule
   ],
-  declarations: [HistogramComponent],
+  declarations: [HistogramComponent, HistogramKeyPipe],
   exports: [HistogramComponent]
 })
 export class HistogramModule {}

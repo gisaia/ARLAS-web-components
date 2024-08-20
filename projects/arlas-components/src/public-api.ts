@@ -7,7 +7,7 @@
  * not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *    http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -15,13 +15,12 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
-*/
+ */
 
 /*
  * Public API Surface of arlas-web-components
  */
 export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TreeNode, TimelineData } from 'arlas-d3';
-export { ArlasComponentsService } from './lib/arlas-components.service';
 export { AwcColorGeneratorLoader, ColorGeneratorLoader, numberToShortValue } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
 export { DonutModule } from './lib/components/donut/donut.module';
@@ -102,4 +101,5 @@ export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display
 export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
-
+export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
+export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';

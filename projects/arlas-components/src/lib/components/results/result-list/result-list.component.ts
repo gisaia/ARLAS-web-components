@@ -17,8 +17,10 @@
  * under the License.
  */
 
-import { AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, HostListener, Input,
-  IterableDiffers, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
+  IterableDiffers, SimpleChanges, ViewEncapsulation
+} from '@angular/core';
 import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
@@ -441,6 +443,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Output() public thumbnailFitEvent: Subject<ThumbnailFitEnum> = new Subject();
 
+  /**
+   * @Output : Angular
+   * @description Emits when result list is updated.
+   */
+  @Output()  public onResultListUpdate: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
@@ -638,6 +645,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       this.setSelectedItems(this.selectedItems);
       this.isNextPageRequested = false;
       this.isPreviousPageRequested = false;
+      this.onResultListUpdate.emit(true);
     }
   }
 
@@ -991,6 +999,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
     item.imageEnabled = itemData.get('imageEnabled') === 'true';
     item.thumbnailEnabled = itemData.get('thumbnailEnabled') === 'true';
+    item.detailsTitleEnabled = itemData.get('detailsTitleEnabled') === 'true';
 
     /** Retro-compatibility code */
     if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
@@ -1022,6 +1031,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
     if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
       item.urlThumbnail = matchAndReplace(itemData, this.fieldsConfiguration.urlThumbnailTemplate);
+    }
+
+    if (item.detailsTitleEnabled && this.fieldsConfiguration.detailsTitleTemplate) {
+      item.detailsTitle = matchAndReplace(itemData, this.fieldsConfiguration.detailsTitleTemplate);
     }
 
     item.position = this.items.length + 1;

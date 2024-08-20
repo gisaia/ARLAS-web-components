@@ -214,6 +214,19 @@ tr:hover td.resultitem__cell.toggle .list_actions {
 
 .resultlist__md-grid-tile {
   margin-top: 5px;
+
+  &__selected--icon{
+    position: absolute;
+    z-index: 1;
+    top: 5px;
+    right: 5px;
+    color: black;
+    background-color: white;
+    border-radius: 12px;
+    font-size: 18px;
+    height: 18px !important;
+    width: 18px !important;
+  }
 }
 
 .resultlist__thead__tr {
