@@ -62,6 +62,8 @@ export { ResultDetailedItemComponent } from './lib/components/results/result-det
 export { ResultsModule } from './lib/components/results/results.module';
 export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services/color.generator.module';
 export { ArlasColorService } from './lib/services/color.generator.service';
+export { CollectionService, BaseCollectionService, AwcCollectionService } from './lib/services/collection.service';
+export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
 export { LayerIdToName } from './lib/components/mapgl-legend/layer-name.pipe';
 export { MapglLegendComponent } from './lib/components/mapgl-legend/mapgl-legend.component';
 export { MapglLegendModule } from './lib/components/mapgl-legend/mapgl-legend.module';
@@ -95,5 +97,9 @@ export { CalendarTimelineComponent, TranslationDirection } from './lib/component
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
 export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
+export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
+export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
+export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
+export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
 export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';

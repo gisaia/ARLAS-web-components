@@ -20,6 +20,7 @@
 	"Geo-queries": "Geo-queries",
 	"of_collection": "of",
 	"geo_query_collection": "collection",
+  "Collection:": "Collection: {{collection}}",
 	"Apply geo-queries": "Apply",
 	"Set geo-queries": "Set",
 	"Lat:": "Lat:",

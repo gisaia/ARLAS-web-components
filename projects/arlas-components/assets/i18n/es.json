@@ -20,6 +20,7 @@
 	"Geo-queries": "Peticiones geográficas",
 	"of_collection": "de la colección",
 	"geo_query_collection": ".",
+  "Collection:": "Colección: {{collection}}",
 	"Apply geo-queries": "Ejecutar",
 	"Set geo-queries": "Ok",
 	"Lat:": "Lat:",
