@@ -1,5 +1,17 @@
 # Change Log
 
+## [v26.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-rc.1) (2024-08-20)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.2.0-beta.1...v26.0.0-rc.1)
+
+## [v25.2.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.2.0-beta.1) (2024-08-06)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-beta.2...v25.2.0-beta.1)
+
+**Miscellaneous:**
+
+- Add a title to the technical details in a resultlist [\#836](https://github.com/gisaia/ARLAS-web-components/issues/836) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v26.0.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-beta.2) (2024-07-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-beta.1...v26.0.0-beta.2)
