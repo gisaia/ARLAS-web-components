@@ -16,21 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HistogramComponent } from './histogram.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { HistogramKeyPipe } from './histogram-key.pipe';
 
-@NgModule({
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatTooltipModule
-  ],
-  declarations: [HistogramComponent, HistogramKeyPipe],
-  exports: [HistogramComponent]
-})
-export class HistogramModule {}
+describe('HistogramKeyPipe', () => {
+  it('create an instance', () => {
+    const pipe = new HistogramKeyPipe();
+    expect(pipe).toBeTruthy();
+  });
+});
