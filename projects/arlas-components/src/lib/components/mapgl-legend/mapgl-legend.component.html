@@ -1,5 +1,5 @@
 <div class="layer_wrapper">
-  <div class="collection_color" [matTooltip]="('Collection: ' | translate) + (collection | translate)"
+  <div class=collection_color [matTooltip]="'Collection:' | translate: {collection: (collection | getCollectionDisplayName)}"
     [style.backgroundColor]="!!collection ? (collection | getColor) : 'transparent'"></div>
   <div class="layer_container" >
     <div class="layer_icon_container">

@@ -29,6 +29,7 @@ export { HistogramModule } from './lib/components/histogram/histogram.module';
 export { MapglImportComponent, MapglImportDialogComponent } from './lib/components/mapgl-import/mapgl-import.component';
 export { CoordinatesComponent } from './lib/components/mapgl/coordinates/coordinates.component';
 export { Coordinate, PointFormGroup } from './lib/tools/coordinates.tools';
+export { FilterOperator } from './lib/tools/models/term-filters';
 export { MapglImportModule } from './lib/components/mapgl-import/mapgl-import.module';
 export { MapglLayerIconComponent } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.component';
 export { MapglLayerIconModule } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.module';
@@ -62,6 +63,8 @@ export { ResultDetailedItemComponent } from './lib/components/results/result-det
 export { ResultsModule } from './lib/components/results/results.module';
 export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services/color.generator.module';
 export { ArlasColorService } from './lib/services/color.generator.service';
+export { CollectionService, BaseCollectionService, AwcCollectionService } from './lib/services/collection.service';
+export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
 export { LayerIdToName } from './lib/components/mapgl-legend/layer-name.pipe';
 export { MapglLegendComponent } from './lib/components/mapgl-legend/mapgl-legend.component';
 export { MapglLegendItemComponent } from './lib/components/mapgl-legend/mapgl-legend-item/mapgl-legend-item.component';
@@ -74,6 +77,8 @@ export { BboxFormErrorPipe } from './lib/components/bbox-generator/bbox-form-err
 export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
+export { MetricsTableModule} from './lib/components/metrics-table/metrics-table.module';
+export { MetricsTableComponent } from './lib/components/metrics-table/metrics-table.component';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
 export {
@@ -96,6 +101,10 @@ export { CalendarTimelineComponent, TranslationDirection } from './lib/component
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
 export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
+export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
+export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
+export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
+export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
 export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';

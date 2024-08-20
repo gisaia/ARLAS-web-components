@@ -1,0 +1,129 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+ 
+:host {
+  display: table-row-group;
+
+  ::ng-deep {
+    arlas-powerbar {
+      .powerbar__powerbar--count {
+        text-align: left;
+      }
+
+      .powerbar__powerbar--term {
+        display: none;
+      }
+
+      .powerbars__powerbar--neutral-state:hover,
+      .powerbars__powerbar--selected-bar:hover,
+      .powerbars__powerbar--unselected-bar:hover {
+        opacity: 1;
+        cursor: pointer;
+      }
+    }
+
+    mat-checkbox .mat-checkbox-inner-container {
+      height: 10px;
+      width: 10px;
+    }
+
+    .checkbox {
+      margin-right: 5px;
+      padding-bottom: 5px;
+    }
+
+    .checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
+      border-color: rgba(0, 0, 0, .04) !important;
+    }
+
+  }
+}
+
+.multi-bar-row {
+  &--selected {
+    font-weight: bold;
+    opacity: 1;
+
+    .header {
+      font-weight: bold !important;
+    }
+  }
+
+  &--unselected {
+    &:hover {
+      opacity: 0.8;
+      cursor: pointer;
+    }
+  }
+
+  &--pending {
+    opacity: 0.5;
+  }
+
+  &__header {
+    padding: 0 6px;
+    font-size: 12px;
+    vertical-align: middle;
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: normal;
+    }
+
+    .header-title {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding: 0 3px;
+    }
+  }
+
+  &__data {
+    padding: 0 6px;
+    vertical-align: middle;
+  }
+
+  td,
+  th {
+    white-space: nowrap;
+    /* Prevents text wrapping */
+
+  }
+}
+
+.empty-cell {
+  height: 10px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.empty {
+  display: inline-block;
+  width: 5px;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+}
+
+.terms-head {
+  width: 80px;
+}
+.column-head {
+  width: 70px;
+}

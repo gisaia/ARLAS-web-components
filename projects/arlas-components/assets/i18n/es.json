@@ -23,6 +23,7 @@
 	"Radius:": "Radio: ",
 	"Geo-queries": "Peticiones geográficas",
 	"of_collection": "de la colección {{collection}}",
+  	"Collection:": "Colección: {{collection}}",
 	"Apply geo-queries": "Ejecutar",
 	"Set geo-queries": "Ok",
 	"Lat:": "Lat:",
@@ -127,6 +128,13 @@
 	"Download": "Descargar",
 	"Cloud": "Nube",
 	"country": "Pais",
+	"COUNT_COLUMN_TITLE": "recuenta",
+	"METRIC_COLUMN_TITLE": "{{field}} {{metric}}", 
+	"METRIC_COLUMN_avg": "medio(a)",
+	"METRIC_COLUMN_sum": "total",
+	"METRIC_COLUMN_min": "mínimo(a)",
+	"METRIC_COLUMN_max": "máxim(a)",
+	"METRIC_COLUMN_cardinality": "cardinalidad",
 	"None": "Ninguna",
 	"Heatmap-density": "Densidad"
 }

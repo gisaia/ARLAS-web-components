@@ -71,7 +71,6 @@ export class MapglImportDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private data: { allowedImportType: Array<string>; }
   ) {
     this.allowedImportType = this.data.allowedImportType.filter(t => [this.SHP, this.KML, this.WKT, this.GEOJSON].includes(t));
-    console.log(this.allowedImportType);
 
     if (this.allowedImportType.indexOf(this.SHP) > -1) {
       this.importType = this.SHP;

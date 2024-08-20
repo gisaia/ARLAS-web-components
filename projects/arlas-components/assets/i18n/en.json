@@ -23,6 +23,7 @@
 	"Radius:": "Radius: ",
 	"Geo-queries": "Geo-queries",
 	"of_collection": "of the {{collection}} collection",
+  	"Collection:": "Collection: {{collection}}",
 	"Apply geo-queries": "Apply",
 	"Set geo-queries": "Set",
 	"Lat:": "Lat:",
@@ -127,6 +128,13 @@
 	"Download": "Download",
 	"Cloud": "Cloud",
 	"country": "country",
+	"COUNT_COLUMN_TITLE": "count",
+	"METRIC_COLUMN_TITLE": "{{metric}} {{field}}",
+	"METRIC_COLUMN_avg": "average",
+	"METRIC_COLUMN_sum": "total",
+	"METRIC_COLUMN_min": "minimal",
+	"METRIC_COLUMN_max": "maximal",
+	"METRIC_COLUMN_cardinality": "cardinality of",
 	"None": "None",
 	"Heatmap-density": "Density"
 }

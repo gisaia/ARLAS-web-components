@@ -1,0 +1,55 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "title": "Metric Table inputs configuration",
+    "description": "The inputs configuration input of a metrics table.",
+    "type": "object",
+    "$id": "metrics-table.schema.json",
+    "properties": {
+        "filterOperator": {
+            "description": "Options about how to apply filters on the metric table.",
+            "type": "object",
+            "properties": {
+                "value": {
+                    "description": "The default operator value. \n if 'Eq', the selected line of the table is included in the ARLAS filter. \n if 'Neq', the selected line is marked as excluded in the ARLAS filter.",
+                    "type": "string",
+                    "enum": [
+                        "Eq",
+                        "Neq"
+                    ]
+                },
+                "display": {
+                    "description": "Whether to display a switcher between 'Eq' and 'Neq' or keep the default operator all the time",
+                    "type": "boolean"
+                }
+            }
+        },
+        "useColorService": {
+            "description": "Whether to allow colorizing the bars according to its term or not using the ArlasColorService",
+            "type": "boolean"
+        },
+        "applyColorTo": {
+            "description": "Choose how to apply colors to the table. By column : all the bars in same column will have the same color. By row : all the bars in the same row, will have the same color.",
+            "type": "string",
+            "enum": ["column", "row"]
+        },
+        "headerDisplayMode": {
+            "description": "Allows to choose what level of details to display in headers. 'chip' only displays a circular chip. 'title' only displays the title. 'full' displays both.",
+            "type": "string",
+            "enum": ["chip", "title", "full"]
+        },
+        "normaliseBy": {
+            "description": "Normalise bars progression based on the maximum value of each column OR of the whole table",
+            "type": "string",
+            "enum": ["table", "column"]
+        },
+        "selectWithCheckbox": {
+            "description": "Display a checkbox next to the terms that allows to select the row.",
+            "type": "boolean"
+        },
+        "showRowField": {
+            "description": "Display the name of the field use to retrieve row values for each sub table.",
+            "type": "boolean"
+        }
+    },
+    "required": []
+}
