@@ -205,7 +205,7 @@ export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
  * draws the heatmap icon for cluster mode
  * @param svgNode SVG element on which we append the heamap circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
- * @param small TODO
+ * @param small Whether to create a small version of the icon
  */
 export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small: boolean) {
   const heatmapColors = [];
