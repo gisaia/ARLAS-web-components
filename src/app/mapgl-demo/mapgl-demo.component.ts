@@ -20,7 +20,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import {
   ARLAS_VSET,
-  GeometrySelectModel, MapglComponent, MapglImportComponent, MapglSettingsComponent,
+  GeometrySelectModel, GeoQueryOperator, MapglComponent, MapglImportComponent, MapglSettingsComponent,
   MapSettingsService, OperationSelectModel,
   VisualisationSetConfig
 } from '../../../projects/arlas-components/src/public-api';
@@ -995,27 +995,28 @@ export class MapSettings implements MapSettingsService {
   public getOperations(): Array<OperationSelectModel> {
     return [
       {
-        operation: 'within',
+        operation: GeoQueryOperator.WITHIN,
         selected: true
       },
       {
-        operation: 'notwithin',
+        operation: GeoQueryOperator.NOT_WITHIN,
         selected: false
       },
       {
-        operation: 'intersects',
+        operation: GeoQueryOperator.INTERSECTS,
         selected: false
       },
       {
-        operation: 'notintersects',
+        operation: GeoQueryOperator.NOT_INTERSECTS,
         selected: false
       }
     ];
   }
 
   public getGeoQueries(): Map<string, [GeometrySelectModel[], OperationSelectModel[], string]> {
-    // TODO
-    return;
+    const geoQueriesMap = new Map<string, [GeometrySelectModel[], OperationSelectModel[], string]>();
+    geoQueriesMap.set('Test', [[{path: 'centroid'}], this.getOperations(), 'Display name Test']);
+    return geoQueriesMap;
   }
 
   public hasFeaturesMode(): boolean {

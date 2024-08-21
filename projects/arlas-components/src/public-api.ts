@@ -67,6 +67,7 @@ export { CollectionService, BaseCollectionService, AwcCollectionService } from '
 export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
 export { LayerIdToName } from './lib/components/mapgl-legend/layer-name.pipe';
 export { MapglLegendComponent } from './lib/components/mapgl-legend/mapgl-legend.component';
+export { MapglLegendItemComponent } from './lib/components/mapgl-legend/mapgl-legend-item/mapgl-legend-item.component';
 export { MapglLegendModule } from './lib/components/mapgl-legend/mapgl-legend.module';
 export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-settings.module';
 export { MetricComponent } from './lib/components/metric/metric.component';
@@ -81,7 +82,7 @@ export { MetricsTableComponent } from './lib/components/metrics-table/metrics-ta
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
 export {
-  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent,
+  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent, GeoQueryOperator
 } from './lib/components/mapgl-settings/mapgl-settings.component';
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
@@ -106,3 +107,5 @@ export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-colle
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
 export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';
+export { GetColorModule } from './lib/pipes/get-color/get-color.module';
+export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';

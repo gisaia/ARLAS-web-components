@@ -16,20 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { NgModule } from '@angular/core';
+import { GetColorPipe } from './get-color.pipe';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 
-.icon_legend {
-  width: 20px;
-  height: 20px;
-}
-
-.img_icon {
-  height: 23px;
-  width: 20px;
-  object-fit: none;
-  object-position: 48% -1px;
-  opacity: 1;
-}
-
-.grayed_img {
-  opacity: 0.2 ;
-}
+@NgModule({
+  imports: [
+    ColorGeneratorModule
+  ],
+  declarations: [
+    GetColorPipe
+  ],
+  exports: [
+    GetColorPipe
+  ]
+})
+export class GetColorModule {}

@@ -23,6 +23,7 @@ export interface LegendParamsResult {
   translateKey: string;
   field?: string;
   normalized?: string;
+  normalizedKey?: string;
   metric?: string;
   format: ParamsResultType;
 }
@@ -37,11 +38,14 @@ export interface LegendParamsResult {
  * metricNormalised :
  *   return metric and normalized interpolated values.
  *   ex: count (normalized)
+ * noMetric :
+ *   return field and normalized interpolated values.
+ *   ex: Boat visibility (normalized)
  * original
  *   return the original key to be translated. This case appear only if we fail
  *   to parse of if we have an error.
  */
-export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'original';
+export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'noMetric' | 'original';
 
 @Pipe({
   name: 'formatLegend'
@@ -67,8 +71,12 @@ export class FormatLegendPipe implements PipeTransform {
     }
 
     const parts = field.split(':');
-    const containsNormalizedPartOrMetric = parts.length === 2 ||
-      (parts.length === 1 && this.containsMetrics(parts[0]));
+    // Regular normalized
+    const containsNormalizedPartOrMetric = parts.length === 2
+      // Normalized by key
+      || parts.length === 3
+      // Metric
+      || (parts.length === 1 && this.containsMetrics(parts[0]));
 
     if (containsNormalizedPartOrMetric) {
       const valueSplit = parts[0].split('_');
@@ -83,8 +91,9 @@ export class FormatLegendPipe implements PipeTransform {
 
       const metric = this.getMetric(valueSplit);
       const field = this.getField(valueSplit);
-      const normalised = parts[1] ?? '';
-      params = this.buildInterpolatedParams(params, metric, field, normalised);
+      const normalized = parts[1] ?? '';
+      const normalizedKey =  parts[2] ?? '';
+      params = this.buildInterpolatedParams(params, metric, field, normalized, normalizedKey);
     } else if (parts[0].endsWith('_arlas__color')){
       params.translateKey = params.translateKey.replace('_arlas__color', '');
     }
@@ -92,26 +101,36 @@ export class FormatLegendPipe implements PipeTransform {
     return params;
   }
 
-  public buildInterpolatedParams(params: LegendParamsResult, metric: string, field: string, normalised: string): LegendParamsResult {
-    const legendParams = {
+  public buildInterpolatedParams(params: LegendParamsResult, metric: string, field: string,
+      normalized: string, normalizedKey: string): LegendParamsResult {
+    const legendParams: LegendParamsResult = {
       ...params,
-      field: '',
+      field: field,
       normalized: '',
       metric,
     };
 
-    if (field && normalised) {
-      legendParams.field = field;
+    if (!metric) {
+      legendParams.format = 'noMetric';
+      legendParams.translateKey = marker('legend without metric');
+    } else if (field && normalized) {
       legendParams.format = 'full';
       legendParams.translateKey = marker('legend');
     } else if (field) {
-      legendParams.field = field;
       legendParams.format = 'metricField';
       legendParams.translateKey =  marker('legend without normalized');
-    } else if (normalised){
-      legendParams.field = field;
+    } else if (normalized) {
       legendParams.format = 'metricNormalised';
       legendParams.translateKey =  marker('legend without field');
+    }
+
+    if (normalized) {
+      if (normalizedKey) {
+        legendParams.normalized = marker('normalized by key');
+        legendParams.normalizedKey = normalizedKey;
+      } else {
+        legendParams.normalized = marker('normalized');
+      }
     }
 
     return legendParams;
@@ -124,7 +143,11 @@ export class FormatLegendPipe implements PipeTransform {
   }
 
   public getField(valueSplit: string[]) {
-    return valueSplit.slice(0, valueSplit.length - 1).join('_');
+    // If last split is a metric, then exclude it
+    if (this.isMetrics(valueSplit[valueSplit.length - 1])) {
+      return valueSplit.slice(0, valueSplit.length - 1).join('_');
+    }
+    return valueSplit.join('_');
   }
 
   public isMetrics(metrics: string) {

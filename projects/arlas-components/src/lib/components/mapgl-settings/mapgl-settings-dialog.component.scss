@@ -1,0 +1,77 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+::ng-deep .map-settings-dialog .mat-dialog-container {
+  overflow: inherit;
+  position: relative;
+}
+
+.mapgl-settings__title {
+  margin: 0 0 10px 0 !important;
+}
+
+.mapgl-settings {
+  position: relative;
+  overflow: hidden;
+
+  &__description {
+    padding-right: 20px;
+    padding-bottom: 0.65em;
+  }
+
+  &__form {
+    display: flex;
+    margin-bottom: 15px;
+    flex-direction: column;
+    padding: 5px 15px 0px;
+    justify-content: flex-start;
+    box-shadow: 0 2px 1px -1px #0003, 0 1px 1px #00000024, 0 1px 3px #0000001f;
+    border-left: 3px solid;
+
+    &__steps {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+
+      &__item {
+        padding-right: 20px;
+        display: flex;
+        justify-content: left;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.mapgl-settings__actions {
+  display: unset;
+  float: right;
+
+  &--apply {
+    color: #ff4081;
+    font-weight: bolder;
+    outline: none;
+  }
+
+  &--cancel {
+    color: #000;
+    margin: 2px;
+    outline: none;
+  }
+}

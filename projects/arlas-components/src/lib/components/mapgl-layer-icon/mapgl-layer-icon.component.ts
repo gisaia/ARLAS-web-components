@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import {Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges} from '@angular/core';
-import {select} from 'd3-selection';
-import {Legend, PROPERTY_SELECTOR_SOURCE} from '../mapgl/mapgl.component.util';
+import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
+import { select } from 'd3-selection';
+import { Legend, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
 
 @Component({
   selector: 'arlas-mapgl-layer-icon',
   templateUrl: './mapgl-layer-icon.component.html',
-  styleUrls: ['./mapgl-layer-icon.component.css']
+  styleUrls: ['./mapgl-layer-icon.component.scss']
 })
 export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public layer: mapboxgl.Layer;
@@ -32,8 +32,8 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
   @Input() public radiusLegend: Legend = {};
-  @Input() public lineDasharray;
-  @ViewChild('layer_icon', {read: ElementRef, static: false}) public layerIconElement: ElementRef;
+  @Input() public lineDasharray: Array<number>;
+  @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
   public constructor() {
   }
@@ -68,7 +68,7 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
         } else if (source.startsWith('feature')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend);
         } else if (source.startsWith('cluster')) {
-          const addBlur =  type === 'circle-heatmap';
+          const addBlur = type === 'circle-heatmap';
           drawClusterCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, addBlur);
         }
         break;
@@ -107,9 +107,10 @@ export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges
 }
 
 /**
- * draws the rectangles icon for cluster mode
+ * Draws the rectangles icon for cluster mode
  * @param svgNode SVG element on which we append the rectangles using d3.
  * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
+ * @param strokeColorLegend Color legend, to give the drawn icons rectangles the same stroke color on the map
  */
 export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend) {
   const fillFourColors = getClusterFillColors(colorLegend);
@@ -142,21 +143,25 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, st
 }
 
 /**
- * draws the rectangles icon for feature and feature-metric modes
+ * Draws the rectangles icon for feature and feature-metric modes
  * @param svgNode SVG element on which we append the rectangles using d3.
- * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map **/
+ * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
+ * @param strokeColorLegend Color legend, to give the drawn icons rectangles the same stroke color on the map
+ * @param [isMetric=false] Whether the layer depends on a metric
+ */
 export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, isMetric = false) {
   const fillColor = getOneColor(colorLegend);
   let strokeColor = fillColor;
   if (strokeColorLegend) {
     strokeColor = getOneColor(strokeColorLegend);
   }
-  const polygon = [{'x': 0, 'y': 0},
-    {'x': 18, 'y': 0},
-    {'x': 13, 'y': 15},
-    {'x': 1, 'y': 15},
-    {'x': 8, 'y': 7},
-    {'x': 0, 'y': 0}];
+  const polygon = [
+    { 'x': 0, 'y': 0 },
+    { 'x': 18, 'y': 0 },
+    { 'x': 13, 'y': 15 },
+    { 'x': 1, 'y': 15 },
+    { 'x': 8, 'y': 7 },
+    { 'x': 0, 'y': 0 }];
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').selectAll('polygon')
@@ -200,6 +205,7 @@ export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
  * draws the heatmap icon for cluster mode
  * @param svgNode SVG element on which we append the heamap circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
+ * @param small Whether to create a small version of the icon
  */
 export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small: boolean) {
   const heatmapColors = [];
@@ -256,11 +262,13 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
 }
 
 /**
- * draws the line icon for feature mode
+ * Draws the line icon for feature mode
  * @param svgNode SVG element on which we append the line using d3.
  * @param colorLegend Color legend, to give the drawn icons line the same color on the map
+ * @param dashArray Array representing the dash pattern
+ * @param [isMetric=false] Whether the layer depends on a metric
  */
-export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray, isMetric = false) {
+export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray: Array<number>, isMetric = false) {
   let lineColor = '';
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     lineColor = colorLegend.fixValue + '';
@@ -311,9 +319,11 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray
 }
 
 /**
- * draws the circle icon for feature mode
+ * Draws the circle icon for feature mode
  * @param svgNode SVG element on which we append the circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
+ * @param strokeColorLegend Color legend, to give the drawn icons circles the same stroke color on the map
+ * @param [isMetric=false] Whether the layer depends on a metric
  */
 export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, isMetric = false) {
   const colorsList = [];
@@ -378,8 +388,8 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
  * draws the circle icon for cluster mode
  * @param svgNode SVG element on which we append the circles using d3.
  * @param colorLegend Color legend, to give the drawn icons circles the same color on the map
- * @param strokeColorLegend
- * @param addBlur
+ * @param strokeColorLegend Color legend, to give the drawn icons circles the same stroke color on the map
+ * @param addBlur Whether to add blur to the drawn circles
  */
 export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, addBlur = false) {
   // todo include radius legend in drawing icons
@@ -436,7 +446,7 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
     .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);
 
-  if (addBlur){
+  if (addBlur) {
     svg.selectAll('circle').attr('filter', 'url(#blurHeatmapCircle)');
   }
 

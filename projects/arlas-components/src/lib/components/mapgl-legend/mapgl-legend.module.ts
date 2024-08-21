@@ -30,6 +30,8 @@ import { LayerIdToName } from './layer-name.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-name/get-collection-display.module';
 import { FormatLegendModule } from '../../pipes/format-legend/format-legend.module';
+import { GetColorModule } from '../../pipes/get-color/get-color.module';
+import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.component';
 
 
 @NgModule({
@@ -42,11 +44,12 @@ import { FormatLegendModule } from '../../pipes/format-legend/format-legend.modu
     MatMenuModule,
     MatTooltipModule,
     FormatNumberModule,
+    GetColorModule,
     GetCollectionDisplayModule,
     FormatLegendModule
   ],
-  declarations: [MapglLegendComponent, LayerIdToName],
-  exports: [MapglLegendComponent, LayerIdToName]
+  declarations: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent],
+  exports: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent]
 })
 export class MapglLegendModule {
 

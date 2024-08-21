@@ -16,6 +16,7 @@ import { GetCollectionDisplayNamePipe } from '../../pipes/get-collection-display
 import { AwcCollectionService, BaseCollectionService, CollectionService } from '../../services/collection.service';
 import { CollectionModule } from '../../services/collection.module';
 import { FormatLegendPipe } from '../../pipes/format-legend/format-legend.pipe';
+import { GetColorPipe } from '../../pipes/get-color/get-color.pipe';
 
 describe('MapglLegendComponent', () => {
   let component: MapglLegendComponent;
@@ -23,7 +24,14 @@ describe('MapglLegendComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MapglLegendComponent, FormatNumberPipe, LayerIdToName, FormatLegendPipe, GetCollectionDisplayNamePipe],
+      declarations: [
+        MapglLegendComponent,
+        FormatNumberPipe,
+        LayerIdToName,
+        FormatLegendPipe,
+        GetColorPipe,
+        GetCollectionDisplayNamePipe
+      ],
       imports: [
         MatButtonModule,
         MatIconModule,
