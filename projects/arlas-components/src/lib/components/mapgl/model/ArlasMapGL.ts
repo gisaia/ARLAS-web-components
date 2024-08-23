@@ -1,4 +1,11 @@
-import { AbstractArlasMapGL, BaseMapGlConfig, BindLayerToEvent, DrawControlsOption, MapEventBinds } from './AbstractArlasMapGL';
+import {
+  AbstractArlasMapGL,
+  BaseMapGlConfig,
+  BindLayerToEvent,
+  ControlPosition,
+  DrawControlsOption,
+  MapEventBinds
+} from './AbstractArlasMapGL';
 import mapboxgl, {
   AnyLayer,
   AnySourceData,
@@ -44,7 +51,7 @@ export interface ArlasMapGlConfig extends BaseMapGlConfig<MapboxOptions> {
  *  - wrap of provider methode could be implemented in another class in middle of
  *  abstract class.
  */
-export class ArlasMapGl extends AbstractArlasMapGL {
+export class ArlasMapGL extends AbstractArlasMapGL {
   protected _mapLayers: MapLayers<AnyLayer>;
   protected _mapProvider: mapboxgl.Map;
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
@@ -517,11 +524,11 @@ export class ArlasMapGl extends AbstractArlasMapGL {
   }
 
 
-  public addControl(control: ControlButton, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left',  eventOverrid?: {
+  public addControl(control: ControlButton, position?: ControlPosition,  eventOverride?: {
     event: string; fn: (e?) => void;});
-  public addControl(control: Control | IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left');
+  public addControl(control: Control | IControl, position?: ControlPosition);
   public addControl(control: Control | IControl | ControlButton,
-                    position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left',
+                    position?: ControlPosition,
                     eventOverrid?: {
     event: string; fn: (e?) => void;
   }){

@@ -261,11 +261,11 @@ export abstract class AbstractArlasMapGL {
   public abstract moveLayer(id: string, before?: string);
   public abstract getSource(id: string);
   public abstract setLayoutProperty(layer: string, name: string, value: any, options?: FilterOptions);
-  public abstract addControl(control: ControlButton, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left',  eventOverrid?: {
+  public abstract addControl(control: ControlButton, position?: ControlPosition,  eventOverrid?: {
     event: string; fn: (e?) => void;});
-  public abstract addControl(control: Control | IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left');
+  public abstract addControl(control: Control | IControl, position?: ControlPosition);
   public abstract addControl(control: Control | IControl | ControlButton,
-                             position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left',
+                             position?: ControlPosition,
                              eventOverrid?: {
     event: string; fn: (e?) => void;
   });

@@ -68,7 +68,7 @@ import {
   DrawControlsOption,
   MapEventBinds
 } from './model/AbstractArlasMapGL';
-import { ArlasMapGl, ArlasMapGlConfig } from './model/ArlasMapGL';
+import { ArlasMapGL, ArlasMapGlConfig } from './model/ArlasMapGL';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -119,7 +119,7 @@ export const GEOJSON_SOURCE_TYPE = 'geojson';
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public map: mapboxgl.Map;
-  public arlasMap: ArlasMapGl;
+  public arlasMap: ArlasMapGL;
   public draw: MapboxDraw;
   public zoom: number;
   public legendOpen = true;
@@ -763,7 +763,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
     };
     console.log('declare');
-    this.arlasMap = new ArlasMapGl(config);
+    this.arlasMap = new ArlasMapGL(config);
     console.log(this.arlasMap);
     this.map = this.arlasMap.getMap();
 
