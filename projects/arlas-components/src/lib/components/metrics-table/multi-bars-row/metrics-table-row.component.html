@@ -6,7 +6,7 @@
   <th class="terms-head" scope="row" class="multi-bar-row__header">
     <div class="header">
       <section *ngIf="displayCheckBox"  (click)="$event.stopPropagation()">
-        <mat-checkbox  [checked]="metricsTableRow?.selected" (change)="onCheck()"></mat-checkbox>
+        <mat-checkbox [checked]="metricsTableRow?.selected" (change)="onCheck()"></mat-checkbox>
       </section>
       <span class="header-title" [matTooltip]="metricsTableRow?.term">
            {{metricsTableRow?.term | uppercase}}

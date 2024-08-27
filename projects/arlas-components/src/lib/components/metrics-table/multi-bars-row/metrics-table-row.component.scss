@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
 :host {
   display: table-row-group;
 
@@ -38,9 +38,20 @@
       }
     }
 
-    mat-checkbox .mat-checkbox-inner-container {
-      height: 10px;
-      width: 10px;
+    mat-checkbox {
+      $checkbox-size: 10px;
+
+      .mat-checkbox-inner-container {
+        height: $checkbox-size;
+        width: $checkbox-size;
+      }
+
+      .mat-checkbox-ripple {
+        left: calc(50% - $checkbox-size / 2);
+        top: calc(50% - $checkbox-size / 2);
+        height: $checkbox-size;
+        width: $checkbox-size;
+      }
     }
 
     .checkbox {
