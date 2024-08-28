@@ -159,7 +159,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
         this.ngOnInit();
       }
     }
-    if (changes.defaultSelection && this.selectedTerms !== undefined && this.selectedTerms !== null) {
+    if (!!changes.selectedTerms) {
       this.updateSelection(this.selectedTerms);
     }
   }
