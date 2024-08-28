@@ -21,6 +21,8 @@
   &__title /* @doc Style of the metric title (above value).*/ {
     text-align: center;
     white-space: nowrap;
+    display: flex;
+    justify-content: center;
   }
 
   &__value /* @doc Style of the metric value*/ {
@@ -28,10 +30,14 @@
     font-size: 1.8em;
     padding: 5px 0;
     white-space: nowrap;
+    display: flex;
+    justify-content: center;
   }
 
   &__description /* @doc Style of the metric description (below value).*/ {
     font-size: 1.3rem;
     font-weight: 100;
+    display: flex;
+    justify-content: center;
   }
 }

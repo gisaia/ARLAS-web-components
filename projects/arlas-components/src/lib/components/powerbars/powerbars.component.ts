@@ -17,16 +17,16 @@
  * under the License.
  */
 
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitter, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { SimpleNode, TreeNode } from 'arlas-d3';
-import { Subject } from 'rxjs';
-import { ArlasColorService } from '../../services/color.generator.service';
-import { PowerBar } from './model/powerbar';
-import * as powerbarsJsonSchema from './powerbars.schema.json';
-import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
+import { Subject, takeUntil } from 'rxjs';
 import * as tinycolor from 'tinycolor2';
 import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
+import { ArlasColorService } from '../../services/color.generator.service';
 import { FilterOperator } from '../../tools/models/term-filters';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
+import { PowerBar } from './model/powerbar';
+import * as powerbarsJsonSchema from './powerbars.schema.json';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -197,7 +197,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   public constructor(private colorService: ArlasColorService) {
     this.colorService.changekeysToColors$
-      .pipe(takeWhile(this._onDestroy$))
+      .pipe(takeUntil(this._onDestroy$))
       .subscribe(() => {
         this.powerBarsList.forEach(p => {
           if (this.useColorService) {
@@ -216,7 +216,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   public ngOnInit() {
     if (!!this.missingLeafEvent) {
       this.missingLeafEvent
-        .pipe(takeWhile(this._onDestroy$))
+        .pipe(takeUntil(this._onDestroy$))
         .subscribe(data => {
           if (this.selectedPaths !== undefined && this.selectedPaths !== null) {
             this.setSelectedPowerbars(this.selectedPaths);
