@@ -53,14 +53,15 @@
 }
 
 .resultitem__cell--label__filled {
-  padding: 3px;
+  padding: 2px;
   border-radius:2px;
 }
 
 .resultitem__cell--label__outlined {
-  padding: 3px;
+  padding: 2px;
   border-radius:2px;
   border : 1.5px solid;
+  display: inline-grid;
 }
 
 .resultdetaileditem__actions {
