@@ -36,10 +36,9 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   /**
    * @constant
    */
-  public SHOW_IMAGE = marker('Click to show details');
+  public readonly SHOW_IMAGE = marker('Click to show details');
 
-  @ViewChild('cellTooltip', { static: true })
-  public cellTooltip: MatTooltip;
+  @ViewChild('cellTooltip', { static: true }) public cellTooltip: MatTooltip;
 
   /**
    * @Input
@@ -84,30 +83,26 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
-
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
   /**
    * @Output
    * @description Emits the list of selected items in result-list.component.
    */
-  @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public selectedItemsEvent = new Subject<Set<string>>();
 
   /**
    * @Output
    * @description Emits the selected/unselected item.
    * @deprecated
    */
-  @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
+  @Output() public selectedItemPositionEvent = new Subject<Item>();
 
   /**
    * @Output
    * @description Emits the the item that it has been clicked on it.
    */
-  @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
-
-
+  @Output() public clickedOnItemEvent = new Subject<Item>();
 
   public ThumbnailFitEnum = ThumbnailFitEnum;
 
@@ -133,19 +128,18 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
 
   public ngOnInit() { }
 
-  // Update the list of the selected items
+  /** Update the list of the selected items */
   public setSelectedItem() {
-    super.setSelectedItem(this.gridTile.isChecked, this.gridTile.identifier, this.selectedItems);
-    this.gridTile.isChecked = !this.gridTile.isChecked;
-    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in list mode
-    this.selectedItemsEvent.next(this.selectedItems);
-  }
+    if (this.gridTile?.isindeterminated) {
+      this.gridTile.isChecked = true;
+      this.gridTile.isindeterminated = false;
+      this.selectedItems.add(this.gridTile.identifier);
+    } else {
+      super.setSelectedItem(this.gridTile.isChecked, this.gridTile.identifier, this.selectedItems);
+      this.gridTile.isChecked = !this.gridTile.isChecked;
+    }
 
-  public determinateItem() {
-    this.gridTile.isChecked = true;
-    this.gridTile.isindeterminated = false;
-    this.selectedItems.add(this.gridTile.identifier);
-    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
+    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in list mode
     this.selectedItemsEvent.next(this.selectedItems);
   }
 

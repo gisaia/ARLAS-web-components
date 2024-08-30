@@ -22,6 +22,23 @@ $img-proportion: 85%;
 .resultgrid {
   width:100%;
   height:100%;
+
+  &--container /* @doc Sets the grid container style.*/ {
+    width:100%;
+    height:100%;
+    margin:1px;
+    background-color: #fff;
+    position: relative;
+    color: #000;
+
+    &--not-highlighted {
+      opacity: 0.3;
+    }
+
+    &--highlighted {
+      opacity: 1;
+    }
+  }
 }
 
 .resultitem-grid__actions {
@@ -37,11 +54,12 @@ $img-proportion: 85%;
   background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2720%27%20height%3D%2720%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%20%3Cg%3E%20%20%3Ctitle%3Ebackground%3C%2Ftitle%3E%20%20%3Crect%20fill%3D%27%23fff%27%20id%3D%27canvas_background%27%20height%3D%2722%27%20width%3D%2722%27%20y%3D%27-1%27%20x%3D%27-1%27%2F%3E%20%20%3Cg%20display%3D%27none%27%20overflow%3D%27visible%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%20id%3D%27canvasGrid%27%3E%20%20%20%3Crect%20fill%3D%27url(%23gridpattern)%27%20stroke-width%3D%270%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%2F%3E%20%20%3C%2Fg%3E%20%3C%2Fg%3E%20%3Cg%3E%20%20%3Ctitle%3ELayer%201%3C%2Ftitle%3E%20%20%3Cellipse%20stroke%3D%27%23000000%27%20ry%3D%275.779194%27%20rx%3D%275.5%27%20id%3D%27svg_1%27%20cy%3D%2710.000004%27%20cx%3D%2710%27%20stroke-width%3D%272.5%27%20fill%3D%27%23ffffff%27%2F%3E%20%3C%2Fg%3E%3C%2Fsvg%3E");
   background-repeat: no-repeat;
   background-position: center;
+
+  &:active {
+    border: 1px solid white;
+  }
 }
 
-.resultitem-grid__actions:active {
-  border: 1px solid white;
-}
 .grid_actions {
   flex-direction: row-reverse;
   display: none;
@@ -51,31 +69,6 @@ $img-proportion: 85%;
   right: 0;
   margin-left: 2px;
   margin-top: 2px;
-}
-
-.resultgrid__img:hover .grid_actions {
-  display: flex;
-  justify-content: space-between;
-}
-
-.resultgrid--container, .resultgrid--container-highlight- /* @doc Sets the grid container style.*/
-{
-  width:100%;
-  height:100%;
-  margin:1px;
-  background-color: #fff;
-  position: relative;
-  color: #000;
-}
-
-.resultgrid--container-highlight-false /* @doc Sets the grid container style.*/
-{
-  opacity: 0.3;
-}
-
-.resultgrid--container-highlight-true 
-{
-  opacity: 1;
 }
 
 .resultgrid__icon_check /* @doc Sets the checkbox icon style.*/
@@ -105,11 +98,14 @@ $img-proportion: 85%;
   align-items: center;
   justify-content: center;
   background-color: #000;
+
+  &:hover .grid_actions {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
-.resultgrid__title-highlight- /* @doc Sets the grid title style.*/,
-.resultgrid__title-highlight-false,
-.resultgrid__title-highlight-true {
+.resultgrid__title /* @doc Sets the grid title style. */ {
   height: calc(100% - $img-proportion);
   color: #000;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
@@ -120,6 +116,10 @@ $img-proportion: 85%;
   padding: 0 5px;
   box-sizing: border-box;
 
+  &--not-highlighted {
+    opacity: 0.3;
+  }
+
   .tablet {
     height: 80%;
     max-height: 20px;
@@ -129,23 +129,11 @@ $img-proportion: 85%;
     margin-right: 2px;
   }
 
-  .resultgrid__title {
+  &__text {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
   }
-}
-
-.resultgrid__title-highlight-false /* @doc Sets the grid title style.*/
-{
-  opacity: 0.3;
-}
-
-.fill-images{
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-  background-color:black;
 }
 
 .contain_thumbnail {
