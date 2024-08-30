@@ -11,14 +11,17 @@ import mapboxgl, {
   AnySourceData,
   Control,
   FilterOptions,
-  IControl, LngLat, LngLatBoundsLike, LngLatLike, MapboxEvent,
+  IControl,
+  LngLat,
+  LngLatBoundsLike,
   MapboxOptions,
-  MapLayerEventType, PointLike
+  MapLayerEventType,
+  PointLike
 } from 'mapbox-gl';
 import { MapSource } from './mapSource';
 import { ArlasAnyLayer, MapExtend, paddedBounds } from '../mapgl.component.util';
 import { ControlButton, PitchToggle } from '../mapgl.component.control';
-import { GEOJSON_SOURCE_TYPE, IconConfig, OnMoveResult, VisualisationSetConfig } from '../mapgl.component';
+import { GEOJSON_SOURCE_TYPE, OnMoveResult, VisualisationSetConfig } from '../mapgl.component';
 import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
 import { fromEvent, map } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -58,6 +61,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   public startlngLat: mapboxgl.LngLat;
   public endlngLat: mapboxgl.LngLat;
   public movelngLat: mapboxgl.LngLat;
+  public layersMap: Map<string, ArlasAnyLayer>;
 
    public constructor(protected config: ArlasMapGlConfig) {
       super(config);
@@ -441,6 +445,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
       });
     }
   }
+
   public addLayer(layerId: AnyLayer, before?: string){
     return this._mapProvider.addLayer(layerId, before);
   }
@@ -585,15 +590,20 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     return this._mapProvider.getStyle().layers;
   }
 
-
   public enableDragPan(){
     this._mapProvider.dragPan.enable();
+  }
+
+  public disableDragPan(){
+    this._mapProvider.dragPan.disable();
   }
 
   /** *
    * core arlas methode
    *
    * */
+
+
   public updateLayoutVisibility(visualisationName: string) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
     this._visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
@@ -756,7 +766,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   }
 
   public onLoad(fn: () => void): void {
-    this._mapProvider.on('load', fn);
+    this.on('load', fn);
   }
 
   public onMoveEnd() {
@@ -846,7 +856,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     this._zoomStart = this.getZoom();
   }
 
-  public calcOffsetPoint(){
+  public calcOffsetPoint() {
     return new mapboxgl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
@@ -856,6 +866,10 @@ export class ArlasMapGL extends AbstractArlasMapGL {
 
   public unproject(latLng: PointLike){
     return this._mapProvider.unproject(latLng);
+  }
+
+  public on(event: string, func: (e) => void){
+    this._mapProvider.on(event, func);
   }
 
   public getCenter(){
@@ -959,5 +973,6 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   public unsubscribeEvents(){
     this._eventSubscription.forEach(s => s.unsubscribe());
   }
+
 
 }

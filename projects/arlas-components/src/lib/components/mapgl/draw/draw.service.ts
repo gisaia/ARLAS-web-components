@@ -18,8 +18,6 @@
  */
 
 import { Injectable } from '@angular/core';
-import mapboxgl from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import area from '@turf/area';
 import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import bbox from '@turf/bbox';
@@ -27,11 +25,11 @@ import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { ArlasDraw } from "../model/ArlasDraw";
 
 @Injectable()
 export class MapboxAoiDrawService {
-  private map: mapboxgl.Map;
-  private mapDraw: MapboxDraw;
+  private mapDraw: ArlasDraw;
   private editionId: string;
   private registeringMode: boolean;
   private ids: Set<string> = new Set();
@@ -98,16 +96,12 @@ export class MapboxAoiDrawService {
     this.bboxEditionState.isEditing = false;
   }
 
-  public setMap(map: mapboxgl.Map) {
-    this.map = map;
+  public setMapboxDraw(mapboxDraw: ArlasDraw) {
+    this.mapDraw = mapboxDraw;
     this.onSelectionChange();
     this.onRender();
     this.onDelete();
     this.onStop();
-  }
-
-  public setMapboxDraw(mapboxDraw: mapboxgl.Map) {
-    this.mapDraw = mapboxDraw;
   }
 
   /**
@@ -150,7 +144,7 @@ export class MapboxAoiDrawService {
 
   /** on selection of a drawn polygon, we get its corresponding id. */
   private onSelectionChange() {
-    this.map.on('draw.selectionchange', (e) => {
+    this.mapDraw.on('draw.selectionchange', (e) => {
       const features = e.features;
       if (this.hasFeatures(features)) {
         this.editionId = features[0].id;
@@ -171,7 +165,7 @@ export class MapboxAoiDrawService {
    * - Stops emitting Aoi dimension info.
    * */
   private onDelete() {
-    this.map.on('draw.delete', (e) => {
+    this.mapDraw.on('draw.delete', (e) => {
       e.features.forEach(f => this.unregister(f.id));
       this.editionId = undefined;
       this.endDimensionsEmission();
@@ -180,7 +174,7 @@ export class MapboxAoiDrawService {
 
 
   private onStop() {
-    this.map.on('draw.onStop', (e) => {
+    this.mapDraw.on('draw.onStop', (e) => {
       this.register(this.editionId);
       this.editionId = undefined;
       this.endDimensionsEmission();
@@ -194,7 +188,7 @@ export class MapboxAoiDrawService {
    * - on adding/deleting features from mapboxdraw object.
    */
   private onRender() {
-    this.map.on('draw.render', (e) => {
+    this.mapDraw.on('draw.render', (e) => {
       if (this.mapDraw) {
         this.registerAll();
         const unregisteredFeatures = this.getUnregistredFeatures();
@@ -253,7 +247,7 @@ export class MapboxAoiDrawService {
    * this method detects this feature on 'draw.render' event.
   */
   private getUnregistredFeatures(): Feature[] {
-    return this.mapDraw.getAll().features.filter(f => !this.ids.has(f.id));
+    return (this.mapDraw.getAllFeatures() as Feature[]).filter(f => !this.ids.has(f.id.toString()));
   }
 
   /** registers the identifiers of each drawn polygon in this service. */
@@ -262,7 +256,7 @@ export class MapboxAoiDrawService {
       this.ids.clear();
       const fc = this.mapDraw.getAll();
       if (!!fc && !!fc.features) {
-        this.ids = new Set(fc.features.map(f => f.id));
+        this.ids = new Set(fc.features.map(f => f.id.toString()));
       }
       this.registeringMode = false;
     }
@@ -279,8 +273,8 @@ export class MapboxAoiDrawService {
   }
 
   /** Gets the given feature from MapboxDraw object. */
-  private getFeature(featureId: string, mapDraw: MapboxDraw): Feature {
-    return mapDraw.get(featureId);
+  private getFeature(featureId: string, mapDraw: ArlasDraw): Feature {
+    return mapDraw.get(featureId) as Feature;
   }
 
   /** Checks if the given feature has enough coordinates to represent an area (polygon) */

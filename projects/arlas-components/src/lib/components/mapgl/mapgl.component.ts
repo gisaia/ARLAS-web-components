@@ -18,32 +18,36 @@
  */
 
 import {
-  AfterViewInit, Component, EventEmitter,
-  HostListener, Input, ViewEncapsulation,
-  OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewEncapsulation,
 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Subject, Subscription, fromEvent, config } from 'rxjs';
-import { debounceTime, finalize } from 'rxjs/operators';
+import { fromEvent, Subject, Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { ElementIdentifier } from '../results/utils/results.utils';
-import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
-import { paddedBounds, MapExtend, LegendData, ArlasAnyLayer } from './mapgl.component.util';
+import { LegendData, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
-import {
-  MapLayers, ExternalEvent,
-  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET
-} from './model/mapLayers';
+import { ARLAS_VSET, MapLayers } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Feature, Polygon, polygon, FeatureCollection, Geometry } from '@turf/helpers';
+import { Feature, FeatureCollection, polygon, Polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 import * as mapboxgl from 'mapbox-gl';
+import { AnyLayer, TransformRequestFunction } from 'mapbox-gl';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { TransformRequestFunction, AnyLayer, MapLayerEventType } from 'mapbox-gl';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
@@ -60,15 +64,10 @@ import directModeOverride from './draw/modes/directSelectOverride';
 import stripMode from './draw/modes/strip/strip.mode';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 import cleanCoords from '@turf/clean-coords';
-import {
-  ArlasMapOffset,
-  AbstractArlasMapGL,
-  BindLayerToEvent,
-  ControlPosition,
-  DrawControlsOption,
-  MapEventBinds
-} from './model/AbstractArlasMapGL';
+import { ArlasMapOffset, ControlPosition, DrawControlsOption } from './model/AbstractArlasMapGL';
 import { ArlasMapGL, ArlasMapGlConfig } from './model/ArlasMapGL';
+import { ArlasDraw } from "./model/ArlasDraw";
+import { Geometry } from "@turf/helpers/dist/js/lib/geojson";
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -120,7 +119,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   public map: mapboxgl.Map;
   public arlasMap: ArlasMapGL;
-  public draw: MapboxDraw;
+  public draw: ArlasDraw;
   public zoom: number;
   public legendOpen = true;
   // GeometryCollection ?
@@ -385,7 +384,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description Emits the event of clicking on a feature.
    */
   @Output() public onFeatureClic = new EventEmitter<{
-    features: Array<mapboxgl.MapboxGeoJSONFeature>;
+    features: Array<GeoJSON.Feature<GeoJSON.Geometry>>;
     point: [number, number];
   }>();
   /**
@@ -393,7 +392,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description Emits the event of hovering feature.
    */
   @Output() public onFeatureOver = new EventEmitter<{
-    features: Array<mapboxgl.MapboxGeoJSONFeature>;
+    features: Array<GeoJSON.Feature<GeoJSON.Geometry>>;
     point: [number, number];
   } | {}>();
 
@@ -569,7 +568,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         const canvas = this.arlasMap.getCanvasContainer();
         const positionInfo = canvas.getBoundingClientRect();
         const width = positionInfo.width;
-        this.arlasMap.getMap().fitBounds(newBoundsToFit, {
+        this.arlasMap.fitBounds(newBoundsToFit, {
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
         });
@@ -767,44 +766,39 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     console.log(this.arlasMap);
     this.map = this.arlasMap.getMap();
 
-    this.drawService.setMap(this.arlasMap.getMap());
     fromEvent(window, 'beforeunload').subscribe(() => {
       this.onMapClosed.next(this.arlasMap.getMapExtend());
     });
 
     this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
 
-    const modes = MapboxDraw.modes;
     const drawStyles = styles.default;
     const drawOptions = {
-      ...this.drawOption, ...{
+      ...this.drawOption,
+      ...{
         styles: drawStyles,
-        modes: Object.assign(
-          modes,
-          {
-            static: StaticMode,
-            limit_vertex: limitVertexDirectSelectMode,
-            draw_polygon: validGeomDrawPolygonMode,
-            draw_circle: circleMode,
-            draw_radius_circle: radiusCircleMode,
-            draw_strip: stripMode,
-            direct_strip: stripDirectSelectMode,
-            direct_select: directModeOverride,
-            simple_select: simpleSelectModeOverride
-          })
+        modes: {
+          static: StaticMode,
+          limit_vertex: limitVertexDirectSelectMode,
+          draw_polygon: validGeomDrawPolygonMode,
+          draw_circle: circleMode,
+          draw_radius_circle: radiusCircleMode,
+          draw_strip: stripMode,
+          direct_strip: stripDirectSelectMode,
+          direct_select: directModeOverride,
+          simple_select: simpleSelectModeOverride
+        }
       }
     };
-
-    const drawControl = new DrawControl(drawOptions, this.drawButtonEnabled);
-    this.draw = drawControl.mapboxDraw;
-    this.draw.modes.DRAW_CIRCLE = 'draw_circle';
-    this.draw.modes.DRAW_RADIUS_CIRCLE = 'draw_radius_circle';
-    this.draw.modes.DRAW_STRIP = 'draw_strip';
-    this.draw.modes.DIRECT_STRIP = 'direct_strip';
+    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.arlasMap.getMap());
+    this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
+    this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
+    this.draw.setMode('DRAW_STRIP', 'draw_strip');
+    this.draw.setMode('DIRECT_STRIP', 'direct_strip');
 
     // TODO : to have to add event override
     const drawControlConfig: DrawControlsOption = {
-      draw: {control: drawControl},
+      draw: {control: this.draw.drawProvider},
       addGeoBox: {
         enable: true,
         overrideEvent:
@@ -841,20 +835,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
 
       this.canvas = this.arlasMap.getCanvasContainer();
-
       this.canvas.addEventListener('mousedown', this.mousedown, true);
-      this.arlasMap.getMap().on('draw.create', (e) => {
+      this.draw.on('draw.create', (e) => {
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
-            'features': this.draw.getAll().features.filter(fc =>
+            'features': this.draw.getAllFeatures().filter(fc =>
               this.drawService.isValidPolygon(fc) ||
               this.drawService.isValidCircle(fc)
             ).map(f => cleanCoords(f))
           });
       });
 
-      this.arlasMap.getMap().on('draw.update', (e) => {
+      this.draw.on('draw.update', (e) => {
         if (e) {
           const features = e.features;
           if (features && features.length > 0) {
@@ -864,11 +857,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           }
         }
       });
-      this.arlasMap.getMap().on('draw.delete', (e) => {
+      this.draw.on('draw.delete', (e) => {
         this.onAoiChanged.next(
           {
             'type': 'FeatureCollection',
-            'features': this.draw.getAll().features.filter(fc =>
+            'features': this.draw.getAllFeatures().filter(fc =>
               this.drawService.isPolygon(fc) ||
               this.drawService.isCircle(fc)
             ).map(f => cleanCoords(f))
@@ -882,24 +875,24 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.finishDrawTooltip.style.left = (x + 20) + 'px';
       };
 
-      this.arlasMap.getMap().on('draw.onClick', (e) => {
+      this.draw.onDrawOnClick( (e) => {
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
         this.drawClickCounter++;
       });
-      this.arlasMap.getMap().on('draw.onStart', (e) => {
+      this.draw.onDrawOnStart( (e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.arlasMap.setCursorStyle('');
       });
-      this.arlasMap.getMap().on('draw.onStop', (e) => {
+      this.draw.onDrawOnStop((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.arlasMap.setCursorStyle('');
       });
 
-      this.arlasMap.getMap().on('draw.invalidGeometry', (e) => {
+      this.draw.onDrawInvalidGeometry( (e) => {
         if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
           if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
@@ -923,13 +916,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         this.arlasMap.setCursorStyle('');
       });
 
-      this.arlasMap.getMap().on('draw.edit.saveInitialFeature', (edition) => {
+      this.draw.onDrawEditSaveInitialFeature( (edition) => {
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
-      this.arlasMap.getMap().on('draw.selectionchange', (e) => {
+      this.draw.onDrawSelectionchange( (e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawSelected = true;
@@ -939,7 +932,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.onAoiChanged.next(
             {
               'type': 'FeatureCollection',
-              'features': this.draw.getAll().features.filter(fc =>
+              'features': this.draw.getAllFeatures().filter(fc =>
                 this.drawService.isValidPolygon(fc) ||
                 this.drawService.isValidCircle(fc)
               ).map(f => cleanCoords(f))
@@ -953,10 +946,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.arlasMap.setCursorStyle('');
         }
       });
-      this.arlasMap.getMap().on('draw.modechange', (e) => {
-        this.isDrawingPolygon = e.mode === this.draw.modes.DRAW_POLYGON;
-        this.isDrawingStrip = e.mode === this.draw.modes.DIRECT_STRIP;
-        this.isDrawingCircle = e.mode === this.draw.modes.DRAW_CIRCLE || e.mode === this.draw.modes.DRAW_RADIUS_CIRCLE;
+      this.draw.onDrawModeChange( (e) => {
+        this.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
+        this.isDrawingStrip = e.mode === this.draw.getMode('DIRECT_STRIP');
+        this.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
         if (this.isDrawingPolygon || this.isDrawingCircle || this.isDrawingStrip || e.mode === 'static') {
           this.isInSimpleDrawMode = false;
         }
@@ -965,7 +958,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         } else if (e.mode === 'static') {
           this.arlasMap.setCursorStyle('');
         } else if (e.mode === 'direct_select') {
-          const selectedFeatures = this.draw.getSelected().features;
+          const selectedFeatures = this.draw.getSelectedFeatures();
           const selectedIds = this.draw.getSelectedIds();
           if (selectedFeatures && selectedIds && selectedIds.length > 0) {
             if (selectedFeatures[0].properties.source === 'bbox') {
@@ -977,7 +970,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
               this.draw.changeMode('limit_vertex', {
                 featureId: selectedIds[0],
                 maxVertexByPolygon: this.drawPolygonVerticesLimit,
-                selectedCoordPaths: selectedFeatures[0].geometry.coordinates
+                selectedCoordPaths: (selectedFeatures[0] as Feature<Geometry>).geometry.coordinates
               });
               this.isInSimpleDrawMode = false;
             } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
@@ -995,7 +988,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       });
 
-      this.arlasMap.getMap().on('click', (e) => {
+      this.arlasMap.on('click', (e) => {
         if (this.isDrawingCircle) {
           return;
         }
@@ -1044,14 +1037,14 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }));
 
     // Mouse events
-    this.arlasMap.getMap().on('mousedown', (e: mapboxgl.MapMouseEvent) => {
+    this.arlasMap.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.arlasMap.getMap().on('mouseup', (e: mapboxgl.MapMouseEvent) => {
+    this.arlasMap.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
 
-    this.arlasMap.getMap().on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+    this.arlasMap.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.isDrawingBbox || this.isDrawingPolygon) {
         this.arlasMap.setCursorStyle('crosshair');
@@ -1162,9 +1155,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   public switchToDrawMode(mode?: string, option?: any) {
-    const selectedMode = mode ?? this.draw.modes.DRAW_POLYGON;
-    this.isDrawingCircle = selectedMode === this.draw.modes.DRAW_CIRCLE || selectedMode === this.draw.modes.DRAW_RADIUS_CIRCLE;
-    this.isDrawingPolygon = selectedMode === this.draw.modes.DRAW_POLYGON;
+    const selectedMode = mode ?? this.draw.getMode('DRAW_POLYGON');
+    this.isDrawingCircle = selectedMode === this.draw.getMode('DRAW_CIRCLE') || selectedMode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
+    this.isDrawingPolygon = selectedMode === this.draw.getMode('DRAW_POLYGON');
     this.isInSimpleDrawMode = false;
     this.draw.changeMode(selectedMode, option ?? {});
   }
@@ -1195,7 +1188,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.drawService.deleteAll();
     }
     this.isDrawSelected = false;
-    this.onAoiChanged.next(this.draw.getAll());
+    this.onAoiChanged.next(this.draw.getAll() as FeatureCollection<GeoJSON.Geometry>);
   }
 
   @HostListener('document:keydown', ['$event'])
@@ -1290,7 +1283,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       return;
     }
     // Disable default drag zooming when we add a geobox.
-    this.arlasMap.getMap().dragPan.disable();
+    this.arlasMap.disableDragPan();
     // Call functions for the following events
     document.addEventListener('mousemove', this.mousemove);
     document.addEventListener('mouseup', this.mouseup);
@@ -1337,7 +1330,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     document.removeEventListener('mousemove', this.mousemove);
     document.removeEventListener('mouseup', this.mouseup);
     this.arlasMap.setCursorStyle('');
-    this.arlasMap.getMap().dragPan.enable();
+    this.arlasMap.enableDragPan();
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
       this.finish([[this.start, f], [e.lngLat]]);
