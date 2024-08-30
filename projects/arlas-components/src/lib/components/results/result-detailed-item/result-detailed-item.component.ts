@@ -77,20 +77,4 @@ export class ResultDetailedItemComponent implements OnInit {
   public getGroups() {
     return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
   }
-
-  public getAttachmentLabel(attachment: Attachment, index: number): string {
-    if (attachment.label && attachment.label.length > 0) {
-      return attachment.label;
-    } else {
-      return this.translate.instant('Link') + ' ' + index;
-    }
-  }
-
-  public getAttachmentDescription(attachment: Attachment): string {
-    if (attachment.description && attachment.description.length > 0) {
-      return attachment.description;
-    } else {
-      return attachment.url;
-    }
-  }
 }
