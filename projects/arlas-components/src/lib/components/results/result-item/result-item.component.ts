@@ -18,34 +18,33 @@
  */
 
 import { Component, Input, OnInit, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { Subject, takeUntil } from 'rxjs';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
-import { TranslateService } from '@ngx-translate/core';
-import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 
 @Component({
   selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
-  styleUrls: ['./result-item.component.css']
+  styleUrls: ['./result-item.component.scss']
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 
   /**
    * @constant
    */
-  public HIDE_DETAILS = marker('Hide details');
+  public readonly HIDE_DETAILS = marker('Hide details');
   /**
    * @constant
    */
-  public SHOW_DETAILS = marker('Show details');
-  public CellBackgroundStyleEnum = CellBackgroundStyleEnum;
+  public readonly SHOW_DETAILS = marker('Show details');
+  public readonly CellBackgroundStyleEnum = CellBackgroundStyleEnum;
 
   /**
    * @Input : Angular
@@ -107,49 +106,55 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * @Output
    * @description Emits the list of selected items in result-list.component.
    */
-  @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public selectedItemsEvent = new Subject<Set<string>>();
 
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
   /**
    * @Output
    * @description Emits the selected/unselected item.
    * @deprecated
    */
-  @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
+  @Output() public selectedItemPositionEvent = new Subject<Item>();
 
   /**
    * @Output
    * @description Emits the border line style depending on the item's toggle state.
    */
-  @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
+  @Output() public borderStyleEvent = new Subject<string>();
 
   public isDetailToggled = false;
   public detailedData = '';
-  public actions;
   public borderStyle = 'solid';
   public colors = {};
   protected identifier: string;
 
-  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
+  public readonly NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  public constructor(public colorService: ArlasColorService, public translate: TranslateService) {
+  private _ondestroy$ = new Subject<boolean>();
+
+  public constructor(private colorService: ArlasColorService) {
     super();
-    this.colorService.changekeysToColors$.subscribe(() => this.updateColors());
+    this.colorService.changekeysToColors$
+      .pipe(takeUntil(this._ondestroy$))
+      .subscribe(() => this.updateColors());
   }
 
   public ngOnInit() {
     this.identifier = this.rowItem?.identifier;
     this.updateColors();
-
   }
 
-  // Detailed data is retrieved wheb the row is toggled for the first time
+  public ngOnDestroy() {
+    this._ondestroy$.next(true);
+    this._ondestroy$.complete();
+  }
+
+  /** Detailed data is retrieved when the row is toggled for the first time */
   public toggle() {
     if (this.rowItem.isDetailToggled === false) {
       this.retrieveAdditionalInfo(this.detailedDataRetriever, this.rowItem);
@@ -162,17 +167,17 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
 
   }
 
-  // Update the list of the selected items
+  /** Update the list of the selected items */
   public setSelectedItem() {
-    super.setSelectedItem(this.rowItem.isChecked, this.identifier, this.selectedItems);
-    this.rowItem.isChecked = !this.rowItem.isChecked;
-    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
-    this.selectedItemsEvent.next(this.selectedItems);
-  }
-  public determinateItem() {
-    this.rowItem.isChecked = true;
-    this.rowItem.isindeterminated = false;
-    this.selectedItems.add(this.identifier);
+    if (this.rowItem.isindeterminated) {
+      this.rowItem.isChecked = true;
+      this.rowItem.isindeterminated = false;
+      this.selectedItems.add(this.identifier);
+    } else {
+      super.setSelectedItem(this.rowItem.isChecked, this.identifier, this.selectedItems);
+      this.rowItem.isChecked = !this.rowItem.isChecked;
+    }
+
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
     this.selectedItemsEvent.next(this.selectedItems);
   }
@@ -186,9 +191,10 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
+    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.identifier } });
   }
 
+  // TODO: can't it be replaced by the colorService ?
   private updateColors() {
     const newColor = {};
     this.rowItem?.columns.forEach(c => {
