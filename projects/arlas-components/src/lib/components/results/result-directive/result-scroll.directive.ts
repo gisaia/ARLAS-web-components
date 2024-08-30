@@ -42,11 +42,11 @@ export class ResultScrollDirective implements OnChanges {
   private lastScrollTop = 0;
   private previousFirstId: string = null;
   private previousLastId: string = null;
-  private tbodyHeight;
+  private tbodyHeight: number;
   private scrolledProgramatically = false;
-  private nbScrolledLines;
-  private top;
-  private height;
+  private nbScrolledLines: number;
+  private top: number;
+  private height: number;
   public constructor(private el: ElementRef) { }
 
   public ngOnChanges(changes: SimpleChanges) {
