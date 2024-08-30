@@ -1,10 +1,10 @@
-<input *ngIf="!column?.isIdField&&(dropdownValues?.length==0||dropdownValues==null)" type="text" class="form-control resultlist__header--filters resultlist__header--filters__{{column?.fieldName}}" (blur)="setFilter()" (keyup.enter)="setFilterOnKeyEnter($event)"
-    [(ngModel)]="inputValue">
+<input *ngIf="!column?.isIdField && (dropdownValues?.length === 0 || dropdownValues === null)" type="text" [(ngModel)]="inputValue"
+    class="resultlist__header--filters resultlist__header--filters__{{column?.fieldName}}" (blur)="setFilter()" (keyup.enter)="setFilterOnKeyEnter($event)">
 
-<mat-form-field *ngIf="!column?.isIdField&&dropdownValues?.length>0" 
-    class="form-control resultlist__header--filters resultlist__header--filters--dropdown resultlist__header--filters__{{column?.fieldName}}" 
-    [style.width.px]="column?.width-10">
-    <mat-select [id]="column?.fieldName" placeholder=""  multiple class="resultlist__dropdown-select" [style.width.px]="column?.width-20" (selectionChange)="selectionChange($event)" [value]="selected">
-        <mat-option  class="resultlist__dropdown-option" *ngFor="let value of dropdownValues"  [value]="value">{{value}}</mat-option>
+<mat-form-field *ngIf="!column?.isIdField && dropdownValues?.length > 0" [style.width.px]="column?.width - 10"
+        class="resultlist__header--filters resultlist__header--filters--dropdown resultlist__header--filters__{{column?.fieldName}}">
+    <mat-select [id]="column?.fieldName" placeholder="" multiple class="resultlist__dropdown-select" [style.width.px]="column?.width - 20"
+            (selectionChange)="selectionChange($event)" [value]="selected">
+        <mat-option  class="resultlist__dropdown-option" *ngFor="let value of dropdownValues" [value]="value">{{value}}</mat-option>
     </mat-select>
 </mat-form-field>

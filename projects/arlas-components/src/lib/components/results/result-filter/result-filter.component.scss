@@ -17,7 +17,10 @@
  * under the License.
  */
 
-.resultlist__header--filters /* @doc Sets filters container style.*/
-{
-  margin: 0
+.resultlist__header--filters /* @doc Sets filters container style.*/ {
+  margin: 0;
+
+  ::ng-deep.mat-form-field-infix {
+    border-top: 0;
+  }
 }

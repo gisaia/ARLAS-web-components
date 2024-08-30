@@ -26,7 +26,7 @@ import { ItemDataType } from '../utils/results.utils';
 @Component({
   selector: '[arlas-result-filter]',
   templateUrl: './result-filter.component.html',
-  styleUrls: ['./result-filter.component.css']
+  styleUrls: ['./result-filter.component.scss']
 })
 export class ResultFilterComponent implements OnInit, OnChanges {
 
@@ -40,7 +40,7 @@ export class ResultFilterComponent implements OnInit, OnChanges {
    * @description A map of columns to filter : key = column (or field) name & value = field value.
    * This components sets directly this map.
    */
-  @Input() public filtersMap: Map<string, ItemDataType> = new Map();
+  @Input() public filtersMap = new Map<string, ItemDataType>();
   /**
    * @Input
    * @description The filter value.
@@ -50,40 +50,37 @@ export class ResultFilterComponent implements OnInit, OnChanges {
    * @Input
    * @description The values of dropdown list.
    */
-  @Input() public dropdownValues: Array<string> = new Array<string>();
+  @Input() public dropdownValues = new Array<string>();
   /**
    * @Output
    * @description Emits the map of filtered columns and the filters values (fieldName-fieldValue map).
    */
-  @Output() public setFiltersEvent: Subject<Map<string, ItemDataType>> = new Subject();
+  @Output() public setFiltersEvent = new Subject<Map<string, ItemDataType>>();
 
   /**
    * @Output
    * @description Emits the column on change to notify the main component.
    */
-  @Output() public columnChanged: Subject<Column> = new Subject<Column>();
+  @Output() public columnChanged = new Subject<Column>();
 
-  public selected: Array<any> = new Array<any>();
+  public selected = new Array<string>();
 
   public constructor() { }
 
   public ngOnInit() {
   }
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['filtersMap'] !== undefined) {
-      if (changes['filtersMap'].currentValue !== undefined) {
-        if (changes['filtersMap'].currentValue !== changes['filtersMap'].previousValue) {
-          if (changes['filtersMap'].currentValue.get(this.column.fieldName) !== undefined) {
-            if (this.inputValue !== changes['filtersMap'].currentValue.get(this.column.fieldName)) {
-              this.inputValue = changes['filtersMap'].currentValue.get(this.column.fieldName);
-              this.selected = new Array<any>();
-              this.inputValue.split(',').forEach(v => this.selected.push(v));
-            }
-          } else {
-            this.inputValue = '';
-            this.selected = new Array<any>();
-          }
+    if (changes['filtersMap'] !== undefined && !!changes['filtersMap'].currentValue !== undefined
+        && changes['filtersMap'].currentValue !== changes['filtersMap'].previousValue) {
+      if (changes['filtersMap'].currentValue.get(this.column.fieldName) !== undefined) {
+        if (this.inputValue !== changes['filtersMap'].currentValue.get(this.column.fieldName)) {
+          this.inputValue = changes['filtersMap'].currentValue.get(this.column.fieldName);
+          this.selected = new Array();
+          this.inputValue.split(',').forEach(v => this.selected.push(v));
         }
+      } else {
+        this.inputValue = '';
+        this.selected = new Array();
       }
     }
   }
@@ -91,8 +88,6 @@ export class ResultFilterComponent implements OnInit, OnChanges {
   public setFilterOnKeyEnter(event) {
     event.target.blur();
   }
-
-
 
   // Update the map of the filtered fields. If a filter is empty, the correspondant field is removed from the map
   public setFilter() {
