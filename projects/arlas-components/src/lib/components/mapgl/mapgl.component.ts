@@ -1668,8 +1668,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     }
   }
 
-  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-    collection?: string): void {
+  private updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>,
+      visibilityEvent: ExternalEvent, collection?: string): void {
     if (this.mapLayers && this.mapLayers.externalEventLayers) {
       this.mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.map.getLayer(layer.id) !== undefined) {
@@ -1678,8 +1678,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-            if (this.map.getLayer(originalLayerId) !== undefined) {
-              originalLayerIsVisible = (this.map.getLayer(originalLayerId) as ArlasAnyLayer).layout.visibility === 'visible';
+            const originalLayer = this.map.getStyle().layers.find(l => l.id === originalLayerId);
+            if (!!originalLayer) {
+              originalLayerIsVisible = (originalLayer as ArlasAnyLayer).layout.visibility === 'visible';
             }
             const layerFilter: Array<any> = [];
             const externalEventLayer = this.layersMap.get(layer.id);
