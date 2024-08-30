@@ -1,21 +1,13 @@
 import { MapSource } from './mapSource';
 import { IconConfig, VisualisationSetConfig } from '../mapgl.component';
 import { FeatureCollection } from '@turf/helpers';
-import { ArlasAnyLayer, MapExtend } from '../mapgl.component.util';
-import { ControlButton, DrawControl } from '../mapgl.component.control';
+import { MapExtend } from '../mapgl.component.util';
+import { ControlButton } from '../mapgl.component.control';
 import { ExternalEvent, MapLayers } from './mapLayers';
 import { Observable, Subscription } from 'rxjs';
-import mapboxgl, {
-  AnyLayer,
-  AnySourceData,
-  Control,
-  FilterOptions,
-  IControl,
-  LngLatBoundsLike, LngLatLike,
-  MapLayerEventType
-} from 'mapbox-gl';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { ElementIdentifier } from '../../results/utils/results.utils';
+import { ArlasDraw } from "./ArlasDraw";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -43,7 +35,7 @@ export interface DrawConfigControl extends ConfigControls {
 }
 
 export interface DrawControlsOption {
-  draw: {control: DrawControl; position?: ControlPosition;};
+  draw: {control: MapboxDraw; position?: ControlPosition;};
   addGeoBox: DrawConfigControl;
   removeAois: DrawConfigControl;
 }
@@ -58,8 +50,6 @@ export interface BindLayerToEvent<T>  {
   layers: string[];
   mapEventBinds: MapEventBinds<T>[];
 }
-
-
 
 export interface BaseMapGlConfig<T> {
   displayCurrentCoordinates: boolean;
@@ -92,8 +82,6 @@ export interface ArlasMapOffset {
   west: number;
 }
 
-const defaultFitBoundPadding = 10;
-
 export abstract class AbstractArlasMapGL {
   /**
    *  props and method with unknow type will be specific to the map provider
@@ -105,7 +93,7 @@ export abstract class AbstractArlasMapGL {
   public abstract endlngLat: unknown;
   public abstract movelngLat: unknown;
 
-  protected abstract _mapProvider: unknown;
+
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -121,7 +109,7 @@ export abstract class AbstractArlasMapGL {
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
   protected _dataSources?: Set<string>;
-  public layersMap: Map<string, ArlasAnyLayer>;
+  public abstract layersMap: Map<string, unknown>;
   public firstDrawLayer: string;
   protected _emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
@@ -208,7 +196,7 @@ export abstract class AbstractArlasMapGL {
   protected abstract loadIcons(): void;
 
   protected abstract addSourcesToMap(sources: Array<MapSource>): void;
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  MapLayerEventType>[]): void;
+  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: unknown[]): void;
   protected abstract bindCustomEvent(): void;
   protected abstract addVisuLayers(): void;
   public abstract reorderLayers(): void;
@@ -225,12 +213,12 @@ export abstract class AbstractArlasMapGL {
   public abstract getColdOrHotLayers();
   public abstract findVisualisationSetLayer(visuName: string);
   public abstract setVisualisationSetLayers(visuName: string, layers: string[]);
-  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void;
+  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<unknown>, sources: Array<MapSource>): void;
   protected abstract addExternalEventLayers();
   protected abstract getMoveEnd(): void;
-  public abstract paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions);
-  public abstract drop(event: CdkDragDrop<string[]>): void;
-  public abstract dropLayer(event: CdkDragDrop<string[]>, visuName: string): void;
+  public abstract paddedFitBounds(bounds:unknown, options?: mapboxgl.FitBoundsOptions);
+  public abstract drop(event:unknown): void;
+  public abstract dropLayer(event: unknown, visuName: string): void;
   public abstract  highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; });
   public abstract  selectFeatures(elementToSelect: Array<ElementIdentifier>): void;
   public abstract selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string): void;
@@ -251,26 +239,27 @@ export abstract class AbstractArlasMapGL {
    * if we change the implementation, as we used addLayer in all our app,
    * the change is transparent.
    */
-  public abstract setLayersMap(mapLayers: MapLayers<AnyLayer>, layers?: Array<AnyLayer>): void;
+  public abstract on(event: string, func: (e) => void)
+  public abstract setLayersMap(mapLayers: MapLayers<unknown>, layers?: Array<unknown>): void;
   public abstract setCursorStyle(cursor: string): void;
-  public abstract addSource(sourceId: string, source: AnySourceData): void;
+  public abstract addSource(sourceId: string, source: unknown): void;
   public abstract getMap(): any;
   public abstract getMapExtend(): MapExtend;
-  public abstract addLayer(layerId: AnyLayer, before?: string);
+  public abstract addLayer(layerId: any, before?: string);
   public abstract getLayerFromMapProvider(layerId: string);
   public abstract moveLayer(id: string, before?: string);
   public abstract getSource(id: string);
-  public abstract setLayoutProperty(layer: string, name: string, value: any, options?: FilterOptions);
+  public abstract setLayoutProperty(layer: string, name: string, value: any, options?: unknown);
   public abstract addControl(control: ControlButton, position?: ControlPosition,  eventOverrid?: {
     event: string; fn: (e?) => void;});
-  public abstract addControl(control: Control | IControl, position?: ControlPosition);
-  public abstract addControl(control: Control | IControl | ControlButton,
+  public abstract addControl(control: unknown, position?: ControlPosition);
+  public abstract addControl(control: unknown,
                              position?: ControlPosition,
                              eventOverrid?: {
     event: string; fn: (e?) => void;
   });
   public abstract getBounds(): void;
-  public abstract fitBounds(bounds: LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData): void;
+  public abstract fitBounds(bounds: unknown, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData): void;
   public abstract setCenter(lngLat: [number, number]): void;
   public abstract getWestBounds(): void;
   public abstract getNorthBounds(): void;
