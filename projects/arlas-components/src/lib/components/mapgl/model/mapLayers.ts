@@ -34,6 +34,7 @@ export interface LayerEvents {
 export interface ExternalEventLayer {
   id: string;
   on: ExternalEvent;
+  filter?: any[] | boolean;
 }
 
 export enum ExternalEvent {

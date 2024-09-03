@@ -29,7 +29,7 @@ export class LayerIdToName implements PipeTransform {
   /** FROM V15.0.0 layer ids look like 'arlas_id:NAME:timestamp
    * This pipe extracts the 'NAME' in that id
    */
-  public transform(id: string): any {
+  public transform(id: string): string {
     return getLayerName(id);
   }
 

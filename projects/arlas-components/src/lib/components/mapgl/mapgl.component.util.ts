@@ -18,10 +18,10 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Point } from 'mapbox-gl';
+import mapboxgl, { Point } from 'mapbox-gl';
 
 export function paddedBounds(npad: number, spad: number, epad: number,
-  wpad: number, map: any, SW, NE) {
+    wpad: number, map: mapboxgl.Map, SW: mapboxgl.LngLatLike, NE: mapboxgl.LngLatLike) {
   const topRight = map.project(NE);
   const bottomLeft = map.project(SW);
   const scale = 1;
@@ -109,6 +109,7 @@ export interface Legend {
 }
 
 
+// TODO: when using typescript >= 5.0, use marker to pick up i18n keys
 export enum PROPERTY_SELECTOR_SOURCE {
   fix = 'Fix',
   provided = 'Provided',

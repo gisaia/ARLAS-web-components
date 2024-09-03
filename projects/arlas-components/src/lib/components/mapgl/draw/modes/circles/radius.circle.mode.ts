@@ -165,7 +165,7 @@ radiusCircleMode.onMouseMove = function (state, e) {
     const options =  {steps: state.steps, units: state.units};
     const circleFeature = circle(center, radiusInKm, options);
     circleFeature.properties.parent = state.line.id;
-    (circleFeature.properties as any).meta = 'radius';
+    circleFeature.properties.meta = 'radius';
     state.circle.setCoordinates(circleFeature.geometry.coordinates);
 };
 

@@ -24,7 +24,7 @@ export abstract class BaseCollectionService {
   protected abstract _initDisplayNames(): void;
   public abstract getDisplayName(collectionName: string): string;
   public abstract getUnit(collectionName: string): string;
-  public abstract getAllUnits(): any[];
+  public abstract getAllUnits(): string[];
 }
 
 export class AwcCollectionService extends BaseCollectionService {

@@ -17,49 +17,54 @@
  * under the License.
  */
 
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { HttpClient } from '@angular/common/http';
 import {
   AfterViewInit, Component, EventEmitter,
-  HostListener, Input, ViewEncapsulation,
+  HostListener, Input,
   OnChanges, OnDestroy, OnInit, Output, SimpleChanges,
+  ViewEncapsulation,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
+import { TranslateService } from '@ngx-translate/core';
+import centroid from '@turf/centroid';
+import cleanCoords from '@turf/clean-coords';
+import { Feature, FeatureCollection, Geometry, MultiPolygon, Polygon, polygon } from '@turf/helpers';
+import * as mapboxgl from 'mapbox-gl';
+import { AnyLayer, TransformRequestFunction } from 'mapbox-gl';
 import { Subject, Subscription, fromEvent } from 'rxjs';
 import { debounceTime, finalize } from 'rxjs/operators';
-import { ElementIdentifier } from '../results/utils/results.utils';
-import { ControlButton, PitchToggle, DrawControl } from './mapgl.component.control';
-import { paddedBounds, MapExtend, LegendData, ArlasAnyLayer } from './mapgl.component.util';
-import * as mapglJsonSchema from './mapgl.schema.json';
-import {
-  MapLayers, ExternalEvent,
-  ARLAS_ID, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, ARLAS_VSET
-} from './model/mapLayers';
-import { MapSource } from './model/mapSource';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Feature, Polygon, polygon, FeatureCollection, Geometry } from '@turf/helpers';
-import centroid from '@turf/centroid';
-import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
-import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
-import * as mapboxgl from 'mapbox-gl';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { TranslateService } from '@ngx-translate/core';
-import { TransformRequestFunction, AnyLayer } from 'mapbox-gl';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
-import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
-import { MapboxAoiDrawService } from './draw/draw.service';
-import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
+import { ElementIdentifier } from '../results/utils/results.utils';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
+import { MapboxAoiDrawService } from './draw/draw.service';
 import circleMode from './draw/modes/circles/circle.mode';
 import radiusCircleMode from './draw/modes/circles/radius.circle.mode';
-import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
 import directModeOverride from './draw/modes/directSelectOverride';
-import stripMode from './draw/modes/strip/strip.mode';
+import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
-import cleanCoords from '@turf/clean-coords';
+import stripMode from './draw/modes/strip/strip.mode';
+import { ControlButton, DrawControl, PitchToggle } from './mapgl.component.control';
+import { ArlasAnyLayer, LegendData, MapExtend, paddedBounds } from './mapgl.component.util';
+import * as mapglJsonSchema from './mapgl.schema.json';
+import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
+import {
+  ARLAS_ID,
+  ARLAS_VSET,
+  ExternalEvent,
+  FILLSTROKE_LAYER_PREFIX,
+  MapLayers,
+  SCROLLABLE_ARLAS_ID
+} from './model/mapLayers';
+import { MapSource } from './model/mapSource';
+import * as styles from './model/theme';
+import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -118,6 +123,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     'type': 'FeatureCollection',
     'features': []
   };
+  // TODO: to remove since never defined ?
   private index: any;
   private north: number;
   private east: number;
@@ -1528,7 +1534,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.map.setCenter(lngLat);
   }
 
-  private latLngToWKT(features) {
+  private latLngToWKT(features: Array<Feature<Polygon | MultiPolygon>>) {
     let wktType = 'POLYGON[###]';
     if (features.length > 1) {
       wktType = 'MULTIPOLYGON([###])';
@@ -1537,7 +1543,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     let polygons = '';
     features.forEach((feat, indexFeature) => {
       if (feat) {
-        const currentFeat: Array<any> = feat.geometry.coordinates;
+        const currentFeat = feat.geometry.coordinates;
         polygons += (indexFeature === 0 ? '' : ',') + '((';
         currentFeat[0].forEach((coord, index) => {
           polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
@@ -1697,7 +1703,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
               this.map.setFilter(layer.id, layerFilter);
               this.map.setLayoutProperty(layer.id, 'visibility', 'visible');
             } else {
-              this.map.setFilter(layer.id, (layer as any).filter);
+              this.map.setFilter(layer.id, layer.filter);
               this.map.setLayoutProperty(layer.id, 'visibility', 'none');
             }
           }

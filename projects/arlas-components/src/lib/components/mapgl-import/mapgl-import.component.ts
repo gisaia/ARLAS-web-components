@@ -63,7 +63,7 @@ export class MapglImportDialogComponent implements OnInit {
   public GEOJSON: string = marker('geojson');
 
   @Output() public file = new Subject<File>();
-  @Output() public importRun = new Subject<any>();
+  @Output() public importRun = new Subject<{ type: string; fitResult: boolean; wktContent: string; }>();
   @ViewChild('fileInput', { static: false }) public fileInput: ElementRef;
 
   public constructor(
@@ -157,7 +157,7 @@ export class MapglImportComponent {
   @Input() public allowedImportType = [this.SHP, this.KML, this.WKT, this.GEOJSON];
   @Input() public allowedGeometryObjectType: Array<AllowedImportGeometry> = ['Polygon'];
   @Output() public imported = new Subject<any>();
-  @Output() public error = new Subject<any>();
+  @Output() public error = new Subject<string>();
   private _currentAllowedGeom: string[];
   public constructor(
     public dialog: MatDialog

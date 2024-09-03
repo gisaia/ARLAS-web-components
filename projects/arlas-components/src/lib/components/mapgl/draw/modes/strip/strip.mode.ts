@@ -171,7 +171,7 @@ stripMode.onMouseMove = function (state, e) {
     if (stripLenght <= state.maxLength) {
         const stripFeature = buildStrip(start, end, state.halfSwath);
         stripFeature.properties.parent = state.line.id;
-        (stripFeature.properties as any).meta = 'strip';
+        stripFeature.properties.meta = 'strip';
         state.strip.setCoordinates(stripFeature.geometry.coordinates);
         const startPoint = point(start);
         const endPoint = point(end);
@@ -181,7 +181,7 @@ stripMode.onMouseMove = function (state, e) {
     } else {
         const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
         stripFeature.properties.parent = state.line.id;
-        (stripFeature.properties as any).meta = 'strip';
+        stripFeature.properties.meta = 'strip';
         state.strip.setCoordinates(stripFeature.geometry.coordinates);
         state.strip.properties['bearingAngle'] = bearingToAzimuth(state.currentMaxBearing);
     }

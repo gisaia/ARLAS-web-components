@@ -162,7 +162,7 @@ export class MapboxAoiDrawService {
     });
   }
 
-  private hasFeatures(features: any[]) {
+  private hasFeatures(features: Array<GeoJSON.Feature>) {
     return !!features && features.length > 0;
   }
 

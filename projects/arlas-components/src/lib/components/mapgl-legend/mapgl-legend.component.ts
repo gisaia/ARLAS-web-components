@@ -515,7 +515,7 @@ export class MapglLegendComponent implements OnInit, AfterViewInit, OnChanges {
 export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>,
     cLegend: Legend, legendWidth: number, legendHeight: number) {
   const maxHeight = getMax(lineWidths);
-  const xDomain: any = (scaleLinear()).range([0, legendWidth]);
+  const xDomain = (scaleLinear()).range([0, legendWidth]);
   const xDomainExtent = [lineWidths[0].key, lineWidths[lineWidths.length - 1].key];
   xDomain.domain(xDomainExtent);
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);

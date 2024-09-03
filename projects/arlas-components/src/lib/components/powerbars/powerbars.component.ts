@@ -350,7 +350,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     this.unselectAllButNotSelectedBars();
   }
 
-  public onKeyUp(searchText: any) {
+  public onKeyUp(searchText: string) {
     this.searchedTerm.next(searchText);
   }
 
@@ -378,7 +378,8 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     this.powerBarsList = this.fetchPowerbarsList(this.level, this.inputData);
   }
 
-  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?: Array<PowerBar>, recursivityCount?: number, path?: any) {
+  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?: Array<PowerBar>,
+      recursivityCount?: number, path?: Array<{ fieldName: string; fieldValue: string; }>) {
     if (recursivityCount === undefined) {
       recursivityCount = 0;
     }

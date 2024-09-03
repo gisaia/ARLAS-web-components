@@ -57,7 +57,7 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
   public layer: string;
   public style: string;
   public formGroup: UntypedFormGroup;
-  public imageToShow: any;
+  public imageToShow: string | ArrayBuffer;
   public isImageLoading = false;
   public showError = false;
   public previewLoading = false;
