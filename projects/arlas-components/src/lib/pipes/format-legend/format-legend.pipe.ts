@@ -45,7 +45,7 @@ export interface LegendParamsResult {
  *   return the original key to be translated. This case appear only if we fail
  *   to parse of if we have an error.
  */
-export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'noMetric' | 'original';
+export type ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'noMetric' | 'original';
 
 @Pipe({
   name: 'formatLegend'

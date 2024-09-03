@@ -17,9 +17,8 @@
  * under the License.
  */
 
-import { NgModule, Provider, ModuleWithProviders } from '@angular/core';
-import { ArlasColorService } from './color.generator.service';
-import { ColorGeneratorLoader, AwcColorGeneratorLoader } from '../components/componentsUtils';
+import { ModuleWithProviders, NgModule, Provider } from '@angular/core';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../components/componentsUtils';
 
 export interface ColorGeneratorModuleConfig {
   loader?: Provider;

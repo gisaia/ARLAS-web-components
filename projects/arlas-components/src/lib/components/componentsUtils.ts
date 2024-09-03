@@ -21,7 +21,7 @@ import { mix } from 'tinycolor2';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 
-export function formatNumber(x, formatChar = ' '): string {
+export function formatNumber(x: string, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
@@ -58,14 +58,6 @@ export function numberToShortValue(number: number, p?: number): string {
 }
 export const DEFAULT_SHORTENING_PRECISION = 2;
 
-export function getKeys(map): Array<string> {
-  return Array.from(map.keys());
-}
-
-export function getValues(map): Array<any> {
-  return Array.from(map.values());
-}
-
 export abstract class ColorGeneratorLoader {
   public abstract keysToColors: Array<[string, string]>;
   public abstract colorsSaturationWeight: number;
@@ -78,7 +70,7 @@ export abstract class ColorGeneratorLoader {
    * tightens this scale to [(1-colorsSaturationWeight), 1]. Therefore all generated colors saturation will be within this scale.
    */
   public abstract getColor(key: string, externalkeysToColors: Array<[string, string]>, externalColorsSaturationWeight: number): string;
-  public abstract getTextColor(color): string;
+  public abstract getTextColor(color: string): string;
 }
 
 export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
@@ -123,7 +115,7 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
     return colorHex;
   }
 
-  public getTextColor(color): string {
+  public getTextColor(color: string): string {
     return '#000000';
   }
 
@@ -151,7 +143,6 @@ export class SelectFormControl extends UntypedFormControl {
 
   public constructor(
     formState: any,
-    label: string,
     options: Array<string>) {
 
     super(formState, Validators.required);
@@ -168,8 +159,8 @@ export class SelectFormControl extends UntypedFormControl {
 const ARLAS_ID = 'arlas_id:';
 
 /** FROM V15.0.0 layer ids look like 'arlas_id:NAME:timestamp
-   * This pipe extracts the 'NAME' in that id
-   */
+ * This pipe extracts the 'NAME' in that id
+ */
 export function getLayerName(id: string): string {
   if (!!id && id.startsWith(ARLAS_ID)) {
     const datedName = id.split(ARLAS_ID)[1];

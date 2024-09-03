@@ -18,7 +18,6 @@
  */
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 
 // eslint-disable-next-line max-len
 export const DECIMAL_SEXAGESIMAL_REGEX = '^(?<decimal>[+-]?([0-9]*[.])?[0-9]+)$|^(?<degrees>(-?)[0-9]+)°[ ]*((?<minutes>[0-9]+)\'[ ]*((?<seconds>[0-9]+)\")?)?$';
@@ -26,9 +25,6 @@ export class PointFormGroup extends FormGroup {
 
     public latitude: FormControl;
     public longitude: FormControl;
-
-    public latitudeChanges$: Observable<any>;
-    public longitudesChanges$: Observable<any>;
 
     public constructor(initLat: number | string, initLng: number | string) {
         const coordinatesRegex = DECIMAL_SEXAGESIMAL_REGEX;

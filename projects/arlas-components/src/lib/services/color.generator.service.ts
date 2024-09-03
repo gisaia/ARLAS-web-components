@@ -26,7 +26,7 @@ import { Subject } from 'rxjs';
 })
 export class ArlasColorService {
 
-  private changekeysToColors =  new Subject<void>();
+  private changekeysToColors = new Subject<void>();
   public changekeysToColors$ = this.changekeysToColors.asObservable();
   public constructor(public colorGenerator: ColorGeneratorLoader) {
     this.colorGenerator.changekeysToColors$.subscribe(() => this.changekeysToColors.next());
@@ -37,7 +37,7 @@ export class ArlasColorService {
     return this.colorGenerator.getColor(key, keysToColors, colorsSaturationWeight);
   }
 
-  public getTextColor(color): string {
+  public getTextColor(color: string): string {
     return this.colorGenerator.getTextColor(color);
   }
 

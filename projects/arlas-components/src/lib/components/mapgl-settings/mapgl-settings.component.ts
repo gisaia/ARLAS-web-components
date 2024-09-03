@@ -104,8 +104,8 @@ export class MapglSettingsDialogComponent implements OnInit {
     const selectedOperationSelectModel = operationsSelectModel.find(osm => osm.selected);
     const selectedOperation = !!selectedOperationSelectModel ?  selectedOperationSelectModel.operation : GeoQueryOperator.INTERSECTS;
     const geoQueryControls = {
-      a_operation: new SelectFormControl(selectedOperation, '', operations),
-      b_geometryPath: new SelectFormControl(selectedGeometryPath, '', geometryPaths),
+      a_operation: new SelectFormControl(selectedOperation, operations),
+      b_geometryPath: new SelectFormControl(selectedGeometryPath, geometryPaths),
       c_collection: new UntypedFormControl(collectionName),
       d_displayCollectionName: new UntypedFormControl(displayCollectionName),
     };

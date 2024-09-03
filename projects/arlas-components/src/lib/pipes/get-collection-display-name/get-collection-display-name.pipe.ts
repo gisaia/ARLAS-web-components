@@ -26,7 +26,7 @@ export class GetCollectionDisplayNamePipe implements PipeTransform {
   public constructor(private collectionService: CollectionService) {
   }
 
-  public transform(value: string, ...args: unknown[]): string {
+  public transform(value: string): string {
     if(!value) {
       return  '';
     }

@@ -19,6 +19,7 @@
 
 import { Injectable } from '@angular/core';
 import { MapSource } from '../components/mapgl/model/mapSource';
+import mapboxgl from 'mapbox-gl';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class MapglService {
   /**
    * @description Add map sources
    */
-  public addSourcesToMap(sources: Array<MapSource>, map: any) {
+  public addSourcesToMap(sources: Array<MapSource>, map: mapboxgl.Map) {
     // Add sources defined as input in mapSources;
     const mapSourcesMap = new Map<string, MapSource>();
     if (sources) {

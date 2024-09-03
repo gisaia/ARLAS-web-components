@@ -17,14 +17,14 @@
  * under the License.
  */
 import { Pipe, PipeTransform } from '@angular/core';
-import { HistogramUtils } from 'arlas-d3';
+import { HistogramParams, HistogramUtils } from 'arlas-d3';
 
 @Pipe({
   name: 'histogramKey'
 })
 export class HistogramKeyPipe implements PipeTransform {
 
-  public transform(key: any, ...args: any[]): string {
-    return HistogramUtils.toString(key, args[0]);
+  public transform(key: Date | number, params: HistogramParams): string {
+    return HistogramUtils.toString(key, params);
   }
 }

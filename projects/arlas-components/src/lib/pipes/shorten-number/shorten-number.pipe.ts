@@ -29,7 +29,7 @@ export class ShortenNumberPipe implements PipeTransform {
 
   public constructor() {}
 
-  public transform(number: number, precision: number = DEFAULT_SHORTENING_PRECISION): any {
+  public transform(number: number, precision: number = DEFAULT_SHORTENING_PRECISION): string {
     return numberToShortValue(number, precision);
   }
 }

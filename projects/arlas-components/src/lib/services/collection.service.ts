@@ -20,8 +20,8 @@
 import { Injectable } from '@angular/core';
 
 export abstract class BaseCollectionService {
-  protected abstract _initUnits();
-  protected abstract _initDisplayNames();
+  protected abstract _initUnits(): void;
+  protected abstract _initDisplayNames(): void;
   public abstract getDisplayName(collectionName: string): string;
   public abstract getUnit(collectionName: string): string;
   public abstract getAllUnits(): any[];
