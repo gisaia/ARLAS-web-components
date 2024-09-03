@@ -19,15 +19,14 @@
 
 import {
   AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
-  IterableDiffers, SimpleChanges, ViewEncapsulation
+  IterableDiffers, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
-import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
-import { TranslateService } from '@ngx-translate/core';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ngxLoadingAnimationTypes } from 'ngx-loading';
 import { fromEvent, Observable, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, take, takeUntil } from 'rxjs/operators';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { Column } from '../model/column';
 import { Item } from '../model/item';
@@ -37,9 +36,10 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
-  PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import {
+  Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
+  matchAndReplace, PageQuery, ResultListOptions
+} from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -52,54 +52,54 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
   styleUrls: ['./result-list.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
+export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit, OnDestroy {
 
   /**
    * @constant
    */
-  public GEO_DISTANCE = 'geodistance';
+  public readonly GEO_DISTANCE = 'geodistance';
 
   /**
    * @constant
    */
-  public FILTER_ON = marker('Filter on');
+  public readonly FILTER_ON = marker('Filter on');
 
   /**
    * @constant
    */
-  public GLOBAL_ACTIONS = marker('Global actions');
+  public readonly GLOBAL_ACTIONS = marker('Global actions');
   /**
    * @constant
    */
-  public GEOSORT_ACTION = marker('Geo sort action');
+  public readonly GEOSORT_ACTION = marker('Geo sort action');
   /**
    * @constant
    */
-  public GRID_MODE = marker('Grid mode');
+  public readonly GRID_MODE = marker('Grid mode');
   /**
    * @constant
    */
-  public LIST_MODE = marker('List mode');
+  public readonly LIST_MODE = marker('List mode');
 
   /**
    * @constant
    */
-  public CONTAIN_FIT = marker('Fit the whole thumbnail to the tile');
+  public readonly CONTAIN_FIT = marker('Fit the whole thumbnail to the tile');
 
   /**
    * @constant
    */
-  public WIDTH_FIT = marker('Fit the thumbnail\'s width to the tile');
+  public readonly WIDTH_FIT = marker('Fit the thumbnail\'s width to the tile');
 
   /**
    * @constant
    */
-  public HEIGHT_FIT = marker('Fit the thumbnail\'s height to the tile');
+  public readonly HEIGHT_FIT = marker('Fit the thumbnail\'s height to the tile');
 
   /**
    * @constant
    */
-  public GEOSORT_BUTTON = marker('Geo-sort');
+  public readonly GEOSORT_BUTTON = marker('Geo-sort');
 
   /**
    * @constant
@@ -171,7 +171,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description The table width. If not specified, the tableWidth value is
    * equal to container width.
    */
-  @Input() public tableWidth: number = null;
+  @Input() public tableWidth = 450;
 
   /**
    * @Input : Angular
@@ -272,17 +272,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description A fieldName-fieldValue map of fields to filter.
    */
 
-  @Input() public filtersMap: Map<string, ItemDataType>;
+  @Input() public filtersMap = new Map<string, ItemDataType>();
 
   /**
    * @Input : Angular
-   * @description A  map of fieldName- Observable of array value for dropdown filter
+   * @description A map of fieldName- Observable of array value for dropdown filter
    */
 
   @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
   /**
    * @Input : Angular
-   * @description A  boolean to show or hide thead of table
+   * @description A boolean to show or hide thead of table
    */
   @Input() public displayThead = true;
 
@@ -340,32 +340,31 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
-  @Output() public sortColumnEvent: Subject<{ fieldName: string; sortDirection: SortEnum; }> =
-    new Subject<{ fieldName: string; sortDirection: SortEnum; }>();
+  @Output() public sortColumnEvent = new Subject<{ fieldName: string; sortDirection: SortEnum; }>();
 
   /**
    * @Output : Angular
    * @description Emits the event of geo-sorting data.
    */
-  @Output() public geoSortEvent: Subject<string> = new Subject<string>();
+  @Output() public geoSortEvent = new Subject<string>();
 
   /**
    * @Output : Angular
    * @description Emits the event of geo-sorting data.
    */
-  @Output() public geoAutoSortEvent: Subject<boolean> = new Subject<boolean>();
+  @Output() public geoAutoSortEvent = new Subject<boolean>();
 
   /**
    * @Output : Angular
    * @description Emits the list of items identifiers whose checkboxes are selected.
    */
-  @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
+  @Output() public selectedItemsEvent = new Subject<Array<string>>();
 
   /**
    * @Output : Angular
-   * @description Emits one item identifier that is hovered..
+   * @description Emits one item identifier that is hovered.
    */
-  @Output() public consultedItemEvent: Subject<ElementIdentifier> = new Subject<ElementIdentifier>();
+  @Output() public consultedItemEvent = new Subject<ElementIdentifier>();
 
   /**
    * @Output : Angular
@@ -377,14 +376,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the filtred fields map (fieldName-fieldValue map).
    */
-  @Output() public setFiltersEvent: Subject<Map<string, ItemDataType>> = new Subject();
+  @Output() public setFiltersEvent = new Subject<Map<string, ItemDataType>>();
 
   /**
    * @Output : Angular
    * @description Emits the request of more data to load. The emitted number is the number of times this event has been emitted.
    * @deprecated moreDataEvent can be replaced by `paginationEvent`
    */
-  @Output() public moreDataEvent: Subject<number> = new Subject<number>();
+  @Output() public moreDataEvent = new Subject<number>();
 
   /**
    * @Output : Angular
@@ -392,56 +391,55 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * The emitted PageQuery contains the reference item from which the new page is loaded
    * and whether it is the previous or the next page.
    */
-  @Output() public paginationEvent: Subject<PageQuery> = new Subject<PageQuery>();
+  @Output() public paginationEvent = new Subject<PageQuery>();
 
   /**
    * @Output : Angular
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
   /**
    * @Output : Angular
    * @description Emits the event of applying the specified globalb action on the selected items.
    */
-  @Output() public globalActionEvent: Subject<Action> = new Subject<Action>();
+  @Output() public globalActionEvent = new Subject<Action>();
 
   /**
    * @Output : Angular
    * @description Emits the event of applying the specified global action on the selected items.
    */
-  @Output() public columnFilterChanged: Subject<Column> = new Subject<Column>();
+  @Output() public columnFilterChanged = new Subject<Column>();
 
   /**
    * @Output : Angular
    * @description Emits the event of clicking on a grid tile.
    */
-  @Output() public clickOnTile: Subject<Item> = new Subject<Item>();
+  @Output() public clickOnTile = new Subject<Item>();
 
   /**
    * @Output : Angular
    * @description Emits the event of clicking on the switch mode button. Emits the new mode (grid or list).
    */
-  @Output() public changeResultMode: Subject<ModeEnum> = new Subject<ModeEnum>();
+  @Output() public changeResultMode = new Subject<ModeEnum>();
 
   /**
    * @Output : Angular
    * @description Emits the current visible items in the viewport.
    */
-  @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
+  @Output() public visibleItems = new Subject<Array<Item>>();
 
   /**
   * @Output : Angular
   * @description Emits on changes rowItemList current value.
   */
-  @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
+  @Output() public onChangeItems = new Subject<Array<Map<string, ItemDataType>>>();
 
   /**
    * @Output : Angular
    * @description Emits when changing how thumbnails fit in their div.
    */
-  @Output() public thumbnailFitEvent: Subject<ThumbnailFitEnum> = new Subject();
+  @Output() public thumbnailFitEvent = new Subject<ThumbnailFitEnum>();
 
   /**
    * @Output : Angular
@@ -454,15 +452,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public sortedColumn: { fieldName: string; sortDirection: SortEnum; } = { fieldName: '', sortDirection: SortEnum.asc };
   public lastSortedColumn: Column;
 
-
   // Heights of table elements
   public tbodyHeight: number = null;
   public theadHeight: number = null;
 
-  public ModeEnum = ModeEnum;
-  public ThumbnailFitEnum = ThumbnailFitEnum;
-  public PageEnum = PageEnum;
-  public SortEnum = SortEnum;
+  public readonly ModeEnum = ModeEnum;
+  public readonly ThumbnailFitEnum = ThumbnailFitEnum;
+  public readonly PageEnum = PageEnum;
+  public readonly SortEnum = SortEnum;
 
   private iterableRowsDiffer;
   private iterableColumnsDiffer;
@@ -478,25 +475,36 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public isShiftDown = false;
 
   private debouncer = new Subject<ElementIdentifier>();
-  private scrollDebouncer = new Subject<any>();
-  private emitVisibleItemsDebouncer = new Subject<any>();
+  private scrollDebouncer = new Subject<{ reference: Map<string, ItemDataType>; whichPage: PageEnum; }>();
+  private emitVisibleItemsDebouncer = new Subject<Array<Item>>();
 
+  private _onDestroy = new Subject<boolean>();
 
-  public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
-    private colorService: ArlasColorService, public translate: TranslateService,
-    private cdr: ChangeDetectorRef) {
+  public constructor(
+    iterableRowsDiffer: IterableDiffers,
+    iterableColumnsDiffer: IterableDiffers,
+    private el: ElementRef,
+    private colorService: ArlasColorService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     // Resize the table height on window resize
     fromEvent(window, 'resize')
-      .pipe(debounceTime(500))
+      .pipe(debounceTime(500), takeUntil(this._onDestroy))
       .subscribe((event: Event) => {
         this.setTableHeight();
       });
     // Add debounce on hover item list
-    this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
-    this.scrollDebouncer.pipe(debounceTime(1000)).subscribe(page => this.paginationEvent.next(page));
-    this.emitVisibleItemsDebouncer.pipe(debounceTime(1000)).subscribe(event => this.visibleItems.next(event));
+    this.debouncer
+      .pipe(debounceTime(500), takeUntil(this._onDestroy))
+      .subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+    this.scrollDebouncer
+      .pipe(debounceTime(1000), takeUntil(this._onDestroy))
+      .subscribe(page => this.paginationEvent.next(page));
+    this.emitVisibleItemsDebouncer
+      .pipe(debounceTime(1000), takeUntil(this._onDestroy))
+      .subscribe(event => this.visibleItems.next(event));
   }
 
   @HostListener('document:keydown.shift', ['$event'])
@@ -523,6 +531,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public ngAfterViewInit(): void {
     this.setTableWidth();
     this.setTableHeight();
+  }
+
+  public ngOnDestroy() {
+    this._onDestroy.next(true);
+    this._onDestroy.complete();
   }
 
   public emitThumbnailsFitStatus(fitChange: MatButtonToggleChange): void {
@@ -662,7 +675,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.isNextPageRequested = whichPage === PageEnum.next;
     this.isPreviousPageRequested = whichPage === PageEnum.previous;
     this.scrollDebouncer.next({ reference: itemData, whichPage: whichPage });
-
   }
 
   /**
@@ -812,7 +824,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets the border style of rows
    */
-  public setBorderStyle(borderStyle): void {
+  public setBorderStyle(borderStyle: string): void {
     this.borderStyle = borderStyle;
   }
 
@@ -914,23 +926,25 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   /**
-   * @description set the list of actions of an item
+   * @description Set the list of actions of an item
    * @param item
    */
   public setItemActions(item: Item): void {
     if (item && (!item.actions || (item.actions && item.actions.length === 0))) {
       item.actions = new Array<Action>();
-      this.detailedDataRetriever.getActions(item).subscribe(actions => {
-        actions.forEach(action => {
-          item.actions.push({
-            id: action.id,
-            label: action.label,
-            actionBus: action.actionBus,
-            cssClass: action.cssClass,
-            tooltip: action.tooltip
+      this.detailedDataRetriever.getActions(item)
+        .pipe(take(1))
+        .subscribe(actions => {
+          actions.forEach(action => {
+            item.actions.push({
+              id: action.id,
+              label: action.label,
+              actionBus: action.actionBus,
+              cssClass: action.cssClass,
+              tooltip: action.tooltip
+            });
           });
         });
-      });
     }
   }
 
@@ -938,7 +952,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
   }
 
-  // Build the table's columns
+  /**
+   * Build the table's columns based on the list input
+   */
   private setColumns() {
     this.columns = new Array<Column>();
     const checkboxColumnWidth = 25;
@@ -1090,7 +1106,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     } else {
       // If the container has no height then try again for up to 10 times
       // Because of an issue with the DOM not loading properly the parent container, its height can be detected to be 0,
-      // even with a preset height. Multiple tiemout values were tested, but they don't have an impact on this behavior.
+      // even with a preset height. Multiple timeout values were tested, but they don't have an impact on this behavior.
       if (nbTrials < 10) {
         setTimeout(() => this.setTableHeight(nbTrials + 1), 0);
       } else {

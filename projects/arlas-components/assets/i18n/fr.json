@@ -90,7 +90,7 @@
 	"Close details": "Fermer le détail",
 	"Click to show details": "Cliquer pour afficher le détail",
 	"Hide details": "Cacher le détail",
-	"Filter on": "Filtre sur",
+	"Filter on": "Filtre sur {{column}}",
 	"Global actions": "Actions",
 	"Geo sort action": "Tri par rapport à la distance au centre de la carte",
 	"Grid mode": "Vue grille",

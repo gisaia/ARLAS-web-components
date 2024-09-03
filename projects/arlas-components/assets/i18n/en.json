@@ -90,7 +90,7 @@
 	"Close details": "Close details",
 	"Click to show details": "Click to show details",
 	"Hide details": "Hide details",
-	"Filter on": "Filter on",
+	"Filter on": "Filter on {{column}}",
 	"Global actions": "Global actions",
 	"Geo sort action": "Sort according to the distance to the map center",
 	"Grid mode": "Grid mode",

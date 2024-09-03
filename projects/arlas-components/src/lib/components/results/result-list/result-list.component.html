@@ -1,83 +1,88 @@
 <table [style.width.px]="tableWidth" class="resultlist">
   <thead *ngIf="displayThead">
-    <tr class="resultlist__filter resultlist__thead__tr" *ngIf="this.displayFilters">
+    <tr class="resultlist__filter resultlist__thead__tr" *ngIf="displayFilters">
       <ng-container *ngFor="let column of columns">
-        <td [style.width.px]="column.width" *ngIf="column.isIdField">
+        <td [style.width.px]="column.width" *ngIf="column.isIdField || column.isToggleField; else columnFilter">
           <span class="resultlist__header--columns--hidden"></span>
         </td>
-        <td arlas-result-filter class="resultlist__filter__{{column.columnName}}" *ngIf="!column.isIdField && !column.isToggleField"
-                           matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}"
-                           [style.width.px]="column.width"
-                           [column]="column"
-                           [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async"
-                           [filtersMap]="filtersMap"
-                           (columnChanged) ="columnChanged($event)"
-                           (setFiltersEvent)="setFilters($event)">
-        </td>
-        <td *ngIf="column.isToggleField" [style.width.px]="column.width">
-          <span class="resultlist__header--columns--hidden"></span>
-        </td>
+        <ng-template #columnFilter>
+          <td arlas-result-filter class="resultlist__filter__{{column.columnName}}"
+            [matTooltip]="FILTER_ON | translate: {column: column.columnName | translate}"
+            [style.width.px]="column.width" [column]="column" [filtersMap]="filtersMap"
+            [dropdownValues]="dropDownMapValues?.get(column.fieldName) | async"
+            (columnChanged)="columnChanged($event)" (setFiltersEvent)="setFilters($event)">
+          </td>
+        </ng-template>
       </ng-container>
     </tr>
     <tr class="resultlist__tools resultlist__thead__tr">
       <td [style.width.px]="tableWidth" class="resultlist__tools__td">
         <div class="resultlist__tools--select">
           <div class="resultlist__tools--select-all">
-            <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [indeterminate]="!allItemsChecked && this.selectedItems.size > 0"></mat-checkbox>
+            <mat-checkbox (change)="selectAllItems()" [checked]="allItemsChecked" [indeterminate]="!allItemsChecked && selectedItems.size > 0"></mat-checkbox>
           </div>
           <div class="resultgrid--checkbox__count">
             <span>{{selectedItems.size}}</span>
           </div>
           <div class="resultlist__tools--menu">
-              <mat-icon id="global_actions_btn" matTooltip="{{GLOBAL_ACTIONS | translate}}" mat-icon-button [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
-              <mat-menu #menu="matMenu">
-                <button id="{{action.label + '_btn'}}'" *ngFor="let action of globalActionsList"  [disabled]="!action.alwaysEnabled && selectedItems.size===0" mat-menu-item (click)="setGlobalAction(action)">
-                  <span>{{action.label | translate}}</span>
-                </button>
-              </mat-menu>
+            <mat-icon id="global_actions_btn" [matTooltip]="GLOBAL_ACTIONS | translate" mat-icon-button
+              [matMenuTriggerFor]="menu" *ngIf="globalActionsList.length > 0">more_vert</mat-icon>
+            <mat-menu #menu="matMenu">
+              <button [id]="action.label + '_btn'" *ngFor="let action of globalActionsList"
+                  [disabled]="!action.alwaysEnabled && selectedItems.size === 0" mat-menu-item
+                  (click)="setGlobalAction(action)">
+                <span>{{action.label | translate}}</span>
+              </button>
+            </mat-menu>
           </div>
         </div>
         <div class="resultlist__tools--separator">|</div>
         <div class="resultlist__tools--sort" id="resultlist_sort">
           <div *ngIf="isGeoSortEnabled" class="resultlist__tools--geosort" id="resultlist_geosort">
-            <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="this.isGeoSortActivated" [labelPosition]="'before'" class="resultlist__tools--geosort--slide" matTooltip="{{GEOSORT_ACTION | translate}}" (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
+            <mat-slide-toggle id="resultlist_geosort_toggle" [disableRipple]="true" [checked]="isGeoSortActivated"
+              [labelPosition]="'before'" class="resultlist__tools--geosort--slide" [matTooltip]="GEOSORT_ACTION | translate"
+              (change)="setGeoSortAction()">{{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
           </div>
-          <mat-select [compareWith]="byFieldName" (selectionChange)="setSortedColumn($event)" [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
-              <mat-select-trigger>
-                <span *ngIf="this.sortedColumn && this.sortedColumn.fieldName !== ''">
-                  {{lastSortedColumn.columnName | translate}} - {{SortEnum[sortedColumn.sortDirection].toUpperCase() + '_short' | translate}}
-                </span>
-              </mat-select-trigger>
-              <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>
-              <mat-optgroup [label]="this.translate.instant('Column')" class="resultlist__tools--sort-group">
-                <ng-container *ngFor="let column of columns">
-                  <mat-option *ngIf="!column.isIdField && !column.isToggleField" [value]="column" class="resultlist__tools--sort-option">
-                    {{column.columnName | translate}}
-                  </mat-option>
-                </ng-container>
-              </mat-optgroup>
-              <mat-optgroup [label]="this.translate.instant('Direction')" class="resultlist__tools--sort-group">
-                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
-                  <mat-radio-group>
-                    <mat-radio-button [value]="'asc'" [checked]="this.sortedColumn.sortDirection === SortEnum.asc" (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
-                  </mat-radio-group>
-                </mat-option>
-                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
-                  <mat-radio-group>
-                    <mat-radio-button [value]="'desc'" [checked]="this.sortedColumn.sortDirection === SortEnum.desc" (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
-                  </mat-radio-group>
-                </mat-option>
-              </mat-optgroup>
+          <mat-select [compareWith]="byFieldName" (selectionChange)="setSortedColumn($event)"
+              [(ngModel)]="currentSortedColumn" [placeholder]="'Sort on' | translate">
+            <mat-select-trigger>
+              <span *ngIf="sortedColumn && sortedColumn.fieldName !== ''">
+                {{lastSortedColumn.columnName | translate}} - {{(SortEnum[sortedColumn.sortDirection] | uppercase) + '_short' | translate}}
+              </span>
+            </mat-select-trigger>
+            <mat-option [value]="" class="resultlist__tools--sort-option">{{'Sort by id' | translate}}</mat-option>
+            <mat-optgroup [label]="'Column' | translate" class="resultlist__tools--sort-group">
+              <ng-container *ngFor="let column of columns">
+                <mat-option *ngIf="!column.isIdField && !column.isToggleField" [value]="column"
+                  class="resultlist__tools--sort-option">{{column.columnName | translate}}</mat-option>
+              </ng-container>
+            </mat-optgroup>
+            <mat-optgroup [label]="'Direction' | translate" class="resultlist__tools--sort-group">
+              <mat-option [disabled]="true" class="resultlist__tools--sort-option">
+                <mat-radio-group>
+                  <mat-radio-button [value]="'asc'" [checked]="sortedColumn.sortDirection === SortEnum.asc"
+                    (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
+                </mat-radio-group>
+              </mat-option>
+              <mat-option [disabled]="true" class="resultlist__tools--sort-option">
+                <mat-radio-group>
+                  <mat-radio-button [value]="'desc'" [checked]="sortedColumn.sortDirection === SortEnum.desc"
+                    (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
+                </mat-radio-group>
+              </mat-option>
+            </mat-optgroup>
           </mat-select>
         </div>
         <ng-container *ngIf="hasGridMode">
           <div class="resultlist__tools--separator">|</div>
           <div class="resultlist__tools--mode" id="resultlist_mode">
             <mat-button-toggle-group [name]="'modeGroup'" (change)="whichMode($event)">
-              <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}" [checked]="resultMode==ModeEnum.list">
+              <mat-button-toggle id="list_mode_btn" [matTooltip]="LIST_MODE | translate"
+                  [value]="ModeEnum.list" [checked]="resultMode === ModeEnum.list">
                 <mat-icon>list</mat-icon>
               </mat-button-toggle>
-              <mat-button-toggle id="grid_mode_btn" matTooltip="{{GRID_MODE | translate}}" value="{{ModeEnum.grid}}" [checked]="resultMode==ModeEnum.grid">
+              <mat-button-toggle id="grid_mode_btn" [matTooltip]="GRID_MODE | translate"
+                  [value]="ModeEnum.grid" [checked]="resultMode === ModeEnum.grid">
                 <mat-icon>grid_view</mat-icon>
               </mat-button-toggle>
             </mat-button-toggle-group>
@@ -87,22 +92,15 @@
     </tr>
     <tr class="resultlist__header resultlist__thead__tr" *ngIf="resultMode !== ModeEnum.grid">
       <ng-container *ngFor="let column of columns">
-        <th *ngIf="column.isIdField"
-            [style.max-width.px]="column.width"
-            [style.min-width.px]="column.width"
-            class="resultlist__header--columns">
-          <span  class="resultlist__header--columns--hidden"></span>
+        <th *ngIf="column.isIdField || column.isToggleField" [style.max-width.px]="column.width"
+            [style.min-width.px]="column.width" class="resultlist__header--columns">
+          <span class="resultlist__header--columns--hidden"></span>
         </th>
-        <th *ngIf="!column.isIdField && !column.isToggleField"
-            [style.max-width.px]="column.width"
-            [style.min-width.px]="column.width"
-            class="resultlist__header--columns" matTooltip="{{column.columnName | translate}}{{column.dataType}}">
+        <th *ngIf="!column.isIdField && !column.isToggleField" [style.max-width.px]="column.width"
+            [style.min-width.px]="column.width" class="resultlist__header--columns"
+            [matTooltip]="(column.columnName | translate) + column.dataType">
           <span>
             {{column.columnName | translate}}{{column.dataType}}
-          </span>
-        </th>
-        <th *ngIf="column.isToggleField" class="resultlist__header--columns" [style.max-width.px]="column.width" [style.min-width.px]="column.width">
-          <span class="resultlist__header--columns--hidden">
           </span>
         </th>
       </ng-container>
@@ -110,37 +108,50 @@
     <tr class="resultlist__grid-detail resultlist__thead__tr"
         *ngIf="selectedGridItem !== null && resultMode === ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
-        <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth" [detailHeight]="detailedGridHeight"
-          [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
-          [useHttp]="fieldsConfiguration.useHttpQuicklooks" (closeDetail)=closeDetail($event)>
+        <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth"
+          [detailHeight]="detailedGridHeight" [idFieldName]="fieldsConfiguration.idFieldName"
+          [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)"
+          [showEmptyGroup]="showEmptyGroup" [useHttp]="fieldsConfiguration.useHttpQuicklooks"
+          (closeDetail)="closeDetail($event)">
         </arlas-result-detailed-grid>
       </td>
     </tr>
   </thead>
-  <div *ngIf="isPreviousPageRequested" class="resultlist__loading resultlist__top_loading"  [style.width.px]="tableWidth">
+  <div *ngIf="isPreviousPageRequested" class="resultlist__loading resultlist__top_loading" [style.width.px]="tableWidth">
     <ngx-loading [show]="isPreviousPageRequested" [config]="loadAnimationConfig"></ngx-loading>
   </div>
-  <tbody class="resultlist__tbody" arlasResultScroll *ngIf="!isBodyHidden" [style.overflow-anchor]="'none'" [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'" [nbGridColumns]="nbGridColumns"
-    [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState" [resultMode]="resultMode" (visibleItems)="emitVisibleItems($event)" (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)">
-    <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
+  <tbody class="resultlist__tbody" arlasResultScroll *ngIf="!isBodyHidden" [style.overflow-anchor]="'none'"
+      [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'"
+      [nbGridColumns]="nbGridColumns" [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch : nLastLines"
+      [fetchState]="fetchState" [resultMode]="resultMode" (visibleItems)="emitVisibleItems($event)"
+      (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)">
+    <mat-grid-list [cols]="nbGridColumns" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode === ModeEnum.list; else grid_mode">
-          <tr arlas-result-item id="{{rowItem.identifier}}" class="resultlist__body--item-hover-{{rowItem.ishighLight}}" [options]="options" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)" (click)="onClickItem(rowItem)"
-            [idFieldName]="fieldsConfiguration.idFieldName" [tableWidth]="tableWidth" [rowItem]="rowItem" [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle" [keysToColors]="keysToColors"
-            [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
-            (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)">
+          <tr arlas-result-item [id]="rowItem.identifier" class="resultlist__body--item-hover-{{rowItem.ishighLight}}"
+            [options]="options" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
+            (click)="onClickItem(rowItem)" [idFieldName]="fieldsConfiguration.idFieldName" [tableWidth]="tableWidth"
+            [rowItem]="rowItem" [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle"
+            [keysToColors]="keysToColors" [colorsSaturationWeight]="colorsSaturationWeight"
+            [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems"
+            (selectedItemsEvent)="setSelectedItems($event)" (borderStyleEvent)="setBorderStyle($event)"
+            [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)">
           </tr>
-          <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item" (mouseenter)="onEnterItem(rowItem)"
-            (mouseleave)="onLeaveItem(rowItem)" [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
+          <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
+            (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
+            [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
             [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
           </tr>
-
         </ng-container>
         <ng-template #grid_mode>
           <mat-grid-tile *ngIf="resultMode === ModeEnum.grid" class="resultlist__md-grid-tile">
-            <mat-icon class="resultlist__md-grid-tile__selected--icon" *ngIf="rowItem.identifier === selectedGridItem?.identifier">info_outline</mat-icon>
-            <arlas-result-grid-tile [thumbnailFit]="thumbnailFit" id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
-              (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
+            <mat-icon class="resultlist__md-grid-tile__selected--icon"
+              *ngIf="rowItem.identifier === selectedGridItem?.identifier">info_outline</mat-icon>
+            <arlas-result-grid-tile [thumbnailFit]="thumbnailFit" [id]="rowItem.identifier"
+              class="resultlist__grid-tile" [options]="options" [gridTile]="rowItem"
+              [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
+              (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)"
+              [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
             </arlas-result-grid-tile>
           </mat-grid-tile>
@@ -150,20 +161,22 @@
   </tbody>
   <div *ngIf="resultMode === ModeEnum.grid" class="resultlist-thumbnails-fit" >
     <mat-button-toggle-group [name]="'thumbnailFitGroup'" (change)="emitThumbnailsFitStatus($event)" class="fit-group">
-      <mat-button-toggle matTooltip="{{WIDTH_FIT | translate}}" value="{{ThumbnailFitEnum.width}}" [checked]="thumbnailFit==ThumbnailFitEnum.width">
-        <mat-icon style="transform: rotate(-90deg)" class="fit-icon">expand</mat-icon>
+      <mat-button-toggle [matTooltip]="WIDTH_FIT | translate" [value]="ThumbnailFitEnum.width"
+          [checked]="thumbnailFit === ThumbnailFitEnum.width">
+        <mat-icon class="contain-icon fit-icon">expand</mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle matTooltip="{{CONTAIN_FIT | translate}}" value="{{ThumbnailFitEnum.contain}}" [checked]="thumbnailFit==ThumbnailFitEnum.contain" class="contain-icon-wrapper">
+      <mat-button-toggle [matTooltip]="CONTAIN_FIT | translate" [value]="ThumbnailFitEnum.contain"
+          [checked]="thumbnailFit === ThumbnailFitEnum.contain" class="contain-icon-wrapper">
         <mat-icon class="contain-icon fit-icon">expand</mat-icon>
         <mat-icon class="fit-icon">expand</mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle matTooltip="{{HEIGHT_FIT | translate}}" value="{{ThumbnailFitEnum.height}}" [checked]="thumbnailFit==ThumbnailFitEnum.height">
+      <mat-button-toggle [matTooltip]="HEIGHT_FIT | translate" [value]="ThumbnailFitEnum.height"
+          [checked]="thumbnailFit === ThumbnailFitEnum.height">
         <mat-icon class="fit-icon">expand</mat-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>
   </div>
   <div *ngIf="isNextPageRequested" class="resultlist__loading resultlist__bottom_loading" [style.width.px]="tableWidth">
-      <ngx-loading [show]="isNextPageRequested" [config]="loadAnimationConfig"></ngx-loading>
+    <ngx-loading [show]="isNextPageRequested" [config]="loadAnimationConfig"></ngx-loading>
   </div>
 </table>
-
