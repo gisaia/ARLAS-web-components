@@ -13,15 +13,15 @@
     </mat-card>
     <form class="wmts-layer-manager-form" [formGroup]="formGroup">
         <mat-form-field class="wmts-layer-manager-field">
-            <mat-select [(value)]="layer" placeholder="{{'Choose layer'| translate}}..." (selectionChange)="selectionChange($event)"
-                formControlName="layer">
+            <mat-select [(value)]="layer" [placeholder]="'Choose layer'| translate"
+                    (selectionChange)="selectionChange($event)" formControlName="layer">
                 <mat-option *ngFor="let layer of layers" [value]="layer">
                     {{layer}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
         <mat-form-field class="wmts-layer-manager-field">
-            <mat-select placeholder="{{'Choose style'| translate}}..." [(value)]="style" formControlName="style">
+            <mat-select [placeholder]="'Choose style'| translate" [(value)]="style" formControlName="style">
                 <mat-option *ngFor="let style of styles" [value]="style">
                     {{style}}
                 </mat-option>
@@ -30,15 +30,16 @@
         <div *ngFor="let dimension of dimensions">
             <div *ngIf="dimension.identifier==='time'">
                 <mat-form-field class="wmts-layer-manager-field">
-                    <input matInput autocomplete="off" [matDatepicker]="picker" placeholder="{{'Choose date'| translate}}" formControlName={{dimension.identifier}}
-                        [max]=dimension.endDate [min]=dimension.startDate>
+                    <input matInput autocomplete="off" [matDatepicker]="picker" [placeholder]="'Choose date'| translate"
+                        [formControlName]="dimension.identifier" [max]="dimension.endDate" [min]="dimension.startDate">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
             </div>
             <div *ngIf="dimension.identifier !=='time'">
                 <mat-form-field class="wmts-layer-manager-field">
-                    <mat-select formControlName={{dimension.identifier}} placeholder="{{'Choose' | translate}} {{dimension.identifier}}">
+                    <mat-select [formControlName]="dimension.identifier"
+                            [placeholder]="'Choose' | translate:{choice: dimension.identifier}">
                         <mat-option *ngFor="let v of dimension.values" [value]="v">
                             {{v}}
                         </mat-option>
@@ -47,9 +48,11 @@
             </div>
         </div>
     </form>
-    <div *ngIf="launchPreview" class="wmts-layer-manager-preview" style="height: 256px;">
-        <img class="wmts-layer-manager-image" [src]="imageToShow" alt="Preview of WMTS service" *ngIf="imageToShow&&!isImageLoading&&!showError">
-        <mat-progress-spinner class="wmts-layer-manager-spinner" *ngIf="isImageLoading" [diameter]="128" [strokeWidth]="2" mode="indeterminate"></mat-progress-spinner>
+    <div *ngIf="launchPreview" class="wmts-layer-manager-preview">
+        <img class="wmts-layer-manager-image" [src]="imageToShow" [alt]="'Preview of WMTS service' | translate"
+            *ngIf="imageToShow && !isImageLoading && !showError">
+        <mat-progress-spinner class="wmts-layer-manager-spinner" *ngIf="isImageLoading"
+            [diameter]="128" [strokeWidth]="2" mode="indeterminate"></mat-progress-spinner>
     </div>
     <div class="wmts-layer-manager-error" *ngIf="launchPreview && showError">
         <span>{{'Unable to preview this style for this layer'| translate}}</span>
@@ -57,7 +60,8 @@
 </mat-dialog-content>
 
 <div mat-dialog-actions>
-    <button mat-raised-button class="wmts-layer-manager-preview-button" [disabled]="style==undefined||layer==undefined" (click)="clickOnPreview()">{{'Preview'| translate}}</button>
-    <button mat-raised-button class="wmts-layer-manager-view-button" [disabled]="style==undefined||layer==undefined" [mat-dialog-close]="formGroup.value"
-        cdkFocusInitial>{{'View' | translate}}</button>
+    <button mat-raised-button class="wmts-layer-manager-preview-button" [disabled]="!style || !layer"
+        (click)="clickOnPreview()">{{'Preview'| translate}}</button>
+    <button mat-raised-button class="wmts-layer-manager-view-button" [disabled]="!style || !layer"
+        [mat-dialog-close]="formGroup.value" cdkFocusInitial>{{'View' | translate}}</button>
 </div>

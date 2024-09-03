@@ -21,6 +21,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
 import moment from 'moment';
 import { Observable, Subject } from 'rxjs';
 import { retry, timeout } from 'rxjs/operators';
@@ -50,7 +51,7 @@ export interface LayerParam {
 @Component({
   templateUrl: './wmts-layer-manager-dialog.component.html',
   selector: 'arlas-wmts-layer-manager-dialog',
-  styleUrls: ['./wmts-layer-manager-dialog.component.css']
+  styleUrls: ['./wmts-layer-manager-dialog.component.scss']
 })
 export class WmtsLayerManagertDialogComponent implements OnInit {
   public layer: string;
@@ -83,13 +84,13 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
     });
   }
 
-  public selectionChange(event) {
+  public selectionChange(event: MatSelectChange) {
     this.style = undefined;
     this.styles = new Array();
     this.styles = this.data.get(event.value).styles;
     this.dimensions = this.data.get(event.value).dimensions;
     this.dimensions.forEach(d => {
-      this.formGroup.addControl(d.identifier, new UntypedFormControl);
+      this.formGroup.addControl(d.identifier, new UntypedFormControl());
     });
   }
   public clickOnPreview() {
@@ -128,7 +129,7 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
 @Component({
   selector: 'arlas-wmts-layer-manager',
   templateUrl: './wmts-layer-manager.component.html',
-  styleUrls: ['./wmts-layer-manager.component.css']
+  styleUrls: ['./wmts-layer-manager.component.scss']
 })
 export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>;
