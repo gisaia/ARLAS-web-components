@@ -138,7 +138,7 @@
         </ng-container>
         <ng-template #grid_mode>
           <mat-grid-tile *ngIf="resultMode === ModeEnum.grid" class="resultlist__md-grid-tile">
-            <mat-icon class="resultlist__md-grid-tile__selected--icon" *ngIf="rowItem.identifier === selectedGridItem?.identifier">info_outline</mat-icon>
+            <mat-icon class="resultlist__md-grid-tile__selected--icon" *ngIf="rowItem.identifier === selectedGridItem?.identifier && isDetailledGridOpen">info_outline</mat-icon>
             <arlas-result-grid-tile [thumbnailFit]="thumbnailFit" id="{{rowItem.identifier}}" class="resultlist__grid-tile"  [options]="options"  [gridTile]="rowItem" [selectedItems]="selectedItems" [detailedDataRetriever]="detailedDataRetriever"
               (selectedItemsEvent)="setSelectedItems($event)" (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
