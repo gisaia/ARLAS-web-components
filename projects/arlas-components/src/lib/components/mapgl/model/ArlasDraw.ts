@@ -1,16 +1,16 @@
-import { AbstractDraw } from "./AbstractDraw";
-import mapboxgl from "mapbox-gl";
+import { AbstractDraw } from './AbstractDraw';
+import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Feature } from "geojson";
+import { Feature } from 'geojson';
 
 export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |
   'draw.update' | 'draw.selectionchange' | 'draw.modechange' | 'draw.render' | 'draw.actionable' |
   'draw.edit.saveInitialFeature' | 'draw.onClick' | 'draw.onStart' | 'draw.onStop'
-  | 'draw.invalidGeometry'
+  | 'draw.invalidGeometry';
 
 export type DrawModes = 'SIMPLE_SELECT' | 'DRAW_CIRCLE' | 'DIRECT_SELECT' |
   'DRAW_LINE_STRING' | 'DRAW_POLYGON' | 'DRAW_POINT' | 'DRAW_RADIUS_CIRCLE' |
-  'DRAW_STRIP' | 'DIRECT_STRIP'
+  'DRAW_STRIP' | 'DIRECT_STRIP';
 
 export class ArlasDraw extends AbstractDraw {
   public drawProvider: MapboxDraw;
@@ -18,16 +18,13 @@ export class ArlasDraw extends AbstractDraw {
   public enabled: boolean;
   public constructor(config: any, enabled: boolean, map: mapboxgl.Map) {
     super();
-    console.log('init draw')
+    console.log('init draw');
     const modes = MapboxDraw.modes;
-    config.modes = Object.assign(
-      modes,
-      ...config.modes
-    )
-    this.config = config
-    console.log('then')
+    this.config = JSON.parse(JSON.stringify(config));
+    this.config.modes = Object.assign(modes, config.modes);
+    console.log('Draw config',  this.config);
     this.drawProvider = new MapboxDraw(this.config);
-    console.log('then')
+    console.log('then');
     this.mapProvider = map;
     this.enabled = enabled;
   }
@@ -45,76 +42,77 @@ export class ArlasDraw extends AbstractDraw {
   }
 
   public setMode(drawModes: DrawModes, replaceMode: any){
+    console.log(drawModes);
     this.drawProvider.modes[drawModes] = replaceMode;
   }
 
-  getAllFeatures() {
+  public getAllFeatures() {
     return this.getAll().features;
   }
 
-
-  onDrawCreate(fn: (e) => void): void {
+  public onDrawCreate(fn: (e) => void): void {
     this.on('draw.create', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawDelete(fn: (e) => void): void {
+  public onDrawDelete(fn: (e) => void): void {
     this.on('draw.delete', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawEditSaveInitialFeature(fn: (e) => void): void {
+  public onDrawEditSaveInitialFeature(fn: (e) => void): void {
     this.on('draw.edit.saveInitialFeature', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawInvalidGeometry(fn: (e) => void): void {
+  public onDrawInvalidGeometry(fn: (e) => void): void {
     this.on('draw.invalidGeometry', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawModeChange(fn: (e) => void): void {
+  public onDrawModeChange(fn: (e) => void): void {
     this.on('draw.modechange', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawOnClick(fn: (e) => void): void {
+  public onDrawOnClick(fn: (e) => void): void {
     this.on('draw.onClick', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawOnStart(fn: (e) => void): void {
+  public onDrawOnStart(fn: (e) => void): void {
     this.on('draw.onStart', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawOnStop(fn: (e) => void): void {
+  public onDrawOnStop(fn: (e) => void): void {
     this.on('draw.onStop', (e) => {
       fn(e);
-    })
+    });
   }
 
-  onDrawSelectionchange(fn: (e) => void): void {
+  public onDrawSelectionchange(fn: (e) => void): void {
     this.on('draw.selectionchange', (e) => {
       fn(e);
     });
   }
 
-  onDrawUpdate(fn: (e) => void): void {
+  public onDrawUpdate(fn: (e) => void): void {
     this.on('draw.update', (e) => {
       fn(e);
-    })
+    });
   }
 
-  getMode(modes: DrawModes){
-    console.log(this.drawProvider.modes)
+  public getMode(modes: DrawModes){
+    console.log(modes);
+    console.log(this.drawProvider.modes);
     return this.drawProvider.modes[modes];
   }
 
@@ -122,77 +120,77 @@ export class ArlasDraw extends AbstractDraw {
    * class wrapper
    */
 
-  on(event: DrawEvents, func: (e) => void): void {
+  public on(event: DrawEvents, func: (e) => void): void {
     this.mapProvider.on(event, func);
   }
 
 
-  add(features: any){
+  public add(features: any){
     this.drawProvider.add(features);
   }
 
-  get(featureId: string): Feature | undefined {
+  public get(featureId: string): Feature | undefined {
    return this.drawProvider.get(featureId);
   }
 
 
-  delete(ids: string | Array<string>): ArlasDraw {
+  public delete(ids: string | Array<string>): ArlasDraw {
     this.drawProvider.delete(ids);
     return  this;
   }
-  deleteAll(): ArlasDraw {
+  public deleteAll(): ArlasDraw {
     this.drawProvider.deleteAll();
     return this;
   }
 
-  set(featureCollection: any): Array<string> {
+  public set(featureCollection: any): Array<string> {
     return  this.drawProvider.set(featureCollection);
   }
 
-  trash(): ArlasDraw {
+  public trash(): ArlasDraw {
     this.drawProvider.trash();
     return this;
   }
 
-  combineFeatures(): ArlasDraw {
+  public combineFeatures(): ArlasDraw {
     this.drawProvider.combineFeatures();
     return this;
   }
-  uncombineFeatures(): ArlasDraw {
+  public uncombineFeatures(): ArlasDraw {
     this.drawProvider.uncombineFeatures();
     return this;
   }
 
-  getCurrentMode(): string {
+  public getCurrentMode(): string {
     return this.drawProvider.getMode();
   }
 
-  getFeatureIdsAt(point: { x: number, y: number }): Array<string> {
+  public getFeatureIdsAt(point: { x: number; y: number; }): Array<string> {
     return this.drawProvider.getFeatureIdsAt(point);
   }
 
-  getSelectedIds(): Array<string>{
+  public getSelectedIds(): Array<string>{
     return this.drawProvider.getSelectedIds();
   }
 
-  getSelected() {
+  public getSelected() {
     return this.drawProvider.getSelected();
   }
 
-  getAll(){
+  public getAll(){
     return this.drawProvider.getAll();
   }
 
-  getSelectedFeatures(){
+  public getSelectedFeatures(){
     return this.getSelected().features;
   }
 
-  setFeatureProperty(featureId: string, property: string, value: any): ArlasDraw {
+  public setFeatureProperty(featureId: string, property: string, value: any): ArlasDraw {
     this.drawProvider.setFeatureProperty(featureId, property, value);
     return  this;
   }
 
-  changeMode(mode: string, opt?: any): ArlasDraw {
+  public changeMode(mode: string, opt?: any): ArlasDraw {
     this.drawProvider.changeMode(mode,opt);
     return this;
   }

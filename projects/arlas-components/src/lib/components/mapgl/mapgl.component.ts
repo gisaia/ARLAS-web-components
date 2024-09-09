@@ -66,8 +66,8 @@ import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 import cleanCoords from '@turf/clean-coords';
 import { ArlasMapOffset, ControlPosition, DrawControlsOption } from './model/AbstractArlasMapGL';
 import { ArlasMapGL, ArlasMapGlConfig } from './model/ArlasMapGL';
-import { ArlasDraw } from "./model/ArlasDraw";
-import { Geometry } from "@turf/helpers/dist/js/lib/geojson";
+import { ArlasDraw } from './model/ArlasDraw';
+import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
