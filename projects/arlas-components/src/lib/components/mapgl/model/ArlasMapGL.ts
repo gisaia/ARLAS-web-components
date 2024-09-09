@@ -861,7 +861,9 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     this._eventSubscription.forEach(s => s.unsubscribe());
   }
 
-
+  public addSourceType(ind: string, protocol: any, cb: (e?) => void) {
+    (this._mapProvider as any).addSourceType(ind, protocol, cb);
+  }
 
   /** *******************************************
    ******************* WRAPPER *****************
@@ -979,4 +981,33 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   public getCenter(){
     return this._mapProvider.getCenter();
   }
+
+  public getLayer (id: string){
+    return this._mapProvider.getLayer(id);
+  }
+
+  public setStyle(style: mapboxgl.Style | string, option?: { diff?: boolean | undefined; localIdeographFontFamily?: string | undefined; }){
+    this._mapProvider.setStyle(style, option);
+    return this;
+  }
+
+  public once(event: string, fn: (e?) => void) {
+    return this._mapProvider.once(event, fn);
+  }
+
+  public removeLayer(id: string){
+    this._mapProvider.removeLayer(id);
+    return this;
+  }
+  public removeSource(id: string){
+    this._mapProvider.removeSource(id);
+    return this;
+  }
+
+  public getStyle(){
+    return this._mapProvider.getStyle();
+  }
+
+
+
 }
