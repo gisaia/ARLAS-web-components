@@ -25,6 +25,7 @@ import { MapglService } from '../../services/mapgl.service';
 import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
+import { ArlasMapGL } from '../mapgl/model/ArlasMapGL';
 
 @Component({
   selector: 'arlas-mapgl-basemap',
@@ -34,7 +35,7 @@ import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
 export class MapglBasemapComponent implements OnInit {
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
-  @Input() public map: mapboxgl.Map;
+  @Input() public map: ArlasMapGL;
   @Input() public mapSources: Array<MapSource>;
 
   @Output() public basemapChanged = new EventEmitter<void>();
@@ -91,8 +92,8 @@ export class MapglBasemapComponent implements OnInit {
   */
   public setStyle(s: mapboxgl.Style, newBasemap: BasemapStyle) {
     const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<mapboxgl.Layer> = (<mapboxgl.Map>this.map).getStyle().layers;
-    const sources = (<mapboxgl.Map>this.map).getStyle().sources;
+    const layers: Array<mapboxgl.Layer> = this.map.getStyle().layers;
+    const sources = this.map.getStyle().sources;
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
     }

@@ -824,8 +824,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
      */
     this.arlasMap.onLoad(() => {
       // TODO: should change the
-      this.basemapService.declareProtomapProtocol(this.arlasMap.getMap());
-      this.basemapService.addProtomapBasemap(this.arlasMap.getMap());
+      this.basemapService.declareProtomapProtocol(this.arlasMap);
+      this.basemapService.addProtomapBasemap(this.arlasMap);
       this.draw.changeMode('static');
 
       if (this.mapLayers !== null) {
