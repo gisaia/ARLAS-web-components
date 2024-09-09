@@ -55,7 +55,7 @@ export {
 } from './lib/components/results/utils/results.utils';
 export { Item } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
-export { MapglComponent, VisualisationSetConfig, IconConfig, OnMoveResult, CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.component';
+export { MapglComponent, CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.component';
 export { MapglModule } from './lib/components/mapgl/mapgl.module';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
@@ -109,3 +109,4 @@ export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
 export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
+export {VisualisationSetConfig, IconConfig, OnMoveResult} from './lib/components/mapgl/model/AbstractArlasMapGL'
