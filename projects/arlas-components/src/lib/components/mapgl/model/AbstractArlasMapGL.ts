@@ -6,8 +6,8 @@ import { ControlButton } from '../mapgl.component.control';
 import { ExternalEvent, MapLayers } from './mapLayers';
 import { Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
-import { ArlasDraw } from "./ArlasDraw";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { ArlasDraw } from './ArlasDraw';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -216,8 +216,8 @@ export abstract class AbstractArlasMapGL {
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<unknown>, sources: Array<MapSource>): void;
   protected abstract addExternalEventLayers();
   protected abstract getMoveEnd(): void;
-  public abstract paddedFitBounds(bounds:unknown, options?: mapboxgl.FitBoundsOptions);
-  public abstract drop(event:unknown): void;
+  public abstract paddedFitBounds(bounds: unknown, options?: mapboxgl.FitBoundsOptions);
+  public abstract drop(event: unknown): void;
   public abstract dropLayer(event: unknown, visuName: string): void;
   public abstract  highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; });
   public abstract  selectFeatures(elementToSelect: Array<ElementIdentifier>): void;
@@ -239,7 +239,7 @@ export abstract class AbstractArlasMapGL {
    * if we change the implementation, as we used addLayer in all our app,
    * the change is transparent.
    */
-  public abstract on(event: string, func: (e) => void)
+  public abstract on(event: string, func: (e) => void);
   public abstract setLayersMap(mapLayers: MapLayers<unknown>, layers?: Array<unknown>): void;
   public abstract setCursorStyle(cursor: string): void;
   public abstract addSource(sourceId: string, source: unknown): void;
@@ -252,10 +252,7 @@ export abstract class AbstractArlasMapGL {
   public abstract setLayoutProperty(layer: string, name: string, value: any, options?: unknown);
   public abstract addControl(control: ControlButton, position?: ControlPosition,  eventOverrid?: {
     event: string; fn: (e?) => void;});
-  public abstract addControl(control: unknown, position?: ControlPosition);
-  public abstract addControl(control: unknown,
-                             position?: ControlPosition,
-                             eventOverrid?: {
+  public abstract addControl(control: unknown, position?: ControlPosition, eventOverrid?: {
     event: string; fn: (e?) => void;
   });
   public abstract getBounds(): void;

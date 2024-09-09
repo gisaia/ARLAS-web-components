@@ -185,7 +185,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
 
   public initDrawControls(config: DrawControlsOption) {
 
-    this.addControl(config.draw.control, (config.draw?.position ?? 'top-right'));
+    this.addControl(config.draw.control as Control, (config.draw?.position ?? 'top-right'));
 
     if(config.addGeoBox.enable){
       const addGeoBoxButton = new ControlButton(config.addGeoBox?.name ?? 'addgeobox');
@@ -392,16 +392,6 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     }
   }
 
-
-
-  public setCursorStyle(cursor: string){
-    this._mapProvider.getCanvas().style.cursor = cursor;
-  }
-
-  public addSource(sourceId: string, source: AnySourceData) {
-    this._mapProvider.addSource(sourceId, source);
-  }
-
   public setLayersMap(mapLayers: MapLayers<AnyLayer>, layers?: Array<AnyLayer>){
     if(mapLayers) {
       const mapLayersCopy = mapLayers;
@@ -446,24 +436,6 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     }
   }
 
-  public addLayer(layerId: AnyLayer, before?: string){
-    return this._mapProvider.addLayer(layerId, before);
-  }
-  public getLayerFromMapProvider(layerId: string){
-   return this._mapProvider.getLayer(layerId);
-  }
-
-  public moveLayer(id: string, before?: string){
-    this._mapProvider.moveLayer(id, before);
-  }
-
-  public getSource(id: string){
-    return this._mapProvider.getSource(id);
-  }
-
-  public getMap(): mapboxgl.Map {
-    return this._mapProvider;
-  }
 
   public getMapExtend(): MapExtend {
     const bounds = this._mapProvider.getBounds();
@@ -524,84 +496,20 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     }
   }
 
-  public setLayoutProperty(layer: string, name: string, value: any, options?: FilterOptions){
-    this._mapProvider.setLayoutProperty(layer, name, value, options);
-  }
 
 
-  public addControl(control: ControlButton, position?: ControlPosition,  eventOverride?: {
-    event: string; fn: (e?) => void;});
-  public addControl(control: Control | IControl, position?: ControlPosition);
+  public addControl(control: ControlButton, position?: ControlPosition);
+  public addControl(control: Control | IControl, position?: ControlPosition,  eventOverride?: { event: string; fn: (e?) => void;});
   public addControl(control: Control | IControl | ControlButton,
                     position?: ControlPosition,
                     eventOverrid?: {
-    event: string; fn: (e?) => void;
-  }){
+                      event: string; fn: (e?) => void;
+                    }){
     this._mapProvider.addControl(control, position);
     if(control instanceof  ControlButton && eventOverrid){
       control.btn[eventOverrid.event] = () => eventOverrid.fn();
     }
   }
-
-  public getBounds(){
-    return this._mapProvider.getBounds();
-  }
-
-  public fitBounds(bounds: LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData){
-    this._mapProvider.fitBounds(bounds, options, eventData);
-    return this;
-  }
-
-  public setCenter(lngLat: [number, number]){
-    this._mapProvider.setCenter(lngLat);
-    return this;
-  }
-
-  public getWestBounds(){
-    return this._mapProvider.getBounds().getWest();
-  }
-  public getNorthBounds(){
-    return this._mapProvider.getBounds().getNorth();
-  }
-
-  public getNorthEastBounds(){
-    return this._mapProvider.getBounds().getNorthEast();
-  }
-  public getSouthBounds(){
-    return this._mapProvider.getBounds().getSouth();
-  }
-
-  public getSouthWestBounds(){
-    return this._mapProvider.getBounds().getSouthWest();
-  }
-  public getEstBounds(){
-    return this.getBounds().getEast();
-  }
-
-  public getZoom(){
-    return this._mapProvider.getZoom();
-  }
-
-  public getCanvasContainer(){
-    return this._mapProvider.getCanvasContainer();
-  }
-
-  public getLayers(){
-    return this._mapProvider.getStyle().layers;
-  }
-
-  public enableDragPan(){
-    this._mapProvider.dragPan.enable();
-  }
-
-  public disableDragPan(){
-    this._mapProvider.dragPan.disable();
-  }
-
-  /** *
-   * core arlas methode
-   *
-   * */
 
 
   public updateLayoutVisibility(visualisationName: string) {
@@ -636,7 +544,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   }
 
   public updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-                                 collection?: string): void {
+                                collection?: string): void {
     if (this._mapLayers && this._mapLayers.externalEventLayers) {
       this._mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this._mapProvider.getLayer(layer.id) !== undefined) {
@@ -758,12 +666,6 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     }
   }
 
-  public flyTo(center, zoom: number){
-    this._mapProvider.flyTo({ center, zoom });
-  }
-  public queryRenderedFeatures(point){
-    return this._mapProvider.queryRenderedFeatures(point);
-  }
 
   public onLoad(fn: () => void): void {
     this.on('load', fn);
@@ -775,7 +677,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
         this._updateBounds();
         this._updateZoom();
         return this.getMoveEnd();
-    }));
+      }));
   }
 
   protected updateOnZoomStart(){
@@ -791,8 +693,8 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   protected updateOnDragEnd(){
     const sub = this._dragEnd$
       .subscribe(e => {
-          this._updateDragEnd(e);
-          this._updateMoveRatio(e);
+        this._updateDragEnd(e);
+        this._updateMoveRatio(e);
       });
     this._eventSubscription.push(sub);
   }
@@ -860,21 +762,6 @@ export class ArlasMapGL extends AbstractArlasMapGL {
     return new mapboxgl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
-  public project(latLng: LngLat){
-    return this._mapProvider.project(latLng);
-  }
-
-  public unproject(latLng: PointLike){
-    return this._mapProvider.unproject(latLng);
-  }
-
-  public on(event: string, func: (e) => void){
-    this._mapProvider.on(event, func);
-  }
-
-  public getCenter(){
-    return this._mapProvider.getCenter();
-  }
 
   protected getMoveEnd(){
     const offsetPoint = this.calcOffsetPoint();
@@ -975,4 +862,121 @@ export class ArlasMapGL extends AbstractArlasMapGL {
   }
 
 
+
+  /** *******************************************
+   ******************* WRAPPER *****************
+   *********************************************
+   *********************************************/
+
+
+  public setCursorStyle(cursor: string){
+    this._mapProvider.getCanvas().style.cursor = cursor;
+  }
+
+  public addSource(sourceId: string, source: AnySourceData) {
+    this._mapProvider.addSource(sourceId, source);
+  }
+
+  public addLayer(layerId: AnyLayer, before?: string){
+    return this._mapProvider.addLayer(layerId, before);
+  }
+  public getLayerFromMapProvider(layerId: string){
+   return this._mapProvider.getLayer(layerId);
+  }
+
+  public moveLayer(id: string, before?: string){
+    this._mapProvider.moveLayer(id, before);
+  }
+
+  public getSource(id: string){
+    return this._mapProvider.getSource(id);
+  }
+
+  public getMap(): mapboxgl.Map {
+    return this._mapProvider;
+  }
+
+  public setLayoutProperty(layer: string, name: string, value: any, options?: FilterOptions){
+    this._mapProvider.setLayoutProperty(layer, name, value, options);
+  }
+
+
+  public getBounds(){
+    return this._mapProvider.getBounds();
+  }
+
+  public fitBounds(bounds: LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData){
+    this._mapProvider.fitBounds(bounds, options, eventData);
+    return this;
+  }
+
+  public setCenter(lngLat: [number, number]){
+    this._mapProvider.setCenter(lngLat);
+    return this;
+  }
+
+  public getWestBounds(){
+    return this._mapProvider.getBounds().getWest();
+  }
+  public getNorthBounds(){
+    return this._mapProvider.getBounds().getNorth();
+  }
+
+  public getNorthEastBounds(){
+    return this._mapProvider.getBounds().getNorthEast();
+  }
+  public getSouthBounds(){
+    return this._mapProvider.getBounds().getSouth();
+  }
+
+  public getSouthWestBounds(){
+    return this._mapProvider.getBounds().getSouthWest();
+  }
+  public getEstBounds(){
+    return this.getBounds().getEast();
+  }
+
+  public getZoom(){
+    return this._mapProvider.getZoom();
+  }
+
+  public getCanvasContainer(){
+    return this._mapProvider.getCanvasContainer();
+  }
+
+  public getLayers(){
+    return this._mapProvider.getStyle().layers;
+  }
+
+  public enableDragPan(){
+    this._mapProvider.dragPan.enable();
+  }
+
+  public disableDragPan(){
+    this._mapProvider.dragPan.disable();
+  }
+
+  public flyTo(center, zoom: number){
+    this._mapProvider.flyTo({ center, zoom });
+  }
+  public queryRenderedFeatures(point){
+    return this._mapProvider.queryRenderedFeatures(point);
+  }
+
+
+  public project(latLng: LngLat){
+    return this._mapProvider.project(latLng);
+  }
+
+  public unproject(latLng: PointLike){
+    return this._mapProvider.unproject(latLng);
+  }
+
+  public on(event: string, func: (e) => void){
+    this._mapProvider.on(event, func);
+  }
+
+  public getCenter(){
+    return this._mapProvider.getCenter();
+  }
 }

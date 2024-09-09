@@ -25,7 +25,7 @@ import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ArlasDraw } from "../model/ArlasDraw";
+import { ArlasDraw } from '../model/ArlasDraw';
 
 @Injectable()
 export class MapboxAoiDrawService {

@@ -1,5 +1,5 @@
-import { Feature } from "geojson";
-import { Geometry, GeometryCollection, Properties } from "@turf/helpers/dist/js/lib/geojson";
+import { Feature } from 'geojson';
+import { Geometry, GeometryCollection, Properties } from '@turf/helpers/dist/js/lib/geojson';
 
 export interface DrawEvents {
   onDrawCreate: (...args) => void;
@@ -17,30 +17,30 @@ export interface DrawEvents {
 export abstract class AbstractDraw implements DrawEvents {
   protected config;
 
-  abstract getAllFeatures():  Array<unknown>;
+  public abstract getAllFeatures():  Array<unknown>;
 
-  abstract onDrawCreate(args): void;
+  public abstract onDrawCreate(args): void;
 
-  abstract on(event:string, func: (e) => void): void;
+  public abstract on(event: string, func: (e) => void): void;
 
-  abstract onDrawDelete(args): void;
+  public abstract onDrawDelete(args): void;
 
-  abstract onDrawEditSaveInitialFeature(args): void;
+  public abstract onDrawEditSaveInitialFeature(args): void;
 
-  abstract onDrawInvalidGeometry(args): void;
+  public abstract onDrawInvalidGeometry(args): void;
 
-  abstract onDrawModeChange(args): void;
+  public abstract onDrawModeChange(args): void;
 
-  abstract onDrawOnClick(args): void;
+  public abstract onDrawOnClick(args): void;
 
-  abstract onDrawOnStart(args): void;
+  public abstract onDrawOnStart(args): void;
 
-  abstract onDrawOnStop(args): void;
+  public abstract onDrawOnStop(args): void;
 
-  abstract onDrawSelectionchange(args): void;
+  public abstract onDrawSelectionchange(args): void;
 
-  abstract onDrawUpdate(args): void;
+  public abstract onDrawUpdate(args): void;
 
-  abstract setMode(mode: any,  replaceMode: string): void;
+  public abstract setMode(mode: any,  replaceMode: string): void;
 
 }
