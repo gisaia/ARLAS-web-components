@@ -553,8 +553,9 @@ export class ArlasMapGL extends AbstractArlasMapGL {
           const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-            if (this._mapProvider.getLayer(originalLayerId) !== undefined) {
-              originalLayerIsVisible = (this._mapProvider.getLayer(originalLayerId) as ArlasAnyLayer).layout.visibility === 'visible';
+            const originalLayer = this._mapProvider.getStyle().layers.find(l => l.id === originalLayerId);
+            if (!!originalLayer) {
+              originalLayerIsVisible = (originalLayer as ArlasAnyLayer).layout.visibility === 'visible';
             }
             const layerFilter: Array<any> = [];
             const externalEventLayer = this.layersMap.get(layer.id);
@@ -567,8 +568,7 @@ export class ArlasMapGL extends AbstractArlasMapGL {
               layerFilter.push('all');
             }
             if (visibilityCondition && originalLayerIsVisible) {
-              const condition = visibilityFilter;
-              layerFilter.push(condition);
+              layerFilter.push(visibilityFilter);
               this._mapProvider.setFilter(layer.id, layerFilter);
               this._mapProvider.setLayoutProperty(layer.id, 'visibility', 'visible');
             } else {
