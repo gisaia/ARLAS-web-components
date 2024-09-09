@@ -3,8 +3,8 @@ import {
   BaseMapGlConfig,
   BindLayerToEvent,
   ControlPosition,
-  DrawControlsOption,
-  MapEventBinds
+  DrawControlsOption, GEOJSON_SOURCE_TYPE,
+  MapEventBinds, OnMoveResult, VisualisationSetConfig
 } from './AbstractArlasMapGL';
 import mapboxgl, {
   AnyLayer,
@@ -21,7 +21,6 @@ import mapboxgl, {
 import { MapSource } from './mapSource';
 import { ArlasAnyLayer, MapExtend, paddedBounds } from '../mapgl.component.util';
 import { ControlButton, PitchToggle } from '../mapgl.component.control';
-import { GEOJSON_SOURCE_TYPE, OnMoveResult, VisualisationSetConfig } from '../mapgl.component';
 import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
 import { fromEvent, map } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';

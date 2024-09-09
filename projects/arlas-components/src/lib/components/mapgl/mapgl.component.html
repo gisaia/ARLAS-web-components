@@ -34,7 +34,7 @@
 <arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="arlasMap?.currentLat"
                    [currentLng]="arlasMap?.currentLng" (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
 
-<arlas-mapgl-basemap *ngIf="showBasemapsList" [mapSources]="arlasMap.mapSources" [map]="map"
+<arlas-mapgl-basemap *ngIf="showBasemapsList" [mapSources]="arlasMap.mapSources" [map]="arlasMap"
   (mouseleave)="hideBasemapSwitcher()" (basemapChanged)="onChangeBasemapStyle()"></arlas-mapgl-basemap>
 <div id="polygon-finish-draw-tooltip" class="draw-tooltip--hide"
   [class.draw-tooltip--show]="drawClickCounter>1">{{FINISH_DRAWING | translate}}</div>

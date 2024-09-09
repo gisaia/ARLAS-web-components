@@ -1,15 +1,19 @@
 import { MapSource } from './mapSource';
-import { IconConfig, VisualisationSetConfig } from '../mapgl.component';
 import { FeatureCollection } from '@turf/helpers';
 import { MapExtend } from '../mapgl.component.util';
 import { ControlButton } from '../mapgl.component.control';
 import { ExternalEvent, MapLayers } from './mapLayers';
 import { Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
-import { ArlasDraw } from './ArlasDraw';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+
+export interface IconConfig {
+  path: string;
+  recolorable?: boolean;
+}
+
 
 export interface ConfigControls {
   enable: boolean;
@@ -80,6 +84,31 @@ export interface ArlasMapOffset {
   east: number;
   south: number;
   west: number;
+}
+
+export const GEOJSON_SOURCE_TYPE = 'geojson';
+
+export interface OnMoveResult {
+  zoom: number;
+  zoomStart: number;
+  center: Array<number>;
+  centerWithOffset: Array<number>;
+  extend: Array<number>;
+  extendWithOffset: Array<number>;
+  rawExtendWithOffset: Array<number>;
+  extendForLoad: Array<number>;
+  extendForTest: Array<number>;
+  rawExtendForLoad: Array<number>;
+  rawExtendForTest: Array<number>;
+  xMoveRatio: number;
+  yMoveRatio: number;
+  visibleLayers: Set<string>;
+}
+
+export interface VisualisationSetConfig {
+  name: string;
+  layers: Array<string>;
+  enabled?: boolean;
 }
 
 export abstract class AbstractArlasMapGL {

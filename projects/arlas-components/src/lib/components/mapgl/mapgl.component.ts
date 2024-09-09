@@ -64,46 +64,25 @@ import directModeOverride from './draw/modes/directSelectOverride';
 import stripMode from './draw/modes/strip/strip.mode';
 import { stripDirectSelectMode } from './draw/modes/strip/strip.direct.mode';
 import cleanCoords from '@turf/clean-coords';
-import { ArlasMapOffset, ControlPosition, DrawControlsOption } from './model/AbstractArlasMapGL';
+import {
+  ArlasMapOffset,
+  ControlPosition,
+  DrawControlsOption, IconConfig, OnMoveResult,
+  VisualisationSetConfig
+} from './model/AbstractArlasMapGL';
 import { ArlasMapGL, ArlasMapGlConfig } from './model/ArlasMapGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
-export interface OnMoveResult {
-  zoom: number;
-  zoomStart: number;
-  center: Array<number>;
-  centerWithOffset: Array<number>;
-  extend: Array<number>;
-  extendWithOffset: Array<number>;
-  rawExtendWithOffset: Array<number>;
-  extendForLoad: Array<number>;
-  extendForTest: Array<number>;
-  rawExtendForLoad: Array<number>;
-  rawExtendForTest: Array<number>;
-  xMoveRatio: number;
-  yMoveRatio: number;
-  visibleLayers: Set<string>;
-}
 
-export interface VisualisationSetConfig {
-  name: string;
-  layers: Array<string>;
-  enabled?: boolean;
-}
-
-export interface IconConfig {
-  path: string;
-  recolorable?: boolean;
-}
 
 export const ZOOM_IN = marker('Zoom in');
 export const ZOOM_OUT = marker('Zoom out');
 export const RESET_BEARING = marker('Reset bearing to north');
 export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
-export const GEOJSON_SOURCE_TYPE = 'geojson';
+
 
 /**
  * Mapgl Component allows to display and select geometrical data on a map.
@@ -541,7 +520,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.map !== undefined) {
+    if (this.arlasMap.getMap() !== undefined) {
       if (changes['drawData'] !== undefined) {
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
@@ -764,7 +743,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     console.log('declare');
     this.arlasMap = new ArlasMapGL(config);
     console.log(this.arlasMap);
-    this.map = this.arlasMap.getMap();
 
     fromEvent(window, 'beforeunload').subscribe(() => {
       this.onMapClosed.next(this.arlasMap.getMapExtend());
