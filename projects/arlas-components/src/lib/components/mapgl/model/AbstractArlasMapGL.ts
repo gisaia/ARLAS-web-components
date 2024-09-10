@@ -5,7 +5,8 @@ import { ControlButton } from '../mapgl.component.control';
 import { ExternalEvent, MapLayers } from './mapLayers';
 import { Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { AnyLayer } from 'mapbox-gl';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -39,7 +40,7 @@ export interface DrawConfigControl extends ConfigControls {
 }
 
 export interface DrawControlsOption {
-  draw: {control: MapboxDraw; position?: ControlPosition;};
+  draw: {control: any; position?: ControlPosition;};
   addGeoBox: DrawConfigControl;
   removeAois: DrawConfigControl;
 }
@@ -121,8 +122,6 @@ export abstract class AbstractArlasMapGL {
   public abstract startlngLat: unknown;
   public abstract endlngLat: unknown;
   public abstract movelngLat: unknown;
-
-
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -221,8 +220,8 @@ export abstract class AbstractArlasMapGL {
   protected abstract initSources(): void;
   protected abstract initVisualisationSet(): void;
   public abstract initDrawControls(config: DrawControlsOption): void;
-  protected abstract loadImage(filePath: string, name: string, errorMessage?: string,  opt?: any): void;
-  protected abstract loadIcons(): void;
+  protected abstract loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any): void;
+  protected abstract initLoadIcons(): void;
 
   protected abstract addSourcesToMap(sources: Array<MapSource>): void;
   public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: unknown[]): void;
@@ -233,83 +232,32 @@ export abstract class AbstractArlasMapGL {
   protected abstract setScrollableLayoutVisibility(layerId: string, visibility: string): void;
   public abstract addLayerInWritePlaceIfNotExist(layerId: string): void;
   public abstract redrawSource(id: string, data): void;
-  public abstract updateLayoutVisibility(visualisationName: string): void;
   public abstract updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
                                 collection?: string): void;
-  public abstract  updateVisibility(visibilityStatus: Map<string, boolean>): void;
   public abstract disableLayoutVisibility(layer: string): void;
   public abstract enableLayoutVisibility(layer: string): void;
   public abstract getColdOrHotLayers();
-  public abstract findVisualisationSetLayer(visuName: string);
-  public abstract setVisualisationSetLayers(visuName: string, layers: string[]);
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<unknown>, sources: Array<MapSource>): void;
   protected abstract addExternalEventLayers();
   protected abstract getMoveEnd(): void;
-  public abstract paddedFitBounds(bounds: unknown, options?: mapboxgl.FitBoundsOptions);
-  public abstract drop(event: unknown): void;
-  public abstract dropLayer(event: unknown, visuName: string): void;
-  public abstract  highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; });
-  public abstract  selectFeatures(elementToSelect: Array<ElementIdentifier>): void;
-  public abstract selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string): void;
-
-  /**
-   * we wrap maprovider function to hide
-   * maprovider implementation from our other interface.
-   * to prevent changes from impacting other parts of the application.
-   * ex:
-   * addLayer(){
-   * provider1.addLayerToMap()
-   * }
-   *
-   * addLayer(){
-   * provider2.addLayer()
-   * }
-   *
-   * if we change the implementation, as we used addLayer in all our app,
-   * the change is transparent.
-   */
-  public abstract on(event: string, func: (e) => void);
-  public abstract setLayersMap(mapLayers: MapLayers<unknown>, layers?: Array<unknown>): void;
-  public abstract setCursorStyle(cursor: string): void;
-  public abstract addSource(sourceId: string, source: unknown): void;
-  public abstract getMap(): any;
-  public abstract getMapExtend(): MapExtend;
-  public abstract addLayer(layerId: any, before?: string);
-  public abstract getLayerFromMapProvider(layerId: string);
-  public abstract moveLayer(id: string, before?: string);
-  public abstract getSource(id: string);
-  public abstract setLayoutProperty(layer: string, name: string, value: any, options?: unknown);
-  public abstract addControl(control: ControlButton, position?: ControlPosition,  eventOverrid?: {
-    event: string; fn: (e?) => void;});
-  public abstract addControl(control: unknown, position?: ControlPosition, eventOverrid?: {
-    event: string; fn: (e?) => void;
-  });
-  public abstract getBounds(): void;
-  public abstract fitBounds(bounds: unknown, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData): void;
-  public abstract setCenter(lngLat: [number, number]): void;
-  public abstract getWestBounds(): void;
-  public abstract getNorthBounds(): void;
-  public abstract getNorthEastBounds(): void;
-  public abstract getSouthBounds(): void;
-  public abstract getSouthWestBounds(): void;
-  public abstract getEstBounds(): void;
-  public abstract getZoom(): void;
-  public abstract getCanvasContainer(): void;
-  public abstract getLayers(): void;
+  public abstract paddedFitBounds(bounds: unknown, options?: unknown);
   public abstract enableDragPan(): void;
-  public abstract getCenter(): void;
-  public abstract flyTo(center, zoom: number): void;
-  public abstract project(latlng: unknown): void;
-  public abstract unproject(latlng: unknown): void;
-  public abstract queryRenderedFeatures(point: [number, number]): void;
+  public abstract disableDragPan(): void;
+  public abstract getWestBounds(): unknown;
+  public abstract getNorthBounds(): unknown;
+  public abstract getNorthEastBounds(): unknown;
+  public abstract getSouthBounds(): unknown;
+  public abstract getSouthWestBounds(): unknown;
+  public abstract getEstBounds(): unknown;
+  public abstract setCursorStyle(cursor: string): void;
+  public abstract getMapProvider(): unknown;
+  public abstract getMapExtend(): MapExtend;
   public abstract onLoad(fn: () => void): void;
   public abstract onMoveEnd(fn: () => void): void;
   protected abstract updateOnZoomStart(): void;
   protected abstract updateOnDragStart(): void;
   protected abstract updateOnDragEnd(): void;
   protected abstract updateOnMoveEnd(): void;
-  public abstract unsubscribeEvents(): void;
-
   protected abstract _updateZoomStart(e?: unknown): void;
   protected abstract _updateDragEnd(e: unknown): void;
   protected abstract _updateDragStart(e: unknown): void;
@@ -319,4 +267,41 @@ export abstract class AbstractArlasMapGL {
   protected abstract _updateStartLngLat(e?: unknown): void;
   protected abstract _updateEndLngLat(e?: unknown): void;
   protected abstract _updateCurrentLngLat(e?: unknown): void;
+  public abstract getLayers(): unknown;
+  public abstract addControl(control: ControlButton, position?: ControlPosition,  eventOverride?: {
+    event: string; fn: (e?) => void;});
+  public abstract addControl(control: unknown, position?: ControlPosition, eventOverride?: {
+    event: string; fn: (e?) => void;
+  });
+  public abstract setLayersMap(mapLayers: MapLayers<unknown>, layers?: Array<unknown>);
+  public abstract highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; });
+  public abstract selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string);
+  public abstract  selectFeatures(elementToSelect: Array<ElementIdentifier>);
+  public abstract updateLayoutVisibility(visualisationName: string);
+  public abstract updateVisibility(visibilityStatus: Map<string, boolean>);
+
+  public findVisualisationSetLayer(visuName: string){
+    return this._visualisationSetsConfig.find(v => v.name === visuName).layers;
+  }
+  public setVisualisationSetLayers(visuName: string, layers: string[]){
+    const f = this._visualisationSetsConfig.find(v => v.name === visuName);
+    if(f){
+      f.layers = layers;
+    }
+  }
+
+  public drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this._visualisationSetsConfig, event.previousIndex, event.currentIndex);
+    this.reorderLayers();
+  }
+
+  public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
+    const layers = Array.from(this.findVisualisationSetLayer(visuName));
+    moveItemInArray(layers, event.previousIndex, event.currentIndex);
+    this.setVisualisationSetLayers(visuName, layers);
+    this.reorderLayers();
+  }
+  public unsubscribeEvents(){
+    this._eventSubscription.forEach(s => s.unsubscribe());
+  }
 }
