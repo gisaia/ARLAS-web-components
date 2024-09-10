@@ -109,4 +109,4 @@ export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
 export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
-export {VisualisationSetConfig, IconConfig, OnMoveResult} from './lib/components/mapgl/model/AbstractArlasMapGL'
+export {VisualisationSetConfig, IconConfig, OnMoveResult} from './lib/components/mapgl/model/AbstractArlasMapGL';

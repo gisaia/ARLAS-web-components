@@ -511,7 +511,7 @@ export class MapglImportComponent {
   /** *************/
   public clearPolygons() {
     // Clean source of imported polygons
-    const labelSource = this.mapComponent.arlasMap.getSource(this.SOURCE_NAME_POLYGON_LABEL) as mapboxgl.GeoJSONSource;
+    const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL) as mapboxgl.GeoJSONSource;
     this.featureIndex = 0;
     this.mapComponent.onAoiChanged.next(this.emptyData);
     if (labelSource !== undefined) {
