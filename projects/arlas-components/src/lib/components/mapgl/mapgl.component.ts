@@ -96,8 +96,7 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: mapboxgl.Map;
-  public arlasMap: ArlasMapGL;
+  public map: ArlasMapGL;
   public draw: ArlasDraw;
   public zoom: number;
   public legendOpen = true;
@@ -453,9 +452,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   /** Hides/shows all the layers inside the given visualisation name*/
   public emitVisualisations(visualisationName: string) {
-    const layers = this.arlasMap.updateLayoutVisibility(visualisationName);
+    const layers = this.map.updateLayoutVisibility(visualisationName);
     this.visualisations.emit(layers);
-    this.arlasMap.reorderLayers();
+    this.map.reorderLayers();
   }
 
   public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string; }): void {
@@ -476,7 +475,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @param sources List of sources that these external `layers` use.
    */
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
-    this.arlasMap.addVisualisation(visualisation, layers, sources);
+    this.map.addVisualisation(visualisation, layers, sources);
   }
 
   /**
@@ -505,22 +504,22 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
-    this.arlasMap.drop(event);
+    this.map.drop(event);
   }
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    this.arlasMap.dropLayer(event, visuName);
+    this.map.dropLayer(event, visuName);
   }
 
   /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
   public reorderLayers() {
     // parses the visulisation list from bottom in order to put the fist ones first
-    this.arlasMap.reorderLayers();
+    this.map.reorderLayers();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.arlasMap.getMap() !== undefined) {
+    if (this.map.getMap() !== undefined) {
       if (changes['drawData'] !== undefined) {
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
@@ -538,16 +537,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         }
         this.drawSelectionChanged = false;
-        if (this.arlasMap.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-          (this.arlasMap.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
+        if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
+          (this.map.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
-        const canvas = this.arlasMap.getCanvasContainer();
+        const canvas = this.map.getCanvasContainer();
         const positionInfo = canvas.getBoundingClientRect();
         const width = positionInfo.width;
-        this.arlasMap.fitBounds(newBoundsToFit, {
+        this.map.fitBounds(newBoundsToFit, {
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
         });
@@ -555,7 +554,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       if (changes['featureToHightLight'] !== undefined
         && changes['featureToHightLight'].currentValue !== changes['featureToHightLight'].previousValue) {
         const featureToHightLight = changes['featureToHightLight'].currentValue;
-        this.arlasMap.highlightFeature(featureToHightLight);
+        this.map.highlightFeature(featureToHightLight);
       }
       if (changes['featuresToSelect'] !== undefined
         && changes['featuresToSelect'].currentValue !== changes['featuresToSelect'].previousValue) {
@@ -606,9 +605,9 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (e.features[0].properties.cluster_id !== undefined) {
       // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat], expansionZoom);
+      this.map.flyTo([e.lngLat.lng, e.lngLat.lat], expansionZoom);
     } else {
-      const zoom = this.arlasMap.getZoom();
+      const zoom = this.map.getZoom();
       let newZoom: number;
       if (zoom >= 0 && zoom < 3) {
         newZoom = 4;
@@ -623,12 +622,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       } else {
         newZoom = 12;
       }
-      this.arlasMap.flyTo([e.lngLat.lng, e.lngLat.lat], newZoom);
+      this.map.flyTo([e.lngLat.lng, e.lngLat.lat], newZoom);
     }
   }
 
   private queryRender(e) {
-    const features = this.arlasMap.queryRenderedFeatures(e.point);
+    const features = this.map.queryRenderedFeatures(e.point);
     const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
     if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
       this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
@@ -688,7 +687,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             [{
               event: 'mousemove',
               fn: (e) => {
-                this.arlasMap.setCursorStyle('pointer');
+                this.map.setCursorStyle('pointer');
               }
             }
             ],
@@ -699,7 +698,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             {
               event: 'mouseleave',
               fn: (e) => {
-                this.arlasMap.setCursorStyle('');
+                this.map.setCursorStyle('');
               }
             }
           ]
@@ -741,11 +740,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
     };
     console.log('declare');
-    this.arlasMap = new ArlasMapGL(config);
-    console.log(this.arlasMap);
+    this.map = new ArlasMapGL(config);
+    console.log(this.map);
 
     fromEvent(window, 'beforeunload').subscribe(() => {
-      this.onMapClosed.next(this.arlasMap.getMapExtend());
+      this.onMapClosed.next(this.map.getMapExtend());
     });
 
     this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
@@ -768,7 +767,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       }
     };
-    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.arlasMap.getMap());
+    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map.getMap());
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
@@ -790,7 +789,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         overrideEvent: {event: 'click', fn: this.removeAois}
       }
     };
-    this.arlasMap.initDrawControls(drawControlConfig);
+    this.map.initDrawControls(drawControlConfig);
     this.drawService.setMapboxDraw(this.draw);
     /**
      *  The other on load initialisation releated with the map are in
@@ -800,19 +799,19 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
      *
      *  !! If you see a better approche let me know.
      */
-    this.arlasMap.onLoad(() => {
+    this.map.onLoad(() => {
       // TODO: should change the
-      this.basemapService.declareProtomapProtocol(this.arlasMap);
-      this.basemapService.addProtomapBasemap(this.arlasMap);
+      this.basemapService.declareProtomapProtocol(this.map);
+      this.basemapService.addProtomapBasemap(this.map);
       this.draw.changeMode('static');
 
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          this.arlasMap.updateVisibility(visibilityStatus);
+          this.map.updateVisibility(visibilityStatus);
         });
       }
 
-      this.canvas = this.arlasMap.getCanvasContainer();
+      this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.draw.on('draw.create', (e) => {
         this.onAoiChanged.next(
@@ -862,12 +861,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.draw.onDrawOnStart( (e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.arlasMap.setCursorStyle('');
+        this.map.setCursorStyle('');
       });
       this.draw.onDrawOnStop((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.arlasMap.setCursorStyle('');
+        this.map.setCursorStyle('');
       });
 
       this.draw.onDrawInvalidGeometry( (e) => {
@@ -891,7 +890,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.draw.add(currentFeature);
         }
         this.openInvalidGeometrySnackBar();
-        this.arlasMap.setCursorStyle('');
+        this.map.setCursorStyle('');
       });
 
       this.draw.onDrawEditSaveInitialFeature( (edition) => {
@@ -921,7 +920,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           this.isDrawingStrip = false;
           this.isInSimpleDrawMode = false;
           this.draw.changeMode('static');
-          this.arlasMap.setCursorStyle('');
+          this.map.setCursorStyle('');
         }
       });
       this.draw.onDrawModeChange( (e) => {
@@ -934,7 +933,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         if (e.mode === 'simple_select') {
           this.isInSimpleDrawMode = true;
         } else if (e.mode === 'static') {
-          this.arlasMap.setCursorStyle('');
+          this.map.setCursorStyle('');
         } else if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelectedFeatures();
           const selectedIds = this.draw.getSelectedIds();
@@ -961,12 +960,12 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
             }
           } else {
             this.isInSimpleDrawMode = false;
-            this.arlasMap.setCursorStyle('');
+            this.map.setCursorStyle('');
           }
         }
       });
 
-      this.arlasMap.on('click', (e) => {
+      this.map.on('click', (e) => {
         if (this.isDrawingCircle) {
           return;
         }
@@ -980,7 +979,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
           }
         } else {
           this.nbPolygonVertice = 0;
-          const features = this.arlasMap.queryRenderedFeatures(e.point);
+          const features = this.map.queryRenderedFeatures(e.point);
           // edit polygon condition : no arlas feature && mapbox-gl-draw source present
           const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
             features.filter(f => f.source.startsWith('mapbox-gl-draw')).length > 0;
@@ -1010,29 +1009,29 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.onMapLoaded.next(true);
     });
 
-    this.arlasMap.onMoveEnd().subscribe((moveResult => {
+    this.map.onMoveEnd().subscribe((moveResult => {
       this.onMove.next(moveResult);
     }));
 
     // Mouse events
-    this.arlasMap.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.arlasMap.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
 
-    this.arlasMap.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.isDrawingBbox || this.isDrawingPolygon) {
-        this.arlasMap.setCursorStyle('crosshair');
-        this.arlasMap.movelngLat = lngLat;
+        this.map.setCursorStyle('crosshair');
+        this.map.movelngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
-        const startlng: number = this.arlasMap.startlngLat.lng;
-        const endlng: number = this.arlasMap.movelngLat.lng;
-        const startlat: number = this.arlasMap.startlngLat.lat;
-        const endlat: number = this.arlasMap.movelngLat.lat;
+        const startlng: number = this.map.startlngLat.lng;
+        const endlng: number = this.map.movelngLat.lng;
+        const startlat: number = this.map.startlngLat.lat;
+        const endlat: number = this.map.movelngLat.lat;
         const west = Math.min(startlng, endlng);
         const north = Math.max(startlat, endlat);
         const east = Math.max(startlng, endlng);
@@ -1060,7 +1059,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
     if (!!this.redrawSource) {
       this.redrawSource.subscribe(sd => {
-        this.arlasMap.redrawSource(sd.source, sd.data);
+        this.map.redrawSource(sd.source, sd.data);
       });
     }
   }
@@ -1076,7 +1075,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description Displays the geobox
    */
   public addGeoBox() {
-    this.arlasMap.setCursorStyle('crosshair');
+    this.map.setCursorStyle('crosshair');
     this.drawService.enableBboxEdition();
     this.isDrawingBbox = true;
   }
@@ -1085,7 +1084,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
   public removeAois() {
-    this.arlasMap.setCursorStyle('');
+    this.map.setCursorStyle('');
     this.isDrawingBbox = false;
     this.deleteSelectedItem();
   }
@@ -1172,16 +1171,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape' && this.isDrawingBbox) {
-      this.arlasMap.setCursorStyle('');
+      this.map.setCursorStyle('');
       this.isDrawingBbox = false;
       document.removeEventListener('mousemove', this.mousemove);
       document.removeEventListener('mouseup', this.mouseup);
-      this.arlasMap.setCursorStyle('');
+      this.map.setCursorStyle('');
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
-      this.arlasMap.enableDragPan();
+      this.map.enableDragPan();
       this.drawService.endDimensionsEmission();
     }
   }
@@ -1197,13 +1196,13 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       this.drawBboxSubscription.unsubscribe();
     }
 
-    if(!!this.arlasMap){
-      this.arlasMap.unsubscribeEvents();
+    if(!!this.map){
+      this.map.unsubscribeEvents();
     }
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    this.arlasMap.selectFeaturesByCollection(features, collection);
+    this.map.selectFeaturesByCollection(features, collection);
   }
 
   public hideBasemapSwitcher() {
@@ -1214,11 +1213,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    * Wrapper method to fit the map to the given bounds with enough padding to properly visualize the area
    */
   public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
-    this.arlasMap.paddedFitBounds(bounds, options);
+    this.map.paddedFitBounds(bounds, options);
   }
 
   public moveToCoordinates(lngLat: [number, number]) {
-    this.arlasMap.setCenter(lngLat);
+    this.map.setCenter(lngLat);
   }
 
   // TODO: put into utils class.
@@ -1248,11 +1247,11 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.arlasMap.highlightFeature(featureToHightLight);
+    this.map.highlightFeature(featureToHightLight);
   }
 
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    this.arlasMap.selectFeatures(elementToSelect);
+    this.map.selectFeatures(elementToSelect);
   }
 
   private mousedown = (e) => {
@@ -1261,7 +1260,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       return;
     }
     // Disable default drag zooming when we add a geobox.
-    this.arlasMap.disableDragPan();
+    this.map.disableDragPan();
     // Call functions for the following events
     document.addEventListener('mousemove', this.mousemove);
     document.addEventListener('mouseup', this.mouseup);
@@ -1307,8 +1306,8 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     );
     document.removeEventListener('mousemove', this.mousemove);
     document.removeEventListener('mouseup', this.mouseup);
-    this.arlasMap.setCursorStyle('');
-    this.arlasMap.enableDragPan();
+    this.map.setCursorStyle('');
+    this.map.enableDragPan();
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
       this.finish([[this.start, f], [e.lngLat]]);
@@ -1323,10 +1322,10 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   private finish(bbox?) {
     if (bbox) {
-      const startlng: number = this.arlasMap.startlngLat.lng;
-      const endlng: number = this.arlasMap.endlngLat.lng;
-      const startlat: number = this.arlasMap.startlngLat.lat;
-      const endlat: number = this.arlasMap.endlngLat.lat;
+      const startlng: number = this.map.startlngLat.lng;
+      const endlng: number = this.map.endlngLat.lng;
+      const startlat: number = this.map.startlngLat.lat;
+      const endlat: number = this.map.endlngLat.lat;
       const west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
       const east = Math.max(startlng, endlng);
