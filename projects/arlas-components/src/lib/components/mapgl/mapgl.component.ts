@@ -38,7 +38,6 @@ import { LegendData, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { ARLAS_VSET, MapLayers } from './model/mapLayers';
 import { MapSource } from './model/mapSource';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Feature, FeatureCollection, polygon, Polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
@@ -67,7 +66,9 @@ import cleanCoords from '@turf/clean-coords';
 import {
   ArlasMapOffset,
   ControlPosition,
-  DrawControlsOption, IconConfig, OnMoveResult,
+  DrawControlsOption,
+  IconConfig,
+  OnMoveResult,
   VisualisationSetConfig
 } from './model/AbstractArlasMapGL';
 import { ArlasMapGL, ArlasMapGlConfig } from './model/ArlasMapGL';
@@ -519,7 +520,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.map.getMap() !== undefined) {
+    if (this.map && this.map.getMapProvider() !== undefined) {
       if (changes['drawData'] !== undefined) {
         this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
@@ -605,7 +606,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     if (e.features[0].properties.cluster_id !== undefined) {
       // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.map.flyTo([e.lngLat.lng, e.lngLat.lat], expansionZoom);
+      this.map.flyTo({center:[e.lngLat.lng, e.lngLat.lat]}, expansionZoom);
     } else {
       const zoom = this.map.getZoom();
       let newZoom: number;
@@ -622,7 +623,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       } else {
         newZoom = 12;
       }
-      this.map.flyTo([e.lngLat.lng, e.lngLat.lat], newZoom);
+      this.map.flyTo({center:[e.lngLat.lng, e.lngLat.lat], zoom: newZoom}, );
     }
   }
 
@@ -767,7 +768,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       }
     };
-    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map.getMap());
+    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map.getMapProvider());
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
