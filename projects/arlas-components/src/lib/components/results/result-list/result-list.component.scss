@@ -212,22 +212,6 @@ tr:hover td.resultitem__cell.toggle .list_actions {
   width: 100%;
 }
 
-.resultlist__md-grid-tile {
-  margin-top: 5px;
-
-  &__selected--icon{
-    position: absolute;
-    z-index: 1;
-    top: 20px;
-    color: white;
-    background-color: transparent;
-    opacity: 50%;
-    font-size: 72px;
-    height: 72px !important;
-    width: 72px !important;
-  }
-}
-
 .resultlist__thead__tr {
   display: block;
   position: relative;

@@ -81,6 +81,12 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   @Input() public idFieldName: string;
 
   /**
+  * @Input
+  * @description Display or not big full info icon on the grid.
+  */
+  @Input() public  displayInfoIcon = false;
+
+  /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */

@@ -17,12 +17,12 @@
       </label>
       <ng-template #labelModeIsDefined>
         <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.filled && column.useColorService" class="resultitem__cell--label resultitem__cell--label__filled"
-          [style.background-color]="colors[rowItem?.itemData.get(column.fieldName)]['color']" 
-          [style.color]="colors[rowItem?.itemData.get(column.fieldName)]['textColor']">
+          [style.background-color]="!!colors[rowItem?.itemData.get(column.fieldName)] ? colors[rowItem?.itemData.get(column.fieldName)]['color'] : 'transparent'" 
+          [style.color]="!!colors[rowItem?.itemData.get(column.fieldName)] ?  colors[rowItem?.itemData.get(column.fieldName)]['textColor'] : 'black'">
           {{rowItem?.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
         </label>
         <label *ngIf="cellBackgroundStyle === CellBackgroundStyleEnum.outlined && column.useColorService && !!rowItem?.itemData.get(column.fieldName) && rowItem?.itemData.get(column.fieldName) !== ''" class="resultitem__cell--label resultitem__cell--label__outlined"
-          [style.border-color]="colors[rowItem?.itemData.get(column.fieldName)]['color']"  >
+          [style.border-color]="!!colors[rowItem?.itemData.get(column.fieldName)] ? colors[rowItem?.itemData.get(column.fieldName)]['color'] : 'black'"  >
           {{rowItem?.itemData.get(column.fieldName) | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
         </label>
       </ng-template>
