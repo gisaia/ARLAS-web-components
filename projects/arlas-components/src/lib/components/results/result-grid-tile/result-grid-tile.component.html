@@ -13,6 +13,7 @@
           {{action.label | translate}}
         </button>
       </div>
+      <mat-icon class="resultlist__md-grid-tile__selected--icon" *ngIf="displayInfoIcon">info_outline</mat-icon>
     </div>
     <div class="resultgrid__title-highlight-{{gridTile?.ishighLight}}">
       <span *ngIf="gridTile?.color" matTooltip="{{gridTile?.tooltip}}" class="tablet" [style.background-color]="gridTile?.color"></span>
