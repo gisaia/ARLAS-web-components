@@ -1,33 +1,30 @@
-<div [ngStyle]="{'width.px':!!chartWidth ? chartWidth : 'unset' }">
+<div [style.width.px]="!!chartWidth ? chartWidth : 'unset'">
   <div class="tools">
-    <div *ngIf="!displayFilterField" class="powerbarTitle">{{powerbarTitle | translate}}</div>
+    <div *ngIf="!displayFilterField" class="powerbars--title">{{powerbarTitle | translate}}</div>
     <div class="powerbars--search" *ngIf="displayFilterField">
       <form (keydown.enter)="$event.preventDefault()">
-        <mat-form-field class="powerbars-search-field">
+        <mat-form-field class="powerbars--search-field">
           <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle | translate}}" matInput
-            class="powerbars-search-input" (keyup)="onKeyUp(searchText.value)" name="search">
+            class="powerbars--search-input" (keyup)="onKeyUp(searchText.value)" name="search">
         </mat-form-field>
       </form>
     </div>
-    <div *ngIf="filterOperator && filterOperator?.display" class="include_exclude">
-      <div class="operation" [class.selected_operation]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div>
-      <div class="operation" [class.selected_operation]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div>
-    </div>
-    <div *ngIf="filterOperator && !filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
-      <div class="operation" [class.exclude]="filterOperator?.value === 'Neq'">{{'exclude' | translate}}</div>
-    </div>
+    <ng-container *ngIf="filterOperator">
+      <div *ngIf="filterOperator?.display" class="include_exclude">
+        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div>
+        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div>
+      </div>
+      <div *ngIf="!filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
+        <div class="operation exclude">{{'exclude' | translate}}</div>
+      </div>
+    </ng-container>
   </div>
 
-  <div [ngClass]="customizedCssClass">
-    <div class="powerbars--container" [class.powerbar-scrollable]="scrollable">
-      <ng-container *ngIf="groupSelections">
-        <div *ngIf="selectedPowerbarsSet.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
-        [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 126 : selectedPowerbarsSet.size * 25">
-        <div *ngFor="let selectedPowerbar of selectedPowerbarsSet"
-          class="powerbars__powerbar powerbars__powerbar--{{selectedPowerbar.classSuffix}}"
-          (click)="clickOnPowerbar(selectedPowerbar)"
-          matTooltip="{{(selectedPowerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-          [matTooltipPosition]="'after'">
+  <div class="powerbars--container" [class.powerbar-scrollable]="scrollable" [ngClass]="customizedCssClass">
+    <ng-container *ngIf="groupSelections">
+      <div *ngIf="selectedPowerbarsSet.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
+        [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
+        <div *ngFor="let selectedPowerbar of selectedPowerbarsSet" (click)="clickOnPowerbar(selectedPowerbar)">
           <arlas-powerbar
             [unit]="unit"
             [powerbar]="selectedPowerbar"
@@ -40,21 +37,20 @@
           ></arlas-powerbar>
         </div>
       </div>
-      </ng-container>
+    </ng-container>
 
-      <div [class.powerbar-list-scrollable]="scrollable">
-        <div *ngFor="let powerbar of powerBarsList" (click)="clickOnPowerbar(powerbar)">
-          <arlas-powerbar
-            [unit]="unit"
-            [powerbar]="powerbar"
-            [useColorFromData]="useColorFromData"
-            [useColorService]="useColorService"
-            [numberShorteningPrecision]="numberShorteningPrecision"
-            [selectWithCheckbox]="selectWithCheckbox"
-            [hideSelected]="groupSelections"
-            (onCheckEvent)="clickOnPowerbar(powerbar)"
-          ></arlas-powerbar>
-        </div>
+    <div [class.powerbar-list-scrollable]="scrollable">
+      <div *ngFor="let powerbar of powerBarsList" (click)="clickOnPowerbar(powerbar)">
+        <arlas-powerbar
+          [unit]="unit"
+          [powerbar]="powerbar"
+          [useColorFromData]="useColorFromData"
+          [useColorService]="useColorService"
+          [numberShorteningPrecision]="numberShorteningPrecision"
+          [selectWithCheckbox]="selectWithCheckbox"
+          [hideSelected]="groupSelections"
+          (onCheckEvent)="clickOnPowerbar(powerbar)"
+        ></arlas-powerbar>
       </div>
     </div>
   </div>
