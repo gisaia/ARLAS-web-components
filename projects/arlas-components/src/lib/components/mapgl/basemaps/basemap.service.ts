@@ -25,6 +25,7 @@ import { BasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
 import { Observable, Subject, catchError, forkJoin, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { ArlasMapGL } from '../model/ArlasMapGL';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,7 @@ export class MapboxBasemapService {
     this.basemaps = basemaps;
   }
 
-  public addProtomapBasemap(map: mapboxgl.Map) {
+  public addProtomapBasemap(map: ArlasMapGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       const styleFile = selectedBasemap.styleFile as mapboxgl.Style;
@@ -68,7 +69,7 @@ export class MapboxBasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: mapboxgl.Map) {
+  public removeProtomapBasemap(map: ArlasMapGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
@@ -80,7 +81,7 @@ export class MapboxBasemapService {
     }
   }
 
-  public declareProtomapProtocol(map: mapboxgl.Map) {
+  public declareProtomapProtocol(map: ArlasMapGL) {
     const protocol = new pmtiles.Protocol();
     if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
       /** addSourceType is private */
