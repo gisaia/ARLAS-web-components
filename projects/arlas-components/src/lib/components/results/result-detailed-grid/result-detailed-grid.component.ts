@@ -208,12 +208,8 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     // before removing it due to visibility rules in the template
     setTimeout(() => {
       this.imgSrc = undefined;
-      if (this.gridTile) {
-        this.gridTile.imageEnabled = false;
-      }
     }, 0);
   }
-
 
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
@@ -239,7 +235,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
 
     const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
-    if (actionsInfos) {
+    if (!!actionsInfos && !!actionsInfos[0]) {
       viewerContainer = actionsInfos[0].parentElement;
       const elements = actionsInfos.length;
       for (let i = 0; i < elements; i++) {

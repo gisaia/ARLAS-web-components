@@ -68,9 +68,9 @@ export class ResultsDemoComponent implements OnInit {
             }
           }
         ],
-        urlThumbnailTemplate: 'urlImage',
+        urlThumbnailTemplate: '{urlImage}',
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
-        useHttpQuicklooks: true
+        useHttpQuicklooks: false
       };
       this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>();
 
