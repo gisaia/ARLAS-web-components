@@ -17,11 +17,17 @@
  * under the License.
  */
 
+@import "../../../../../assets/styles/sizes.scss";
+
 .legend {
     &__title {
         text-align: center;
-        font-size: 0.7em;
+        font-size: $xs-font-size;
         color: #666;
+
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-family: Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
     }
 
     &--manual {
@@ -57,7 +63,7 @@
             }
 
             &__key {
-                font-size: 0.8em;
+                font-size: $xs-font-size;
                 margin-left: 5px;
                 flex: 1;
                 white-space: nowrap;
@@ -83,7 +89,7 @@
             justify-content: space-between;
 
             &__value {
-                font-size: 0.6em;
+                font-size: $xxs-font-size;
                 color: #666;
             }
         }

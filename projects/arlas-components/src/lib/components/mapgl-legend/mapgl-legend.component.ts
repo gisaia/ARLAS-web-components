@@ -30,11 +30,12 @@ import { ArlasColorService } from '../../services/color.generator.service';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from '../mapgl/mapgl.component.util';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../mapgl/model/mapLayers';
 import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.component';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 export const GET = 'get';
 export const MATCH = 'match';
 export const INTERPOLATE = 'interpolate';
-export const OTHER = 'other_color';
+export const OTHER = marker('other_color');
 
 export const IN = 'in';
 export const NOT_IN = '!';
