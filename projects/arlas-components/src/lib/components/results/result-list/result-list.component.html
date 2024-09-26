@@ -123,7 +123,7 @@
           [detailHeight]="detailedGridHeight" [idFieldName]="fieldsConfiguration.idFieldName"
           [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)"
           [showEmptyGroup]="showEmptyGroup" [useHttp]="fieldsConfiguration.useHttpQuicklooks"
-          (closeDetail)=closeDetail($event)>
+          (closeDetail)="closeDetail($event)">
         </arlas-result-detailed-grid>
       </td>
     </tr>
