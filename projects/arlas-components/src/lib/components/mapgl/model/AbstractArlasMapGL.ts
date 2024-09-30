@@ -81,13 +81,13 @@ export interface BaseMapGlConfig<T> {
   offset: ArlasMapOffset;
   icons: Array<IconConfig>;
   mapSources: Array<MapSource>;
-  mapLayers: MapLayers<unknown>;
+  mapLayers: MapLayers<any>;
   mapLayersEventBind: {
-    onHover: MapEventBinds<unknown>[];
-    emitOnClick: MapEventBinds<unknown>[];
-    zoomOnClick: MapEventBinds<unknown>[];
+    onHover: MapEventBinds<any>[];
+    emitOnClick: MapEventBinds<any>[];
+    zoomOnClick: MapEventBinds<any>[];
   };
-  customEventBind: BindLayerToEvent<unknown>[];
+  customEventBind: BindLayerToEvent<any>[];
   mapProviderOptions?: T;
   maxWidthScale?: number;
   unitScale?: string;
@@ -135,16 +135,17 @@ export abstract class AbstractArlasMapGL {
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startlngLat: unknown;
-  public abstract endlngLat: unknown;
-  public abstract movelngLat: unknown;
+  public abstract startlngLat: any;
+  public abstract endlngLat: any;
+  public abstract movelngLat: any;
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
   protected _fitBoundsPadding: number;
   protected _displayCurrentCoordinates: boolean;
   protected _wrapLatLng: boolean;
-  protected _mapLayers: MapLayers<unknown>;
+  // @Override
+  protected _mapLayers: MapLayers<any>;
   protected _controls: ControlsOption;
   protected _dataSource: Set<string>;
   public visualisationSetsConfig: Array<VisualisationSetConfig>;
@@ -153,7 +154,7 @@ export abstract class AbstractArlasMapGL {
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
   protected _dataSources?: Set<string>;
-  public abstract layersMap: Map<string, unknown>;
+  public abstract layersMap: Map<string, any>;
   public firstDrawLayer: string;
   protected _emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
@@ -216,7 +217,7 @@ export abstract class AbstractArlasMapGL {
     this.init(config);
   }
 
-  protected init(config: BaseMapGlConfig<unknown>): void {
+  protected init(config: BaseMapGlConfig<any>): void {
     try {
       this._initMapProvider(config);
       this._initControls();
@@ -239,7 +240,7 @@ export abstract class AbstractArlasMapGL {
   protected abstract _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any): void;
   protected abstract _initLoadIcons(): void;
 
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: unknown[]): void;
+  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: any[]): void;
   protected abstract _bindCustomEvent(): void;
   protected abstract addVisualLayers(): void;
   public abstract reorderLayers(): void;
@@ -247,19 +248,19 @@ export abstract class AbstractArlasMapGL {
   public abstract updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
                                 collection?: string): void;
   public abstract getColdOrHotLayers();
-  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<unknown>, sources: Array<MapSource>): void;
+  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<MapSource>): void;
   protected abstract _getMoveEnd(): void;
-  public abstract paddedFitBounds(bounds: unknown, options?: unknown);
+  public abstract paddedFitBounds(bounds: any, options?: any);
   public abstract enableDragPan(): void;
   public abstract disableDragPan(): void;
-  public abstract getWestBounds(): unknown;
-  public abstract getNorthBounds(): unknown;
-  public abstract getNorthEastBounds(): unknown;
-  public abstract getSouthBounds(): unknown;
-  public abstract getSouthWestBounds(): unknown;
-  public abstract getEstBounds(): unknown;
+  public abstract getWestBounds(): any;
+  public abstract getNorthBounds(): any;
+  public abstract getNorthEastBounds(): any;
+  public abstract getSouthBounds(): any;
+  public abstract getSouthWestBounds(): any;
+  public abstract getEstBounds(): any;
   public abstract setCursorStyle(cursor: string): void;
-  public abstract getMapProvider(): unknown;
+  public abstract getMapProvider(): any;
   public abstract getMapExtend(): MapExtend;
   public abstract onLoad(fn: () => void): void;
   public abstract onMoveEnd(fn: () => void): void;
@@ -267,22 +268,22 @@ export abstract class AbstractArlasMapGL {
   protected abstract _updateOnDragStart(): void;
   protected abstract _updateOnDragEnd(): void;
   protected abstract _updateOnMoveEnd(): void;
-  protected abstract _updateZoomStart(e?: unknown): void;
-  protected abstract _updateDragEnd(e: unknown): void;
-  protected abstract _updateDragStart(e: unknown): void;
-  protected abstract _updateMoveRatio(e: unknown): void;
-  protected abstract _updateBounds(e?: unknown): void;
-  protected abstract _updateZoom(e?: unknown): void;
-  protected abstract _updateStartLngLat(e?: unknown): void;
-  protected abstract _updateEndLngLat(e?: unknown): void;
-  protected abstract _updateCurrentLngLat(e?: unknown): void;
-  public abstract getLayers(): unknown;
+  protected abstract _updateZoomStart(e?: any): void;
+  protected abstract _updateDragEnd(e: any): void;
+  protected abstract _updateDragStart(e: any): void;
+  protected abstract _updateMoveRatio(e: any): void;
+  protected abstract _updateBounds(e?: any): void;
+  protected abstract _updateZoom(e?: any): void;
+  protected abstract _updateStartLngLat(e?: any): void;
+  protected abstract _updateEndLngLat(e?: any): void;
+  protected abstract _updateCurrentLngLat(e?: any): void;
+  public abstract getLayers(): any;
   public abstract addControl(control: ControlButton, position?: ControlPosition,  eventOverride?: {
     event: string; fn: (e?) => void;});
-  public abstract addControl(control: unknown, position?: ControlPosition, eventOverride?: {
+  public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
     event: string; fn: (e?) => void;
   });
-  public abstract setLayersMap(mapLayers: MapLayers<unknown>, layers?: Array<unknown>);
+  public abstract setLayersMap(mapLayers: MapLayers<any>, layers?: Array<any>);
 
   protected _addExternalEventLayers() {
     if (!!this._mapLayers.externalEventLayers) {
@@ -317,7 +318,7 @@ export abstract class AbstractArlasMapGL {
     if (layer !== undefined && layer.id === layerId) {
       /** Add the layer if it is not already added */
       if (this.getMapProvider().getLayer(layerId) === undefined) {
-        if (this.firstDrawLayer.length > 0) {
+        if (this.firstDrawLayer && this.firstDrawLayer.length > 0) {
           /** draw layers must be on the top of the layers */
           this.getMapProvider().addLayer(layer, this.firstDrawLayer);
         } else {
