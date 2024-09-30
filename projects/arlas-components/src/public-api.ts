@@ -110,3 +110,4 @@ export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.modu
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
 export {VisualisationSetConfig, IconConfig, OnMoveResult} from './lib/components/mapgl/model/AbstractArlasMapGL';
+export {MapOverride} from './lib/components/mapgl/model/map.type';
