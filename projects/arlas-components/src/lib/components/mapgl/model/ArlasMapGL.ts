@@ -87,7 +87,7 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
       super(config);
     }
 
-  protected initMapProvider(config: ArlasMapGlConfig){
+  protected _initMapProvider(config: ArlasMapGlConfig){
     this._mapProvider = new mapboxgl.Map(
       config.mapProviderOptions
     );
@@ -98,24 +98,24 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     this.getMapProvider().boxZoom.disable();
   }
 
-  protected initOnLoad(){
+  protected _initOnLoad(){
     this.onLoad(() => {
       console.log('on load');
       this._updateBounds();
       this._updateZoom();
       this.firstDrawLayer = this.getColdOrHotLayers()[0];
-      this.initLoadIcons();
-      this.initSources();
-      this.initMapLayers();
+      this._initLoadIcons();
+      this._initSources();
+      this._initMapLayers();
       this.getMapProvider().showTileBoundaries = false;
-      this.bindCustomEvent();
+      this._bindCustomEvent();
       // Fit bounds on current bounds to emit init position in moveend bus
       this.getMapProvider().fitBounds(this.getMapProvider().getBounds());
-      this.initVisualisationSet();
+      this._initVisualisationSet();
     });
   }
 
-  protected initMapMoveEvents(){
+  protected _initMapMoveEvents(){
    this._zoomStart$ = fromEvent(this.getMapProvider(), 'zoomstart')
       .pipe(debounceTime(750));
 
@@ -139,13 +139,13 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
       this._updateCurrentLngLat(e)
     );
 
-    this.updateOnZoomStart();
-    this.updateOnDragStart();
-    this.updateOnDragEnd();
-    this.updateOnMoveEnd();
+    this._updateOnZoomStart();
+    this._updateOnDragStart();
+    this._updateOnDragEnd();
+    this._updateOnMoveEnd();
   }
 
-  public initControls(): void {
+  public _initControls(): void {
      console.log('init controls');
     if(this._controls) {
       if(this._controls.mapAttribution) {
@@ -176,7 +176,7 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected initSources(){
+  protected _initSources(){
     if(this._dataSources){
       this._dataSources.forEach(id => {
         this.getMapProvider().addSource(id, {type: GEOJSON_SOURCE_TYPE, data:  Object.assign({}, this._emptyData) });
@@ -191,12 +191,11 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     if(this.mapSources){
       this.addSourcesToMap(this.mapSources);
     }
-
   }
 
-  protected initVisualisationSet(){
-    if (this._visualisationSetsConfig) {
-      this._visualisationSetsConfig.forEach(visu => {
+  protected _initVisualisationSet(){
+    if (this.visualisationSetsConfig) {
+      this.visualisationSetsConfig.forEach(visu => {
         this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
         this.visualisationsSets.status.set(visu.name, visu.enabled);
       });
@@ -222,12 +221,12 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected initImages(){
-    this.loadInternalImage('assets/rotate/01.png', 'rotate');
-    this.loadInternalImage('assets/resize/01.png', 'resize');
+  protected _initImages(){
+    this._loadInternalImage('assets/rotate/01.png', 'rotate');
+    this._loadInternalImage('assets/resize/01.png', 'resize');
   }
 
-  protected loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any){
+  protected _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any){
     this.getMapProvider().loadImage(filePath, (error, image) => {
       if (error) {
         console.warn(errorMessage);
@@ -241,10 +240,10 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     });
   }
 
-  protected initLoadIcons(){
+  protected _initLoadIcons(){
     if (this._icons) {
       this._icons.forEach(icon => {
-        this.loadInternalImage(
+        this._loadInternalImage(
           this.ICONS_BASE_PATH + icon.path,
           icon.path.split('.')[0],
           'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found',
@@ -254,11 +253,11 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected initMapLayers(){
+  protected _initMapLayers(){
     if(this._mapLayers){
       this.setLayersMap(this._mapLayers as MapLayers<AnyLayer>);
-      this.addVisuLayers();
-      this.addExternalEventLayers();
+      this.addVisualLayers();
+      this._addExternalEventLayers();
 
       this.bindLayersToMapEvent(
         this._mapLayers.events.zoomOnClick,
@@ -274,7 +273,6 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
         this.config.mapLayers.events.onHover,
         this.config.mapLayersEventBind.onHover
       );
-
     }
   }
 
@@ -289,7 +287,7 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     });
   }
 
-  protected bindCustomEvent(){
+  protected _bindCustomEvent(){
     if(this.config.customEventBind){
       this.config.customEventBind.forEach(element =>
         this.bindLayersToMapEvent(element.layers, element.mapEventBinds)
@@ -297,10 +295,10 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected addVisuLayers() {
-    if (!!this._visualisationSetsConfig) {
-      for (let i = this._visualisationSetsConfig.length - 1; i >= 0; i--) {
-        const visualisation: VisualisationSetConfig = this._visualisationSetsConfig[i];
+  protected addVisualLayers() {
+    if (!!this.visualisationSetsConfig) {
+      for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
+        const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
         if (!!visualisation.layers) {
           for (let j = visualisation.layers.length - 1; j >= 0; j--) {
             const l = visualisation.layers[j];
@@ -347,8 +345,8 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
 
   public reorderLayers() {
     // parses the visulisation list from bottom in order to put the fist ones first
-    for (let i = this._visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation: VisualisationSetConfig = this._visualisationSetsConfig[i];
+    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
+      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
       if (!!visualisation.layers && visualisation.enabled) {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
@@ -397,43 +395,6 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     this.getColdOrHotLayers().forEach(id => this.getMapProvider().moveLayer(id));
   }
 
-  protected setStrokeLayoutVisibility(layerId: string, visibility: string): void {
-    const layer = this.layersMap.get(layerId);
-    if (layer.type === 'fill') {
-      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = this.layersMap.get(strokeId);
-      if (!!strokeLayer) {
-        this.getMapProvider().setLayoutProperty(strokeId, 'visibility', visibility);
-      }
-    }
-  }
-
-  protected setScrollableLayoutVisibility(layerId: string, visibility: string): void {
-    const layer = this.layersMap.get(layerId);
-    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-    const scrollbaleLayer = this.layersMap.get(scrollableId);
-    if (!!scrollbaleLayer) {
-      this.getMapProvider().setLayoutProperty(scrollableId, 'visibility', visibility);
-    }
-  }
-
-  public addLayerInWritePlaceIfNotExist(layerId: string): void {
-    const layer = this.layersMap.get(layerId);
-    if (layer !== undefined && layer.id === layerId) {
-      /** Add the layer if it is not already added */
-      if (this.getMapProvider().getLayer(layerId) === undefined) {
-        if (this.firstDrawLayer.length > 0) {
-          /** draw layers must be on the top of the layers */
-          this.getMapProvider().addLayer(layer, this.firstDrawLayer);
-        } else {
-          this.getMapProvider().addLayer(layer);
-        }
-      }
-    } else {
-      throw new Error('The layer `' + layerId + '` is not declared in `mapLayers.layers`');
-    }
-  }
-
   public setLayersMap(mapLayers: MapLayers<AnyLayer>, layers?: Array<AnyLayer>){
     if(mapLayers) {
       const mapLayersCopy = mapLayers;
@@ -443,21 +404,6 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
       const layersMap = new Map();
       mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
       this.layersMap = layersMap;
-    }
-  }
-
-  public addSourcesToMap(sources: Array<MapSource>): void {
-    // Add sources defined as input in mapSources;
-    const mapSourcesMap = new Map<string, MapSource>();
-    if (sources) {
-      sources.forEach(mapSource => {
-        mapSourcesMap.set(mapSource.id, mapSource);
-      });
-      mapSourcesMap.forEach((mapSource, id) => {
-        if (this.getMapProvider().getSource(id) === undefined && typeof (mapSource.source) !== 'string') {
-          this.getMapProvider().addSource(id, mapSource.source);
-        }
-      });
     }
   }
 
@@ -538,113 +484,6 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  public updateLayoutVisibility(visualisationName: string) {
-    const visuStatus = !this.visualisationsSets.status.get(visualisationName);
-    this._visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
-    if (!visuStatus) {
-      const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
-      this.visualisationsSets.visualisations.forEach((ls, v) => {
-        if (v !== visualisationName) {
-          ls.forEach(ll => {
-            if (layersSet && layersSet.has(ll)) {
-              layersSet.delete(ll);
-            }
-          });
-        }
-      });
-      layersSet.forEach(ll => {
-        this.disableLayoutVisibility(ll);
-      });
-    }
-    this.visualisationsSets.status.set(visualisationName, visuStatus);
-    const layers = new Set<string>();
-    this.visualisationsSets.visualisations.forEach((ls, v) => {
-      if (this.visualisationsSets.status.get(v)) {
-        ls.forEach(l => {
-          layers.add(l);
-          this.enableLayoutVisibility(l);
-        });
-      }
-    });
-    return layers;
-  }
-
-  public updateVisibility(visibilityStatus: Map<string, boolean>){
-    visibilityStatus.forEach((visibilityStatus, l) => {
-      let layerInVisualisations = false;
-      if (!visibilityStatus) {
-        this._visualisationSetsConfig.forEach(v => {
-          const ls = new Set(v.layers);
-          if (!layerInVisualisations) {
-            layerInVisualisations = ls.has(l);
-          }
-        });
-        if (layerInVisualisations) {
-          this.disableLayoutVisibility(l);
-        }
-      } else {
-        let oneVisualisationEnabled = false;
-        this._visualisationSetsConfig.forEach(v => {
-          const ls = new Set(v.layers);
-          if (!layerInVisualisations) {
-            layerInVisualisations = ls.has(l);
-          }
-          if (ls.has(l) && v.enabled) {
-            oneVisualisationEnabled = true;
-            this.enableLayoutVisibility(l);
-          }
-        });
-        if (!oneVisualisationEnabled && layerInVisualisations) {
-          this.disableLayoutVisibility(l);
-        }
-      }
-    });
-  }
-
-
-  public highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    if (featureToHightLight && featureToHightLight.elementidentifier) {
-      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
-      if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
-        ids.push(+featureToHightLight.elementidentifier.idValue);
-      }
-      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
-        ['literal', ids]];
-      this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
-    }
-  }
-
-  public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    const ids: Array<number | string> = features.map(f => f.idValue);
-    const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
-    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-    this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
-  }
-
-  public selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    if (elementToSelect) {
-      const ids = elementToSelect.length > 0 ?
-        elementToSelect.reduce((memo, element) => {
-          memo.push(element.idValue);
-          return memo;
-        }, []) : [];
-      const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
-      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-      this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
-    }
-  }
-  public disableLayoutVisibility(layer: string){
-    this.getMapProvider().setLayoutProperty(layer, 'visibility', 'none');
-    this.setStrokeLayoutVisibility(layer, 'none');
-    this.setScrollableLayoutVisibility(layer, 'none');
-  }
-
-  public enableLayoutVisibility(layer: string){
-    this.getMapProvider().setLayoutProperty(layer, 'visibility', 'visible');
-    this.setStrokeLayoutVisibility(layer, 'visible');
-    this.setScrollableLayoutVisibility(layer, 'visible');
-  }
-
   public getMapProvider(): mapboxgl.Map {
     return this._mapProvider;
   }
@@ -658,14 +497,13 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
       .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0);
   }
 
-
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         this.getMapProvider().addSource(s.id, s.source);
       }
     });
-    this._visualisationSetsConfig.unshift(visualisation);
+    this.visualisationSetsConfig.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
     this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
     layers.forEach(layer => {
@@ -676,7 +514,7 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     this.reorderLayers();
   }
 
-  protected addExternalEventLayers() {
+  protected _addExternalEventLayers() {
     if (!!this._mapLayers.externalEventLayers) {
       this._mapLayers.layers
         .filter(layer => this._mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
@@ -694,21 +532,21 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
       .pipe(map(_ => {
         this._updateBounds();
         this._updateZoom();
-        return this.getMoveEnd();
+        return this._getMoveEnd();
       }));
   }
 
-  protected updateOnZoomStart(){
+  protected _updateOnZoomStart(){
     const sub = this._zoomStart$.subscribe(_ => this._updateZoomStart());
     this._eventSubscription.push(sub);
   }
 
-  protected updateOnDragStart(){
+  protected _updateOnDragStart(){
     const sub = this._dragStart$.subscribe(e => this._updateDragStart(e));
     this._eventSubscription.push(sub);
   }
 
-  protected updateOnDragEnd(){
+  protected _updateOnDragEnd(){
     const sub = this._dragEnd$
       .subscribe(e => {
         this._updateDragEnd(e);
@@ -717,7 +555,7 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     this._eventSubscription.push(sub);
   }
 
-  protected updateOnMoveEnd(){
+  protected _updateOnMoveEnd(){
     const sub = this._moveEnd$
       .subscribe(_ => {
         this._updateBounds();
@@ -779,7 +617,7 @@ export class ArlasMapGL extends AbstractArlasMapGL implements MapOverride {
     return new mapboxgl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
-  protected getMoveEnd(){
+  protected _getMoveEnd(){
     const offsetPoint = this.calcOffsetPoint();
     const centerOffsetPoint = this.getMapProvider().project(this.getMapProvider().getCenter()).add(offsetPoint);
     const centerOffSetLatLng = this.getMapProvider().unproject(centerOffsetPoint);

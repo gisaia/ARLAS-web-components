@@ -21,10 +21,11 @@ import { MapSource } from './mapSource';
 import { FeatureCollection } from '@turf/helpers';
 import { MapExtend } from '../mapgl.component.util';
 import { ControlButton } from '../mapgl.component.control';
-import { ExternalEvent, MapLayers } from './mapLayers';
+import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
 import { Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { AnyLayer } from "mapbox-gl";
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -32,7 +33,6 @@ export interface IconConfig {
   path: string;
   recolorable?: boolean;
 }
-
 
 export interface ConfigControls {
   enable: boolean;
@@ -62,8 +62,6 @@ export interface DrawControlsOption {
   addGeoBox: DrawConfigControl;
   removeAois: DrawConfigControl;
 }
-
-
 
 export interface MapEventBinds<T>  {
    event: T;
@@ -149,7 +147,7 @@ export abstract class AbstractArlasMapGL {
   protected _mapLayers: MapLayers<unknown>;
   protected _controls: ControlsOption;
   protected _dataSource: Set<string>;
-  protected _visualisationSetsConfig: Array<VisualisationSetConfig>;
+  public visualisationSetsConfig: Array<VisualisationSetConfig>;
   protected _icons: Array<IconConfig>;
   public mapSources: Array<MapSource>;
   protected _maxWidthScale?: number;
@@ -208,7 +206,7 @@ export abstract class AbstractArlasMapGL {
     this._controls = config.controls;
     this._fitBoundsPadding = config.fitBoundsPadding ?? 10;
     this._dataSource = config.dataSources;
-    this._visualisationSetsConfig = config.visualisationSetsConfig;
+    this.visualisationSetsConfig = config.visualisationSetsConfig;
     this._icons= config.icons;
     this.mapSources= config.mapSources;
     this._maxWidthScale = config.maxWidthScale;
@@ -220,44 +218,37 @@ export abstract class AbstractArlasMapGL {
 
   protected init(config: BaseMapGlConfig<unknown>): void {
     try {
-      this.initMapProvider(config);
-      this.initControls();
-      this.initImages();
-      this.initOnLoad();
-      this.initMapMoveEvents();
+      this._initMapProvider(config);
+      this._initControls();
+      this._initImages();
+      this._initOnLoad();
+      this._initMapMoveEvents();
     } catch (e){
       console.log(e);
     }
   }
 
-  protected abstract initMapProvider(BaseMapGlConfig): void;
-  protected abstract initImages(): void;
-  protected abstract initOnLoad(): void;
-  public abstract initControls(): void;
-  protected abstract initMapMoveEvents(): void;
-  protected abstract initSources(): void;
-  protected abstract initVisualisationSet(): void;
+  protected abstract _initMapProvider(BaseMapGlConfig): void;
+  protected abstract _initImages(): void;
+  protected abstract _initOnLoad(): void;
+  protected abstract _initControls(): void;
+  protected abstract _initMapMoveEvents(): void;
+  protected abstract _initSources(): void;
+  protected abstract _initVisualisationSet(): void;
   public abstract initDrawControls(config: DrawControlsOption): void;
-  protected abstract loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any): void;
-  protected abstract initLoadIcons(): void;
+  protected abstract _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any): void;
+  protected abstract _initLoadIcons(): void;
 
-  protected abstract addSourcesToMap(sources: Array<MapSource>): void;
   public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: unknown[]): void;
-  protected abstract bindCustomEvent(): void;
-  protected abstract addVisuLayers(): void;
+  protected abstract _bindCustomEvent(): void;
+  protected abstract addVisualLayers(): void;
   public abstract reorderLayers(): void;
-  protected abstract setStrokeLayoutVisibility(layerId: string, visibility: string): void;
-  protected abstract setScrollableLayoutVisibility(layerId: string, visibility: string): void;
-  public abstract addLayerInWritePlaceIfNotExist(layerId: string): void;
   public abstract redrawSource(id: string, data): void;
   public abstract updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
                                 collection?: string): void;
-  public abstract disableLayoutVisibility(layer: string): void;
-  public abstract enableLayoutVisibility(layer: string): void;
   public abstract getColdOrHotLayers();
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<unknown>, sources: Array<MapSource>): void;
-  protected abstract addExternalEventLayers();
-  protected abstract getMoveEnd(): void;
+  protected abstract _getMoveEnd(): void;
   public abstract paddedFitBounds(bounds: unknown, options?: unknown);
   public abstract enableDragPan(): void;
   public abstract disableDragPan(): void;
@@ -272,10 +263,10 @@ export abstract class AbstractArlasMapGL {
   public abstract getMapExtend(): MapExtend;
   public abstract onLoad(fn: () => void): void;
   public abstract onMoveEnd(fn: () => void): void;
-  protected abstract updateOnZoomStart(): void;
-  protected abstract updateOnDragStart(): void;
-  protected abstract updateOnDragEnd(): void;
-  protected abstract updateOnMoveEnd(): void;
+  protected abstract _updateOnZoomStart(): void;
+  protected abstract _updateOnDragStart(): void;
+  protected abstract _updateOnDragEnd(): void;
+  protected abstract _updateOnMoveEnd(): void;
   protected abstract _updateZoomStart(e?: unknown): void;
   protected abstract _updateDragEnd(e: unknown): void;
   protected abstract _updateDragStart(e: unknown): void;
@@ -292,34 +283,187 @@ export abstract class AbstractArlasMapGL {
     event: string; fn: (e?) => void;
   });
   public abstract setLayersMap(mapLayers: MapLayers<unknown>, layers?: Array<unknown>);
-  public abstract highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; });
-  public abstract selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string);
-  public abstract  selectFeatures(elementToSelect: Array<ElementIdentifier>);
-  public abstract updateLayoutVisibility(visualisationName: string);
-  public abstract updateVisibility(visibilityStatus: Map<string, boolean>);
+
+  protected _addExternalEventLayers() {
+    if (!!this._mapLayers.externalEventLayers) {
+      this._mapLayers.layers
+        .filter(layer => this._mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+        .forEach(l => this.addLayerInWritePlaceIfNotExist(l.id));
+    }
+  }
+
+  protected setStrokeLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    if (layer.type === 'fill') {
+      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.layersMap.get(strokeId);
+      if (!!strokeLayer) {
+        this.getMapProvider().setLayoutProperty(strokeId, 'visibility', visibility);
+      }
+    }
+  }
+
+  protected setScrollableLayoutVisibility(layerId: string, visibility: string): void {
+    const layer = this.layersMap.get(layerId);
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollbaleLayer = this.layersMap.get(scrollableId);
+    if (!!scrollbaleLayer) {
+      this.getMapProvider().setLayoutProperty(scrollableId, 'visibility', visibility);
+    }
+  }
+
+  public addLayerInWritePlaceIfNotExist(layerId: string): void {
+    const layer = this.layersMap.get(layerId);
+    if (layer !== undefined && layer.id === layerId) {
+      /** Add the layer if it is not already added */
+      if (this.getMapProvider().getLayer(layerId) === undefined) {
+        if (this.firstDrawLayer.length > 0) {
+          /** draw layers must be on the top of the layers */
+          this.getMapProvider().addLayer(layer, this.firstDrawLayer);
+        } else {
+          this.getMapProvider().addLayer(layer);
+        }
+      }
+    } else {
+      throw new Error('The layer `' + layerId + '` is not declared in `mapLayers.layers`');
+    }
+  }
+
+  public addSourcesToMap(sources: Array<MapSource>): void {
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, MapSource>();
+    if (sources) {
+      sources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        if (this.getMapProvider().getSource(id) === undefined && typeof (mapSource.source) !== 'string') {
+          this.getMapProvider().addSource(id, mapSource.source);
+        }
+      });
+    }
+  }
+
+  public updateLayoutVisibility(visualisationName: string) {
+    const visuStatus = !this.visualisationsSets.status.get(visualisationName);
+    this.visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
+    if (!visuStatus) {
+      const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
+      this.visualisationsSets.visualisations.forEach((ls, v) => {
+        if (v !== visualisationName) {
+          ls.forEach(ll => {
+            if (layersSet && layersSet.has(ll)) {
+              layersSet.delete(ll);
+            }
+          });
+        }
+      });
+      layersSet.forEach(ll => {
+        this.disableLayoutVisibility(ll);
+      });
+    }
+    this.visualisationsSets.status.set(visualisationName, visuStatus);
+    const layers = new Set<string>();
+    this.visualisationsSets.visualisations.forEach((ls, v) => {
+      if (this.visualisationsSets.status.get(v)) {
+        ls.forEach(l => {
+          layers.add(l);
+          this.enableLayoutVisibility(l);
+        });
+      }
+    });
+    return layers;
+  }
+
+  public updateVisibility(visibilityStatus: Map<string, boolean>){
+    visibilityStatus.forEach((visibilityStatus, l) => {
+      let layerInVisualisations = false;
+      if (!visibilityStatus) {
+        this.visualisationSetsConfig.forEach(v => {
+          const ls = new Set(v.layers);
+          if (!layerInVisualisations) {
+            layerInVisualisations = ls.has(l);
+          }
+        });
+        if (layerInVisualisations) {
+          this.disableLayoutVisibility(l);
+        }
+      } else {
+        let oneVisualisationEnabled = false;
+        this.visualisationSetsConfig.forEach(v => {
+          const ls = new Set(v.layers);
+          if (!layerInVisualisations) {
+            layerInVisualisations = ls.has(l);
+          }
+          if (ls.has(l) && v.enabled) {
+            oneVisualisationEnabled = true;
+            this.enableLayoutVisibility(l);
+          }
+        });
+        if (!oneVisualisationEnabled && layerInVisualisations) {
+          this.disableLayoutVisibility(l);
+        }
+      }
+    });
+  }
+
+  public highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
+    if (featureToHightLight && featureToHightLight.elementidentifier) {
+      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
+      if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
+        ids.push(+featureToHightLight.elementidentifier.idValue);
+      }
+      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
+        ['literal', ids]];
+      this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
+    }
+  }
+
+  public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
+    const ids: Array<number | string> = features.map(f => f.idValue);
+    const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
+    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
+    this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+  }
+
+  public selectFeatures(elementToSelect: Array<ElementIdentifier>) {
+    if (elementToSelect) {
+      const ids = elementToSelect.length > 0 ?
+        elementToSelect.reduce((memo, element) => {
+          memo.push(element.idValue);
+          return memo;
+        }, []) : [];
+      const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
+      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
+      this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
+    }
+  }
+
+  public disableLayoutVisibility(layer: string){
+    this.getMapProvider().setLayoutProperty(layer, 'visibility', 'none');
+    this.setStrokeLayoutVisibility(layer, 'none');
+    this.setScrollableLayoutVisibility(layer, 'none');
+  }
+
+  public enableLayoutVisibility(layer: string){
+    this.getMapProvider().setLayoutProperty(layer, 'visibility', 'visible');
+    this.setStrokeLayoutVisibility(layer, 'visible');
+    this.setScrollableLayoutVisibility(layer, 'visible');
+  }
 
   public findVisualisationSetLayer(visuName: string){
-    return this._visualisationSetsConfig.find(v => v.name === visuName).layers;
+    return this.visualisationSetsConfig.find(v => v.name === visuName).layers;
   }
   public setVisualisationSetLayers(visuName: string, layers: string[]){
-    const f = this._visualisationSetsConfig.find(v => v.name === visuName);
+    const f = this.visualisationSetsConfig.find(v => v.name === visuName);
     if(f){
       f.layers = layers;
     }
   }
 
-  public drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this._visualisationSetsConfig, event.previousIndex, event.currentIndex);
-    this.reorderLayers();
-  }
-
-  public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    const layers = Array.from(this.findVisualisationSetLayer(visuName));
-    moveItemInArray(layers, event.previousIndex, event.currentIndex);
-    this.setVisualisationSetLayers(visuName, layers);
-    this.reorderLayers();
-  }
   public unsubscribeEvents(){
     this._eventSubscription.forEach(s => s.unsubscribe());
   }
+
 }
+
