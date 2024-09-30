@@ -46,7 +46,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { AnyLayer, TransformRequestFunction } from 'mapbox-gl';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import * as styles from './model/theme';
 import { getLayerName } from '../componentsUtils';
@@ -505,12 +505,16 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
-    this.map.drop(event);
+    moveItemInArray(this.map.visualisationSetsConfig, event.previousIndex, event.currentIndex);
+    this.reorderLayers();
   }
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    this.map.dropLayer(event, visuName);
+    const layers = Array.from(this.map.findVisualisationSetLayer(visuName));
+    moveItemInArray(layers, event.previousIndex, event.currentIndex);
+    this.map.setVisualisationSetLayers(visuName, layers);
+    this.reorderLayers();
   }
 
   /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
@@ -651,6 +655,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       fitBoundsPadding:  this.fitBoundsPadding,
       margePanForLoad:  this.margePanForLoad,
       margePanForTest: this.margePanForTest,
+      visualisationSetsConfig: this.visualisationSetsConfig,
       offset: this.offset,
       wrapLatLng: this.wrapLatLng,
       mapLayers: this.mapLayers,
@@ -794,7 +799,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
     this.drawService.setMapboxDraw(this.draw);
     /**
      *  The other on load initialisation releated with the map are in
-     *  Arlasapgl in initOnLoad method
+     *  ArlasMapgl in initOnLoad method
      *  the code below can be executed in as the method executed in
      *  this part do not need to be executed in specific order
      *
