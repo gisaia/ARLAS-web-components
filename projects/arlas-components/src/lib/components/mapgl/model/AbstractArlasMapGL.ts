@@ -24,8 +24,8 @@ import { ControlButton } from '../mapgl.component.control';
 import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
 import { Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AnyLayer } from "mapbox-gl";
+
+import { MapOverride } from './map.type';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -128,7 +128,7 @@ export interface VisualisationSetConfig {
   enabled?: boolean;
 }
 
-export abstract class AbstractArlasMapGL {
+export abstract class AbstractArlasMapGL implements MapOverride {
   /**
    *  props and method with unknow type will be specific to the map provider
    *  we used.
@@ -215,6 +215,130 @@ export abstract class AbstractArlasMapGL {
     this._dataSources=  config.dataSources;
 
     this.init(config);
+  }
+  setMinZoom(minZoom?: number): this {
+    throw new Error('Method not implemented.');
+  }
+  setMaxZoom(maxZoom?: number): this {
+    throw new Error('Method not implemented.');
+  }
+  project(lnglat: unknown): unknown {
+    throw new Error('Method not implemented.');
+  }
+  unproject(point: unknown): unknown {
+    throw new Error('Method not implemented.');
+  }
+  queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): unknown[] {
+    throw new Error('Method not implemented.');
+  }
+  setStyle(style: unknown, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
+    throw new Error('Method not implemented.');
+  }
+  getStyle(): unknown {
+    throw new Error('Method not implemented.');
+  }
+  addSource(id: string, source: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  removeSource(id: string): this {
+    throw new Error('Method not implemented.');
+  }
+  getSource(id: string): unknown {
+    throw new Error('Method not implemented.');
+  }
+  addImage(name: string, image: HTMLImageElement | ArrayBufferView | ImageData | ImageBitmap | { width: number; height: number; data: Uint8Array | Uint8ClampedArray; }, options?: { pixelRatio?: number; sdf?: boolean; }): this {
+    throw new Error('Method not implemented.');
+  }
+  loadImage(url: string, callback: Function): this {
+    throw new Error('Method not implemented.');
+  }
+  addLayer(layer: unknown, before?: string): this {
+    throw new Error('Method not implemented.');
+  }
+  moveLayer(id: string, beforeId?: string): this {
+    throw new Error('Method not implemented.');
+  }
+  removeLayer(id: string): this {
+    throw new Error('Method not implemented.');
+  }
+  getLayer(id: string): unknown {
+    throw new Error('Method not implemented.');
+  }
+  setFilter(layer: string, filter?: boolean | any[], options?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  getLight(): unknown {
+    throw new Error('Method not implemented.');
+  }
+  setFeatureState(feature: unknown, state: { [key: string]: any; }): void {
+    throw new Error('Method not implemented.');
+  }
+  getFeatureState(feature: unknown): { [key: string]: any; } {
+    throw new Error('Method not implemented.');
+  }
+  removeFeatureState(target: unknown, key?: string): void {
+    throw new Error('Method not implemented.');
+  }
+  getContainer(): HTMLElement {
+    throw new Error('Method not implemented.');
+  }
+  getCanvasContainer(): HTMLElement {
+    throw new Error('Method not implemented.');
+  }
+  getCanvas(): HTMLCanvasElement {
+    throw new Error('Method not implemented.');
+  }
+  getCenter(): unknown {
+    throw new Error('Method not implemented.');
+  }
+  setCenter(center: unknown, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  panTo(lnglat: unknown, options?: unknown, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  getZoom(): number {
+    throw new Error('Method not implemented.');
+  }
+  setZoom(zoom: number, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  getBearing(): number {
+    throw new Error('Method not implemented.');
+  }
+  setBearing(bearing: number, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  rotateTo(bearing: number, options?: unknown, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  setPitch(pitch: number, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  cameraForBounds(bounds: unknown, options?: unknown): unknown {
+    throw new Error('Method not implemented.');
+  }
+  fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+
+  easeTo(options: unknown, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  flyTo(options: unknown, unknown?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
+  on<T extends never>(type: T, listener: (ev: unknown) => void): this;
+  on(type: string, listener: (ev: any) => void): this;
+  on(type: unknown, layer: unknown, listener?: unknown): this {
+    throw new Error('Method not implemented.');
+  }
+  once<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
+  once<T extends never>(type: T, listener: (ev: unknown) => void): this;
+  once(type: string, listener: (ev: any) => void): this;
+  once(type: unknown, layer: unknown, listener?: unknown): this {
+    throw new Error('Method not implemented.');
   }
 
   protected init(config: BaseMapGlConfig<any>): void {
@@ -447,9 +571,14 @@ export abstract class AbstractArlasMapGL {
   }
 
   public enableLayoutVisibility(layer: string){
-    this.getMapProvider().setLayoutProperty(layer, 'visibility', 'visible');
+    this.setLayoutProperty(layer, 'visibility', 'visible');
     this.setStrokeLayoutVisibility(layer, 'visible');
     this.setScrollableLayoutVisibility(layer, 'visible');
+  }
+
+  public setLayoutProperty(layer: string, name: string, value: any, options?: any){
+    this.getMapProvider().setLayoutProperty(layer, name, value, options);
+    return this;
   }
 
   public findVisualisationSetLayer(visuName: string){
@@ -466,5 +595,24 @@ export abstract class AbstractArlasMapGL {
     this._eventSubscription.forEach(s => s.unsubscribe());
   }
 
+  public getBounds(){
+    return this.getMapProvider().getBounds();
+  }
+
+  public abstract resize(eventData?: unknown): this;
+  public abstract getMaxBounds(): unknown;
+  public abstract setMaxBounds(unknown?: unknown): this;
+  public getMaxZoom(): number {
+    return this.getMapProvider().getMaxZoom();
+  }
+
+  public getMinZoom(): number {
+    return this.getMapProvider().getMinZoom();
+  }
+
+  public getPitch(): number {
+    return  this.getMapProvider().getPitch() ;
+  }
+  
 }
 

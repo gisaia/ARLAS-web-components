@@ -71,7 +71,7 @@ import {
   OnMoveResult,
   VisualisationSetConfig
 } from './model/AbstractArlasMapGL';
-import { ArlasMapGL, ArlasMapGlConfig } from './model/ArlasMapGL';
+import { ArlasMapboxGL, ArlasMapGlConfig } from './model/ArlasMapboxGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
 
@@ -97,7 +97,7 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 })
 export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: ArlasMapGL;
+  public map: ArlasMapboxGL;
   public draw: ArlasDraw;
   public zoom: number;
   public legendOpen = true;
@@ -746,7 +746,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
       }
     };
     console.log('declare');
-    this.map = new ArlasMapGL(config);
+    this.map = new ArlasMapboxGL(config);
     console.log(this.map);
 
     fromEvent(window, 'beforeunload').subscribe(() => {

@@ -25,7 +25,7 @@ import { MapglService } from '../../services/mapgl.service';
 import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
-import { ArlasMapGL } from '../mapgl/model/ArlasMapGL';
+import { ArlasMapboxGL } from '../mapgl/model/ArlasMapboxGL';
 
 @Component({
   selector: 'arlas-mapgl-basemap',
@@ -35,7 +35,7 @@ import { ArlasMapGL } from '../mapgl/model/ArlasMapGL';
 export class MapglBasemapComponent implements OnInit {
   private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
-  @Input() public map: ArlasMapGL;
+  @Input() public map: ArlasMapboxGL;
   @Input() public mapSources: Array<MapSource>;
 
   @Output() public basemapChanged = new EventEmitter<void>();
