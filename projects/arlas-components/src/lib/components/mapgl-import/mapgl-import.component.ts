@@ -68,8 +68,9 @@ export class MapglImportDialogComponent implements OnInit {
 
   public constructor(
     private dialogRef: MatDialogRef<MapglImportDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { allowedImportType: Array<string>; }
+    @Inject(MAT_DIALOG_DATA) private data: { allowedImportType: Array<string>; defaultFitResult?: boolean; }
   ) {
+    this.fitResult = data.defaultFitResult ?? false;
     this.allowedImportType = this.data.allowedImportType.filter(t => [this.SHP, this.KML, this.WKT, this.GEOJSON].includes(t));
 
     if (this.allowedImportType.indexOf(this.SHP) > -1) {
@@ -201,8 +202,8 @@ export class MapglImportComponent {
     }
   }
 
-  public openDialog() {
-    this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: { allowedImportType: this.allowedImportType } });
+  public openDialog(defaultFitResult?: boolean) {
+    this.dialogRef = this.dialog.open(MapglImportDialogComponent, { data: { allowedImportType: this.allowedImportType, defaultFitResult } });
     this.dialogRef.componentInstance.file.subscribe((file: File) => {
       this.currentFile = file;
     });
