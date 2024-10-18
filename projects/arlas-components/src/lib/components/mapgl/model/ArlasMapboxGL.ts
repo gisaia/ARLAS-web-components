@@ -405,7 +405,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
   }
 
   public isLayerVisible(layer: ArlasAnyLayer): boolean {
-    return layer.layout.visibility === 'visible'
+    return layer.layout.visibility === 'visible';
   }
 
   public getColdOrHotLayers(){
@@ -771,8 +771,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
   public getMaxBounds(): mapboxgl.LngLatBounds | null {
     return this._mapProvider.getMaxBounds();
   }
-
-  
 
   public getRenderWorldCopies(): boolean {
     return  this._mapProvider.getRenderWorldCopies() ;

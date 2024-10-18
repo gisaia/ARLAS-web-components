@@ -216,128 +216,132 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
     this.init(config);
   }
-  setMinZoom(minZoom?: number): this {
+  public setMinZoom(minZoom?: number): this {
     throw new Error('Method not implemented.');
   }
-  setMaxZoom(maxZoom?: number): this {
+  public setMaxZoom(maxZoom?: number): this {
     throw new Error('Method not implemented.');
   }
-  project(lnglat: unknown): unknown {
+  public project(lnglat: unknown): unknown {
     throw new Error('Method not implemented.');
   }
-  unproject(point: unknown): unknown {
+  public unproject(point: unknown): unknown {
     throw new Error('Method not implemented.');
   }
-  queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): unknown[] {
+  public queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): unknown[] {
     throw new Error('Method not implemented.');
   }
-  setStyle(style: unknown, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
+  public setStyle(style: unknown, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
     throw new Error('Method not implemented.');
   }
-  getStyle(): unknown {
+  public getStyle(): unknown {
     throw new Error('Method not implemented.');
   }
-  addSource(id: string, source: unknown): this {
+  public addSource(id: string, source: unknown): this {
     throw new Error('Method not implemented.');
   }
-  removeSource(id: string): this {
+  public removeSource(id: string): this {
     throw new Error('Method not implemented.');
   }
-  getSource(id: string): unknown {
+  public getSource(id: string): unknown {
     throw new Error('Method not implemented.');
   }
-  addImage(name: string, image: HTMLImageElement | ArrayBufferView | ImageData | ImageBitmap | { width: number; height: number; data: Uint8Array | Uint8ClampedArray; }, options?: { pixelRatio?: number; sdf?: boolean; }): this {
+  public addImage(name: string, image: HTMLImageElement
+    | ArrayBufferView | ImageData | ImageBitmap | {
+      width: number; height: number; data: Uint8Array
+        | Uint8ClampedArray;
+    }, options?: { pixelRatio?: number; sdf?: boolean; }): this {
     throw new Error('Method not implemented.');
   }
-  loadImage(url: string, callback: Function): this {
+  public loadImage(url: string, callback: Function): this {
     throw new Error('Method not implemented.');
   }
-  addLayer(layer: unknown, before?: string): this {
+  public addLayer(layer: unknown, before?: string): this {
     throw new Error('Method not implemented.');
   }
-  moveLayer(id: string, beforeId?: string): this {
+  public moveLayer(id: string, beforeId?: string): this {
     throw new Error('Method not implemented.');
   }
-  removeLayer(id: string): this {
+  public removeLayer(id: string): this {
     throw new Error('Method not implemented.');
   }
-  getLayer(id: string): unknown {
+  public getLayer(id: string): unknown {
     throw new Error('Method not implemented.');
   }
-  setFilter(layer: string, filter?: boolean | any[], options?: unknown): this {
+  public setFilter(layer: string, filter?: boolean | any[], options?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  getLight(): unknown {
+  public getLight(): unknown {
     throw new Error('Method not implemented.');
   }
-  setFeatureState(feature: unknown, state: { [key: string]: any; }): void {
+  public setFeatureState(feature: unknown, state: { [key: string]: any; }): void {
     throw new Error('Method not implemented.');
   }
-  getFeatureState(feature: unknown): { [key: string]: any; } {
+  public getFeatureState(feature: unknown): { [key: string]: any; } {
     throw new Error('Method not implemented.');
   }
-  removeFeatureState(target: unknown, key?: string): void {
+  public removeFeatureState(target: unknown, key?: string): void {
     throw new Error('Method not implemented.');
   }
-  getContainer(): HTMLElement {
+  public getContainer(): HTMLElement {
     throw new Error('Method not implemented.');
   }
-  getCanvasContainer(): HTMLElement {
+  public getCanvasContainer(): HTMLElement {
     throw new Error('Method not implemented.');
   }
-  getCanvas(): HTMLCanvasElement {
+  public getCanvas(): HTMLCanvasElement {
     throw new Error('Method not implemented.');
   }
-  getCenter(): unknown {
+  public getCenter(): unknown {
     throw new Error('Method not implemented.');
   }
-  setCenter(center: unknown, unknown?: unknown): this {
+  public setCenter(center: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  panTo(lnglat: unknown, options?: unknown, unknown?: unknown): this {
+  public panTo(lnglat: unknown, options?: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  getZoom(): number {
+  public getZoom(): number {
     throw new Error('Method not implemented.');
   }
-  setZoom(zoom: number, unknown?: unknown): this {
+  public setZoom(zoom: number, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  getBearing(): number {
+  public getBearing(): number {
     throw new Error('Method not implemented.');
   }
-  setBearing(bearing: number, unknown?: unknown): this {
+  public setBearing(bearing: number, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  rotateTo(bearing: number, options?: unknown, unknown?: unknown): this {
+  public rotateTo(bearing: number, options?: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  setPitch(pitch: number, unknown?: unknown): this {
+  public setPitch(pitch: number, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  cameraForBounds(bounds: unknown, options?: unknown): unknown {
+  public cameraForBounds(bounds: unknown, options?: unknown): unknown {
     throw new Error('Method not implemented.');
   }
-  fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this {
+  public fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
 
-  easeTo(options: unknown, unknown?: unknown): this {
+  public easeTo(options: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  flyTo(options: unknown, unknown?: unknown): this {
+  public flyTo(options: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
-  on<T extends never>(type: T, listener: (ev: unknown) => void): this;
-  on(type: string, listener: (ev: any) => void): this;
-  on(type: unknown, layer: unknown, listener?: unknown): this {
+  public on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
+  public on<T extends never>(type: T, listener: (ev: unknown) => void): this;
+  public on(type: string, listener: (ev: any) => void): this;
+  public on(type: unknown, layer: unknown, listener?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  once<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
-  once<T extends never>(type: T, listener: (ev: unknown) => void): this;
-  once(type: string, listener: (ev: any) => void): this;
-  once(type: unknown, layer: unknown, listener?: unknown): this {
+  public once<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
+  public once<T extends never>(type: T, listener: (ev: unknown) => void): this;
+  public once(type: string, listener: (ev: any) => void): this;
+  public once(type: unknown, layer: unknown, listener?: unknown): this {
     throw new Error('Method not implemented.');
   }
 
@@ -399,12 +403,10 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   protected abstract _updateEndLngLat(e?: any): void;
   protected abstract _updateCurrentLngLat(e?: any): void;
   public abstract getLayers(): any;
-  public abstract addControl(control: ControlButton, position?: ControlPosition, eventOverride?: {
-    event: string; fn: (e?) => void;
-  });
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
     event: string; fn: (e?) => void;
   });
+
   public abstract setLayersMap(mapLayers: MapLayers<any>, layers?: Array<any>);
 
   protected _addExternalEventLayers() {
