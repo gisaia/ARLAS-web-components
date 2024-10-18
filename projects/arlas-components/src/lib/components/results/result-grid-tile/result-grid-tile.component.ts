@@ -81,10 +81,17 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   @Input() public idFieldName: string;
 
   /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+  /**
   * @Input
   * @description Display or not big full info icon on the grid.
   */
   @Input() public  displayInfoIcon = false;
+
+
 
   /**
    * @Output
@@ -160,13 +167,12 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
     this.clickedOnItemEvent.next(this.gridTile);
   }
 
-  public triggerActionOnItem(event: Event, action: Action) {
+  public triggerActionOnItem(action: Action) {
     this.actionOnItemEvent.next(
       {
         action: action,
         elementidentifier: { idFieldName: this.idFieldName, idValue: this.gridTile.identifier }
       }
     );
-    event.stopPropagation();
   }
 }

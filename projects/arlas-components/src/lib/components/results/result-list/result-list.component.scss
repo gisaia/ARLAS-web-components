@@ -119,10 +119,26 @@
   color: #aaa;
 }
 
-tr:hover td.resultitem__cell.toggle .list_actions {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
+tr {
+  &:hover {
+    .toggle {
+      .actions {
+        arlas-result-actions {
+          .list_actions {
+            .not_activated {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+
+  }
+}
+
+
+tr:hover td.resultitem__cell.toggle ::ng-deep .list_active_actions {
+  display: none;
 }
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/

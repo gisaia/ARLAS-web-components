@@ -20,8 +20,8 @@
 $img-proportion: 85%;
 
 .resultgrid {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
 }
 
 .resultitem-grid__actions {
@@ -30,7 +30,7 @@ $img-proportion: 85%;
   border: none;
   width: 24px;
   height: 24px;
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
   font-size: 0;
   margin: 1px 5px;
   background-color: white;
@@ -42,9 +42,9 @@ $img-proportion: 85%;
 .resultitem-grid__actions:active {
   border: 1px solid white;
 }
+
 .grid_actions {
   flex-direction: row-reverse;
-  display: none;
   flex-wrap: wrap-reverse;
   position: absolute;
   bottom: 1px;
@@ -58,42 +58,73 @@ $img-proportion: 85%;
   justify-content: space-between;
 }
 
-.resultgrid--container, .resultgrid--container-highlight- /* @doc Sets the grid container style.*/
-{
-  width:100%;
-  height:100%;
-  margin:1px;
+.resultgrid--container,
+.resultgrid--container-highlight-
+
+/* @doc Sets the grid container style.*/
+  {
+  width: 100%;
+  height: 100%;
+  margin: 1px;
   background-color: #fff;
   position: relative;
   color: #000;
 }
 
-.resultgrid--container-highlight-false /* @doc Sets the grid container style.*/
-{
+.resultgrid {
+  .resultgrid--container {
+    .resultgrid__img {
+      &:hover {
+        .actions {
+          ::ng-deep .list_actions {
+              .not_activated {
+                display: block;
+              }
+            }
+
+        }
+      }
+      .actions {
+        position: absolute;
+        bottom: 15%;
+        right: 2px;
+
+      }
+    }
+  }
+}
+
+.resultgrid--container-highlight-false
+
+/* @doc Sets the grid container style.*/
+  {
   opacity: 0.3;
 }
 
-.resultgrid--container-highlight-true 
-{
+.resultgrid--container-highlight-true {
   opacity: 1;
 }
 
-.resultgrid__icon_check /* @doc Sets the checkbox icon style.*/
-{
+.resultgrid__icon_check
+
+/* @doc Sets the checkbox icon style.*/
+  {
   position: absolute;
   top: 5px;
   left: 5px;
   font-size: 15px;
   width: 15px;
   height: 15px;
-  color:white;
+  color: white;
   cursor: pointer;
   z-index: 5;
   user-select: none;
 }
 
-.resultgrid__img /* @doc Sets the image style.*/
-{
+.resultgrid__img
+
+/* @doc Sets the image style.*/
+  {
   box-sizing: border-box;
   display: flex;
   height: $img-proportion;
@@ -107,7 +138,10 @@ $img-proportion: 85%;
   background-color: #000;
 }
 
-.resultgrid__title-highlight- /* @doc Sets the grid title style.*/,
+.resultgrid__title-highlight-
+
+/* @doc Sets the grid title style.*/
+,
 .resultgrid__title-highlight-false,
 .resultgrid__title-highlight-true {
   height: calc(100% - $img-proportion);
@@ -136,23 +170,25 @@ $img-proportion: 85%;
   }
 }
 
-.resultgrid__title-highlight-false /* @doc Sets the grid title style.*/
-{
+.resultgrid__title-highlight-false
+
+/* @doc Sets the grid title style.*/
+  {
   opacity: 0.3;
 }
 
-.fill-images{
+.fill-images {
   object-fit: cover;
   width: 100%;
   height: 100%;
-  background-color:black;
+  background-color: black;
 }
 
 .contain_thumbnail {
   object-fit: contain;
   width: 100%;
   height: 100%;
-  background-color:black;
+  background-color: black;
 }
 
 .height_thumbnail {
@@ -174,7 +210,7 @@ $img-proportion: 85%;
 .resultlist__md-grid-tile {
   margin-top: 5px;
 
-  &__selected--icon{
+  &__selected--icon {
     position: absolute;
     z-index: 1;
     top: 15px;

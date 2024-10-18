@@ -75,6 +75,9 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    */
   @Input() public selectedItems: Set<string>;
 
+  @Input() public activeActions: Map<string, Set<string>>;
+
+
   /**
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
@@ -101,6 +104,12 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    */
   @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
 
+
+  /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   @Input() public tableWidth: number;
   /**

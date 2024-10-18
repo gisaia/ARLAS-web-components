@@ -166,6 +166,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Input() public fieldsConfiguration: FieldsConfiguration;
 
+  @Input() public activeActions: Map<string, Set<string>>;
+
   /**
    * @Input : Angular
    * @description The table width. If not specified, the tableWidth value is
@@ -221,10 +223,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
   /**
- * @Input : Angular
- * @description List of items ids that are in a selected status.
- */
+   * @Input : Angular
+   * @description List of items ids that are in a selected status.
+  */
   @Input() public selectedItems: Set<string> = new Set<string>();
+
+  /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   /**
    * @Input : Angular
@@ -785,7 +793,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @param item hovered item
    */
   public onEnterItem(item: Item): void {
-    this.setItemActions(item);
     this.setConsultedItem(item.identifier);
   }
 
@@ -913,26 +920,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     });
   }
 
-  /**
-   * @description set the list of actions of an item
-   * @param item
-   */
-  public setItemActions(item: Item): void {
-    if (item && (!item.actions || (item.actions && item.actions.length === 0))) {
-      item.actions = new Array<Action>();
-      this.detailedDataRetriever.getActions(item).subscribe(actions => {
-        actions.forEach(action => {
-          item.actions.push({
-            id: action.id,
-            label: action.label,
-            actionBus: action.actionBus,
-            cssClass: action.cssClass,
-            tooltip: action.tooltip
-          });
-        });
-      });
-    }
-  }
 
   public byFieldName(item1: Column, item2: Column) {
     return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
