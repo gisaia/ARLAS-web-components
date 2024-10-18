@@ -94,12 +94,4 @@
   border: 1px solid white;
 }
 
-.list_actions {
-  display: none;
-  position: absolute;
-  right: 35px;
-  top: 0;
-  height: 100%;
-  width: max-content;
-}
 

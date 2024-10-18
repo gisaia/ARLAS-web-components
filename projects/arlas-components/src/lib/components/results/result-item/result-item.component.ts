@@ -102,6 +102,12 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   @Input() public cellBackgroundStyle: CellBackgroundStyleEnum = CellBackgroundStyleEnum.filled;
 
 
+  /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+
   @Input() public tableWidth: number;
   /**
    * @Output
@@ -186,6 +192,8 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public triggerActionOnItem(action: Action) {
+    console.log('uuuum');
+    console.log(action)
     this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
   }
 

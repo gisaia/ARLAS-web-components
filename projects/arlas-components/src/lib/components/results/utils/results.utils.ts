@@ -39,8 +39,25 @@ export interface Action {
   actionBus?: Subject<{ idFieldName: string; idValue: string; }>;
   cssClass?: string | string[];
   tooltip?: string;
+  /** if activated, the action is always displayed (not only on hover) */
+  activated?: boolean;
+  reverseAction?: Action;
   /** for global actions, even if no item is selected, the action will be enabled */
   alwaysEnabled?: boolean;
+}
+
+export class ActionHandler {
+  public static isReversible(a: Action): boolean {
+    return !!a && !!a.reverseAction;
+  }
+
+  public static activate(a: Action): void {
+    a.activated = true;
+  }
+
+  public static reverse(a: Action): void {
+    a.activated = false;
+  }
 }
 
 export interface ElementIdentifier {

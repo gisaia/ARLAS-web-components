@@ -221,10 +221,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
   /**
- * @Input : Angular
- * @description List of items ids that are in a selected status.
- */
+   * @Input : Angular
+   * @description List of items ids that are in a selected status.
+  */
   @Input() public selectedItems: Set<string> = new Set<string>();
+
+  /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   /**
    * @Input : Angular
@@ -669,6 +675,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Emits which action to apply on which item/product
    */
   public triggerActionOnItem(actionOnItem: { action: Action; elementidentifier: ElementIdentifier; }): void {
+    console.log(actionOnItem)
     this.actionOnItemEvent.next(actionOnItem);
   }
 

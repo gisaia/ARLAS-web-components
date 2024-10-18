@@ -46,6 +46,8 @@ import { FormatNumberModule } from '../../pipes/format-number/format-number.modu
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReplaceModule } from '../../pipes/replace/replace.module';
 import { GetAttachmentUrlModule } from '../../pipes/get-attachment-url/get-attachment-url.module';
+import { ResultActionsComponent } from './result-actions/result-actions.component';
+import { ActionDisplayerPipe } from './result-actions/result-actions.pipe';
 
 @NgModule({
   imports: [
@@ -73,10 +75,10 @@ import { GetAttachmentUrlModule } from '../../pipes/get-attachment-url/get-attac
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
-    ResultFilterComponent, ResultScrollDirective],
+    ResultFilterComponent, ResultScrollDirective, ResultActionsComponent, ActionDisplayerPipe],
   exports: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
-    ResultFilterComponent, ResultScrollDirective],
+    ResultFilterComponent, ResultScrollDirective, ResultActionsComponent, ActionDisplayerPipe],
 
 })
 export class ResultsModule { }

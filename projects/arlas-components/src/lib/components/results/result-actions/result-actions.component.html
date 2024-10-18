@@ -1,0 +1,16 @@
+<div [style.max-width.px]="width" class="list_actions">
+    <button *ngFor="let action of item?.actions" (click)="triggerAction(action)"
+        matTooltip="{{action | actionDisplayer:'tooltip' |translate}}"
+        class="resultitem-list__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
+        {{action | actionDisplayer:'label' | translate}}
+    </button>
+</div>
+<div [style.max-width.px]="width" class="list_active_actions">
+    <ng-container *ngFor="let action of item?.actions">
+        <button *ngIf="action?.activated" (click)="triggerAction(action)"
+            matTooltip="{{action | actionDisplayer:'tooltip' |translate}}"
+            class="resultitem-list__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
+            {{action | actionDisplayer:'label' | translate}}
+        </button>
+    </ng-container>
+</div>

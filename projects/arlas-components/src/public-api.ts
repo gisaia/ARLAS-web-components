@@ -59,6 +59,8 @@ export { MapglComponent, VisualisationSetConfig, IconConfig, OnMoveResult, CROSS
 export { MapglModule } from './lib/components/mapgl/mapgl.module';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
+export { ResultActionsComponent } from './lib/components/results/result-actions/result-actions.component';
+export { ActionDisplayerPipe } from './lib/components/results/result-actions/result-actions.pipe';
 export { ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
 export { ResultsModule } from './lib/components/results/results.module';
 export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services/color.generator.module';
