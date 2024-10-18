@@ -23,3 +23,10 @@ export class MapSource {
     mapboxgl.GeoJSONSource | mapboxgl.GeoJSONSourceRaw |
     mapboxgl.CanvasSource | mapboxgl.ImageSource | mapboxgl.VideoSource;
 }
+
+
+
+export class ArlasMapSource<SourceType> {
+  public id: string;
+  public source: string | SourceType;
+}

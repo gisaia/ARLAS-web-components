@@ -363,8 +363,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
   }
 
   public redrawSource(id: string, data){
-    if (this.getMapProvider().getSource(id) !== undefined) {
-      (this.getMapProvider().getSource(id) as mapboxgl.GeoJSONSource).setData({
+    if (this.getSource(id) !== undefined) {
+      (this.getSource(id) as mapboxgl.GeoJSONSource).setData({
         'type': 'FeatureCollection',
         'features': data
       });
@@ -443,7 +443,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     this.getMapProvider().on('load', fn);
   }
 
-  public onMoveEnd() {
+  public onMoveEnd(cb?: () => void) {
     return this._moveEnd$
       .pipe(map(_ => {
         this._updateBounds();
@@ -522,11 +522,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
   }
 
   protected _updateZoom(): void {
-    this.zoom = this.getMapProvider().getZoom();
+    this.zoom = this.getZoom();
   }
 
   protected  _updateZoomStart(): void {
-    this._zoomStart = this.getMapProvider().getZoom();
+    this._zoomStart = this.getZoom();
   }
 
   public calcOffsetPoint() {
@@ -623,7 +623,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
       left: this._offset.west + this._fitBoundsPadding,
       right: this._offset.east + this._fitBoundsPadding
     };
-    this.getMapProvider().fitBounds(bounds, paddedOptions);
+    this.fitBounds(bounds, paddedOptions);
   }
 
   public addSourceType(ind: string, protocol: any, cb: (e?) => void) {

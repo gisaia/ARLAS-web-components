@@ -17,15 +17,16 @@
  * under the License.
  */
 
-import { MapSource } from './mapSource';
+import { ArlasMapSource } from './mapSource';
 import { FeatureCollection } from '@turf/helpers';
 import { MapExtend } from '../mapgl.component.util';
-import { ControlButton } from '../mapgl.component.control';
 import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
-import { Observable, Subscription } from 'rxjs';
+import { fromEvent, map, Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
 
 import { MapOverride } from './map.type';
+import mapboxgl, { AnyLayer, MapLayerEventType } from "mapbox-gl";
+import { debounceTime } from "rxjs/operators";
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -80,7 +81,7 @@ export interface BaseMapGlConfig<T> {
   wrapLatLng: boolean;
   offset: ArlasMapOffset;
   icons: Array<IconConfig>;
-  mapSources: Array<MapSource>;
+  mapSources: Array<ArlasMapSource<any>>;
   mapLayers: MapLayers<any>;
   mapLayersEventBind: {
     onHover: MapEventBinds<any>[];
@@ -150,7 +151,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   protected _dataSource: Set<string>;
   public visualisationSetsConfig: Array<VisualisationSetConfig>;
   protected _icons: Array<IconConfig>;
-  public mapSources: Array<MapSource>;
+  public mapSources: Array<ArlasMapSource<any>>;
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
   protected _dataSources?: Set<string>;
@@ -253,7 +254,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }, options?: { pixelRatio?: number; sdf?: boolean; }): this {
     throw new Error('Method not implemented.');
   }
-  public loadImage(url: string, callback: Function): this {
+  public loadImage(url: string, callback: (error: any, image: any) => void): this {
     throw new Error('Method not implemented.');
   }
   public addLayer(layer: unknown, before?: string): this {
@@ -357,24 +358,242 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected abstract _initMapProvider(BaseMapGlConfig): void;
-  protected abstract _initImages(): void;
-  protected abstract _initOnLoad(): void;
-  protected abstract _initControls(): void;
-  protected abstract _initMapMoveEvents(): void;
-  protected abstract _initSources(): void;
-  protected abstract _initVisualisationSet(): void;
-  public abstract initDrawControls(config: DrawControlsOption): void;
-  protected abstract _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any): void;
-  protected abstract _initLoadIcons(): void;
+  protected _initOnLoad(options?:{
+    beforeOnLoadOption?: () => void,
+    afterOnLoadOptions?: () => void
+  }){
+    this.onLoad(() => {
+      options?.beforeOnLoadOption();
+      this._updateBounds();
+      this._updateZoom();
+      this.firstDrawLayer = this.getColdOrHotLayers()[0];
+      this._initLoadIcons();
+      this._initSources();
+      this._initMapLayers();
+      this._bindCustomEvent();
+      // Fit bounds on current bounds to emit init position in moveend bus
+      this.getMapProvider().fitBounds(this.getBounds());
+      this._initVisualisationSet();
+      options?.afterOnLoadOptions();
+    });
+  }
 
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: any[]): void;
-  protected abstract _bindCustomEvent(): void;
+  protected _initMapMoveEvents() {
+    this._zoomStart$ = fromEvent(this.getMapProvider(), 'zoomstart')
+      .pipe(debounceTime(750));
+
+    this._dragStart$ = fromEvent(this.getMapProvider(), 'dragstart')
+      .pipe(debounceTime(750));
+
+    this._dragEnd$ = fromEvent(this.getMapProvider(), 'dragend')
+      .pipe(debounceTime(750));
+
+    this._moveEnd$ = fromEvent(this.getMapProvider(), 'moveend')
+      .pipe(debounceTime(750));
+
+    this._updateOnZoomStart();
+    this._updateOnDragStart();
+    this._updateOnDragEnd();
+    this._updateOnMoveEnd();
+  }
+
+  protected _initMapLayers(){
+    if(this._mapLayers){
+      this.setLayersMap(this._mapLayers as MapLayers<AnyLayer>);
+      this.addVisualLayers();
+      this._addExternalEventLayers();
+
+      this.bindLayersToMapEvent(
+        this._mapLayers.events.zoomOnClick,
+        this.config.mapLayersEventBind.zoomOnClick
+      );
+
+      this.bindLayersToMapEvent(
+        this.config.mapLayers.events.emitOnClick,
+        this.config.mapLayersEventBind.emitOnClick
+      );
+
+      this.bindLayersToMapEvent(
+        this.config.mapLayers.events.onHover,
+        this.config.mapLayersEventBind.onHover
+      );
+    }
+  }
+
+  protected _initImages(){
+    this._loadInternalImage('assets/rotate/01.png', 'rotate');
+    this._loadInternalImage('assets/resize/01.png', 'resize');
+  }
+
+  protected _initLoadIcons(){
+    if (this._icons) {
+      this._icons.forEach(icon => {
+        this._loadInternalImage(
+          this.ICONS_BASE_PATH + icon.path,
+          icon.path.split('.')[0],
+          'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found',
+          { 'sdf': icon.recolorable }
+        );
+      });
+    }
+  }
+
+  protected _initSources(): void {
+    if(this._dataSources){
+      this._dataSources.forEach(id => {
+        this.addSource(id, {type: GEOJSON_SOURCE_TYPE, data:  Object.assign({}, this._emptyData) });
+      });
+    }
+
+    this.addSource(this.POLYGON_LABEL_SOURCE, {
+      'type': GEOJSON_SOURCE_TYPE,
+      'data': this.polygonlabeldata
+    });
+
+    if(this.mapSources){
+      this.addSourcesToMap(this.mapSources);
+    }
+  }
+
+  protected _updateBounds(): void {
+    this._west = this.getWestBounds();
+    this._south = this.getSouthBounds();
+    this._east = this.getEastBounds();
+    this._north = this.getNorthBounds();
+  }
+
+  protected _updateZoom(e?: any): void {
+    this.zoom = this.getZoom();
+  }
+
+  protected _updateCurrentLngLat(e: any): void {
+    const lngLat = e.lngLat;
+    if (this._displayCurrentCoordinates) {
+      const displayedLngLat = this._wrapLatLng ? lngLat.wrap() : lngLat;
+      this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
+      this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
+    }
+  }
+
+  protected _updateDragEnd(e: any): void {
+    if(e.originalEvent){
+      this._dragEndX = e.originalEvent.clientX;
+      this._dragEndY = e.originalEvent.clientY;
+    }
+  }
+
+  protected _updateDragStart(e: any): void {
+    this._dragStartX = e.originalEvent.clientX;
+    this._dragStartY = e.originalEvent.clientY;
+  }
+
+  protected _updateEndLngLat(e: any): void {
+    this.endlngLat = e.lngLat;
+  }
+
+  protected _updateMoveRatio(e: any): void {
+    this._xMoveRatio = Math.abs(this._dragEndX - this._dragStartX) / e.target._canvas.clientWidth;
+    this._yMoveRatio = Math.abs(this._dragEndY - this._dragStartY) / e.target._canvas.clientHeight;
+  }
+
+  protected _updateStartLngLat(e: any): void {
+    this.startlngLat = e.lngLat;
+  }
+
+
+  protected  _updateZoomStart(): void {
+    this._zoomStart = this.getZoom();
+  }
+
+  protected _updateOnZoomStart(){
+    const sub = this._zoomStart$.subscribe(_ => this._updateZoomStart());
+    this._eventSubscription.push(sub);
+  }
+
+  protected _updateOnDragStart(){
+    const sub = this._dragStart$.subscribe(e => this._updateDragStart(e));
+    this._eventSubscription.push(sub);
+  }
+
+  protected _updateOnDragEnd(){
+    const sub = this._dragEnd$
+      .subscribe(e => {
+        this._updateDragEnd(e);
+        this._updateMoveRatio(e);
+      });
+    this._eventSubscription.push(sub);
+  }
+
+  protected _updateOnMoveEnd(){
+    const sub = this._moveEnd$
+      .subscribe(_ => {
+        this._updateBounds();
+        this._updateZoom();
+      });
+    this._eventSubscription.push(sub);
+  }
+
+  protected _bindCustomEvent(){
+    if(this.config.customEventBind){
+      this.config.customEventBind.forEach(element =>
+        this.bindLayersToMapEvent(element.layers, element.mapEventBinds)
+      );
+    }
+  }
+
+  protected _initVisualisationSet(){
+    if (this.visualisationSetsConfig) {
+      this.visualisationSetsConfig.forEach(visu => {
+        this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
+        this.visualisationsSets.status.set(visu.name, visu.enabled);
+      });
+    }
+  }
+
+  protected _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any){
+    this.loadImage(filePath, (error, image) => {
+      if (error) {
+        console.warn(errorMessage);
+      } else {
+        if(opt){
+          this.addImage(name, image, opt);
+        } else {
+          this.addImage(name, image);
+        }
+      }
+    });
+  }
+
+  public onMoveEnd(cb?: () => void) {
+    return this._moveEnd$
+      .pipe(map(_ => {
+        this._updateBounds();
+        this._updateZoom();
+        if(cb){
+          cb();
+        }
+        return this._getMoveEnd();
+      }));
+  }
+
+  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  MapLayerEventType>[]){
+    layers.forEach(layerId => {
+      binds.forEach(el => {
+        this.getMapProvider().on(el.event, layerId, (e) => {
+          el.fn(e);
+        });
+      });
+    });
+  }
+  public abstract calcOffsetPoint(): any;
+  protected abstract _initMapProvider(BaseMapGlConfig): void;
+  protected abstract _initControls(): void;
+  public abstract initDrawControls(config: DrawControlsOption): void;
   protected abstract addVisualLayers(): void;
   public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
-  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<MapSource>): void;
-  protected abstract _getMoveEnd(): void;
+  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
+  protected abstract _getMoveEnd():  OnMoveResult;
   public abstract paddedFitBounds(bounds: any, options?: any);
   public abstract enableDragPan(): void;
   public abstract disableDragPan(): void;
@@ -388,20 +607,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public abstract getMapProvider(): any;
   public abstract getMapExtend(): MapExtend;
   public abstract onLoad(fn: () => void): void;
-  public abstract onMoveEnd(fn: () => void): void;
-  protected abstract _updateOnZoomStart(): void;
-  protected abstract _updateOnDragStart(): void;
-  protected abstract _updateOnDragEnd(): void;
-  protected abstract _updateOnMoveEnd(): void;
-  protected abstract _updateZoomStart(e?: any): void;
-  protected abstract _updateDragEnd(e: any): void;
-  protected abstract _updateDragStart(e: any): void;
-  protected abstract _updateMoveRatio(e: any): void;
-  protected abstract _updateBounds(e?: any): void;
-  protected abstract _updateZoom(e?: any): void;
-  protected abstract _updateStartLngLat(e?: any): void;
-  protected abstract _updateEndLngLat(e?: any): void;
-  protected abstract _updateCurrentLngLat(e?: any): void;
+
   public abstract getLayers(): any;
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
     event: string; fn: (e?) => void;
@@ -454,9 +660,9 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  public addSourcesToMap(sources: Array<MapSource>): void {
+  public addSourcesToMap(sources: Array<any>): void {
     // Add sources defined as input in mapSources;
-    const mapSourcesMap = new Map<string, MapSource>();
+    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
     if (sources) {
       sources.forEach(mapSource => {
         mapSourcesMap.set(mapSource.id, mapSource);
