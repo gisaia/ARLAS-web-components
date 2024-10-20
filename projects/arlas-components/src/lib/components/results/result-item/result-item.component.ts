@@ -192,8 +192,6 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public triggerActionOnItem(action: Action) {
-    console.log('uuuum');
-    console.log(action)
     this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
   }
 

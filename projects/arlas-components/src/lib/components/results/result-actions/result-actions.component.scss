@@ -21,12 +21,17 @@
 }
 
 .list_actions {
-    display: none;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
     position: absolute;
     right: 35px;
     top: 0;
     height: 100%;
     width: max-content;
+    .not_activated {
+        display: none;
+    }
 }
 
 .list_active_actions {

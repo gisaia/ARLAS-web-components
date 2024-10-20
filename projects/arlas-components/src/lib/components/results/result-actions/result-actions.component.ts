@@ -35,12 +35,10 @@ export class ResultActionsComponent implements OnInit, OnChanges {
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
   @Output() public actionOnItemEvent: Subject<Action> = new Subject<Action>();
 
-
   public ngOnInit(): void {
-    console.log(this.item)
     this.actions = this.item.actions;
-    console.log(this.actions);
   }
+
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.activatedActionsPerItem) {
       const actionIds = this.activatedActionsPerItem.get(this.item.identifier);
@@ -51,18 +49,23 @@ export class ResultActionsComponent implements OnInit, OnChanges {
           }
         });
         /** Retrigger ActionDisplayerMap */
+        this.actions = [...this.actions];
       }
     }
   }
 
   public triggerAction(action: Action) {
-    console.log(action);
+    this.actionOnItemEvent.next(action);
+    if (ActionHandler.isReversible(action)) {
+      console.log(action);
+      console.log('was activated?', action.activated);
+    }
     if (ActionHandler.isReversible(action) && !action.activated) {
       ActionHandler.activate(action);
     } else if (ActionHandler.isReversible(action) && action.activated) {
       ActionHandler.reverse(action);
     }
-    this.actionOnItemEvent.next(action);
     /** Retrigger ActionDisplayerMap */
+    this.actions = [...this.actions];
   }
 }

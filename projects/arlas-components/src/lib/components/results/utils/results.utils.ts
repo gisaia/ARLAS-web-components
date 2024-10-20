@@ -42,6 +42,7 @@ export interface Action {
   /** if activated, the action is always displayed (not only on hover) */
   activated?: boolean;
   reverseAction?: Action;
+  icon?: string;
   /** for global actions, even if no item is selected, the action will be enabled */
   alwaysEnabled?: boolean;
 }

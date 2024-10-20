@@ -675,7 +675,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Emits which action to apply on which item/product
    */
   public triggerActionOnItem(actionOnItem: { action: Action; elementidentifier: ElementIdentifier; }): void {
-    console.log(actionOnItem)
     this.actionOnItemEvent.next(actionOnItem);
   }
 
@@ -934,7 +933,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
             label: action.label,
             actionBus: action.actionBus,
             cssClass: action.cssClass,
-            tooltip: action.tooltip
+            tooltip: action.tooltip,
+            reverseAction: action.reverseAction,
+            icon: action.icon
           });
         });
       });

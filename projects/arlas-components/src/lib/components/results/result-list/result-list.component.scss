@@ -125,9 +125,9 @@ tr {
       .actions {
         arlas-result-actions {
           .list_actions {
-            display: flex;
-            flex-direction: row-reverse;
-            align-items: center;
+            .not_activated {
+              display: block;
+            }
           }
         }
       }
