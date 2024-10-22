@@ -35,13 +35,13 @@ import maplibre, {
   EaseToOptions,
   FeatureIdentifier,
   FitBoundsOptions,
-  FlyToOptions,
+  FlyToOptions, IControl,
   LngLatBounds,
   LngLatLike,
-  MapEventType,
-  MapLayerEventType,
+  MapEventType, MapGeoJSONFeature,
+  MapLayerEventType, MapMouseEvent,
   MapOptions,
-  PointLike,
+  PointLike, QueryRenderedFeaturesOptions,
   SourceSpecification,
   StyleImageInterface,
   StyleSetterOptions,
@@ -57,7 +57,7 @@ import mapboxgl, { Control } from "mapbox-gl";
 
 export interface ArlasMaplibreConfig extends BaseMapGlConfig<MapOptions>  {
   mapLayers: MapLayers<TypedStyleLayer>;
-  customEventBind: BindLayerToEvent<keyof MapEventType>[];
+  customEventBind: BindLayerToEvent<keyof MapLayerEventType>[];
   mapLayersEventBind: {
     onHover: MapEventBinds<keyof MapLayerEventType>[];
     emitOnClick: MapEventBinds<keyof MapLayerEventType>[];
@@ -81,6 +81,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this._mapProvider = new maplibre.Map(
       config.mapProviderOptions
     );
+    this._mapProvider.addControl(new maplibre.NavigationControl());
     // Disable map pitch and rotation with keyboard
     this.getMapProvider().keyboard.disableRotation();
 
@@ -187,7 +188,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
   }
 
   protected _initControls(): void {
-    console.log('init controls');
+    console.log('init controls', this._controls);
     if(this._controls) {
       if(this._controls.mapAttribution) {
         this.addControl(new maplibre.AttributionControl(this._controls.mapAttribution.config),this._controls.mapAttribution.position);
@@ -232,12 +233,18 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
   }
 
 
-  addControl(control: any, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void });
-  addControl(control: unknown, position?: "top-right" | "top-left" | "bottom-right" | "bottom-left"): this;
-  addControl(control: any, position?: ControlPosition | "top-right" | "top-left" | "bottom-right" | "bottom-left", eventOverride?: {
+  addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void });
+  addControl(control: IControl, position?: "top-right" | "top-left" | "bottom-right" | "bottom-left"): this;
+  addControl(control: IControl, position?: ControlPosition | "top-right" | "top-left" | "bottom-right" | "bottom-left", eventOverride?: {
     event: string;
     fn: (e?) => void
   }) {
+    console.log(control)
+    this.getMapProvider().addControl(control, position);
+    if(control instanceof  ControlButton && eventOverride){
+      control.btn[eventOverride.event] = () => eventOverride.fn();
+    }
+    return this;
   }
 
   protected addVisualLayers(): void {
@@ -368,7 +375,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     if(!(config.draw.control)) {
       console.warn(' Draw control is not instance of MapBoxDraw');
     } else {
-      this.addControl(config.draw.control as Control, (config.draw?.position ?? 'top-right'));
+      this.addControl(config.draw.control as IControl, (config.draw?.position ?? 'top-right'));
     }
 
     if(config.addGeoBox.enable){
@@ -450,8 +457,8 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
   public unproject(point: maplibre.PointLike): unknown {
     return this._mapProvider.unproject(point);
   }
-  public queryRenderedFeatures(pointOrBox?: PointLike | [PointLike, PointLike], options?: { layers?: string[]; filter?: any[]; }): unknown[] {
-    return this._mapProvider.queryRenderedFeatures(pointOrBox, options);
+  public queryRenderedFeatures(pointOrBox?: PointLike | [PointLike, PointLike], options?: { layers?: string[]; filter?: any[]; }): MapGeoJSONFeature[] {
+    return this._mapProvider.queryRenderedFeatures(pointOrBox, options as QueryRenderedFeaturesOptions);
   }
   public setStyle(style:StyleSpecification, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
     this._mapProvider.setStyle(style, options);
@@ -505,7 +512,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     return this.getMapProvider().getStyle().layers;
   }
   public setFilter(layer: string, filter?: boolean | any[], options?: StyleSetterOptions): this {
-    this._mapProvider.setFilter(layer, filter, options);
+    this._mapProvider.setFilter(layer, filter as any, options);
     return this;
   }
   public getLight(): unknown {
