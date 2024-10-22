@@ -53,7 +53,7 @@ import { getLayerName } from '../componentsUtils';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
-import { MapboxBasemapService } from './basemaps/basemap.service';
+import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import circleMode from './draw/modes/circles/circle.mode';

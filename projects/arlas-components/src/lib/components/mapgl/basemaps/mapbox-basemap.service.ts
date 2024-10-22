@@ -21,9 +21,9 @@ import { Injectable } from '@angular/core';
 import { ArlasBasemaps } from './basemaps';
 import * as pmtiles from 'pmtiles';
 import { CustomProtocol } from '../custom-protocol/mapbox-gl-custom-protocol';
-import { BasemapStyle } from './basemap.config';
+import { MapboxBasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
-import { Observable, Subject, catchError, forkJoin, of, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMapboxGL } from '../model/ArlasMapboxGL';
 
@@ -90,7 +90,7 @@ export class MapboxBasemapService {
     }
   }
 
-  public getInitStyle(selected: BasemapStyle) {
+  public getInitStyle(selected: MapboxBasemapStyle) {
     if (selected.type === 'protomap') {
       /** This is necessaty to make it work for mapbox. */
       const clonedStyleFile: mapboxgl.Style = Object.assign({}, selected.styleFile as mapboxgl.Style);
@@ -139,7 +139,7 @@ export class MapboxBasemapService {
     return forkJoin(sources$);
   }
 
-  private getStyleFile(b: BasemapStyle): Observable<mapboxgl.Style> {
+  private getStyleFile(b: MapboxBasemapStyle): Observable<mapboxgl.Style> {
     if (typeof b.styleFile === 'string') {
       return this.http.get(b.styleFile) as Observable<mapboxgl.Style>;
     } else {

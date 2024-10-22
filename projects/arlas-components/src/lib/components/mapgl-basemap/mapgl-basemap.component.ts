@@ -22,7 +22,7 @@ import { Subject } from 'rxjs/internal/Subject';
 import mapboxgl, { AnyLayer } from 'mapbox-gl';
 import { MapSource } from '../mapgl/model/mapSource';
 import { MapglService } from '../../services/mapgl.service';
-import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
+import { MapboxBasemapService } from '../mapgl/basemaps/mapbox-basemap.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
 import { ArlasMapboxGL } from '../mapgl/model/ArlasMapboxGL';

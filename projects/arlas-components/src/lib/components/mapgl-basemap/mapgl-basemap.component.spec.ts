@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapglBasemapComponent } from './mapgl-basemap.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { MapboxBasemapService } from '../mapgl/basemaps/basemap.service';
+import { MapboxBasemapService } from '../mapgl/basemaps/mapbox-basemap.service';
 
 describe('MapglBasemapComponent', () => {
   let component: MapglBasemapComponent;

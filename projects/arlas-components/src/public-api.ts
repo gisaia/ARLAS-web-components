@@ -38,7 +38,7 @@ export {
   ExternalEventLayer, ExternalEvent, SCROLLABLE_ARLAS_ID, FillStroke, LayerMetadata, PaintColor, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
 } from './lib/components/mapgl/model/mapLayers';
 export { BasemapStyle } from './lib/components/mapgl/basemaps/basemap.config';
-export { MapboxBasemapService } from './lib/components/mapgl/basemaps/basemap.service';
+export { MapboxBasemapService } from './lib/components/mapgl/basemaps/mapbox-basemap.service';
 export { ArlasBasemaps } from './lib/components/mapgl/basemaps/basemaps';
 export { MapSource } from './lib/components/mapgl/model/mapSource';
 export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE, ArlasAnyLayer } from './lib/components/mapgl/mapgl.component.util';

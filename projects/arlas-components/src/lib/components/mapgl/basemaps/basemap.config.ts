@@ -18,12 +18,22 @@
  */
 
 
+import mapboxgl from "mapbox-gl";
+import maplibre from "maplibre-gl";
+
 export interface BasemapStyle {
   name: string;
-  styleFile: string | mapboxgl.Style;
+  styleFile: any;
   url?: string;
   image?: string;
   type?: 'protomap' | 'mapbox';
   errored?: boolean;
 }
 
+export interface MapboxBasemapStyle extends BasemapStyle{
+  styleFile: string | mapboxgl.Style;
+}
+
+export interface MapLibreBasemapStyle extends BasemapStyle{
+  styleFile: string | maplibre.StyleSpecification;
+}
