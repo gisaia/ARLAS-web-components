@@ -37,10 +37,8 @@ export class ResultActionsComponent implements OnInit, OnChanges {
 
   public ngOnInit(): void {
     this.actions = this.item.actions;
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    if (changes.activatedActionsPerItem) {
+    console.log('iniiiiii', this.activatedActionsPerItem)
+    if (this.activatedActionsPerItem) {
       const actionIds = this.activatedActionsPerItem.get(this.item.identifier);
       if (actionIds) {
         this.actions.forEach(a => {
@@ -54,12 +52,41 @@ export class ResultActionsComponent implements OnInit, OnChanges {
     }
   }
 
+  public ngOnChanges(changes: SimpleChanges): void {
+    if (changes.activatedActionsPerItem) {
+      console.log(this.activatedActionsPerItem);
+      if (this.activatedActionsPerItem) {
+        const actionIds = this.activatedActionsPerItem.get(this.item.identifier);
+        if (actionIds) {
+          this.actions.forEach(a => {
+            if (actionIds.has(a.id)) {
+              ActionHandler.activate(a);
+            }
+          });
+          /** Retrigger ActionDisplayerMap */
+          this.actions = [...this.actions];
+        }
+      }
+    }
+    if (changes.actions) {
+      console.log(this.activatedActionsPerItem);
+      if (this.activatedActionsPerItem) {
+        const actionIds = this.activatedActionsPerItem.get(this.item.identifier);
+        if (actionIds) {
+          this.actions.forEach(a => {
+            if (actionIds.has(a.id)) {
+              ActionHandler.activate(a);
+            }
+          });
+          /** Retrigger ActionDisplayerMap */
+          this.actions = [...this.actions];
+        }
+      }
+    }
+  }
+
   public triggerAction(action: Action) {
     this.actionOnItemEvent.next(action);
-    if (ActionHandler.isReversible(action)) {
-      console.log(action);
-      console.log('was activated?', action.activated);
-    }
     if (ActionHandler.isReversible(action) && !action.activated) {
       ActionHandler.activate(action);
     } else if (ActionHandler.isReversible(action) && action.activated) {

@@ -75,6 +75,9 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    */
   @Input() public selectedItems: Set<string>;
 
+  @Input() public activeActions: Map<string, Set<string>>;
+
+
   /**
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key

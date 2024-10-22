@@ -51,7 +51,7 @@ export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerat
 export { DetailedDataRetriever } from './lib/components/results/utils/detailed-data-retriever';
 export {
   Action, ElementIdentifier, FieldsConfiguration, DescribedUrl, ResultListOptions,
-  Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER
+  Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER, ActionHandler
 } from './lib/components/results/utils/results.utils';
 export { Item } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';

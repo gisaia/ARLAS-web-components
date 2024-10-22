@@ -32,6 +32,14 @@
     .not_activated {
         display: none;
     }
+    .icon {
+        margin-left: 5px;
+        float: right;
+        width: 20px;
+        height: 20px;
+        font-size: 20px;
+        cursor: pointer;
+    }
 }
 
 .list_active_actions {

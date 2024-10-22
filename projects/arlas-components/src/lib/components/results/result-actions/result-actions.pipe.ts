@@ -6,7 +6,7 @@ import { Action, ActionHandler } from '../utils/results.utils';
 })
 export class ActionDisplayerPipe implements PipeTransform {
 
-    transform(a: Action, displayElement: 'label' | 'tooltip' | 'id') {
+    transform(a: Action, displayElement: 'label' | 'tooltip' | 'id' | 'icon') {
         switch (displayElement) {
             case 'label':
                 return ActionHandler.isReversible(a) ?
@@ -19,7 +19,11 @@ export class ActionDisplayerPipe implements PipeTransform {
             case 'id':
                 return ActionHandler.isReversible(a) ?
                     (a.activated ? a.reverseAction?.id : a.id) :
-                    a.label;
+                    a.id;
+            case 'icon':
+                return ActionHandler.isReversible(a) ?
+                    (a.activated ? a.reverseAction?.icon : a.icon) :
+                    a.icon;
         }
 
     }
