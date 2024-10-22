@@ -24,7 +24,8 @@ import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMaplibre } from "../model/ArlasMaplibre";
-import maplibre from "maplibre-gl";
+import maplibre, { LayerSpecification } from "maplibre-gl";
+import { BackgroundLayerSpecification } from "@maplibre/maplibre-gl-style-spec";
 
 @Injectable({
   providedIn: 'root'
@@ -80,7 +81,7 @@ export class MapLibreBasemapService {
 
   public declareProtomapProtocol(map: ArlasMaplibre) {
     const protocol = new pmtiles.Protocol();
-    maplibregl.addProtocol("pmtiles", protocol.tile);
+    maplibre.addProtocol("pmtiles", protocol.tile);
   }
 
   public getInitStyle(selected: MapLibreBasemapStyle) {
@@ -101,7 +102,7 @@ export class MapLibreBasemapService {
         paint: {
           'background-color': 'rgba(0,0,0,0)'
         }
-      }];
+      } as BackgroundLayerSpecification];
       return clonedStyleFile;
     }
     return selected.styleFile;
