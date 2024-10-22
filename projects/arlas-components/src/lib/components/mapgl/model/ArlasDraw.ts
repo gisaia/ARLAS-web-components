@@ -18,9 +18,9 @@
  */
 
 import { AbstractDraw } from './AbstractDraw';
-import mapboxgl from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Feature } from 'geojson';
+import { AbstractArlasMapGL } from "./AbstractArlasMapGL";
 
 export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |
   'draw.update' | 'draw.selectionchange' | 'draw.modechange' | 'draw.render' | 'draw.actionable' |
@@ -33,9 +33,9 @@ export type DrawModes = 'SIMPLE_SELECT' | 'DRAW_CIRCLE' | 'DIRECT_SELECT' |
 
 export class ArlasDraw extends AbstractDraw {
   public drawProvider: MapboxDraw;
-  public mapProvider: mapboxgl.Map;
+  public arlasMap:  AbstractArlasMapGL;
   public enabled: boolean;
-  public constructor(config: any, enabled: boolean, map: mapboxgl.Map) {
+  public constructor(config: any, enabled: boolean, map: AbstractArlasMapGL) {
     super();
     console.log('init draw');
     const modes = MapboxDraw.modes;
@@ -44,7 +44,7 @@ export class ArlasDraw extends AbstractDraw {
     console.log('Draw config',  this.config);
     this.drawProvider = new MapboxDraw(this.config);
     console.log('then');
-    this.mapProvider = map;
+    this.arlasMap = map;
     this.enabled = enabled;
   }
 
@@ -140,7 +140,7 @@ export class ArlasDraw extends AbstractDraw {
    */
 
   public on(event: DrawEvents, func: (e) => void): void {
-    this.mapProvider.on(event, func);
+    this.arlasMap.on(event, func);
   }
 
 

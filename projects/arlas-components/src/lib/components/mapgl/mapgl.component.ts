@@ -774,7 +774,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
         }
       }
     };
-    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map.getMapProvider());
+    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map);
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
