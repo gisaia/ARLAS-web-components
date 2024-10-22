@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   public activeLinkIndex = 0;
   public navLinks = [
     '/',
+    '/maplibre',
     '/donut',
     '/histogram',
     '/powerbars',

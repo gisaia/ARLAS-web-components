@@ -40,16 +40,33 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import {
-  DonutModule, FormatLegendModule, FormatNumberModule, HistogramModule, MapglImportModule,
-  MapglLayerIconModule, MapglLegendModule, MapglModule, MapglSettingsModule,
-  MetricModule, MetricsTableComponent, MetricsTableModule, PowerbarsModule, ResultsModule, WmtsLayerManagerModule,
+  DonutModule,
+  FormatLegendModule,
+  HistogramModule,
+  MapglImportModule,
+  MapglLayerIconModule,
+  MapglLegendModule,
+  MapglModule,
+  MapglSettingsModule,
+  MetricModule,
+  MetricsTableModule,
+  PowerbarsModule,
+  ResultsModule,
+  WmtsLayerManagerModule,
   WmtsLayerManagertDialogComponent
 } from '../../projects/arlas-components/src/public-api';
-import { MapglImportDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
-import { MapglSettingsDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
-import { CalendarTimelineModule } from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
+import {
+  MapglImportDialogComponent
+} from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
+import {
+  MapglSettingsDialogComponent
+} from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
+import {
+  CalendarTimelineModule
+} from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
 import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
 import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-demo.component';
+import { MapglLibreDemoComponent } from "./mapgl-libre-demo/mapgl-libre-demo.component";
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -58,6 +75,7 @@ export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
 
 const routes: Routes = [
   { path: '', component: MapglDemoComponent },
+  { path: 'maplibre', component: MapglLibreDemoComponent },
   { path: 'histogram', component: HistogramDemoComponent },
   { path: 'donut', component: DonutDemoComponent },
   { path: 'powerbars', component: PowerbarsDemoComponent },
@@ -73,6 +91,7 @@ const routes: Routes = [
     HistogramDemoComponent,
     ResultsDemoComponent,
     MapglDemoComponent,
+    MapglLibreDemoComponent,
     PowerbarsDemoComponent,
     DonutDemoComponent,
     WmtsLayerManagerDemoComponent,
