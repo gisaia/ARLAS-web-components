@@ -326,6 +326,13 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
+  hasImage(id: string): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  removeImage(id: string): void {
+    throw new Error('Method not implemented.');
+  }
 
   public easeTo(options: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
@@ -910,6 +917,8 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
     this.getColdOrHotLayers().forEach(id => this.moveLayer(id));
   }
+
+
 
 }
 

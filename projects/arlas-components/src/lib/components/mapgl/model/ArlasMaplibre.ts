@@ -370,6 +370,14 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     return this.getBounds().getEast();
   }
 
+  hasImage(id: string): boolean {
+    return  this.getMapProvider().hasImage(id);
+  }
+
+  removeImage(id: string): void {
+    this.getMapProvider().removeImage(id);
+  }
+
   public initDrawControls(config: DrawControlsOption) {
 
     if(!(config.draw.control)) {

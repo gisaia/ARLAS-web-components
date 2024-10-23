@@ -189,6 +189,9 @@ export interface MapOverride {
 
   fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
 
+  hasImage(id: string):boolean;
+  removeImage(id: string):void;
+
 
   easeTo(options: unknown, unknown?: unknown): this;
 

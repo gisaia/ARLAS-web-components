@@ -728,6 +728,14 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     return this._mapProvider.getStyle();
   }
 
+  hasImage(id: string): boolean {
+    return  this.getMapProvider().hasImage(id);
+  }
+
+  removeImage(id: string): void {
+    this.getMapProvider().removeImage(id);
+  }
+
   public addImage(name: string, image: HTMLImageElement | ArrayBufferView | {
     width: number;
     height: number;
