@@ -99,36 +99,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     this.getMapProvider().boxZoom.disable();
   }
 
-  protected _initOnLoad(){
-    this.onLoad(() => {
-      console.log('on load');
-      this._updateBounds();
-      this._updateZoom();
-      this.firstDrawLayer = this.getColdOrHotLayers()[0];
-      this._initLoadIcons();
-      this._initSources();
-      this._initMapLayers();
-      this.getMapProvider().showTileBoundaries = false;
-      this._bindCustomEvent();
-      // Fit bounds on current bounds to emit init position in moveend bus
-      this.getMapProvider().fitBounds(this.getBounds());
-      this._initVisualisationSet();
-    });
-  }
-
   protected _initMapMoveEvents(){
-   this._zoomStart$ = fromEvent(this.getMapProvider(), 'zoomstart')
-      .pipe(debounceTime(750));
-
-   this._dragStart$ = fromEvent(this.getMapProvider(), 'dragstart')
-      .pipe(debounceTime(750));
-
-    this._dragEnd$ = fromEvent(this.getMapProvider(), 'dragend')
-      .pipe(debounceTime(750));
-
-    this._moveEnd$ = fromEvent(this.getMapProvider(), 'moveend')
-      .pipe(debounceTime(750));
-
+    super._initMapMoveEvents();
     this.getMapProvider().on('mousedown', (e) =>
       this._updateStartLngLat(e)
     );
@@ -139,11 +111,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     this.getMapProvider().on('mousemove', (e) =>
       this._updateCurrentLngLat(e)
     );
-
-    this._updateOnZoomStart();
-    this._updateOnDragStart();
-    this._updateOnDragEnd();
-    this._updateOnMoveEnd();
   }
 
   public _initControls(): void {
@@ -177,32 +144,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected _initSources(){
-    if(this._dataSources){
-      this._dataSources.forEach(id => {
-        this.getMapProvider().addSource(id, {type: GEOJSON_SOURCE_TYPE, data:  Object.assign({}, this._emptyData) });
-      });
-    }
-
-    this.getMapProvider().addSource(this.POLYGON_LABEL_SOURCE, {
-      'type': GEOJSON_SOURCE_TYPE,
-      'data': this.polygonlabeldata
-    });
-
-    if(this.mapSources){
-      this.addSourcesToMap(this.mapSources);
-    }
-  }
-
-  protected _initVisualisationSet(){
-    if (this.visualisationSetsConfig) {
-      this.visualisationSetsConfig.forEach(visu => {
-        this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
-        this.visualisationsSets.status.set(visu.name, visu.enabled);
-      });
-    }
-  }
-
   public initDrawControls(config: DrawControlsOption) {
 
      if(!(config.draw.control instanceof MapboxDraw)) {
@@ -221,129 +162,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
       this.addControl(removeAoisButton, config.removeAois?.position ?? 'top-right', config.removeAois?.overrideEvent);
     }
   }
-
-  protected _initImages(){
-    this._loadInternalImage('assets/rotate/01.png', 'rotate');
-    this._loadInternalImage('assets/resize/01.png', 'resize');
-  }
-
-  protected _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any){
-    this.loadImage(filePath, (error, image) => {
-      if (error) {
-        console.warn(errorMessage);
-      } else {
-        if(opt){
-          this.addImage(name, image, opt);
-        } else {
-          this.addImage(name, image);
-        }
-      }
-    });
-  }
-
-  protected _initLoadIcons(){
-    if (this._icons) {
-      this._icons.forEach(icon => {
-        this._loadInternalImage(
-          this.ICONS_BASE_PATH + icon.path,
-          icon.path.split('.')[0],
-          'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found',
-          { 'sdf': icon.recolorable }
-        );
-      });
-    }
-  }
-
-  protected _initMapLayers(){
-    if(this._mapLayers){
-      this.setLayersMap(this._mapLayers as MapLayers<AnyLayer>);
-      this.addVisualLayers();
-      this._addExternalEventLayers();
-
-      this.bindLayersToMapEvent(
-        this._mapLayers.events.zoomOnClick,
-        this.config.mapLayersEventBind.zoomOnClick
-      );
-
-      this.bindLayersToMapEvent(
-        this.config.mapLayers.events.emitOnClick,
-        this.config.mapLayersEventBind.emitOnClick
-      );
-
-      this.bindLayersToMapEvent(
-        this.config.mapLayers.events.onHover,
-        this.config.mapLayersEventBind.onHover
-      );
-    }
-  }
-
-
-  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  MapLayerEventType>[]){
-    layers.forEach(layerId => {
-      binds.forEach(el => {
-        this.getMapProvider().on(el.event, layerId, (e) => {
-          el.fn(e);
-        });
-      });
-    });
-  }
-
-  protected _bindCustomEvent(){
-    if(this.config.customEventBind){
-      this.config.customEventBind.forEach(element =>
-        this.bindLayersToMapEvent(element.layers, element.mapEventBinds)
-      );
-    }
-  }
-
-  protected addVisualLayers() {
-    if (!!this.visualisationSetsConfig) {
-      for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-        const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-        if (!!visualisation.layers) {
-          for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-            const l = visualisation.layers[j];
-            const layer = this.layersMap.get(l);
-            const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-            const scrollableLayer = this.layersMap.get(scrollableId);
-            if (!!scrollableLayer) {
-              this.addLayerInWritePlaceIfNotExist(scrollableId);
-            }
-            this.addLayerInWritePlaceIfNotExist(l);
-            /** add stroke layer if the layer is a fill */
-            if (layer.type === 'fill') {
-              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-              const strokeLayer = this.layersMap.get(strokeId);
-              if (!!strokeLayer) {
-                this.addLayerInWritePlaceIfNotExist(strokeId);
-              }
-            }
-          }
-        }
-      }
-      this.visualisationsSets.status.forEach((b, vs) => {
-        if (!b) {
-          this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.setLayoutProperty(l, 'visibility', 'none');
-            this.setStrokeLayoutVisibility(l, 'none');
-            this.setScrollableLayoutVisibility(l, 'none');
-          });
-        }
-      });
-      this.visualisationsSets.status.forEach((b, vs) => {
-        if (b) {
-          this.visualisationsSets.visualisations.get(vs).forEach(l => {
-            this.setLayoutProperty(l, 'visibility', 'visible');
-            this.setStrokeLayoutVisibility(l, 'visible');
-            this.setScrollableLayoutVisibility(l, 'visible');
-          });
-
-        }
-      });
-      this.reorderLayers();
-    }
-  }
-
 
 
   public setLayersMap(mapLayers: MapLayers<AnyLayer>, layers?: Array<AnyLayer>){
@@ -445,92 +263,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     this.getMapProvider().on('load', fn);
   }
 
-  public onMoveEnd(cb?: () => void) {
-    return this._moveEnd$
-      .pipe(map(_ => {
-        this._updateBounds();
-        this._updateZoom();
-        return this._getMoveEnd();
-      }));
-  }
-
-  protected _updateOnZoomStart(){
-    const sub = this._zoomStart$.subscribe(_ => this._updateZoomStart());
-    this._eventSubscription.push(sub);
-  }
-
-  protected _updateOnDragStart(){
-    const sub = this._dragStart$.subscribe(e => this._updateDragStart(e));
-    this._eventSubscription.push(sub);
-  }
-
-  protected _updateOnDragEnd(){
-    const sub = this._dragEnd$
-      .subscribe(e => {
-        this._updateDragEnd(e);
-        this._updateMoveRatio(e);
-      });
-    this._eventSubscription.push(sub);
-  }
-
-  protected _updateOnMoveEnd(){
-    const sub = this._moveEnd$
-      .subscribe(_ => {
-        this._updateBounds();
-        this._updateZoom();
-      });
-    this._eventSubscription.push(sub);
-  }
-
-  protected _updateBounds(): void {
-    this._west = this.getWestBounds();
-    this._south = this.getSouthBounds();
-    this._east = this.getEastBounds();
-    this._north = this.getNorthBounds();
-  }
-
-  protected _updateCurrentLngLat(e: mapboxgl.MapMouseEvent): void {
-    const lngLat = e.lngLat;
-    if (this._displayCurrentCoordinates) {
-      const displayedLngLat = this._wrapLatLng ? lngLat.wrap() : lngLat;
-      this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
-      this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
-    }
-  }
-
-  protected _updateDragEnd(e: any): void {
-    if(e.originalEvent){
-      this._dragEndX = e.originalEvent.clientX;
-      this._dragEndY = e.originalEvent.clientY;
-    }
-  }
-
-  protected _updateDragStart(e: any): void {
-    this._dragStartX = e.originalEvent.clientX;
-    this._dragStartY = e.originalEvent.clientY;
-  }
-
-  protected _updateEndLngLat(e: any): void {
-    this.endlngLat = e.lngLat;
-  }
-
-  protected _updateMoveRatio(e: any): void {
-    this._xMoveRatio = Math.abs(this._dragEndX - this._dragStartX) / e.target._canvas.clientWidth;
-    this._yMoveRatio = Math.abs(this._dragEndY - this._dragStartY) / e.target._canvas.clientHeight;
-  }
-
-  protected _updateStartLngLat(e: any): void {
-    this.startlngLat = e.lngLat;
-  }
-
-  protected _updateZoom(): void {
-    this.zoom = this.getZoom();
-  }
-
-  protected  _updateZoomStart(): void {
-    this._zoomStart = this.getZoom();
-  }
-
   public calcOffsetPoint() {
     return new mapboxgl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
@@ -617,6 +349,16 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     return onMoveData;
   }
 
+  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  MapLayerEventType>[]){
+    layers.forEach(layerId => {
+      binds.forEach(el => {
+        this.getMapProvider().on(el.event, layerId, (e) => {
+          el.fn(e);
+        });
+      });
+    });
+  }
+
   public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
     const paddedOptions = Object.assign({}, options);
     paddedOptions.padding = {
@@ -652,10 +394,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
   public getEastBounds(){
     return this.getBounds().getEast();
   }
-
-  /** *****
-   ******* MAP PROVIDER WRAP
-   *******/
 
 
   public addLayer(layer: AnyLayer, before?: string){

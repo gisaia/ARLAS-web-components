@@ -52,10 +52,9 @@ import maplibregl, {
   TypedStyleLayer
 } from 'maplibre-gl';
 
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
+import { MapLayers } from './mapLayers';
 import { MapExtend, paddedBounds } from '../mapgl.component.util';
 import { ControlButton } from '../mapgl.component.control';
-import mapboxgl from 'mapbox-gl';
 import { MaplibreControlButton, MaplibrePitchToggle } from '../mapgl-maplibre.component.control';
 
 
@@ -227,6 +226,16 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
   }
 
 
+  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  MapLayerEventType>[]){
+    layers.forEach(layerId => {
+      binds.forEach(el => {
+        this.getMapProvider().on(el.event, layerId, (e) => {
+          el.fn(e);
+        });
+      });
+    });
+  }
+
   public  addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
   public addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
   public addControl(control: IControl, position?: ControlPosition | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left', eventOverride?: {
@@ -241,52 +250,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
     return this;
   }
 
-  protected addVisualLayers(): void {
 
-    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-      if (!!visualisation.layers) {
-        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-          const l = visualisation.layers[j];
-          const layer = this.layersMap.get(l);
-          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-          const scrollableLayer = this.layersMap.get(scrollableId);
-          if (!!scrollableLayer) {
-            this.addLayerInWritePlaceIfNotExist(scrollableId);
-          }
-          this.addLayerInWritePlaceIfNotExist(l);
-          /** add stroke layer if the layer is a fill */
-          if (layer.type === 'fill') {
-            const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-            const strokeLayer = this.layersMap.get(strokeId);
-            if (!!strokeLayer) {
-              this.addLayerInWritePlaceIfNotExist(strokeId);
-            }
-          }
-        }
-      }
-    }
-    this.visualisationsSets.status.forEach((b, vs) => {
-      if (!b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => {
-          this.setLayoutProperty(l, 'visibility', 'none');
-          this.setStrokeLayoutVisibility(l, 'none');
-          this.setScrollableLayoutVisibility(l, 'none');
-        });
-      }
-    });
-    this.visualisationsSets.status.forEach((b, vs) => {
-      if (b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => {
-          this.setLayoutProperty(l, 'visibility', 'visible');
-          this.setStrokeLayoutVisibility(l, 'visible');
-          this.setScrollableLayoutVisibility(l, 'visible');
-        });
-
-      }
-    });
-    this.reorderLayers();
-  }
 
   // TODO : should fix any in source
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<any>): void {
@@ -301,7 +265,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
     layers.forEach(layer => {
       this.addLayer(layer);
     });
-
+    // TODO : should fix any in source
     this.setLayersMap(this._mapLayers as MapLayers<TypedStyleLayer>, layers);
     this.reorderLayers();
   }
@@ -412,7 +376,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
 
   public redrawSource(id: string, data){
     if (this.getSource(id) !== undefined) {
-      (this.getSource(id) as mapboxgl.GeoJSONSource).setData({
+      (this.getSource(id) as maplibregl.GeoJSONSource).setData({
         'type': 'FeatureCollection',
         'features': data
       });

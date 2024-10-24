@@ -25,7 +25,6 @@ import { fromEvent, map, Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
 
 import { MapOverride } from './map.type';
-import mapboxgl, { AnyLayer, MapLayerEventType } from 'mapbox-gl';
 import { debounceTime } from 'rxjs/operators';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -406,7 +405,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _initMapLayers(){
     if(this._mapLayers){
-      this.setLayersMap(this._mapLayers as MapLayers<AnyLayer>);
+      this.setLayersMap(this._mapLayers as MapLayers<any>);
       this.addVisualLayers();
       this._addExternalEventLayers();
 
@@ -571,6 +570,52 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     });
   }
 
+  protected addVisualLayers(): void {
+    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
+      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
+      if (!!visualisation.layers) {
+        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
+          const l = visualisation.layers[j];
+          const layer = this.layersMap.get(l);
+          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+          const scrollableLayer = this.layersMap.get(scrollableId);
+          if (!!scrollableLayer) {
+            this.addLayerInWritePlaceIfNotExist(scrollableId);
+          }
+          this.addLayerInWritePlaceIfNotExist(l);
+          /** add stroke layer if the layer is a fill */
+          if (layer.type === 'fill') {
+            const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+            const strokeLayer = this.layersMap.get(strokeId);
+            if (!!strokeLayer) {
+              this.addLayerInWritePlaceIfNotExist(strokeId);
+            }
+          }
+        }
+      }
+    }
+    this.visualisationsSets.status.forEach((b, vs) => {
+      if (!b) {
+        this.visualisationsSets.visualisations.get(vs).forEach(l => {
+          this.setLayoutProperty(l, 'visibility', 'none');
+          this.setStrokeLayoutVisibility(l, 'none');
+          this.setScrollableLayoutVisibility(l, 'none');
+        });
+      }
+    });
+    this.visualisationsSets.status.forEach((b, vs) => {
+      if (b) {
+        this.visualisationsSets.visualisations.get(vs).forEach(l => {
+          this.setLayoutProperty(l, 'visibility', 'visible');
+          this.setStrokeLayoutVisibility(l, 'visible');
+          this.setScrollableLayoutVisibility(l, 'visible');
+        });
+
+      }
+    });
+    this.reorderLayers();
+  }
+
   public onMoveEnd(cb?: () => void) {
     return this._moveEnd$
       .pipe(map(_ => {
@@ -583,20 +628,11 @@ export abstract class AbstractArlasMapGL implements MapOverride {
       }));
   }
 
-  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  MapLayerEventType>[]){
-    layers.forEach(layerId => {
-      binds.forEach(el => {
-        this.getMapProvider().on(el.event, layerId, (e) => {
-          el.fn(e);
-        });
-      });
-    });
-  }
+  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  any>[]):void;
   public abstract calcOffsetPoint(): any;
   protected abstract _initMapProvider(BaseMapGlConfig): void;
   protected abstract _initControls(): void;
   public abstract initDrawControls(config: DrawControlsOption): void;
-  protected abstract addVisualLayers(): void;
   public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
