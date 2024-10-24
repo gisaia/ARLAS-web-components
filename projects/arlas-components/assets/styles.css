@@ -196,3 +196,37 @@ a.arlas-map-control {
 .table-wrapper .result-attachment-label {
   display: none !important;
 }
+
+
+.maplibre-ctrl-compass {
+  border-bottom: 1px solid #ddd !important;
+}
+
+.maplibre-ctrl-pitch {
+  border-bottom: 1px solid #ddd !important;
+}
+
+.maplibre-ctrl-group {
+  border-radius: 4px 4px 0px 0px!important;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1)!important;
+  overflow: hidden;
+  background: #fff;
+}
+
+.maplibre-ctrl-group-pitch {
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+;
+}
+
+.maplibre-ctrl-group-removeaois {
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1)!important;
+}
+
+.maplibre-ctrl-group-addgeobox {
+  border-radius: 4px 4px 0px 0px!important;
+;
+}

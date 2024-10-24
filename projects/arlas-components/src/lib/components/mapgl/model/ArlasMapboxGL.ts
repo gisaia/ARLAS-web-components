@@ -1,4 +1,3 @@
-
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -33,19 +32,22 @@ import mapboxgl, {
   AnyLayer,
   AnySourceData,
   Control,
-  FilterOptions,
-  IControl, LngLat, LngLatBoundsLike,
+  IControl,
+  LngLat,
+  LngLatBoundsLike,
   MapboxOptions,
-  MapLayerEventType, PointLike
+  MapLayerEventType,
+  PointLike
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { MapSource } from './mapSource';
 import { ArlasAnyLayer, MapExtend, paddedBounds } from '../mapgl.component.util';
-import { ControlButton, PitchToggle } from '../mapgl.component.control';
-import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
+import { ControlButton } from '../mapgl.component.control';
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
 import { fromEvent, map } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { MapOverride } from './map.type';
+import { MapBoxControlButton, MapBoxPitchToggle } from '../mapgl-mapbox.component.control';
 
 export interface ArlasMapGlConfig extends BaseMapGlConfig<MapboxOptions>  {
   mapLayers: MapLayers<AnyLayer>;
@@ -164,7 +166,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
 
       if(this._controls?.pitchToggle?.enable){
         const conf = this._controls.pitchToggle.config;
-        this.addControl(new PitchToggle(conf.bearing, conf.pitch, conf.minpitchzoom), this._controls.pitchToggle?.position ?? 'top-right');
+        this.addControl(new MapBoxPitchToggle(conf.bearing, conf.pitch, conf.minpitchzoom), this._controls.pitchToggle?.position ?? 'top-right');
       }
 
       if(this._controls?.navigationControl?.enable) {
@@ -210,12 +212,12 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
      }
 
     if(config.addGeoBox.enable){
-      const addGeoBoxButton = new ControlButton(config.addGeoBox?.name ?? 'addgeobox');
+      const addGeoBoxButton = new MapBoxControlButton(config.addGeoBox?.name ?? 'addgeobox');
       this.addControl(addGeoBoxButton, config.addGeoBox?.position ?? 'top-right', config.addGeoBox?.overrideEvent);
 
     }
     if(config.addGeoBox.enable) {
-      const removeAoisButton = new ControlButton('removeaois');
+      const removeAoisButton = new MapBoxControlButton('removeaois');
       this.addControl(removeAoisButton, config.removeAois?.position ?? 'top-right', config.removeAois?.overrideEvent);
     }
   }
@@ -728,11 +730,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     return this._mapProvider.getStyle();
   }
 
-  hasImage(id: string): boolean {
+  public hasImage(id: string): boolean {
     return  this.getMapProvider().hasImage(id);
   }
 
-  removeImage(id: string): void {
+  public removeImage(id: string): void {
     this.getMapProvider().removeImage(id);
   }
 

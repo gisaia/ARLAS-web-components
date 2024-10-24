@@ -17,23 +17,20 @@
  * under the License.
  */
 
+import { ControlButton, PitchToggle } from './mapgl.component.control';
 
-import mapboxgl from 'mapbox-gl';
-import maplibre from 'maplibre-gl';
 
-export interface BasemapStyle {
-  name: string;
-  styleFile: any;
-  url?: string;
-  image?: string;
-  type?: 'protomap' | 'mapbox';
-  errored?: boolean;
+export class MapBoxPitchToggle extends PitchToggle {
+
+  protected _buildClasses(){
+    this.btnClasses = ['mapboxgl-ctrl-icon', 'mapboxgl-ctrl-pitch'];
+    this.containerClasses = ['mapboxgl-ctrl', 'mapboxgl-ctrl-group', 'mapboxgl-ctrl-group-pitch'];
+  }
 }
 
-export interface MapboxBasemapStyle extends BasemapStyle{
-  styleFile: string | mapboxgl.Style;
-}
-
-export interface MapLibreBasemapStyle extends BasemapStyle{
-  styleFile: string | maplibre.StyleSpecification;
+export class MapBoxControlButton extends ControlButton {
+  protected  _buildClasses(){
+    this.btnClasses = ['mapboxgl-ctrl-icon', 'map__controls__icons', 'map__controls__icons--' + this.name];
+    this.containerClasses = ['mapboxgl-ctrl', 'mapboxgl-ctrl-group', 'mapboxgl-ctrl-group-' + this.name];
+  }
 }

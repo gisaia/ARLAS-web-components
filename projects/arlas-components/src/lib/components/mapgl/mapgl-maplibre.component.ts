@@ -74,9 +74,9 @@ import {
 import { ArlasMapboxGL, ArlasMapGlConfig } from './model/ArlasMapboxGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
-import { TypedStyleLayer } from "maplibre-gl";
-import { ArlasMaplibre, ArlasMaplibreConfig } from "./model/ArlasMaplibre";
-import { MapLibreBasemapService } from "./basemaps/maplibre-basemap.service";
+import { TypedStyleLayer } from 'maplibre-gl';
+import { ArlasMaplibreGL, ArlasMaplibreConfig } from './model/ArlasMaplibreGL';
+import { MapLibreBasemapService } from './basemaps/maplibre-basemap.service';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 
@@ -100,7 +100,7 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 })
 export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
-  public map: ArlasMaplibre;
+  public map: ArlasMaplibreGL;
   public draw: ArlasDraw;
   public zoom: number;
   public legendOpen = true;
@@ -114,7 +114,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   private canvas: HTMLElement;
   private box: HTMLElement;
   // points which xy coordinates are in screen referential
-  //Todo: define common Type to avoid repercution on ui
+  // Todo: define common Type to avoid repercution on ui
   private start: mapboxgl.Point;
   private current: mapboxgl.Point;
 
@@ -463,7 +463,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
     this.map.reorderLayers();
   }
 
-  //Todo:
+  // Todo:
   public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string; }): void {
     const downlodedSource = {
       layerId: downaload.layer.id,
@@ -481,7 +481,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @param layers List of actual layers that are declared in `visualisation` object
    * @param sources List of sources that these external `layers` use.
    */
-  //Todo: define common type to avoid repercution on wui
+  // Todo: define common type to avoid repercution on wui
   public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
     this.map.addVisualisation(visualisation, layers, sources);
   }
@@ -509,7 +509,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   public ngOnInit() {
     this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
   }
-  //todo:timeline hs
+  // todo:timeline hs
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
@@ -754,7 +754,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
       }
     };
     console.log('declare');
-    this.map = new ArlasMaplibre(config);
+    this.map = new ArlasMaplibreGL(config);
     console.log(this.map);
 
     fromEvent(window, 'beforeunload').subscribe(() => {
@@ -1226,7 +1226,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   /**
    * Wrapper method to fit the map to the given bounds with enough padding to properly visualize the area
    */
-  //Todo: define common type to avoid repercution on arlas wui
+  // Todo: define common type to avoid repercution on arlas wui
   public paddedFitBounds(bounds: any, options?: any) {
     this.map.paddedFitBounds(bounds, options);
   }

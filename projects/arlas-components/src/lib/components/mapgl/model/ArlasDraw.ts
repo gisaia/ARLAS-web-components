@@ -20,7 +20,8 @@
 import { AbstractDraw } from './AbstractDraw';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Feature } from 'geojson';
-import { AbstractArlasMapGL } from "./AbstractArlasMapGL";
+import { AbstractArlasMapGL } from './AbstractArlasMapGL';
+import { ArlasMaplibreGL } from './ArlasMaplibreGL';
 
 export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |
   'draw.update' | 'draw.selectionchange' | 'draw.modechange' | 'draw.render' | 'draw.actionable' |
@@ -46,6 +47,12 @@ export class ArlasDraw extends AbstractDraw {
     console.log('then');
     this.arlasMap = map;
     this.enabled = enabled;
+
+
+    MapboxDraw.constants.classes.CONTROL_BASE  = (map instanceof ArlasMaplibreGL) ? 'maplibregl-ctrl' : 'mapboxgl-ctrl';
+    MapboxDraw.constants.classes.CONTROL_PREFIX = (map instanceof ArlasMaplibreGL) ?'maplibregl-ctrl-': 'mapboxgl-ctrl-';
+    MapboxDraw.constants.classes.CONTROL_GROUP = (map instanceof ArlasMaplibreGL) ? 'maplibregl-ctrl-group': 'mapboxgl-ctrl-group';
+
   }
 
   public onAdd(map) {

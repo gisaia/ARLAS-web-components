@@ -25,8 +25,8 @@ import { fromEvent, map, Observable, Subscription } from 'rxjs';
 import { ElementIdentifier } from '../../results/utils/results.utils';
 
 import { MapOverride } from './map.type';
-import mapboxgl, { AnyLayer, MapLayerEventType } from "mapbox-gl";
-import { debounceTime } from "rxjs/operators";
+import mapboxgl, { AnyLayer, MapLayerEventType } from 'mapbox-gl';
+import { debounceTime } from 'rxjs/operators';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
@@ -136,9 +136,9 @@ export abstract class AbstractArlasMapGL implements MapOverride {
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startlngLat: any;
-  public abstract endlngLat: any;
-  public abstract movelngLat: any;
+  public abstract startlngLat: any; // todo: find common type
+  public abstract endlngLat: any; // todo: find common type
+  public abstract movelngLat: any; // todo: find common type
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -146,16 +146,16 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   protected _displayCurrentCoordinates: boolean;
   protected _wrapLatLng: boolean;
   // @Override
-  protected _mapLayers: MapLayers<any>;
+  protected _mapLayers: MapLayers<any>; // todo: find common type
   protected _controls: ControlsOption;
   protected _dataSource: Set<string>;
   public visualisationSetsConfig: Array<VisualisationSetConfig>;
   protected _icons: Array<IconConfig>;
-  public mapSources: Array<ArlasMapSource<any>>;
+  public mapSources: Array<ArlasMapSource<any>>; // todo: find common type
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
   protected _dataSources?: Set<string>;
-  public abstract layersMap: Map<string, any>;
+  public abstract layersMap: Map<string, any>; // todo: find common type
   public firstDrawLayer: string;
   protected _emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
@@ -326,11 +326,11 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  hasImage(id: string): boolean {
+  public hasImage(id: string): boolean {
     throw new Error('Method not implemented.');
   }
 
-  removeImage(id: string): void {
+  public removeImage(id: string): void {
     throw new Error('Method not implemented.');
   }
 
@@ -365,9 +365,9 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected _initOnLoad(options?:{
-    beforeOnLoadOption?: () => void,
-    afterOnLoadOptions?: () => void
+  protected _initOnLoad(options?: {
+    beforeOnLoadOption?: () => void;
+    afterOnLoadOptions?: () => void;
   }){
     this.onLoad(() => {
       options?.beforeOnLoadOption();

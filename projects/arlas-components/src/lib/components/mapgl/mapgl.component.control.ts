@@ -20,7 +20,6 @@
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 
-
 export class PitchToggle {
   public bearing: number;
   public pitch: number;
@@ -35,16 +34,24 @@ export class PitchToggle {
     'CI+ICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHN0eWxlPSJmb250LXNpemU6IDE0cHg7IGZvbnQtZmFtaWx5OiAnSGVsdmV0aWNhIE5ldWUnLEFyaWF' +
     'sLEhlbHZldGljYSxzYW5zLXNlcmlmOyBmb250LXdlaWdodDogYm9sZDsgdGV4dC1hbmNob3I6IG1pZGRsZTsiPjJEPC90ZXh0Pjwvc3ZnPg==)';
 
+  public btnClasses: string[] = [];
+  public containerClasses: string[] = [];
   public constructor(bearing, pitch, minpitchzoom) {
     this.bearing = bearing;
     this.pitch = pitch;
     this.minpitchzoom = minpitchzoom;
+    this._buildClasses();
+  }
+
+  protected _buildClasses(){
+    this.btnClasses = [];
+    this.containerClasses = [];
   }
 
   public onAdd(map) {
     this.map = map;
     this.btn = document.createElement('button');
-    this.btn.className = 'mapboxgl-ctrl-icon mapboxgl-ctrl-pitch';
+    this.btn.className = this.btnClasses.join(' ');
     this.btn.style.backgroundImage = this.image3D;
     this.btn.type = 'button';
     this.btn['aria-label'] = marker('Toggle Pitch');
@@ -62,7 +69,7 @@ export class PitchToggle {
       }
     };
     this.container = document.createElement('div');
-    this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group mapboxgl-ctrl-group-pitch';
+    this.container.className = this.containerClasses.join(' ');
     this.container.appendChild(this.btn);
     return this.container;
   }
@@ -80,18 +87,26 @@ export class ControlButton {
   public icon;
   public name;
   private tooltip;
+  public btnClasses: string[] = [];
+  public containerClasses: string[] = [];
   public constructor(name: string, tooltip?: string) {
     this.name = name;
     this.tooltip = tooltip;
+    this._buildClasses();
+  }
+
+  protected  _buildClasses(){
+    this.btnClasses = [];
+    this.containerClasses = [];
   }
   public onAdd(map) {
     this.map = map;
     this.btn = document.createElement('button');
-    this.btn.className = 'mapboxgl-ctrl-icon map__controls__icons map__controls__icons--' + this.name;
+    this.btn.className = this.btnClasses.join(' ');
     this.btn.type = 'button';
     this.btn.id = 'layers_switcher_btn';
     this.container = document.createElement('div');
-    this.container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group mapboxgl-ctrl-group-' + this.name;
+    this.container.className = this.containerClasses.join(' ');
     this.container.setAttribute('title', this.tooltip);
     this.container.appendChild(this.btn);
     return this.container;

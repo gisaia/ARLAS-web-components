@@ -502,7 +502,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public ngOnInit() {
     this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
   }
-  //todo:timeline hs
+  // todo:timeline hs
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {

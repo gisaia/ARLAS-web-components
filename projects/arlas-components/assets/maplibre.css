@@ -17,23 +17,36 @@
  * under the License.
  */
 
+/* You can add global styles to this file, and also import other style files */
 
-import mapboxgl from 'mapbox-gl';
-import maplibre from 'maplibre-gl';
 
-export interface BasemapStyle {
-  name: string;
-  styleFile: any;
-  url?: string;
-  image?: string;
-  type?: 'protomap' | 'mapbox';
-  errored?: boolean;
+.maplibreglgl-ctrl-compass {
+  border-bottom: 1px solid #ddd !important;
 }
 
-export interface MapboxBasemapStyle extends BasemapStyle{
-  styleFile: string | mapboxgl.Style;
+.maplibregl-ctrl-pitch {
+  border-bottom: 1px solid #ddd !important;
 }
 
-export interface MapLibreBasemapStyle extends BasemapStyle{
-  styleFile: string | maplibre.StyleSpecification;
+.maplibregl-ctrl-group {
+  border-radius: 4px 4px 0px 0px!important;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1)!important;
+  overflow: hidden;
+  background: #fff;
+}
+
+.maplibregl-ctrl-group-pitch {
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+}
+
+.maplibregl-ctrl-group-removeaois {
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1)!important;
+}
+
+.maplibregl-ctrl-group-addgeobox {
+  border-radius: 4px 4px 0px 0px!important;
 }

@@ -39,7 +39,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { GetValueModule } from '../../pipes/get-value/get-value.module';
-import { MapglMaplibreComponent } from "./mapgl-maplibre.component";
+import { MapglMaplibreComponent } from './mapgl-maplibre.component';
 
 
 @NgModule({

@@ -25,23 +25,26 @@ import {
   MapEventBinds,
   OnMoveResult,
   VisualisationSetConfig
-} from "./AbstractArlasMapGL";
-import maplibre, {
+} from './AbstractArlasMapGL';
+import maplibregl, {
   AddLayerObject,
   AnimationOptions,
   CameraForBoundsOptions,
   CanvasSourceSpecification,
+  CenterZoomBearing,
   ControlPosition,
   EaseToOptions,
   FeatureIdentifier,
   FitBoundsOptions,
-  FlyToOptions, IControl,
+  FlyToOptions,
+  IControl,
   LngLatBounds,
   LngLatLike,
-  MapEventType, MapGeoJSONFeature,
-  MapLayerEventType, MapMouseEvent,
+  MapGeoJSONFeature,
+  MapLayerEventType,
   MapOptions,
-  PointLike, QueryRenderedFeaturesOptions,
+  PointLike,
+  QueryRenderedFeaturesOptions,
   SourceSpecification,
   StyleImageInterface,
   StyleSetterOptions,
@@ -49,10 +52,11 @@ import maplibre, {
   TypedStyleLayer
 } from 'maplibre-gl';
 
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from "./mapLayers";
-import { MapExtend, paddedBounds } from "../mapgl.component.util";
-import { ControlButton, PitchToggle } from "../mapgl.component.control";
-import mapboxgl, { Control } from "mapbox-gl";
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
+import { MapExtend, paddedBounds } from '../mapgl.component.util';
+import { ControlButton } from '../mapgl.component.control';
+import mapboxgl from 'mapbox-gl';
+import { MaplibreControlButton, MaplibrePitchToggle } from '../mapgl-maplibre.component.control';
 
 
 export interface ArlasMaplibreConfig extends BaseMapGlConfig<MapOptions>  {
@@ -65,23 +69,24 @@ export interface ArlasMaplibreConfig extends BaseMapGlConfig<MapOptions>  {
   };
 }
 
-export class ArlasMaplibre extends AbstractArlasMapGL{
+export class ArlasMaplibreGL extends AbstractArlasMapGL{
   protected _mapLayers: MapLayers<TypedStyleLayer>;
-  protected _mapProvider: maplibre.Map;
-  endlngLat: any;
-  layersMap: Map<string, any>;
-  movelngLat: any;
-  startlngLat: any;
+  protected _mapProvider: maplibregl.Map;
+  public endlngLat: any;
+  public layersMap: Map<string, any>;
+  public movelngLat: any;
+  public startlngLat: any;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);
   }
 
+
   protected _initMapProvider(config: ArlasMaplibreConfig){
-    this._mapProvider = new maplibre.Map(
+    console.log('init map provider');
+    this._mapProvider = new maplibregl.Map(
       config.mapProviderOptions
     );
-    this._mapProvider.addControl(new maplibre.NavigationControl());
     // Disable map pitch and rotation with keyboard
     this.getMapProvider().keyboard.disableRotation();
 
@@ -89,20 +94,8 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this.getMapProvider().boxZoom.disable();
   }
 
-  protected _initOnLoad(){
-    super._initOnLoad({
-      beforeOnLoadOption: () => {
-        this.firstDrawLayer = this.getColdOrHotLayers()[0];
-        this.getMapProvider().showTileBoundaries = false;
-      },
-      afterOnLoadOptions: () => {
-        this.getMapProvider().fitBounds(this.getBounds());
-      }
-    });
-  }
-
   public calcOffsetPoint() {
-    return new maplibre.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
+    return new maplibregl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
   protected _getMoveEnd(){
@@ -117,8 +110,8 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     const height = bottomLeft.y;
     const width = topRght.x;
 
-    const bottomLeftOffset = bottomLeft.add(new maplibre.Point(this._offset.west, this._offset.south));
-    const topRghtOffset = topRght.add(new maplibre.Point(this._offset.east, this._offset.north));
+    const bottomLeftOffset = bottomLeft.add(new maplibregl.Point(this._offset.west, this._offset.south));
+    const topRghtOffset = topRght.add(new maplibregl.Point(this._offset.east, this._offset.north));
 
     const bottomLeftOffsetLatLng = this.getMapProvider().unproject(bottomLeftOffset);
     const topRghtOffsetLatLng = this.getMapProvider().unproject(topRghtOffset);
@@ -191,7 +184,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     console.log('init controls', this._controls);
     if(this._controls) {
       if(this._controls.mapAttribution) {
-        this.addControl(new maplibre.AttributionControl(this._controls.mapAttribution.config),this._controls.mapAttribution.position);
+        this.addControl(new maplibregl.AttributionControl(this._controls.mapAttribution.config),this._controls.mapAttribution.position);
       }
 
       /** Whether to display scale */
@@ -201,18 +194,19 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
           unit: this._unitScale,
         };
         const opt = this._controls?.scale?.config ?? defaultOpt;
-        const scale = new maplibre.ScaleControl(opt);
+        const scale = new maplibregl.ScaleControl(opt);
         this.addControl(scale, this._controls.scale?.position ?? 'bottom-right');
       }
 
       if(this._controls?.pitchToggle?.enable){
         const conf = this._controls.pitchToggle.config;
-        this.addControl(new PitchToggle(conf.bearing, conf.pitch, conf.minpitchzoom), this._controls.pitchToggle?.position ?? 'top-right');
+        this.addControl(new MaplibrePitchToggle(conf.bearing, conf.pitch, conf.minpitchzoom),
+          this._controls.pitchToggle?.position ?? 'top-right');
       }
 
       if(this._controls?.navigationControl?.enable) {
         this.addControl(
-          new maplibre.NavigationControl(this._controls.navigationControl.config),
+          new maplibregl.NavigationControl(this._controls.navigationControl.config),
           this._controls.navigationControl?.position ?? 'top-right');
       }
     }
@@ -233,13 +227,13 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
   }
 
 
-  addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void });
-  addControl(control: IControl, position?: "top-right" | "top-left" | "bottom-right" | "bottom-left"): this;
-  addControl(control: IControl, position?: ControlPosition | "top-right" | "top-left" | "bottom-right" | "bottom-left", eventOverride?: {
+  public  addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
+  public addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
+  public addControl(control: IControl, position?: ControlPosition | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left', eventOverride?: {
     event: string;
-    fn: (e?) => void
+    fn: (e?) => void;
   }) {
-    console.log(control)
+    console.log(control);
     this.getMapProvider().addControl(control, position);
     if(control instanceof  ControlButton && eventOverride){
       control.btn[eventOverride.event] = () => eventOverride.fn();
@@ -295,7 +289,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
   }
 
   // TODO : should fix any in source
-  addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<any>): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<any>): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         this.getMapProvider().addSource(s.id, s.source);
@@ -312,69 +306,69 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this.reorderLayers();
   }
 
-  disableDragPan(): void {
+  public disableDragPan(): void {
     this.getMapProvider().dragPan.disable();
   }
 
-  enableDragPan(): void {
+  public enableDragPan(): void {
     this.getMapProvider().dragPan.enable();
   }
 
-  getBounds(): LngLatBounds {
+  public getBounds(): LngLatBounds {
     return this.getMapProvider().getBounds();
   }
 
-  getColdOrHotLayers() {
+  public getColdOrHotLayers() {
     return this.getLayers().map(layer => layer.id)
       .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0);
   }
 
-  getEastBounds(): any {
+  public getEastBounds(): any {
     return this.getBounds().getEast();
   }
 
-  getLayers(): any {
+  public getLayers(): any {
     return this.getMapProvider().getStyle().layers;
   }
 
-  getMapExtend(): MapExtend {
+  public getMapExtend(): MapExtend {
     const bounds = this.getBounds();
     return  { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.getMapProvider().getZoom() };
   }
 
-  getMapProvider(): maplibre.Map {
-    return this._mapProvider
+  public getMapProvider(): maplibregl.Map {
+    return this._mapProvider;
   }
 
-  getMaxBounds(): unknown {
+  public getMaxBounds(): unknown {
     return this._mapProvider.getMaxBounds();
   }
 
-  getNorthBounds(): number {
+  public getNorthBounds(): number {
     return this.getBounds().getNorth();
   }
 
-  getNorthEastBounds() {
+  public getNorthEastBounds() {
     return this.getBounds().getNorthEast();
   }
 
-  getSouthBounds(): number {
+  public getSouthBounds(): number {
     return this.getBounds().getSouth();
   }
 
-  getSouthWestBounds() {
+  public getSouthWestBounds() {
     return this.getBounds().getSouthWest();
   }
 
-  getWestBounds(): number  {
+  public getWestBounds(): number  {
     return this.getBounds().getEast();
   }
 
-  hasImage(id: string): boolean {
+  public hasImage(id: string): boolean {
     return  this.getMapProvider().hasImage(id);
   }
 
-  removeImage(id: string): void {
+  public removeImage(id: string): void {
     this.getMapProvider().removeImage(id);
   }
 
@@ -387,25 +381,25 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     }
 
     if(config.addGeoBox.enable){
-      const addGeoBoxButton = new ControlButton(config.addGeoBox?.name ?? 'addgeobox');
+      const addGeoBoxButton = new MaplibreControlButton(config.addGeoBox?.name ?? 'addgeobox');
       this.addControl(addGeoBoxButton, config.addGeoBox?.position ?? 'top-right', config.addGeoBox?.overrideEvent);
 
     }
     if(config.addGeoBox.enable) {
-      const removeAoisButton = new ControlButton('removeaois');
+      const removeAoisButton = new MaplibreControlButton('removeaois');
       this.addControl(removeAoisButton, config.removeAois?.position ?? 'top-right', config.removeAois?.overrideEvent);
     }
   }
 
-  isLayerVisible(layer: any): boolean {
+  public isLayerVisible(layer: any): boolean {
     return layer.layout.visibility === 'visible';
   }
 
-  onLoad(fn: () => void): void {
+  public onLoad(fn: () => void): void {
     this.getMapProvider().on('load', fn);
   }
 
-  public paddedFitBounds(bounds: LngLatBounds, options?: maplibre.FitBoundsOptions) {
+  public paddedFitBounds(bounds: LngLatBounds, options?: maplibregl.FitBoundsOptions) {
     const paddedOptions = Object.assign({}, options);
     paddedOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
@@ -425,12 +419,12 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     }
   }
 
-  resize(eventData?: unknown): this {
+  public resize(eventData?: unknown): this {
     this._mapProvider.resize(eventData);
     return this;
   }
 
-  setCursorStyle(cursor: string): void {
+  public setCursorStyle(cursor: string): void {
     this.getMapProvider().getCanvas().style.cursor = cursor;
   }
 
@@ -446,7 +440,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     }
   }
 
-  setMaxBounds(lnglatbounds?: maplibre.LngLatBoundsLike): this {
+  public setMaxBounds(lnglatbounds?: maplibregl.LngLatBoundsLike): this {
     this._mapProvider.setMaxBounds(lnglatbounds);
     return this;
   }
@@ -459,16 +453,17 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this._mapProvider.setMaxZoom(maxZoom);
     return this;
   }
-  public project(lngLat: maplibre.LngLat): unknown {
+  public project(lngLat: maplibregl.LngLat): unknown {
     return this._mapProvider.project(lngLat);
   }
-  public unproject(point: maplibre.PointLike): unknown {
+  public unproject(point: maplibregl.PointLike): unknown {
     return this._mapProvider.unproject(point);
   }
-  public queryRenderedFeatures(pointOrBox?: PointLike | [PointLike, PointLike], options?: { layers?: string[]; filter?: any[]; }): MapGeoJSONFeature[] {
+  public queryRenderedFeatures(pointOrBox?: PointLike | [PointLike, PointLike],
+                               options?: { layers?: string[]; filter?: any[]; }): MapGeoJSONFeature[] {
     return this._mapProvider.queryRenderedFeatures(pointOrBox, options as QueryRenderedFeaturesOptions);
   }
-  public setStyle(style:StyleSpecification, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
+  public setStyle(style: StyleSpecification, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
     this._mapProvider.setStyle(style, options);
     return this;
   }
@@ -516,14 +511,14 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this._mapProvider.removeLayer(id);
     return this;
   }
-  public getLayer(id: string): unknown {
-    return this.getMapProvider().getStyle().layers;
+  public getLayer(id: string): any {
+    return this.getMapProvider().getLayer(id);
   }
   public setFilter(layer: string, filter?: boolean | any[], options?: StyleSetterOptions): this {
     this._mapProvider.setFilter(layer, filter as any, options);
     return this;
   }
-  public getLight(): unknown {
+  public getLight() {
     return this._mapProvider.getLight();
   }
   public setFeatureState(feature: FeatureIdentifier, state: { [key: string]: any; }): void {
@@ -544,7 +539,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
   public getCanvas(): HTMLCanvasElement {
     return this._mapProvider.getCanvas();
   }
-  public getCenter():  maplibre.LngLat {
+  public getCenter():  maplibregl.LngLat {
     return this._mapProvider.getCenter();
   }
   public setCenter(center: LngLatLike, eventData?: any): this {
@@ -577,7 +572,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this._mapProvider.setPitch(pitch, eventData);
     return this;
   }
-  public cameraForBounds(bounds: LngLatBounds, options?: CameraForBoundsOptions): unknown {
+  public cameraForBounds(bounds: LngLatBounds, options?: CameraForBoundsOptions): CenterZoomBearing {
     return this._mapProvider.cameraForBounds(bounds, options);
   }
   public fitBounds(bounds: LngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
@@ -587,7 +582,7 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
 
   public easeTo(options: EaseToOptions, eventData?: any): this {
     this._mapProvider.easeTo(options, eventData);
-    return this;;
+    return this;
   }
   public flyTo(options: FlyToOptions, eventData?: any): this {
     this._mapProvider.flyTo(options, eventData);
@@ -600,8 +595,8 @@ export class ArlasMaplibre extends AbstractArlasMapGL{
     this._mapProvider.on(type, layer, listener);
     return this;
   }
-  public once<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
-  public once<T extends never>(type: T, listener: (ev: unknown) => void): this;
+  public once<T extends never>(type: T, layer: string, listener: (ev: any) => void): this;
+  public once<T extends never>(type: T, listener: (ev: any) => void): this;
   public once(type: string, listener: (ev: any) => void): this;
   public once(type, layer, listener?): this {
     this._mapProvider.once(type, layer, listener);

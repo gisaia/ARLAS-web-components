@@ -23,9 +23,9 @@ import * as pmtiles from 'pmtiles';
 import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, Subject, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ArlasMaplibre } from "../model/ArlasMaplibre";
-import maplibre, { LayerSpecification } from "maplibre-gl";
-import { BackgroundLayerSpecification } from "@maplibre/maplibre-gl-style-spec";
+import { ArlasMaplibreGL } from '../model/ArlasMaplibreGL';
+import maplibre, { LayerSpecification } from 'maplibre-gl';
+import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,7 @@ export class MapLibreBasemapService {
     this.basemaps = basemaps;
   }
 
-  public addProtomapBasemap(map: ArlasMaplibre) {
+  public addProtomapBasemap(map: ArlasMaplibreGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       const styleFile = selectedBasemap.styleFile as any;
@@ -67,7 +67,7 @@ export class MapLibreBasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: ArlasMaplibre) {
+  public removeProtomapBasemap(map: ArlasMaplibreGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as maplibre.StyleSpecification).layers.forEach(l => {
@@ -79,9 +79,9 @@ export class MapLibreBasemapService {
     }
   }
 
-  public declareProtomapProtocol(map: ArlasMaplibre) {
+  public declareProtomapProtocol(map: ArlasMaplibreGL) {
     const protocol = new pmtiles.Protocol();
-    maplibre.addProtocol("pmtiles", protocol.tile);
+    maplibre.addProtocol('pmtiles', protocol.tile);
   }
 
   public getInitStyle(selected: MapLibreBasemapStyle) {

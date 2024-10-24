@@ -56,6 +56,7 @@ export {
 export { Item } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
 export { MapglComponent, CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.component';
+export { MapglMaplibreComponent } from './lib/components/mapgl/mapgl-maplibre.component';
 export { MapglModule } from './lib/components/mapgl/mapgl.module';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
@@ -111,4 +112,5 @@ export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
 export {VisualisationSetConfig, IconConfig, OnMoveResult, AbstractArlasMapGL} from './lib/components/mapgl/model/AbstractArlasMapGL';
 export {ArlasMapboxGL} from './lib/components/mapgl/model/ArlasMapboxGL';
+export {ArlasMaplibreGL} from './lib/components/mapgl/model/ArlasMaplibreGL';
 export {MapOverride} from './lib/components/mapgl/model/map.type';

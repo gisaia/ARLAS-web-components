@@ -171,14 +171,44 @@ a.arlas-map-control {
 .mapboxgl-ctrl-group-removeaois {
   margin-top: 0px!important;
   border-radius: 0px 0px 4px 4px!important;
-  ;
   box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1)!important;
 }
 
 .mapboxgl-ctrl-group-addgeobox {
   border-radius: 4px 4px 0px 0px!important;
-  ;
 }
+
+.maplibregl-ctrl-compass {
+  border-bottom: 1px solid #ddd !important;
+}
+
+.maplibregl-ctrl-pitch {
+  border-bottom: 1px solid #ddd !important;
+}
+
+.maplibregl-ctrl-group {
+  border-radius: 4px 4px 0px 0px!important;
+  box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.1)!important;
+  overflow: hidden;
+  background: #fff;
+}
+
+.maplibregl-ctrl-group-pitch {
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+}
+
+.maplibregl-ctrl-group-removeaois {
+  margin-top: 0px!important;
+  border-radius: 0px 0px 4px 4px!important;
+  box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.1)!important;
+}
+
+.maplibregl-ctrl-group-addgeobox {
+  border-radius: 4px 4px 0px 0px!important;
+}
+
+
 
 .donut {
   height: 500px !important;
