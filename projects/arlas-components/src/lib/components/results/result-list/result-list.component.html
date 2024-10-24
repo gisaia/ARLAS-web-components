@@ -152,6 +152,8 @@
           </tr>
           <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
             (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
+            [detailedDataRetriever]="detailedDataRetriever"
+            [activatedActionsPerItem]="activatedActionsPerItem"
             [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
             [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
           </tr>
@@ -161,6 +163,7 @@
           <div class="div-grid-tile" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)" >
             <mat-grid-tile *ngIf="resultMode === ModeEnum.grid" class="resultlist__md-grid-tile">
               <arlas-result-grid-tile
+                [activatedActionsPerItem]="activatedActionsPerItem"
                 [displayInfoIcon]="rowItem.identifier === selectedGridItem?.identifier && isDetailledGridOpen"
                 [thumbnailFit]="thumbnailFit"
                 id="{{rowItem.identifier}}" class="resultlist__grid-tile" [options]="options" [gridTile]="rowItem"

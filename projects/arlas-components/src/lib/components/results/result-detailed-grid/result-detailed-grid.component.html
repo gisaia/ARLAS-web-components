@@ -40,6 +40,8 @@
       </div>
       <div arlas-result-detailed-item class="resultgrid--detailed-item"
         [rowItem]="gridTile" [containerType]="'grid'" [idFieldName]="idFieldName"
+        [detailedDataRetriever]="detailedDataRetriever"
+        [activatedActionsPerItem]="activatedActionsPerItem"
         [style.width.px]="detailWidth" [style.height.px]="detailHeight"
         [showEmptyGroup]= "showEmptyGroup" (actionOnItemEvent)="triggerActionOnItem($event)">
       </div>

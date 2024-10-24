@@ -27,6 +27,7 @@ import { Item } from '../model/item';
 import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 @Component({
   selector: 'arlas-result-detailed-grid',
@@ -89,6 +90,18 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    */
   @Input() public useHttp = false;
 
+  /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+
+  /**
+  * @Input
+  * @description A detailed-data-retriever object that implements
+  * DetailedDataRetriever interface.
+  */
+  @Input() public detailedDataRetriever: DetailedDataRetriever;
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
@@ -157,7 +170,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], {headers: {[PROTECTED_IMAGE_HEADER]: 'true'}, responseType: 'blob' })
+      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { headers: { [PROTECTED_IMAGE_HEADER]: 'true' }, responseType: 'blob' })
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
