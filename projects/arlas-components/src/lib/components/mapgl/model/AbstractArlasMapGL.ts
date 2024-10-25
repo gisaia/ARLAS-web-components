@@ -234,7 +234,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public setStyle(style: unknown, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
     throw new Error('Method not implemented.');
   }
-  public getStyle(): unknown {
+  public getStyle(): any {
     throw new Error('Method not implemented.');
   }
   public addSource(id: string, source: unknown): this {

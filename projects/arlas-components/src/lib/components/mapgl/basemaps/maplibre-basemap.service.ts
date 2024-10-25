@@ -80,7 +80,7 @@ export class MapLibreBasemapService {
   }
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
-    const protocol = new pmtiles.Protocol();
+    const protocol = new pmtiles.Protocol({metadata: true});
     maplibre.addProtocol('pmtiles', protocol.tile);
   }
 

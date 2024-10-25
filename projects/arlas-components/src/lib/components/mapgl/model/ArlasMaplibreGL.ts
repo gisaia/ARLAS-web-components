@@ -325,7 +325,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
   }
 
   public getWestBounds(): number  {
-    return this.getBounds().getEast();
+    return this.getBounds().getWest();
   }
 
   public hasImage(id: string): boolean {
@@ -427,7 +427,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
                                options?: { layers?: string[]; filter?: any[]; }): MapGeoJSONFeature[] {
     return this._mapProvider.queryRenderedFeatures(pointOrBox, options as QueryRenderedFeaturesOptions);
   }
-  public setStyle(style: StyleSpecification, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
+  public setStyle(style: StyleSpecification | string, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
     this._mapProvider.setStyle(style, options);
     return this;
   }
