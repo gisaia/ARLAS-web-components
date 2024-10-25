@@ -18,29 +18,23 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ArlasBasemaps } from './basemaps';
 import * as pmtiles from 'pmtiles';
 import { CustomProtocol } from '../custom-protocol/mapbox-gl-custom-protocol';
 import { MapboxBasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
-import { catchError, forkJoin, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMapboxGL } from '../model/ArlasMapboxGL';
+import { AbstractArlasMapGL } from "../model/AbstractArlasMapGL";
+import { BasemapService } from "./basemap.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MapboxBasemapService {
-  private POWERED_BY_ARLAS = ' Powered by ARLAS.';
-  public basemaps: ArlasBasemaps;
+export class MapboxBasemapService extends BasemapService{
 
-  private protomapBasemapAddedSource = new Subject<boolean>();
-  public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
-
-  public constructor(private http: HttpClient) { }
-
-  public setBasemaps(basemaps: ArlasBasemaps) {
-    this.basemaps = basemaps;
+  public constructor(protected http: HttpClient) {
+    super(http);
   }
 
   public addProtomapBasemap(map: ArlasMapboxGL) {
@@ -50,15 +44,8 @@ export class MapboxBasemapService {
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       if (pmtilesSource) {
         // eslint-disable-next-line max-len
-        pmtilesSource['attribution'] = '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>';
-        pmtilesSource['attribution'] = pmtilesSource['attribution'] + this.POWERED_BY_ARLAS;
-        map.addSource('arlas_protomaps_source', pmtilesSource as any);
-        styleFile.layers.forEach(l => {
-          if (!!map.getLayer(l.id)) {
-            map.removeLayer(l.id);
-          }
-          map.addLayer(l as any);
-        });
+        this.addPMtilesToSource(map, pmtilesSource);
+        this.addProtomapLayerToMap(map, styleFile);
       }
     } else {
       /** no action needed. The base map has been added already thanks to getInitStyle */
@@ -69,7 +56,7 @@ export class MapboxBasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: ArlasMapboxGL) {
+  public removeProtomapBasemap(map: AbstractArlasMapGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
@@ -81,7 +68,7 @@ export class MapboxBasemapService {
     }
   }
 
-  public declareProtomapProtocol(map: ArlasMapboxGL) {
+  public declareProtomapProtocol(map: AbstractArlasMapGL) {
     const protocol = new pmtiles.Protocol();
     if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
       /** addSourceType is private */
@@ -93,29 +80,14 @@ export class MapboxBasemapService {
   public getInitStyle(selected: MapboxBasemapStyle) {
     if (selected.type === 'protomap') {
       /** This is necessaty to make it work for mapbox. */
-      const clonedStyleFile: mapboxgl.Style = Object.assign({}, selected.styleFile as mapboxgl.Style);
-      clonedStyleFile.sources = {
-        protomaps_attribution: {
-          'type': 'vector',
-          // eslint-disable-next-line max-len
-          'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>' + this.POWERED_BY_ARLAS
-        }
-      };
-      clonedStyleFile.layers = [{
-        id: 'backgrounds',
-        type: 'background',
-        source: 'protomaps_attribution',
-        paint: {
-          'background-color': 'rgba(0,0,0,0)'
-        }
-      }];
-      return clonedStyleFile;
+      const clonedStyleFile: mapboxgl.Style = this.cloneStyleFile<mapboxgl.Style>(selected);
+      return this.buildInitStyle<mapboxgl.Style, any>(clonedStyleFile);
     }
-    return selected.styleFile;
+    return selected.styleFile as mapboxgl.Style;
   }
 
 
-  public fetchSources$() {
+  public fetchSources$(): Observable<readonly unknown[]> {
     const sources$: Observable<mapboxgl.Style>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
@@ -139,7 +111,7 @@ export class MapboxBasemapService {
     return forkJoin(sources$);
   }
 
-  private getStyleFile(b: MapboxBasemapStyle): Observable<mapboxgl.Style> {
+  protected getStyleFile(b: MapboxBasemapStyle): Observable<mapboxgl.Style> {
     if (typeof b.styleFile === 'string') {
       return this.http.get(b.styleFile) as Observable<mapboxgl.Style>;
     } else {

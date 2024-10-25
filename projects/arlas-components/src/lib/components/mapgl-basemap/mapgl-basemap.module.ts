@@ -22,10 +22,12 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglBasemapComponent } from './mapgl-basemap.component';
+import { MaplibreglBasemapComponent } from "./maplibregl-basemap.component";
 
 @NgModule({
   declarations: [
-    MapglBasemapComponent
+    MapglBasemapComponent,
+    MaplibreglBasemapComponent
   ],
   imports: [
     CommonModule,
@@ -33,7 +35,8 @@ import { MapglBasemapComponent } from './mapgl-basemap.component';
     MatIconModule
   ],
   exports: [
-    MapglBasemapComponent
+    MapglBasemapComponent,
+    MaplibreglBasemapComponent
   ]
 })
 export class MapglBasemapModule { }

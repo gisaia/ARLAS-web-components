@@ -17,28 +17,20 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Subject } from 'rxjs/internal/Subject';
-import mapboxgl, { AnyLayer } from 'mapbox-gl';
-import { MapSource } from '../mapgl/model/mapSource';
+import { Component, Input, OnInit } from '@angular/core';
 import { MapglService } from '../../services/mapgl.service';
-import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
-import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
-import { AbstractArlasMapGL } from "../mapgl/model/AbstractArlasMapGL";
-import { BasemapService } from "../mapgl/basemaps/basemap.service";
 import { BaseMapglBasemapComponent } from "./base-mapgl-basemap";
-import { MapboxBasemapService } from "../mapgl/basemaps/mapbox-basemap.service";
-import { ArlasMapboxGL, ArlasMapGlConfig } from "../mapgl/model/ArlasMapboxGL";
+import { MapLibreBasemapService } from "../mapgl/basemaps/maplibre-basemap.service";
+import { ArlasMaplibreGL } from "../mapgl/model/ArlasMaplibreGL";
 
 @Component({
-  selector: 'arlas-mapgl-basemap',
+  selector: 'arlas-maplibre-basemap',
   templateUrl: './mapgl-basemap.component.html',
   styleUrls: ['./mapgl-basemap.component.scss']
 })
-export class MapglBasemapComponent extends BaseMapglBasemapComponent implements OnInit {
-  @Input() public map: ArlasMapboxGL;
-
-  public constructor(protected mapglService: MapglService, protected basemapService: MapboxBasemapService) {
+export class MaplibreglBasemapComponent extends BaseMapglBasemapComponent implements OnInit {
+  @Input() public map: ArlasMaplibreGL;
+  public constructor(protected mapglService: MapglService, protected basemapService: MapLibreBasemapService) {
     super(mapglService, basemapService);
   }
 }

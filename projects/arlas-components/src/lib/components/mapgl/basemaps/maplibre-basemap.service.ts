@@ -18,30 +18,26 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ArlasBasemaps } from './basemaps';
 import * as pmtiles from 'pmtiles';
 import { MapLibreBasemapStyle } from './basemap.config';
-import { catchError, forkJoin, Observable, of, Subject, tap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMaplibreGL } from '../model/ArlasMaplibreGL';
-import maplibre, { LayerSpecification } from 'maplibre-gl';
+import maplibre from 'maplibre-gl';
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
+import { BasemapService } from "./basemap.service";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MapLibreBasemapService {
-  private POWERED_BY_ARLAS = ' Powered by ARLAS.';
-  public basemaps: ArlasBasemaps;
+export class MapLibreBasemapService extends BasemapService{
 
-  private protomapBasemapAddedSource = new Subject<boolean>();
-  public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  public constructor(private http: HttpClient) { }
-
-  public setBasemaps(basemaps: ArlasBasemaps) {
-    this.basemaps = basemaps;
+  public constructor(protected http: HttpClient) {
+    super(http);
   }
+
+
 
   public addProtomapBasemap(map: ArlasMaplibreGL) {
     const selectedBasemap = this.basemaps.getSelected();
@@ -49,16 +45,8 @@ export class MapLibreBasemapService {
       const styleFile = selectedBasemap.styleFile as any;
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       if (pmtilesSource) {
-        // eslint-disable-next-line max-len
-        pmtilesSource['attribution'] = '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>';
-        pmtilesSource['attribution'] = pmtilesSource['attribution'] + this.POWERED_BY_ARLAS;
-        map.addSource('arlas_protomaps_source', pmtilesSource as any);
-        styleFile.layers.forEach(l => {
-          if (!!map.getLayer(l.id)) {
-            map.removeLayer(l.id);
-          }
-          map.addLayer(l as any);
-        });
+        this.addPMtilesToSource(map, pmtilesSource);
+        this.addProtomapLayerToMap(map, styleFile);
       }
     }
   }
@@ -87,29 +75,15 @@ export class MapLibreBasemapService {
   public getInitStyle(selected: MapLibreBasemapStyle) {
     if (selected.type === 'protomap') {
       /** This is necessaty to make it work for mapbox. */
-      const clonedStyleFile: maplibre.StyleSpecification = Object.assign({}, selected.styleFile as maplibre.StyleSpecification);
-      clonedStyleFile.sources = {
-        protomaps_attribution: {
-          'type': 'vector',
-          // eslint-disable-next-line max-len
-          'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>' + this.POWERED_BY_ARLAS
-        }
-      };
-      clonedStyleFile.layers = [{
-        id: 'backgrounds',
-        type: 'background',
-        source: 'protomaps_attribution',
-        paint: {
-          'background-color': 'rgba(0,0,0,0)'
-        }
-      } as BackgroundLayerSpecification];
-      return clonedStyleFile;
+
+      const clonedStyleFile= this.cloneStyleFile<maplibre.StyleSpecification>(selected);
+      return this.buildInitStyle<maplibre.StyleSpecification , BackgroundLayerSpecification>(clonedStyleFile);
     }
     return selected.styleFile;
   }
 
 
-  public fetchSources$() {
+  public fetchSources$(): Observable<readonly unknown[]> {
     const sources$: Observable<maplibre.StyleSpecification>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
@@ -133,7 +107,7 @@ export class MapLibreBasemapService {
     return forkJoin(sources$);
   }
 
-  private getStyleFile(b: MapLibreBasemapStyle): Observable<maplibre.StyleSpecification> {
+  protected getStyleFile(b: MapLibreBasemapStyle): Observable<maplibre.StyleSpecification> {
     if (typeof b.styleFile === 'string') {
       return this.http.get(b.styleFile) as Observable<maplibre.StyleSpecification>;
     } else {

@@ -53,7 +53,6 @@ import { getLayerName } from '../componentsUtils';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
-import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import circleMode from './draw/modes/circles/circle.mode';
@@ -71,11 +70,10 @@ import {
   OnMoveResult,
   VisualisationSetConfig
 } from './model/AbstractArlasMapGL';
-import { ArlasMapboxGL, ArlasMapGlConfig } from './model/ArlasMapboxGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
 import { TypedStyleLayer } from 'maplibre-gl';
-import { ArlasMaplibreGL, ArlasMaplibreConfig } from './model/ArlasMaplibreGL';
+import { ArlasMaplibreConfig, ArlasMaplibreGL } from './model/ArlasMaplibreGL';
 import { MapLibreBasemapService } from './basemaps/maplibre-basemap.service';
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
@@ -94,8 +92,8 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 
 @Component({
   selector: 'arlas-mapglibre',
-  templateUrl: './mapgl.component.html',
-  styleUrls: ['./mapgl.component.scss'],
+  templateUrl: './mapgl-maplibre.component.html',
+  styleUrls: ['./mapgl-maplibre.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
