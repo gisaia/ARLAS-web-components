@@ -42,8 +42,6 @@ import { Feature, FeatureCollection, polygon, Polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './model/ValidGeomDrawPolygonMode';
-import * as mapboxgl from 'mapbox-gl';
-import { AnyLayer, TransformRequestFunction } from 'mapbox-gl';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -72,7 +70,7 @@ import {
 } from './model/AbstractArlasMapGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
-import { TypedStyleLayer } from 'maplibre-gl';
+import maplibre, { TypedStyleLayer } from 'maplibre-gl';
 import { ArlasMaplibreConfig, ArlasMaplibreGL } from './model/ArlasMaplibreGL';
 import { MapLibreBasemapService } from './basemaps/maplibre-basemap.service';
 
@@ -113,8 +111,8 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   private box: HTMLElement;
   // points which xy coordinates are in screen referential
   // Todo: define common Type to avoid repercution on ui
-  private start: mapboxgl.Point;
-  private current: mapboxgl.Point;
+  private start: maplibre.Point;
+  private current: maplibre.Point;
 
 
   private savedEditFeature = null;
@@ -277,7 +275,8 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-  @Input() public transformRequest: TransformRequestFunction;
+    //TODO: find good transform request
+  @Input() public transformRequest: any;
 
   /**
    * @Input : Angular
@@ -461,8 +460,8 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
     this.map.reorderLayers();
   }
 
-  // Todo:
-  public downloadLayerSource(downaload: { layer: mapboxgl.Layer; downloadType: string; }): void {
+  // Todo: replace layer any by unique type
+  public downloadLayerSource(downaload: { layer: any; downloadType: string; }): void {
     const downlodedSource = {
       layerId: downaload.layer.id,
       layerName: getLayerName(downaload.layer.id),
@@ -480,7 +479,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @param sources List of sources that these external `layers` use.
    */
   // Todo: define common type to avoid repercution on wui
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>, sources: Array<MapSource>): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<MapSource>): void {
     this.map.addVisualisation(visualisation, layers, sources);
   }
 
@@ -549,7 +548,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         }
         this.drawSelectionChanged = false;
         if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-          (this.map.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
+          (this.map.getSource(this.POLYGON_LABEL_SOURCE) as maplibre.GeoJSONSource).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -606,7 +605,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
   public initTransformRequest() {
     if (!this.transformRequest) {
-      this.transformRequest = (url: string, resourceType: mapboxgl.ResourceType) => ({
+      this.transformRequest = (url: string, resourceType: maplibre.ResourceType) => ({
         url,
       });
     }
@@ -1026,14 +1025,14 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
     }));
 
     // Mouse events
-    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousedown', (e: maplibre.MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mouseup', (e: maplibre.MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
 
-    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousemove', (e: maplibre.MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.isDrawingBbox || this.isDrawingPolygon) {
         this.map.setCursorStyle('crosshair');
@@ -1279,7 +1278,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
     document.addEventListener('mouseup', this.mouseup);
     // Capture the first xy coordinates
     const rect = this.canvas.getBoundingClientRect();
-    this.start = new mapboxgl.Point(
+    this.start = new maplibre.Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
@@ -1288,7 +1287,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
     const rect = this.canvas.getBoundingClientRect();
-    this.current = new mapboxgl.Point(
+    this.current = new maplibre.Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
@@ -1313,7 +1312,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
 
   private mouseup = (e) => {
     const rect = this.canvas.getBoundingClientRect();
-    const f = new mapboxgl.Point(
+    const f = new maplibre.Point(
       e.clientX - rect.left - this.canvas.clientLeft,
       e.clientY - rect.top - this.canvas.clientTop
     );
