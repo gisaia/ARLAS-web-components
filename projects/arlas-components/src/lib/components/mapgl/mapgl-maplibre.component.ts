@@ -810,12 +810,14 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
      *
      *  !! If you see a better approche let me know.
      */
-    this.map.onLoad(() => {
-      // TODO: should change the
+
+    this.map.on('beforeOnLoadInit', () => {
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
-      this.draw.changeMode('static');
+    });
 
+    this.map.on('load', () => {
+      this.draw.changeMode('static');
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
           this.map.updateVisibility(visibilityStatus);

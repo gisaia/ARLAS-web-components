@@ -502,7 +502,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   public ngOnInit() {
     this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
   }
-  // todo:timeline hs
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
@@ -806,10 +805,15 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
      *
      *  !! If you see a better approche let me know.
      */
-    this.map.onLoad(() => {
+
+    this.map.on('beforeOnLoadInit', () => {
       // TODO: should change the
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
+    });
+
+    this.map.on('load', () => {
+
       this.draw.changeMode('static');
 
       if (this.mapLayers !== null) {

@@ -51,10 +51,6 @@ export class MapLibreBasemapService extends BasemapService{
     }
   }
 
-  public notifyProtomapAddition() {
-    this.protomapBasemapAddedSource.next(true);
-  }
-
   public removeProtomapBasemap(map: ArlasMaplibreGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
@@ -68,10 +64,8 @@ export class MapLibreBasemapService extends BasemapService{
   }
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
-    const protocol = new pmtiles.Protocol({metadata: true});
-    const sources: VectorSourceSpecification = {type: 'vector'};
-    map.addSource('pmtiles-type', sources);
-    maplibre.addProtocol('pmtiles', protocol.tile);
+    const protocol = new pmtiles.Protocol();
+    maplibre.addProtocol('pmtiles', protocol.tile as any);
   }
 
   public getInitStyle(selected: MapLibreBasemapStyle) {

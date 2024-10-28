@@ -196,7 +196,7 @@ export interface MapOverride {
   easeTo(options: unknown, unknown?: unknown): this;
 
   flyTo(options: unknown, unknown?: unknown): this;
-
+  fire(type: string): void;
   on<T extends keyof unknown>(
     type: T,
     layer: string,

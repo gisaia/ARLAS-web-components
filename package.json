@@ -63,7 +63,7 @@
     "ngeohash": "^0.6.0",
     "ngx-loading": "^14.0.0",
     "numeral": "^2.0.6",
-    "pmtiles": "^3.2.0",
+    "pmtiles": "^2.11.0",
     "rxjs": "~7.4.0",
     "shpjs": "^4.0.4",
     "stream": "0.0.2",

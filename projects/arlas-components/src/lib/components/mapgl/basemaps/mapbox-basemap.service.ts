@@ -52,10 +52,6 @@ export class MapboxBasemapService extends BasemapService{
     }
   }
 
-  public notifyProtomapAddition() {
-    this.protomapBasemapAddedSource.next(true);
-  }
-
   public removeProtomapBasemap(map: AbstractArlasMapGL) {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {

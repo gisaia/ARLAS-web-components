@@ -589,6 +589,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL implements MapOverride {
     return this;
   }
 
+  public fire(event:string) {
+     this.getMapProvider().fire(event);
+  }
+
   public on<T extends keyof mapboxgl.MapLayerEventType>(
     type: T, layer: string,
     listener: (ev: (mapboxgl.MapLayerEventType[T] & mapboxgl.EventData)) => void): this;
