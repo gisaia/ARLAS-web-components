@@ -196,6 +196,8 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _eventSubscription: Subscription[] = [];
 
+  protected evented = new EventTarget();
+
   protected constructor(protected config: BaseMapGlConfig<any>) {
     this.config = config;
     this._offset = config.offset;
@@ -339,9 +341,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public flyTo(options: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
-  public fire(type: string): void {
-    throw new Error('Method not implemented.');
-  }
+
   public on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
   public on<T extends never>(type: T, listener: (ev: unknown) => void): this;
   public on(type: string, listener: (ev: any) => void): this;
@@ -369,7 +369,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _initOnLoad(){
     this.onLoad(() => {
-      this.getMapProvider().fire('beforeOnLoadInit');
+      this.evented.dispatchEvent(new Event('beforeOnLoadInit'));
       console.log('on load call');
       this._updateBounds();
       this._updateZoom();
@@ -382,6 +382,10 @@ export abstract class AbstractArlasMapGL implements MapOverride {
       this.getMapProvider().fitBounds(this.getBounds());
       this._initVisualisationSet();
     });
+  }
+
+  onCustomEvent(event:string, loadFn: () => void){
+    this.evented.addEventListener(event, loadFn);
   }
 
   protected _initMapMoveEvents() {

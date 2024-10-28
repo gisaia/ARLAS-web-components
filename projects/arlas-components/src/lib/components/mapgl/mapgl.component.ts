@@ -806,7 +806,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
      *  !! If you see a better approche let me know.
      */
 
-    this.map.on('beforeOnLoadInit', () => {
+    this.map.onCustomEvent('beforeOnLoadInit', () => {
       // TODO: should change the
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);

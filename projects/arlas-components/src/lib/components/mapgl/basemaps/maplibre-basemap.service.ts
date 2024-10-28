@@ -23,7 +23,7 @@ import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMaplibreGL } from '../model/ArlasMaplibreGL';
-import maplibre, { VectorSourceSpecification } from 'maplibre-gl';
+import maplibre, { GetResourceResponse, RequestParameters, VectorSourceSpecification } from 'maplibre-gl';
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { BasemapService } from './basemap.service';
 
@@ -44,6 +44,7 @@ export class MapLibreBasemapService extends BasemapService{
     if (selectedBasemap.type === 'protomap') {
       const styleFile = selectedBasemap.styleFile as any;
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
+      pmtilesSource['type'] = 'vector';
       if (pmtilesSource) {
         this.addPMtilesToSource(map, pmtilesSource);
         this.addProtomapLayerToMap(map, styleFile);
@@ -65,7 +66,20 @@ export class MapLibreBasemapService extends BasemapService{
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
     const protocol = new pmtiles.Protocol();
-    maplibre.addProtocol('pmtiles', protocol.tile as any);
+    maplibre.addProtocol('pmtiles', (requestParameters: RequestParameters, abortController: AbortController) => {
+      return new Promise((res, rej) => {
+        protocol.tile(requestParameters,  (error?: Error | null, data?: any | null, cacheControl?: string | null, expires?: string | null) => {
+          if(error){
+            rej(error);
+          }
+          res({
+            cacheControl,
+            expires,
+            data
+          });
+        });
+      });
+    });
   }
 
   public getInitStyle(selected: MapLibreBasemapStyle) {

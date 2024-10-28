@@ -37,7 +37,7 @@ import { ElementIdentifier } from '../results/utils/results.utils';
 import { LegendData, MapExtend } from './mapgl.component.util';
 import * as mapglJsonSchema from './mapgl.schema.json';
 import { ARLAS_VSET, MapLayers } from './model/mapLayers';
-import { MapSource } from './model/mapSource';
+import { ArlasMapSource, MapSource } from './model/mapSource';
 import { Feature, FeatureCollection, polygon, Polygon } from '@turf/helpers';
 import centroid from '@turf/centroid';
 import limitVertexDirectSelectMode from './model/LimitVertexDirectSelectMode';
@@ -479,7 +479,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @param sources List of sources that these external `layers` use.
    */
   // Todo: define common type to avoid repercution on wui
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<MapSource>): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void {
     this.map.addVisualisation(visualisation, layers, sources);
   }
 
@@ -811,7 +811,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
      *  !! If you see a better approche let me know.
      */
 
-    this.map.on('beforeOnLoadInit', () => {
+    this.map.onCustomEvent('beforeOnLoadInit', () => {
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
     });

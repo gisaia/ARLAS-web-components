@@ -552,9 +552,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
     this._mapProvider.flyTo(options, eventData);
     return this;
   }
-  public fire(event:string) {
-    this.getMapProvider().fire(event);
-  }
 
   public on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
   public on<T extends never>(type: T, listener: (ev: unknown) => void): this;
