@@ -68,6 +68,7 @@ export { CollectionService, BaseCollectionService, AwcCollectionService } from '
 export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
 export { LayerIdToName } from './lib/components/mapgl-legend/layer-name.pipe';
 export { MapglLegendComponent } from './lib/components/mapgl-legend/mapgl-legend.component';
+export { MaplibreglLegendComponent } from './lib/components/mapgl-legend/maplibregl-legend.component';
 export { MapglLegendItemComponent } from './lib/components/mapgl-legend/mapgl-legend-item/mapgl-legend-item.component';
 export { MapglLegendModule } from './lib/components/mapgl-legend/mapgl-legend.module';
 export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-settings.module';

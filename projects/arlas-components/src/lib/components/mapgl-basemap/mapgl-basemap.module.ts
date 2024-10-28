@@ -22,7 +22,7 @@ import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapglBasemapComponent } from './mapgl-basemap.component';
-import { MaplibreglBasemapComponent } from "./maplibregl-basemap.component";
+import { MaplibreglBasemapComponent } from './maplibregl-basemap.component';
 
 @NgModule({
   declarations: [

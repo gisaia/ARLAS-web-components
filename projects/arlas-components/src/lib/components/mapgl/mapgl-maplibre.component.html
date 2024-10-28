@@ -19,11 +19,11 @@
             <div cdkDragHandle class="map__visu-layer-drag">
               <mat-icon>drag_indicator</mat-icon>
             </div>
-            <arlas-mapgl-legend [collection]="l | getCollection: map?.layersMap " [enabled]="visu.enabled"
+            <arlas-maplibregl-legend [collection]="l | getCollection: map?.layersMap " [enabled]="visu.enabled"
                                 [layer]="l | getValue: map?.layersMap " [zoom]="map?.zoom"
                                 (visibilityStatus)="emitLegendVisibility(visu.name, l, $event)" [legendUpdater]="legendUpdater"
                                 [visibilityUpdater]="visibilityUpdater"
-                                (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-mapgl-legend>
+                                (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-maplibregl-legend>
           </div>
         </div>
       </div>

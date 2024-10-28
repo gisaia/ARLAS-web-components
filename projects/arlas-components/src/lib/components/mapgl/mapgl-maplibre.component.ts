@@ -275,7 +275,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-    //TODO: find good transform request
+    // TODO: find good transform request
   @Input() public transformRequest: any;
 
   /**

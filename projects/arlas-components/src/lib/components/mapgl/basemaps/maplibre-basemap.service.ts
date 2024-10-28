@@ -23,9 +23,9 @@ import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMaplibreGL } from '../model/ArlasMaplibreGL';
-import maplibre from 'maplibre-gl';
+import maplibre, { VectorSourceSpecification } from 'maplibre-gl';
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
-import { BasemapService } from "./basemap.service";
+import { BasemapService } from './basemap.service';
 
 @Injectable({
   providedIn: 'root'
@@ -69,6 +69,8 @@ export class MapLibreBasemapService extends BasemapService{
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
     const protocol = new pmtiles.Protocol({metadata: true});
+    const sources: VectorSourceSpecification = {type: 'vector'};
+    map.addSource('pmtiles-type', sources);
     maplibre.addProtocol('pmtiles', protocol.tile);
   }
 

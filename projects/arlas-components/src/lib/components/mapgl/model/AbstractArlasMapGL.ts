@@ -366,7 +366,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _initOnLoad(){
     this.onLoad(() => {
-      console.log('on load call')
+      console.log('on load call');
       this._updateBounds();
       this._updateZoom();
       this.firstDrawLayer = this.getColdOrHotLayers()[0];
@@ -401,7 +401,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _initMapLayers(){
     if(this._mapLayers){
-      console.log('init maplayers')
+      console.log('init maplayers');
       this.setLayersMap(this._mapLayers as MapLayers<any>);
       this.addVisualLayers();
       this._addExternalEventLayers();
@@ -424,7 +424,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   }
 
   protected _initImages(){
-    console.log('init image call')
+    console.log('init image call');
     this._loadInternalImage('assets/rotate/01.png', 'rotate');
     this._loadInternalImage('assets/resize/01.png', 'resize');
   }
@@ -443,7 +443,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   }
 
   protected _initSources(): void {
-    console.log('ini _initSources', this._dataSources)
+    console.log('ini _initSources', this._dataSources);
     if(this._dataSources){
       this._dataSources.forEach(id => {
         this.addSource(id, {type: GEOJSON_SOURCE_TYPE, data:  Object.assign({}, this._emptyData) });
@@ -461,7 +461,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   }
 
   protected _updateBounds(): void {
-    console.log('_updateBounds call')
+    console.log('_updateBounds call');
 
     this._west = this.getWestBounds();
     this._south = this.getSouthBounds();
@@ -542,7 +542,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _bindCustomEvent(){
     if(this.config.customEventBind){
-      console.log('bind custom event')
+      console.log('bind custom event');
       this.config.customEventBind.forEach(element =>
         this.bindLayersToMapEvent(element.layers, element.mapEventBinds)
       );
@@ -551,7 +551,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _initVisualisationSet(){
     if (this.visualisationSetsConfig) {
-      console.log('_initVisualisationSet')
+      console.log('_initVisualisationSet');
       this.visualisationSetsConfig.forEach(visu => {
         this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
         this.visualisationsSets.status.set(visu.name, visu.enabled);
@@ -631,7 +631,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
       }));
   }
 
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  any>[]):void;
+  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  any>[]): void;
   public abstract calcOffsetPoint(): any;
   protected abstract _initMapProvider(BaseMapGlConfig): void;
   protected abstract _initControls(): void;

@@ -19,9 +19,9 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { MapglService } from '../../services/mapgl.service';
-import { BaseMapglBasemapComponent } from "./base-mapgl-basemap";
-import { MapLibreBasemapService } from "../mapgl/basemaps/maplibre-basemap.service";
-import { ArlasMaplibreGL } from "../mapgl/model/ArlasMaplibreGL";
+import { BaseMapglBasemapComponent } from './base-mapgl-basemap';
+import { MapLibreBasemapService } from '../mapgl/basemaps/maplibre-basemap.service';
+import { ArlasMaplibreGL } from '../mapgl/model/ArlasMaplibreGL';
 
 @Component({
   selector: 'arlas-maplibre-basemap',

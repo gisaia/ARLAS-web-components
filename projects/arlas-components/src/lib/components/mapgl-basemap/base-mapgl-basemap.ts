@@ -24,8 +24,8 @@ import { MapSource } from '../mapgl/model/mapSource';
 import { MapglService } from '../../services/mapgl.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
-import { AbstractArlasMapGL } from "../mapgl/model/AbstractArlasMapGL";
-import { BasemapService } from "../mapgl/basemaps/basemap.service";
+import { AbstractArlasMapGL } from '../mapgl/model/AbstractArlasMapGL';
+import { BasemapService } from '../mapgl/basemaps/basemap.service';
 
 @Component({
   selector: 'arlas-base-mapgl-basemap',
@@ -85,20 +85,20 @@ export class BaseMapglBasemapComponent implements OnInit {
     }
   }
 
-    //TODO: s to any try to find a good type or interface for all layer
+    // TODO: s to any try to find a good type or interface for all layer
   /**  Set mapbox new style.
    * !!NOTE: mapbox setStyle removes all added layers from the map; thus the following description :
    * This method saves all the currently added layers to the map, applies the 'map.setStyle' and adds all the saved layers afterwards.
    */
   public setStyle(s: any, newBasemap: BasemapStyle) {
     const selectedBasemapLayersSet = new Set<string>();
-    //TODO: Array to any try to find a good type or interface for all layer
+    // TODO: Array to any try to find a good type or interface for all layer
     const layers: Array<any> = this.map.getStyle().layers;
     const sources = this.map.getStyle().sources;
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
     }
-    //TODO: Array to any try to find a good type or interface for all layer
+    // TODO: Array to any try to find a good type or interface for all layer
     const layersToSave = new Array<any>();
     const sourcesToSave = new Array<MapSource>();
     layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {

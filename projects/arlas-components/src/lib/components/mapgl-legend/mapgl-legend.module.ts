@@ -32,6 +32,7 @@ import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-n
 import { FormatLegendModule } from '../../pipes/format-legend/format-legend.module';
 import { GetColorModule } from '../../pipes/get-color/get-color.module';
 import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.component';
+import { MaplibreglLegendComponent } from './maplibregl-legend.component';
 
 
 @NgModule({
@@ -48,8 +49,8 @@ import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.
     GetCollectionDisplayModule,
     FormatLegendModule
   ],
-  declarations: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent],
-  exports: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent]
+  declarations: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent, MaplibreglLegendComponent],
+  exports: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent, MaplibreglLegendComponent]
 })
 export class MapglLegendModule {
 

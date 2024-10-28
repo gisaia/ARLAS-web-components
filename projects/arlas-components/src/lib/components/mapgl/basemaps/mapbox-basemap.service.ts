@@ -25,8 +25,8 @@ import mapboxgl from 'mapbox-gl';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ArlasMapboxGL } from '../model/ArlasMapboxGL';
-import { AbstractArlasMapGL } from "../model/AbstractArlasMapGL";
-import { BasemapService } from "./basemap.service";
+import { AbstractArlasMapGL } from '../model/AbstractArlasMapGL';
+import { BasemapService } from './basemap.service';
 
 @Injectable({
   providedIn: 'root'
