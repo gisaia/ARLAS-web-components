@@ -82,7 +82,7 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
 
   /**
    * @Input : Angular
-   * @description List of active actions per item.
+   * @description Map <itemId, Set<actionIds>> : for each item, gives the list of activated actions.
   */
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
   /**
