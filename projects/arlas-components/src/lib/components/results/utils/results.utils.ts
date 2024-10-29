@@ -45,6 +45,11 @@ export interface Action {
   icon?: string;
   /** for global actions, even if no item is selected, the action will be enabled */
   alwaysEnabled?: boolean;
+  /** if this attribute is set, it means that this action embark those fields in order to be accomplished.
+   * If those fields don't exist the action could not be completed and therefore should be hidden. */
+  fields?: string [];
+  show?: boolean;
+
 }
 
 export class ActionHandler {

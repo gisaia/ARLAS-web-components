@@ -148,7 +148,8 @@
             [keysToColors]="keysToColors" [colorsSaturationWeight]="colorsSaturationWeight"
             [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems"
             (selectedItemsEvent)="setSelectedItems($event)" (borderStyleEvent)="setBorderStyle($event)"
-            [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)">
+            [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)"
+           >
           </tr>
           <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
             (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"

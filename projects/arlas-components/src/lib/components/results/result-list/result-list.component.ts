@@ -40,6 +40,7 @@ import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -491,7 +492,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
-    private colorService: ArlasColorService, public translate: TranslateService,
+    private colorService: ArlasColorService, public translate: TranslateService, private notifier: ResultlistNotifierService,
     private cdr: ChangeDetectorRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
@@ -794,6 +795,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public onEnterItem(item: Item): void {
     this.setConsultedItem(item.identifier);
+    this.notifier.notifyItemHover(item);
   }
 
   /**

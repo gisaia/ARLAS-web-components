@@ -17,18 +17,19 @@
  * under the License.
  */
 
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Item } from '../model/item';
 import { Action, ActionHandler } from '../utils/results.utils';
-import { Subject, take } from 'rxjs';
+import { filter, Subject, take, takeUntil } from 'rxjs';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 
 @Component({
   selector: 'arlas-result-actions',
   templateUrl: './result-actions.component.html',
   styleUrls: ['./result-actions.component.scss']
 })
-export class ResultActionsComponent implements OnInit, OnChanges {
+export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() public item: Item;
   @Input() public width: number;
@@ -38,7 +39,24 @@ export class ResultActionsComponent implements OnInit, OnChanges {
   @Input() public mode: 'icon' | 'text' = 'icon';
   @Output() public actionOnItemEvent: Subject<Action> = new Subject<Action>();
   
+  /** Destroy subscriptions */
+  private _onDestroy$ = new Subject<boolean>();
+
   public actions: Action[];
+
+  public constructor(private notifier: ResultlistNotifierService) {
+    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter((i: Item) => i.identifier === this.item.identifier)).subscribe({
+      next: (i: Item) => {
+        this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
+        this.actions.filter(a => ActionHandler.isReversible(a) && a.fields && a.show === undefined).forEach(a => {
+          this.detailedDataRetriever.getValues(i.identifier, a.fields).pipe(take(1)).subscribe({
+            next: (values: string[]) => a.show = values.filter(v => !v).length === 0 
+          })
+        });
+        console.log('hovering this um', i.identifier)
+      }
+    })
+  }
 
   public ngOnInit(): void {
     this.setItemActions(this.item);
@@ -71,6 +89,7 @@ export class ResultActionsComponent implements OnInit, OnChanges {
         this.actions.filter(a => ActionHandler.isReversible(a)).forEach(a => {
           if (actionIds.has(a.id)) {
             ActionHandler.activate(a);
+            a.show = true;
           } else {
             ActionHandler.reverse(a);
           }
@@ -97,7 +116,9 @@ export class ResultActionsComponent implements OnInit, OnChanges {
             cssClass: action.cssClass,
             tooltip: action.tooltip,
             reverseAction: action.reverseAction,
-            icon: action.icon
+            icon: action.icon,
+            fields: action.fields,
+            show: action.show
           });
         });
         this.actions = item.actions;
@@ -107,5 +128,10 @@ export class ResultActionsComponent implements OnInit, OnChanges {
       this.actions = item.actions;
       this.updateActions();
     }
+  }
+
+  public ngOnDestroy(): void {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
 }
