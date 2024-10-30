@@ -51,7 +51,7 @@ export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerat
 export { DetailedDataRetriever } from './lib/components/results/utils/detailed-data-retriever';
 export {
   Action, ElementIdentifier, FieldsConfiguration, DescribedUrl, ResultListOptions,
-  Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER
+  Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER, ActionHandler
 } from './lib/components/results/utils/results.utils';
 export { Item } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
@@ -59,6 +59,8 @@ export { MapglComponent, VisualisationSetConfig, IconConfig, OnMoveResult, CROSS
 export { MapglModule } from './lib/components/mapgl/mapgl.module';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
+export { ResultActionsComponent } from './lib/components/results/result-actions/result-actions.component';
+export { ActionDisplayerPipe } from './lib/components/results/result-actions/result-actions.pipe';
 export { ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
 export { ResultsModule } from './lib/components/results/results.module';
 export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services/color.generator.module';

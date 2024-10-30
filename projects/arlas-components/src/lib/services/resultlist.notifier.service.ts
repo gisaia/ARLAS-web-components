@@ -17,17 +17,22 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action } from '../utils/results.utils';
-import { Observable } from 'rxjs';
-import { Item } from '../model/item';
+import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { Item } from '../components/results/model/item';
 
+@Injectable({
+  providedIn: 'root'
+})
+export class ResultlistNotifierService {
 
-export interface DetailedDataRetriever {
+  private itemHoveredSource: Subject<Item> = new Subject();
+  public itemHovered$: Observable<Item> = this.itemHoveredSource.asObservable();
 
-  getValues(identifier: string, fields: string[]): Observable<string[]>;
-
-  getData(identifier: string): Observable<AdditionalInfo>;
-
-  getActions(item: Item): Observable<Array<Action>>;
+  public notifyItemHover(item: Item) {
+    this.itemHoveredSource.next(item);
+  }
 
 }
+
+
