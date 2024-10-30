@@ -132,13 +132,7 @@ tr {
         }
       }
     }
-
   }
-}
-
-
-tr:hover td.resultitem__cell.toggle ::ng-deep .list_active_actions {
-  display: none;
 }
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
