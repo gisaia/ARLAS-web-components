@@ -27,6 +27,7 @@ export class PitchToggle {
   public map: any;
   public btn: HTMLButtonElement;
   public container: HTMLDivElement;
+
   public image3D = 'url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzM' +
     'CI+ICAgIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHN0eWxlPSJmb250LXNpemU6IDE0cHg7IGZvbnQtZmFtaWx5OiAnSGVsdmV0aWNhIE5ldWUnLEFya' +
     'WFsLEhlbHZldGljYSxzYW5zLXNlcmlmOyBmb250LXdlaWdodDogYm9sZDsgdGV4dC1hbmNob3I6IG1pZGRsZTsiPjNEPC90ZXh0Pjwvc3ZnPg==)';
@@ -36,6 +37,7 @@ export class PitchToggle {
 
   public btnClasses: string[] = [];
   public containerClasses: string[] = [];
+
   public constructor(bearing, pitch, minpitchzoom) {
     this.bearing = bearing;
     this.pitch = pitch;

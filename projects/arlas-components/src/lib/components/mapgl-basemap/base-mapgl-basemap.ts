@@ -24,7 +24,7 @@ import { MapSource } from '../mapgl/model/mapSource';
 import { MapglService } from '../../services/mapgl.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
-import { AbstractArlasMapGL } from '../mapgl/model/AbstractArlasMapGL';
+import { AbstractArlasMapGL } from '../mapgl/model/map/AbstractArlasMapGL';
 import { BasemapService } from '../mapgl/basemaps/basemap.service';
 
 @Component({

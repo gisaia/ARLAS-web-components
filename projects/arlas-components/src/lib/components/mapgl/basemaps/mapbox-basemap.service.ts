@@ -24,8 +24,8 @@ import { MapboxBasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { ArlasMapboxGL } from '../model/ArlasMapboxGL';
-import { AbstractArlasMapGL } from '../model/AbstractArlasMapGL';
+import { ArlasMapboxGL } from '../model/map/ArlasMapboxGL';
+import { AbstractArlasMapGL } from '../model/map/AbstractArlasMapGL';
 import { BasemapService } from './basemap.service';
 
 @Injectable({

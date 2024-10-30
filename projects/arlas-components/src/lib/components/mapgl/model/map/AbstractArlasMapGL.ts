@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { ArlasMapSource } from './mapSource';
+import { ArlasMapSource } from '../mapSource';
 import { FeatureCollection } from '@turf/helpers';
-import { MapExtend } from '../mapgl.component.util';
-import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
+import { MapExtend } from '../../mapgl.component.util';
+import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from '../mapLayers';
 import { fromEvent, map, Observable, Subscription } from 'rxjs';
-import { ElementIdentifier } from '../../results/utils/results.utils';
+import { ElementIdentifier } from '../../../results/utils/results.utils';
 
-import { MapOverride } from './map.type';
+import { MapOverride } from '../map.type';
 import { debounceTime } from 'rxjs/operators';
 
 export type ControlPosition = 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -128,16 +128,21 @@ export interface VisualisationSetConfig {
   enabled?: boolean;
 }
 
+export interface LngLat {
+  lng: number;
+  lat: number;
+}
+
 export abstract class AbstractArlasMapGL implements MapOverride {
   /**
-   *  props and method with unknow type will be specific to the map provider
+   *  props and methods with unknown type will be specific to the map provider
    *  we used.
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startlngLat: any; // todo: find common type
-  public abstract endlngLat: any; // todo: find common type
-  public abstract movelngLat: any; // todo: find common type
+  public abstract startlngLat: LngLat;
+  public abstract endlngLat: LngLat;
+  public abstract movelngLat: LngLat;
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -251,7 +256,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public addImage(name: string, image: HTMLImageElement
     | ArrayBufferView | ImageData | ImageBitmap | {
       width: number; height: number; data: Uint8Array
-        | Uint8ClampedArray;
+      | Uint8ClampedArray;
     }, options?: { pixelRatio?: number; sdf?: boolean; }): this {
     throw new Error('Method not implemented.');
   }
@@ -367,7 +372,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected _initOnLoad(){
+  protected _initOnLoad() {
     this.onLoad(() => {
       this.evented.dispatchEvent(new Event('beforeOnLoadInit'));
       console.log('on load call');
@@ -384,7 +389,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     });
   }
 
-  onCustomEvent(event:string, loadFn: () => void){
+  onCustomEvent(event: string, loadFn: () => void) {
     this.evented.addEventListener(event, loadFn);
   }
 
@@ -407,8 +412,8 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     this._updateOnMoveEnd();
   }
 
-  protected _initMapLayers(){
-    if(this._mapLayers){
+  protected _initMapLayers() {
+    if (this._mapLayers) {
       console.log('init maplayers');
       this.setLayersMap(this._mapLayers as MapLayers<any>);
       this.addVisualLayers();
@@ -431,13 +436,13 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected _initImages(){
+  protected _initImages() {
     console.log('init image call');
     this._loadInternalImage('assets/rotate/01.png', 'rotate');
     this._loadInternalImage('assets/resize/01.png', 'resize');
   }
 
-  protected _initLoadIcons(){
+  protected _initLoadIcons() {
     if (this._icons) {
       this._icons.forEach(icon => {
         this._loadInternalImage(
@@ -452,9 +457,9 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
   protected _initSources(): void {
     console.log('ini _initSources', this._dataSources);
-    if(this._dataSources){
+    if (this._dataSources) {
       this._dataSources.forEach(id => {
-        this.addSource(id, {type: GEOJSON_SOURCE_TYPE, data:  Object.assign({}, this._emptyData) });
+        this.addSource(id, { type: GEOJSON_SOURCE_TYPE, data: Object.assign({}, this._emptyData) });
       });
     }
 
@@ -463,7 +468,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
       'data': this.polygonlabeldata
     });
 
-    if(this.mapSources){
+    if (this.mapSources) {
       this.addSourcesToMap(this.mapSources);
     }
   }
@@ -491,7 +496,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   }
 
   protected _updateDragEnd(e: any): void {
-    if(e.originalEvent){
+    if (e.originalEvent) {
       this._dragEndX = e.originalEvent.clientX;
       this._dragEndY = e.originalEvent.clientY;
     }
@@ -516,21 +521,21 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   }
 
 
-  protected  _updateZoomStart(): void {
+  protected _updateZoomStart(): void {
     this._zoomStart = this.getZoom();
   }
 
-  protected _updateOnZoomStart(){
+  protected _updateOnZoomStart() {
     const sub = this._zoomStart$.subscribe(_ => this._updateZoomStart());
     this._eventSubscription.push(sub);
   }
 
-  protected _updateOnDragStart(){
+  protected _updateOnDragStart() {
     const sub = this._dragStart$.subscribe(e => this._updateDragStart(e));
     this._eventSubscription.push(sub);
   }
 
-  protected _updateOnDragEnd(){
+  protected _updateOnDragEnd() {
     const sub = this._dragEnd$
       .subscribe(e => {
         this._updateDragEnd(e);
@@ -539,7 +544,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     this._eventSubscription.push(sub);
   }
 
-  protected _updateOnMoveEnd(){
+  protected _updateOnMoveEnd() {
     const sub = this._moveEnd$
       .subscribe(_ => {
         this._updateBounds();
@@ -548,8 +553,8 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     this._eventSubscription.push(sub);
   }
 
-  protected _bindCustomEvent(){
-    if(this.config.customEventBind){
+  protected _bindCustomEvent() {
+    if (this.config.customEventBind) {
       console.log('bind custom event');
       this.config.customEventBind.forEach(element =>
         this.bindLayersToMapEvent(element.layers, element.mapEventBinds)
@@ -557,7 +562,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected _initVisualisationSet(){
+  protected _initVisualisationSet() {
     if (this.visualisationSetsConfig) {
       console.log('_initVisualisationSet');
       this.visualisationSetsConfig.forEach(visu => {
@@ -567,12 +572,12 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  protected _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any){
+  protected _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any) {
     this.loadImage(filePath, (error, image) => {
       if (error) {
         console.warn(errorMessage);
       } else {
-        if(opt){
+        if (opt) {
           this.addImage(name, image, opt);
         } else {
           this.addImage(name, image);
@@ -632,14 +637,14 @@ export abstract class AbstractArlasMapGL implements MapOverride {
       .pipe(map(_ => {
         this._updateBounds();
         this._updateZoom();
-        if(cb){
+        if (cb) {
           cb();
         }
         return this._getMoveEnd();
       }));
   }
 
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof  any>[]): void;
+  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
   public abstract calcOffsetPoint(): any;
   protected abstract _initMapProvider(BaseMapGlConfig): void;
   protected abstract _initControls(): void;
@@ -647,7 +652,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
-  protected abstract _getMoveEnd():  OnMoveResult;
+  protected abstract _getMoveEnd(): OnMoveResult;
   public abstract paddedFitBounds(bounds: any, options?: any);
   public abstract enableDragPan(): void;
   public abstract disableDragPan(): void;

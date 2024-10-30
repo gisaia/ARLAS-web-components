@@ -25,7 +25,7 @@ import {
   MapEventBinds,
   OnMoveResult,
   VisualisationSetConfig
-} from './AbstractArlasMapGL';
+} from './map/AbstractArlasMapGL';
 import maplibregl, {
   AddLayerObject,
   AnimationOptions,
@@ -54,8 +54,8 @@ import maplibregl, {
 
 import { MapLayers } from './mapLayers';
 import { MapExtend, paddedBounds } from '../mapgl.component.util';
-import { ControlButton } from '../mapgl.component.control';
-import { MaplibreControlButton, MaplibrePitchToggle } from '../mapgl-maplibre.component.control';
+import { ControlButton } from '../controls/mapgl.component.control';
+import { MaplibreControlButton, MaplibrePitchToggle } from '../controls/mapgl-maplibre.component.control';
 
 
 export interface ArlasMaplibreConfig extends BaseMapGlConfig<MapOptions>  {
@@ -71,10 +71,10 @@ export interface ArlasMaplibreConfig extends BaseMapGlConfig<MapOptions>  {
 export class ArlasMaplibreGL extends AbstractArlasMapGL{
   protected _mapLayers: MapLayers<TypedStyleLayer>;
   protected _mapProvider: maplibregl.Map;
-  public endlngLat: any;
+  public endlngLat: maplibregl.LngLat;
   public layersMap: Map<string, any>;
-  public movelngLat: any;
-  public startlngLat: any;
+  public movelngLat: maplibregl.LngLat;
+  public startlngLat: maplibregl.LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);
@@ -236,7 +236,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
     });
   }
 
-  public  addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
+  public addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
   public addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
   public addControl(control: IControl, position?: ControlPosition | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left', eventOverride?: {
     event: string;
@@ -244,7 +244,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL{
   }) {
     console.log(control);
     this.getMapProvider().addControl(control, position);
-    if(control instanceof  ControlButton && eventOverride){
+    if(control instanceof ControlButton && eventOverride){
       control.btn[eventOverride.event] = () => eventOverride.fn();
     }
     return this;
