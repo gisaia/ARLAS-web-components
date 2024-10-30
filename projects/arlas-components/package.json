@@ -68,6 +68,7 @@
   "overrides": {
     "@angular-devkit/build-angular": {
       "webpack-dev-middleware": "~5.3.4"
-    }
+    },
+    "http-proxy-middleware": "2.0.7"
   }
 }

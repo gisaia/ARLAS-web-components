@@ -141,17 +141,20 @@
     <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
       <ng-container *ngFor="let rowItem of items; index as i">
         <ng-container *ngIf="resultMode === ModeEnum.list; else grid_mode">
-          <tr arlas-result-item id="{{rowItem.identifier}}" class="resultlist__body--item-hover-{{rowItem.ishighLight}}"
+          <tr arlas-result-item [activatedActionsPerItem]="activatedActionsPerItem" id="{{rowItem.identifier}}" class="resultlist__body--item-hover-{{rowItem.ishighLight}}"
             [options]="options" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
             (click)="onClickItem(rowItem)" [idFieldName]="fieldsConfiguration.idFieldName" [tableWidth]="tableWidth"
             [rowItem]="rowItem" [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle"
             [keysToColors]="keysToColors" [colorsSaturationWeight]="colorsSaturationWeight"
             [detailedDataRetriever]="detailedDataRetriever" [selectedItems]="selectedItems"
             (selectedItemsEvent)="setSelectedItems($event)" (borderStyleEvent)="setBorderStyle($event)"
-            [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)">
+            [style.border-bottom-style]="borderStyle" (actionOnItemEvent)="triggerActionOnItem($event)"
+           >
           </tr>
           <tr arlas-result-detailed-item *ngIf="rowItem.isDetailToggled" class="resultlist__body--detailed-item"
             (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
+            [detailedDataRetriever]="detailedDataRetriever"
+            [activatedActionsPerItem]="activatedActionsPerItem"
             [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
             [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
           </tr>
@@ -161,6 +164,7 @@
           <div class="div-grid-tile" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)" >
             <mat-grid-tile *ngIf="resultMode === ModeEnum.grid" class="resultlist__md-grid-tile">
               <arlas-result-grid-tile
+                [activatedActionsPerItem]="activatedActionsPerItem"
                 [displayInfoIcon]="rowItem.identifier === selectedGridItem?.identifier && isDetailledGridOpen"
                 [thumbnailFit]="thumbnailFit"
                 id="{{rowItem.identifier}}" class="resultlist__grid-tile" [options]="options" [gridTile]="rowItem"

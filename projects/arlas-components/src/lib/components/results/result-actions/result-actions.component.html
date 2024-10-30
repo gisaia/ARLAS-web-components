@@ -1,0 +1,59 @@
+<!-- This sections is for actions that we display as icon buttons -->
+<div [style.max-width.px]="width" class="list_actions" *ngIf="mode === 'icon'; else textActions">
+    <ng-container *ngFor="let action of actions">
+        <ng-container *ngIf="action?.show === true">
+            <!-- The action is activated, which means it will always be displayed.-->
+            <ng-container *ngIf="action?.activated">
+                <!-- The button icon is provided by css 'background-url' attribute.-->
+                <button *ngIf="!action?.icon else active_icon" (click)="triggerAction($event, action)"
+                    matTooltip="{{action | actionDisplayer:'tooltip' |translate}}"
+                    class="resultitem-list__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
+                    {{action | actionDisplayer:'label' | translate}}
+                </button>
+                <ng-template #active_icon>
+                    <!-- The icon is provided by the action itself.-->
+                    <mat-icon (click)="triggerAction($event, action)" class="icon"
+                        matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
+                        {{action | actionDisplayer:'icon'}}
+                    </mat-icon>
+                </ng-template>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngFor="let action of actions">
+        <ng-container *ngIf="action?.show === true">
+            <!-- The action is not activated, which means it will appear only when an item is hovered.-->
+            <ng-container *ngIf="!action?.activated">
+                <button *ngIf="!action?.icon else not_active_icon" (click)="triggerAction($event, action)"
+                    class="not_activated" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}"
+                    class="resultitem-list__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
+                    {{action | actionDisplayer:'label' | translate}}
+                </button>
+                <ng-template #not_active_icon>
+                    <mat-icon (click)="triggerAction($event, action)" class="icon not_activated"
+                        matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
+                        {{action | actionDisplayer:'icon'}}
+                    </mat-icon>
+                </ng-template>
+            </ng-container>
+        </ng-container>
+    </ng-container>
+
+</div>
+<!-- This sections is for actions that we display as text buttons instead of icon buttons-->
+<ng-template #textActions>
+    <ng-container *ngFor="let action of actions">
+        <ng-container *ngIf="action?.show === true">
+            <button mat-raised-button *ngIf="!action?.activated else activeButton" class="text-action"
+                (click)="triggerAction($event, action)" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
+                {{action | actionDisplayer:'label' | translate}}
+            </button>
+            <ng-template #activeButton>
+                <button mat-raised-button *ngIf="action?.activated" (click)="triggerAction($event, action)"
+                    class="text-action" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
+                    {{action | actionDisplayer:'label' | translate}}
+                </button>
+            </ng-template>
+        </ng-container>
+    </ng-container>
+</ng-template>

@@ -40,6 +40,7 @@ import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -221,10 +222,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Input() public indeterminatedItems: Set<string> = new Set<string>();
 
   /**
- * @Input : Angular
- * @description List of items ids that are in a selected status.
- */
+   * @Input : Angular
+   * @description List of items ids that are in a selected status.
+  */
   @Input() public selectedItems: Set<string> = new Set<string>();
+
+  /**
+   * @Input : Angular
+   * @description Map <itemId, Set<actionIds>> : for each item, gives the list of activated actions.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   /**
    * @Input : Angular
@@ -483,7 +490,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
-    private colorService: ArlasColorService, public translate: TranslateService,
+    private colorService: ArlasColorService, public translate: TranslateService, private notifier: ResultlistNotifierService,
     private cdr: ChangeDetectorRef) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
@@ -785,8 +792,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @param item hovered item
    */
   public onEnterItem(item: Item): void {
-    this.setItemActions(item);
     this.setConsultedItem(item.identifier);
+    this.notifier.notifyItemHover(item);
   }
 
   /**
@@ -913,26 +920,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     });
   }
 
-  /**
-   * @description set the list of actions of an item
-   * @param item
-   */
-  public setItemActions(item: Item): void {
-    if (item && (!item.actions || (item.actions && item.actions.length === 0))) {
-      item.actions = new Array<Action>();
-      this.detailedDataRetriever.getActions(item).subscribe(actions => {
-        actions.forEach(action => {
-          item.actions.push({
-            id: action.id,
-            label: action.label,
-            actionBus: action.actionBus,
-            cssClass: action.cssClass,
-            tooltip: action.tooltip
-          });
-        });
-      });
-    }
-  }
 
   public byFieldName(item1: Column, item2: Column) {
     return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
