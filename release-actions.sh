@@ -82,6 +82,7 @@ releaseProd(){
     if [ "$BRANCH" == "develop" ] && [ "$STAGE_LOCAL" == "stable" ];
         then
         echo "=> Merge develop into master"
+        git fetch
         git checkout master
         git pull origin master
         git merge origin/develop
