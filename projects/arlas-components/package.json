@@ -37,7 +37,7 @@
     "@turf/rhumb-destination": "^6.5.0",
     "@turf/transform-rotate": "^6.5.0",
     "@types/mapbox-gl": "^1.6.3",
-    "arlas-d3": "~11.2.5",
+    "arlas-d3": "~11.2.6",
     "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
     "iv-viewer": "~2.0.1",
