@@ -167,8 +167,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Input() public fieldsConfiguration: FieldsConfiguration;
 
-  @Input() public activeActions: Map<string, Set<string>>;
-
   /**
    * @Input : Angular
    * @description The table width. If not specified, the tableWidth value is
