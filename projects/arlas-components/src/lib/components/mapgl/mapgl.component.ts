@@ -70,8 +70,8 @@ import {
   IconConfig,
   OnMoveResult,
   VisualisationSetConfig
-} from './model/AbstractArlasMapGL';
-import { ArlasMapboxGL, ArlasMapGlConfig } from './model/ArlasMapboxGL';
+} from './model/map/AbstractArlasMapGL';
+import { ArlasMapboxGL, ArlasMapGlConfig } from './model/map/ArlasMapboxGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
 
@@ -122,7 +122,6 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
    */
   public FINISH_DRAWING = marker('Double click to finish drawing');
   private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private ICONS_BASE_PATH = 'assets/icons/';
   private offlineBasemapChangeSubscription!: Subscription;
   /**
    * @Input : Angular

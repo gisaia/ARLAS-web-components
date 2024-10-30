@@ -20,7 +20,7 @@
 import { AbstractDraw } from './AbstractDraw';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { Feature } from 'geojson';
-import { AbstractArlasMapGL } from './AbstractArlasMapGL';
+import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
 import { ArlasMaplibreGL } from './ArlasMaplibreGL';
 
 export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |

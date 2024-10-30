@@ -22,7 +22,7 @@ import { ArlasBasemaps } from './basemaps';
 import { BasemapStyle } from './basemap.config';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AbstractArlasMapGL } from '../model/AbstractArlasMapGL';
+import { AbstractArlasMapGL } from '../model/map/AbstractArlasMapGL';
 
 @Injectable({
   providedIn: 'root'

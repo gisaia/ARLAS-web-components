@@ -67,7 +67,7 @@ import {
   IconConfig,
   OnMoveResult,
   VisualisationSetConfig
-} from './model/AbstractArlasMapGL';
+} from './model/map/AbstractArlasMapGL';
 import { ArlasDraw } from './model/ArlasDraw';
 import { Geometry } from '@turf/helpers/dist/js/lib/geojson';
 import maplibre, { TypedStyleLayer } from 'maplibre-gl';
@@ -122,7 +122,6 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    */
   public FINISH_DRAWING = marker('Double click to finish drawing');
   private POLYGON_LABEL_SOURCE = 'polygon_label';
-  private ICONS_BASE_PATH = 'assets/icons/';
   private offlineBasemapChangeSubscription!: Subscription;
   /**
    * @Input : Angular
@@ -245,7 +244,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @Input : Angular
    * @description List of mapboxgl sources to add to the map.
    */
-    // Todo: define comoon type to avoid repercution on wui.
+  // Todo: define comoon type to avoid repercution on wui.
   @Input() public mapSources: Array<MapSource>;
 
   /**
@@ -275,7 +274,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-    // TODO: find good transform request
+  // TODO: find good transform request
   @Input() public transformRequest: any;
 
   /**
@@ -292,7 +291,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * Origin is top-left and x axe is west to east and y axe north to south.
    */
   @Input() public offset: ArlasMapOffset =
-    {north: 0, east: 0, south: 0, west: 0};
+    { north: 0, east: 0, south: 0, west: 0 };
 
   /**
    * @Input : Angular
@@ -428,8 +427,8 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
   private drawBboxSubscription: Subscription;
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
-                     private basemapService: MapLibreBasemapService,
-                     private _snackBar: MatSnackBar, private translate: TranslateService) {
+    private basemapService: MapLibreBasemapService,
+    private _snackBar: MatSnackBar, private translate: TranslateService) {
 
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
@@ -615,7 +614,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
     if (e.features[0].properties.cluster_id !== undefined) {
       // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.map.flyTo({center:[e.lngLat.lng, e.lngLat.lat]}, expansionZoom);
+      this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat] }, expansionZoom);
     } else {
       const zoom = this.map.getZoom();
       let newZoom: number;
@@ -632,7 +631,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
       } else {
         newZoom = 12;
       }
-      this.map.flyTo({center:[e.lngLat.lng, e.lngLat.lat], zoom: newZoom}, );
+      this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom },);
     }
   }
 
@@ -640,7 +639,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
     const features = this.map.queryRenderedFeatures(e.point);
     const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
     if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-      this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+      this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
     }
   }
 
@@ -655,10 +654,10 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
       .map(id => layer.concat(id)))
       .reduce((p, ac) => ac.concat(p), []);
 
-    const config: ArlasMaplibreConfig ={
+    const config: ArlasMaplibreConfig = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
-      fitBoundsPadding:  this.fitBoundsPadding,
-      margePanForLoad:  this.margePanForLoad,
+      fitBoundsPadding: this.fitBoundsPadding,
+      margePanForLoad: this.margePanForLoad,
       margePanForTest: this.margePanForTest,
       visualisationSetsConfig: this.visualisationSetsConfig,
       offset: this.offset,
@@ -694,12 +693,12 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         },
       ],
       mapLayersEventBind: {
-        zoomOnClick: [{event: 'click', fn: this.defaultOnZoom}],
+        zoomOnClick: [{ event: 'click', fn: this.defaultOnZoom }],
         onHover: [
           {
             event: 'mousemove',
             fn: (e) => {
-              this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+              this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
             }
           },
           {
@@ -715,7 +714,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
             fn: this.queryRender
           }],
       },
-      mapProviderOptions:{
+      mapProviderOptions: {
         container: this.id,
         style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
         center: this.initCenter,
@@ -725,18 +724,18 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         renderWorldCopies: true,
         preserveDrawingBuffer: this.preserveDrawingBuffer,
         locale: {
-        'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
+          'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
           'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
           'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
-      },
-      pitchWithRotate: false,
+        },
+        pitchWithRotate: false,
         transformRequest: this.transformRequest,
         attributionControl: false,
-    },
+      },
       controls: {
         mapAttribution: {
           enable: true,
-          position: this.mapAttributionPosition
+          position: this.mapAttributionPosition,
         },
         scale: {
           enable: this.displayScale
@@ -746,7 +745,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         },
         pitchToggle: {
           enable: true,
-          config: {bearing: -20, pitch: 70, minpitchzoom: 11}
+          config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
         }
       }
     };
@@ -778,7 +777,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         }
       }
     };
-    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map);
+    this.draw = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map);
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
@@ -786,18 +785,18 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
 
     // TODO : to have to add event override
     const drawControlConfig: DrawControlsOption = {
-      draw: {control: this.draw.drawProvider},
+      draw: { control: this.draw.drawProvider },
       addGeoBox: {
         enable: true,
         overrideEvent:
-          {
-            event: 'click',
-            fn: this.addGeoBox
-          }
+        {
+          event: 'click',
+          fn: this.addGeoBox
+        }
       },
       removeAois: {
         enable: true,
-        overrideEvent: {event: 'click', fn: this.removeAois}
+        overrideEvent: { event: 'click', fn: this.removeAois }
       }
     };
     this.map.initDrawControls(drawControlConfig);
@@ -865,13 +864,13 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         this.finishDrawTooltip.style.left = (x + 20) + 'px';
       };
 
-      this.draw.onDrawOnClick( (e) => {
+      this.draw.onDrawOnClick((e) => {
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
         this.drawClickCounter++;
       });
-      this.draw.onDrawOnStart( (e) => {
+      this.draw.onDrawOnStart((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.map.setCursorStyle('');
@@ -882,7 +881,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         this.map.setCursorStyle('');
       });
 
-      this.draw.onDrawInvalidGeometry( (e) => {
+      this.draw.onDrawInvalidGeometry((e) => {
         if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
           if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
@@ -906,13 +905,13 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
         this.map.setCursorStyle('');
       });
 
-      this.draw.onDrawEditSaveInitialFeature( (edition) => {
+      this.draw.onDrawEditSaveInitialFeature((edition) => {
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
-      this.draw.onDrawSelectionchange( (e) => {
+      this.draw.onDrawSelectionchange((e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawSelected = true;
@@ -936,7 +935,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
           this.map.setCursorStyle('');
         }
       });
-      this.draw.onDrawModeChange( (e) => {
+      this.draw.onDrawModeChange((e) => {
         this.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
         this.isDrawingStrip = e.mode === this.draw.getMode('DIRECT_STRIP');
         this.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
@@ -1209,7 +1208,7 @@ export class MapglMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
       this.drawBboxSubscription.unsubscribe();
     }
 
-    if(!!this.map){
+    if (!!this.map) {
       this.map.unsubscribeEvents();
     }
   }

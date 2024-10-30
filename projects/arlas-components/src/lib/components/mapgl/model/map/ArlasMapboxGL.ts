@@ -23,7 +23,6 @@ import {
   BindLayerToEvent,
   ControlPosition,
   DrawControlsOption,
-  GEOJSON_SOURCE_TYPE,
   MapEventBinds,
   OnMoveResult,
   VisualisationSetConfig
@@ -40,14 +39,12 @@ import mapboxgl, {
   PointLike
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { MapSource } from './mapSource';
-import { ArlasAnyLayer, MapExtend, paddedBounds } from '../mapgl.component.util';
-import { ControlButton } from '../mapgl.component.control';
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './mapLayers';
-import { fromEvent, map } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { MapOverride } from './map.type';
-import { MapBoxControlButton, MapBoxPitchToggle } from '../mapgl-mapbox.component.control';
+import { MapSource } from '../mapSource';
+import { ArlasAnyLayer, MapExtend, paddedBounds } from '../../mapgl.component.util';
+import { ControlButton } from '../../controls/mapgl.component.control';
+import { MapLayers } from '../mapLayers';
+import { MapOverride } from '../map.type';
+import { MapBoxControlButton, MapBoxPitchToggle } from '../../controls/mapgl-mapbox.component.control';
 
 export interface ArlasMapGlConfig extends BaseMapGlConfig<MapboxOptions>  {
   mapLayers: MapLayers<AnyLayer>;

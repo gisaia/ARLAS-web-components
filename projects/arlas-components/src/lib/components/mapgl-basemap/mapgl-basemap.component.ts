@@ -24,11 +24,11 @@ import { MapSource } from '../mapgl/model/mapSource';
 import { MapglService } from '../../services/mapgl.service';
 import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
 import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
-import { AbstractArlasMapGL } from '../mapgl/model/AbstractArlasMapGL';
+import { AbstractArlasMapGL } from '../mapgl/model/map/AbstractArlasMapGL';
 import { BasemapService } from '../mapgl/basemaps/basemap.service';
 import { BaseMapglBasemapComponent } from './base-mapgl-basemap';
 import { MapboxBasemapService } from '../mapgl/basemaps/mapbox-basemap.service';
-import { ArlasMapboxGL, ArlasMapGlConfig } from '../mapgl/model/ArlasMapboxGL';
+import { ArlasMapboxGL, ArlasMapGlConfig } from '../mapgl/model/map/ArlasMapboxGL';
 
 @Component({
   selector: 'arlas-mapgl-basemap',
