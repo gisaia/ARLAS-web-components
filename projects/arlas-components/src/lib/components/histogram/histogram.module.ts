@@ -23,12 +23,14 @@ import { HistogramComponent } from './histogram.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HistogramKeyPipe } from './histogram-key.pipe';
+import { GetCollectionUnitModule } from '../../pipes/get-collection-unit/get-collection-unit.module';
 
 @NgModule({
   imports: [
     CommonModule,
     TranslateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    GetCollectionUnitModule
   ],
   declarations: [HistogramComponent, HistogramKeyPipe],
   exports: [HistogramComponent]
