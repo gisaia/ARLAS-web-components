@@ -176,6 +176,99 @@
           }
         }
       }
+    },
+    "arlas-mapbox": {
+      "projectType": "library",
+      "root": "projects/arlas-mapbox",
+      "sourceRoot": "projects/arlas-mapbox/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/arlas-mapbox/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/arlas-mapbox/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/arlas-mapbox/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/arlas-mapbox/src/test.ts",
+            "tsConfig": "projects/arlas-mapbox/tsconfig.spec.json",
+            "karmaConfig": "projects/arlas-mapbox/karma.conf.js"
+          }
+        }
+      }
+    },
+    "arlas-maplibre": {
+      "projectType": "library",
+      "root": "projects/arlas-maplibre",
+      "sourceRoot": "projects/arlas-maplibre/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/arlas-maplibre/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/arlas-maplibre/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/arlas-maplibre/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/arlas-maplibre/src/test.ts",
+            "tsConfig": "projects/arlas-maplibre/tsconfig.spec.json",
+            "karmaConfig": "projects/arlas-maplibre/karma.conf.js"
+          }
+        }
+      }
+    },
+    "arlas-map": {
+      "projectType": "library",
+      "root": "projects/arlas-map",
+      "sourceRoot": "projects/arlas-map/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/arlas-map/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/arlas-map/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/arlas-map/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/arlas-map/src/test.ts",
+            "tsConfig": "projects/arlas-map/tsconfig.spec.json",
+            "karmaConfig": "projects/arlas-map/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "schematics": {

@@ -6,6 +6,15 @@
       "arlas-components": [
         "dist/arlas-components/arlas-components",
         "dist/arlas-components"
+      ],
+      "arlas-map": [
+        "dist/arlas-map"
+      ],
+      "arlas-mapbox": [
+        "dist/arlas-mapbox"
+      ],
+      "arlas-maplibre": [
+        "dist/arlas-maplibre"
       ]
     },
     "outDir": "./dist/out-tsc",
