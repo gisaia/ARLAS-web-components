@@ -18,58 +18,61 @@
  */
 
 export interface MapLayers<T> {
-    layers: Array<T>;
-    externalEventLayers?: Array<ExternalEventLayer>;
-    events: LayerEvents;
-  }
-  
-  export interface LayerEvents {
-    onHover: Set<string>;
-    emitOnClick: Set<string>;
-    zoomOnClick: Set<string>;
-  }
-  
-  export interface ExternalEventLayer {
-    id: string;
-    on: ExternalEvent;
-  }
-  
-  export enum ExternalEvent {
-    select = 'select',
-    hover = 'hover'
-  }
-  
-  export interface FillStroke {
-    width?: PaintValue;
-    opacity?: number;
-    color?: PaintValue;
-  }
-  export interface LayerMetadata {
-    collection?: string;
-    collectionDisplayName?: string;
-    stroke?: FillStroke;
-    isScrollableLayer?: boolean;
-    hiddenProps?: MetadataHiddenProps;
-  }
-  export interface MetadataHiddenProps {
-    geomType?: string;
-  }
-  
-  export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
-  
-  export interface PaintColor {
-    property: string;
-    type: string;
-    stops: Array<Array<string>>;
-  }
-  
-  
-  export const HOVER_LAYER_PREFIX = 'arlas-hover-';
-  export const SELECT_LAYER_PREFIX = 'arlas-select-';
-  export const FILLSTROKE_LAYER_PREFIX = 'arlas-fill_stroke-';
-  export const SCROLLABLE_ARLAS_ID = 'scrollable_arlas_id:';
-  export const ARLAS_ID = 'arlas_id:';
-  export const ARLAS_VSET = ':arlas_vset:';
-  
-  
-  
+  layers: Array<T>;
+  externalEventLayers?: Array<ExternalEventLayer>;
+  events: LayerEvents;
+}
+
+export interface LayerEvents {
+  onHover: Set<string>;
+  emitOnClick: Set<string>;
+  zoomOnClick: Set<string>;
+}
+
+export interface ExternalEventLayer {
+  id: string;
+  on: ExternalEvent;
+}
+
+export enum ExternalEvent {
+  select = 'select',
+  hover = 'hover'
+}
+
+export interface FillStroke {
+  width?: PaintValue;
+  opacity?: number;
+  color?: PaintValue;
+}
+
+/** Metadata of a layer containing info about
+ * - the collection
+ * - whether it has an interaction with the resultlist (scrollable)
+ * - geomType for circle heatmap.
+ */
+export interface LayerMetadata {
+  collection?: string;
+  collectionDisplayName?: string;
+  stroke?: FillStroke;
+  isScrollableLayer?: boolean;
+  hiddenProps?: MetadataHiddenProps;
+}
+export interface MetadataHiddenProps {
+  geomType?: string;
+}
+
+export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
+
+export interface PaintColor {
+  property: string;
+  type: string;
+  stops: Array<Array<string>>;
+}
+
+
+export const HOVER_LAYER_PREFIX = 'arlas-hover-';
+export const SELECT_LAYER_PREFIX = 'arlas-select-';
+export const FILLSTROKE_LAYER_PREFIX = 'arlas-fill_stroke-';
+export const SCROLLABLE_ARLAS_ID = 'scrollable_arlas_id:';
+export const ARLAS_ID = 'arlas_id:';
+export const ARLAS_VSET = ':arlas_vset:';

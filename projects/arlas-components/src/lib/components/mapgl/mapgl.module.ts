@@ -32,7 +32,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { GetCollectionPipe, GetLayerPipe } from './mapgl.component.util';
-import { MapglBasemapModule } from '../mapgl-basemap/mapgl-basemap.module';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { CoordinatesComponent } from './coordinates/coordinates.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -51,7 +50,6 @@ import { MapglMaplibreComponent } from './mapgl-maplibre.component';
     MatRadioModule,
     TranslateModule,
     MapglLegendModule,
-    MapglBasemapModule,
     MatSnackBarModule,
     MatSlideToggleModule,
     MatTooltipModule,

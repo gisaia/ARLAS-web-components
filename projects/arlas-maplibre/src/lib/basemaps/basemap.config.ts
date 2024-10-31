@@ -17,26 +17,10 @@
  * under the License.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
-import { MapglBasemapComponent } from './mapgl-basemap.component';
-import { MaplibreglBasemapComponent } from './maplibregl-basemap.component';
 
-@NgModule({
-  declarations: [
-    MapglBasemapComponent,
-    MaplibreglBasemapComponent
-  ],
-  imports: [
-    CommonModule,
-    TranslateModule,
-    MatIconModule
-  ],
-  exports: [
-    MapglBasemapComponent,
-    MaplibreglBasemapComponent
-  ]
-})
-export class MapglBasemapModule { }
+import maplibre from 'maplibre-gl';
+import { BasemapStyle } from '../../../../arlas-map/src/lib/basemaps/basemap.config';
+
+export interface MapLibreBasemapStyle extends BasemapStyle{
+  styleFile: string | maplibre.StyleSpecification;
+}

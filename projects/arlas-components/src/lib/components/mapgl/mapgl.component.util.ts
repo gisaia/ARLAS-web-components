@@ -36,29 +36,6 @@ export function paddedBounds(npad: number, spad: number, epad: number,
   return [swWorld, neWorld];
 }
 
-export function project(lat: number, lng: number, zoom: number): { x: number; y: number; } {
-
-  const R = 6378137;
-  const sphericalScale = 0.5 / (Math.PI * R);
-  const d = Math.PI / 180;
-  const max = 1 - 1E-15;
-  const sin = Math.max(Math.min(Math.sin(lat * d), max), -max);
-  const scale = 256 * Math.pow(2, zoom);
-
-  const point = {
-    x: R * lng * d,
-    y: R * Math.log((1 + sin) / (1 - sin)) / 2
-  };
-
-  point.x = tiled(scale * (sphericalScale * point.x + 0.5));
-  point.y = tiled(scale * (-sphericalScale * point.y + 0.5));
-
-  return point;
-}
-
-function tiled(num: number): number {
-  return Math.floor(num / 256);
-}
 
 export interface MapExtend {
   bounds: number[][];

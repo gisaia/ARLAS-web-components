@@ -17,9 +17,21 @@
  * under the License.
  */
 
+import { ControlButton, PitchToggle } from "../../../../../arlas-map/src/lib/map/model/controls";
 
-/** Data source of a layer */
-export class ArlasMapSource<SourceType> {
-  public id: string;
-  public source: string | SourceType;
+
+export class MaplibrePitchToggle extends PitchToggle {
+  protected _buildClasses(){
+    this.btnClasses = ['maplibregl-ctrl-icon', 'maplibregl-ctrl-pitch'];
+    this.containerClasses = ['maplibregl-ctrl', 'maplibregl-ctrl-group', 'maplibregl-ctrl-group-pitch'];
+  }
+}
+
+
+export class MaplibreControlButton extends ControlButton {
+
+  protected  _buildClasses(){
+    this.btnClasses = ['maplibregl-ctrl-icon', 'map__controls__icons', 'map__controls__icons--' + this.name];
+    this.containerClasses = ['maplibregl-ctrl', 'maplibregl-ctrl-group', 'maplibregl-ctrl-group-' + this.name];
+  }
 }

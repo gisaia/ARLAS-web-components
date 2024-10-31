@@ -19,23 +19,21 @@
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs/internal/Subject';
-import mapboxgl, { AnyLayer } from 'mapbox-gl';
-import { MapSource } from '../mapgl/model/mapSource';
-import { MapglService } from '../../services/mapgl.service';
-import { BasemapStyle } from '../mapgl/basemaps/basemap.config';
-import { ArlasBasemaps } from '../mapgl/basemaps/basemaps';
-import { AbstractArlasMapGL } from '../mapgl/model/map/AbstractArlasMapGL';
-import { BasemapService } from '../mapgl/basemaps/basemap.service';
+import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
+import { ArlasMapSource } from '../map/model/sources';
+import { ArlasBasemaps } from './basemaps.model';
+import { BasemapService } from './basemap.service';
+import { BasemapStyle } from './basemap.config';
 
 @Component({
   selector: 'arlas-base-mapgl-basemap',
   template: '',
 })
-export class BaseMapglBasemapComponent implements OnInit {
+export class BasemapComponent implements OnInit {
   protected LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
   @Input() public map: AbstractArlasMapGL;
-  @Input() public mapSources: Array<MapSource>;
+  @Input() public mapSources: Array<ArlasMapSource<any>>;
 
   @Output() public basemapChanged = new EventEmitter<void>();
   @Output() public blur = new Subject<void>();
@@ -44,7 +42,7 @@ export class BaseMapglBasemapComponent implements OnInit {
   public basemaps: ArlasBasemaps;
 
 
-  public constructor(protected mapglService: MapglService, protected basemapService: BasemapService) { }
+  public constructor(protected basemapService: BasemapService) { }
 
   public ngOnInit(): void {
     this.initBasemaps();
@@ -100,7 +98,7 @@ export class BaseMapglBasemapComponent implements OnInit {
     }
     // TODO: Array to any try to find a good type or interface for all layer
     const layersToSave = new Array<any>();
-    const sourcesToSave = new Array<MapSource>();
+    const sourcesToSave = new Array<ArlasMapSource<any>>();
     layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
       layersToSave.push(l);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
@@ -120,7 +118,7 @@ export class BaseMapglBasemapComponent implements OnInit {
     this.map.setStyle(initStyle).once('styledata', () => {
       setTimeout(() => {
         /** the timeout fixes a mapboxgl bug related to layer placement*/
-        this.mapglService.addSourcesToMap(sourcesToSave, this.map);
+        this.map.addSourcesToMap(sourcesToSave);
         layersToSave.forEach(l => {
           if (!this.map.getLayer(l.id)) {
             this.map.addLayer(l);

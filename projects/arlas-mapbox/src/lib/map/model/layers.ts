@@ -17,20 +17,6 @@
  * under the License.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { MapglService } from '../../services/mapgl.service';
-import { BaseMapglBasemapComponent } from './base-mapgl-basemap';
-import { MapLibreBasemapService } from '../mapgl/basemaps/maplibre-basemap.service';
-import { ArlasMaplibreGL } from '../mapgl/model/ArlasMaplibreGL';
+import mapboxgl from 'mapbox-gl';
 
-@Component({
-  selector: 'arlas-maplibre-basemap',
-  templateUrl: './mapgl-basemap.component.html',
-  styleUrls: ['./mapgl-basemap.component.scss']
-})
-export class MaplibreglBasemapComponent extends BaseMapglBasemapComponent implements OnInit {
-  @Input() public map: ArlasMaplibreGL;
-  public constructor(protected mapglService: MapglService, protected basemapService: MapLibreBasemapService) {
-    super(mapglService, basemapService);
-  }
-}
+export type ArlasAnyLayer = mapboxgl.CircleLayer | mapboxgl.FillLayer | mapboxgl.HeatmapLayer | mapboxgl.LineLayer | mapboxgl.SymbolLayer;

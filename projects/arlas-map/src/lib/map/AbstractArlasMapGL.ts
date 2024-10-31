@@ -23,8 +23,11 @@ import { fromEvent, map, Observable, Subscription } from 'rxjs';
 
 import { debounceTime } from 'rxjs/operators';
 import { ArlasMapSource } from './model/sources';
-import { ControlsOption, IconConfig } from './model/controls';
+import { ControlPosition, ControlsOption, DrawControlsOption, IconConfig } from './model/controls';
 import { VisualisationSetConfig } from './model/visualisationsets';
+import { MapInterface } from './interface/map.interface';
+import { ElementIdentifier } from '../../../../arlas-components/src/public-api';
+import { MapExtent } from './model/extent';
 
 
 export interface MapEventBinds<T> {
@@ -110,7 +113,7 @@ export interface LngLat {
  *  - wrap of provider methode could be implemented in another class in middle of
  *  abstract class.
  */
-export abstract class AbstractArlasMapGL implements MapOverride {
+export abstract class AbstractArlasMapGL implements MapInterface {
   /**
    *  props and methods with unknown type will be specific to the map provider
    *  we used.
@@ -621,11 +624,12 @@ export abstract class AbstractArlasMapGL implements MapOverride {
       }));
   }
 
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
-  public abstract calcOffsetPoint(): any;
   protected abstract _initMapProvider(BaseMapGlConfig): void;
   protected abstract _initControls(): void;
   public abstract initDrawControls(config: DrawControlsOption): void;
+
+  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
+  public abstract calcOffsetPoint(): any;
   public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
@@ -641,8 +645,15 @@ export abstract class AbstractArlasMapGL implements MapOverride {
   public abstract getEastBounds(): any;
   public abstract setCursorStyle(cursor: string): void;
   public abstract getMapProvider(): any;
-  public abstract getMapExtend(): MapExtend;
+  public abstract getMapExtend(): MapExtent;
   public abstract onLoad(fn: () => void): void;
+
+  public abstract getBounds(): unknown;
+  public abstract resize(eventData?: unknown): this;
+  public abstract getMaxBounds(): unknown;
+  public abstract setMaxBounds(unknown?: unknown): this;
+  public abstract paddedBounds(npad: number, spad: number, epad: number,
+    wpad: number, map: any, SW, NE): LngLat[];
 
   public abstract getLayers(): any;
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
@@ -696,7 +707,7 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     }
   }
 
-  public addSourcesToMap(sources: Array<any>): void {
+  public addSourcesToMap(sources: Array<ArlasMapSource<any>>): void {
     // Add sources defined as input in mapSources;
     const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
     if (sources) {
@@ -837,11 +848,6 @@ export abstract class AbstractArlasMapGL implements MapOverride {
     this._eventSubscription.forEach(s => s.unsubscribe());
   }
 
-
-  public abstract getBounds(): unknown;
-  public abstract resize(eventData?: unknown): this;
-  public abstract getMaxBounds(): unknown;
-  public abstract setMaxBounds(unknown?: unknown): this;
   public getMaxZoom(): number {
     return this.getMapProvider().getMaxZoom();
   }
@@ -946,10 +952,5 @@ export abstract class AbstractArlasMapGL implements MapOverride {
 
     this.getColdOrHotLayers().forEach(id => this.moveLayer(id));
   }
-
-
-
-
-
 }
 

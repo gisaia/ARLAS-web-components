@@ -17,9 +17,12 @@
  * under the License.
  */
 
-
-/** Data source of a layer */
-export class ArlasMapSource<SourceType> {
-  public id: string;
-  public source: string | SourceType;
+export interface BasemapStyle {
+  name: string;
+  styleFile: any;
+  url?: string;
+  image?: string;
+  type?: 'protomap' | 'mapbox';
+  errored?: boolean;
 }
+

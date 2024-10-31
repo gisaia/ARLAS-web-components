@@ -17,9 +17,8 @@
  * under the License.
  */
 
+import mapboxgl from "mapbox-gl";
 
-/** Data source of a layer */
-export class ArlasMapSource<SourceType> {
-  public id: string;
-  public source: string | SourceType;
-}
+export type MapboxSourceType = mapboxgl.AnySourceData | mapboxgl.VectorSource | mapboxgl.RasterSource |
+mapboxgl.GeoJSONSource | mapboxgl.GeoJSONSourceRaw |
+mapboxgl.CanvasSource | mapboxgl.ImageSource | mapboxgl.VideoSource;

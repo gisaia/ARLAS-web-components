@@ -18,8 +18,9 @@
  */
 
 
-/** Data source of a layer */
-export class ArlasMapSource<SourceType> {
-  public id: string;
-  public source: string | SourceType;
+import mapboxgl from 'mapbox-gl';
+import { BasemapStyle } from '../../../../arlas-map/src/lib/basemaps/basemap.config';
+
+export interface MapboxBasemapStyle extends BasemapStyle {
+  styleFile: string | mapboxgl.Style;
 }

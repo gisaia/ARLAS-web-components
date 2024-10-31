@@ -17,9 +17,30 @@
  * under the License.
  */
 
+export interface AoiDimensions {
+  area: number;
+  areaMessage?: string;
+  show: boolean;
+  envelope: {
+    width: number;
+    height: number;
+  };
+}
 
-/** Data source of a layer */
-export class ArlasMapSource<SourceType> {
-  public id: string;
-  public source: string | SourceType;
+export interface EditionState {
+  enabled: boolean;
+  isDrawing: boolean;
+  isEditing: boolean;
+}
+
+export interface Corner {
+  lat: number;
+  lng: number;
+}
+
+export interface BboxDrawCommand {
+  east: number;
+  west: number;
+  north: number;
+  south: number;
 }
