@@ -76,3 +76,15 @@ export const FILLSTROKE_LAYER_PREFIX = 'arlas-fill_stroke-';
 export const SCROLLABLE_ARLAS_ID = 'scrollable_arlas_id:';
 export const ARLAS_ID = 'arlas_id:';
 export const ARLAS_VSET = ':arlas_vset:';
+
+/** FROM V15.0.0 layer ids look like 'arlas_id:NAME:timestamp
+   * This pipe extracts the 'NAME' in that id
+   */
+export function getLayerName(id: string): string {
+  if (!!id && id.startsWith(ARLAS_ID)) {
+    const datedName = id.split(ARLAS_ID)[1];
+    const undatedName = datedName.split(':')[0];
+    return undatedName;
+  }
+  return id;
+}
