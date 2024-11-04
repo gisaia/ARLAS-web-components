@@ -563,8 +563,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       this.isPreviousPageRequested = false;
 
       // If the selected item is not in the current list of items, close the detail
-      if (!(!!this.selectedGridItem && !!changes['rowItemList'].currentValue
-          && this.rowItemList.map(item => <string>item.get(this.fieldsConfiguration.idFieldName)).includes(this.selectedGridItem.identifier))) {
+      const selectedItemInData = this.rowItemList
+        .map(item => <string>item.get(this.fieldsConfiguration.idFieldName))
+        .includes(this.selectedGridItem.identifier);
+      if (!(!!this.selectedGridItem && !!changes['rowItemList'].currentValue && selectedItemInData)) {
         this.closeDetail(true);
       }
 
