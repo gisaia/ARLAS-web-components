@@ -5,6 +5,9 @@ import { httpLoaderFactory } from 'app/app.module';
 import { HttpClient } from '@angular/common/http';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatIconModule } from '@angular/material/icon';
+import { MapboxAoiDrawService } from '../../../arlas-map/src/lib/draw/draw.service';
+import { CommonModule } from '@angular/common';
+import { GetValueModule } from '../../../arlas-components/src/public-api';
 
 
 
@@ -21,8 +24,13 @@ import { MatIconModule } from '@angular/material/icon';
       }
     }),
     MatTooltipModule,
-    MatIconModule
-   ],
+    MatIconModule,
+    CommonModule,
+    GetValueModule
+  ],
+  providers: [
+    MapboxAoiDrawService
+  ],
   exports: [
     ArlasMaplibreComponent
   ]

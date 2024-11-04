@@ -19,12 +19,15 @@
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import {
-  ARLAS_VSET,
-  GeometrySelectModel, GeoQueryOperator, MapglComponent, MapglImportComponent, MapglSettingsComponent,
+  GeometrySelectModel, GeoQueryOperator,
+  MapglSettingsComponent,
   MapSettingsService, OperationSelectModel,
-  VisualisationSetConfig
 } from '../../../projects/arlas-components/src/public-api';
 import { Subject } from 'rxjs';
+import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
+import { ArlasMapComponent } from '../../../projects/arlas-map/src/public-api';
+import { ArlasMapboxComponent } from '../../../projects/arlas-mapbox/src/public-api';
+import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -33,8 +36,8 @@ import { Subject } from 'rxjs';
 })
 export class MapglDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: true }) public mapComponent: MapglComponent;
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapboxComponent;
+  // @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
 
   public modeChoice = 'all';
@@ -904,7 +907,7 @@ export class MapglDemoComponent implements OnInit {
 
   public onMapLoaded() {
     this.mapComponent.visibilityStatus = new Map();
-    this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET + 'arlas_id:Number of products:1677155990578', true);
+    this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET   + 'arlas_id:Number of products:1677155990578', true);
     this.mapComponent.visibilityStatus.set('Latest products' + ARLAS_VSET + 'arlas_id:Latest products:1677155839933', false);
   }
 }

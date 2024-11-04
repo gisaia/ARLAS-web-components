@@ -17,7 +17,20 @@
  * under the License.
  */
 
-export interface DrawEvents {
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import { Feature } from 'geojson';
+import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
+
+export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |
+  'draw.update' | 'draw.selectionchange' | 'draw.modechange' | 'draw.render' | 'draw.actionable' |
+  'draw.edit.saveInitialFeature' | 'draw.onClick' | 'draw.onStart' | 'draw.onStop'
+  | 'draw.invalidGeometry';
+
+export type DrawModes = 'SIMPLE_SELECT' | 'DRAW_CIRCLE' | 'DIRECT_SELECT' |
+  'DRAW_LINE_STRING' | 'DRAW_POLYGON' | 'DRAW_POINT' | 'DRAW_RADIUS_CIRCLE' |
+  'DRAW_STRIP' | 'DIRECT_STRIP';
+
+export interface DrawEventsInterface {
   onDrawCreate: (...args) => void;
   onDrawUpdate: (...args) => void;
   onDrawDelete: (...args) => void;
@@ -30,33 +43,191 @@ export interface DrawEvents {
   onDrawModeChange: (...args) => void;
 }
 
-export abstract class AbstractDraw implements DrawEvents {
+export class AbstractDraw implements DrawEventsInterface {
   protected config;
+  public arlasMap: AbstractArlasMapGL;
+  public enabled: boolean;
+  public drawProvider: MapboxDraw;
+  public constructor(config: any, enabled: boolean, map: AbstractArlasMapGL) {
+    console.log('init draw');
+    const modes = MapboxDraw.modes;
+    this.config = JSON.parse(JSON.stringify(config));
+    this.config.modes = Object.assign(modes, config.modes);
+    console.log('Draw config', this.config);
+    this.drawProvider = new MapboxDraw(this.config);
+    console.log('then');
+    this.arlasMap = map;
+    this.enabled = enabled;
 
-  public abstract getAllFeatures():  Array<unknown>;
 
-  public abstract onDrawCreate(args): void;
+  }
 
-  public abstract on(event: string, func: (e) => void): void;
 
-  public abstract onDrawDelete(args): void;
 
-  public abstract onDrawEditSaveInitialFeature(args): void;
+  public onAdd(map) {
+    const controlContainer = this.drawProvider.onAdd(map);
+    if (!this.enabled) {
+      controlContainer.className += ' draw-control-disabled';
+    }
+    return controlContainer;
+  }
 
-  public abstract onDrawInvalidGeometry(args): void;
+  public onRemove(map) {
+    return this.drawProvider.onRemove(map);
+  }
 
-  public abstract onDrawModeChange(args): void;
+  public setMode(drawModes: DrawModes, replaceMode: any) {
+    console.log(drawModes);
+    this.drawProvider.modes[drawModes] = replaceMode;
+  }
 
-  public abstract onDrawOnClick(args): void;
+  public getAllFeatures() {
+    return this.getAll().features;
+  }
 
-  public abstract onDrawOnStart(args): void;
+  public onDrawCreate(fn: (e) => void): void {
+    this.on('draw.create', (e) => {
+      fn(e);
+    });
+  }
 
-  public abstract onDrawOnStop(args): void;
+  public onDrawDelete(fn: (e) => void): void {
+    this.on('draw.delete', (e) => {
+      fn(e);
+    });
+  }
 
-  public abstract onDrawSelectionchange(args): void;
+  public onDrawEditSaveInitialFeature(fn: (e) => void): void {
+    this.on('draw.edit.saveInitialFeature', (e) => {
+      fn(e);
+    });
+  }
 
-  public abstract onDrawUpdate(args): void;
+  public onDrawInvalidGeometry(fn: (e) => void): void {
+    this.on('draw.invalidGeometry', (e) => {
+      fn(e);
+    });
+  }
 
-  public abstract setMode(mode: any,  replaceMode: string): void;
+  public onDrawModeChange(fn: (e) => void): void {
+    this.on('draw.modechange', (e) => {
+      fn(e);
+    });
+  }
+
+  public onDrawOnClick(fn: (e) => void): void {
+    this.on('draw.onClick', (e) => {
+      fn(e);
+    });
+  }
+
+  public onDrawOnStart(fn: (e) => void): void {
+    this.on('draw.onStart', (e) => {
+      fn(e);
+    });
+  }
+
+  public onDrawOnStop(fn: (e) => void): void {
+    this.on('draw.onStop', (e) => {
+      fn(e);
+    });
+  }
+
+  public onDrawSelectionchange(fn: (e) => void): void {
+    this.on('draw.selectionchange', (e) => {
+      fn(e);
+    });
+  }
+
+  public onDrawUpdate(fn: (e) => void): void {
+    this.on('draw.update', (e) => {
+      fn(e);
+    });
+  }
+
+  public getMode(modes: DrawModes) {
+    console.log(modes);
+    console.log(this.drawProvider.modes);
+    return this.drawProvider.modes[modes];
+  }
+
+  /**
+   * class wrapper
+   */
+
+  public on(event: DrawEvents, func: (e) => void): void {
+    this.arlasMap.on(event, func);
+  }
+
+
+  public add(features: any) {
+    this.drawProvider.add(features);
+  }
+
+  public get(featureId: string): Feature | undefined {
+    return this.drawProvider.get(featureId);
+  }
+
+
+  public delete(ids: string | Array<string>): AbstractDraw {
+    this.drawProvider.delete(ids);
+    return this;
+  }
+  public deleteAll(): AbstractDraw {
+    this.drawProvider.deleteAll();
+    return this;
+  }
+
+  public set(featureCollection: any): Array<string> {
+    return this.drawProvider.set(featureCollection);
+  }
+
+  public trash(): AbstractDraw {
+    this.drawProvider.trash();
+    return this;
+  }
+
+  public combineFeatures(): AbstractDraw {
+    this.drawProvider.combineFeatures();
+    return this;
+  }
+  public uncombineFeatures(): AbstractDraw {
+    this.drawProvider.uncombineFeatures();
+    return this;
+  }
+
+  public getCurrentMode(): string {
+    return this.drawProvider.getMode();
+  }
+
+  public getFeatureIdsAt(point: { x: number; y: number; }): Array<string> {
+    return this.drawProvider.getFeatureIdsAt(point);
+  }
+
+  public getSelectedIds(): Array<string> {
+    return this.drawProvider.getSelectedIds();
+  }
+
+  public getSelected() {
+    return this.drawProvider.getSelected();
+  }
+
+  public getAll() {
+    return this.drawProvider.getAll();
+  }
+
+  public getSelectedFeatures() {
+    return this.getSelected().features;
+  }
+
+  public setFeatureProperty(featureId: string, property: string, value: any): AbstractDraw {
+    this.drawProvider.setFeatureProperty(featureId, property, value);
+    return this;
+  }
+
+  public changeMode(mode: string, opt?: any): AbstractDraw {
+    this.drawProvider.changeMode(mode, opt);
+    return this;
+  }
 
 }

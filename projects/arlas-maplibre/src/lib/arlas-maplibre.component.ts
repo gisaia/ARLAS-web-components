@@ -35,15 +35,14 @@ import { fromEvent, Subject, Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { ArlasMaplibreConfig, ArlasMaplibreGL } from './map/ArlasMaplibreGL';
-import { ArlasDraw } from '../../../arlas-map/src/lib/draw/ArlasDraw';
 import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
-import maplibre, { TypedStyleLayer } from 'maplibre-gl';
+import maplibre, { RequestTransformFunction, TypedStyleLayer } from 'maplibre-gl';
 import { ARLAS_VSET, getLayerName, MapLayers } from '../../../arlas-map/src/lib/map/model/layers';
 import { BasemapStyle } from '../../../arlas-map/src/lib/basemaps/basemap.config';
 import { ElementIdentifier } from '../../../arlas-components/src/public-api';
 import { ArlasMapSource } from '../../../arlas-map/src/lib/map/model/sources';
 import { MaplibreSourceType } from './map/model/sources';
-import { ArlasMapOffset, OnMoveResult } from '../../../arlas-map/src/lib/map/AbstractArlasMapGL';
+import { ArlasMapOffset, CROSS_LAYER_PREFIX, OnMoveResult, RESET_BEARING, ZOOM_IN, ZOOM_OUT } from '../../../arlas-map/src/lib/map/AbstractArlasMapGL';
 import { LegendData } from '../../../arlas-map/src/lib/legend/legend.config';
 import { VisualisationSetConfig } from '../../../arlas-map/src/lib/map/model/visualisationsets';
 import { ControlPosition, DrawControlsOption, IconConfig } from '../../../arlas-map/src/lib/map/model/controls';
@@ -68,15 +67,8 @@ import directModeOverride from '../../../arlas-map/src/lib/draw/modes/directSele
 import simpleSelectModeOverride from '../../../arlas-map/src/lib/draw/modes/simpleSelectOverride';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import cleanCoords from '@turf/clean-coords';
+import { ArlasDraw } from './draw/ArlasDraw';
 
-export const CROSS_LAYER_PREFIX = 'arlas_cross';
-
-
-
-export const ZOOM_IN = marker('Zoom in');
-export const ZOOM_OUT = marker('Zoom out');
-export const RESET_BEARING = marker('Reset bearing to north');
-export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 
 
 /**
@@ -84,7 +76,7 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
  */
 
 @Component({
-  selector: 'arlas-mapglibre',
+  selector: 'arlas-maplibre',
   templateUrl: './arlas-maplibre.component.html',
   styleUrls: ['./arlas-maplibre.component.scss'],
   encapsulation: ViewEncapsulation.None
@@ -267,8 +259,7 @@ export class ArlasMaplibreComponent implements OnInit, AfterViewInit, OnChanges,
    * @Input : Angular
    * @description A callback run before the Map makes a request for an external URL, mapbox map option
    */
-  // TODO: find good transform request
-  @Input() public transformRequest: any;
+  @Input() public transformRequest: RequestTransformFunction;
 
   /**
    * @Input : Angular

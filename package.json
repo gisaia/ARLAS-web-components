@@ -10,7 +10,7 @@
     "build:stats": "ng build --stats-json",
     "test": "ng test arlas-web-components",
     "lint": "ng lint arlas-web-components",
-    "build-release": "ng build arlas-web-components --configuration production  && cp -r patches dist/arlas-web-components",
+    "build-release": "ng build arlas-web-components --configuration production && ng build arlas-map --configuration production  && cp -r patches dist/arlas-web-components",
     "e2e": "ng e2e",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "i18n:init": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",

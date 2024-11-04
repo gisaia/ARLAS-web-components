@@ -25,11 +25,11 @@ import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { ArlasDraw } from './ArlasDraw';
+import { AbstractDraw } from './AbstractDraw';
 
 @Injectable()
 export class MapboxAoiDrawService {
-  private mapDraw: ArlasDraw;
+  private mapDraw: AbstractDraw;
   private editionId: string;
   private registeringMode: boolean;
   private ids: Set<string> = new Set();
@@ -96,7 +96,7 @@ export class MapboxAoiDrawService {
     this.bboxEditionState.isEditing = false;
   }
 
-  public setMapboxDraw(mapboxDraw: ArlasDraw) {
+  public setMapboxDraw(mapboxDraw: AbstractDraw) {
     this.mapDraw = mapboxDraw;
     this.onSelectionChange();
     this.onRender();
@@ -273,7 +273,7 @@ export class MapboxAoiDrawService {
   }
 
   /** Gets the given feature from MapboxDraw object. */
-  private getFeature(featureId: string, mapDraw: ArlasDraw): Feature {
+  private getFeature(featureId: string, mapDraw: AbstractDraw): Feature {
     return mapDraw.get(featureId) as Feature;
   }
 

@@ -43,10 +43,6 @@ import {
   DonutModule,
   FormatLegendModule,
   HistogramModule,
-  MapglImportModule,
-  MapglLayerIconModule,
-  MapglLegendModule,
-  MapglModule,
   MapglSettingsModule,
   MetricModule,
   MetricsTableModule,
@@ -56,9 +52,6 @@ import {
   WmtsLayerManagertDialogComponent
 } from '../../projects/arlas-components/src/public-api';
 import {
-  MapglImportDialogComponent
-} from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
-import {
   MapglSettingsDialogComponent
 } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
 import {
@@ -67,6 +60,9 @@ import {
 import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
 import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-demo.component';
 import { MapglLibreDemoComponent } from "./mapgl-libre-demo/mapgl-libre-demo.component";
+import { ArlasMaplibreModule } from '../../projects/arlas-maplibre/src/public-api';
+import { ArlasMapboxModule } from '../../projects/arlas-mapbox/src/public-api';
+import { ArlasMapModule } from '../../projects/arlas-map/src/public-api';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -104,11 +100,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     CalendarTimelineModule,
     FormsModule,
-    MapglModule,
-    MapglImportModule,
     MapglSettingsModule,
-    MapglLegendModule,
-    MapglLayerIconModule,
     MatButtonModule,
     MatIconModule,
     MatRadioModule,
@@ -124,6 +116,9 @@ const routes: Routes = [
     PowerbarsModule,
     WmtsLayerManagerModule,
     HttpClientModule,
+    ArlasMaplibreModule,
+    ArlasMapboxModule,
+    ArlasMapModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -134,6 +129,6 @@ const routes: Routes = [
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
   bootstrap: [AppComponent],
-  entryComponents: [MapglImportDialogComponent, WmtsLayerManagertDialogComponent, MapglSettingsDialogComponent]
+  entryComponents: [WmtsLayerManagertDialogComponent, MapglSettingsDialogComponent]
 })
 export class AppModule { }

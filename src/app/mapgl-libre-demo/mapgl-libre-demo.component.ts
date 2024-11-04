@@ -19,15 +19,15 @@
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import {
-  ARLAS_VSET,
-  GeometrySelectModel, GeoQueryOperator, MapglComponent, MapglImportComponent, MapglSettingsComponent,
+  GeometrySelectModel, GeoQueryOperator, MapglSettingsComponent,
   MapSettingsService, OperationSelectModel,
-  VisualisationSetConfig
+  
 } from '../../../projects/arlas-components/src/public-api';
 import { Subject } from 'rxjs';
-import {
-  MapglMaplibreComponent
-} from "../../../projects/arlas-components/src/lib/components/mapgl/mapgl-maplibre.component";
+import { ArlasMaplibreComponent } from '../../../projects/arlas-maplibre/src/public-api';
+import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
+import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
+
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -36,8 +36,8 @@ import {
 })
 export class MapglLibreDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: true }) public mapComponent: MapglMaplibreComponent;
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMaplibreComponent;
+  // @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
 
   public modeChoice = 'all';

@@ -28,6 +28,7 @@ import { VisualisationSetConfig } from './model/visualisationsets';
 import { MapInterface } from './interface/map.interface';
 import { ElementIdentifier } from '../../../../arlas-components/src/public-api';
 import { MapExtent } from './model/extent';
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 
 export interface MapEventBinds<T> {
@@ -96,6 +97,12 @@ export interface LngLat {
   lng: number;
   lat: number;
 }
+
+export const CROSS_LAYER_PREFIX = 'arlas_cross';
+export const ZOOM_IN = marker('Zoom in');
+export const ZOOM_OUT = marker('Zoom out');
+export const RESET_BEARING = marker('Reset bearing to north');
+export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 
 /**
  *  The aim of this class is to handle all core interaction we have
