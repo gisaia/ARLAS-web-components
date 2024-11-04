@@ -105,6 +105,8 @@ export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
 export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
 export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
+export { GetFieldDisplayModule } from './lib/pipes/get-field-display-name/get-field-display.module';
+export { GetFieldDisplayNamePipe } from './lib/pipes/get-field-display-name/get-field-display-name.pipe';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';

@@ -18,7 +18,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-
+import { CollectionService } from '../../services/collection.service';
 export interface LegendParamsResult {
   translateKey: string;
   field?: string;
@@ -51,6 +51,9 @@ export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'n
   name: 'formatLegend'
 })
 export class FormatLegendPipe implements PipeTransform {
+
+  public constructor(private collectionService: CollectionService) {
+  }
   private readonly metrics: string[] = [
     marker('avg'),
     marker('sum'),
@@ -62,7 +65,7 @@ export class FormatLegendPipe implements PipeTransform {
 
   public transform(field: string): LegendParamsResult | null {
     let params: LegendParamsResult = {
-      translateKey: field,
+      translateKey: this.collectionService.getDisplayFieldName(field),
       format: 'original'
     };
 
@@ -95,7 +98,7 @@ export class FormatLegendPipe implements PipeTransform {
       const normalizedKey =  parts[2] ?? '';
       params = this.buildInterpolatedParams(params, metric, field, normalized, normalizedKey);
     } else if (parts[0].endsWith('_arlas__color')){
-      params.translateKey = params.translateKey.replace('_arlas__color', '');
+      params.translateKey = this.collectionService.getDisplayFieldName(params.translateKey.replace('_arlas__color', ''));
     }
 
     return params;
@@ -105,7 +108,7 @@ export class FormatLegendPipe implements PipeTransform {
       normalized: string, normalizedKey: string): LegendParamsResult {
     const legendParams: LegendParamsResult = {
       ...params,
-      field: field,
+      field: this.collectionService.getDisplayFieldName(field),
       normalized: '',
       metric,
     };

@@ -17,25 +17,17 @@
  * under the License.
  */
 
-import { AsyncPipe, CommonModule, KeyValuePipe, NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
+import { AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
-import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MetricsTableComponent } from './metrics-table.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
-import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.component';
 import { FormatLongTitlePipe } from '../../pipes/format-title/format-long-title.pipe';
 import { MetricsTableRowModule } from './multi-bars-row/metrics-table-row.module';
-
+import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-name/get-collection-display.module';
+import { GetFieldDisplayModule } from '../../pipes/get-field-display-name/get-field-display.module';
 @NgModule({
     imports: [
         PowerbarModule,
@@ -49,7 +41,9 @@ import { MetricsTableRowModule } from './multi-bars-row/metrics-table-row.module
         MetricsTableRowModule,
         FormatLongTitlePipe,
         AsyncPipe,
-        KeyValuePipe
+        KeyValuePipe,
+        GetCollectionDisplayModule,
+        GetFieldDisplayModule
     ],
     declarations: [MetricsTableComponent],
     exports: [MetricsTableComponent]
