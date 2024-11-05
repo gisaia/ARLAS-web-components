@@ -17,7 +17,19 @@ export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { AbstractDraw } from './lib/draw/AbstractDraw'
 export { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './lib/draw/draw.models'
 export { MapboxAoiDrawService } from './lib/draw/draw.service'
-export { AbstractArlasMapGL } from './lib/map/AbstractArlasMapGL'
+export { limitVertexDirectSelectMode } from './lib/draw/modes/LimitVertexDirectSelectMode'
+export { validGeomDrawPolygonMode } from './lib/draw/modes/ValidGeomDrawPolygonMode'
+export { directModeOverride } from './lib/draw/modes/directSelectOverride'
+export { simpleSelectModeOverride } from './lib/draw/modes/simpleSelectOverride'
+export { circleMode } from './lib/draw/modes/circles/circle.mode'
+export { radiusCircleMode } from './lib/draw/modes/circles/radius.circle.mode'
+export { createSupplementaryPointsForCircle, dragPan } from './lib/draw/modes/circles/utils'
+export { stripDirectSelectMode } from './lib/draw/modes/strip/strip.direct.mode'
+export { stripMode } from './lib/draw/modes/strip/strip.mode'
+export { AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
+  BindLayerToEvent, ElementIdentifier, GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP, LngLat,
+  MapConfig, MapEventBinds, OnMoveResult, RESET_BEARING, ZOOM_IN, ZOOM_OUT
+ } from './lib/map/AbstractArlasMapGL'
 export { MapInterface } from './lib/map/interface/map.interface'
 export {
   ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl,
@@ -31,4 +43,6 @@ export {
 } from './lib/map/model/layers'
 export { ArlasMapSource } from './lib/map/model/sources'
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets'
+export { Legend, LegendData } from './lib/legend/legend.config'
+export * as styles from './lib/draw/themes/default-theme'
 

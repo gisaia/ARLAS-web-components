@@ -26,10 +26,13 @@ import { ArlasMapSource } from './model/sources';
 import { ControlPosition, ControlsOption, DrawControlsOption, IconConfig } from './model/controls';
 import { VisualisationSetConfig } from './model/visualisationsets';
 import { MapInterface } from './interface/map.interface';
-import { ElementIdentifier } from '../../../../arlas-components/src/public-api';
 import { MapExtent } from './model/extent';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
+export interface ElementIdentifier {
+  idFieldName: string;
+  idValue: string;
+}
 
 export interface MapEventBinds<T> {
   event: T;
@@ -642,6 +645,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
   protected abstract _getMoveEnd(): OnMoveResult;
   public abstract paddedFitBounds(bounds: any, options?: any);
+  public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
   public abstract enableDragPan(): void;
   public abstract disableDragPan(): void;
   public abstract getWestBounds(): any;

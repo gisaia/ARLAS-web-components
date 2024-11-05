@@ -20,7 +20,7 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as jsts from 'jsts/dist/jsts.min';
 
-const limitVertexDirectSelectMode = MapboxDraw.modes.direct_select;
+export const limitVertexDirectSelectMode = MapboxDraw.modes.direct_select;
 const reader = new jsts.io.GeoJSONReader();
 
 limitVertexDirectSelectMode.fireInvalidGeom = function (feature) {

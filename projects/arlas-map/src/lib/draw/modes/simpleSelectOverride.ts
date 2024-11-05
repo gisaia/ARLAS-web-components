@@ -21,7 +21,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { createSupplementaryPointsForCircle } from './circles/utils';
 
 
-const simpleSelectModeOverride = MapboxDraw.modes.simple_select;
+export const simpleSelectModeOverride = MapboxDraw.modes.simple_select;
 
 simpleSelectModeOverride.dragMove = function (state, e) {
     // Dragging when drag move is enabled

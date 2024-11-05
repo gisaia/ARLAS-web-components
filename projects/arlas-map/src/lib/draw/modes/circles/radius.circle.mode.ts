@@ -21,7 +21,8 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import circle from '@turf/circle';
 import length from '@turf/length';
 import numeral from 'numeral';
-const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
+
+export const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
 
 radiusCircleMode.fireOnStop = function () {

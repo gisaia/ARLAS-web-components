@@ -44,14 +44,15 @@ import maplibregl, {
   StyleSpecification,
   TypedStyleLayer
 } from 'maplibre-gl';
-import { AbstractArlasMapGL, BindLayerToEvent, MapConfig, MapEventBinds, OnMoveResult } from '../../../../arlas-map/src/lib/map/AbstractArlasMapGL';
-import { MapLayers } from '../../../../arlas-map/src/lib/map/model/layers';
+import { AbstractArlasMapGL, BindLayerToEvent, MapConfig, MapEventBinds, OnMoveResult } from 'arlas-map';
+import { MapLayers } from 'arlas-map';
 import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
-import { ControlButton, DrawControlsOption } from '../../../../arlas-map/src/lib/map/model/controls';
-import { VisualisationSetConfig } from '../../../../arlas-map/src/lib/map/model/visualisationsets';
-import { MapExtent } from '../../../../arlas-map/src/lib/map/model/extent';
-import { ArlasMapSource } from '../../../../arlas-map/src/lib/map/model/sources';
+import { ControlButton, DrawControlsOption } from 'arlas-map';
+import { VisualisationSetConfig } from 'arlas-map';
+import { MapExtent } from 'arlas-map';
+import { ArlasMapSource } from 'arlas-map';
 import { MaplibreSourceType } from './model/sources';
+import bbox from '@turf/bbox';
 
 
 
@@ -374,6 +375,37 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
   public onLoad(fn: () => void): void {
     this.getMapProvider().on('load', fn);
+  }
+
+
+  /** Gets bounds of the given geometry */
+  public geometryToBound(geometry: any, paddingPercentage?: number): unknown {
+    const boundingBox: any = bbox(geometry);
+    let west = boundingBox[0];
+    let south = boundingBox[1];
+    let east = boundingBox[2];
+    let north = boundingBox[3];
+    if (paddingPercentage !== undefined) {
+      let width = east - west;
+      let height = north - south;
+      /** if there is one hit, then west=east ===> we consider a width of 0.05°*/
+      if (width === 0) {
+        width = 0.05;
+      }
+      /** if there is one hit, then north=south ===> we consider a height of 0.05°*/
+      if (height === 0) {
+        height = 0.05;
+      }
+      west = west - paddingPercentage * width;
+      south = Math.max(-90, south - paddingPercentage * height);
+      east = east + paddingPercentage * width;
+      north = Math.min(90, north + paddingPercentage * height);
+    }
+    const maplibreBounds = new LngLatBounds(
+      new LngLat(west, south),
+      new LngLat(east, north)
+    );
+    return maplibreBounds;
   }
 
   public paddedFitBounds(bounds: LngLatBounds, options?: maplibregl.FitBoundsOptions) {

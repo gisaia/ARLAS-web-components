@@ -21,7 +21,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import circle from '@turf/circle';
 
 
-const circleMode = { ...MapboxDraw.modes.draw_polygon };
+export const circleMode = { ...MapboxDraw.modes.draw_polygon };
 const DEFAULT_RADIUS_IN_KM = 2;
 
 circleMode.onSetup = function (opts) {

@@ -18,10 +18,10 @@
  */
 
 import { Component, Input, OnInit } from '@angular/core';
-import { BasemapComponent } from '../../../../arlas-map/src/lib/basemaps/basemap.component';
+import { BasemapComponent } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 import { MapLibreBasemapService } from './maplibre-basemap.service';
-import { ArlasMapSource } from '../../../../arlas-map/src/lib/map/model/sources';
+import { ArlasMapSource } from 'arlas-map';
 import { MaplibreSourceType } from '../map/model/sources';
 
 @Component({

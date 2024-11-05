@@ -19,7 +19,7 @@
 
 
 import mapboxgl from 'mapbox-gl';
-import { BasemapStyle } from '../../../../arlas-map/src/lib/basemaps/basemap.config';
+import { BasemapStyle } from 'arlas-map';
 
 export interface MapboxBasemapStyle extends BasemapStyle {
   styleFile: string | mapboxgl.Style;

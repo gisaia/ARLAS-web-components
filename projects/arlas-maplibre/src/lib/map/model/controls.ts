@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ControlButton, PitchToggle } from "../../../../../arlas-map/src/lib/map/model/controls";
+import { ControlButton, PitchToggle } from 'arlas-map';
 
 
 export class MaplibrePitchToggle extends PitchToggle {

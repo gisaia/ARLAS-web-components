@@ -3,5 +3,6 @@
   "dest": "../../dist/arlas-maplibre",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["arlas-map", "."]
 }

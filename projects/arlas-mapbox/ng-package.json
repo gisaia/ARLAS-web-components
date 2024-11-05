@@ -3,5 +3,6 @@
   "dest": "../../dist/arlas-mapbox",
   "lib": {
     "entryFile": "src/public-api.ts"
-  }
+  },
+  "allowedNonPeerDependencies": ["arlas-map", "."]
 }

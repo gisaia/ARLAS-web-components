@@ -19,7 +19,7 @@
 
 
 import maplibre from 'maplibre-gl';
-import { BasemapStyle } from '../../../../arlas-map/src/lib/basemaps/basemap.config';
+import { BasemapStyle } from 'arlas-map';
 
 export interface MapLibreBasemapStyle extends BasemapStyle{
   styleFile: string | maplibre.StyleSpecification;

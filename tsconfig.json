@@ -4,21 +4,23 @@
     "importHelpers": true,
     "paths": {
       "arlas-components": [
-        "dist/arlas-components/arlas-components",
-        "dist/arlas-components"
+        "dist/arlas-web-components",
+        "projects/arlas-components/src/public-api.ts",
       ],
       "arlas-map": [
-        "dist/arlas-map"
+        "dist/arlas-map",
+        "projects/arlas-map/src/public-api.ts",
       ],
       "arlas-mapbox": [
-        "dist/arlas-mapbox"
+        "projects/arlas-mapbox/src/public-api.ts"
       ],
       "arlas-maplibre": [
         "dist/arlas-maplibre"
       ]
     },
     "outDir": "./dist/out-tsc",
-    "baseUrl": "src",
+    "baseUrl": "./",
+    "rootDir": "./",
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",

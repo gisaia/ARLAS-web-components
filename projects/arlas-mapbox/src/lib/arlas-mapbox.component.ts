@@ -5,35 +5,35 @@ import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/he
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { finalize, fromEvent, Subject, Subscription } from 'rxjs';
 import mapboxgl, { AnyLayer, TransformRequestFunction } from 'mapbox-gl';
-import { ARLAS_VSET, getLayerName, MapLayers } from '../../../arlas-map/src/lib/map/model/layers';
-import { BasemapStyle } from '../../../arlas-map/src/lib/basemaps/basemap.config';
-import { ElementIdentifier } from '../../../arlas-components/src/public-api';
-import { ArlasMapSource } from '../../../arlas-map/src/lib/map/model/sources';
+import { ARLAS_VSET, getLayerName, MapLayers } from 'arlas-map';
+import { BasemapStyle } from 'arlas-map';
+import { ElementIdentifier } from 'arlas-map';
+import { ArlasMapSource } from 'arlas-map';
 import { MapboxSourceType } from './map/model/sources';
-import { ArlasMapOffset, CROSS_LAYER_PREFIX, OnMoveResult, RESET_BEARING, ZOOM_IN, ZOOM_OUT } from '../../../arlas-map/src/lib/map/AbstractArlasMapGL';
-import { LegendData } from '../../../arlas-map/src/lib/legend/legend.config';
-import { VisualisationSetConfig } from '../../../arlas-map/src/lib/map/model/visualisationsets';
-import { ControlPosition, DrawControlsOption, IconConfig } from '../../../arlas-map/src/lib/map/model/controls';
-import { MapExtent } from '../../../arlas-map/src/lib/map/model/extent';
-import { AoiDimensions, BboxDrawCommand } from '../../../arlas-map/src/lib/draw/draw.models';
+import { ArlasMapOffset, CROSS_LAYER_PREFIX, OnMoveResult, RESET_BEARING, ZOOM_IN, ZOOM_OUT } from 'arlas-map';
+import { LegendData } from 'arlas-map';
+import { VisualisationSetConfig } from 'arlas-map';
+import { ControlPosition, DrawControlsOption, IconConfig } from 'arlas-map';
+import { MapExtent } from 'arlas-map';
+import { AoiDimensions, BboxDrawCommand } from 'arlas-map';
 import { HttpClient } from '@angular/common/http';
-import { MapboxAoiDrawService } from '../../../arlas-map/src/lib/draw/draw.service';
+import { MapboxAoiDrawService } from 'arlas-map';
 import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import centroid from '@turf/centroid';
-import { ArlasBasemaps } from '../../../arlas-map/src/lib/basemaps/basemaps.model';
-import * as styles from '../../../arlas-map/src/lib/draw/themes/default-theme';
+import { ArlasBasemaps } from 'arlas-map';
+import { styles } from 'arlas-map';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
-import limitVertexDirectSelectMode from '../../../arlas-map/src/lib/draw/modes/LimitVertexDirectSelectMode';
-import validGeomDrawPolygonMode from '../../../arlas-map/src/lib/draw/modes/ValidGeomDrawPolygonMode';
-import circleMode from '../../../arlas-map/src/lib/draw/modes/circles/circle.mode';
-import radiusCircleMode from '../../../arlas-map/src/lib/draw/modes/circles/radius.circle.mode';
-import stripMode from '../../../arlas-map/src/lib/draw/modes/strip/strip.mode';
-import { stripDirectSelectMode } from '../../../arlas-map/src/lib/draw/modes/strip/strip.direct.mode';
-import directModeOverride from '../../../arlas-map/src/lib/draw/modes/directSelectOverride';
-import simpleSelectModeOverride from '../../../arlas-map/src/lib/draw/modes/simpleSelectOverride';
+import { limitVertexDirectSelectMode } from 'arlas-map';
+import { validGeomDrawPolygonMode } from 'arlas-map';
+import { circleMode } from 'arlas-map';
+import { radiusCircleMode } from 'arlas-map';
+import { stripMode } from 'arlas-map';
+import { stripDirectSelectMode } from 'arlas-map';
+import { directModeOverride } from 'arlas-map';
+import { simpleSelectModeOverride } from 'arlas-map';
 import cleanCoords from '@turf/clean-coords';
 
 @Component({
@@ -46,7 +46,6 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
 
   public map: ArlasMapboxGL;
   public draw: ArlasDraw;
-  public zoom: number;
   public legendOpen = true;
   // GeometryCollection ?
   private emptyData: FeatureCollection<GeoJSON.Geometry> = {
@@ -236,7 +235,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
    * Origin is top-left and x axe is west to east and y axe north to south.
    */
   @Input() public offset: ArlasMapOffset =
-    {north: 0, east: 0, south: 0, west: 0};
+    { north: 0, east: 0, south: 0, west: 0 };
 
   /**
    * @Input : Angular
@@ -372,8 +371,8 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
   private drawBboxSubscription: Subscription;
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
-                     private basemapService: MapboxBasemapService,
-                     private _snackBar: MatSnackBar, private translate: TranslateService) {
+    private basemapService: MapboxBasemapService,
+    private _snackBar: MatSnackBar, private translate: TranslateService) {
 
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
@@ -489,8 +488,8 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
           this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         }
         this.drawSelectionChanged = false;
-        if (this.map.getSource(this.POLYGON_LABEL_SOURCE) !== undefined) {
-          (this.map.getSource(this.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
+        if (this.map.getSource(this.map.POLYGON_LABEL_SOURCE) !== undefined) {
+          (this.map.getSource(this.map.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -557,7 +556,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
     if (e.features[0].properties.cluster_id !== undefined) {
       // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.map.flyTo({center:[e.lngLat.lng, e.lngLat.lat]}, expansionZoom);
+      this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat] }, expansionZoom);
     } else {
       const zoom = this.map.getZoom();
       let newZoom: number;
@@ -574,7 +573,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
       } else {
         newZoom = 12;
       }
-      this.map.flyTo({center:[e.lngLat.lng, e.lngLat.lat], zoom: newZoom}, );
+      this.map.flyTo({ center: [e.lngLat.lng, e.lngLat.lat], zoom: newZoom },);
     }
   }
 
@@ -582,7 +581,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
     const features = this.map.queryRenderedFeatures(e.point);
     const hasCrossOrDrawLayer = (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
     if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-      this.onFeatureClic.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+      this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
     }
   }
 
@@ -599,8 +598,8 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
 
     const config: ArlasMapGlConfig = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
-      fitBoundsPadding:  this.fitBoundsPadding,
-      margePanForLoad:  this.margePanForLoad,
+      fitBoundsPadding: this.fitBoundsPadding,
+      margePanForLoad: this.margePanForLoad,
       margePanForTest: this.margePanForTest,
       visualisationSetsConfig: this.visualisationSetsConfig,
       offset: this.offset,
@@ -612,12 +611,12 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
       mapSources: this.mapSources,
       unitScale: this.unitScale,
       mapLayersEventBind: {
-        zoomOnClick: [{event: 'click', fn: this.defaultOnZoom}],
+        zoomOnClick: [{ event: 'click', fn: this.defaultOnZoom }],
         onHover: [
           {
             event: 'mousemove',
             fn: (e) => {
-              this.onFeatureOver.next({features: e.features, point: [e.lngLat.lng, e.lngLat.lat]});
+              this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
             }
           },
           {
@@ -688,7 +687,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
         },
         pitchToggle: {
           enable: true,
-          config: {bearing: -20, pitch: 70, minpitchzoom: 11}
+          config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
         }
       }
     };
@@ -720,7 +719,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
         }
       }
     };
-    this.draw  = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map);
+    this.draw = new ArlasDraw(drawOptions, this.drawButtonEnabled, this.map);
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
@@ -728,18 +727,18 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
 
     // TODO : to have to add event override
     const drawControlConfig: DrawControlsOption = {
-      draw: {control: this.draw.drawProvider},
+      draw: { control: this.draw.drawProvider },
       addGeoBox: {
         enable: true,
         overrideEvent:
-          {
-            event: 'click',
-            fn: this.addGeoBox
-          }
+        {
+          event: 'click',
+          fn: this.addGeoBox
+        }
       },
       removeAois: {
         enable: true,
-        overrideEvent: {event: 'click', fn: this.removeAois}
+        overrideEvent: { event: 'click', fn: this.removeAois }
       }
     };
     this.map.initDrawControls(drawControlConfig);
@@ -810,13 +809,13 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
         this.finishDrawTooltip.style.left = (x + 20) + 'px';
       };
 
-      this.draw.onDrawOnClick( (e) => {
+      this.draw.onDrawOnClick((e) => {
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
         this.drawClickCounter++;
       });
-      this.draw.onDrawOnStart( (e) => {
+      this.draw.onDrawOnStart((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.map.setCursorStyle('');
@@ -827,7 +826,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
         this.map.setCursorStyle('');
       });
 
-      this.draw.onDrawInvalidGeometry( (e) => {
+      this.draw.onDrawInvalidGeometry((e) => {
         if (this.savedEditFeature) {
           const featureCoords = this.savedEditFeature.coordinates[0].slice();
           if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
@@ -851,13 +850,13 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
         this.map.setCursorStyle('');
       });
 
-      this.draw.onDrawEditSaveInitialFeature( (edition) => {
+      this.draw.onDrawEditSaveInitialFeature((edition) => {
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
-      this.draw.onDrawSelectionchange( (e) => {
+      this.draw.onDrawSelectionchange((e) => {
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawSelected = true;
@@ -881,7 +880,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
           this.map.setCursorStyle('');
         }
       });
-      this.draw.onDrawModeChange( (e) => {
+      this.draw.onDrawModeChange((e) => {
         this.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
         this.isDrawingStrip = e.mode === this.draw.getMode('DIRECT_STRIP');
         this.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
@@ -1154,7 +1153,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
       this.drawBboxSubscription.unsubscribe();
     }
 
-    if(!!this.map){
+    if (!!this.map) {
       this.map.unsubscribeEvents();
     }
   }

@@ -24,7 +24,7 @@ import rhumbBearing from '@turf/rhumb-bearing';
 import length from '@turf/length';
 import transformRotate from '@turf/transform-rotate';
 
-const stripMode = { ...MapboxDraw.modes.draw_line_string };
+export const stripMode = { ...MapboxDraw.modes.draw_line_string };
 
 function createVertex(parentId, coordinates, path, selected) {
     return {

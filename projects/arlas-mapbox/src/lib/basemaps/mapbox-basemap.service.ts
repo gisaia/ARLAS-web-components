@@ -23,7 +23,7 @@ import { MapboxBasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { BasemapService } from '../../../../arlas-map/src/lib/basemaps/basemap.service';
+import { BasemapService } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
 

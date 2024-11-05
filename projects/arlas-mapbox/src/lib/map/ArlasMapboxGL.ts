@@ -23,13 +23,14 @@ import {
   MapConfig,
   MapEventBinds,
   OnMoveResult,
-} from '../../../../arlas-map/src/lib/map/AbstractArlasMapGL';
+} from 'arlas-map';
 import mapboxgl, {
   AnyLayer,
   AnySourceData,
   Control,
   IControl,
   LngLat,
+  LngLatBounds,
   LngLatBoundsLike,
   MapboxOptions,
   MapLayerEventType,
@@ -37,14 +38,14 @@ import mapboxgl, {
   PointLike
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { MapLayers } from '../../../../arlas-map/src/lib/map/model/layers';
+import { MapLayers, VisualisationSetConfig,
+  ControlButton, ControlPosition, DrawControlsOption,
+  MapExtent, ArlasMapSource
+ } from 'arlas-map';
 import { ArlasAnyLayer } from './model/layers';
-import { VisualisationSetConfig } from '../../../../arlas-map/src/lib/map/model/visualisationsets';
-import { ControlButton, ControlPosition, DrawControlsOption } from '../../../../arlas-map/src/lib/map/model/controls';
-import { MapExtent } from '../../../../arlas-map/src/lib/map/model/extent';
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
-import { ArlasMapSource } from '../../../../arlas-map/src/lib/map/model/sources';
 import { MapboxSourceType } from './model/sources';
+import bbox from '@turf/bbox';
 
 
 // todo : rename to mapboxConfig
@@ -357,6 +358,36 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
         });
       });
     });
+  }
+
+  /** Gets bounds of the given geometry */
+  public geometryToBound(geometry: any, paddingPercentage?: number): unknown {
+    const boundingBox: any = bbox(geometry);
+    let west = boundingBox[0];
+    let south = boundingBox[1];
+    let east = boundingBox[2];
+    let north = boundingBox[3];
+    if (paddingPercentage !== undefined) {
+      let width = east - west;
+      let height = north - south;
+      /** if there is one hit, then west=east ===> we consider a width of 0.05°*/
+      if (width === 0) {
+        width = 0.05;
+      }
+      /** if there is one hit, then north=south ===> we consider a height of 0.05°*/
+      if (height === 0) {
+        height = 0.05;
+      }
+      west = west - paddingPercentage * width;
+      south = Math.max(-90, south - paddingPercentage * height);
+      east = east + paddingPercentage * width;
+      north = Math.min(90, north + paddingPercentage * height);
+    }
+    const mapboxBounds = new LngLatBounds(
+      new LngLat(west, south),
+      new LngLat(east, north)
+    );
+    return mapboxBounds;
   }
 
   public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {

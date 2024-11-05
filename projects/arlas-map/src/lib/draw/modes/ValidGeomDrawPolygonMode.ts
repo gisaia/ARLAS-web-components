@@ -20,7 +20,7 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import * as jsts from 'jsts/dist/jsts.min';
 
-const validGeomDrawPolygonMode = MapboxDraw.modes.draw_polygon;
+export const validGeomDrawPolygonMode = MapboxDraw.modes.draw_polygon;
 const reader = new jsts.io.GeoJSONReader();
 
 validGeomDrawPolygonMode.fireInvalidGeom = function (feature) {

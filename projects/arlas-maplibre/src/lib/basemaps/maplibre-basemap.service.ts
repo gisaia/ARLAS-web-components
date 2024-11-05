@@ -24,7 +24,7 @@ import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import maplibre, { GetResourceResponse, RequestParameters, VectorSourceSpecification } from 'maplibre-gl';
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
-import { BasemapService } from '../../../../arlas-map/src/lib/basemaps/basemap.service';
+import { BasemapService } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 
 @Injectable({

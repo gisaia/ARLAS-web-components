@@ -24,6 +24,7 @@ import { ArlasMapSource } from '../map/model/sources';
 import { ArlasBasemaps } from './basemaps.model';
 import { BasemapService } from './basemap.service';
 import { BasemapStyle } from './basemap.config';
+import mapboxgl from 'mapbox-gl';
 
 @Component({
   selector: 'arlas-base-mapgl-basemap',

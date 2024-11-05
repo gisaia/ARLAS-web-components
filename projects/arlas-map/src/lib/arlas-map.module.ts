@@ -5,7 +5,7 @@ import { ArlasMapComponent } from './arlas-map.component';
 
 @NgModule({
   declarations: [
-    ArlasMapComponent
+    ArlasMapComponent,
   ],
   imports: [
   ],

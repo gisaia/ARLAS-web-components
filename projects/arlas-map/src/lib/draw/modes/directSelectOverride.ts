@@ -24,7 +24,7 @@ import distance from '@turf/distance';
 import { createSupplementaryPointsForCircle } from './circles/utils';
 
 
-const directModeOverride = MapboxDraw.modes.direct_select;
+export const directModeOverride = MapboxDraw.modes.direct_select;
 
 directModeOverride.dragFeature = function (state, e, delta) {
     MapboxDraw.lib.moveFeatures(this.getSelected(), delta);

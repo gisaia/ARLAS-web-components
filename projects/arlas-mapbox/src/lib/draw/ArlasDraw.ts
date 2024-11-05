@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AbstractDraw } from "../../../../arlas-map/src/lib/draw/AbstractDraw";
+import { AbstractDraw } from "arlas-map";
 import { ArlasMapboxGL } from "../map/ArlasMapboxGL";
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 

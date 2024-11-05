@@ -15,7 +15,7 @@
         </div>
         <div class="map__visu-content" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
           <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer"
-            [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) | getValue:visibilityStatus) !== true">
+            [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) ) !== true">
             <div cdkDragHandle class="map__visu-layer-drag">
               <mat-icon>drag_indicator</mat-icon>
             </div>
