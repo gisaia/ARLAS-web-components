@@ -5,6 +5,7 @@
 export * from './lib/arlas-map.service';
 export * from './lib/arlas-map.component';
 export * from './lib/arlas-map.module';
+export { CoordinatesComponent } from './lib/coordinates/coordinates.component';
 export { BasemapComponent } from './lib/basemaps/basemap.component';
 export { BasemapStyle } from './lib/basemaps/basemap.config';
 export { BasemapService } from './lib/basemaps/basemap.service';
@@ -45,4 +46,6 @@ export { ArlasMapSource } from './lib/map/model/sources'
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets'
 export { Legend, LegendData } from './lib/legend/legend.config'
 export * as styles from './lib/draw/themes/default-theme'
+export { ArlasMapComponent } from './lib/arlas-map.component'
+export { ArlasMapService } from './lib/arlas-map.service'
 

@@ -96,7 +96,7 @@ export class MapboxAoiDrawService {
     this.bboxEditionState.isEditing = false;
   }
 
-  public setMapboxDraw(mapboxDraw: AbstractDraw) {
+  public setDraw(mapboxDraw: AbstractDraw) {
     this.mapDraw = mapboxDraw;
     this.onSelectionChange();
     this.onRender();

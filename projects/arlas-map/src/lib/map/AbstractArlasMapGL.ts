@@ -165,7 +165,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     };
   public currentLat: string;
   public currentLng: string;
-  protected readonly POLYGON_LABEL_SOURCE = 'polygon_label';
+  public readonly POLYGON_LABEL_SOURCE = 'polygon_label';
   protected ICONS_BASE_PATH = 'assets/icons/';
 
   protected _north: number;
@@ -225,7 +225,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   public unproject(point: unknown): unknown {
     throw new Error('Method not implemented.');
   }
-  public queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): unknown[] {
+  public queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[] {
     throw new Error('Method not implemented.');
   }
   public setStyle(style: unknown, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
@@ -636,6 +636,8 @@ export abstract class AbstractArlasMapGL implements MapInterface {
 
   protected abstract _initMapProvider(BaseMapGlConfig): void;
   protected abstract _initControls(): void;
+  protected abstract _getMoveEnd(): OnMoveResult;
+
   public abstract initDrawControls(config: DrawControlsOption): void;
 
   public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
@@ -643,7 +645,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
   public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
-  protected abstract _getMoveEnd(): OnMoveResult;
   public abstract paddedFitBounds(bounds: any, options?: any);
   public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
   public abstract enableDragPan(): void;

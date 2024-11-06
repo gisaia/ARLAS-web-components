@@ -49,7 +49,7 @@ import bbox from '@turf/bbox';
 
 
 // todo : rename to mapboxConfig
-export interface ArlasMapGlConfig extends MapConfig<MapboxOptions> {
+export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
   customEventBind: BindLayerToEvent<keyof MapLayerEventType>[];
   mapLayersEventBind: {
@@ -68,7 +68,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   public movelngLat: mapboxgl.LngLat;
   public layersMap: Map<string, ArlasAnyLayer>;
 
-  public constructor(protected config: ArlasMapGlConfig) {
+  public constructor(protected config: ArlasMapboxConfig) {
     super(config);
   }
 
@@ -88,7 +88,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
 
 
-  protected _initMapProvider(config: ArlasMapGlConfig) {
+  protected _initMapProvider(config: ArlasMapboxConfig) {
     this._mapProvider = new mapboxgl.Map(
       config.mapProviderOptions
     );

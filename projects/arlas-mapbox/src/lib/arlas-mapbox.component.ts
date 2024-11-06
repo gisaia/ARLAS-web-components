@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { ArlasMapboxGL, ArlasMapGlConfig } from './map/ArlasMapboxGL';
+import { ArlasMapboxGL, ArlasMapboxConfig } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -596,7 +596,7 @@ export class ArlasMapboxComponent implements OnInit, AfterViewInit, OnChanges, O
       .map(id => layer.concat(id)))
       .reduce((p, ac) => ac.concat(p), []);
 
-    const config: ArlasMapGlConfig = {
+    const config: ArlasMapboxConfig = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
       fitBoundsPadding: this.fitBoundsPadding,
       margePanForLoad: this.margePanForLoad,

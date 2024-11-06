@@ -27,8 +27,9 @@ import { BasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
 
 @Component({
-  selector: 'arlas-base-mapgl-basemap',
-  template: '',
+  selector: 'arlas-basemap',
+  templateUrl: './basemap.component.html',
+  styleUrls: ['./basemap.component.scss']
 })
 export class BasemapComponent implements OnInit {
   protected LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
