@@ -1,6 +1,6 @@
 {
   "name": "arlas-web-components",
-  "version": "26.0.6",
+  "version": "26.0.7",
   "peerDependencies": {
     "@angular/animations": "^14.2.12",
     "@angular/cdk": "^14.2.7",
