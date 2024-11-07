@@ -81,9 +81,7 @@ export class GetCollectionPipe implements PipeTransform {
   public transform(value: string, layersMap?: Map<string, mapboxgl.Layer>): string {
     let collection: string;
     if (!!layersMap && !!layersMap.get(value).metadata) {
-      if (!!layersMap.get(value).metadata.collectionDisplayName) {
-        collection = layersMap.get(value).metadata.collectionDisplayName;
-      } else if (!!layersMap.get(value).metadata.collection) {
+      if (!!layersMap.get(value).metadata.collection) {
         collection = layersMap.get(value).metadata.collection;
       }
     }
