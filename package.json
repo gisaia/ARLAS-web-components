@@ -80,7 +80,7 @@
     "@angular-eslint/template-parser": "~14.4.0",
     "@angular/cli": "^14.2.13",
     "@angular/compiler-cli": "^14.2.12",
-    "@biesbjerg/ngx-translate-extract-marker": "1.0.0",
+    "@colsen1991/ngx-translate-extract-marker": "2.0.8",
     "@gisaia/ngx-translate-extract": "8.2.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^16.18.1",

@@ -33,6 +33,7 @@ import { FormatLegendModule } from '../../pipes/format-legend/format-legend.modu
 import { GetColorModule } from '../../pipes/get-color/get-color.module';
 import { MapglLegendItemComponent } from './mapgl-legend-item/mapgl-legend-item.component';
 import { GetFieldDisplayModule } from '../../pipes/get-field-display-name/get-field-display.module';
+import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { GetFieldDisplayModule } from '../../pipes/get-field-display-name/get-fi
     GetColorModule,
     GetCollectionDisplayModule,
     GetFieldDisplayModule,
-    FormatLegendModule
+    FormatLegendModule,
+    MarkerModule
   ],
   declarations: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent],
   exports: [MapglLegendComponent, LayerIdToName, MapglLegendItemComponent]

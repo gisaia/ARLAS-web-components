@@ -20,7 +20,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Coordinate, PointFormGroup } from '../../../tools/coordinates.tools';
 import { FormControl, FormGroup } from '@angular/forms';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-coordinates',

@@ -26,7 +26,7 @@ import bbox from '@turf/bbox';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 @Injectable()
 export class MapboxAoiDrawService {

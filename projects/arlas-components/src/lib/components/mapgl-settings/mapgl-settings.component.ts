@@ -20,7 +20,7 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { Subject, takeUntil } from 'rxjs';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { SelectFormControl } from '../componentsUtils';

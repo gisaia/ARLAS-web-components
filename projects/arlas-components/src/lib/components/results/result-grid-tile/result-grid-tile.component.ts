@@ -25,7 +25,7 @@ import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-result-grid-tile',
