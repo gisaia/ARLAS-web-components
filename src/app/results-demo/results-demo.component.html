@@ -4,7 +4,7 @@
       <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
         [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
         [fieldsConfiguration]="fieldsConfiguration" [nbLinesBeforeFetch]="20"
-        [options]="options" [isGeoSortEnabled]="true"
+        [options]="options" [isGeoSortEnabled]="true" [tableWidth]="500"
         [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
         (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)" [currentSortedColumn]="activeSort"></arlas-result-list>
     </div>

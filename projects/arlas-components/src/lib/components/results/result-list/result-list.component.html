@@ -97,9 +97,9 @@
         </th>
         <th *ngIf="!column.isIdField && !column.isToggleField" [style.max-width.px]="column.width"
           [style.min-width.px]="column.width" class="resultlist__header--columns"
-          matTooltip="{{column.columnName | translate}}{{column.dataType}}">
+          [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')">
           <span>
-            {{column.columnName | translate}}{{column.dataType}}
+            {{column.columnName | translate}}{{column.dataType ? ' (' + column.dataType + ')': ''}}
           </span>
         </th>
         <th *ngIf="column.isToggleField" class="resultlist__header--columns" [style.max-width.px]="column.width"

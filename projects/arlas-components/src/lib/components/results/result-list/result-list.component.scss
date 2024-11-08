@@ -272,7 +272,7 @@ tr {
 
 .resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
   font-size: 14px;
-  padding-right: 20px;
+  padding-right: 10px;
   margin-left: 5px;
   flex: 1;
   // Correct label wrapping
@@ -285,6 +285,11 @@ tr {
   --mdc-switch-handle-width: 15px;
   --mdc-switch-selected-icon-size: 0;
   --mdc-switch-unselected-icon-size: 0;
+  --mdc-switch-track-width: 30px;
+
+  .mdc-form-field--align-end>label {
+    padding-right: 10px;
+  }
 }
 
 .resultlist__tools--sort-container /* @doc Sort section in the list header */ {
@@ -295,6 +300,8 @@ tr {
 
   .resultlist__tools--sort {
     flex: 1;
+
+    --mdc-typography-body1-font-size: 14px;
 
     &-option {
       line-height: 30px !important;
