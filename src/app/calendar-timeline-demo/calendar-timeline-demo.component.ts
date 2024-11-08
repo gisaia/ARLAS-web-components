@@ -21,6 +21,8 @@ import { Component, OnInit } from '@angular/core';
 import { Granularity } from 'arlas-d3';
 import { Subject } from 'rxjs';
 
+// TODO: add data to properly test component
+
 @Component({
   selector: 'arlas-calendar-timeline-demo',
   templateUrl: './calendar-timeline-demo.component.html',
