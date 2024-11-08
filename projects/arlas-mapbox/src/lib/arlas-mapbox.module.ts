@@ -1,27 +1,18 @@
 import { NgModule } from '@angular/core';
-import { ArlasMapboxComponent } from './arlas-mapbox.component';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
-import { MapboxAoiDrawService } from 'arlas-map';
-import { CommonModule } from '@angular/common';
-
+import { ArlasMapboxService } from './arlas-mapbox.service';
+import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
 
 @NgModule({
   declarations: [
-    ArlasMapboxComponent
   ],
   imports: [
-    TranslateModule,
-    MatTooltipModule,
-    MatIconModule,
-    CommonModule,
+
   ],
   providers: [
-    MapboxAoiDrawService
+    ArlasMapboxService,
+    MapboxBasemapService
   ],
   exports: [
-    ArlasMapboxComponent
   ]
 })
 export class ArlasMapboxModule { }

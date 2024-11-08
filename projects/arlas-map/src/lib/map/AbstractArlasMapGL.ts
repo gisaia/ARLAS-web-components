@@ -96,9 +96,14 @@ export interface OnMoveResult {
 }
 
 
-export interface LngLat {
+export class LngLat {
   lng: number;
   lat: number;
+
+  constructor(lng, lat) {
+    this.lng = lng;
+    this.lat = lat;
+  }
 }
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
@@ -707,6 +712,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     if (layer !== undefined && layer.id === layerId) {
       /** Add the layer if it is not already added */
       if (this.getMapProvider().getLayer(layerId) === undefined) {
+        console.log(layer);
         if (this.firstDrawLayer && this.firstDrawLayer.length > 0) {
           /** draw layers must be on the top of the layers */
           this.getMapProvider().addLayer(layer, this.firstDrawLayer);

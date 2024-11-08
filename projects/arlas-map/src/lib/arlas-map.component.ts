@@ -313,6 +313,7 @@ export class ArlasMapComponent implements OnInit {
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
     private basemapService: BasemapService, private _snackBar: MatSnackBar, private translate: TranslateService,
     protected mapService: ArlasMapService) {
+    console.log('ummm');
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
       next: (bboxDC: BboxDrawCommand) => {
@@ -323,10 +324,12 @@ export class ArlasMapComponent implements OnInit {
 
   public ngOnInit() {
     this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
+    console.log('ummm init');
   }
 
   public ngAfterViewInit() {
     /** init values */
+    console.log('ummm after');
     if (!this.initCenter) {
       this.initCenter = [0, 0];
     }
@@ -374,7 +377,7 @@ export class ArlasMapComponent implements OnInit {
         }
         this.drawSelectionChanged = false;
         if (this.map.getSource(this.map.POLYGON_LABEL_SOURCE) !== undefined) {
-          (this.map.getSource(this.map.POLYGON_LABEL_SOURCE) as mapboxgl.GeoJSONSource).setData(this.polygonlabeldata);
+          (this.map.getSource(this.map.POLYGON_LABEL_SOURCE) as any).setData(this.polygonlabeldata);
         }
       }
       if (changes['boundsToFit'] !== undefined) {
@@ -446,7 +449,9 @@ export class ArlasMapComponent implements OnInit {
   }
 
   public declareMap() {
+    console.log('declaaaring')
     this.initTransformRequest();
+    console.log('traaans')
     const config: MapConfig<unknown> = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
       fitBoundsPadding: this.fitBoundsPadding,
@@ -1146,7 +1151,7 @@ export class ArlasMapComponent implements OnInit {
   /**
    * Wrapper method to fit the map to the given bounds with enough padding to properly visualize the area
    */
-  public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
+  public paddedFitBounds(bounds: any, options?: any) {
     this.map.paddedFitBounds(bounds, options);
   }
 

@@ -3,5 +3,4 @@
  */
 
 export * from './lib/arlas-maplibre.service';
-export * from './lib/arlas-maplibre.component';
 export * from './lib/arlas-maplibre.module';

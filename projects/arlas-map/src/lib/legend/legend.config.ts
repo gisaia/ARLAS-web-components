@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { HistogramData } from "arlas-d3/histograms/utils/HistogramUtils";
+
 export interface LegendData {
   minValue?: string;
   maxValue?: string;
@@ -32,6 +34,26 @@ export interface Legend {
   interpolatedValues?: Array<string | number>;
   manualValues?: Map<string, string | number>;
   visible?: boolean;
+  /** data to be plotted as histogram in the legend */
+  histogram?: Array<HistogramData>;
+}
+
+export interface CircleLegend extends FillLegend {
+  radius: Legend
+}
+
+export interface FillLegend {
+  color: Legend;
+  colorPalette: string;
+  strokeColor: Legend;
+  strokeColorPalette: string;
+}
+
+export interface LineLegend {
+  color: Legend;
+  colorPalette: string;
+  dashes: Array<number>;
+  width: Legend,
 }
 
 export enum PROPERTY_SELECTOR_SOURCE {

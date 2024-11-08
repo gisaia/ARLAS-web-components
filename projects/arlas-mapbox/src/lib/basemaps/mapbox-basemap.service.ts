@@ -27,9 +27,7 @@ import { BasemapService } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class MapboxBasemapService extends BasemapService {
 
   public constructor(protected http: HttpClient) {
@@ -78,13 +76,16 @@ export class MapboxBasemapService extends BasemapService {
       const clonedStyleFile: mapboxgl.Style = this.cloneStyleFile<mapboxgl.Style>(selected);
       return this.buildInitStyle<mapboxgl.Style, any>(clonedStyleFile);
     }
+    console.log('iniiit style uuum')
     return selected.styleFile as mapboxgl.Style;
   }
 
 
   public fetchSources$(): Observable<readonly unknown[]> {
     const sources$: Observable<mapboxgl.Style>[] = [];
+    console.log('fetch')
     this.basemaps.styles().forEach(s => {
+      console.log('fetchhh');
       sources$.push(this.getStyleFile(s).pipe(
         tap(sf => {
           Object.keys(sf.sources).forEach(k => {
@@ -98,6 +99,7 @@ export class MapboxBasemapService extends BasemapService {
           s.styleFile = sf as mapboxgl.Style;
         }),
         catchError(() => {
+          console.log('uuum error !!!')
           s.errored = true;
           return of();
         })

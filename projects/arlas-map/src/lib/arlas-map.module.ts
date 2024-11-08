@@ -7,6 +7,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BasemapComponent } from './basemaps/basemap.component';
 import { BboxGeneratorModule } from './bbox-generator/bbox-generator.module';
 import { CoordinatesComponent } from './coordinates/coordinates.component';
+import { MapboxAoiDrawService } from './draw/draw.service';
+import { CommonModule } from '@angular/common';
 
 
 
@@ -17,11 +19,15 @@ import { CoordinatesComponent } from './coordinates/coordinates.component';
     CoordinatesComponent
   ],
   imports: [
+    CommonModule,
     MatSnackBarModule,
     TranslateModule,
     MatIconModule,
     MatTooltipModule,
     BboxGeneratorModule
+  ],
+  providers: [
+    MapboxAoiDrawService
   ],
   exports: [
     ArlasMapComponent,

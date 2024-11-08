@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
+import { AbstractArlasMapGL, MapConfig, LngLat } from './map/AbstractArlasMapGL';
 import { AbstractDraw } from './draw/AbstractDraw';
 
 @Injectable({
@@ -18,6 +18,32 @@ export abstract class ArlasMapService {
 
   public abstract createDraw(drawOptions, enabled: boolean, map: AbstractArlasMapGL): AbstractDraw;
 
+  public abstract getLngLatBound(c1: LngLat, c2: LngLat): any;
+
+  public abstract boundsToString(bounds: any): string;
+
+  public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
+
+  public getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>) {
+    const lFilter = map.layersMap.get(layer).filter;
+    const filters = [];
+    if (lFilter) {
+      lFilter.forEach(f => {
+        filters.push(f);
+      });
+    }
+    if (filters.length === 0) {
+      filters.push('all');
+    }
+    filters.push([
+      'match',
+      ['get', 'id'],
+      Array.from(new Set(ids)),
+      true,
+      false
+    ]);
+    return filters;
+  }
   /** Binds custom interaction of : 'mouseleave' and 'mouseenter' events
    *  to all draw layers 
   */
@@ -29,6 +55,7 @@ export abstract class ArlasMapService {
     ].map(layer => ['.cold', '.hot']
       .map(id => layer.concat(id)))
       .reduce((p, ac) => ac.concat(p), []);
+    console.log('awili')
     return [
       {
         layers: drawPolygonLayers,
@@ -56,7 +83,7 @@ export abstract class ArlasMapService {
   }
 
   public abstract getPointFromScreen(e, container: HTMLElement);
-  
+
   
 
 

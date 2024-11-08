@@ -3,5 +3,5 @@
  */
 
 export * from './lib/arlas-mapbox.service';
-export * from './lib/arlas-mapbox.component';
 export * from './lib/arlas-mapbox.module';
+export { MapboxBasemapService } from './lib/basemaps/mapbox-basemap.service';
