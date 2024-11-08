@@ -23,6 +23,7 @@ export abstract class BaseCollectionService {
   protected abstract _initUnits();
   protected abstract _initDisplayNames();
   public abstract getDisplayName(collectionName: string): string;
+  public abstract getDisplayFieldName(fieldName: string): string;
   public abstract getUnit(collectionName: string): string;
   public abstract getAllUnits(): any[];
 }
@@ -37,6 +38,11 @@ export class AwcCollectionService extends BaseCollectionService {
   public getDisplayName(collectionName: string): string {
     return collectionName;
   }
+
+  public getDisplayFieldName(fieldName: string): string {
+    return fieldName;
+  }
+
   public getUnit(collectionName: string): string {
     return collectionName;
   }
@@ -53,6 +59,11 @@ export class CollectionService {
   public getDisplayName(collectionName: string): string {
     return this.baseCollectionService.getDisplayName(collectionName);
   };
+
+  public getDisplayFieldName(fieldName: string): string {
+    return this.baseCollectionService.getDisplayFieldName(fieldName);
+  };
+
   public getUnit(collectionName: string): string {
     return this.baseCollectionService.getUnit(collectionName);
   };

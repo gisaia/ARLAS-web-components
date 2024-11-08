@@ -23,11 +23,11 @@
                   [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
                 <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
                 <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
-                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}
+                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | getCollectionDisplayName |  translate }}
                 </div>
               </div>
               <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">{{
-                header.rowfield | translate }}</div>
+                header.rowfield | getFieldDisplayName | translate }}</div>
 
             </div>
           </th>
@@ -39,12 +39,12 @@
               <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
                 [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
               <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
-              <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
-                *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | translate }}
+              <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | getCollectionDisplayName | translate"
+                *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | getCollectionDisplayName | translate }}
               </div>
             </div>
             <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">
-              {{header.rowfield | translate}}</div>
+              {{header.rowfield | getFieldDisplayName | translate}}</div>
           </th>
         </ng-template>
       </tr>
@@ -53,10 +53,10 @@
         <th class="terms-head"></th>
         <th class="column-head multi-bar__header" *ngFor="let header of metricsTable?.header; let i = index">
           <div *ngIf="header.metric !== 'count'"
-            [matTooltip]="'METRIC_COLUMN_TITLE' | translate:  { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle | translate }"
+            [matTooltip]="'METRIC_COLUMN_TITLE' | translate:  { metric: 'METRIC_COLUMN_' + header.metric | translate, field : header.subTitle | getFieldDisplayName | translate }"
             class="multi-bar__header-item multi-bar__header-item-title">
             {{'METRIC_COLUMN_TITLE' | translate: { metric: 'METRIC_COLUMN_' + header.metric | translate, field :
-            header.subTitle |
+            header.subTitle | getFieldDisplayName |
             translate } }}
           </div>
           <div *ngIf="header.metric === 'count'" [matTooltip]="'COUNT_COLUMN_TITLE' | translate"

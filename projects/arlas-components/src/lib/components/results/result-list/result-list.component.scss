@@ -109,10 +109,20 @@
   color: #aaa;
 }
 
-tr:hover td.resultitem__cell.toggle .list_actions {
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
+tr {
+  &:hover {
+    .toggle {
+      .actions {
+        arlas-result-actions {
+          .list_actions {
+            .not_activated {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/

@@ -16,18 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Pipe, PipeTransform } from '@angular/core';
+import { CollectionService } from '../../services/collection.service';
+@Pipe({
+  name: 'getFieldDisplayName'
+})
+export class GetFieldDisplayNamePipe implements PipeTransform {
 
-import { AdditionalInfo, Action } from '../utils/results.utils';
-import { Observable } from 'rxjs';
-import { Item } from '../model/item';
+  public constructor(private collectionService: CollectionService) {
+  }
 
-
-export interface DetailedDataRetriever {
-
-  getValues(identifier: string, fields: string[]): Observable<string[]>;
-
-  getData(identifier: string): Observable<AdditionalInfo>;
-
-  getActions(item: Item): Observable<Array<Action>>;
+  public transform(value: string): string {
+    if(!value) {
+      return  '';
+    }
+    return this.collectionService.getDisplayFieldName(value);
+  }
 
 }

@@ -18,13 +18,16 @@
  * under the License.
  */
 
-import { Observable, from } from 'rxjs';
+import { Observable, from, of } from 'rxjs';
 import { AdditionalInfo, Attachment } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 import { Action, DetailedDataRetriever, Item } from '../../../../projects/arlas-components/src/public-api';
 
 
 export class DetailedDataRetrieverImp implements DetailedDataRetriever {
 
+  public getValues(identifier: string, fields: string[]): Observable<string[]> {
+    return of([]);
+  }
   public getActions(item: Item): Observable<Array<Action>> {
     const actionsList = new Array<Action>();
     actionsList.push({ id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS' },
