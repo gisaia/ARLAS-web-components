@@ -454,7 +454,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits when result list is updated.
    */
-  @Output()  public onResultListUpdate: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public onResultListUpdate: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  /**
+   * @Output : Angular
+   * @description Emits when the list is ready.
+   */
+  @Output() public onListLoaded = new EventEmitter<boolean>();
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
@@ -528,6 +534,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngAfterViewInit(): void {
+    this.onListLoaded.next(true);
     this.setTableWidth();
     this.setTableHeight();
   }
@@ -554,8 +561,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       // Reset selected items when data change (ie a filter is applied/removed or pagination occur)
       this.selectedItems = new Set<string>();
       this.isPreviousPageRequested = false;
+
+      // If the selected item is not in the current list of items, close the detail
+      const selectedItemInData = this.rowItemList
+        .map(item => <string>item.get(this.fieldsConfiguration.idFieldName))
+        .includes(this.selectedGridItem.identifier);
+      if (!(!!this.selectedGridItem && !!changes['rowItemList'].currentValue && selectedItemInData)) {
+        this.closeDetail(true);
+      }
+
       this.onChangeItems.next(changes['rowItemList'].currentValue);
-      this.closeDetail(true);
     }
     if (changes['isDetailledGridOpen'] !== undefined) {
       this.isDetailledGridOpen = changes['isDetailledGridOpen'].currentValue;
