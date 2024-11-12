@@ -27,7 +27,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   styleUrls: ['./mapgl-layer-icon.component.scss']
 })
 export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges {
-  @Input() public layer: mapboxgl.Layer;
+  @Input() public layer: any;
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
