@@ -2,6 +2,9 @@
  * Public API Surface of arlas-map
  */
 
+export { LegendItemComponent } from './lib/legend/legend-item/legend-item.component';
+export { LegendComponent } from './lib/legend/legend.component';
+export { LayerIconComponent } from './lib/legend/legend-icon/layer-icon.component';
 export * from './lib/arlas-map.service';
 export * from './lib/arlas-map.component';
 export * from './lib/arlas-map.module';
@@ -44,9 +47,8 @@ export {
 } from './lib/map/model/layers'
 export { ArlasMapSource } from './lib/map/model/sources'
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets'
-export { Legend, LegendData, PROPERTY_SELECTOR_SOURCE, CircleLegend, LineLegend, FillLegend } from './lib/legend/legend.config'
+export { Legend, LegendData, PROPERTY_SELECTOR_SOURCE, CircleLegend, LineLegend, FillLegend, HeatmapLegend, LabelLegend } from './lib/legend/legend.config'
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools'
 export * as styles from './lib/draw/themes/default-theme'
 export { ArlasMapComponent } from './lib/arlas-map.component'
 export { ArlasMapService } from './lib/arlas-map.service'
-

@@ -18,7 +18,7 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { getLayerName } from '../componentsUtils';
+import { getLayerName } from '../map/model/layers';
 
 
 @Pipe({

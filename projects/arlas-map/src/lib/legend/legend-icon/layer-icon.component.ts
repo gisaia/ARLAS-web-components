@@ -22,11 +22,11 @@ import { select } from 'd3-selection';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 
 @Component({
-  selector: 'arlas-mapgl-layer-icon',
-  templateUrl: './mapgl-layer-icon.component.html',
-  styleUrls: ['./mapgl-layer-icon.component.scss']
+  selector: 'arlas-layer-icon',
+  templateUrl: './layer-icon.component.html',
+  styleUrls: ['./layer-icon.component.scss']
 })
-export class MapglLayerIconComponent implements OnInit, AfterViewInit, OnChanges {
+export class LayerIconComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public layer: any;
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};

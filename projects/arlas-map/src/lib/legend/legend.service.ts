@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { CircleLegend, FillLegend, Legend, LegendData, LineLegend } from './legend.config';
+import { CircleLegend, FillLegend, HeatmapLegend, LabelLegend, Legend, LegendData, LineLegend } from './legend.config';
 import { TranslateService } from '@ngx-translate/core';
 
 
@@ -43,6 +43,14 @@ export class LegendService {
     }
 
     public getFillLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): FillLegend {
+        return undefined;
+    }
+
+    public getHeatmapLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): HeatmapLegend {
+        return undefined;
+    }
+
+    public getLabelLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LabelLegend {
         return undefined;
     }
 }

@@ -24,8 +24,7 @@ import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
 import { Subject, takeUntil } from 'rxjs';
-import * as tinycolor from 'tinycolor2';
-import { ArlasColorService } from 'arlas-components';
+import { ArlasColorService } from 'arlas-web-components';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
@@ -243,25 +242,28 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       }
       case 'heatmap': {
-        const p: mapboxgl.HeatmapPaint = (paint as mapboxgl.HeatmapPaint);
-        const colors = MapglLegendComponent.buildColorLegend(
-          p['heatmap-color'], visibileMode, this.legendData, this.layer.filter, this.translate
-        );
-        this.buildCircleRadiusLegend(p['heatmap-radius']);
-        this.colorLegend = colors[0];
-        this.colorPalette = colors[1];
-        if (this.layer.source.toString().startsWith('feature-metric')) {
-          this.colorLegend.visible = false;
+        const heatmapLegend = this.legendService.getHeatmapLegend(paint, visibileMode, this.legendData, this.layer);
+
+        this.colorLegend = heatmapLegend.color;
+        this.colorPalette = heatmapLegend.colorPalette;
+        this.radiusLegend = heatmapLegend.radius;
+        if (!!this.circleRadiusLegend.interpolatedElement) {
+          const heatmapRadiusEvolution = heatmapLegend.radius.histogram;
+          drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, heatmapRadiusEvolution, this.colorLegend,
+            this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(heatmapRadiusEvolution)) * 2);
         }
         break;
       }
       case 'symbol': {
-        const p: mapboxgl.SymbolPaint = (paint as mapboxgl.SymbolPaint);
-        const colors = MapglLegendComponent.buildColorLegend(p['text-color'], visibileMode, this.legendData, this.layer.filter, this.translate);
-        this.colorLegend = colors[0];
-        this.colorPalette = colors[1];
-        const l: mapboxgl.SymbolLayout = (paint as mapboxgl.SymbolLayout);
-        this.buildWidthLegend(l['text-size']);
+        const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer);
+        this.colorLegend = symbolLegend.color;
+        this.colorPalette = symbolLegend.colorPalette;
+        this.widthLegend = symbolLegend.size;
+        if (!!this.lineWidthLegend.interpolatedElement) {
+          const lineWidthEvolution = symbolLegend.size.histogram;
+          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
+            this.LEGEND_WIDTH, MAX_LINE_WIDTH);
+        }
         break;
       }
     }
@@ -300,210 +302,6 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         }
       }
     });
-  }
-
-  public static buildColorLegend(colorExpression: string | mapboxgl.StyleFunction | mapboxgl.Expression, visibleMode: boolean,
-    legendData: Map<string, LegendData>, filter?: any[], translate?: TranslateService): [Legend, string] {
-    const colorLegend: Legend = { visible: true };
-    let colorPalette = '';
-    if (typeof colorExpression === 'string') {
-      colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
-      colorLegend.fixValue = colorExpression;
-    } else if (Array.isArray(colorExpression)) {
-      if (colorExpression.length === 2) {
-        /** color = ["get", "field"]  ==> Generated or Provided */
-        const field = colorExpression[1];
-        colorLegend.title = field;
-        if (!Array.isArray(field)) {
-          if ((field as string).endsWith('_arlas__color')) {
-            colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
-          } else {
-            colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
-          }
-          colorLegend.manualValues = new Map();
-          if (legendData && legendData.get(field)) {
-            const keysToColors = legendData.get(field).keysColorsMap;
-            const colorList = Array.from(keysToColors.keys()).map(k => [k, keysToColors.get(k)]).flat();
-            for (let i = 0; i < colorList.length; i += 2) {
-              colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], colorList[i + 1]);
-            }
-            if (colorList.length === 0) {
-              colorLegend.manualValues.set('', '#eee');
-            }
-          } else {
-            colorLegend.manualValues.set('', '#eee');
-          }
-
-          if (!!filter) {
-            MapglLegendComponent.filterLegend(colorLegend.manualValues, filter,
-              (field as string).endsWith('_arlas__color') ? (field as string).slice(0, -13) : field);
-          }
-        }
-      } else if (colorExpression.length >= 3) {
-        if (colorExpression[0] === MATCH) {
-          /** color = ["match", ["get", "field"], .... ]**/
-          colorLegend.type = PROPERTY_SELECTOR_SOURCE.manual;
-          const colorsLength = colorExpression.length;
-          let hasDefaultColor = false;
-          if (colorsLength % 2 !== 0) {
-            hasDefaultColor = true;
-          }
-          const field = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
-          colorLegend.title = field;
-          colorLegend.manualValues = new Map();
-          let keysToColors: Map<string, string>;
-          if (legendData && legendData.get(field + '_color')) {
-            // If there is a legendData, use only the colors in the keysToColors
-            keysToColors = legendData.get(field + '_color').keysColorsMap;
-          } else {
-            // If no legendData for this field, use all the colors of colorExpression
-            keysToColors = new Map();
-            for (let i = 2; i < colorExpression.length; i += 2) {
-              if (hasDefaultColor && i === colorsLength - 3) {
-                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
-                keysToColors.set(OTHER, colorExpression[i + 2]);
-                break;
-              } else {
-                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
-              }
-            }
-          }
-          for (let i = 2; i < colorExpression.length; i += 2) {
-            if (hasDefaultColor && i === colorsLength - 3) {
-              if (keysToColors.has(colorExpression[i] + '')) {
-                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
-                  colorExpression[i + 1]);
-              }
-              colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
-              break;
-            } else {
-              if (keysToColors.has(colorExpression[i] + '')) {
-                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
-                  colorExpression[i + 1]);
-              }
-            }
-          }
-
-          if (!!filter) {
-            MapglLegendComponent.filterLegend(colorLegend.manualValues, filter, field);
-          }
-        } else if (colorExpression[0] === INTERPOLATE) {
-          colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
-          // todo throw exception if interpolation is not linear
-          const field = colorExpression[2].length === 2 ? colorExpression[2][1] : HEATMAP_DENSITY;
-          colorLegend.title = field;
-          colorLegend.interpolatedValues = [];
-          const palette = [];
-          const colors = colorExpression.slice(3);
-          colors.forEach((c, i) => {
-            if (i % 2 === 0) {
-              palette.push({
-                proportion: c,
-                value: colors[i + 1]
-              });
-            }
-          });
-          const minimum = palette[0].proportion;
-          const maximum = palette.slice(-1)[0].proportion;
-          palette.forEach(c => colorLegend.interpolatedValues.push(c.value));
-          const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
-          if (legendData && legendData.get(field) && field !== 'count') {
-            colorLegend.minValue = legendData.get(field).minValue;
-            colorLegend.maxValue = legendData.get(field).maxValue;
-            // For heatmaps, the count is used to fetch data, so we use it for the legend
-          } else if (field === HEATMAP_DENSITY && legendData && legendData.get('count')) {
-            colorLegend.minValue = legendData.get('count').minValue;
-            colorLegend.maxValue = legendData.get('count').maxValue;
-          } else {
-            colorLegend.minValue = colorValues[0] + '';
-            colorLegend.maxValue = colorValues[colorValues.length - 1] + '';
-          }
-          if (!visibleMode) {
-            /** apply greyscale because the layer is not visible */
-            colorLegend.interpolatedValues = colorLegend.interpolatedValues
-              .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
-            palette.forEach(p => {
-              p.value = tinycolor.default(p.value.toString()).greyscale().lighten(20).toHexString();
-            });
-          }
-          colorPalette = palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');
-        }
-      }
-    }
-
-    colorLegend.visible = visibleMode;
-    return [colorLegend, colorPalette];
-  }
-
-  private buildWidthLegend(lineWidth: number | mapboxgl.StyleFunction | mapboxgl.Expression): void {
-    /** if the line width is fix then it is not added to the legend*/
-    if (Array.isArray(lineWidth)) {
-      if (lineWidth.length >= 3) {
-        if (lineWidth[0] === INTERPOLATE) {
-          const field = lineWidth[2][1];
-          this.widthLegend.title = field;
-          if (this.legendData && this.legendData.get(field)) {
-            this.widthLegend.minValue = this.legendData.get(field).minValue;
-            this.widthLegend.maxValue = this.legendData.get(field).maxValue;
-          }
-          this.widthLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          const lineWidthEvolution: Array<HistogramData> = new Array();
-          lineWidth.filter((w, i) => i >= 3).forEach((w, i) => {
-            if (i % 2 === 0) {
-              lineWidthEvolution.push({ key: w, value: lineWidth[i + 1 + 3] });
-            }
-          });
-          const maxLineWidth = getMax(lineWidthEvolution);
-          if (maxLineWidth > this.MAX_LINE_WIDTH) {
-            lineWidthEvolution.map(lw => {
-              lw.value = lw.value * this.MAX_LINE_WIDTH / maxLineWidth;
-              return lw;
-            });
-          }
-          if (!!this.lineWidthLegend.interpolatedElement) {
-            drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
-              this.LEGEND_WIDTH, this.MAX_LINE_WIDTH);
-          }
-        }
-      }
-    }
-  }
-
-  private buildCircleRadiusLegend(circleRadius: number | mapboxgl.StyleFunction | mapboxgl.Expression): void {
-    if (Array.isArray(circleRadius)) {
-      if (circleRadius.length >= 3) {
-        if (circleRadius[0] === INTERPOLATE) {
-          const field = circleRadius[2][1];
-          const circleRadiusEvolution: Array<HistogramData> = new Array();
-          circleRadius.filter((w, i) => i >= 3).forEach((w, i) => {
-            if (i % 2 === 0) {
-              circleRadiusEvolution.push({ key: w, value: circleRadius[i + 1 + 3] });
-            }
-          });
-          this.radiusLegend.title = field;
-          if (this.legendData && this.legendData.get(field)) {
-            this.radiusLegend.minValue = this.legendData.get(field).minValue;
-            this.radiusLegend.maxValue = this.legendData.get(field).maxValue;
-          } else {
-            this.radiusLegend.minValue = circleRadiusEvolution[0].key + '';
-            this.radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
-          }
-          this.radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          const maxCircleRadius = getMax(circleRadiusEvolution);
-          if (maxCircleRadius > this.MAX_CIRLE_RADIUS) {
-            circleRadiusEvolution.map(lw => {
-              lw.value = lw.value * this.MAX_CIRLE_RADIUS / maxCircleRadius;
-              return lw;
-            });
-          }
-          if (!!this.circleRadiusLegend.interpolatedElement) {
-            drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend,
-              this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
-          }
-        }
-      }
-    }
   }
 }
 

@@ -18,18 +18,17 @@
  */
 
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Legend, PROPERTY_SELECTOR_SOURCE } from '../../mapgl/mapgl.component.util';
-import { Layer } from 'mapbox-gl';
+import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 
 @Component({
-  selector: 'arlas-mapgl-legend-item',
-  templateUrl: './mapgl-legend-item.component.html',
-  styleUrls: ['./mapgl-legend-item.component.scss']
+  selector: 'arlas-legend-item',
+  templateUrl: './legend-item.component.html',
+  styleUrls: ['./legend-item.component.scss']
 })
-export class MapglLegendItemComponent implements OnInit {
+export class LegendItemComponent implements OnInit {
   @Input() public legend: Legend;
   @Input() public title: string;
-  @Input() public layer: Layer;
+  @Input() public layer: any;
   @Input() public colorPalette: string;
   @ViewChild('interpolated_svg', { read: ElementRef, static: false }) public interpolatedElement: ElementRef;
 

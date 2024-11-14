@@ -49,6 +49,18 @@ export interface FillLegend {
   strokeColorPalette: string;
 }
 
+export interface HeatmapLegend {
+  color: Legend;
+  colorPalette: string;
+  radius: Legend
+}
+
+export interface LabelLegend {
+  color: Legend;
+  colorPalette: string;
+  size: Legend
+}
+
 export interface LineLegend {
   color: Legend;
   colorPalette: string;

@@ -20,15 +20,15 @@
 import { Injectable } from '@angular/core';
 import { CircleLegend, getMax, Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
 import { TranslateService } from '@ngx-translate/core';
-import { CirclePaint, FillPaint, Layer, LinePaint } from 'mapbox-gl';
+import { CirclePaint, FillPaint, HeatmapPaint, Layer, LinePaint, SymbolPaint } from 'mapbox-gl';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { MAX_CIRLE_RADIUS } from 'arlas-map';
 import { LineLegend } from 'arlas-map';
 import { MAX_LINE_WIDTH } from 'arlas-map';
-import { ArlasAnyLayer } from '../map/model/layers';
 import { LayerMetadata } from 'arlas-map';
-import { FillLegend } from 'arlas-map';
+import { FillLegend, HeatmapLegend } from 'arlas-map';
+import { LabelLegend } from 'arlas-map';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -171,5 +171,31 @@ export class MapboxLegendService {
         })
     }
 
+
+    public getHeatmapLegend(paint: HeatmapPaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: Layer): HeatmapLegend {
+        const p: HeatmapPaint = paint;
+        const colors = MapboxLegendService.buildColorLegend(p['heatmap-color'], visibileMode, legendData, layer.filter, this.translate);
+        const radius = MapboxLegendService.buildRadiusLegend(p['heatmap-radius'], legendData);
+        if (layer.source.toString().startsWith('feature-metric')) {
+            colors[0].visible = false;
+        }
+        return ({
+            color: colors[0],
+            colorPalette: colors[1],
+            radius: radius
+        });
+    }
+
+
+    public getLabelLegend(paint: SymbolPaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: Layer): LabelLegend {
+        const p: SymbolPaint = paint;
+        const colors = MapboxLegendService.buildColorLegend(p['text-color'], visibileMode, legendData, layer.filter, this.translate);
+        const size = MapboxLegendService.buildWidthLegend(p['text-size'], legendData);
+        return ({
+            color: colors[0],
+            colorPalette: colors[1],
+            size: size
+        });
+    }
 
 }

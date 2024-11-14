@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MapglLayerIconComponent } from './mapgl-layer-icon.component';
+import { LayerIconComponent } from './layer-icon.component';
 
-describe('MapglLayerIconComponent', () => {
-  let component: MapglLayerIconComponent;
-  let fixture: ComponentFixture<MapglLayerIconComponent>;
+describe('LayerIconComponent', () => {
+  let component: LayerIconComponent;
+  let fixture: ComponentFixture<LayerIconComponent>;
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      declarations: [MapglLayerIconComponent]
+      declarations: [LayerIconComponent]
     })
       .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapglLayerIconComponent);
+    fixture = TestBed.createComponent(LayerIconComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -3,7 +3,7 @@
   "compilerOptions": {
     "importHelpers": true,
     "paths": {
-      "arlas-components": [
+      "arlas-web-components": [
         "dist/arlas-web-components",
         "projects/arlas-components/src/public-api.ts",
       ],
