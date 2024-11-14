@@ -1,6 +1,22 @@
 # Change Log
 
-## [v26.0.7](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.7) (2024-11-04)
+## [v26.0.10](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.10) (2024-11-12)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.9...v26.0.10)
+
+## [v26.0.9](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.9) (2024-11-12)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.8...v26.0.9)
+
+## [v26.0.8](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.8) (2024-11-12)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.7...v26.0.8)
+
+**Fixed bugs:**
+
+- Legend can sometimes not display fully [\#881](https://github.com/gisaia/ARLAS-web-components/issues/881) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+## [v26.0.7](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.7) (2024-11-06)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.6...v26.0.7)
 
