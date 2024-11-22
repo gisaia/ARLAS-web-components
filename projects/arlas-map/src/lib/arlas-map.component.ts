@@ -1,14 +1,14 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
 import { BasemapStyle } from './basemaps/basemap.config';
-import { ArlasMapOffset, AbstractArlasMapGL, OnMoveResult, ElementIdentifier, MapConfig, ZOOM_IN, ZOOM_OUT, RESET_BEARING } from './map/AbstractArlasMapGL';
+import { ArlasMapOffset, AbstractArlasMapGL, ElementIdentifier, MapConfig, ZOOM_IN, ZOOM_OUT, RESET_BEARING } from './map/AbstractArlasMapGL';
 import { IconConfig, ControlPosition, DrawControlsOption } from './map/model/controls';
 import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { LegendData } from './legend/legend.config';
 import { MapExtent } from './map/model/extent';
 import { ArlasMapSource } from './map/model/sources';
-import { MapLayers } from './map/model/layers';
+import { getLayerName, MapLayers } from './map/model/layers';
 import { AbstractDraw } from './draw/AbstractDraw';
 import { finalize, fromEvent, Subject, Subscription } from 'rxjs';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
@@ -31,11 +31,17 @@ import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import cleanCoords from '@turf/clean-coords';
 import centroid from '@turf/centroid';
+import { ARLAS_VSET } from './map/model/layers';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { OnMoveResult } from './map/model/map';
+import { MapLayerMouseEvent } from './map/model/events';
 
 @Component({
   selector: 'arlas-map',
   templateUrl: './arlas-map.component.html',
-  styleUrls: ['./arlas-map.component.scss']
+  styleUrls: ['./arlas-map.component.scss'],
+  encapsulation: ViewEncapsulation.None
+
 })
 export class ArlasMapComponent implements OnInit {
 
@@ -320,6 +326,7 @@ export class ArlasMapComponent implements OnInit {
         this.drawBbox(bboxDC.east, bboxDC.south, bboxDC.west, bboxDC.north);
       }
     });
+
   }
 
   public ngOnInit() {
@@ -441,10 +448,10 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
-  protected queryRender(e) {
-    const hasCrossOrDrawLayer = this.mapService.hasCrossOrDrawLayer(e, this.map);
+  protected queryRender(e, map: AbstractArlasMapGL, ) {
+    const hasCrossOrDrawLayer = map.hasCrossOrDrawLayer(e);
     if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-      this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      map.onEvent(e);
     }
   }
 
@@ -488,7 +495,7 @@ export class ArlasMapComponent implements OnInit {
             fn: this.queryRender
           }],
       },
-      customEventBind: this.mapService.getCustomEventsToDrawLayers(this.map),
+      customEventBind: (m: AbstractArlasMapGL) => this.mapService.getCustomEventsToDrawLayers(m),
       mapProviderOptions: {
         container: this.id,
         style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
@@ -527,7 +534,13 @@ export class ArlasMapComponent implements OnInit {
     console.log('declare');
     this.map = this.mapService.createMap(config);
     console.log(this.map);
-
+    this.map.eventEmitter$.subscribe({
+      next: (e: MapLayerMouseEvent) => {
+        if (e.type === 'click') {
+          this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+        }
+      }
+    })
     fromEvent(window, 'beforeunload').subscribe(() => {
       this.onMapClosed.next(this.map.getMapExtend());
     });
@@ -560,7 +573,7 @@ export class ArlasMapComponent implements OnInit {
 
     // TODO : to have to add event override
     const drawControlConfig: DrawControlsOption = {
-      draw: { control: this.draw.drawProvider },
+      draw: { control: this.draw },
       addGeoBox: {
         enable: true,
         overrideEvent:
@@ -642,6 +655,7 @@ export class ArlasMapComponent implements OnInit {
       };
 
       this.draw.onDrawOnClick((e) => {
+        console.log('the fuck', e)
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
@@ -683,12 +697,14 @@ export class ArlasMapComponent implements OnInit {
       });
 
       this.draw.onDrawEditSaveInitialFeature((edition) => {
+        console.log('onDrawEditSaveInitialFeature', edition)
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
       this.draw.onDrawSelectionchange((e) => {
+        console.log('onDrawSelectionchange', e)
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawSelected = true;
@@ -1123,6 +1139,52 @@ export class ArlasMapComponent implements OnInit {
       this.drawService.endDimensionsEmission();
     }
   }
+
+  /**
+   * Update the visibility status of the layer and emit that update
+   * @param visualisation visualisation set name
+   * @param l layer id
+   * @param visible whether the layer is enabled and visible in the visualisation set
+   */
+  public emitLegendVisibility(visualisation: string, l: string, visible: boolean): void {
+    // Copy the map so the pipe updates the values
+    this.visibilityStatus = new Map(this.visibilityStatus);
+    this.visibilityStatus.set(visualisation + ARLAS_VSET + l, visible);
+    this.legendVisibiltyStatus.next(this.visibilityStatus);
+  }
+
+  public emitVisualisations(visualisationName: string) {
+    const layers = this.map.updateLayoutVisibility(visualisationName);
+    this.visualisations.emit(layers);
+    this.map.reorderLayers();
+  }
+
+  // Todo: replace layer any by unique type
+  public downloadLayerSource(downaload: { layer: any; downloadType: string; }): void {
+    const downlodedSource = {
+      layerId: downaload.layer.id,
+      layerName: getLayerName(downaload.layer.id),
+      collection: downaload.layer.metadata.collection,
+      sourceName: downaload.layer.source as string,
+      downloadType: downaload.downloadType
+    };
+    this.downloadSourceEmitter.next(downlodedSource);
+  }
+
+  /** puts the visualisation set list in the new order after dropping */
+  public drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.map.visualisationSetsConfig, event.previousIndex, event.currentIndex);
+    this.reorderLayers();
+  }
+
+  /** puts the layers list in the new order after dropping */
+  public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
+    const layers = Array.from(this.map.findVisualisationSetLayer(visuName));
+    moveItemInArray(layers, event.previousIndex, event.currentIndex);
+    this.map.setVisualisationSetLayers(visuName, layers);
+    this.reorderLayers();
+  }
+
 
   public ngOnDestroy(): void {
     if (!!this.aoiEditSubscription) {

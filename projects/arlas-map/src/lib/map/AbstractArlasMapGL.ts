@@ -19,7 +19,7 @@
 
 import { FeatureCollection } from '@turf/helpers';
 import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './model/layers';
-import { fromEvent, map, Observable, Subscription } from 'rxjs';
+import { fromEvent, map, Observable, Subject, Subscription } from 'rxjs';
 
 import { debounceTime } from 'rxjs/operators';
 import { ArlasMapSource } from './model/sources';
@@ -28,6 +28,8 @@ import { VisualisationSetConfig } from './model/visualisationsets';
 import { MapInterface } from './interface/map.interface';
 import { MapExtent } from './model/extent';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { LngLat, OnMoveResult } from './model/map';
+import { MapLayerMouseEvent } from './model/events';
 
 export interface ElementIdentifier {
   idFieldName: string;
@@ -36,7 +38,7 @@ export interface ElementIdentifier {
 
 export interface MapEventBinds<T> {
   event: T;
-  fn: (e?) => void;
+  fn: (e?, map?: AbstractArlasMapGL) => void;
 }
 export interface BindLayerToEvent<T> {
   layers: string[];
@@ -60,7 +62,7 @@ export interface MapConfig<T> {
     emitOnClick: MapEventBinds<any>[];
     zoomOnClick: MapEventBinds<any>[];
   };
-  customEventBind: BindLayerToEvent<any>[];
+  customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<any>[];
   mapProviderOptions?: T;
   maxWidthScale?: number;
   unitScale?: string;
@@ -78,33 +80,7 @@ export interface ArlasMapOffset {
 
 export const GEOJSON_SOURCE_TYPE = 'geojson';
 
-export interface OnMoveResult {
-  zoom: number;
-  zoomStart: number;
-  center: Array<number>;
-  centerWithOffset: Array<number>;
-  extend: Array<number>;
-  extendWithOffset: Array<number>;
-  rawExtendWithOffset: Array<number>;
-  extendForLoad: Array<number>;
-  extendForTest: Array<number>;
-  rawExtendForLoad: Array<number>;
-  rawExtendForTest: Array<number>;
-  xMoveRatio: number;
-  yMoveRatio: number;
-  visibleLayers: Set<string>;
-}
 
-
-export class LngLat {
-  lng: number;
-  lat: number;
-
-  constructor(lng, lat) {
-    this.lng = lng;
-    this.lat = lat;
-  }
-}
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 export const ZOOM_IN = marker('Zoom in');
@@ -135,6 +111,8 @@ export abstract class AbstractArlasMapGL implements MapInterface {
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
+  private eventEmitter: Subject<MapLayerMouseEvent> = new Subject();
+  public eventEmitter$ = this.eventEmitter.asObservable();
   public abstract startlngLat: LngLat;
   public abstract endlngLat: LngLat;
   public abstract movelngLat: LngLat;
@@ -376,12 +354,16 @@ export abstract class AbstractArlasMapGL implements MapInterface {
       this.firstDrawLayer = this.getColdOrHotLayers()[0];
       this._initLoadIcons();
       this._initSources();
-      this._initMapLayers();
-      this._bindCustomEvent();
+      this._initMapLayers(this);
+      this._bindCustomEvent(this);
       // Fit bounds on current bounds to emit init position in moveend bus
       this.getMapProvider().fitBounds(this.getBounds());
       this._initVisualisationSet();
     });
+  }
+
+  onEvent(e) {
+    this.eventEmitter.next(e);
   }
 
   onCustomEvent(event: string, loadFn: () => void) {
@@ -407,7 +389,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this._updateOnMoveEnd();
   }
 
-  protected _initMapLayers() {
+  protected _initMapLayers(map: AbstractArlasMapGL) {
     if (this._mapLayers) {
       console.log('init maplayers');
       this.setLayersMap(this._mapLayers as MapLayers<any>);
@@ -415,16 +397,19 @@ export abstract class AbstractArlasMapGL implements MapInterface {
       this._addExternalEventLayers();
 
       this.bindLayersToMapEvent(
+        map,
         this._mapLayers.events.zoomOnClick,
         this.config.mapLayersEventBind.zoomOnClick
       );
 
       this.bindLayersToMapEvent(
+        map,
         this.config.mapLayers.events.emitOnClick,
         this.config.mapLayersEventBind.emitOnClick
       );
 
       this.bindLayersToMapEvent(
+        map,
         this.config.mapLayers.events.onHover,
         this.config.mapLayersEventBind.onHover
       );
@@ -548,11 +533,11 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this._eventSubscription.push(sub);
   }
 
-  protected _bindCustomEvent() {
+  protected _bindCustomEvent(map: AbstractArlasMapGL) {
     if (this.config.customEventBind) {
       console.log('bind custom event');
-      this.config.customEventBind.forEach(element =>
-        this.bindLayersToMapEvent(element.layers, element.mapEventBinds)
+      this.config.customEventBind(map).forEach(element =>
+        this.bindLayersToMapEvent(map, element.layers, element.mapEventBinds)
       );
     }
   }
@@ -645,7 +630,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
 
   public abstract initDrawControls(config: DrawControlsOption): void;
 
-  public abstract bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
+  public abstract bindLayersToMapEvent(map: AbstractArlasMapGL, layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
   public abstract calcOffsetPoint(): any;
   public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
@@ -712,7 +697,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     if (layer !== undefined && layer.id === layerId) {
       /** Add the layer if it is not already added */
       if (this.getMapProvider().getLayer(layerId) === undefined) {
-        console.log(layer);
         if (this.firstDrawLayer && this.firstDrawLayer.length > 0) {
           /** draw layers must be on the top of the layers */
           this.getMapProvider().addLayer(layer, this.firstDrawLayer);
@@ -820,6 +804,11 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
     this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+  }
+
+  public hasCrossOrDrawLayer(e: any): boolean {
+    const features = this.queryRenderedFeatures(e.point);
+    return (!!features && !!features.find(f => f && f.layer && f.layer.id && f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
   }
 
   public selectFeatures(elementToSelect: Array<ElementIdentifier>) {

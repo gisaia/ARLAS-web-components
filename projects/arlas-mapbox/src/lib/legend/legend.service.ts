@@ -28,7 +28,9 @@ import { LineLegend } from 'arlas-map';
 import { MAX_LINE_WIDTH } from 'arlas-map';
 import { LayerMetadata } from 'arlas-map';
 import { FillLegend, HeatmapLegend } from 'arlas-map';
-import { LabelLegend } from 'arlas-map';
+import { LabelLegend, LegendService } from 'arlas-map';
+import * as tinycolor from 'tinycolor2';
+
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -41,15 +43,173 @@ export const HEATMAP_DENSITY = 'Heatmap-density';
 @Injectable({
     providedIn: 'root'
 })
-export class MapboxLegendService {
+export class MapboxLegendService extends LegendService {
 
     public constructor(public translate: TranslateService) {
+        super()
+    }
 
+    public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
+        filter.forEach((f, idx) => {
+            if (idx !== 0 && idx !== filter.length - 1) {
+                switch (f[0]) {
+                    case IN: {
+                        if (f[1][1] === field) {
+                            const valuesToKeep: Array<string> = f[2][1];
+                            colorLegendValues.forEach((val, key) => {
+                                if (!(valuesToKeep.includes(key))) {
+                                    colorLegendValues.delete(key);
+                                }
+                            });
+                        }
+                        break;
+                    }
+                    case NOT_IN: {
+                        if (f[1][0] === IN && f[1][1][1] === field) {
+                            const valuesToExclude: Array<string> = f[1][2][1];
+                            valuesToExclude.forEach(value => {
+                                colorLegendValues.delete(value);
+                            });
+                        }
+                        break;
+                    }
+                }
+            }
+        });
     }
     public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
         filter?: any, translate?: TranslateService): [Legend, string] {
 
-        return [undefined, '']
+        const colorLegend: Legend = { visible: true };
+        let colorPalette = '';
+        if (typeof colorExpression === 'string') {
+            colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
+            colorLegend.fixValue = colorExpression;
+        } else if (Array.isArray(colorExpression)) {
+            if (colorExpression.length === 2) {
+                /** color = ["get", "field"]  ==> Generated or Provided */
+                const field = colorExpression[1];
+                colorLegend.title = field;
+                if (!Array.isArray(field)) {
+                    if ((field as string).endsWith('_arlas__color')) {
+                        colorLegend.type = PROPERTY_SELECTOR_SOURCE.generated;
+                    } else {
+                        colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
+                    }
+                    colorLegend.manualValues = new Map();
+                    if (legendData && legendData.get(field)) {
+                        const keysToColors = legendData.get(field).keysColorsMap;
+                        const colorList = Array.from(keysToColors.keys()).map(k => [k, keysToColors.get(k)]).flat();
+                        for (let i = 0; i < colorList.length; i += 2) {
+                            colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], colorList[i + 1]);
+                        }
+                        if (colorList.length === 0) {
+                            colorLegend.manualValues.set('', '#eee');
+                        }
+                    } else {
+                        colorLegend.manualValues.set('', '#eee');
+                    }
+
+                    if (!!filter) {
+                        MapboxLegendService.filterLegend(colorLegend.manualValues, filter,
+                            (field as string).endsWith('_arlas__color') ? (field as string).slice(0, -13) : field);
+                    }
+                }
+            } else if (colorExpression.length >= 3) {
+                if (colorExpression[0] === MATCH) {
+                    /** color = ["match", ["get", "field"], .... ]**/
+                    colorLegend.type = PROPERTY_SELECTOR_SOURCE.manual;
+                    const colorsLength = colorExpression.length;
+                    let hasDefaultColor = false;
+                    if (colorsLength % 2 !== 0) {
+                        hasDefaultColor = true;
+                    }
+                    const field = colorExpression[1].length === 2 ? colorExpression[1][1] : '';
+                    colorLegend.title = field;
+                    colorLegend.manualValues = new Map();
+                    let keysToColors: Map<string, string>;
+                    if (legendData && legendData.get(field + '_color')) {
+                        // If there is a legendData, use only the colors in the keysToColors
+                        keysToColors = legendData.get(field + '_color').keysColorsMap;
+                    } else {
+                        // If no legendData for this field, use all the colors of colorExpression
+                        keysToColors = new Map();
+                        for (let i = 2; i < colorExpression.length; i += 2) {
+                            if (hasDefaultColor && i === colorsLength - 3) {
+                                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
+                                keysToColors.set(OTHER, colorExpression[i + 2]);
+                                break;
+                            } else {
+                                keysToColors.set(colorExpression[i] + '', colorExpression[i + 1]);
+                            }
+                        }
+                    }
+                    for (let i = 2; i < colorExpression.length; i += 2) {
+                        if (hasDefaultColor && i === colorsLength - 3) {
+                            if (keysToColors.has(colorExpression[i] + '')) {
+                                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                                    colorExpression[i + 1]);
+                            }
+                            colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
+                            break;
+                        } else {
+                            if (keysToColors.has(colorExpression[i] + '')) {
+                                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                                    colorExpression[i + 1]);
+                            }
+                        }
+                    }
+
+                    if (!!filter) {
+                        MapboxLegendService.filterLegend(colorLegend.manualValues, filter, field);
+                    }
+                } else if (colorExpression[0] === INTERPOLATE) {
+                    colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+                    /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
+                    // todo throw exception if interpolation is not linear
+                    const field = colorExpression[2].length === 2 ? colorExpression[2][1] : HEATMAP_DENSITY;
+                    colorLegend.title = field;
+                    colorLegend.interpolatedValues = [];
+                    const palette = [];
+                    const colors = colorExpression.slice(3);
+                    colors.forEach((c, i) => {
+                        if (i % 2 === 0) {
+                            palette.push({
+                                proportion: c,
+                                value: colors[i + 1]
+                            });
+                        }
+                    });
+                    const minimum = palette[0].proportion;
+                    const maximum = palette.slice(-1)[0].proportion;
+                    palette.forEach(c => colorLegend.interpolatedValues.push(c.value));
+                    const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
+                    if (legendData && legendData.get(field) && field !== 'count') {
+                        colorLegend.minValue = legendData.get(field).minValue;
+                        colorLegend.maxValue = legendData.get(field).maxValue;
+                        // For heatmaps, the count is used to fetch data, so we use it for the legend
+                    } else if (field === HEATMAP_DENSITY && legendData && legendData.get('count')) {
+                        colorLegend.minValue = legendData.get('count').minValue;
+                        colorLegend.maxValue = legendData.get('count').maxValue;
+                    } else {
+                        colorLegend.minValue = colorValues[0] + '';
+                        colorLegend.maxValue = colorValues[colorValues.length - 1] + '';
+                    }
+                    if (!visibleMode) {
+                        /** apply greyscale because the layer is not visible */
+                        colorLegend.interpolatedValues = colorLegend.interpolatedValues
+                            .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
+                        palette.forEach(p => {
+                            p.value = tinycolor.default(p.value.toString()).greyscale().lighten(20).toHexString();
+                        });
+                    }
+                    colorPalette = palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');
+                }
+            }
+        }
+
+        colorLegend.visible = visibleMode;
+        return [colorLegend, colorPalette];
     };
 
     public static buildRadiusLegend(radiusExpression: string | any, legendData: Map<string, LegendData>): Legend {

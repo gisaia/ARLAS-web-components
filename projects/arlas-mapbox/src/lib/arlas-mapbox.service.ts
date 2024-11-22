@@ -19,17 +19,12 @@ export class ArlasMapboxService extends ArlasMapService {
     });
   }
 
-  public hasCrossOrDrawLayer(e: any, map: ArlasMapboxGL): boolean {
-    const features = map.queryRenderedFeatures(e.point);
-    return (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)))
-  }
-
   public createMap(config: ArlasMapboxConfig): ArlasMapboxGL {
     return new ArlasMapboxGL(config);
   }
 
-  public createDraw(drawOptions: any, enabled: boolean, map: ArlasMapboxGL): ArlasDraw {
-    return new ArlasDraw(drawOptions, enabled, map);
+  public createDraw(drawOptions: any, enabled: boolean, map: ArlasMapboxGL): any {
+    return (new ArlasDraw(drawOptions, enabled, map));
   }
 
   public getPointFromScreen(e, container: HTMLElement): Point {
@@ -44,7 +39,7 @@ export class ArlasMapboxService extends ArlasMapService {
     return new LngLatBounds(c1, c2);
   }
   public boundsToString(bounds: LngLatBounds): string {
-    throw bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
+    return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
 
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {

@@ -29,7 +29,7 @@ import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { LegendService } from './legend.service';
-import { MAX_LINE_WIDTH } from 'arlas-map';
+import { MAX_LINE_WIDTH } from './legend.tools';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -88,7 +88,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * @Output : Angular
    * @description Notifies the parent component that the user wants to download the layer
    */
-  @Output() public downloadSourceEmitter: Subject<{ layer: mapboxgl.Layer; downloadType: string; }> = new Subject();
+  @Output() public downloadSourceEmitter: Subject<{ layer: any; downloadType: string; }> = new Subject();
 
   @ViewChild('width_legend', { static: false }) public lineWidthLegend: any//MapglLegendItemComponent;
   @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: any//MapglLegendItemComponent;
@@ -121,6 +121,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
     this.legendUpdater
       .pipe(takeUntil(this._onDestroy$))
       .subscribe(legendDataPerCollection => {
+
         this.legendData = legendDataPerCollection.get(this.collection);
         if (!!this.layer) {
           this.drawLegends(this.visibleMode);
@@ -182,7 +183,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
     this._onDestroy$.complete();
   }
 
-  public downloadLayerSource(layer: mapboxgl.Layer, downloadType: string): void {
+  public downloadLayerSource(layer: any, downloadType: string): void {
     const download = {
       layer,
       downloadType
@@ -255,6 +256,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       }
       case 'symbol': {
+        // todo: fix text size
         const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer);
         this.colorLegend = symbolLegend.color;
         this.colorPalette = symbolLegend.colorPalette;

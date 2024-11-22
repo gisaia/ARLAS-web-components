@@ -2,6 +2,7 @@
   <div class="map__visu-list">
     <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
       <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
+      {{visualisationSetsConfig}}
     </div>
     <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
       (cdkDropListDropped)="drop($event)">
@@ -16,7 +17,7 @@
         </div>
         <div class="map__visu-content" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
           <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer"
-            [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) ) !== true">
+            [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) | getValue:visibilityStatus) !== true">
             <div cdkDragHandle class="map__visu-layer-drag">
               <mat-icon>drag_indicator</mat-icon>
             </div>

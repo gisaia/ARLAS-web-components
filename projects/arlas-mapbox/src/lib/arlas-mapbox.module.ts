@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ArlasMapboxService } from './arlas-mapbox.service';
 import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
+import { MapboxLegendService } from './legend/legend.service';
 
 @NgModule({
   declarations: [
@@ -10,7 +11,8 @@ import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
   ],
   providers: [
     ArlasMapboxService,
-    MapboxBasemapService
+    MapboxBasemapService,
+    MapboxLegendService
   ],
   exports: [
   ]

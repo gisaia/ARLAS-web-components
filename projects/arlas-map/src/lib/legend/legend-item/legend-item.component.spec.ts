@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { LegendItemComponent } from './legend-item.component';
 
 describe('LegendItemComponent', () => {

@@ -2,6 +2,10 @@
  * Public API Surface of arlas-map
  */
 
+export { GetCollectionPipe } from './lib/arlas-map.pipe';
+export { LayerIdToName } from './lib/legend/layer-name.pipe';
+export { LegendService } from './lib/legend/legend.service';
+export { ArlasMapModule } from './lib/arlas-map.module';
 export { LegendItemComponent } from './lib/legend/legend-item/legend-item.component';
 export { LegendComponent } from './lib/legend/legend.component';
 export { LayerIconComponent } from './lib/legend/legend-icon/layer-icon.component';
@@ -31,8 +35,8 @@ export { createSupplementaryPointsForCircle, dragPan } from './lib/draw/modes/ci
 export { stripDirectSelectMode } from './lib/draw/modes/strip/strip.direct.mode'
 export { stripMode } from './lib/draw/modes/strip/strip.mode'
 export { AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
-  BindLayerToEvent, ElementIdentifier, GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP, LngLat,
-  MapConfig, MapEventBinds, OnMoveResult, RESET_BEARING, ZOOM_IN, ZOOM_OUT
+  BindLayerToEvent, ElementIdentifier, GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP,
+  MapConfig, MapEventBinds, RESET_BEARING, ZOOM_IN, ZOOM_OUT
  } from './lib/map/AbstractArlasMapGL'
 export { MapInterface } from './lib/map/interface/map.interface'
 export {
@@ -52,3 +56,4 @@ export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.to
 export * as styles from './lib/draw/themes/default-theme'
 export { ArlasMapComponent } from './lib/arlas-map.component'
 export { ArlasMapService } from './lib/arlas-map.service'
+export { LngLat, OnMoveResult} from './lib/map/model/map'

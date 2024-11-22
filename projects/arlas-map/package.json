@@ -1,6 +1,6 @@
 {
   "name": "arlas-map",
-  "version": "27.0.0-alpha.5",
+  "version": "27.0.0-alpha.7",
   "peerDependencies": {
     "@angular/animations": "^14.2.12",
     "@angular/cdk": "^14.2.7",
@@ -33,7 +33,7 @@
     "@turf/rhumb-bearing": "^6.5.0",
     "@turf/rhumb-destination": "^6.5.0",
     "@turf/transform-rotate": "^6.5.0",
-    "@types/mapbox-gl": "^1.6.3",
-    "pmtiles": "^2.11.0"
+    "pmtiles": "^2.11.0",
+    "arlas-web-components": "27.0.0-map.alpha.3"
   }
 }

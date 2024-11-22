@@ -19,11 +19,6 @@ export class ArlasMaplibreService extends ArlasMapService {
     });
   }
 
-  public hasCrossOrDrawLayer(e: any, map: ArlasMaplibreGL): boolean {
-    const features = map.queryRenderedFeatures(e.point);
-    return (!!features && !!features.find(f => f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
-  }
-
   public createMap(config: ArlasMaplibreConfig): ArlasMaplibreGL {
     return new ArlasMaplibreGL(config);
   }

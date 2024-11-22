@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, MapConfig, LngLat } from './map/AbstractArlasMapGL';
+import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
 import { AbstractDraw } from './draw/AbstractDraw';
+import { LngLat } from './map/model/map';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,6 @@ export abstract class ArlasMapService {
 
 
   public abstract getInitTransformRequest(): Function;
-
-  public abstract hasCrossOrDrawLayer(e, map: AbstractArlasMapGL): boolean;
 
   public abstract createMap(config: MapConfig<unknown>): AbstractArlasMapGL;
 
@@ -44,6 +43,7 @@ export abstract class ArlasMapService {
     ]);
     return filters;
   }
+
   /** Binds custom interaction of : 'mouseleave' and 'mouseenter' events
    *  to all draw layers 
   */
@@ -55,7 +55,6 @@ export abstract class ArlasMapService {
     ].map(layer => ['.cold', '.hot']
       .map(id => layer.concat(id)))
       .reduce((p, ac) => ac.concat(p), []);
-    console.log('awili')
     return [
       {
         layers: drawPolygonLayers,

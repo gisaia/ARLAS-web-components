@@ -62,7 +62,6 @@ export class LayerIconComponent implements OnInit, AfterViewInit, OnChanges {
     switch (type) {
       case 'circle':
       case 'circle-heatmap': {
-        const p: mapboxgl.CirclePaint = (paint as mapboxgl.CirclePaint);
         if (source.startsWith('feature-metric')) {
           drawFeatureCircleIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
         } else if (source.startsWith('feature')) {
@@ -96,7 +95,8 @@ export class LayerIconComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       }
       case 'symbol': {
-        const l: mapboxgl.SymbolLayout = (this.layer.layout as mapboxgl.SymbolLayout);
+        //todo type
+        const l: any = (this.layer.layout);
         if (l['text-field']) {
           drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }

@@ -59,7 +59,7 @@ import bbox from '@turf/bbox';
 
 export interface ArlasMaplibreConfig extends MapConfig<MapOptions> {
   mapLayers: MapLayers<TypedStyleLayer>;
-  customEventBind: BindLayerToEvent<keyof MapLayerEventType>[];
+  customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<MapLayerEventType>[];
   mapLayersEventBind: {
     onHover: MapEventBinds<keyof MapLayerEventType>[];
     emitOnClick: MapEventBinds<keyof MapLayerEventType>[];
@@ -239,11 +239,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
 
-  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof MapLayerEventType>[]) {
+  public bindLayersToMapEvent(map: ArlasMaplibreGL, layers: string[] | Set<string>, binds: MapEventBinds<keyof MapLayerEventType>[]) {
     layers.forEach(layerId => {
       binds.forEach(el => {
         this.getMapProvider().on(el.event, layerId, (e) => {
-          el.fn(e);
+          el.fn(e, map);
         });
       });
     });

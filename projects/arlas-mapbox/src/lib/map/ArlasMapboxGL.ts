@@ -51,7 +51,7 @@ import bbox from '@turf/bbox';
 // todo : rename to mapboxConfig
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
-  customEventBind: BindLayerToEvent<keyof MapLayerEventType>[];
+  customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<MapLayerEventType>[];
   mapLayersEventBind: {
     onHover: MapEventBinds<keyof MapLayerEventType>[];
     emitOnClick: MapEventBinds<keyof MapLayerEventType>[];
@@ -149,8 +149,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     if (!(config.draw.control instanceof MapboxDraw)) {
       console.warn(' Draw control is not instance of MapBoxDraw');
     } else {
-      this.addControl(config.draw.control as Control, (config.draw?.position ?? 'top-right'));
     }
+    this.addControl(config.draw.control as Control, (config.draw?.position ?? 'top-right'));
 
     if (config.addGeoBox.enable) {
       const addGeoBoxButton = new MapBoxControlButton(config.addGeoBox?.name ?? 'addgeobox');
@@ -350,11 +350,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return onMoveData;
   }
 
-  public bindLayersToMapEvent(layers: string[] | Set<string>, binds: MapEventBinds<keyof MapLayerEventType>[]) {
+  public bindLayersToMapEvent(map: ArlasMapboxGL, layers: string[] | Set<string>, binds: MapEventBinds<keyof MapLayerEventType>[]) {
     layers.forEach(layerId => {
       binds.forEach(el => {
         this.getMapProvider().on(el.event, layerId, (e) => {
-          el.fn(e);
+          el.fn(e, map);
         });
       });
     });
@@ -409,6 +409,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this.getBounds().getWest();
   }
   public getNorthBounds() {
+    console.log('north', this.getBounds().getNorth())
     return this.getBounds().getNorth();
   }
 

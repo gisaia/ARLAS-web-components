@@ -108,6 +108,7 @@ const routes: Routes = [
     MatSidenavModule,
     MatTabsModule,
     HistogramModule,
+    ArlasMapModule,
     DonutModule,
     ResultsModule,
     MetricModule,

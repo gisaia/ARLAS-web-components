@@ -62,8 +62,6 @@ export class AbstractDraw implements DrawEventsInterface {
 
   }
 
-
-
   public onAdd(map) {
     const controlContainer = this.drawProvider.onAdd(map);
     if (!this.enabled) {
@@ -229,5 +227,7 @@ export class AbstractDraw implements DrawEventsInterface {
     this.drawProvider.changeMode(mode, opt);
     return this;
   }
+
+
 
 }
