@@ -23,14 +23,18 @@ import { GetValueModule } from 'arlas-web-components';
 import { CommonModule } from '@angular/common';
 import { FormatNumberModule } from 'arlas-web-components';
 import { FormatLegendModule } from 'arlas-web-components';
+import { BasemapModule } from './basemaps/basemap.module';
+import { CoordinatesModule } from './coordinates/coordinates.module';
+import { MapSettingsModule } from './map-settings/map-settings.module';
+import { MapImportModule } from './map-import/map-import.module';
+import { MapImportComponent } from './map-import/map-import.component';
+import { MapSettingsComponent } from './map-settings/map-settings.component';
 
 
 
 @NgModule({
   declarations: [
     ArlasMapComponent,
-    BasemapComponent,
-    CoordinatesComponent,
     LayerIconComponent,
     LegendComponent,
     LegendItemComponent,
@@ -51,20 +55,24 @@ import { FormatLegendModule } from 'arlas-web-components';
     GetValueModule,
     FormatNumberModule,
     FormatLegendModule,
-    CommonModule
+    CommonModule,
+    CoordinatesModule,
+    MapSettingsModule,
+    MapImportModule,
+    BasemapModule
   ],
   providers: [
     MapboxAoiDrawService,
     ArlasColorService
   ],
   exports: [
-    BasemapComponent,
-    CoordinatesComponent,
     LayerIconComponent,
     LegendComponent,
     LegendItemComponent,
     LayerIdToName,
     ArlasMapComponent,
+    MapImportComponent,
+    MapSettingsComponent,
     GetCollectionPipe
   ]
 })

@@ -16,20 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { ArlasPoint } from './geometry';
-import { LngLat } from './map';
-
-
-export interface MapLayerMouseEvent {
-    type: string;
-    lngLat: LngLat;
-    /** Any Feature like object. The type is not specified in order to avoid cast issues. */
-    features: any[];
-}
-
-export interface MapMouseEvent {
-    type: string
-    point: ArlasPoint;
-    lngLat: LngLat;
-}

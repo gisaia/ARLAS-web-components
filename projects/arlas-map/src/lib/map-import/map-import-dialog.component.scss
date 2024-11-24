@@ -17,19 +17,34 @@
  * under the License.
  */
 
-import { ArlasPoint } from './geometry';
-import { LngLat } from './map';
-
-
-export interface MapLayerMouseEvent {
-    type: string;
-    lngLat: LngLat;
-    /** Any Feature like object. The type is not specified in order to avoid cast issues. */
-    features: any[];
+.mapgl-import-body {
+  min-width: 500px;
+  display: flex;
+  flex-direction: column;
 }
 
-export interface MapMouseEvent {
-    type: string
-    point: ArlasPoint;
-    lngLat: LngLat;
+.mapgl-import-zoom {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.mapgl-import-error {
+  color: #f44336;
+  font-size: 75%;
+}
+
+.mapgl-import-upload:focus {
+  outline: none;
+}
+
+.mapgl-import-radio-button {
+  padding: 10px;
+}
+
+.mapgl-import-text-area {
+  width: 100%;
+  height: 200px;
+  resize: vertical;
 }

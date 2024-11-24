@@ -46,7 +46,6 @@ export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services
 export { ArlasColorService } from './lib/services/color.generator.service';
 export { CollectionService, BaseCollectionService, AwcCollectionService } from './lib/services/collection.service';
 export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
-export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-settings.module';
 export { MetricComponent } from './lib/components/metric/metric.component';
 export { MetricModule } from './lib/components/metric/metric.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
@@ -55,9 +54,7 @@ export { MetricsTableModule } from './lib/components/metrics-table/metrics-table
 export { MetricsTableComponent } from './lib/components/metrics-table/metrics-table.component';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
-export {
-  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent, GeoQueryOperator
-} from './lib/components/mapgl-settings/mapgl-settings.component';
+
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { WmtsLayerManagertDialogComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';

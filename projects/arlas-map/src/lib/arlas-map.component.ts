@@ -34,7 +34,7 @@ import centroid from '@turf/centroid';
 import { ARLAS_VSET } from './map/model/layers';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { OnMoveResult } from './map/model/map';
-import { MapLayerMouseEvent } from './map/model/events';
+import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
 
 @Component({
   selector: 'arlas-map',
@@ -819,14 +819,14 @@ export class ArlasMapComponent implements OnInit {
     }));
 
     // Mouse events
-    this.map.on('mousedown', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousedown', (e: MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mouseup', (e: MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
 
-    this.map.on('mousemove', (e: mapboxgl.MapMouseEvent) => {
+    this.map.on('mousemove', (e: MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.isDrawingBbox || this.isDrawingPolygon) {
         this.map.setCursorStyle('crosshair');

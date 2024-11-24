@@ -24,7 +24,6 @@ import { ArlasMapSource } from '../map/model/sources';
 import { ArlasBasemaps } from './basemaps.model';
 import { BasemapService } from './basemap.service';
 import { BasemapStyle } from './basemap.config';
-import mapboxgl from 'mapbox-gl';
 
 @Component({
   selector: 'arlas-basemap',
@@ -42,7 +41,6 @@ export class BasemapComponent implements OnInit {
 
   public showList = false;
   public basemaps: ArlasBasemaps;
-
 
   public constructor(protected basemapService: BasemapService) { }
 
@@ -93,7 +91,7 @@ export class BasemapComponent implements OnInit {
   public setStyle(s: any, newBasemap: BasemapStyle) {
     const selectedBasemapLayersSet = new Set<string>();
     // TODO: Array to any try to find a good type or interface for all layer
-    const layers: Array<any> = this.map.getStyle().layers;
+    const layers: Array<any> = this.map.getLayers();
     const sources = this.map.getStyle().sources;
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
@@ -101,7 +99,7 @@ export class BasemapComponent implements OnInit {
     // TODO: Array to any try to find a good type or interface for all layer
     const layersToSave = new Array<any>();
     const sourcesToSave = new Array<ArlasMapSource<any>>();
-    layers.filter((l: mapboxgl.Layer) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
+    layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
       layersToSave.push(l);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
         sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });

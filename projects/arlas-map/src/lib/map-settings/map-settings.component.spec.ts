@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapglSettingsComponent } from './mapgl-settings.component';
+import { MapSettingsComponent } from './map-settings.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,13 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
 
-describe('MapglSettingsComponent', () => {
-  let component: MapglSettingsComponent;
-  let fixture: ComponentFixture<MapglSettingsComponent>;
+describe('MapSettingsComponent', () => {
+  let component: MapSettingsComponent;
+  let fixture: ComponentFixture<MapSettingsComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MapglSettingsComponent],
+      declarations: [MapSettingsComponent],
       imports: [
         MatTabsModule,
         MatDialogModule,
@@ -32,7 +32,7 @@ describe('MapglSettingsComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MapglSettingsComponent);
+    fixture = TestBed.createComponent(MapSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

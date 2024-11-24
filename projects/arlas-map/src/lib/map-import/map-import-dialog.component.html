@@ -1,0 +1,25 @@
+<h1 mat-dialog-title class="mapgl-import-title">{{ 'Import file' | translate}}</h1>
+<div mat-dialog-content class="mapgl-import-body">
+  <mat-radio-group class="mapgl-import-radio-group" [(ngModel)]="importType" (change)="changeType()">
+    <mat-radio-button *ngFor="let type of allowedImportType" [value]="type" class="mapgl-import-radio-button">
+      {{ type | translate }}
+    </mat-radio-button>
+  </mat-radio-group>
+
+  <input *ngIf="importType !== WKT" type="file" class="mapgl-import-upload" #fileInput accept="{{allowedFileExtension}}" (change)="onFileChange($event.target.files)">
+  <textarea *ngIf="importType === WKT" class="mapgl-import-text-area" [(ngModel)]="wktContent" placeholder="{{'Paste your WKT' | translate}}" (change)="onTextChange()"></textarea>
+
+  <div class="mapgl-import-zoom">
+    <mat-checkbox [(ngModel)]="fitResult">{{ 'Zoom to result' | translate}}</mat-checkbox>
+  </div>
+  <div *ngIf="displayError" class="mapgl-import-error">
+    {{ errorMessage | translate}} <ng-container *ngIf="errorThreshold !== ''"> - ({{'Max:' | translate }} {{errorThreshold}})</ng-container>
+  </div>
+</div>
+
+<div mat-dialog-actions class="mapgl-import-actions">
+  <button mat-button (click)="onCancel()">{{ 'Cancel' | translate}}</button>
+  <button mat-button [disabled]="((importType === SHP || importType === KML || importType === GEOJSON) && !currentFile) || isRunning || (importType === WKT && wktContent === '')" (click)="import()">{{ 'Import' | translate}}</button>
+  <mat-progress-spinner *ngIf="isRunning" [color]="'accent'" [diameter]="40" [mode]="'indeterminate'">
+  </mat-progress-spinner>
+</div>

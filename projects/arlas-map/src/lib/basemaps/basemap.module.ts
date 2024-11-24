@@ -17,19 +17,21 @@
  * under the License.
  */
 
-import { ArlasPoint } from './geometry';
-import { LngLat } from './map';
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { TranslateModule } from '@ngx-translate/core';
+import { NgModule } from '@angular/core';
+import { BasemapComponent } from './basemap.component';
 
+@NgModule({
+  imports: [
+    CommonModule,
+    MatIconModule,
+    TranslateModule
+  ],
+  declarations: [BasemapComponent],
+  exports: [BasemapComponent]
+})
+export class BasemapModule {
 
-export interface MapLayerMouseEvent {
-    type: string;
-    lngLat: LngLat;
-    /** Any Feature like object. The type is not specified in order to avoid cast issues. */
-    features: any[];
-}
-
-export interface MapMouseEvent {
-    type: string
-    point: ArlasPoint;
-    lngLat: LngLat;
 }

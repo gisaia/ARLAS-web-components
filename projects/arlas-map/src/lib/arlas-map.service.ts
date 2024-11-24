@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
 import { AbstractDraw } from './draw/AbstractDraw';
 import { LngLat } from './map/model/map';
+import { FeatureCollection } from '@turf/helpers';
 
 @Injectable({
   providedIn: 'root'
@@ -82,6 +83,12 @@ export abstract class ArlasMapService {
   }
 
   public abstract getPointFromScreen(e, container: HTMLElement);
+
+  /** Sets `data` to a Geojson `source` of the map
+   * @param source A Geojson source
+   * @param data A feature collection object.
+   */
+  public abstract setDataToGeojsonSource(source: any, data: FeatureCollection<GeoJSON.Geometry> );
 
   
 

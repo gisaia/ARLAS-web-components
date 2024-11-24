@@ -18,12 +18,11 @@
  */
 
 import { Component, OnInit, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { Subject, takeUntil } from 'rxjs';
-import { ArlasColorService } from '../../services/color.generator.service';
-import { SelectFormControl } from '../componentsUtils';
+import { ArlasColorService } from 'arlas-web-components';
 
 export interface GeometrySelectModel {
   path: string;
@@ -45,16 +44,39 @@ export enum GeoQueryOperator {
   NOT_INTERSECTS = 'notintersects'
 }
 
+export class SelectFormControl extends UntypedFormControl {
+
+  // used only for autocomplete: list of filtered options
+  public filteredOptions: Array<string>;
+  public syncOptions: Array<string> = [];
+
+  public constructor(
+    formState: any,
+    label: string,
+    options: Array<string>) {
+
+    super(formState, Validators.required);
+    this.setValue(formState);
+    this.setSyncOptions(options);
+
+  }
+
+  public setSyncOptions(newOptions: Array<string>) {
+    this.syncOptions = newOptions;
+    this.filteredOptions = newOptions;
+  }
+}
+
 export interface MapSettingsService {
   getGeoQueries(): Map<string, [Array<GeometrySelectModel>, Array<OperationSelectModel>, string]>;
 }
 
 @Component({
-  selector: 'arlas-mapgl-settings-dialog',
-  templateUrl: './mapgl-settings-dialog.component.html',
-  styleUrls: ['./mapgl-settings-dialog.component.scss']
+  selector: 'arlas-map-settings-dialog',
+  templateUrl: './map-settings-dialog.component.html',
+  styleUrls: ['./map-settings-dialog.component.scss']
 })
-export class MapglSettingsDialogComponent implements OnInit {
+export class MapSettingsDialogComponent implements OnInit {
   /**
    * @Output : Angular
    * Emits the geo-query to apply. A geo-query is defined by
@@ -73,7 +95,7 @@ export class MapglSettingsDialogComponent implements OnInit {
   private _onDestroy$ = new Subject<boolean>();
 
   public constructor(
-    private dialogRef: MatDialogRef<MapglSettingsComponent>,
+    private dialogRef: MatDialogRef<MapSettingsComponent>,
     private colorGeneratorLoader: ArlasColorService) { }
 
   public ngOnInit() { }
@@ -135,11 +157,11 @@ export class MapglSettingsDialogComponent implements OnInit {
 }
 
 @Component({
-  selector: 'arlas-mapgl-settings',
-  templateUrl: './mapgl-settings.component.html',
-  styleUrls: ['./mapgl-settings.component.scss']
+  selector: 'arlas-map-settings',
+  templateUrl: './map-settings.component.html',
+  styleUrls: ['./map-settings.component.scss']
 })
-export class MapglSettingsComponent implements OnInit {
+export class MapSettingsComponent implements OnInit {
 
   /**
    * @Output : Angular
@@ -149,14 +171,14 @@ export class MapglSettingsComponent implements OnInit {
    */
   @Output() public geoQueryEmitter = new Subject<Map<string, GeoQuery>>();
 
-  public dialogRef: MatDialogRef<MapglSettingsDialogComponent>;
+  public dialogRef: MatDialogRef<MapSettingsDialogComponent>;
 
   public constructor(public dialog: MatDialog) { }
 
   public ngOnInit() { }
 
   public openDialog(mapSettingsService: MapSettingsService) {
-    this.dialogRef = this.dialog.open(MapglSettingsDialogComponent, { data: null, panelClass: 'map-settings-dialog' });
+    this.dialogRef = this.dialog.open(MapSettingsDialogComponent, { data: null, panelClass: 'map-settings-dialog' });
     const mapGeoQueries = mapSettingsService.getGeoQueries();
     if (!!mapGeoQueries) {
       mapGeoQueries.forEach((geoQueries, collection) => {

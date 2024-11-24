@@ -2,6 +2,14 @@
  * Public API Surface of arlas-map
  */
 
+export {
+  MapSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapSettingsDialogComponent, GeoQueryOperator
+} from './lib/map-settings/map-settings.component';
+export {
+  AllowedImportGeometry, MapImportComponent, MapImportDialogComponent
+} from './lib/map-import/map-import.component';
+export { MapSettingsModule } from './lib/map-settings/map-settings.module';
+export { MapImportModule } from './lib/map-import/map-import.module';
 export { GetCollectionPipe } from './lib/arlas-map.pipe';
 export { LayerIdToName } from './lib/legend/layer-name.pipe';
 export { LegendService } from './lib/legend/legend.service';
@@ -23,7 +31,7 @@ export { BboxGeneratorModule } from './lib/bbox-generator/bbox-generator.module'
 export { BboxFormGroup } from './lib/bbox-generator/bbox-generator.utils';
 export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { AbstractDraw } from './lib/draw/AbstractDraw'
-export { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './lib/draw/draw.models'
+export { AoiDimensions as AoiEdition, BboxDrawCommand, Corner, EditionState } from './lib/draw/draw.models'
 export { MapboxAoiDrawService } from './lib/draw/draw.service'
 export { limitVertexDirectSelectMode } from './lib/draw/modes/LimitVertexDirectSelectMode'
 export { validGeomDrawPolygonMode } from './lib/draw/modes/ValidGeomDrawPolygonMode'

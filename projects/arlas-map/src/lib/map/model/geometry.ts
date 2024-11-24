@@ -17,19 +17,12 @@
  * under the License.
  */
 
-import { ArlasPoint } from './geometry';
-import { LngLat } from './map';
+export class ArlasPoint {
+    public x: number;
+    public y: number;
 
-
-export interface MapLayerMouseEvent {
-    type: string;
-    lngLat: LngLat;
-    /** Any Feature like object. The type is not specified in order to avoid cast issues. */
-    features: any[];
-}
-
-export interface MapMouseEvent {
-    type: string
-    point: ArlasPoint;
-    lngLat: LngLat;
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+    }
 }

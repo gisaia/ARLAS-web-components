@@ -50,6 +50,7 @@ export class CoordinatesComponent implements OnInit {
     this.coordinatesForm.longitude.setValue(this.currentLng);
   }
 
+  // todo: use a pipe !!!!!!!!!!
   public getErrorMessage(formControl: FormControl | FormGroup) {
     if (formControl.hasError('required')) {
       return marker('You must enter a coordinate');

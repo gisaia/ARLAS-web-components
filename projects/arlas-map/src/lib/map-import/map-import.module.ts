@@ -19,41 +19,35 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
-import { MapglSettingsComponent, MapglSettingsDialogComponent } from './mapgl-settings.component';
-import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-name/get-collection-display.module';
+import { MapImportComponent, MapImportDialogComponent } from './map-import.component';
+
 
 
 @NgModule({
-    imports: [
-        CommonModule,
-        BrowserModule,
-        FormsModule,
-        MatTabsModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatButtonToggleModule,
-        MatIconModule,
-        MatButtonModule,
-        MatRadioModule,
-        ReactiveFormsModule,
-        TranslateModule,
-        GetCollectionDisplayModule
-    ],
-  declarations: [MapglSettingsComponent, MapglSettingsDialogComponent],
-  exports: [MapglSettingsComponent]
+  imports: [
+    CommonModule,
+    BrowserModule,
+    FormsModule,
+    MatButtonModule,
+    MatCheckboxModule,
+    MatDialogModule,
+    MatProgressSpinnerModule,
+    MatSelectModule,
+    MatRadioModule,
+    TranslateModule
+  ],
+  declarations: [MapImportComponent, MapImportDialogComponent],
+  exports: [MapImportComponent]
 })
-export class MapglSettingsModule {
+export class MapImportModule {
 
 }

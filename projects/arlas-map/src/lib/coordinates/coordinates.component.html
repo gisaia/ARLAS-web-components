@@ -23,7 +23,7 @@
         </mat-form-field>
       </div>
       <button class="move" mat-stroked-button (click)="moveToCoordinates()"
-        [disabled]="coordinatesForm.invalid || coordinatesForm.latitudeErrors">
+        [disabled]="coordinatesForm.invalid">
         <span class="label">{{'Move to' | translate}}</span>
       </button>
     </div>

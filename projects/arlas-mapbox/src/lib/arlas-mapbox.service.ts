@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ArlasMapService, CROSS_LAYER_PREFIX, LngLat } from 'arlas-map';
-import { LngLatBounds, Point } from 'mapbox-gl';
+import { GeoJSONSource, LngLatBounds, Point } from 'mapbox-gl';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasAnyLayer } from './map/model/layers';
+import { FeatureCollection } from '@turf/helpers';
 
 @Injectable()
 export class ArlasMapboxService extends ArlasMapService {
-  
+
 
   constructor() {
     super();
@@ -66,4 +67,9 @@ export class ArlasMapboxService extends ArlasMapService {
       }
     }
   }
+
+  public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
+    source.setData(data);
+  };
+
 }
