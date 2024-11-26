@@ -123,7 +123,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   private updateActions() {
     if (this.activatedActionsPerItem) {
       const actionIds = this.activatedActionsPerItem.get(this.item.identifier);
-      if (actionIds) {
+      if (!!actionIds && !!this.actions) {
         this.actions.filter(a => ActionHandler.isReversible(a)).forEach(a => {
           if (actionIds.has(a.id)) {
             ActionHandler.activate(a);
