@@ -1,8 +1,16 @@
 # Change Log
 
+## [v26.0.12](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.12) (2024-12-02)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.11...v26.0.12)
+
 ## [v26.0.11](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.11) (2024-11-26)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.2...v26.0.11)
+
+**Fixed bugs:**
+
+- actions update needs existence verification [\#888](https://github.com/gisaia/ARLAS-web-components/issues/888)
 
 ## [v27.0.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.2) (2024-11-14)
 
