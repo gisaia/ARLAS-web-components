@@ -53,7 +53,7 @@ export {
   Action, ElementIdentifier, FieldsConfiguration, DescribedUrl, ResultListOptions,
   Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER, ActionHandler
 } from './lib/components/results/utils/results.utils';
-export { Item } from './lib/components/results/model/item';
+export { Item, ItemDetailGroup } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
 export { MapglComponent, VisualisationSetConfig, IconConfig, OnMoveResult, CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.component';
 export { MapglModule } from './lib/components/mapgl/mapgl.module';
