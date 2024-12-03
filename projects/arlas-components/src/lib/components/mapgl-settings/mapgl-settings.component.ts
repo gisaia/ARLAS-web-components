@@ -61,8 +61,8 @@ export class MapglSettingsDialogComponent implements OnInit {
    * - the operation ("within", "intersects", "notwithin", "notintersects")
    * - the geometry field to query
    */
-  @Output() public geoQueryEmitter = new Subject<Map<string, GeoQuery>>();
-  public emittedGeoQueries = new Map<string, GeoQuery>();
+  @Output() public geoQueryEmitter: Subject<Map<string, GeoQuery>> = new Subject<Map<string, GeoQuery>>();
+  public emittedGeoQueries: Map<string, GeoQuery> = new Map();
   /** Constants */
   public GEO_QUERIES_DESCRIPTION = marker('Draw a bbox or a polygon that');
 

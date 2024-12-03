@@ -35,8 +35,13 @@
   font-size: 75%;
 }
 
-.mapgl-import-upload:focus {
-  outline: none;
+.mapgl-import-upload {
+  padding-left: 10px;
+  padding-top: 10px;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .mapgl-import-radio-button {
@@ -44,6 +49,7 @@
 }
 
 .mapgl-import-text-area {
+  box-sizing: border-box;
   width: 100%;
   height: 200px;
   resize: vertical;
