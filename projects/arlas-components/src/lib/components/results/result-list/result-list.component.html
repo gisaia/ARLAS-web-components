@@ -49,7 +49,6 @@
                   {{lastSortedColumn.columnName | translate}} - {{(SortEnum[sortedColumn.sortDirection] | uppercase) + '_short' | translate}}
                 </span>
               </mat-select-trigger>
-              <!-- TODO: find better sort descriptor than '- -' -->
               <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>
               <mat-optgroup [label]="'Column' | translate" class="resultlist__tools--sort-group">
                 <ng-container *ngFor="let column of columns">

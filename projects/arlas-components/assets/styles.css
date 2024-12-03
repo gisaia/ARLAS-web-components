@@ -39,11 +39,6 @@ body {
 .constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar {
 }
 
-/* TODO: still used ? */
-.histogram__area .histogram__swimlane-height--tick {
-  stroke: black;
-}
-
 .one_dimension .histogram__axis {
   stroke: white;
 }
