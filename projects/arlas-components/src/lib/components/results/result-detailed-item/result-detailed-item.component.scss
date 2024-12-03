@@ -36,30 +36,41 @@
 }
 
 .resultdetaileditem /* @doc Sets all texts style.*/ {
-  font-family:
-    Roboto,
-    Helvetica Neue,
-    sans-serif;
+  font-family: Roboto, Helvetica Neue, sans-serif;
   font-size: 0.7em;
   text-align: left;
   padding: 0 5px;
 
-  &--group-title {
-    font-weight: bold;
-    color: #322d90;
-    font-size: 1.1em;
+  &--group {
+    padding-bottom: 10px;
+
+    &-title {
+      font-weight: bold;
+      font-size: 12px;
+      border-bottom: 1px solid #f0eeeecf;
+      display: block;
+    }
   }
 
   &--item {
-    font-weight: bold;
-    color: #444;
+    display: block;
+    color: black;
+    padding: 3px;
+    border-bottom: 1px solid #f0eeeecf;
 
     &--key /* @doc Sets key style. (key: value part)*/ {
-      font-weight: 520;
+      font-size: 11px;
+      font-weight: 500;
+      width: 120px;
+      display: inline-block;
+      white-space: pre-wrap;
     }
 
     &--value /* @doc Sets value style (key: value part)*/ {
       margin-right: 10px;
+      font-weight: 500;
+      font-size: 11px;
+      overflow-wrap: anywhere;
     }
   }
 
@@ -81,6 +92,7 @@
 .result-attachments {
   display: block;
   max-width: 95%;
+  padding-top: 10px;
 
   &--title /* @doc Sets the style of attachments section's title*/ {
     font-weight: bold;
