@@ -90,6 +90,7 @@ $default-font-size: 14px;
         top: -$radius;
         right: -$radius;
         border-radius: $radius;
+        border: 1px solid grey;
         display: flex;
         align-items: center;
         justify-content: center;
