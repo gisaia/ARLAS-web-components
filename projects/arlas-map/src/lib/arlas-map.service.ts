@@ -11,7 +11,6 @@ export abstract class ArlasMapService {
 
   constructor() { }
 
-
   public abstract getInitTransformRequest(): Function;
 
   public abstract createMap(config: MapConfig<unknown>): AbstractArlasMapGL;

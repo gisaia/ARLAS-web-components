@@ -20,7 +20,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { BasemapComponent } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
-import { MapLibreBasemapService } from './maplibre-basemap.service';
+import { MaplibreBasemapService } from './maplibre-basemap.service';
 import { ArlasMapSource } from 'arlas-map';
 import { MaplibreSourceType } from '../map/model/sources';
 
@@ -32,7 +32,7 @@ import { MaplibreSourceType } from '../map/model/sources';
 export class MaplibreBasemapComponent extends BasemapComponent implements OnInit {
   @Input() public map: ArlasMaplibreGL;
   @Input() public mapSources: Array<ArlasMapSource<MaplibreSourceType>>;
-  public constructor(protected basemapService: MapLibreBasemapService) {
+  public constructor(protected basemapService: MaplibreBasemapService) {
     super(basemapService);
   }
 }

@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { ArlasMaplibreService } from './arlas-maplibre.service';
+import { MaplibreBasemapService } from './basemaps/maplibre-basemap.service';
+import { MaplibreLegendService } from './legend/legend.service';
 
 
 
@@ -9,7 +11,9 @@ import { ArlasMaplibreService } from './arlas-maplibre.service';
   imports: [
   ],
   providers: [
-    ArlasMaplibreService
+    ArlasMaplibreService,
+    MaplibreBasemapService,
+    MaplibreLegendService
   ],
   exports: [
   ]

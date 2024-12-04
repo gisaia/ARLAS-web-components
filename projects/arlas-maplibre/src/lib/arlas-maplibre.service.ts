@@ -41,7 +41,7 @@ export class ArlasMaplibreService extends ArlasMapService {
     return new LngLatBounds(c1, c2);
   }
   public boundsToString(bounds: LngLatBounds): string {
-    throw bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
+    return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
 
   public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {

@@ -30,7 +30,7 @@ import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 @Injectable({
   providedIn: 'root'
 })
-export class MapLibreBasemapService extends BasemapService {
+export class MaplibreBasemapService extends BasemapService {
 
 
   public constructor(protected http: HttpClient) {

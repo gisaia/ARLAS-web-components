@@ -31,6 +31,8 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { LngLat, OnMoveResult } from './model/map';
 import { MapLayerMouseEvent } from './model/events';
 
+
+
 export interface ElementIdentifier {
   idFieldName: string;
   idValue: string;
@@ -40,6 +42,7 @@ export interface MapEventBinds<T> {
   event: T;
   fn: (e?, map?: AbstractArlasMapGL) => void;
 }
+
 export interface BindLayerToEvent<T> {
   layers: string[];
   mapEventBinds: MapEventBinds<T>[];
@@ -79,8 +82,6 @@ export interface ArlasMapOffset {
 }
 
 export const GEOJSON_SOURCE_TYPE = 'geojson';
-
-
 
 export const CROSS_LAYER_PREFIX = 'arlas_cross';
 export const ZOOM_IN = marker('Zoom in');
@@ -196,9 +197,11 @@ export abstract class AbstractArlasMapGL implements MapInterface {
 
     this.init(config);
   }
+
   public setMinZoom(minZoom?: number): this {
     throw new Error('Method not implemented.');
   }
+
   public setMaxZoom(maxZoom?: number): this {
     throw new Error('Method not implemented.');
   }
