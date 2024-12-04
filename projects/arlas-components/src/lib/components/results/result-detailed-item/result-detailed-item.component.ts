@@ -23,6 +23,7 @@ import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
@@ -63,7 +64,20 @@ export class ResultDetailedItemComponent implements OnInit {
   @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
     new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
+    /**
+   * @Input
+   * @description A detailed-data-retriever object that implements
+   * DetailedDataRetriever interface.
+   */
+  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  /**
+   * @Input : Angular
+   * @description List of active actions per item.
+  */
+  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
+
 
   public constructor(public translate: TranslateService) { }
 

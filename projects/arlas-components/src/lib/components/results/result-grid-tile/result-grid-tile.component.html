@@ -7,11 +7,14 @@
       <img [defaultImage]="options?.defautlImgUrl" [lazyLoad]="gridTile?.urlThumbnail"
         [class.contain_thumbnail]="thumbnailFit === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit === ThumbnailFitEnum.height"
         [class.width_thumbnail]="thumbnailFit === ThumbnailFitEnum.width">
-      <div *ngIf="options?.showActionsOnhover" class="grid_actions">
-        <button *ngFor="let action of gridTile?.actions" (mouseover)="hideCellTooltip($event)" (click)="triggerActionOnItem($event, action)" matTooltip="{{action.tooltip | translate}}"
-          class="resultitem-grid__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
-          {{action.label | translate}}
-        </button>
+      <div *ngIf="options?.showActionsOnhover" class="actions" (mouseover)="hideCellTooltip($event)">
+        <arlas-result-actions 
+          [activatedActionsPerItem]="activatedActionsPerItem" 
+          [detailedDataRetriever]="detailedDataRetriever"
+          [item]="gridTile"
+          [stopPropagation]="true"
+          (actionOnItemEvent)="triggerActionOnItem($event)" ></arlas-result-actions>
+
       </div>
       <mat-icon class="resultlist__md-grid-tile__selected--icon" *ngIf="displayInfoIcon">info_outline</mat-icon>
     </div>

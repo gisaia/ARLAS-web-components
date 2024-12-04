@@ -33,7 +33,7 @@
       "mapbox-gl",
       "geojson"
     ],
-    "target": "es2020",
+    "target": "ES2022",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "typeRoots": [
@@ -43,7 +43,8 @@
       "es2019",
       "dom"
     ],
-    "module": "es2015"
+    "module": "es2015",
+    "useDefineForClassFields": false
   },
   "exclude": [
     "node_modules",

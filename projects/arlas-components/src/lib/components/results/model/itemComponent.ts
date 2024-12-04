@@ -53,7 +53,11 @@ export class ItemComponent {
             label: action.label,
             actionBus: action.actionBus,
             cssClass: action.cssClass,
-            tooltip: action.tooltip
+            tooltip: action.tooltip,
+            reverseAction: action.reverseAction,
+            icon: action.icon,
+            fields: action.fields,
+            show: action.show
           });
         });
         additionalInfo.details.forEach((v, k) => {

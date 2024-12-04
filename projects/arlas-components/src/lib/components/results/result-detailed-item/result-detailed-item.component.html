@@ -3,28 +3,25 @@
 <td [class.grid-container]="containerType === 'grid'" [colSpan]="detailColspan - 1">
   <div class="details-title" *ngIf="rowItem?.detailsTitleEnabled">{{rowItem?.detailsTitle}}</div>
   <div class="resultdetaileditem">
-    <span *ngFor="let group of getGroups()">
-      <span class="resultdetaileditem--group-title {{group.group | replace:' ':'-' | lowercase}}-item-detail">
-        {{group.group | translate}}
-      </span>
-      <br>
-      <span *ngFor="let detail of group.details" class="resultdetaileditem--item {{detail.key}}-item-detail">
-        <span class="resultdetaileditem--item--key">{{detail.key | translate}}</span> :
-        <span class="resultdetaileditem--item--value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
-      </span>
-      <br>
-      <br />
-    </span>
-    <button mat-raised-button *ngFor="let action of rowItem?.actions" (click)="triggerActionOnItem(action)"
-      matTooltip="{{action.tooltip | translate}}"
-      class="resultdetaileditem__actions {{action.id}}-action {{action.cssClass}}-action">
-      {{action.label | translate}}
-    </button>
-    <br>
-    <br />
+    <ng-container *ngFor="let group of rowItem?.itemDetailedData">
+      <div class="resultdetaileditem--group" *ngIf="showEmptyGroup || group.details.length > 0">
+        <span class="resultdetaileditem--group-title {{group.group | replace:' ':'-' | lowercase}}-item-detail">
+          {{group.group | translate}}
+        </span>
+        <span *ngFor="let detail of group.details" class="resultdetaileditem--item {{detail.key}}-item-detail">
+          <span class="resultdetaileditem--item--key">{{detail.key | translate}}</span>
+          <span class="resultdetaileditem--item--value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
+        </span>
+      </div>
+    </ng-container>
+    <arlas-result-actions
+          [activatedActionsPerItem]="activatedActionsPerItem"
+          [detailedDataRetriever]="detailedDataRetriever"
+          [item]="rowItem"
+          [mode]="'text'"
+          (actionOnItemEvent)="triggerActionOnItem($event)" ></arlas-result-actions>
     <span class="result-attachments" *ngIf="rowItem?.attachments && rowItem?.attachments.length > 0">
-      <span class="result-attachments--title">{{'Attachments' | translate}}</span>
-      <br>
+      <div class="result-attachments--title">{{'Attachments' | translate}}</div>
       <span class="result-attachments--item" *ngFor="let att of rowItem?.attachments; index as i">
         <a class="result-attachments--item--link" href="{{att.url | getAttachmentUrl}}"
           matTooltip="{{getAttachmentDescription(att)}}" [matTooltipPosition]="'after'" target="_blank">

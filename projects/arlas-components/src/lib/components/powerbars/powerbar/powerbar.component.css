@@ -20,19 +20,33 @@
 .container {
     display: flex;
     align-items: flex-start;
+
+    --mdc-checkbox-state-layer-size: 10px
 }
 
-.container ::ng-deep .mat-checkbox-inner-container{
-    height: 10px !important;
-    width: 10px !important;
+/* Change the size of the checkbox below 18px */
+.container ::ng-deep.mdc-checkbox__native-control {
+    top: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
 }
+.container ::ng-deep.mdc-checkbox,
+.container ::ng-deep.mdc-checkbox__background,
+.container ::ng-deep.mat-mdc-checkbox-touch-target,
+.container ::ng-deep.mdc-checkbox__ripple,
+.container ::ng-deep.mat-mdc-checkbox-ripple  {
+    width: 10px;
+    height: 10px;
+    top: 0 !important;
+    left: 0 !important;
+}
+.container ::ng-deep.mat-mdc-checkbox-touch-target {
+    transform: unset;
+}
+
 .checkbox {
     margin-right: 5px;
     padding-bottom: 5px;
-}
-
-.checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
-    border-color: rgba(0,0,0,.04) !important;
 }
 
 .powerbars__powerbar {

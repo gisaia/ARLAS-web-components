@@ -16,18 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { NgModule } from '@angular/core';
+import { GetFieldDisplayNamePipe } from './get-field-display-name.pipe';
 
-import { AdditionalInfo, Action } from '../utils/results.utils';
-import { Observable } from 'rxjs';
-import { Item } from '../model/item';
-
-
-export interface DetailedDataRetriever {
-
-  getValues(identifier: string, fields: string[]): Observable<string[]>;
-
-  getData(identifier: string): Observable<AdditionalInfo>;
-
-  getActions(item: Item): Observable<Array<Action>>;
-
-}
+@NgModule({
+  imports: [
+  ],
+  declarations: [
+    GetFieldDisplayNamePipe
+  ],
+  exports: [
+    GetFieldDisplayNamePipe
+  ]
+})
+export class GetFieldDisplayModule {}

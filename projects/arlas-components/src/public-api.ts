@@ -34,12 +34,14 @@ export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerat
 export { DetailedDataRetriever } from './lib/components/results/utils/detailed-data-retriever';
 export {
   Action, ElementIdentifier, FieldsConfiguration, DescribedUrl, ResultListOptions,
-  Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER
+  Attachment, AdditionalInfo, Field, PageQuery, PROTECTED_IMAGE_HEADER, ActionHandler
 } from './lib/components/results/utils/results.utils';
-export { Item } from './lib/components/results/model/item';
+export { Item, ItemDetailGroup } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
+export { ResultActionsComponent } from './lib/components/results/result-actions/result-actions.component';
+export { ActionDisplayerPipe } from './lib/components/results/result-actions/result-actions.pipe';
 export { ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
 export { ResultsModule } from './lib/components/results/results.module';
 export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services/color.generator.module';
@@ -74,6 +76,8 @@ export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
 export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
 export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
+export { GetFieldDisplayModule } from './lib/pipes/get-field-display-name/get-field-display.module';
+export { GetFieldDisplayNamePipe } from './lib/pipes/get-field-display-name/get-field-display-name.pipe';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';

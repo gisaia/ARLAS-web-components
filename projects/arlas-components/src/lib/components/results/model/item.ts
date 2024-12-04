@@ -20,6 +20,11 @@
 import { Action, Attachment, ItemDataType } from '../utils/results.utils';
 import { Column } from './column';
 
+export interface ItemDetailGroup {
+  group: string;
+  details: Array<{ key: string; value: string; }>;
+};
+
 export class Item {
 
   /**
@@ -66,13 +71,7 @@ export class Item {
   /**
    * @description More data organized in groups.
    */
-  public itemDetailedData: Array<{
-    group: string;
-    details: Array<{ key: string; value: string; }>;
-  }> = new Array<{
-    group: string;
-    details: Array<{ key: string; value: string; }>;
-  }>();
+  public itemDetailedData = new Array<ItemDetailGroup>();
   /**
      * @description Links attached to the item.
      */

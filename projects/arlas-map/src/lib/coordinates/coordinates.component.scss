@@ -16,21 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+$default-spacing: 10px;
+$sm-spacing: calc($default-spacing / 2);
+$xs-spacing: calc($sm-spacing / 2);
+$sm-font-size: 12px;
+$default-font-size: 14px;
 
 .current-coordinate,
 .current-coordinate-edition {
     position: absolute;
     right: 110px;
-    bottom: 26px;
+    bottom: 10px;
 }
 
 .current-coordinate {
     background-color: white;
     border: 1px solid #a1a1a1;
     border-radius: 4px;
-    padding: 5px;
-
+    padding: 0 $sm-spacing;
     cursor: pointer;
+    font-size: $default-font-size;
+    padding: $xs-spacing $sm-spacing;
+    // Map scale height
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+    .lng, .lat {
+        width: 110px;
+    }
+
+    .lat {
+        margin-right: $default-spacing;
+    }
 }
 
 .current-coordinate-edition {
@@ -46,15 +65,19 @@
         .coordinate {
             padding: 0 5px;
         }
-
-        ::ng-deep.mat-form-field-wrapper {
-            padding-bottom: 5px !important;
-            padding-top: 5px !important;
+        ::ng-deep.mat-mdc-form-field-infix {
+            padding-left: 5px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            font-size: 14px;
+            min-height: unset;
         }
-
-        ::ng-deep.mat-form-field-infix {
+        ::ng-deep.mat-mdc-form-field {
             padding: 7px 0;
             width: 130px;
+        }
+        ::ng-deep.mat-mdc-form-field-subscript-wrapper {
+            display: none;
         }
     }
 

@@ -38,14 +38,6 @@ body {
 .constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar {
 }
 
-.histogram__area .histogram__swimlane-height--tick {
-  stroke: black;
-}
-
-a.arlas-map-control {
-  background-color: green;
-}
-
 .one_dimension .histogram__axis {
   stroke: white;
 }
@@ -79,71 +71,6 @@ a.arlas-map-control {
   -moz-osx-font-smoothing: grayscale;
   /* Support for IE. */
   font-feature-settings: 'liga';
-}
-
-.arlas-gl-geobox-chip {
-  background-color: #043B53;
-  color: white;
-  cursor: pointer;
-  font-size: 0.8em;
-  position: absolute;
-  top: 50px!important;
-  right: 15px!important;
-  z-index: 1000;
-  height: 30px;
-  padding-top: 5px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.arlas-gl-circle-chip {
-  display: none;
-  background-color: #043B53;
-  color: white;
-  cursor: pointer;
-  font-size: 0.8em;
-  position: absolute;
-  top: 85px!important;
-  right: 15px!important;
-  z-index: 1000;
-  height: 30px;
-  padding-top: 5px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.arlas-gl-geohash-chip {
-  display: none;
-  background-color: #043B53;
-  color: white;
-  cursor: pointer;
-  font-size: 0.8em;
-  position: absolute;
-  top: 120px!important;
-  right: 15px!important;
-  z-index: 1000;
-  height: 30px;
-  padding-top: 5px;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.arlas-gl-toggle {
-  top: 85px!important;
-  right: 15px!important;
-  z-index: 1000;
-  position: absolute;
-  color: #043B53;
-}
-
-.boxdraw {
-  background: rgba(56, 135, 190, 0.1);
-  border: 2px solid #3887be;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
 }
 
 .mapboxgl-ctrl-compass {
@@ -186,10 +113,6 @@ a.arlas-map-control {
 .resultlist__header--filters--dropdown {
   height: 36px !important;
   vertical-align: middle !important;
-}
-
-.mat-input-infix {
-  margin-top: -29px !important;
 }
 
 .table-wrapper .result-attachment-label {

@@ -23,6 +23,7 @@ import rhumbDestination from '@turf/rhumb-destination';
 import rhumbBearing from '@turf/rhumb-bearing';
 import length from '@turf/length';
 import transformRotate from '@turf/transform-rotate';
+import transformTranslate from '@turf/transform-translate';
 
 export const stripMode = { ...MapboxDraw.modes.draw_line_string };
 
@@ -158,32 +159,44 @@ stripMode.clickAnywhere = function (state, e) {
     } else {
         state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
     }
-
     return null;
 };
 
 stripMode.onMouseMove = function (state, e) {
-    MapboxDraw.modes.draw_line_string.onMouseMove.call(this, state, e);
-    const geojson = state.line.toGeoJSON();
-    const stripLenght = length(geojson, { units: 'kilometers' });
-    const start = geojson.geometry.coordinates[0];
-    const end = [e.lngLat.lng, e.lngLat.lat];
-    if (stripLenght <= state.maxLength) {
-        const stripFeature = buildStrip(start, end, state.halfSwath);
-        stripFeature.properties.parent = state.line.id;
-        (stripFeature.properties as any).meta = 'strip';
-        state.strip.setCoordinates(stripFeature.geometry.coordinates);
+    if (state.currentVertexPosition === 1) {
+        MapboxDraw.modes.draw_line_string.onMouseMove.call(this, state, e);
+        const geojson = state.line.toGeoJSON();
+        const stripLenght = length(geojson, { units: 'kilometers' });
+        const start = geojson.geometry.coordinates[0];
+        const end = [e.lngLat.lng, e.lngLat.lat];
         const startPoint = point(start);
         const endPoint = point(end);
         const bearing = rhumbBearing(startPoint, endPoint);
-        state.currentMaxBearing = bearing;
-        state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
-    } else {
-        const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
-        stripFeature.properties.parent = state.line.id;
-        (stripFeature.properties as any).meta = 'strip';
-        state.strip.setCoordinates(stripFeature.geometry.coordinates);
-        state.strip.properties['bearingAngle'] = bearingToAzimuth(state.currentMaxBearing);
+        if (stripLenght > state.maxLength && state.isStripDrew === undefined) {
+            const translateDistance = -(stripLenght - state.maxLength);
+            const translatedPoint = transformTranslate(endPoint, translateDistance, bearing);
+            const stripFeature = buildStrip(start, translatedPoint.geometry.coordinates, state.halfSwath);
+            stripFeature.properties.parent = state.line.id;
+            (stripFeature.properties as any).meta = 'strip';
+            state.strip.setCoordinates(stripFeature.geometry.coordinates);
+            state.currentMaxBearing = bearing;
+            state.isStripDrew = true;
+            state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
+        } else if (stripLenght <= state.maxLength || state.isStripDrew === undefined) {
+            const stripFeature = buildStrip(start, end, state.halfSwath);
+            stripFeature.properties.parent = state.line.id;
+            (stripFeature.properties as any).meta = 'strip';
+            state.strip.setCoordinates(stripFeature.geometry.coordinates);
+            state.currentMaxBearing = bearing;
+            state.isStripDrew = true;
+            state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
+        } else if (state.isStripDrew && stripLenght > state.maxLength) {
+            const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
+            stripFeature.properties.parent = state.line.id;
+            (stripFeature.properties as any).meta = 'strip';
+            state.strip.setCoordinates(stripFeature.geometry.coordinates);
+            state.strip.properties['bearingAngle'] = bearingToAzimuth(state.currentMaxBearing);
+        }
     }
 };
 
