@@ -1,16 +1,16 @@
 {
   "name": "arlas-map",
-  "version": "27.0.0-alpha.8",
+  "version": "27.0.0-map.beta.1",
   "peerDependencies": {
-    "@angular/animations": "^14.2.12",
-    "@angular/cdk": "^14.2.7",
-    "@angular/common": "^14.2.12",
-    "@angular/core": "^14.2.12",
-    "@angular/forms": "^14.2.12",
-    "@angular/material": "^14.2.7",
-    "@angular/platform-browser": "^14.2.12",
-    "@angular/platform-browser-dynamic": "^14.2.12",
-    "@angular/router": "^14.2.12",
+    "@angular/animations": "^15.2.10",
+    "@angular/cdk": "^15.2.9",
+    "@angular/common": "^15.2.10",
+    "@angular/core": "^15.2.10",
+    "@angular/forms": "^15.2.10",
+    "@angular/material": "^15.2.9",
+    "@angular/platform-browser": "^15.2.10",
+    "@angular/platform-browser-dynamic": "^15.2.10",
+    "@angular/router": "^15.2.10",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "rxjs": "~7.4.0",
@@ -34,6 +34,6 @@
     "@turf/rhumb-destination": "^6.5.0",
     "@turf/transform-rotate": "^6.5.0",
     "pmtiles": "^2.11.0",
-    "arlas-web-components": "27.0.0-map.alpha.4"
+    "arlas-web-components": "27.0.0-map.beta.1"
   }
 }

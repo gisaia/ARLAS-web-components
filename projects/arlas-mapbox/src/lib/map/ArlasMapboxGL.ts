@@ -504,19 +504,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this.getMapProvider().hasImage(id);
   }
 
-  public removeImage(id: string): void {
-    this.getMapProvider().removeImage(id);
-  }
-
-  public addImage(name: string, image: HTMLImageElement | ArrayBufferView | {
-    width: number;
-    height: number;
-    data: Uint8Array | Uint8ClampedArray;
-  } | ImageData | ImageBitmap, options?: { pixelRatio?: number | undefined; sdf?: boolean | undefined; }): this {
-    this._mapProvider.addImage(name, image);
-    return this;
-  }
-
   public cameraForBounds(bounds: mapboxgl.LngLatBoundsLike,
     options?: mapboxgl.CameraForBoundsOptions): mapboxgl.CameraForBoundsResult | undefined {
     return this._mapProvider.cameraForBounds(bounds, options);
@@ -641,10 +628,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this;
   }
 
-  public loadImage(url: string, callback: Function): this {
-    this._mapProvider.loadImage(url, callback);
-    return this;
-  }
 
   public addSource(id: string, source: AnySourceData): this {
     this._mapProvider.addSource(id, source);

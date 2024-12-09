@@ -346,9 +346,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this.getMapProvider().hasImage(id);
   }
 
-  public removeImage(id: string): void {
-    this.getMapProvider().removeImage(id);
-  }
 
   public initDrawControls(config: DrawControlsOption) {
 
@@ -490,24 +487,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   public getSource(id: string): unknown {
     return this._mapProvider.getSource(id);
   }
-  public addImage(name: string, image: HTMLImageElement | ImageBitmap | ImageData | {
-    width: number;
-    height: number;
-    data: Uint8Array | Uint8ClampedArray;
-  } | StyleImageInterface, options?: { pixelRatio?: number; sdf?: boolean; }): this {
-    this._mapProvider.addImage(name, image);
-    return this;
-  }
-  public loadImage(url: string, callback: (error: any, image: any) => void): this {
-    this._mapProvider.loadImage(url)
-      .then(res => {
-        callback(null, res.data);
-      })
-      .catch(err => {
-        callback(err, null);
-      });
-    return this;
-  }
+
   public addLayer(layer: AddLayerObject, before?: string): this {
     this.getMapProvider().addLayer(layer, before);
     return this;

@@ -118,20 +118,7 @@ export interface MapInterface {
     removeSource(id: string): this;
   
     getSource(id: string): unknown;
-  
-    addImage(
-      name: string,
-      image:
-        | HTMLImageElement
-        | ArrayBufferView
-        | { width: number; height: number; data: Uint8Array | Uint8ClampedArray; }
-        | ImageData
-        | ImageBitmap,
-      options?: { pixelRatio?: number | undefined; sdf?: boolean | undefined; },
-    ): this;
-  
-    loadImage(url: string, callback: Function): this;
-  
+   
   
     addLayer(layer: unknown, before?: string): this;
   
@@ -187,10 +174,7 @@ export interface MapInterface {
   
     fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
   
-    hasImage(id: string): boolean;
-    removeImage(id: string): void;
-  
-  
+
     easeTo(options: unknown, unknown?: unknown): this;
   
     flyTo(options: unknown, unknown?: unknown): this;

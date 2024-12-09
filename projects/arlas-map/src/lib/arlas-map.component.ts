@@ -306,6 +306,8 @@ export class ArlasMapComponent implements OnInit {
 
 
 
+  protected ICONS_BASE_PATH = 'assets/icons/';
+
 
 
   /** ------------------------------------------------------- VISUAL SEPERATOR - INIT ----------------------------------------- */
@@ -455,6 +457,18 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
+  /**
+   * Adds the custom icons given in the component's input
+   */
+  public addIcons() {
+    this.icons.forEach(icon => {
+      const iconName = icon.path.split('.')[0];
+      const iconPath = this.ICONS_BASE_PATH + icon.path;
+      const iconErrorMessage = 'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found';
+      this.mapService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable } );
+    });
+  }
+
   public declareMap() {
     console.log('declaaaring')
     this.initTransformRequest();
@@ -534,6 +548,7 @@ export class ArlasMapComponent implements OnInit {
     console.log('declare');
     this.map = this.mapService.createMap(config);
     console.log(this.map);
+
     this.map.eventEmitter$.subscribe({
       next: (e: MapLayerMouseEvent) => {
         if (e.type === 'click') {
@@ -602,6 +617,8 @@ export class ArlasMapComponent implements OnInit {
       // TODO: should change the
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
+      this.addIcons();
+
     });
 
     this.map.on('load', () => {

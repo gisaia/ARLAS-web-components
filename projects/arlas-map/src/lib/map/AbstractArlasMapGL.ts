@@ -229,16 +229,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   public getSource(id: string): unknown {
     throw new Error('Method not implemented.');
   }
-  public addImage(name: string, image: HTMLImageElement
-    | ArrayBufferView | ImageData | ImageBitmap | {
-      width: number; height: number; data: Uint8Array
-      | Uint8ClampedArray;
-    }, options?: { pixelRatio?: number; sdf?: boolean; }): this {
-    throw new Error('Method not implemented.');
-  }
-  public loadImage(url: string, callback: (error: any, image: any) => void): this {
-    throw new Error('Method not implemented.');
-  }
+
   public addLayer(layer: unknown, before?: string): this {
     throw new Error('Method not implemented.');
   }
@@ -312,10 +303,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     throw new Error('Method not implemented.');
   }
 
-  public removeImage(id: string): void {
-    throw new Error('Method not implemented.');
-  }
-
   public easeTo(options: unknown, unknown?: unknown): this {
     throw new Error('Method not implemented.');
   }
@@ -340,7 +327,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     try {
       this._initMapProvider(config);
       this._initControls();
-      this._initImages();
       this._initOnLoad();
       this._initMapMoveEvents();
     } catch (e) {
@@ -355,7 +341,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
       this._updateBounds();
       this._updateZoom();
       this.firstDrawLayer = this.getColdOrHotLayers()[0];
-      this._initLoadIcons();
       this._initSources();
       this._initMapLayers(this);
       this._bindCustomEvent(this);
@@ -416,25 +401,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
         this.config.mapLayers.events.onHover,
         this.config.mapLayersEventBind.onHover
       );
-    }
-  }
-
-  protected _initImages() {
-    console.log('init image call');
-    this._loadInternalImage('assets/rotate/01.png', 'rotate');
-    this._loadInternalImage('assets/resize/01.png', 'resize');
-  }
-
-  protected _initLoadIcons() {
-    if (this._icons) {
-      this._icons.forEach(icon => {
-        this._loadInternalImage(
-          this.ICONS_BASE_PATH + icon.path,
-          icon.path.split('.')[0],
-          'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found',
-          { 'sdf': icon.recolorable }
-        );
-      });
     }
   }
 
@@ -553,20 +519,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
         this.visualisationsSets.status.set(visu.name, visu.enabled);
       });
     }
-  }
-
-  protected _loadInternalImage(filePath: string, name: string, errorMessage?: string, opt?: any) {
-    this.loadImage(filePath, (error, image) => {
-      if (error) {
-        console.warn(errorMessage);
-      } else {
-        if (opt) {
-          this.addImage(name, image, opt);
-        } else {
-          this.addImage(name, image);
-        }
-      }
-    });
   }
 
   protected addVisualLayers(): void {
