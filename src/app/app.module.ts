@@ -128,7 +128,6 @@ const routes: Routes = [
     }})
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
-  bootstrap: [AppComponent],
-  entryComponents: [MapglImportDialogComponent, WmtsLayerManagertDialogComponent, MapglSettingsDialogComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
