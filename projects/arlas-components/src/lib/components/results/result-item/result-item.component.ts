@@ -27,7 +27,7 @@ import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundSty
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 import { TranslateService } from '@ngx-translate/core';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 
 @Component({

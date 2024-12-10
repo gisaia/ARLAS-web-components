@@ -52,7 +52,7 @@ import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { MapboxBasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import circleMode from './draw/modes/circles/circle.mode';
 import radiusCircleMode from './draw/modes/circles/radius.circle.mode';
 import simpleSelectModeOverride from './draw/modes/simpleSelectOverride';
@@ -460,7 +460,7 @@ export class MapglComponent implements OnInit, AfterViewInit, OnChanges, OnDestr
   private aoiEditSubscription: Subscription;
   private drawBboxSubscription: Subscription;
 
-  public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
+  public constructor(private drawService: MapboxAoiDrawService,
     private basemapService: MapboxBasemapService,
     private _snackBar: MatSnackBar, private translate: TranslateService) {
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
