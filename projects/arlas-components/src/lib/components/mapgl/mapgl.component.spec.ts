@@ -20,7 +20,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MapglComponent } from './mapgl.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,10 +39,8 @@ describe('MapglComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MapglComponent],
-      imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
-        HttpClientModule,
+    declarations: [MapglComponent],
+    imports: [TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
         MatIconModule,
         MatButtonModule,
         MatSelectModule,
@@ -51,13 +49,13 @@ describe('MapglComponent', () => {
         MatSlideToggleModule,
         MatTooltipModule,
         MatChipsModule,
-        DragDropModule
-      ],
-      providers: [
+        DragDropModule],
+    providers: [
         HttpClient,
-        MapboxAoiDrawService
-      ]
-    })
+        MapboxAoiDrawService,
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+})
       .compileComponents();
   }));
 

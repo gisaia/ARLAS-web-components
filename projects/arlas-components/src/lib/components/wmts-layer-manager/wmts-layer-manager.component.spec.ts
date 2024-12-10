@@ -21,7 +21,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { WmtsLayerManagerComponent } from './wmts-layer-manager.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('WmtsLayerManagerComponent', () => {
   let component: WmtsLayerManagerComponent;
@@ -29,15 +29,13 @@ describe('WmtsLayerManagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WmtsLayerManagerComponent ],
-      imports: [
-        MatDialogModule,
-        HttpClientModule
-      ],
-      providers: [
-        HttpClient
-      ]
-    })
+    declarations: [WmtsLayerManagerComponent],
+    imports: [MatDialogModule],
+    providers: [
+        HttpClient,
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+})
       .compileComponents();
   }));
 

@@ -20,7 +20,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultDetailedGridComponent } from './result-detailed-grid.component';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('ResultDetailedGridComponent', () => {
   let component: ResultDetailedGridComponent;
@@ -28,11 +28,10 @@ describe('ResultDetailedGridComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultDetailedGridComponent ],
-      imports: [
-        HttpClientModule
-      ]
-    })
+    declarations: [ResultDetailedGridComponent],
+    imports: [],
+    providers: [provideHttpClient(withInterceptorsFromDi())]
+})
       .compileComponents();
   }));
 

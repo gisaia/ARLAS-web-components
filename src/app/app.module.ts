@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -74,57 +74,50 @@ const routes: Routes = [
   { path: 'multi-collection', component: MetricsTableDemoComponent }
 ];
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    HistogramDemoComponent,
-    ResultsDemoComponent,
-    MapglDemoComponent,
-    PowerbarsDemoComponent,
-    DonutDemoComponent,
-    WmtsLayerManagerDemoComponent,
-    CalendarTimelineDemoComponent,
-    MetricsTableDemoComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormatLegendModule,
-    BrowserAnimationsModule,
-    CalendarTimelineModule,
-    FormsModule,
-    MapglModule,
-    MapglImportModule,
-    MapglSettingsModule,
-    MapglLegendModule,
-    MapglLayerIconModule,
-    MatButtonModule,
-    MatIconModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatTabsModule,
-    HistogramModule,
-    DonutModule,
-    ResultsModule,
-    MetricModule,
-    MetricsTableModule,
-    RouterModule.forRoot(routes),
-    PowerbarsModule,
-    WmtsLayerManagerModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    CollectionModule.forRoot({loader:{
-      provide: BaseCollectionService,
-      useClass: AwcCollectionService
-    }})
-  ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        HistogramDemoComponent,
+        ResultsDemoComponent,
+        MapglDemoComponent,
+        PowerbarsDemoComponent,
+        DonutDemoComponent,
+        WmtsLayerManagerDemoComponent,
+        CalendarTimelineDemoComponent,
+        MetricsTableDemoComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormatLegendModule,
+        BrowserAnimationsModule,
+        CalendarTimelineModule,
+        FormsModule,
+        MapglModule,
+        MapglImportModule,
+        MapglSettingsModule,
+        MapglLegendModule,
+        MapglLayerIconModule,
+        MatButtonModule,
+        MatIconModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatTabsModule,
+        HistogramModule,
+        DonutModule,
+        ResultsModule,
+        MetricModule,
+        MetricsTableModule,
+        RouterModule.forRoot(routes),
+        PowerbarsModule,
+        WmtsLayerManagerModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: httpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        CollectionModule.forRoot({ loader: {
+                provide: BaseCollectionService,
+                useClass: AwcCollectionService
+            } })], providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
