@@ -1,20 +1,19 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MapglSettingsComponent } from './mapgl-settings.component';
-import { MatTabsModule } from '@angular/material/tabs';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MapglSettingsComponent } from './mapgl-settings.component';
 
 describe('MapglSettingsComponent', () => {
   let component: MapglSettingsComponent;
   let fixture: ComponentFixture<MapglSettingsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [MapglSettingsComponent],
       imports: [

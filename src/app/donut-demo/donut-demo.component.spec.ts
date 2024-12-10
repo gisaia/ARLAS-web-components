@@ -17,15 +17,14 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DonutDemoComponent } from './donut-demo.component';
 
 describe('DonutDemoComponent', () => {
   let component: DonutDemoComponent;
   let fixture: ComponentFixture<DonutDemoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DonutDemoComponent ]
     })

@@ -17,17 +17,16 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { WmtsLayerManagerComponent } from './wmts-layer-manager.component';
-import { MatDialogModule } from '@angular/material/dialog';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
+import { WmtsLayerManagerComponent } from './wmts-layer-manager.component';
 
 describe('WmtsLayerManagerComponent', () => {
   let component: WmtsLayerManagerComponent;
   let fixture: ComponentFixture<WmtsLayerManagerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
     declarations: [WmtsLayerManagerComponent],
     imports: [MatDialogModule],

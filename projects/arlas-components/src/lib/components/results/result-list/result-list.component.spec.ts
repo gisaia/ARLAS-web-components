@@ -17,27 +17,26 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResultListComponent } from './result-list.component';
-import { ArlasColorService } from '../../../services/color.generator.service';
-import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
+import { ArlasColorService } from '../../../services/color.generator.service';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
+import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
+import { ResultListComponent } from './result-list.component';
 
 describe('ResultListComponent', () => {
   let component: ResultListComponent;
   let fixture: ComponentFixture<ResultListComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ResultListComponent, ResultScrollDirective],
       providers: [

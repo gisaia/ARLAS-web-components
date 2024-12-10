@@ -17,19 +17,18 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResultGridTileComponent } from './result-grid-tile.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { ResultGridTileComponent } from './result-grid-tile.component';
 
 describe('ResultGridTileComponent', () => {
   let component: ResultGridTileComponent;
   let fixture: ComponentFixture<ResultGridTileComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResultGridTileComponent ],
       imports: [

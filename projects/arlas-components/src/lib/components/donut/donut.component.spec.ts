@@ -17,19 +17,18 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { DonutComponent } from './donut.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { DonutComponent } from './donut.component';
 
 describe('DonutComponent', () => {
   let component: DonutComponent;
   let fixture: ComponentFixture<DonutComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DonutComponent ],
       imports: [
