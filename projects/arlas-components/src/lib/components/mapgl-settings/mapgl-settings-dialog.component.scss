@@ -64,7 +64,7 @@
   float: right;
 
   &--apply {
-    color: #ff4081;
+    --mdc-text-button-label-text-color: #ff4081;
     font-weight: bolder;
     outline: none;
   }
