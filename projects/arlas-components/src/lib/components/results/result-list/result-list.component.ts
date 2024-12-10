@@ -39,7 +39,7 @@ import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 
 /**

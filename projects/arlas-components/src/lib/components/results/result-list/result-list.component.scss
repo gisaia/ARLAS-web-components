@@ -154,7 +154,7 @@ tr {
   height: 30px;
 
   .mat-button-toggle-label-content {
-    line-height: 36px;
+    line-height: 36px !important;
     height: 36px;
     width: 36px;
     padding: 0 !important;
@@ -213,7 +213,7 @@ tr {
   max-width: 90px;
 
   .mat-button-toggle-label-content {
-    line-height: 36px;
+    line-height: 36px !important;
     height: 36px;
     width: 36px;
     padding: 0 !important;
@@ -281,11 +281,12 @@ tr {
   text-overflow: ellipsis;
 
   --mdc-switch-track-height: 10px;
-  --mdc-switch-handle-height: 15px;
+  --mat-switch-unselected-handle-size: 15px;
+  --mat-switch-selected-handle-size: 15px;
+  --mat-switch-pressed-handle-size: 15px;
   --mdc-switch-handle-width: 15px;
-  --mdc-switch-selected-icon-size: 0;
-  --mdc-switch-unselected-icon-size: 0;
   --mdc-switch-track-width: 30px;
+  --mdc-switch-state-layer-size: 0;
 
   .mdc-form-field--align-end>label {
     padding-right: 10px;

@@ -10,7 +10,7 @@
           <span class="map__visu-title-text" [class.map__visu-title-text--disabled]="!visu.enabled">
             {{visu.name | translate}}</span>
           <mat-slide-toggle [checked]="visu.enabled" (change)="emitVisualisations(visu.name)"
-            [matTooltip]="'show_layers' | translate"></mat-slide-toggle>
+            [matTooltip]="'show_layers' | translate" [hideIcon]="true"></mat-slide-toggle>
         </div>
         <div class="map__visu-content" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
           <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer"
