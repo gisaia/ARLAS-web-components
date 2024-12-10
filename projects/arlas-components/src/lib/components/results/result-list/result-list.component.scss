@@ -164,6 +164,29 @@ tr {
 .resultlist__tools {
   height: 50px;
   overflow: hidden;
+
+  &--geosort /* @doc Geo-sort toggle in the list header */ {
+    font-size: 14px;
+    padding-right: 10px;
+    margin-left: 5px;
+    flex: 1;
+    // Correct label wrapping
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    --mdc-switch-track-height: 10px;
+    --mat-switch-unselected-handle-size: 15px !important;
+    --mat-switch-selected-handle-size: 15px !important;
+    --mat-switch-pressed-handle-size: 15px !important;
+    --mdc-switch-handle-width: 15px;
+    --mdc-switch-track-width: 30px;
+    --mdc-switch-state-layer-size: 0;
+
+    .mdc-form-field--align-end>label {
+      padding-right: 10px;
+    }
+  }
 }
 
 .resultlist__grid-detail {
@@ -268,29 +291,6 @@ tr {
   width: 14px;
   height: 14px;
   cursor: pointer;
-}
-
-.resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
-  font-size: 14px;
-  padding-right: 10px;
-  margin-left: 5px;
-  flex: 1;
-  // Correct label wrapping
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  --mdc-switch-track-height: 10px;
-  --mat-switch-unselected-handle-size: 15px;
-  --mat-switch-selected-handle-size: 15px;
-  --mat-switch-pressed-handle-size: 15px;
-  --mdc-switch-handle-width: 15px;
-  --mdc-switch-track-width: 30px;
-  --mdc-switch-state-layer-size: 0;
-
-  .mdc-form-field--align-end>label {
-    padding-right: 10px;
-  }
 }
 
 .resultlist__tools--sort-container /* @doc Sort section in the list header */ {
