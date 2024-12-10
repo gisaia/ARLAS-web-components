@@ -65,14 +65,14 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "arlas-web-components:build"
+            "buildTarget": "arlas-web-components:build"
           },
           "configurations": {
             "development": {
-              "browserTarget": "arlas-web-components-demo:build:development"
+              "buildTarget": "arlas-web-components-demo:build:development"
             },
             "production": {
-              "browserTarget": "arlas-web-components:build:production"
+              "buildTarget": "arlas-web-components:build:production"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "arlas-web-components:build"
+            "buildTarget": "arlas-web-components:build"
           }
         },
         "test": {
