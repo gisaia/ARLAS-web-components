@@ -469,40 +469,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     options?: { layers?: string[]; filter?: any[]; }): MapGeoJSONFeature[] {
     return this._mapProvider.queryRenderedFeatures(pointOrBox, options as QueryRenderedFeaturesOptions);
   }
-  public setStyle(style: StyleSpecification | string, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
-    this._mapProvider.setStyle(style, options);
-    return this;
-  }
-  public getStyle(): StyleSpecification {
-    return this._mapProvider.getStyle();
-  }
-  public addSource(id: string, source: SourceSpecification | CanvasSourceSpecification): this {
-    this._mapProvider.addSource(id, source);
-    return this;
-  }
-  public removeSource(id: string): this {
-    this._mapProvider.removeSource(id);
-    return this;
-  }
-  public getSource(id: string): unknown {
-    return this._mapProvider.getSource(id);
-  }
-
-  public addLayer(layer: AddLayerObject, before?: string): this {
-    this.getMapProvider().addLayer(layer, before);
-    return this;
-  }
-  public moveLayer(id: string, beforeId?: string): this {
-    this.getMapProvider().moveLayer(id, beforeId);
-    return this;
-  }
-  public removeLayer(id: string): this {
-    this._mapProvider.removeLayer(id);
-    return this;
-  }
-  public getLayer(id: string): any {
-    return this.getMapProvider().getLayer(id);
-  }
   public setFilter(layer: string, filter?: boolean | any[], options?: StyleSetterOptions): this {
     this._mapProvider.setFilter(layer, filter as any, options);
     return this;
@@ -569,10 +535,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this;
   }
 
-  public easeTo(options: EaseToOptions, eventData?: any): this {
-    this._mapProvider.easeTo(options, eventData);
-    return this;
-  }
   public flyTo(options: FlyToOptions, eventData?: any): this {
     this._mapProvider.flyTo(options, eventData);
     return this;

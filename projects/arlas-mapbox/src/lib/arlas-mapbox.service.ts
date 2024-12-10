@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ArlasMapService, CROSS_LAYER_PREFIX, LngLat } from 'arlas-map';
+import { ARLAS_ID, ArlasMapService, CROSS_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, LngLat, SCROLLABLE_ARLAS_ID } from 'arlas-map';
 import { AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceOptions, GeoJSONSourceRaw, LngLatBounds, Point, Popup, RasterLayer, RasterSource, Source, SymbolLayer } from 'mapbox-gl';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
@@ -45,7 +45,7 @@ export class ArlasMapboxService extends ArlasMapService {
   }
 
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
-    const layer = map.getLayer(l) as ArlasAnyLayer;
+    const layer = this.getLayer(map, l);
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
@@ -70,7 +70,9 @@ export class ArlasMapboxService extends ArlasMapService {
   }
 
   public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
-    source.setData(data);
+    if (!!source) {
+      source.setData(data);
+    }
   };
 
   /**
@@ -112,7 +114,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param sourceId source identifier
    * @param map Map instance
    */
-  private hasSource(sourceId: string, map: ArlasMapboxGL): boolean {
+  public hasSource(map: ArlasMapboxGL, sourceId: string): boolean {
     return !!map.getMapProvider().getSource(sourceId);
   }
   /**
@@ -135,7 +137,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param map Map
    */
   public setSource(sourceId: string, source: AnySourceData, map: ArlasMapboxGL) {
-    if (!this.hasSource(sourceId, map)) {
+    if (!this.hasSource(map, sourceId)) {
       map.getMapProvider().addSource(sourceId, source);
     } else {
       console.warn(`The source ${sourceId} is already added to the map`);
@@ -157,7 +159,7 @@ export class ArlasMapboxService extends ArlasMapService {
     }
   }
 
-  
+
   /**
    * Executes the 'fn' function on 'eventName' triggered from the given 'layer' of the 'map' instance.
    * @param eventName 
@@ -166,7 +168,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param fn 
    */
   public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave', map: ArlasMapboxGL, layer: string, fn: () => void): void {
-    map.getMapProvider().on(eventName, layer,  fn);
+    map.getMapProvider().on(eventName, layer, fn);
   }
 
   /**
@@ -204,6 +206,29 @@ export class ArlasMapboxService extends ArlasMapService {
     return map.getMapProvider().getLayer(layer) as ArlasAnyLayer;
   }
 
+  /**
+   * @override Mapbox implementation.
+   * @param layerId Layer identifier.
+   * @param isVisible If true, the layer is made visible, otherwise, it is hidden.
+   * @param map Map instance.
+   */
+  public setLayerVisibility(layerId: string, isVisible: boolean, map: ArlasMapboxGL): void {
+    if (this.hasLayer(map, layerId)) {
+      map.getMapProvider().setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
+      const layer = this.getLayer(map, layerId);
+      if (layer.type === 'fill') {
+        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+        if (this.hasLayer(map, strokeId)) {
+          this.setLayerVisibility(strokeId, isVisible, map);
+        }
+      }
+      const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+      if (!layer.id.startsWith(SCROLLABLE_ARLAS_ID) && this.hasLayer(map, scrollableId)) {
+        this.setLayerVisibility(scrollableId, isVisible, map);
+      }
+    }
+  }
+
 
   /**
    * @override Mapbox implementation.
@@ -212,7 +237,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param source 
    */
   public removeSource(map: ArlasMapboxGL, source: string) {
-    if (!!source && this.hasSource(source, map)) {
+    if (!!source && this.hasSource(map, source)) {
       map.getMapProvider().removeSource(source);
     }
   };
@@ -381,7 +406,7 @@ export class ArlasMapboxService extends ArlasMapService {
    */
   public addGeojsonLayer(map: ArlasMapboxGL, layerId: string, style: MapboxVectorStyle,
     data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void {
-      const source: GeoJSONSourceRaw = this.createGeojsonSource(data);
+    const source: GeoJSONSourceRaw = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, source, map);
     const geojsonLayer: ArlasAnyLayer = {
@@ -395,5 +420,11 @@ export class ArlasMapboxService extends ArlasMapService {
     style.applyStyle(geojsonLayer);
     this.addLayer(map, geojsonLayer);
   }
+
+
+  public flyTo(lat: number, lng: number, zoom: number, map: ArlasMapboxGL) {
+    map.getMapProvider().flyTo({ center: [lng, lat], zoom });
+  }
+
 
 }

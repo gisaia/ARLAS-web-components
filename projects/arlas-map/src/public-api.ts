@@ -17,7 +17,7 @@ export { ArlasMapModule } from './lib/arlas-map.module';
 export { LegendItemComponent } from './lib/legend/legend-item/legend-item.component';
 export { LegendComponent } from './lib/legend/legend.component';
 export { LayerIconComponent } from './lib/legend/legend-icon/layer-icon.component';
-export * from './lib/arlas-map.service';
+export * from './lib/map/service/arlas-map.service';
 export * from './lib/arlas-map.component';
 export * from './lib/arlas-map.module';
 export { CoordinatesComponent } from './lib/coordinates/coordinates.component';
@@ -63,6 +63,7 @@ export { Legend, LegendData, PROPERTY_SELECTOR_SOURCE, CircleLegend, LineLegend,
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools';
 export * as styles from './lib/draw/themes/default-theme';
 export { ArlasMapComponent } from './lib/arlas-map.component';
-export { ArlasMapService } from './lib/arlas-map.service';
+export { ArlasMapService } from './lib/map/service/arlas-map.service';
 export { LngLat, OnMoveResult} from './lib/map/model/map';
 export { VectorStyle, ArlasCircle, ArlasFill, VectorStyleEnum } from './lib/map/model/vector-style';
+export { ArlasMapFunctionalService } from './lib/arlas-map-logic.service';

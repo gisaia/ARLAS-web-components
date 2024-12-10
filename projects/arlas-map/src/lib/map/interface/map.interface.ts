@@ -106,28 +106,6 @@ export interface MapInterface {
       options?: { layers?: string[] | undefined; filter?: any[] | undefined; } & unknown,
     ): unknown[];
   
-    setStyle(
-      style: unknown,
-      options?: { diff?: boolean | undefined; localIdeographFontFamily?: string | undefined; },
-    ): this;
-  
-    getStyle(): unknown;
-  
-    addSource(id: string, source: unknown): this;
-  
-    removeSource(id: string): this;
-  
-    getSource(id: string): unknown;
-   
-  
-    addLayer(layer: unknown, before?: string): this;
-  
-    moveLayer(id: string, beforeId?: string): this;
-  
-    removeLayer(id: string): this;
-  
-    getLayer(id: string): unknown;
-  
     setFilter(layer: string, filter?: any[] | boolean | null, options?: unknown | null): this;
   
     setLayoutProperty(layer: string, name: string, value: any, options?: unknown): this;
@@ -173,12 +151,8 @@ export interface MapInterface {
     cameraForBounds(bounds: unknown, options?: unknown): unknown | undefined;
   
     fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
-  
-
-    easeTo(options: unknown, unknown?: unknown): this;
-  
-    flyTo(options: unknown, unknown?: unknown): this;
-  
+    
+ 
     on<T extends keyof unknown>(
       type: T,
       layer: string,

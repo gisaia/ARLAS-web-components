@@ -26,6 +26,7 @@ import maplibre, { GetResourceResponse, RequestParameters, VectorSourceSpecifica
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { BasemapService } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
+import { ArlasMaplibreService } from '../arlas-maplibre.service';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +34,8 @@ import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 export class MaplibreBasemapService extends BasemapService {
 
 
-  public constructor(protected http: HttpClient) {
-    super(http);
+  public constructor(protected http: HttpClient, protected mapService: ArlasMaplibreService) {
+    super(http, mapService);
   }
 
 
@@ -55,11 +56,9 @@ export class MaplibreBasemapService extends BasemapService {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as maplibre.StyleSpecification).layers.forEach(l => {
-        if (!!map.getLayer(l.id)) {
-          map.removeLayer(l.id);
-        }
+        this.mapService.removeLayer(map, l.id);
       });
-      map.removeSource('arlas_protomaps_source');
+      this.mapService.removeSource(map, 'arlas_protomaps_source')
     }
   }
 

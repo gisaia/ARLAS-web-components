@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
-import { AbstractDraw } from './draw/AbstractDraw';
-import { LngLat } from './map/model/map';
+import { AbstractArlasMapGL, MapConfig } from '../AbstractArlasMapGL';
+import { AbstractDraw } from '../../draw/AbstractDraw';
+import { LngLat } from '../model/map';
 import { FeatureCollection } from '@turf/helpers';
-import { VectorStyle } from './map/model/vector-style';
+import { VectorStyle } from '../model/vector-style';
 
 @Injectable({
   providedIn: 'root'
@@ -97,19 +97,33 @@ export abstract class ArlasMapService {
    * @param map Map instance
    * @param layer layer identifier
    */
+  public abstract addLayer(map: AbstractArlasMapGL, layer: any, beforeId?: string);
+  public abstract addArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, any>, beforeId?: string);
+  public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): any[]
   public abstract hasLayer(map: AbstractArlasMapGL, layer: any);
-  /** */
-  public abstract setSource(sourceId: string, source: any, options: any);
-  public abstract addLayer(map: AbstractArlasMapGL, layer: any);
+  public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
+  public abstract moveLayer(map: AbstractArlasMapGL, layer: any, beforeId?: string);
+  public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, any>, beforeId?: string);
+  public abstract onLayerEvent(eventName: any, map: AbstractArlasMapGL, layer: any, fn: () => void);
   public abstract removeLayer(map: AbstractArlasMapGL, layer: any);
-  public abstract removeSource(map: AbstractArlasMapGL, layer: any);
-  public abstract createPopup(lng: number, lat: number, message: string);
-  public abstract addPopup(map: AbstractArlasMapGL, popup: any);
-  public abstract removePopup(map: AbstractArlasMapGL, popup: any);
   public abstract removeLayers(map: AbstractArlasMapGL, layers: any)
   public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
-  public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
+  public abstract setLayerVisibility(layer: any, isVisible: boolean, map: AbstractArlasMapGL);
+  public abstract isLayerVisible(layer: any): boolean;
+  public abstract getLayer(map: AbstractArlasMapGL, layerId: string): any;
+
+  public abstract hasSource(map: AbstractArlasMapGL, source: any);
+  public abstract getSource(sourceId: string, options: any): any;
+  public abstract setSource(sourceId: string, source: any, options: any);
+  public abstract removeSource(map: AbstractArlasMapGL, source: any);
+
+  public abstract addPopup(map: AbstractArlasMapGL, popup: any);
+  public abstract createPopup(lng: number, lat: number, message: string);
+  public abstract removePopup(map: AbstractArlasMapGL, popup: any);
+  
+  public abstract onMapEvent(eventName: any, map: AbstractArlasMapGL, fn: (e) => void);
   public abstract setMapCursor(map: AbstractArlasMapGL, cursor: string): void;
+  public abstract flyTo(lat: number, lng: number, zoom: number, map: AbstractArlasMapGL);
 
   public abstract addIconLayer(map: AbstractArlasMapGL, layerId: string, iconName: string,
     iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>);
@@ -120,11 +134,13 @@ export abstract class ArlasMapService {
     data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>
   ): void;
 
+
+  public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: any, filter: any);
+
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): any;
   public abstract createRasterSource(url: string, bounds: number[],
     maxZoom: number, minZoom: number, tileSize: number): any;
 
-    public abstract onLayerEvent(eventName: any, map: AbstractArlasMapGL, layer: any, fn: () => void);
-    public abstract onMapEvent(eventName: any, map: AbstractArlasMapGL, fn: (e) => void);
+
 
 }

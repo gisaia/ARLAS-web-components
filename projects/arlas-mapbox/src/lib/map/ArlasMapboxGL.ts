@@ -491,10 +491,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     this._mapProvider.removeLayer(id);
     return this;
   }
-  public removeSource(id: string) {
-    this._mapProvider.removeSource(id);
-    return this;
-  }
 
   public getStyle() {
     return this._mapProvider.getStyle();
@@ -508,12 +504,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     options?: mapboxgl.CameraForBoundsOptions): mapboxgl.CameraForBoundsResult | undefined {
     return this._mapProvider.cameraForBounds(bounds, options);
   }
-
-  public easeTo(options: mapboxgl.EaseToOptions, eventData?: mapboxgl.EventData): this {
-    this._mapProvider.easeTo(options, eventData);
-    return this;
-  }
-
 
   public getBearing(): number {
     return this._mapProvider.getBearing();
@@ -602,12 +592,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     this._mapProvider.setZoom(zoom, eventData);
     return this;
   }
-
-  public flyTo(options: mapboxgl.FlyToOptions, eventData?: mapboxgl.EventData): this {
-    this._mapProvider.flyTo(options, eventData);
-    return this;
-  }
-
 
   public on<T extends keyof mapboxgl.MapLayerEventType>(
     type: T, layer: string,

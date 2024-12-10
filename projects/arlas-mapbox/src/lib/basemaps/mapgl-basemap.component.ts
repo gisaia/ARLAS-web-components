@@ -22,6 +22,7 @@ import { BasemapComponent, ArlasMapSource } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { MapboxBasemapService } from './mapbox-basemap.service';
 import { MapboxSourceType } from '../map/model/sources';
+import { ArlasMapFunctionalService } from 'arlas-map';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class MapboxBasemapComponent extends BasemapComponent implements OnInit {
   @Input() public map: ArlasMapboxGL;
   @Input() public mapSources: Array<ArlasMapSource<MapboxSourceType>>;
 
-  public constructor(protected basemapService: MapboxBasemapService) {
-    super(basemapService);
+  public constructor(protected basemapService: MapboxBasemapService, protected mapFunctionalService: ArlasMapFunctionalService) {
+    super(basemapService, mapFunctionalService);
   }
 }

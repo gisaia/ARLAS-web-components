@@ -32,7 +32,7 @@ import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { Feature } from 'geojson';
 import { ArlasMapComponent } from '../arlas-map.component';
-import { ArlasMapService } from '../arlas-map.service';
+import { ArlasMapService } from '../map/service/arlas-map.service';
 
 
 const gpsi = gpsi_.default;

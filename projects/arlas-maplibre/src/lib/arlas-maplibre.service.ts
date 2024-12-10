@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ArlasMapService, CROSS_LAYER_PREFIX } from 'arlas-map';
+import { ARLAS_ID, ArlasMapService, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
 import { AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, Point, Popup, RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification, TypedStyleLayer } from 'maplibre-gl';
 import { ArlasMaplibreConfig, ArlasMaplibreGL } from './map/ArlasMaplibreGL';
 import { ArlasDraw } from './draw/ArlasDraw';
@@ -8,6 +8,7 @@ import { LayerMetadata } from 'arlas-map';
 import { FeatureCollection } from '@turf/helpers';
 import { from } from 'rxjs';
 import { MaplibreVectorStyle } from './map/model/vector-style';
+import { ExternalEvent } from 'arlas-map';
 
 @Injectable()
 export class ArlasMaplibreService extends ArlasMapService {
@@ -47,14 +48,14 @@ export class ArlasMaplibreService extends ArlasMapService {
   }
 
   public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
-    const layer = map.getLayer(l) as TypedStyleLayer;
+    const layer = this.getLayer(map, l) as TypedStyleLayer;
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
         if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
           map.setFilter(l, this.getVisibleIdsFilter(map, l, ids));
           const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-          const strokeLayer = map.getLayer(strokeLayerId);
+          const strokeLayer = this.getLayer(map, strokeLayerId);
           if (!!strokeLayer) {
             map.setFilter(strokeLayerId, this.getVisibleIdsFilter(map, strokeLayerId, ids));
           }
@@ -62,7 +63,7 @@ export class ArlasMaplibreService extends ArlasMapService {
       } else {
         map.setFilter(l, map.layersMap.get(l).filter);
         const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-        const strokeLayer = map.getLayer(strokeLayerId);
+        const strokeLayer = this.getLayer(map, strokeLayerId);
         if (!!strokeLayer) {
           map.setFilter(strokeLayerId,
             map.layersMap.get(strokeLayerId).filter);
@@ -72,7 +73,9 @@ export class ArlasMaplibreService extends ArlasMapService {
   }
 
   public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
-    source.setData(data);
+    if (!!source) {
+      source.setData(data);
+    }
   };
 
   /**
@@ -113,7 +116,7 @@ export class ArlasMaplibreService extends ArlasMapService {
    * @param sourceId source identifier
    * @param map Map instance
    */
-  private hasSource(sourceId: string, map: ArlasMaplibreGL): boolean {
+  public hasSource(map: ArlasMaplibreGL, sourceId: string): boolean {
     return !!map.getMapProvider().getSource(sourceId);
   }
   /**
@@ -136,7 +139,7 @@ export class ArlasMaplibreService extends ArlasMapService {
    * @param map Map
    */
   public setSource(sourceId: string, source: SourceSpecification | CanvasSourceSpecification, map: ArlasMaplibreGL) {
-    if (!this.hasSource(sourceId, map)) {
+    if (!this.hasSource(map, sourceId)) {
       map.getMapProvider().addSource(sourceId, source);
     } else {
       console.warn(`The source ${sourceId} is already added to the map`);
@@ -158,6 +161,83 @@ export class ArlasMaplibreService extends ArlasMapService {
     }
   }
 
+  public addArlasDataLayer(map: ArlasMaplibreGL, layer: AddLayerObject, arlasDataLayers: Map<string, AddLayerObject>, before?: string) {
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollableLayer = arlasDataLayers.get(scrollableId);
+    if (!!scrollableLayer) {
+      this.addLayer(map, scrollableLayer, before);
+    }
+    this.addLayer(map, layer, before);
+    /** add stroke layer if the layer is a fill */
+    if (layer.type === 'fill') {
+      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = arlasDataLayers.get(strokeId);
+      if (!!strokeLayer) {
+        this.addLayer(map, scrollableLayer, before);
+      }
+    }
+  }
+
+
+  /**
+   * @override Maplibre implementation.
+   * Moves the given layer to the top in map instance OR optionnaly before a layer.  
+   * @param map Map
+   * @param layer Layer to add to the map
+   * @param before Identifier of an already added layer. The given Layer (second param) is moved under this 'before' layer.
+   */
+  public moveLayer(map: ArlasMaplibreGL, layer: string, before?: string) {
+    if (this.hasLayer(map, layer)) {
+      map.getMapProvider().moveLayer(layer, before);
+    } else {
+      console.warn(`The layer ${layer} is not added to the map`);
+    }
+  }
+
+  public moveArlasDataLayer(map: ArlasMaplibreGL, layerId: string, arlasDataLayers: Map<string, AddLayerObject>, before?: string) {
+    const layer = arlasDataLayers.get(layerId);
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollableLayer = arlasDataLayers.get(scrollableId);
+    if (!!scrollableLayer && this.hasLayer(map, scrollableId)) {
+      this.moveLayer(map, scrollableId);
+    }
+    if (!!this.hasLayer(map, layerId)) {
+      this.moveLayer(map, layerId);
+      if (layer.type === 'fill') {
+        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+        const strokeLayer = arlasDataLayers.get(strokeId);
+        if (!!strokeLayer && this.hasLayer(map, strokeId)) {
+          this.moveLayer(map, strokeId);
+        }
+        if (!!strokeLayer && !!strokeLayer.id) {
+          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
+          const selectLayer = arlasDataLayers.get(selectId);
+          if (!!selectLayer && this.hasLayer(map, selectId)) {
+            this.moveLayer(map, selectId);
+          }
+          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
+          const hoverLayer = arlasDataLayers.get(hoverId);
+          if (!!hoverLayer && this.hasLayer(map, hoverId)) {
+            this.moveLayer(map, hoverId);
+          }
+        }
+      }
+    }
+    const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
+    const selectLayer = arlasDataLayers.get(selectId);
+    if (!!selectLayer && this.hasLayer(map, selectId)) {
+      this.moveLayer(map, selectId);
+    }
+    const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
+    const hoverLayer = arlasDataLayers.get(hoverId);
+    if (!!hoverLayer && this.hasLayer(map, hoverId)) {
+      this.moveLayer(map, hoverId);
+    }
+
+    
+  }
+
+
   /**
    * @override Maplibre implementation.
    * Executes the 'fn' function on 'eventName' triggered from the given 'layer' of the 'map' instance.
@@ -170,13 +250,13 @@ export class ArlasMaplibreService extends ArlasMapService {
     map.getMapProvider().on(eventName, layer, fn);
   }
 
-   /**
-   * @override Maplibre implementation.
-   * Executes the 'fn' function on 'eventName' triggered from the 'map' instance.
-   * @param eventName 
-   * @param map 
-   * @param fn 
-   */
+  /**
+  * @override Maplibre implementation.
+  * Executes the 'fn' function on 'eventName' triggered from the 'map' instance.
+  * @param eventName 
+  * @param map 
+  * @param fn 
+  */
   public onMapEvent(eventName: 'load' | 'moveend' | 'zoomend', map: ArlasMaplibreGL, fn: (e) => void) {
     map.getMapProvider().on(eventName, fn);
   }
@@ -206,6 +286,30 @@ export class ArlasMaplibreService extends ArlasMapService {
     return map.getMapProvider().getLayer(layer);
   }
 
+  /**
+   * @override Maplibre implementation.
+   * @param layer Layer identifier.
+   * @param isVisible If true, the layer is made visible, otherwise, it is hidden.
+   * @param map Map instance.
+   */
+  public setLayerVisibility(layerId: string, isVisible: boolean, map: ArlasMaplibreGL): void {
+    if (this.hasLayer(map, layerId)) {
+      map.getMapProvider().setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
+      const layer = this.getLayer(map, layerId);
+      if (layer.type === 'fill') {
+        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+        if (this.hasLayer(map, strokeId)) {
+          this.setLayerVisibility(strokeId, isVisible, map);
+        }
+      }
+      const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+      if (!layer.id.startsWith(SCROLLABLE_ARLAS_ID) && this.hasLayer(map, scrollableId)) {
+        this.setLayerVisibility(scrollableId, isVisible, map);
+      }
+    }
+  }
+
+
 
   /**
    * @override Maplibre implementation.
@@ -214,7 +318,7 @@ export class ArlasMaplibreService extends ArlasMapService {
    * @param source 
    */
   public removeSource(map: ArlasMaplibreGL, source: string) {
-    if (!!source && this.hasSource(source, map)) {
+    if (!!source && this.hasSource(map, source)) {
       map.getMapProvider().removeSource(source);
     }
   };
@@ -288,6 +392,17 @@ export class ArlasMaplibreService extends ArlasMapService {
   }
 
   /**
+   * @override Maplibre implementation.
+   * Checks if there are any layers respecting the given id patters
+    * @param map Map instance.
+   * @param layersIdPattern Identifiers pattern.
+   * @returns 
+   */
+  public getLayersFromPattern(map: ArlasMaplibreGL, layersIdPattern: string): AddLayerObject[] {
+    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern));
+  }
+
+  /**
   * @override Maplibre implementation.
   * Set the mouse cursor when it's over the map
   * @param map Map instance.
@@ -346,17 +461,17 @@ export class ArlasMaplibreService extends ArlasMapService {
     this.addLayer(map, iconLayer, beforeId);
   }
 
-   /**
-   * @override Maplibre implementation.
-   * Creates a new geojsob layer and adds to the map
-   * @param map Map instance
-   * @param layerId The identifier of the new icon layer
-   * @param style Vector style to apply to the geojson
-   * @param data Geojson data which features will be styled with the given style.
-   */
+  /**
+  * @override Maplibre implementation.
+  * Creates a new geojsob layer and adds to the map
+  * @param map Map instance
+  * @param layerId The identifier of the new icon layer
+  * @param style Vector style to apply to the geojson
+  * @param data Geojson data which features will be styled with the given style.
+  */
   public addGeojsonLayer(map: ArlasMaplibreGL, layerId: string, style: MaplibreVectorStyle,
     data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void {
-      const source: GeoJSONSourceSpecification = this.createGeojsonSource(data);
+    const source: GeoJSONSourceSpecification = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, source, map);
     const geojsonLayer: LayerSpecification = {
@@ -396,6 +511,15 @@ export class ArlasMaplibreService extends ArlasMapService {
     }
     this.addLayer(map, iconLayer);
   };
+
+  public flyTo(lat: number, lng: number, zoom: number, map: ArlasMaplibreGL) {
+    map.getMapProvider().flyTo({ center: [lng, lat], zoom });
+  }
+
+  public filterGeojsonData(map: ArlasMaplibreGL, layerId: string, filter: any) {
+    map.getMapProvider().setFilter(layerId, filter);
+  }
+
 
 
 
