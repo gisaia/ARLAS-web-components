@@ -26,12 +26,13 @@ import { HttpClient } from '@angular/common/http';
 import { BasemapService } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
+import { ArlasMapboxService } from '../arlas-mapbox.service';
 
 @Injectable()
 export class MapboxBasemapService extends BasemapService {
 
-  public constructor(protected http: HttpClient) {
-    super(http);
+  public constructor(protected http: HttpClient, protected mapService: ArlasMapboxService) {
+    super(http, mapService);
   }
 
   public addProtomapBasemap(map: ArlasMapboxGL) {
@@ -53,11 +54,9 @@ export class MapboxBasemapService extends BasemapService {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
-        if (!!map.getLayer(l.id)) {
-          map.removeLayer(l.id);
-        }
+        this.mapService.removeLayer(map, l.id);
       });
-      map.removeSource('arlas_protomaps_source');
+      this.mapService.removeSource(map, 'arlas_protomaps_source')
     }
   }
 

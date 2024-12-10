@@ -57,8 +57,6 @@ export interface MapConfig<T> {
   margePanForTest: number;
   wrapLatLng: boolean;
   offset: ArlasMapOffset;
-  icons: Array<IconConfig>;
-  mapSources: Array<ArlasMapSource<any>>;
   mapLayers: MapLayers<any>;
   mapLayersEventBind: {
     onHover: MapEventBinds<any>[];
@@ -69,8 +67,6 @@ export interface MapConfig<T> {
   mapProviderOptions?: T;
   maxWidthScale?: number;
   unitScale?: string;
-  dataSources?: Set<string>;
-  visualisationSetsConfig?: Array<VisualisationSetConfig>;
   controls?: ControlsOption;
 }
 
@@ -126,13 +122,11 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   // @Override
   protected _mapLayers: MapLayers<any>; // todo: find common type
   protected _controls: ControlsOption;
-  protected _dataSource: Set<string>;
   public visualisationSetsConfig: Array<VisualisationSetConfig>;
   protected _icons: Array<IconConfig>;
   public mapSources: Array<ArlasMapSource<any>>; // todo: find common type
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
-  protected _dataSources?: Set<string>;
   public abstract layersMap: Map<string, any>; // todo: find common type
   public firstDrawLayer: string;
   protected _emptyData: FeatureCollection<GeoJSON.Geometry> = {
@@ -187,13 +181,8 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this._mapLayers = config.mapLayers;
     this._controls = config.controls;
     this._fitBoundsPadding = config.fitBoundsPadding ?? 10;
-    this._dataSource = config.dataSources;
-    this.visualisationSetsConfig = config.visualisationSetsConfig;
-    this._icons = config.icons;
-    this.mapSources = config.mapSources;
     this._maxWidthScale = config.maxWidthScale;
     this._unitScale = config.unitScale;
-    this._dataSources = config.dataSources;
 
     this.init(config);
   }
@@ -212,34 +201,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     throw new Error('Method not implemented.');
   }
   public queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[] {
-    throw new Error('Method not implemented.');
-  }
-  public setStyle(style: unknown, options?: { diff?: boolean; localIdeographFontFamily?: string; }): this {
-    throw new Error('Method not implemented.');
-  }
-  public getStyle(): any {
-    throw new Error('Method not implemented.');
-  }
-  public addSource(id: string, source: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public removeSource(id: string): this {
-    throw new Error('Method not implemented.');
-  }
-  public getSource(id: string): unknown {
-    throw new Error('Method not implemented.');
-  }
-
-  public addLayer(layer: unknown, before?: string): this {
-    throw new Error('Method not implemented.');
-  }
-  public moveLayer(id: string, beforeId?: string): this {
-    throw new Error('Method not implemented.');
-  }
-  public removeLayer(id: string): this {
-    throw new Error('Method not implemented.');
-  }
-  public getLayer(id: string): unknown {
     throw new Error('Method not implemented.');
   }
   public setFilter(layer: string, filter?: boolean | any[], options?: unknown): this {
@@ -303,13 +264,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     throw new Error('Method not implemented.');
   }
 
-  public easeTo(options: unknown, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public flyTo(options: unknown, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-
   public on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
   public on<T extends never>(type: T, listener: (ev: unknown) => void): this;
   public on(type: string, listener: (ev: any) => void): this;
@@ -341,7 +295,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
       this._updateBounds();
       this._updateZoom();
       this.firstDrawLayer = this.getColdOrHotLayers()[0];
-      this._initSources();
       this._initMapLayers(this);
       this._bindCustomEvent(this);
       // Fit bounds on current bounds to emit init position in moveend bus
@@ -381,7 +334,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     if (this._mapLayers) {
       console.log('init maplayers');
       this.setLayersMap(this._mapLayers as MapLayers<any>);
-      this.addVisualLayers();
       this._addExternalEventLayers();
 
       this.bindLayersToMapEvent(
@@ -401,24 +353,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
         this.config.mapLayers.events.onHover,
         this.config.mapLayersEventBind.onHover
       );
-    }
-  }
-
-  protected _initSources(): void {
-    console.log('ini _initSources', this._dataSources);
-    if (this._dataSources) {
-      this._dataSources.forEach(id => {
-        this.addSource(id, { type: GEOJSON_SOURCE_TYPE, data: Object.assign({}, this._emptyData) });
-      });
-    }
-
-    this.addSource(this.POLYGON_LABEL_SOURCE, {
-      'type': GEOJSON_SOURCE_TYPE,
-      'data': this.polygonlabeldata
-    });
-
-    if (this.mapSources) {
-      this.addSourcesToMap(this.mapSources);
     }
   }
 
@@ -521,52 +455,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     }
   }
 
-  protected addVisualLayers(): void {
-    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-      if (!!visualisation.layers) {
-        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-          const l = visualisation.layers[j];
-          const layer = this.layersMap.get(l);
-          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-          const scrollableLayer = this.layersMap.get(scrollableId);
-          if (!!scrollableLayer) {
-            this.addLayerInWritePlaceIfNotExist(scrollableId);
-          }
-          this.addLayerInWritePlaceIfNotExist(l);
-          /** add stroke layer if the layer is a fill */
-          if (layer.type === 'fill') {
-            const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-            const strokeLayer = this.layersMap.get(strokeId);
-            if (!!strokeLayer) {
-              this.addLayerInWritePlaceIfNotExist(strokeId);
-            }
-          }
-        }
-      }
-    }
-    this.visualisationsSets.status.forEach((b, vs) => {
-      if (!b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => {
-          this.setLayoutProperty(l, 'visibility', 'none');
-          this.setStrokeLayoutVisibility(l, 'none');
-          this.setScrollableLayoutVisibility(l, 'none');
-        });
-      }
-    });
-    this.visualisationsSets.status.forEach((b, vs) => {
-      if (b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => {
-          this.setLayoutProperty(l, 'visibility', 'visible');
-          this.setStrokeLayoutVisibility(l, 'visible');
-          this.setScrollableLayoutVisibility(l, 'visible');
-        });
-
-      }
-    });
-    this.reorderLayers();
-  }
-
   public onMoveEnd(cb?: () => void) {
     return this._moveEnd$
       .pipe(map(_ => {
@@ -619,14 +507,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
 
   public abstract setLayersMap(mapLayers: MapLayers<any>, layers?: Array<any>);
 
-  protected _addExternalEventLayers() {
-    if (!!this._mapLayers.externalEventLayers) {
-      this._mapLayers.layers
-        .filter(layer => this._mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-        .forEach(l => this.addLayerInWritePlaceIfNotExist(l.id));
-    }
-  }
-
+  
   protected setStrokeLayoutVisibility(layerId: string, visibility: string): void {
     const layer = this.layersMap.get(layerId);
     if (layer.type === 'fill') {
@@ -664,20 +545,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     }
   }
 
-  public addSourcesToMap(sources: Array<ArlasMapSource<any>>): void {
-    // Add sources defined as input in mapSources;
-    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
-    if (sources) {
-      sources.forEach(mapSource => {
-        mapSourcesMap.set(mapSource.id, mapSource);
-      });
-      mapSourcesMap.forEach((mapSource, id) => {
-        if (this.getMapProvider().getSource(id) === undefined && typeof (mapSource.source) !== 'string') {
-          this.getMapProvider().addSource(id, mapSource.source);
-        }
-      });
-    }
-  }
 
   public updateLayoutVisibility(visualisationName: string) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
@@ -742,42 +609,14 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     });
   }
 
-  public highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    if (featureToHightLight && featureToHightLight.elementidentifier) {
-      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
-      if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
-        ids.push(+featureToHightLight.elementidentifier.idValue);
-      }
-      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
-        ['literal', ids]];
-      this.updateLayersVisibility(!featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
-    }
-  }
-
-  public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    const ids: Array<number | string> = features.map(f => f.idValue);
-    const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
-    const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-    this.updateLayersVisibility((features.length > 0), visibilityFilter, ExternalEvent.select, collection);
-  }
+  
 
   public hasCrossOrDrawLayer(e: any): boolean {
     const features = this.queryRenderedFeatures(e.point);
     return (!!features && !!features.find(f => f && f.layer && f.layer.id && f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
   }
 
-  public selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    if (elementToSelect) {
-      const ids = elementToSelect.length > 0 ?
-        elementToSelect.reduce((memo, element) => {
-          memo.push(element.idValue);
-          return memo;
-        }, []) : [];
-      const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
-      const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-      this.updateLayersVisibility((elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
-    }
-  }
+  
 
   public disableLayoutVisibility(layer: string) {
     this.getMapProvider().setLayoutProperty(layer, 'visibility', 'none');
@@ -822,97 +661,8 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     return this.getMapProvider().getPitch();
   }
 
-  public abstract isLayerVisible(layer: any): boolean;
 
 
-  public updateLayersVisibility(visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-    collection?: string): void {
-    if (this._mapLayers && this._mapLayers.externalEventLayers) {
-      this._mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
-        if (this.getLayer(layer.id) !== undefined) {
-          let originalLayerIsVisible = false;
-          const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
-          if (isCollectionCompatible) {
-            const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-            const originalLayer = this.getMapProvider().getStyle().layers.find(l => l.id === originalLayerId);
-            if (!!originalLayer) {
-              originalLayerIsVisible = this.isLayerVisible(originalLayer);
-            }
-            const layerFilter: Array<any> = [];
-            const externalEventLayer = this.layersMap.get(layer.id);
-            if (!!externalEventLayer && !!externalEventLayer.filter) {
-              externalEventLayer.filter.forEach(f => {
-                layerFilter.push(f);
-              });
-            }
-            if (layerFilter.length === 0) {
-              layerFilter.push('all');
-            }
-            if (visibilityCondition && originalLayerIsVisible) {
-              layerFilter.push(visibilityFilter);
-              this.setFilter(layer.id, layerFilter);
-              this.setLayoutProperty(layer.id, 'visibility', 'visible');
-            } else {
-              this.setFilter(layer.id, (layer as any).filter);
-              this.setLayoutProperty(layer.id, 'visibility', 'none');
-            }
-          }
-        }
-      });
-    }
-  }
 
-  public reorderLayers() {
-    // parses the visulisation list from bottom in order to put the fist ones first
-    for (let i = this.visualisationSetsConfig.length - 1; i >= 0; i--) {
-      const visualisation: VisualisationSetConfig = this.visualisationSetsConfig[i];
-      if (!!visualisation.layers && visualisation.enabled) {
-        for (let j = visualisation.layers.length - 1; j >= 0; j--) {
-          const l = visualisation.layers[j];
-          const layer = this.layersMap.get(l);
-          const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-          const scrollableLayer = this.layersMap.get(scrollableId);
-          if (!!scrollableLayer && !!this.getLayer(scrollableId)) {
-            this.moveLayer(scrollableId);
-          }
-          if (!!this.getLayer(l)) {
-            this.moveLayer(l);
-            if (layer.type === 'fill') {
-              const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-              const strokeLayer = this.layersMap.get(strokeId);
-              if (!!strokeLayer && !!this.getLayer(strokeId)) {
-                this.moveLayer(strokeId);
-              }
-              if (!!strokeLayer && !!strokeLayer.id) {
-                const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-                const selectLayer = this.layersMap.get(selectId);
-                if (!!selectLayer && !!this.getLayer(selectId)) {
-                  this.moveLayer(selectId);
-                }
-                const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-                const hoverLayer = this.layersMap.get(hoverId);
-                if (!!hoverLayer && !!this.getLayer(hoverId)) {
-                  this.moveLayer(hoverId);
-                }
-              }
-            }
-          }
-          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
-          const selectLayer = this.layersMap.get(selectId);
-          if (!!selectLayer && !!this.getLayer(selectId)) {
-            this.moveLayer(selectId);
-          }
-          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
-          const hoverLayer = this.layersMap.get(hoverId);
-          if (!!hoverLayer && !!this.getLayer(hoverId)) {
-            this.moveLayer(hoverId);
-          }
-        }
-      }
-    }
-
-    this.getColdOrHotLayers().forEach(id => this.moveLayer(id));
-  }
 }
 

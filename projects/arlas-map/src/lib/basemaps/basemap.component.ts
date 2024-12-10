@@ -24,6 +24,8 @@ import { ArlasMapSource } from '../map/model/sources';
 import { ArlasBasemaps } from './basemaps.model';
 import { BasemapService } from './basemap.service';
 import { BasemapStyle } from './basemap.config';
+import { ArlasMapService } from '../map/service/arlas-map.service';
+import { ArlasMapFunctionalService } from '../arlas-map-logic.service';
 
 @Component({
   selector: 'arlas-basemap',
@@ -42,7 +44,7 @@ export class BasemapComponent implements OnInit {
   public showList = false;
   public basemaps: ArlasBasemaps;
 
-  public constructor(protected basemapService: BasemapService) { }
+  public constructor(protected basemapService: BasemapService, protected mapFunctionalService: ArlasMapFunctionalService) { }
 
   public ngOnInit(): void {
     this.initBasemaps();
@@ -118,7 +120,7 @@ export class BasemapComponent implements OnInit {
     this.map.setStyle(initStyle).once('styledata', () => {
       setTimeout(() => {
         /** the timeout fixes a mapboxgl bug related to layer placement*/
-        this.map.addSourcesToMap(sourcesToSave);
+        this.mapFunctionalService.declareBasemapSources(sourcesToSave, this.map);
         layersToSave.forEach(l => {
           if (!this.map.getLayer(l.id)) {
             this.map.addLayer(l);

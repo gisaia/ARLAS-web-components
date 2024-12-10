@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ArlasMapService } from './arlas-map.service';
+import { ArlasMapService } from './map/service/arlas-map.service';
 
 describe('ArlasMapService', () => {
   let service: ArlasMapService;

@@ -23,6 +23,7 @@ import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 import { MaplibreBasemapService } from './maplibre-basemap.service';
 import { ArlasMapSource } from 'arlas-map';
 import { MaplibreSourceType } from '../map/model/sources';
+import { ArlasMapFunctionalService } from 'arlas-map';
 
 @Component({
   selector: 'arlas-maplibre-basemap',
@@ -32,7 +33,7 @@ import { MaplibreSourceType } from '../map/model/sources';
 export class MaplibreBasemapComponent extends BasemapComponent implements OnInit {
   @Input() public map: ArlasMaplibreGL;
   @Input() public mapSources: Array<ArlasMapSource<MaplibreSourceType>>;
-  public constructor(protected basemapService: MaplibreBasemapService) {
-    super(basemapService);
+  public constructor(protected basemapService: MaplibreBasemapService, protected mapFunctionalService: ArlasMapFunctionalService) {
+    super(basemapService, mapFunctionalService);
   }
 }

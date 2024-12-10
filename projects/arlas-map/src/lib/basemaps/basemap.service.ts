@@ -23,6 +23,7 @@ import { BasemapStyle } from './basemap.config';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
+import { ArlasMapService } from '../map/service/arlas-map.service';
 
 @Injectable({
   providedIn: 'root'
@@ -35,7 +36,7 @@ export abstract class BasemapService {
   protected protomapBasemapAddedSource = new Subject<boolean>();
   public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  protected constructor(protected http: HttpClient) { }
+  protected constructor(protected http: HttpClient, protected mapService: ArlasMapService) { }
 
   public setBasemaps(basemaps: ArlasBasemaps) {
     this.basemaps = basemaps;
@@ -47,7 +48,7 @@ export abstract class BasemapService {
     /* eslint-disable max-len */
     pmtilesSource['attribution'] = '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>';
     pmtilesSource['attribution'] = pmtilesSource['attribution'] + this.POWERED_BY_ARLAS;
-    map.addSource('arlas_protomaps_source', pmtilesSource as any);
+    this.mapService.setSource('arlas_protomaps_source', pmtilesSource, map);
   }
 
   protected addProtomapLayerToMap(map: AbstractArlasMapGL, styleFile: any) {
@@ -63,17 +64,7 @@ export abstract class BasemapService {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public removeProtomapBasemap(map: AbstractArlasMapGL) {
-    const selectedBasemap = this.basemaps.getSelected();
-    if (selectedBasemap.type === 'protomap') {
-      (selectedBasemap.styleFile as any).layers.forEach(l => {
-        if (!!map.getLayer(l.id)) {
-          map.removeLayer(l.id);
-        }
-      });
-      map.removeSource('arlas_protomaps_source');
-    }
-  }
+  public abstract removeProtomapBasemap(map: AbstractArlasMapGL);
 
   public abstract declareProtomapProtocol(map: AbstractArlasMapGL): void;
   public cloneStyleFile<T>(selected: any) {
