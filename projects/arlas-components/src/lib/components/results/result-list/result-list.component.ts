@@ -25,7 +25,7 @@ import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
-import { ngxLoadingAnimationTypes } from 'ngx-loading';
+import { ngxLoadingAnimationTypes } from 'ngx-loading-reloaded';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ArlasColorService } from '../../../services/color.generator.service';

@@ -176,12 +176,15 @@ tr {
     text-overflow: ellipsis;
 
     --mdc-switch-track-height: 10px;
-    --mat-switch-unselected-handle-size: 15px !important;
-    --mat-switch-selected-handle-size: 15px !important;
-    --mat-switch-pressed-handle-size: 15px !important;
     --mdc-switch-handle-width: 15px;
     --mdc-switch-track-width: 30px;
     --mdc-switch-state-layer-size: 0;
+
+    .mdc-switch__handle {
+      --mat-switch-unselected-handle-size: 15px;
+      --mat-switch-selected-handle-size: 15px;
+      --mat-switch-pressed-handle-size: 15px;
+    }
 
     .mdc-form-field--align-end>label {
       padding-right: 10px;

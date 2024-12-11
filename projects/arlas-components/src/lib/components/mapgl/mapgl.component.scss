@@ -79,11 +79,14 @@
 
   --mdc-switch-track-width: 24px;
   --mdc-switch-track-height: 5px;
-  --mat-switch-unselected-handle-size: 12px !important;
-  --mat-switch-selected-handle-size: 12px !important;
-  --mat-switch-pressed-handle-size: 12px !important;
   --mdc-switch-handle-width: 12px;
   --mdc-switch-state-layer-size: 0;
+
+  .mdc-switch__handle {
+    --mat-switch-unselected-handle-size: 12px;
+    --mat-switch-selected-handle-size: 12px;
+    --mat-switch-pressed-handle-size: 12px;
+  }
 
   &-text {
     color: #333;
