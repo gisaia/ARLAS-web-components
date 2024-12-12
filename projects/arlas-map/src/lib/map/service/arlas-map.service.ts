@@ -22,66 +22,7 @@ export abstract class ArlasMapService {
 
   public abstract boundsToString(bounds: any): string;
 
-  public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
-
-  public getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>) {
-    const lFilter = map.layersMap.get(layer).filter;
-    const filters = [];
-    if (lFilter) {
-      lFilter.forEach(f => {
-        filters.push(f);
-      });
-    }
-    if (filters.length === 0) {
-      filters.push('all');
-    }
-    filters.push([
-      'match',
-      ['get', 'id'],
-      Array.from(new Set(ids)),
-      true,
-      false
-    ]);
-    return filters;
-  }
-
-  /** Binds custom interaction of : 'mouseleave' and 'mouseenter' events
-   *  to all draw layers 
-  */
-  public getCustomEventsToDrawLayers(map: AbstractArlasMapGL) {
-    const drawPolygonLayers = [
-      'gl-draw-polygon-stroke-inactive',
-      'gl-draw-polygon-stroke-active',
-      'gl-draw-polygon-stroke-static'
-    ].map(layer => ['.cold', '.hot']
-      .map(id => layer.concat(id)))
-      .reduce((p, ac) => ac.concat(p), []);
-    return [
-      {
-        layers: drawPolygonLayers,
-        mapEventBinds:
-          [{
-            event: 'mousemove',
-            fn: (e) => {
-              map.setCursorStyle('pointer');
-            }
-          }
-          ],
-      },
-      {
-        layers: drawPolygonLayers,
-        mapEventBinds: [
-          {
-            event: 'mouseleave',
-            fn: (e) => {
-              map.setCursorStyle('');
-            }
-          }
-        ]
-      },
-    ]
-  }
-
+ 
   public abstract getPointFromScreen(e, container: HTMLElement);
 
   /** Sets `data` to a Geojson `source` of the map
@@ -99,12 +40,14 @@ export abstract class ArlasMapService {
    */
   public abstract addLayer(map: AbstractArlasMapGL, layer: any, beforeId?: string);
   public abstract addArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, any>, beforeId?: string);
-  public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): any[]
+  public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): any[];
+  public abstract getAllLayers(map: AbstractArlasMapGL): any[];
+  
   public abstract hasLayer(map: AbstractArlasMapGL, layer: any);
   public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract moveLayer(map: AbstractArlasMapGL, layer: any, beforeId?: string);
   public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, any>, beforeId?: string);
-  public abstract onLayerEvent(eventName: any, map: AbstractArlasMapGL, layer: any, fn: () => void);
+  public abstract onLayerEvent(eventName: any, map: AbstractArlasMapGL, layer: any, fn: (e) => void);
   public abstract removeLayer(map: AbstractArlasMapGL, layer: any);
   public abstract removeLayers(map: AbstractArlasMapGL, layers: any)
   public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
@@ -112,8 +55,11 @@ export abstract class ArlasMapService {
   public abstract isLayerVisible(layer: any): boolean;
   public abstract getLayer(map: AbstractArlasMapGL, layerId: string): any;
 
+
+  public abstract queryFeatures(e: any, map: AbstractArlasMapGL, layersIdPattern: string, options?: any);
   public abstract hasSource(map: AbstractArlasMapGL, source: any);
   public abstract getSource(sourceId: string, options: any): any;
+  public abstract getAllSources(options: any): any;
   public abstract setSource(sourceId: string, source: any, options: any);
   public abstract removeSource(map: AbstractArlasMapGL, source: any);
 
@@ -140,7 +86,5 @@ export abstract class ArlasMapService {
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): any;
   public abstract createRasterSource(url: string, bounds: number[],
     maxZoom: number, minZoom: number, tileSize: number): any;
-
-
 
 }

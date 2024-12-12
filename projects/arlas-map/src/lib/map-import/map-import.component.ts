@@ -513,7 +513,7 @@ export class MapImportComponent {
   /** *************/
   public clearPolygons() {
     // Clean source of imported polygons
-    const labelSource = this.mapComponent.map.getSource(this.SOURCE_NAME_POLYGON_LABEL);
+    const labelSource = this.mapService.getSource(this.SOURCE_NAME_POLYGON_LABEL, this.mapComponent.map);
     this.featureIndex = 0;
     this.mapComponent.onAoiChanged.next(this.emptyData);
     if (labelSource !== undefined) {

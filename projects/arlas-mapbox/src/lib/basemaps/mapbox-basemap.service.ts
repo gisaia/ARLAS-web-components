@@ -23,15 +23,22 @@ import { MapboxBasemapStyle } from './basemap.config';
 import mapboxgl from 'mapbox-gl';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { BasemapService } from 'arlas-map';
+import { AbstractArlasMapGL, BasemapService, BasemapStyle } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
 import { ArlasMapboxService } from '../arlas-mapbox.service';
+import { MapLogicService } from '../arlas-map-logic.service';
+import { MapboxSourceType } from '../map/model/sources';
+import { ArlasMapSource } from 'arlas-map';
+import { ArlasAnyLayer } from '../map/model/layers';
 
 @Injectable()
 export class MapboxBasemapService extends BasemapService {
+  
 
-  public constructor(protected http: HttpClient, protected mapService: ArlasMapboxService) {
+  public constructor(protected http: HttpClient, protected mapService: ArlasMapboxService,
+    private mapLogicService: MapLogicService
+  ) {
     super(http, mapService);
   }
 
@@ -75,16 +82,13 @@ export class MapboxBasemapService extends BasemapService {
       const clonedStyleFile: mapboxgl.Style = this.cloneStyleFile<mapboxgl.Style>(selected);
       return this.buildInitStyle<mapboxgl.Style, any>(clonedStyleFile);
     }
-    console.log('iniiit style uuum')
     return selected.styleFile as mapboxgl.Style;
   }
 
 
   public fetchSources$(): Observable<readonly unknown[]> {
     const sources$: Observable<mapboxgl.Style>[] = [];
-    console.log('fetch')
     this.basemaps.styles().forEach(s => {
-      console.log('fetchhh');
       sources$.push(this.getStyleFile(s).pipe(
         tap(sf => {
           Object.keys(sf.sources).forEach(k => {
@@ -98,8 +102,7 @@ export class MapboxBasemapService extends BasemapService {
           s.styleFile = sf as mapboxgl.Style;
         }),
         catchError(() => {
-          console.log('uuum error !!!')
-          s.errored = true;
+            s.errored = true;
           return of();
         })
       ));
@@ -113,5 +116,49 @@ export class MapboxBasemapService extends BasemapService {
     } else {
       return of(b.styleFile);
     }
+  }
+
+  
+  public setBasemap(s: any, newBasemap: BasemapStyle, map: ArlasMapboxGL, mapSources: Array<ArlasMapSource<MapboxSourceType>>) {
+    const selectedBasemapLayersSet = new Set<string>();
+    const layers: Array<ArlasAnyLayer> = this.mapService.getAllLayers(map);
+    const sources = this.mapService.getAllSources(map);
+    if (s.layers) {
+      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
+    }
+    const layersToSave = new Array<ArlasAnyLayer>();
+    const sourcesToSave = new Array<ArlasMapSource<MapboxSourceType>>();
+    layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
+      layersToSave.push(l as ArlasAnyLayer);
+      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
+        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] as MapboxSourceType });
+      }
+    });
+    const sourcesToSaveSet = new Set<string>();
+    sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
+    if (mapSources) {
+      mapSources.forEach(mapSource => {
+        if (!sourcesToSaveSet.has(mapSource.id)) {
+          sourcesToSave.push(mapSource);
+        }
+      });
+    }
+    const initStyle = this.getInitStyle(newBasemap);
+    map.getMapProvider().setStyle(initStyle).once('styledata', () => {
+      setTimeout(() => {
+        /** the timeout fixes a mapboxgl bug related to layer placement*/
+        this.mapLogicService.declareBasemapSources(sourcesToSave, map);
+        layersToSave.forEach(l => {
+          this.mapService.addLayer(map, l);
+        });
+        localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
+        this.basemaps.setSelected(newBasemap);
+        if (newBasemap.type === 'protomap') {
+          this.addProtomapBasemap(map);
+          this.notifyProtomapAddition();
+        }
+        this.basemapChangedSource.next();
+      }, 0);
+    });
   }
 }

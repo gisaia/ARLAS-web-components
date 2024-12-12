@@ -22,22 +22,25 @@ import * as pmtiles from 'pmtiles';
 import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import maplibre, { GetResourceResponse, RequestParameters, VectorSourceSpecification } from 'maplibre-gl';
-import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
-import { BasemapService } from 'arlas-map';
+import maplibre, { AddLayerObject, RequestParameters, TypedStyleLayer } from 'maplibre-gl';
+import { BackgroundLayerSpecification, LayerSpecification } from '@maplibre/maplibre-gl-style-spec';
+import { BasemapService, BasemapStyle } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 import { ArlasMaplibreService } from '../arlas-maplibre.service';
+import { ArlasMapSource } from 'arlas-map';
+import { MapLogicService } from '../arlas-map-logic.service';
+import { MaplibreSourceType } from '../map/model/sources';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MaplibreBasemapService extends BasemapService {
 
-
-  public constructor(protected http: HttpClient, protected mapService: ArlasMaplibreService) {
+  public constructor(protected http: HttpClient, protected mapService: ArlasMaplibreService,
+    private mapLogicService: MapLogicService
+  ) {
     super(http, mapService);
   }
-
 
   public addProtomapBasemap(map: ArlasMaplibreGL) {
     const selectedBasemap = this.basemaps.getSelected();
@@ -119,5 +122,48 @@ export class MaplibreBasemapService extends BasemapService {
     } else {
       return of(b.styleFile);
     }
+  }
+
+  public setBasemap(s: any, newBasemap: BasemapStyle, map: ArlasMaplibreGL, mapSources: Array<ArlasMapSource<any>>) {
+    const selectedBasemapLayersSet = new Set<string>();
+    const layers: Array<TypedStyleLayer> = this.mapService.getAllLayers(map);
+    const sources = this.mapService.getAllSources(map);
+    if (s.layers) {
+      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
+    }
+    const layersToSave = new Array<AddLayerObject>();
+    const sourcesToSave = new Array<ArlasMapSource<MaplibreSourceType>>();
+    layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
+      layersToSave.push(l as AddLayerObject);
+      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
+        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] as MaplibreSourceType });
+      }
+    });
+    const sourcesToSaveSet = new Set<string>();
+    sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
+    if (mapSources) {
+      mapSources.forEach(mapSource => {
+        if (!sourcesToSaveSet.has(mapSource.id)) {
+          sourcesToSave.push(mapSource);
+        }
+      });
+    }
+    const initStyle = this.getInitStyle(newBasemap);
+    map.getMapProvider().setStyle(initStyle).once('styledata', () => {
+      setTimeout(() => {
+        /** the timeout fixes a mapboxgl bug related to layer placement*/
+        this.mapLogicService.declareBasemapSources(sourcesToSave, map);
+        layersToSave.forEach(l => {
+          this.mapService.addLayer(map, l);
+        });
+        localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
+        this.basemaps.setSelected(newBasemap);
+        if (newBasemap.type === 'protomap') {
+          this.addProtomapBasemap(map);
+          this.notifyProtomapAddition();
+        }
+        this.basemapChangedSource.next();
+      }, 0);
+    });
   }
 }

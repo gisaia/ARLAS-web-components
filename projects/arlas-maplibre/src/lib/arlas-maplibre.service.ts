@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ARLAS_ID, ArlasMapService, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
-import { AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, Point, Popup, RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification, TypedStyleLayer } from 'maplibre-gl';
+import { AbstractArlasMapGL, ARLAS_ID, ArlasMapService, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
+import {
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
+  GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, Point, Popup,
+  RasterLayerSpecification, RasterSourceSpecification, ResourceType,
+  SourceSpecification, SymbolLayerSpecification, TypedStyleLayer
+} from 'maplibre-gl';
 import { ArlasMaplibreConfig, ArlasMaplibreGL } from './map/ArlasMaplibreGL';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { LngLat } from 'arlas-map';
@@ -12,6 +17,8 @@ import { ExternalEvent } from 'arlas-map';
 
 @Injectable()
 export class ArlasMaplibreService extends ArlasMapService {
+
+
 
   public constructor() {
     super();
@@ -45,31 +52,6 @@ export class ArlasMaplibreService extends ArlasMapService {
   }
   public boundsToString(bounds: LngLatBounds): string {
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
-  }
-
-  public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
-    const layer = this.getLayer(map, l) as TypedStyleLayer;
-    if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
-      if (ids && ids.length > 0) {
-        // Tests value in camel and kebab case due to an unknown issue on other projects
-        if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
-          map.setFilter(l, this.getVisibleIdsFilter(map, l, ids));
-          const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-          const strokeLayer = this.getLayer(map, strokeLayerId);
-          if (!!strokeLayer) {
-            map.setFilter(strokeLayerId, this.getVisibleIdsFilter(map, strokeLayerId, ids));
-          }
-        }
-      } else {
-        map.setFilter(l, map.layersMap.get(l).filter);
-        const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-        const strokeLayer = this.getLayer(map, strokeLayerId);
-        if (!!strokeLayer) {
-          map.setFilter(strokeLayerId,
-            map.layersMap.get(strokeLayerId).filter);
-        }
-      }
-    }
   }
 
   public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
@@ -146,6 +128,11 @@ export class ArlasMaplibreService extends ArlasMapService {
     }
   };
 
+
+  public getAllSources(map: ArlasMaplibreGL) {
+    return map.getMapProvider().getStyle().sources;
+  }
+
   /**
    * @override Maplibre implementation.
    * Adds the given layer to the map instance, optionnaly before a layer. Otherwise it's added to the top.  
@@ -173,7 +160,7 @@ export class ArlasMaplibreService extends ArlasMapService {
       const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
       const strokeLayer = arlasDataLayers.get(strokeId);
       if (!!strokeLayer) {
-        this.addLayer(map, scrollableLayer, before);
+        this.addLayer(map, strokeLayer, before);
       }
     }
   }
@@ -234,7 +221,7 @@ export class ArlasMaplibreService extends ArlasMapService {
       this.moveLayer(map, hoverId);
     }
 
-    
+
   }
 
 
@@ -246,7 +233,7 @@ export class ArlasMaplibreService extends ArlasMapService {
    * @param layer 
    * @param fn 
    */
-  public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave' | 'mouseenter', map: ArlasMaplibreGL, layer: string, fn: () => void): void {
+  public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave' | 'mouseenter', map: ArlasMaplibreGL, layer: string, fn: (e) => void): void {
     map.getMapProvider().on(eventName, layer, fn);
   }
 
@@ -276,14 +263,21 @@ export class ArlasMaplibreService extends ArlasMapService {
     }
   };
 
+
+
   /**
+   * @overload
    * Returns the layer object of the given layer id.
    * @param map Map instance.
    * @param layer Layer identifier
    * @returns the layer object.
    */
-  private getLayer(map: ArlasMaplibreGL, layer: string) {
-    return map.getMapProvider().getLayer(layer);
+  public getLayer(map: ArlasMaplibreGL, layer: string): TypedStyleLayer {
+    return map.getMapProvider().getLayer(layer) as TypedStyleLayer;
+  }
+
+  public getAllLayers(map: ArlasMaplibreGL): TypedStyleLayer[] {
+    return map.getMapProvider().getStyle().layers as TypedStyleLayer[];
   }
 
   /**
@@ -299,12 +293,12 @@ export class ArlasMaplibreService extends ArlasMapService {
       if (layer.type === 'fill') {
         const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
         if (this.hasLayer(map, strokeId)) {
-          this.setLayerVisibility(strokeId, isVisible, map);
+          map.getMapProvider().setLayoutProperty(strokeId, 'visibility', isVisible ? 'visible' : 'none');
         }
       }
       const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-      if (!layer.id.startsWith(SCROLLABLE_ARLAS_ID) && this.hasLayer(map, scrollableId)) {
-        this.setLayerVisibility(scrollableId, isVisible, map);
+      if (!!scrollableId && this.hasLayer(map, scrollableId)) {
+        map.getMapProvider().setLayoutProperty(scrollableId, 'visibility', isVisible ? 'visible' : 'none');
       }
     }
   }
@@ -429,7 +423,6 @@ export class ArlasMaplibreService extends ArlasMapService {
       tiles: [url],
       bounds: bounds as [number, number, number, number],
       maxzoom: maxZoom,
-      minzoom: minZoom,
       tileSize: tileSize
     }
   }
@@ -519,6 +512,21 @@ export class ArlasMaplibreService extends ArlasMapService {
   public filterGeojsonData(map: ArlasMaplibreGL, layerId: string, filter: any) {
     map.getMapProvider().setFilter(layerId, filter);
   }
+
+  public queryFeatures(e: any, map: ArlasMaplibreGL, layersIdPattern: string, options: any) {
+    map.getMapProvider().queryRenderedFeatures(e.point, options).filter(f => !!f.layer && !!f.layer.id && f.layer.id.includes(layersIdPattern));
+  };
+
+
+  public isLayerVisible(layer: LayerSpecification): boolean {
+    return layer.layout.visibility === 'visible';
+  }
+
+  public getSource(sourceId: string, map: ArlasMaplibreGL) {
+    return map.getMapProvider().getSource(sourceId);
+  }
+
+
 
 
 

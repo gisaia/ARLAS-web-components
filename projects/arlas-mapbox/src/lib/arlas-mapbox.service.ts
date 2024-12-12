@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { ARLAS_ID, ArlasMapService, CROSS_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, LngLat, SCROLLABLE_ARLAS_ID } from 'arlas-map';
+import { AbstractArlasMapGL, ARLAS_ID, ArlasMapService, CROSS_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, LngLat, SCROLLABLE_ARLAS_ID } from 'arlas-map';
 import { AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceOptions, GeoJSONSourceRaw, LngLatBounds, Point, Popup, RasterLayer, RasterSource, Source, SymbolLayer } from 'mapbox-gl';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasAnyLayer } from './map/model/layers';
 import { FeatureCollection } from '@turf/helpers';
 import { MapboxVectorStyle } from './map/model/vector-style';
+import { ExternalEvent } from 'arlas-map';
 
 @Injectable()
 export class ArlasMapboxService extends ArlasMapService {
-
 
   constructor() {
     super();
@@ -44,36 +44,11 @@ export class ArlasMapboxService extends ArlasMapService {
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
 
-  public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
-    const layer = this.getLayer(map, l);
-    if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
-      if (ids && ids.length > 0) {
-        // Tests value in camel and kebab case due to an unknown issue on other projects
-        if (layer.metadata.isScrollableLayer || layer.metadata['is-scrollable-layer']) {
-          map.setFilter(l, this.getVisibleIdsFilter(map, l, ids));
-          const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-          const strokeLayer = map.getLayer(strokeLayerId);
-          if (!!strokeLayer) {
-            map.setFilter(strokeLayerId, this.getVisibleIdsFilter(map, strokeLayerId, ids));
-          }
-        }
-      } else {
-        map.setFilter(l, map.layersMap.get(l).filter);
-        const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-        const strokeLayer = map.getLayer(strokeLayerId);
-        if (!!strokeLayer) {
-          map.setFilter(strokeLayerId,
-            map.layersMap.get(strokeLayerId).filter);
-        }
-      }
-    }
-  }
-
   public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
     if (!!source) {
       source.setData(data);
     }
-  };
+  }
 
   /**
    * @override Add an Image to the map.
@@ -91,9 +66,7 @@ export class ArlasMapboxService extends ArlasMapService {
         if (error) {
           console.warn(errorMessage);
         }
-        console.log('adding the imahe')
         if (!mapboxMap.hasImage(name)) {
-          console.log(image)
           mapboxMap.addImage(name, image, opt);
         }
       });
@@ -167,7 +140,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param layer 
    * @param fn 
    */
-  public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave', map: ArlasMapboxGL, layer: string, fn: () => void): void {
+  public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave', map: ArlasMapboxGL, layer: string, fn: (e) => void): void {
     map.getMapProvider().on(eventName, layer, fn);
   }
 
@@ -202,7 +175,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param layer Layer identifier
    * @returns the layer object.
    */
-  private getLayer(map: ArlasMapboxGL, layer: string): ArlasAnyLayer {
+  public getLayer(map: ArlasMapboxGL, layer: string): ArlasAnyLayer {
     return map.getMapProvider().getLayer(layer) as ArlasAnyLayer;
   }
 
@@ -219,12 +192,12 @@ export class ArlasMapboxService extends ArlasMapService {
       if (layer.type === 'fill') {
         const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
         if (this.hasLayer(map, strokeId)) {
-          this.setLayerVisibility(strokeId, isVisible, map);
+          map.getMapProvider().setLayoutProperty(strokeId, 'visibility', isVisible ? 'visible' : 'none');
         }
       }
       const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
       if (!layer.id.startsWith(SCROLLABLE_ARLAS_ID) && this.hasLayer(map, scrollableId)) {
-        this.setLayerVisibility(scrollableId, isVisible, map);
+        map.getMapProvider().setLayoutProperty(scrollableId, 'visibility', isVisible ? 'visible' : 'none');
       }
     }
   }
@@ -425,6 +398,119 @@ export class ArlasMapboxService extends ArlasMapService {
   public flyTo(lat: number, lng: number, zoom: number, map: ArlasMapboxGL) {
     map.getMapProvider().flyTo({ center: [lng, lat], zoom });
   }
+
+  public filterGeojsonData(map: ArlasMapboxGL, layerId: string, filter: any) {
+    map.getMapProvider().setFilter(layerId, filter);
+  }
+
+  public queryFeatures(e: any, map: ArlasMapboxGL, layersIdPattern: string, options: any) {
+    map.getMapProvider().queryRenderedFeatures(e.point, options).filter(f => !!f.layer && !!f.layer.id && f.layer.id.includes(layersIdPattern));
+  };
+
+
+  public isLayerVisible(layer: ArlasAnyLayer): boolean {
+    return layer.layout.visibility === 'visible';
+  }
+
+  public getSource(sourceId: string, map: ArlasMapboxGL) {
+    return map.getMapProvider().getSource(sourceId);
+  }
+
+  public addArlasDataLayer(map: ArlasMapboxGL, layer: ArlasAnyLayer, arlasDataLayers: Map<string, ArlasAnyLayer>, before?: string) {
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollableLayer = arlasDataLayers.get(scrollableId);
+    if (!!scrollableLayer) {
+      this.addLayer(map, scrollableLayer, before);
+    }
+    this.addLayer(map, layer, before);
+    /** add stroke layer if the layer is a fill */
+    if (layer.type === 'fill') {
+      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = arlasDataLayers.get(strokeId);
+      if (!!strokeLayer) {
+        this.addLayer(map, strokeLayer, before);
+      }
+    }
+  }
+
+  /**
+   * @override Mapbox implementation.
+   * Checks if there are any layers respecting the given id patters
+    * @param map Map instance.
+   * @param layersIdPattern Identifiers pattern.
+   * @returns 
+   */
+  public getLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): ArlasAnyLayer[] {
+    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
+  }
+
+  public getAllLayers(map: ArlasMapboxGL): ArlasAnyLayer[] {
+    return map.getMapProvider().getStyle().layers as ArlasAnyLayer[];
+  }
+
+  /**
+   * @override Mapbox implementation.
+   * Moves the given layer to the top in map instance OR optionnaly before a layer.  
+   * @param map Map
+   * @param layer Layer to add to the map
+   * @param before Identifier of an already added layer. The given Layer (second param) is moved under this 'before' layer.
+   */
+  public moveLayer(map: ArlasMapboxGL, layer: string, before?: string) {
+    if (this.hasLayer(map, layer)) {
+      map.getMapProvider().moveLayer(layer, before);
+    } else {
+      console.warn(`The layer ${layer} is not added to the map`);
+    }
+  }
+
+  public moveArlasDataLayer(map: ArlasMapboxGL, layerId: string, arlasDataLayers: Map<string, ArlasAnyLayer>, before?: string) {
+    const layer = arlasDataLayers.get(layerId);
+    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
+    const scrollableLayer = arlasDataLayers.get(scrollableId);
+    if (!!scrollableLayer && this.hasLayer(map, scrollableId)) {
+      this.moveLayer(map, scrollableId);
+    }
+    if (!!this.hasLayer(map, layerId)) {
+      this.moveLayer(map, layerId);
+      if (layer.type === 'fill') {
+        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+        const strokeLayer = arlasDataLayers.get(strokeId);
+        if (!!strokeLayer && this.hasLayer(map, strokeId)) {
+          this.moveLayer(map, strokeId);
+        }
+        if (!!strokeLayer && !!strokeLayer.id) {
+          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
+          const selectLayer = arlasDataLayers.get(selectId);
+          if (!!selectLayer && this.hasLayer(map, selectId)) {
+            this.moveLayer(map, selectId);
+          }
+          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
+          const hoverLayer = arlasDataLayers.get(hoverId);
+          if (!!hoverLayer && this.hasLayer(map, hoverId)) {
+            this.moveLayer(map, hoverId);
+          }
+        }
+      }
+    }
+    const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
+    const selectLayer = arlasDataLayers.get(selectId);
+    if (!!selectLayer && this.hasLayer(map, selectId)) {
+      this.moveLayer(map, selectId);
+    }
+    const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
+    const hoverLayer = arlasDataLayers.get(hoverId);
+    if (!!hoverLayer && this.hasLayer(map, hoverId)) {
+      this.moveLayer(map, hoverId);
+    }
+  }
+
+  public getAllSources(map: ArlasMapboxGL) {
+    return map.getMapProvider().getStyle().sources;
+  }
+
+
+
+
 
 
 }

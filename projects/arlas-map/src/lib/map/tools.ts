@@ -16,28 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+export function latLngToWKT(features) {
+  let wktType = 'POLYGON[###]';
+  if (features.length > 1) {
+    wktType = 'MULTIPOLYGON([###])';
+  }
 
+  let polygons = '';
+  features.forEach((feat, indexFeature) => {
+    if (feat) {
+      const currentFeat: Array<any> = feat.geometry.coordinates;
+      polygons += (indexFeature === 0 ? '' : ',') + '((';
+      currentFeat[0].forEach((coord, index) => {
+        polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
+      });
+      polygons += '))';
+    }
+  });
 
-/**
- * This interface proposes all the functions a mapprovider should implement.
- * This way prevent changes from impacting other parts of the application in case the mapprovider changes its own interface.
- * ex:
- * addLayer(){
- *  provider1.addLayerToMap()
- * }
- *
- * addLayer(){
- *  provider2.addLayer()
- * }
- *
- * If we change the implementation, as we use addLayer in all our app, the change is transparent.
- */
-
-export interface MapInterface {
-  addControl(
-    control: unknown,
-    position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left',
-  ): this;
-
-  getZoom(): number;
+  let wkt = '';
+  if (polygons !== '') {
+    wkt = wktType.replace('[###]', polygons);
+  }
+  return wkt;
 }

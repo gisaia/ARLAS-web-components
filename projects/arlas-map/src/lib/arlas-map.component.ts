@@ -2,7 +2,7 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleCha
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
 import { BasemapStyle } from './basemaps/basemap.config';
-import { ArlasMapOffset, AbstractArlasMapGL, ElementIdentifier, MapConfig, ZOOM_IN, ZOOM_OUT, RESET_BEARING } from './map/AbstractArlasMapGL';
+import { ArlasMapOffset, AbstractArlasMapGL, ElementIdentifier, MapConfig, ZOOM_IN, ZOOM_OUT, RESET_BEARING, CROSS_LAYER_PREFIX } from './map/AbstractArlasMapGL';
 import { IconConfig, ControlPosition, DrawControlsOption } from './map/model/controls';
 import { AoiDimensions, BboxDrawCommand } from './draw/draw.models';
 import { LegendData } from './legend/legend.config';
@@ -34,8 +34,9 @@ import centroid from '@turf/centroid';
 import { ARLAS_VSET } from './map/model/layers';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { OnMoveResult } from './map/model/map';
-import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
+import { MapMouseEvent } from './map/model/events';
 import { ArlasMapFunctionalService } from './arlas-map-logic.service';
+import { latLngToWKT } from './map/tools';
 
 @Component({
   selector: 'arlas-map',
@@ -77,7 +78,7 @@ export class ArlasMapComponent implements OnInit {
   public nbPolygonVertice = 0;
   /** Number of clicks while drawing !! How is it different from the var above ??? */
   public drawClickCounter = 0;
-  /**  !! TODO description */
+  /** List of drawn polygons centroid */
   public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
   /** Whether the list of basemaps is shown. */
   public showBasemapsList = false;
@@ -106,10 +107,7 @@ export class ArlasMapComponent implements OnInit {
   private drawBboxSubscription: Subscription;
 
 
-
   /** ------------------------------------------------------- VISUAL SEPERATOR ----------------------------------------- */
-
-
 
 
   /** ANGULAR INPUTS */
@@ -253,14 +251,7 @@ export class ArlasMapComponent implements OnInit {
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
 
-
-
-
   /** ------------------------------------------------------- VISUAL SEPERATOR ----------------------------------------- */
-
-
-
-
 
 
   /** ANGULAR OUTPUTS */
@@ -277,14 +268,14 @@ export class ArlasMapComponent implements OnInit {
   /** @description @deprecated Emits the event of moving the map. */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
 
-  /** @description Emits the visualisations !!! TODO description !!! */
+  /** @description Emits the visible visualisations ids */
   @Output() public visualisations: EventEmitter<Set<string>> = new EventEmitter();
 
-  /** @description Emits the event of clicking on a feature. !!! TODO : fix spelling !!!*/
-  @Output() public onFeatureClic = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; }>();
+  /** @description Emits the event of clicking on a feature. */
+  @Output() public onFeatureClick = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; }>();
 
-  /** @description Emits the event of hovering feature. !!! TODO : fix spelling !!! */
-  @Output() public onFeatureOver = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; } | {}>();
+  /** @description Emits the event of hovering feature. */
+  @Output() public onFeatureHover = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; } | {}>();
 
   /** @description Emits the geojson of an aoi added to the map. */
   @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
@@ -298,7 +289,7 @@ export class ArlasMapComponent implements OnInit {
   /** @description Emits which layers are displayed in the Legend. */
   @Output() public legendVisibiltyStatus: Subject<Map<string, boolean>> = new Subject();
 
-  /** @description !!! todo !!! */
+  /** @description  Notifies that the user wants to download the selected layer */
   @Output() public downloadSourceEmitter: Subject<{
     layerId: string;
     layerName: string;
@@ -307,25 +298,15 @@ export class ArlasMapComponent implements OnInit {
     downloadType: string;
   }> = new Subject();
 
-
-
   protected ICONS_BASE_PATH = 'assets/icons/';
 
 
-
   /** ------------------------------------------------------- VISUAL SEPERATOR - INIT ----------------------------------------- */
-
-
-
-
-
-
 
   public constructor(private http: HttpClient, private drawService: MapboxAoiDrawService,
     private basemapService: BasemapService, private _snackBar: MatSnackBar, private translate: TranslateService,
     protected mapService: ArlasMapService,
     protected mapFunctionalService: ArlasMapFunctionalService) {
-    console.log('ummm');
     this.aoiEditSubscription = this.drawService.editAoi$.subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawBboxSubscription = this.drawService.drawBbox$.subscribe({
       next: (bboxDC: BboxDrawCommand) => {
@@ -337,12 +318,10 @@ export class ArlasMapComponent implements OnInit {
 
   public ngOnInit() {
     this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
-    console.log('ummm init');
   }
 
   public ngAfterViewInit() {
     /** init values */
-    console.log('ummm after');
     if (!this.initCenter) {
       this.initCenter = [0, 0];
     }
@@ -414,9 +393,6 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
-
-
-
   /** ------------------------------------------------------- VISUAL SEPERATOR - MAP ----------------------------------------- */
 
   /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
@@ -426,8 +402,8 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
-  /** TODO comment */
-  public defaultOnZoom(e) {
+  /** Zooms on clicked feature from map event e. */
+  public zoomOnClick(e) {
     if (e.features[0].properties.cluster_id !== undefined) {
       // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
@@ -453,22 +429,23 @@ export class ArlasMapComponent implements OnInit {
   }
 
   protected queryRender(e, map: AbstractArlasMapGL,) {
-    const hasCrossOrDrawLayer = map.hasCrossOrDrawLayer(e);
+    const hasCrossOrDrawLayer = this.mapService.queryFeatures(e, this.map, CROSS_LAYER_PREFIX);
     if (!this.isDrawingBbox && !this.isDrawingPolygon && !this.isDrawingCircle && !this.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-      map.onEvent(e);
+      this.onFeatureClick.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
     }
   }
 
-  /**
-   * Adds the custom icons given in the component's input
-   */
+  /** Adds the custom icons given in the component's input */
   public addIcons() {
-    this.icons.forEach(icon => {
-      const iconName = icon.path.split('.')[0];
-      const iconPath = this.ICONS_BASE_PATH + icon.path;
-      const iconErrorMessage = 'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found';
-      this.mapService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable });
-    });
+    if (this.icons) {
+      this.icons.forEach(icon => {
+        const iconName = icon.path.split('.')[0];
+        const iconPath = this.ICONS_BASE_PATH + icon.path;
+        const iconErrorMessage = 'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found';
+        this.mapService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable });
+      });
+
+    }
   }
 
   public declareMap() {
@@ -480,32 +457,8 @@ export class ArlasMapComponent implements OnInit {
       margePanForTest: this.margePanForTest,
       offset: this.offset,
       wrapLatLng: this.wrapLatLng,
-      mapLayers: this.mapLayers,
       maxWidthScale: this.maxWidthScale,
       unitScale: this.unitScale,
-      mapLayersEventBind: {
-        zoomOnClick: [{ event: 'click', fn: this.defaultOnZoom }],
-        onHover: [
-          {
-            event: 'mousemove',
-            fn: (e) => {
-              this.onFeatureOver.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
-            }
-          },
-          {
-            event: 'mouseleave',
-            fn: (e) => {
-              this.onFeatureOver.next({});
-            }
-          }
-        ],
-        emitOnClick: [
-          {
-            event: 'click',
-            fn: this.queryRender
-          }],
-      },
-      customEventBind: (m: AbstractArlasMapGL) => this.mapService.getCustomEventsToDrawLayers(m),
       mapProviderOptions: {
         container: this.id,
         style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
@@ -541,15 +494,7 @@ export class ArlasMapComponent implements OnInit {
         }
       }
     };
-    console.log('declare');
     this.map = this.mapService.createMap(config);
-    this.map.eventEmitter$.subscribe({
-      next: (e: MapLayerMouseEvent) => {
-        if (e.type === 'click') {
-          this.onFeatureClic.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
-        }
-      }
-    })
     fromEvent(window, 'beforeunload').subscribe(() => {
       this.onMapClosed.next(this.map.getMapExtend());
     });
@@ -579,8 +524,6 @@ export class ArlasMapComponent implements OnInit {
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
     this.draw.setMode('DIRECT_STRIP', 'direct_strip');
-
-    // TODO : to have to add event override
     const drawControlConfig: DrawControlsOption = {
       draw: { control: this.draw },
       addGeoBox: {
@@ -597,6 +540,7 @@ export class ArlasMapComponent implements OnInit {
       }
     };
     this.map.initDrawControls(drawControlConfig);
+
     this.drawService.setDraw(this.draw);
     /**
      *  The other on load initialisation releated with the map are in
@@ -608,7 +552,6 @@ export class ArlasMapComponent implements OnInit {
      */
 
     this.map.onCustomEvent('beforeOnLoadInit', () => {
-      // TODO: should change the
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
       this.addIcons();
@@ -616,18 +559,16 @@ export class ArlasMapComponent implements OnInit {
       this.mapFunctionalService.declareBasemapSources(this.mapSources, this.map);
       this.mapFunctionalService.declareLabelSources('', this.polygonlabeldata, this.map);
       this.mapFunctionalService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers, this.map);
-
+      this.bindLayerEvents();
     });
 
-    this.map.on('load', () => {
-
+    this.mapService.onMapEvent('load', this.map, () => {
       this.draw.changeMode('static');
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          this.map.updateVisibility(visibilityStatus);
+          this.mapFunctionalService.updateVisibility(visibilityStatus, this.visualisationSetsConfig, this.map);
         });
       }
-
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.draw.on('draw.create', (e) => {
@@ -670,7 +611,6 @@ export class ArlasMapComponent implements OnInit {
       };
 
       this.draw.onDrawOnClick((e) => {
-        console.log('the fuck', e)
         if (this.drawClickCounter === 0) {
           window.addEventListener('mousemove', mouseMoveForDraw);
         }
@@ -679,12 +619,12 @@ export class ArlasMapComponent implements OnInit {
       this.draw.onDrawOnStart((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.map.setCursorStyle('');
+        this.mapService.setMapCursor(this.map, '');
       });
       this.draw.onDrawOnStop((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.map.setCursorStyle('');
+        this.mapService.setMapCursor(this.map, '');
       });
 
       this.draw.onDrawInvalidGeometry((e) => {
@@ -708,18 +648,16 @@ export class ArlasMapComponent implements OnInit {
           this.draw.add(currentFeature);
         }
         this.openInvalidGeometrySnackBar();
-        this.map.setCursorStyle('');
+        this.mapService.setMapCursor(this.map, '');
       });
 
       this.draw.onDrawEditSaveInitialFeature((edition) => {
-        console.log('onDrawEditSaveInitialFeature', edition)
         this.savedEditFeature = Object.assign({}, edition.feature);
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
       this.draw.onDrawSelectionchange((e) => {
-        console.log('onDrawSelectionchange', e)
         this.drawSelectionChanged = true;
         if (e.features.length > 0) {
           this.isDrawSelected = true;
@@ -740,7 +678,7 @@ export class ArlasMapComponent implements OnInit {
           this.isDrawingStrip = false;
           this.isInSimpleDrawMode = false;
           this.draw.changeMode('static');
-          this.map.setCursorStyle('');
+          this.mapService.setMapCursor(this.map, '');
         }
       });
       this.draw.onDrawModeChange((e) => {
@@ -753,7 +691,7 @@ export class ArlasMapComponent implements OnInit {
         if (e.mode === 'simple_select') {
           this.isInSimpleDrawMode = true;
         } else if (e.mode === 'static') {
-          this.map.setCursorStyle('');
+          this.mapService.setMapCursor(this.map, '');
         } else if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelectedFeatures();
           const selectedIds = this.draw.getSelectedIds();
@@ -780,12 +718,12 @@ export class ArlasMapComponent implements OnInit {
             }
           } else {
             this.isInSimpleDrawMode = false;
-            this.map.setCursorStyle('');
+            this.mapService.setMapCursor(this.map, '');
           }
         }
       });
 
-      this.map.on('click', (e) => {
+      this.mapService.onMapEvent('click', this.map, (e) => {
         if (this.isDrawingCircle) {
           return;
         }
@@ -829,22 +767,22 @@ export class ArlasMapComponent implements OnInit {
       this.onMapLoaded.next(true);
     });
 
-    this.map.onMoveEnd().subscribe((moveResult => {
+    this.map.onMoveEnd(this.mapFunctionalService.visualisationsSets).subscribe((moveResult => {
       this.onMove.next(moveResult);
     }));
 
     // Mouse events
-    this.map.on('mousedown', (e: MapMouseEvent) => {
+    this.mapService.onMapEvent('mousedown', this.map, (e: MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.map.on('mouseup', (e: MapMouseEvent) => {
+    this.mapService.onMapEvent('mouseup', this.map, (e: MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
 
-    this.map.on('mousemove', (e: MapMouseEvent) => {
+    this.mapService.onMapEvent('mousemove', this.map, (e: MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.isDrawingBbox || this.isDrawingPolygon) {
-        this.map.setCursorStyle('crosshair');
+        this.mapService.setMapCursor(this.map, 'crosshair');
         this.map.movelngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
@@ -879,38 +817,55 @@ export class ArlasMapComponent implements OnInit {
 
     if (!!this.redrawSource) {
       this.redrawSource.subscribe(sd => {
-        this.map.redrawSource(sd.source, sd.data);
+        this.mapService.setDataToGeojsonSource(this.mapService.getSource(sd.source, this.map), {
+          'type': 'FeatureCollection',
+          'features': sd.data
+        });
       });
     }
   }
 
+  public bindLayerEvents() {
+    this.mapLayers.events.zoomOnClick.forEach(layerId => {
+      this.mapService.onLayerEvent('click', this.map, layerId, (e) => this.zoomOnClick(e));
+    });
+    this.mapLayers.events.onHover.forEach(layerId => {
+      this.mapService.onLayerEvent('mousemove', this.map, layerId, (e) =>
+        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] }));
 
+      this.mapService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
+        this.onFeatureHover.next({}));
+    });
 
+    this.mapLayers.events.emitOnClick.forEach(layerId => {
+      this.mapService.onLayerEvent('click', this.map, layerId, (e) =>
+        this.queryRender(e, this.map));
+    });
 
+    const drawPolygonLayers = [
+      'gl-draw-polygon-stroke-inactive',
+      'gl-draw-polygon-stroke-active',
+      'gl-draw-polygon-stroke-static'
+    ].map(layer => ['.cold', '.hot']
+      .map(id => layer.concat(id)))
+      .reduce((p, ac) => ac.concat(p), []);
 
-
-
-
-
-
+    drawPolygonLayers.forEach(layerId => {
+      this.mapService.onLayerEvent('mousemove', this.map, layerId, (e) =>
+        this.mapService.setMapCursor(this.map, 'pointer'));
+      this.mapService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
+        this.mapService.setMapCursor(this.map, ''));
+    });
+  }
 
   /** ------------------------------------------------------- VISUAL SEPERATOR - LAYERS ----------------------------------------- */
-
-
-
-
 
   /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
   public reorderLayers() {
     this.mapFunctionalService.reorderLayers(this.visualisationSetsConfig, this.map);
   }
 
-
-
   /** ------------------------------------------------------- VISUAL SEPERATOR - DRAWING ----------------------------------------- */
-
-
-
 
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
@@ -952,7 +907,7 @@ export class ArlasMapComponent implements OnInit {
     const f = this.mapService.getPointFromScreen(e, this.canvas);
     document.removeEventListener('mousemove', this.mousemove);
     document.removeEventListener('mouseup', this.mouseup);
-    this.map.setCursorStyle('');
+    this.mapService.setMapCursor(this.map, '');
     this.map.enableDragPan();
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
@@ -983,7 +938,6 @@ export class ArlasMapComponent implements OnInit {
       }
     }
   }
-
 
   /**
    * Emits the newly drawn bbox. It completes the drawBbox event emitted by the drawService.
@@ -1026,7 +980,7 @@ export class ArlasMapComponent implements OnInit {
 
   /** @description Displays the geobox */
   public addGeoBox() {
-    this.map.setCursorStyle('crosshair');
+    this.mapService.setMapCursor(this.map, 'crosshair');
     this.drawService.enableBboxEdition();
     this.isDrawingBbox = true;
   }
@@ -1035,7 +989,7 @@ export class ArlasMapComponent implements OnInit {
    * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
   public removeAois() {
-    this.map.setCursorStyle('');
+    this.mapService.setMapCursor(this.map, '');
     this.isDrawingBbox = false;
     this.deleteSelectedItem();
   }
@@ -1077,7 +1031,7 @@ export class ArlasMapComponent implements OnInit {
   public getAllPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
+      polygon = latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
         this.drawService.isCircle(f)).map(f => cleanCoords(f)));
     } else {
       polygon = {
@@ -1096,7 +1050,7 @@ export class ArlasMapComponent implements OnInit {
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     let polygon;
     if (mode === 'wkt') {
-      polygon = this.latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
+      polygon = latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
         this.drawService.isCircle(f)));
     } else {
       polygon = {
@@ -1138,11 +1092,11 @@ export class ArlasMapComponent implements OnInit {
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape' && this.isDrawingBbox) {
-      this.map.setCursorStyle('');
+      this.mapService.setMapCursor(this.map, '');
       this.isDrawingBbox = false;
       document.removeEventListener('mousemove', this.mousemove);
       document.removeEventListener('mouseup', this.mouseup);
-      this.map.setCursorStyle('');
+      this.mapService.setMapCursor(this.map, '');
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
@@ -1166,12 +1120,11 @@ export class ArlasMapComponent implements OnInit {
   }
 
   public emitVisualisations(visualisationName: string) {
-    const layers = this.map.updateLayoutVisibility(visualisationName);
+    const layers = this.mapFunctionalService.updateLayoutVisibility(visualisationName, this.visualisationSetsConfig, this.map);
     this.visualisations.emit(layers);
     this.reorderLayers();
   }
 
-  // Todo: replace layer any by unique type
   public downloadLayerSource(downaload: { layer: any; downloadType: string; }): void {
     const downlodedSource = {
       layerId: downaload.layer.id,
@@ -1185,15 +1138,15 @@ export class ArlasMapComponent implements OnInit {
 
   /** puts the visualisation set list in the new order after dropping */
   public drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.map.visualisationSetsConfig, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.visualisationSetsConfig, event.previousIndex, event.currentIndex);
     this.reorderLayers();
   }
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    const layers = Array.from(this.map.findVisualisationSetLayer(visuName));
+    const layers = Array.from(this.mapFunctionalService.findVisualisationSetLayer(visuName, this.visualisationSetsConfig));
     moveItemInArray(layers, event.previousIndex, event.currentIndex);
-    this.map.setVisualisationSetLayers(visuName, layers);
+    this.mapFunctionalService.setVisualisationSetLayers(visuName, layers, this.visualisationSetsConfig);
     this.reorderLayers();
   }
 
@@ -1215,7 +1168,7 @@ export class ArlasMapComponent implements OnInit {
   }
 
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    this.map.selectFeaturesByCollection(features, collection);
+    this.mapFunctionalService.selectFeaturesByCollection(this.mapLayers, this.map, features, collection);
   }
 
   public hideBasemapSwitcher() {
@@ -1233,41 +1186,12 @@ export class ArlasMapComponent implements OnInit {
     this.map.setCenter(lngLat);
   }
 
-  // TODO: put into utils class.
-  private latLngToWKT(features) {
-    let wktType = 'POLYGON[###]';
-    if (features.length > 1) {
-      wktType = 'MULTIPOLYGON([###])';
-    }
-
-    let polygons = '';
-    features.forEach((feat, indexFeature) => {
-      if (feat) {
-        const currentFeat: Array<any> = feat.geometry.coordinates;
-        polygons += (indexFeature === 0 ? '' : ',') + '((';
-        currentFeat[0].forEach((coord, index) => {
-          polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];
-        });
-        polygons += '))';
-      }
-    });
-
-    let wkt = '';
-    if (polygons !== '') {
-      wkt = wktType.replace('[###]', polygons);
-    }
-    return wkt;
-  }
-
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.map.highlightFeature(featureToHightLight);
+    this.mapFunctionalService.highlightFeature(this.mapLayers, this.map, featureToHightLight);
   }
 
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    this.map.selectFeatures(elementToSelect);
+    this.mapFunctionalService.selectFeatures(this.mapLayers, this.map, elementToSelect);
   }
-
-
-
 
 }

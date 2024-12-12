@@ -49,17 +49,12 @@ export class AbstractDraw implements DrawEventsInterface {
   public enabled: boolean;
   public drawProvider: MapboxDraw;
   public constructor(config: any, enabled: boolean, map: AbstractArlasMapGL) {
-    console.log('init draw');
     const modes = MapboxDraw.modes;
     this.config = JSON.parse(JSON.stringify(config));
     this.config.modes = Object.assign(modes, config.modes);
-    console.log('Draw config', this.config);
     this.drawProvider = new MapboxDraw(this.config);
-    console.log('then');
     this.arlasMap = map;
     this.enabled = enabled;
-
-
   }
 
   public onAdd(map) {
@@ -75,7 +70,6 @@ export class AbstractDraw implements DrawEventsInterface {
   }
 
   public setMode(drawModes: DrawModes, replaceMode: any) {
-    console.log(drawModes);
     this.drawProvider.modes[drawModes] = replaceMode;
   }
 
@@ -144,19 +138,12 @@ export class AbstractDraw implements DrawEventsInterface {
   }
 
   public getMode(modes: DrawModes) {
-    console.log(modes);
-    console.log(this.drawProvider.modes);
     return this.drawProvider.modes[modes];
   }
-
-  /**
-   * class wrapper
-   */
 
   public on(event: DrawEvents, func: (e) => void): void {
     this.arlasMap.on(event, func);
   }
-
 
   public add(features: any) {
     this.drawProvider.add(features);
@@ -165,7 +152,6 @@ export class AbstractDraw implements DrawEventsInterface {
   public get(featureId: string): Feature | undefined {
     return this.drawProvider.get(featureId);
   }
-
 
   public delete(ids: string | Array<string>): AbstractDraw {
     this.drawProvider.delete(ids);

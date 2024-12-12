@@ -18,8 +18,8 @@
  */
 
 import { FeatureCollection } from '@turf/helpers';
-import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './model/layers';
-import { fromEvent, map, Observable, Subject, Subscription } from 'rxjs';
+import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './model/layers';
+import { fromEvent, map, Observable, Subscription } from 'rxjs';
 
 import { debounceTime } from 'rxjs/operators';
 import { ArlasMapSource } from './model/sources';
@@ -29,8 +29,6 @@ import { MapInterface } from './interface/map.interface';
 import { MapExtent } from './model/extent';
 import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { LngLat, OnMoveResult } from './model/map';
-import { MapLayerMouseEvent } from './model/events';
-
 
 
 export interface ElementIdentifier {
@@ -57,13 +55,7 @@ export interface MapConfig<T> {
   margePanForTest: number;
   wrapLatLng: boolean;
   offset: ArlasMapOffset;
-  mapLayers: MapLayers<any>;
-  mapLayersEventBind: {
-    onHover: MapEventBinds<any>[];
-    emitOnClick: MapEventBinds<any>[];
-    zoomOnClick: MapEventBinds<any>[];
-  };
-  customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<any>[];
+
   mapProviderOptions?: T;
   maxWidthScale?: number;
   unitScale?: string;
@@ -108,8 +100,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  private eventEmitter: Subject<MapLayerMouseEvent> = new Subject();
-  public eventEmitter$ = this.eventEmitter.asObservable();
   public abstract startlngLat: LngLat;
   public abstract endlngLat: LngLat;
   public abstract movelngLat: LngLat;
@@ -122,25 +112,14 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   // @Override
   protected _mapLayers: MapLayers<any>; // todo: find common type
   protected _controls: ControlsOption;
-  public visualisationSetsConfig: Array<VisualisationSetConfig>;
   protected _icons: Array<IconConfig>;
   public mapSources: Array<ArlasMapSource<any>>; // todo: find common type
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
-  public abstract layersMap: Map<string, any>; // todo: find common type
-  public firstDrawLayer: string;
   protected _emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
     'features': []
   };
-  public polygonlabeldata = Object.assign({}, this._emptyData);
-  public visualisationsSets: {
-    visualisations: Map<string, Set<string>>;
-    status: Map<string, boolean>;
-  } = {
-      visualisations: new Map(),
-      status: new Map()
-    };
   public currentLat: string;
   public currentLng: string;
   public readonly POLYGON_LABEL_SOURCE = 'polygon_label';
@@ -178,105 +157,25 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this._margePanForTest = config.margePanForTest;
     this._displayCurrentCoordinates = config.displayCurrentCoordinates ?? false;
     this._wrapLatLng = config.wrapLatLng ?? true;
-    this._mapLayers = config.mapLayers;
     this._controls = config.controls;
     this._fitBoundsPadding = config.fitBoundsPadding ?? 10;
     this._maxWidthScale = config.maxWidthScale;
     this._unitScale = config.unitScale;
-
     this.init(config);
   }
 
-  public setMinZoom(minZoom?: number): this {
-    throw new Error('Method not implemented.');
-  }
+  public abstract on(type: string, listener: (ev: any) => void): this;
 
-  public setMaxZoom(maxZoom?: number): this {
-    throw new Error('Method not implemented.');
-  }
-  public project(lnglat: unknown): unknown {
-    throw new Error('Method not implemented.');
-  }
-  public unproject(point: unknown): unknown {
-    throw new Error('Method not implemented.');
-  }
-  public queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[] {
-    throw new Error('Method not implemented.');
-  }
-  public setFilter(layer: string, filter?: boolean | any[], options?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public getLight(): unknown {
-    throw new Error('Method not implemented.');
-  }
-  public setFeatureState(feature: unknown, state: { [key: string]: any; }): void {
-    throw new Error('Method not implemented.');
-  }
-  public getFeatureState(feature: unknown): { [key: string]: any; } {
-    throw new Error('Method not implemented.');
-  }
-  public removeFeatureState(target: unknown, key?: string): void {
-    throw new Error('Method not implemented.');
-  }
-  public getContainer(): HTMLElement {
-    throw new Error('Method not implemented.');
-  }
-  public getCanvasContainer(): HTMLElement {
-    throw new Error('Method not implemented.');
-  }
-  public getCanvas(): HTMLCanvasElement {
-    throw new Error('Method not implemented.');
-  }
-  public getCenter(): unknown {
-    throw new Error('Method not implemented.');
-  }
-  public setCenter(center: unknown, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public panTo(lnglat: unknown, options?: unknown, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public getZoom(): number {
-    throw new Error('Method not implemented.');
-  }
-  public setZoom(zoom: number, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public getBearing(): number {
-    throw new Error('Method not implemented.');
-  }
-  public setBearing(bearing: number, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public rotateTo(bearing: number, options?: unknown, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public setPitch(pitch: number, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public cameraForBounds(bounds: unknown, options?: unknown): unknown {
-    throw new Error('Method not implemented.');
-  }
-  public fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public hasImage(id: string): boolean {
-    throw new Error('Method not implemented.');
-  }
+  public abstract getZoom(): number;
 
-  public on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
-  public on<T extends never>(type: T, listener: (ev: unknown) => void): this;
-  public on(type: string, listener: (ev: any) => void): this;
-  public on(type: unknown, layer: unknown, listener?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
-  public once<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
-  public once<T extends never>(type: T, listener: (ev: unknown) => void): this;
-  public once(type: string, listener: (ev: any) => void): this;
-  public once(type: unknown, layer: unknown, listener?: unknown): this {
-    throw new Error('Method not implemented.');
-  }
+  public abstract fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
+  public abstract getCanvasContainer(): HTMLElement;
 
+  public abstract queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[];
+
+  public abstract setCenter(center: unknown, unknown?: unknown): this;
+
+  public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   protected init(config: MapConfig<any>): void {
     try {
       this._initMapProvider(config);
@@ -291,23 +190,13 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   protected _initOnLoad() {
     this.onLoad(() => {
       this.evented.dispatchEvent(new Event('beforeOnLoadInit'));
-      console.log('on load call');
       this._updateBounds();
       this._updateZoom();
-      this.firstDrawLayer = this.getColdOrHotLayers()[0];
-      this._initMapLayers(this);
-      this._bindCustomEvent(this);
-      // Fit bounds on current bounds to emit init position in moveend bus
       this.getMapProvider().fitBounds(this.getBounds());
-      this._initVisualisationSet();
     });
   }
 
-  onEvent(e) {
-    this.eventEmitter.next(e);
-  }
-
-  onCustomEvent(event: string, loadFn: () => void) {
+  public onCustomEvent(event: string, loadFn: () => void) {
     this.evented.addEventListener(event, loadFn);
   }
 
@@ -330,35 +219,7 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this._updateOnMoveEnd();
   }
 
-  protected _initMapLayers(map: AbstractArlasMapGL) {
-    if (this._mapLayers) {
-      console.log('init maplayers');
-      this.setLayersMap(this._mapLayers as MapLayers<any>);
-      this._addExternalEventLayers();
-
-      this.bindLayersToMapEvent(
-        map,
-        this._mapLayers.events.zoomOnClick,
-        this.config.mapLayersEventBind.zoomOnClick
-      );
-
-      this.bindLayersToMapEvent(
-        map,
-        this.config.mapLayers.events.emitOnClick,
-        this.config.mapLayersEventBind.emitOnClick
-      );
-
-      this.bindLayersToMapEvent(
-        map,
-        this.config.mapLayers.events.onHover,
-        this.config.mapLayersEventBind.onHover
-      );
-    }
-  }
-
   protected _updateBounds(): void {
-    console.log('_updateBounds call');
-
     this._west = this.getWestBounds();
     this._south = this.getSouthBounds();
     this._east = this.getEastBounds();
@@ -436,26 +297,10 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this._eventSubscription.push(sub);
   }
 
-  protected _bindCustomEvent(map: AbstractArlasMapGL) {
-    if (this.config.customEventBind) {
-      console.log('bind custom event');
-      this.config.customEventBind(map).forEach(element =>
-        this.bindLayersToMapEvent(map, element.layers, element.mapEventBinds)
-      );
-    }
-  }
-
-  protected _initVisualisationSet() {
-    if (this.visualisationSetsConfig) {
-      console.log('_initVisualisationSet');
-      this.visualisationSetsConfig.forEach(visu => {
-        this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
-        this.visualisationsSets.status.set(visu.name, visu.enabled);
-      });
-    }
-  }
-
-  public onMoveEnd(cb?: () => void) {
+  public onMoveEnd(visualisationsSets: {
+    visualisations: Map<string, Set<string>>;
+    status: Map<string, boolean>;
+  }, cb?: () => void) {
     return this._moveEnd$
       .pipe(map(_ => {
         this._updateBounds();
@@ -463,21 +308,21 @@ export abstract class AbstractArlasMapGL implements MapInterface {
         if (cb) {
           cb();
         }
-        return this._getMoveEnd();
+        return this._getMoveEnd(visualisationsSets);
       }));
   }
 
   protected abstract _initMapProvider(BaseMapGlConfig): void;
   protected abstract _initControls(): void;
-  protected abstract _getMoveEnd(): OnMoveResult;
+  protected abstract _getMoveEnd(visualisationsSets: {
+    visualisations: Map<string, Set<string>>;
+    status: Map<string, boolean>;
+  }): OnMoveResult;
 
   public abstract initDrawControls(config: DrawControlsOption): void;
 
-  public abstract bindLayersToMapEvent(map: AbstractArlasMapGL, layers: string[] | Set<string>, binds: MapEventBinds<keyof any>[]): void;
   public abstract calcOffsetPoint(): any;
-  public abstract redrawSource(id: string, data): void;
   public abstract getColdOrHotLayers();
-  public abstract addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>, sources: Array<ArlasMapSource<any>>): void;
   public abstract paddedFitBounds(bounds: any, options?: any);
   public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
   public abstract enableDragPan(): void;
@@ -488,7 +333,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   public abstract getSouthBounds(): any;
   public abstract getSouthWestBounds(): any;
   public abstract getEastBounds(): any;
-  public abstract setCursorStyle(cursor: string): void;
   public abstract getMapProvider(): any;
   public abstract getMapExtend(): MapExtent;
   public abstract onLoad(fn: () => void): void;
@@ -500,150 +344,16 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   public abstract paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: any, SW, NE): LngLat[];
 
-  public abstract getLayers(): any;
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
     event: string; fn: (e?) => void;
   });
 
-  public abstract setLayersMap(mapLayers: MapLayers<any>, layers?: Array<any>);
-
-  
-  protected setStrokeLayoutVisibility(layerId: string, visibility: string): void {
-    const layer = this.layersMap.get(layerId);
-    if (layer.type === 'fill') {
-      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = this.layersMap.get(strokeId);
-      if (!!strokeLayer) {
-        this.getMapProvider().setLayoutProperty(strokeId, 'visibility', visibility);
-      }
-    }
-  }
-
-  protected setScrollableLayoutVisibility(layerId: string, visibility: string): void {
-    const layer = this.layersMap.get(layerId);
-    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-    const scrollbaleLayer = this.layersMap.get(scrollableId);
-    if (!!scrollbaleLayer) {
-      this.getMapProvider().setLayoutProperty(scrollableId, 'visibility', visibility);
-    }
-  }
-
-  public addLayerInWritePlaceIfNotExist(layerId: string): void {
-    const layer = this.layersMap.get(layerId);
-    if (layer !== undefined && layer.id === layerId) {
-      /** Add the layer if it is not already added */
-      if (this.getMapProvider().getLayer(layerId) === undefined) {
-        if (this.firstDrawLayer && this.firstDrawLayer.length > 0) {
-          /** draw layers must be on the top of the layers */
-          this.getMapProvider().addLayer(layer, this.firstDrawLayer);
-        } else {
-          this.getMapProvider().addLayer(layer);
-        }
-      }
-    } else {
-      throw new Error('The layer `' + layerId + '` is not declared in `mapLayers.layers`');
-    }
-  }
-
-
-  public updateLayoutVisibility(visualisationName: string) {
-    const visuStatus = !this.visualisationsSets.status.get(visualisationName);
-    this.visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
-    if (!visuStatus) {
-      const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
-      this.visualisationsSets.visualisations.forEach((ls, v) => {
-        if (v !== visualisationName) {
-          ls.forEach(ll => {
-            if (layersSet && layersSet.has(ll)) {
-              layersSet.delete(ll);
-            }
-          });
-        }
-      });
-      layersSet.forEach(ll => {
-        this.disableLayoutVisibility(ll);
-      });
-    }
-    this.visualisationsSets.status.set(visualisationName, visuStatus);
-    const layers = new Set<string>();
-    this.visualisationsSets.visualisations.forEach((ls, v) => {
-      if (this.visualisationsSets.status.get(v)) {
-        ls.forEach(l => {
-          layers.add(l);
-          this.enableLayoutVisibility(l);
-        });
-      }
-    });
-    return layers;
-  }
-
-  public updateVisibility(visibilityStatus: Map<string, boolean>) {
-    visibilityStatus.forEach((visibilityStatus, l) => {
-      let layerInVisualisations = false;
-      if (!visibilityStatus) {
-        this.visualisationSetsConfig.forEach(v => {
-          const ls = new Set(v.layers);
-          if (!layerInVisualisations) {
-            layerInVisualisations = ls.has(l);
-          }
-        });
-        if (layerInVisualisations) {
-          this.disableLayoutVisibility(l);
-        }
-      } else {
-        let oneVisualisationEnabled = false;
-        this.visualisationSetsConfig.forEach(v => {
-          const ls = new Set(v.layers);
-          if (!layerInVisualisations) {
-            layerInVisualisations = ls.has(l);
-          }
-          if (ls.has(l) && v.enabled) {
-            oneVisualisationEnabled = true;
-            this.enableLayoutVisibility(l);
-          }
-        });
-        if (!oneVisualisationEnabled && layerInVisualisations) {
-          this.disableLayoutVisibility(l);
-        }
-      }
-    });
-  }
-
-  
-
-  public hasCrossOrDrawLayer(e: any): boolean {
-    const features = this.queryRenderedFeatures(e.point);
-    return (!!features && !!features.find(f => f && f.layer && f.layer.id && f.layer.id.startsWith(CROSS_LAYER_PREFIX)));
-  }
-
-  
-
-  public disableLayoutVisibility(layer: string) {
-    this.getMapProvider().setLayoutProperty(layer, 'visibility', 'none');
-    this.setStrokeLayoutVisibility(layer, 'none');
-    this.setScrollableLayoutVisibility(layer, 'none');
-  }
-
-  public enableLayoutVisibility(layer: string) {
-    this.setLayoutProperty(layer, 'visibility', 'visible');
-    this.setStrokeLayoutVisibility(layer, 'visible');
-    this.setScrollableLayoutVisibility(layer, 'visible');
-  }
 
   public setLayoutProperty(layer: string, name: string, value: any, options?: any) {
     this.getMapProvider().setLayoutProperty(layer, name, value, options);
     return this;
   }
 
-  public findVisualisationSetLayer(visuName: string) {
-    return this.visualisationSetsConfig.find(v => v.name === visuName).layers;
-  }
-  public setVisualisationSetLayers(visuName: string, layers: string[]) {
-    const f = this.visualisationSetsConfig.find(v => v.name === visuName);
-    if (f) {
-      f.layers = layers;
-    }
-  }
 
   public unsubscribeEvents() {
     this._eventSubscription.forEach(s => s.unsubscribe());

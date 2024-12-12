@@ -31,6 +31,11 @@ import { ArlasMapService } from '../map/service/arlas-map.service';
 export abstract class BasemapService {
 
   protected POWERED_BY_ARLAS = ' Powered by ARLAS.';
+  protected LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+
+
+  protected basemapChangedSource: Subject<void> = new Subject();
+  public basemapChanged$ = this.basemapChangedSource.asObservable();
   public basemaps: ArlasBasemaps;
 
   protected protomapBasemapAddedSource = new Subject<boolean>();
@@ -53,10 +58,8 @@ export abstract class BasemapService {
 
   protected addProtomapLayerToMap(map: AbstractArlasMapGL, styleFile: any) {
     styleFile.layers.forEach(l => {
-      if (!!map.getLayer(l.id)) {
-        map.removeLayer(l.id);
-      }
-      map.addLayer(l as any);
+      this.mapService.removeLayer(map, l.id);
+      this.mapService.addLayer(map, l);
     });
   }
 
@@ -92,4 +95,5 @@ export abstract class BasemapService {
   public abstract getInitStyle(selected: BasemapStyle): any;
   public abstract fetchSources$(): Observable<readonly any[]>;
   protected abstract getStyleFile(b: BasemapStyle): Observable<any>;
+  public abstract setBasemap(s: any, newBasemap: BasemapStyle, map: AbstractArlasMapGL, options?: any);
 }

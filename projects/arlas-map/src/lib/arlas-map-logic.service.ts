@@ -49,7 +49,7 @@ export abstract class ArlasMapFunctionalService {
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
       const source = this.mapService.getSource(labelSourceId, map);
-      this.mapService.setDataToGeojsonSource(labelSourceId, source);
+      this.mapService.setDataToGeojsonSource(source, data);
     }
   }
 
@@ -76,7 +76,6 @@ export abstract class ArlasMapFunctionalService {
    */
   public initVisualisationSet(visualisationSetsConfig: VisualisationSetConfig[]) {
     if (visualisationSetsConfig) {
-      console.log('_initVisualisationSet');
       visualisationSetsConfig.forEach(visu => {
         this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
         this.visualisationsSets.status.set(visu.name, visu.enabled);
@@ -86,7 +85,6 @@ export abstract class ArlasMapFunctionalService {
 
   public initMapLayers(mapLayers: MapLayers<any>, map: AbstractArlasMapGL) {
     if (mapLayers) {
-      console.log('init maplayers');
       this.setLayersMap(mapLayers as MapLayers<any>);
     }
   }
@@ -117,7 +115,9 @@ export abstract class ArlasMapFunctionalService {
     if (!!mapLayers.externalEventLayers) {
       mapLayers.layers
         .filter(layer => mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-        .forEach(l => this.mapService.addLayer(map, l.id));
+        .forEach(l => {
+          this.mapService.addLayer(map, l);
+        });
     }
   }
 
@@ -153,7 +153,7 @@ export abstract class ArlasMapFunctionalService {
           const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-            const originalLayer = this.mapService.getLayer(map, originalLayerId);
+            const originalLayer = this.mapService.getAllLayers(map).find(l => l.id === originalLayerId);
             if (!!originalLayer) {
               originalLayerIsVisible = this.mapService.isLayerVisible(originalLayer);
             }
@@ -179,7 +179,6 @@ export abstract class ArlasMapFunctionalService {
       });
     }
   }
-
 
   public selectFeatures(mapLayers: MapLayers<any>, map: AbstractArlasMapGL, elementToSelect: Array<ElementIdentifier>) {
     if (elementToSelect) {
@@ -212,6 +211,86 @@ export abstract class ArlasMapFunctionalService {
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
     this.filterLayersOnEvent(mapLayers, map, (features.length > 0), visibilityFilter, ExternalEvent.select, collection);
   }
+
+
+  public updateLayoutVisibility(visualisationName: string, visualisationSetsConfig: VisualisationSetConfig[], map: AbstractArlasMapGL) {
+    const visuStatus = !this.visualisationsSets.status.get(visualisationName);
+    visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
+    if (!visuStatus) {
+      const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
+      this.visualisationsSets.visualisations.forEach((ls, v) => {
+        if (v !== visualisationName) {
+          ls.forEach(ll => {
+            if (layersSet && layersSet.has(ll)) {
+              layersSet.delete(ll);
+            }
+          });
+        }
+      });
+      layersSet.forEach(ll => {
+        this.mapService.setLayerVisibility(ll, false, map);
+      });
+    }
+    this.visualisationsSets.status.set(visualisationName, visuStatus);
+    const layers = new Set<string>();
+    this.visualisationsSets.visualisations.forEach((ls, v) => {
+      if (this.visualisationsSets.status.get(v)) {
+        ls.forEach(l => {
+          layers.add(l);
+          this.mapService.setLayerVisibility(l, true, map);
+        });
+      }
+    });
+    return layers;
+  }
+
+  public updateVisibility(visibilityStatus: Map<string, boolean>, visualisationSetsConfig: VisualisationSetConfig[], map: AbstractArlasMapGL) {
+    visibilityStatus.forEach((visibilityStatus, l) => {
+      let layerInVisualisations = false;
+      if (!visibilityStatus) {
+        visualisationSetsConfig.forEach(v => {
+          const ls = new Set(v.layers);
+          if (!layerInVisualisations) {
+            layerInVisualisations = ls.has(l);
+          }
+        });
+        if (layerInVisualisations) {
+          this.mapService.setLayerVisibility(l, false, map);
+        }
+      } else {
+        let oneVisualisationEnabled = false;
+        visualisationSetsConfig.forEach(v => {
+          const ls = new Set(v.layers);
+          if (!layerInVisualisations) {
+            layerInVisualisations = ls.has(l);
+          }
+          if (ls.has(l) && v.enabled) {
+            oneVisualisationEnabled = true;
+            this.mapService.setLayerVisibility(l, true, map);
+          }
+        });
+        if (!oneVisualisationEnabled && layerInVisualisations) {
+          this.mapService.setLayerVisibility(l, false, map);
+        }
+      }
+    });
+  }
+
+
+  public findVisualisationSetLayer(visuName: string, visualisationSetsConfig: VisualisationSetConfig[]) {
+    return visualisationSetsConfig.find(v => v.name === visuName).layers;
+  }
+  public setVisualisationSetLayers(visuName: string, layers: string[], visualisationSetsConfig: VisualisationSetConfig[]) {
+    const f = visualisationSetsConfig.find(v => v.name === visuName);
+    if (f) {
+      f.layers = layers;
+    }
+  }
+
+  public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
+
+  public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>);
+
 
 
 }

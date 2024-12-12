@@ -21,12 +21,10 @@ import {
   AbstractArlasMapGL,
   BindLayerToEvent,
   MapConfig,
-  MapEventBinds,
   OnMoveResult,
 } from 'arlas-map';
 import mapboxgl, {
   AnyLayer,
-  AnySourceData,
   Control,
   IControl,
   LngLat,
@@ -34,32 +32,24 @@ import mapboxgl, {
   LngLatBoundsLike,
   MapboxOptions,
   MapLayerEventType,
-  Point,
-  PointLike
+  Point
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { MapLayers, VisualisationSetConfig,
-  ControlButton, ControlPosition, DrawControlsOption,
-  MapExtent, ArlasMapSource
- } from 'arlas-map';
+import {
+  MapLayers, ControlButton, ControlPosition, DrawControlsOption,
+  MapExtent, 
+} from 'arlas-map';
 import { ArlasAnyLayer } from './model/layers';
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
-import { MapboxSourceType } from './model/sources';
 import bbox from '@turf/bbox';
 
-
-// todo : rename to mapboxConfig
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
   customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<MapLayerEventType>[];
-  mapLayersEventBind: {
-    onHover: MapEventBinds<keyof MapLayerEventType>[];
-    emitOnClick: MapEventBinds<keyof MapLayerEventType>[];
-    zoomOnClick: MapEventBinds<keyof MapLayerEventType>[];
-  };
 }
 
 export class ArlasMapboxGL extends AbstractArlasMapGL {
+
   protected _mapLayers: MapLayers<AnyLayer>;
   protected _mapProvider: mapboxgl.Map;
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
@@ -85,6 +75,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     const northEastWorld = new Point(northEastPoint.x / scale + bottomLeft.x, northEastPoint.y / scale + topRight.y);
     const neWorld = map.unproject(northEastWorld);
     return [swWorld, neWorld];
+  }
+
+  public on(type: string, listener: (ev: any) => void): this {
+    this.getMapProvider().on(type, listener);
+    return this;
   }
 
 
@@ -114,7 +109,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
 
   public _initControls(): void {
-    console.log('init controls');
     if (this._controls) {
       if (this._controls.mapAttribution) {
         this.addControl(new mapboxgl.AttributionControl(this._controls.mapAttribution.config), this._controls.mapAttribution.position);
@@ -203,10 +197,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this;
   }
 
-  public setCursorStyle(cursor: string) {
-    this.getMapProvider().getCanvas().style.cursor = cursor;
-  }
-
   public enableDragPan() {
     this.getMapProvider().dragPan.enable();
   }
@@ -224,41 +214,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this.getMapProvider().getStyle().layers;
   }
 
-  public isLayerVisible(layer: ArlasAnyLayer): boolean {
-    return layer.layout.visibility === 'visible';
-  }
-
   public getColdOrHotLayers() {
     return this.getLayers().map(layer => layer.id)
       .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0);
   }
-
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<AnyLayer>,
-    sources: Array<ArlasMapSource<MapboxSourceType>>): void {
-    sources.forEach((s) => {
-      if (typeof (s.source) !== 'string') {
-        this.getMapProvider().addSource(s.id, s.source);
-      }
-    });
-    this.visualisationSetsConfig.unshift(visualisation);
-    this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
-    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
-    layers.forEach(layer => {
-      this.addLayer(layer);
-    });
-
-    this.setLayersMap(this._mapLayers as MapLayers<AnyLayer>, layers);
-    this.reorderLayers();
-  }
-
-  protected _addExternalEventLayers() {
-    if (!!this._mapLayers.externalEventLayers) {
-      this._mapLayers.layers
-        .filter(layer => this._mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
-        .forEach(l => this.addLayerInWritePlaceIfNotExist(l.id));
-    }
-  }
-
 
   public onLoad(fn: () => void): void {
     this.getMapProvider().on('load', fn);
@@ -268,7 +227,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return new mapboxgl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
-  protected _getMoveEnd() {
+  protected _getMoveEnd(visualisationsSets: {
+    visualisations: Map<string, Set<string>>;
+    status: Map<string, boolean>;
+  }) {
     const offsetPoint = this.calcOffsetPoint();
     const centerOffsetPoint = this.getMapProvider().project(this.getMapProvider().getCenter()).add(offsetPoint);
     const centerOffSetLatLng = this.getMapProvider().unproject(centerOffsetPoint);
@@ -296,9 +258,9 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     const rawEastOffset = topRghtOffsetLatLng.lng;
     const rawNorthOffset = topRghtOffsetLatLng.lat;
     const visibleLayers = new Set<string>();
-    this.visualisationsSets.status.forEach((b, vs) => {
+    visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
+        visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
       }
     });
     const onMoveData: OnMoveResult = {
@@ -350,15 +312,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return onMoveData;
   }
 
-  public bindLayersToMapEvent(map: ArlasMapboxGL, layers: string[] | Set<string>, binds: MapEventBinds<keyof MapLayerEventType>[]) {
-    layers.forEach(layerId => {
-      binds.forEach(el => {
-        this.getMapProvider().on(el.event, layerId, (e) => {
-          el.fn(e, map);
-        });
-      });
-    });
-  }
 
   /** Gets bounds of the given geometry */
   public geometryToBound(geometry: any, paddingPercentage?: number): unknown {
@@ -409,7 +362,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this.getBounds().getWest();
   }
   public getNorthBounds() {
-    console.log('north', this.getBounds().getNorth())
     return this.getBounds().getNorth();
   }
 
@@ -425,17 +377,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
   public getEastBounds() {
     return this.getBounds().getEast();
-  }
-
-
-  public addLayer(layer: AnyLayer, before?: string) {
-    this.getMapProvider().addLayer(layer, before);
-    return this;
-  }
-
-  public moveLayer(id: string, before?: string) {
-    this.getMapProvider().moveLayer(id, before);
-    return this;
   }
 
   public getSource(id: string) {
@@ -460,107 +401,17 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this._mapProvider.getCanvasContainer();
   }
 
-
   public queryRenderedFeatures(point) {
     return this._mapProvider.queryRenderedFeatures(point);
-  }
-
-  public project(latLng: LngLat) {
-    return this._mapProvider.project(latLng);
-  }
-
-  public unproject(latLng: PointLike) {
-    return this._mapProvider.unproject(latLng);
-  }
-
-
-  public getCenter() {
-    return this._mapProvider.getCenter();
-  }
-
-  public getLayer(id: string) {
-    return this._mapProvider.getLayer(id);
-  }
-
-  public setStyle(style: mapboxgl.Style | string, option?: { diff?: boolean | undefined; localIdeographFontFamily?: string | undefined; }) {
-    this._mapProvider.setStyle(style, option);
-    return this;
-  }
-
-  public removeLayer(id: string) {
-    this._mapProvider.removeLayer(id);
-    return this;
-  }
-
-  public getStyle() {
-    return this._mapProvider.getStyle();
-  }
-
-  public hasImage(id: string): boolean {
-    return this.getMapProvider().hasImage(id);
-  }
-
-  public cameraForBounds(bounds: mapboxgl.LngLatBoundsLike,
-    options?: mapboxgl.CameraForBoundsOptions): mapboxgl.CameraForBoundsResult | undefined {
-    return this._mapProvider.cameraForBounds(bounds, options);
-  }
-
-  public getBearing(): number {
-    return this._mapProvider.getBearing();
-  }
-
-  public getCanvas(): HTMLCanvasElement {
-    return this._mapProvider.getCanvas();
-  }
-
-  public getContainer(): HTMLElement {
-    return this._mapProvider.getContainer();
-  }
-
-  public getFeatureState(feature: mapboxgl.FeatureIdentifier | mapboxgl.MapboxGeoJSONFeature): { [p: string]: any; } {
-    return this._mapProvider.getFeatureState(feature);
-  }
-
-  public getLight(): mapboxgl.Light {
-    return this._mapProvider.getLight();
   }
 
   public getMaxBounds(): mapboxgl.LngLatBounds | null {
     return this._mapProvider.getMaxBounds();
   }
 
-  public getRenderWorldCopies(): boolean {
-    return this._mapProvider.getRenderWorldCopies();
-  }
-
-  public panTo(lnglat: mapboxgl.LngLatLike, options?: mapboxgl.AnimationOptions, eventdata?: mapboxgl.EventData): this {
-    this._mapProvider.panTo(lnglat, options, eventdata);
-    return this;
-  }
-
-  public removeFeatureState(target: mapboxgl.FeatureIdentifier | mapboxgl.MapboxGeoJSONFeature, key?: string): void {
-    this._mapProvider.removeFeatureState(target, key);
-  }
-
   public resize(eventData?: mapboxgl.EventData): this {
     this._mapProvider.resize(eventData);
     return this;
-  }
-
-  public rotateTo(bearing: number, options?: mapboxgl.AnimationOptions, eventData?: mapboxgl.EventData): this {
-    this._mapProvider.rotateTo(bearing, options, eventData);
-    return this;
-  }
-
-  public setBearing(bearing: number, eventData?: mapboxgl.EventData): this {
-    this._mapProvider.setBearing(bearing, eventData);
-    return this;
-  }
-
-  public setFeatureState(feature: mapboxgl.FeatureIdentifier | mapboxgl.MapboxGeoJSONFeature, state: {
-    [p: string]: any;
-  }): void {
-    this._mapProvider.setFeatureState(feature, state);
   }
 
   public setFilter(layer: string, filter?: any[] | boolean | null, options?: mapboxgl.FilterOptions | null): this {
@@ -573,48 +424,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this;
   }
 
-  public setMaxZoom(maxZoom?: number | null): this {
-    this._mapProvider.setMaxZoom(maxZoom);
-    return this;
-  }
-
-  public setMinZoom(minZoom?: number | null): this {
-    this._mapProvider.setMinZoom(minZoom);
-    return this;
-  }
-
-  public setPitch(pitch: number, eventData?: mapboxgl.EventData): this {
-    this._mapProvider.setPitch(pitch, eventData);
-    return this;
-  }
-
   public setZoom(zoom: number, eventData?: mapboxgl.EventData): this {
     this._mapProvider.setZoom(zoom, eventData);
-    return this;
-  }
-
-  public on<T extends keyof mapboxgl.MapLayerEventType>(
-    type: T, layer: string,
-    listener: (ev: (mapboxgl.MapLayerEventType[T] & mapboxgl.EventData)) => void): this;
-  public on<T extends keyof mapboxgl.MapEventType>(type: T, listener: (ev: (mapboxgl.MapEventType[T] & mapboxgl.EventData)) => void): this;
-  public on(type: string, listener: (ev: any) => void): this;
-  public on(type, layer, listener?): this {
-    this._mapProvider.on(type, layer, listener);
-    return this;
-  }
-
-  public once<T extends keyof mapboxgl.MapLayerEventType>
-    (type: T, layer: string, listener: (ev: (mapboxgl.MapLayerEventType[T] & mapboxgl.EventData)) => void): this;
-  public once<T extends keyof mapboxgl.MapEventType>(type: T, listener: (ev: (mapboxgl.MapEventType[T] & mapboxgl.EventData)) => void): this;
-  public once(type: string, listener: (ev: any) => void): this;
-  public once(type, layer, listener?): this {
-    this._mapProvider.once(type, layer, listener);
-    return this;
-  }
-
-
-  public addSource(id: string, source: AnySourceData): this {
-    this._mapProvider.addSource(id, source);
     return this;
   }
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs/internal/Subject';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
 import { ArlasMapSource } from '../map/model/sources';
@@ -26,14 +26,16 @@ import { BasemapService } from './basemap.service';
 import { BasemapStyle } from './basemap.config';
 import { ArlasMapService } from '../map/service/arlas-map.service';
 import { ArlasMapFunctionalService } from '../arlas-map-logic.service';
+import { takeUntil } from 'rxjs';
 
 @Component({
   selector: 'arlas-basemap',
   templateUrl: './basemap.component.html',
   styleUrls: ['./basemap.component.scss']
 })
-export class BasemapComponent implements OnInit {
-  protected LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+export class BasemapComponent implements OnInit, OnDestroy {
+
+  private _onDestroy$ = new Subject<boolean>();
 
   @Input() public map: AbstractArlasMapGL;
   @Input() public mapSources: Array<ArlasMapSource<any>>;
@@ -44,7 +46,13 @@ export class BasemapComponent implements OnInit {
   public showList = false;
   public basemaps: ArlasBasemaps;
 
-  public constructor(protected basemapService: BasemapService, protected mapFunctionalService: ArlasMapFunctionalService) { }
+  public constructor(protected basemapService: BasemapService,
+    protected mapFunctionalService: ArlasMapFunctionalService,
+    protected mapService: ArlasMapService) {
+
+      this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());
+
+     }
 
   public ngOnInit(): void {
     this.initBasemaps();
@@ -81,59 +89,13 @@ export class BasemapComponent implements OnInit {
 
   public setBaseMapStyle(newBasemap: BasemapStyle) {
     if (this.map) {
-      this.setStyle(this.basemaps.getSelected().styleFile as any, newBasemap);
+      this.basemapService.setBasemap(this.basemaps.getSelected().styleFile as any, newBasemap, this.map, this.mapSources);
     }
   }
 
-    // TODO: s to any try to find a good type or interface for all layer
-  /**  Set mapbox new style.
-   * !!NOTE: mapbox setStyle removes all added layers from the map; thus the following description :
-   * This method saves all the currently added layers to the map, applies the 'map.setStyle' and adds all the saved layers afterwards.
-   */
-  public setStyle(s: any, newBasemap: BasemapStyle) {
-    const selectedBasemapLayersSet = new Set<string>();
-    // TODO: Array to any try to find a good type or interface for all layer
-    const layers: Array<any> = this.map.getLayers();
-    const sources = this.map.getStyle().sources;
-    if (s.layers) {
-      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
-    }
-    // TODO: Array to any try to find a good type or interface for all layer
-    const layersToSave = new Array<any>();
-    const sourcesToSave = new Array<ArlasMapSource<any>>();
-    layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
-      layersToSave.push(l);
-      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
-      }
-    });
-    const sourcesToSaveSet = new Set<string>();
-    sourcesToSave.forEach(mapSource => sourcesToSaveSet.add(mapSource.id));
-    if (this.mapSources) {
-      this.mapSources.forEach(mapSource => {
-        if (!sourcesToSaveSet.has(mapSource.id)) {
-          sourcesToSave.push(mapSource);
-        }
-      });
-    }
-    const initStyle = this.basemapService.getInitStyle(newBasemap);
-    this.map.setStyle(initStyle).once('styledata', () => {
-      setTimeout(() => {
-        /** the timeout fixes a mapboxgl bug related to layer placement*/
-        this.mapFunctionalService.declareBasemapSources(sourcesToSave, this.map);
-        layersToSave.forEach(l => {
-          if (!this.map.getLayer(l.id)) {
-            this.map.addLayer(l);
-          }
-        });
-        localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
-        this.basemaps.setSelected(newBasemap);
-        if (newBasemap.type === 'protomap') {
-          this.basemapService.addProtomapBasemap(this.map);
-          this.basemapService.notifyProtomapAddition();
-        }
-        this.basemapChanged.emit();
-      }, 0);
-    });
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
+
 }

@@ -18,56 +18,48 @@
  */
 
 import maplibregl, {
-  AddLayerObject,
-  AnimationOptions,
-  CameraForBoundsOptions,
-  CanvasSourceSpecification,
-  CenterZoomBearing,
   ControlPosition,
-  EaseToOptions,
-  FeatureIdentifier,
   FitBoundsOptions,
-  FlyToOptions,
   IControl,
   LngLat,
   LngLatBounds,
-  LngLatLike,
   MapGeoJSONFeature,
   MapLayerEventType,
   MapOptions,
   Point,
   PointLike,
   QueryRenderedFeaturesOptions,
-  SourceSpecification,
-  StyleImageInterface,
   StyleSetterOptions,
-  StyleSpecification,
   TypedStyleLayer
 } from 'maplibre-gl';
-import { AbstractArlasMapGL, BindLayerToEvent, MapConfig, MapEventBinds, OnMoveResult } from 'arlas-map';
+import { AbstractArlasMapGL, BindLayerToEvent, MapConfig, OnMoveResult } from 'arlas-map';
 import { MapLayers } from 'arlas-map';
 import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
 import { ControlButton, DrawControlsOption } from 'arlas-map';
-import { VisualisationSetConfig } from 'arlas-map';
 import { MapExtent } from 'arlas-map';
-import { ArlasMapSource } from 'arlas-map';
-import { MaplibreSourceType } from './model/sources';
 import bbox from '@turf/bbox';
-
-
 
 
 export interface ArlasMaplibreConfig extends MapConfig<MapOptions> {
   mapLayers: MapLayers<TypedStyleLayer>;
   customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<MapLayerEventType>[];
-  mapLayersEventBind: {
-    onHover: MapEventBinds<keyof MapLayerEventType>[];
-    emitOnClick: MapEventBinds<keyof MapLayerEventType>[];
-    zoomOnClick: MapEventBinds<keyof MapLayerEventType>[];
-  };
 }
 
 export class ArlasMaplibreGL extends AbstractArlasMapGL {
+  public setCenter(lngLat: [number, number]) {
+    this._mapProvider.setCenter(lngLat);
+    return this;
+  }
+
+  public getCanvasContainer() {
+    return this._mapProvider.getCanvasContainer();
+  }
+
+  public resize(eventData?: unknown): this {
+    this._mapProvider.resize(eventData);
+    return this;
+  }
+
   protected _mapLayers: MapLayers<TypedStyleLayer>;
   protected _mapProvider: maplibregl.Map;
   public endlngLat: maplibregl.LngLat;
@@ -80,7 +72,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   protected _initMapProvider(config: ArlasMaplibreConfig) {
-    console.log('init map provider');
     this._mapProvider = new maplibregl.Map(
       config.mapProviderOptions
     );
@@ -110,7 +101,16 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return [swWorld, neWorld];
   }
 
-  protected _getMoveEnd() {
+
+  public on(type: string, listener: (ev: any) => void): this {
+    this.getMapProvider().on(type, listener);
+    return this;
+  }
+
+  protected _getMoveEnd(visualisationsSets: {
+    visualisations: Map<string, Set<string>>;
+    status: Map<string, boolean>;
+  }) {
     const offsetPoint = this.calcOffsetPoint();
     const centerOffsetPoint = this.getMapProvider().project(this.getMapProvider().getCenter()).add(offsetPoint);
     const centerOffSetLatLng = this.getMapProvider().unproject(centerOffsetPoint);
@@ -138,9 +138,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     const rawEastOffset = topRghtOffsetLatLng.lng;
     const rawNorthOffset = topRghtOffsetLatLng.lat;
     const visibleLayers = new Set<string>();
-    this.visualisationsSets.status.forEach((b, vs) => {
+    visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        this.visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
+        visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
       }
     });
     const onMoveData: OnMoveResult = {
@@ -193,7 +193,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   protected _initControls(): void {
-    console.log('init controls', this._controls);
     if (this._controls) {
       if (this._controls.mapAttribution) {
         this.addControl(new maplibregl.AttributionControl(this._controls.mapAttribution.config), this._controls.mapAttribution.position);
@@ -238,24 +237,12 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     );
   }
 
-
-  public bindLayersToMapEvent(map: ArlasMaplibreGL, layers: string[] | Set<string>, binds: MapEventBinds<keyof MapLayerEventType>[]) {
-    layers.forEach(layerId => {
-      binds.forEach(el => {
-        this.getMapProvider().on(el.event, layerId, (e) => {
-          el.fn(e, map);
-        });
-      });
-    });
-  }
-
   public addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
   public addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
   public addControl(control: IControl, position?: ControlPosition | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left', eventOverride?: {
     event: string;
     fn: (e?) => void;
   }) {
-    console.log(control);
     this.getMapProvider().addControl(control, position);
     if (control instanceof ControlButton && eventOverride) {
       control.btn[eventOverride.event] = () => eventOverride.fn();
@@ -264,24 +251,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
 
-
-  // TODO : should fix any in source
-  public addVisualisation(visualisation: VisualisationSetConfig, layers: Array<any>,
-    sources: Array<ArlasMapSource<MaplibreSourceType>>): void {
-    sources.forEach((s) => {
-      if (typeof (s.source) !== 'string') {
-        this.getMapProvider().addSource(s.id, s.source);
-      }
-    });
-    this.visualisationSetsConfig.unshift(visualisation);
-    this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
-    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
-    layers.forEach(layer => {
-      this.addLayer(layer);
-    });
-    // TODO : should fix any in source
-    this.setLayersMap(this._mapLayers as MapLayers<TypedStyleLayer>, layers);
-    this.reorderLayers();
+  public setFilter(layer: string, filter?: boolean | any[], options?: StyleSetterOptions): this {
+    this._mapProvider.setFilter(layer, filter as any, options);
+    return this;
   }
 
   public disableDragPan(): void {
@@ -416,143 +388,27 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     this.fitBounds(bounds, paddedOptions);
   }
 
-  public redrawSource(id: string, data) {
-    if (this.getSource(id) !== undefined) {
-      (this.getSource(id) as maplibregl.GeoJSONSource).setData({
-        'type': 'FeatureCollection',
-        'features': data
-      });
-    }
-  }
-
-  public resize(eventData?: unknown): this {
-    this._mapProvider.resize(eventData);
-    return this;
-  }
-
-  public setCursorStyle(cursor: string): void {
-    this.getMapProvider().getCanvas().style.cursor = cursor;
-  }
-
-  public setLayersMap(mapLayers: MapLayers<TypedStyleLayer>, layers?: Array<TypedStyleLayer>) {
-    if (mapLayers) {
-      const mapLayersCopy = mapLayers;
-      if (layers) {
-        mapLayersCopy.layers = mapLayersCopy.layers.concat(layers);
-      }
-      const layersMap = new Map();
-      mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
-      this.layersMap = layersMap;
-    }
-  }
 
   public setMaxBounds(lnglatbounds?: maplibregl.LngLatBoundsLike): this {
     this._mapProvider.setMaxBounds(lnglatbounds);
     return this;
   }
 
-  public setMinZoom(minZoom?: number): this {
-    this._mapProvider.setMinZoom(minZoom);
-    return this;
-  }
-  public setMaxZoom(maxZoom?: number): this {
-    this._mapProvider.setMaxZoom(maxZoom);
-    return this;
-  }
-  public project(lngLat: maplibregl.LngLat): unknown {
-    return this._mapProvider.project(lngLat);
-  }
-  public unproject(point: maplibregl.PointLike): unknown {
-    return this._mapProvider.unproject(point);
-  }
+
   public queryRenderedFeatures(pointOrBox?: PointLike | [PointLike, PointLike],
     options?: { layers?: string[]; filter?: any[]; }): MapGeoJSONFeature[] {
     return this._mapProvider.queryRenderedFeatures(pointOrBox, options as QueryRenderedFeaturesOptions);
   }
-  public setFilter(layer: string, filter?: boolean | any[], options?: StyleSetterOptions): this {
-    this._mapProvider.setFilter(layer, filter as any, options);
-    return this;
-  }
-  public getLight() {
-    return this._mapProvider.getLight();
-  }
-  public setFeatureState(feature: FeatureIdentifier, state: { [key: string]: any; }): void {
-    this._mapProvider.setFeatureState(feature, state);
-  }
-  public getFeatureState(feature: FeatureIdentifier): { [key: string]: any; } {
-    return this._mapProvider.getFeatureState(feature);
-  }
-  public removeFeatureState(target: FeatureIdentifier, key?: string): void {
-    this._mapProvider.removeFeatureState(target, key);
-  }
-  public getContainer(): HTMLElement {
-    return this._mapProvider.getContainer();
-  }
-  public getCanvasContainer(): HTMLElement {
-    return this._mapProvider.getCanvasContainer();
-  }
-  public getCanvas(): HTMLCanvasElement {
-    return this._mapProvider.getCanvas();
-  }
-  public getCenter(): maplibregl.LngLat {
-    return this._mapProvider.getCenter();
-  }
-  public setCenter(center: LngLatLike, eventData?: any): this {
-    this._mapProvider.setCenter(center, eventData);
-    return this;
-  }
-  public panTo(lnglat: LngLatLike, options?: AnimationOptions, eventdata?: any): this {
-    this._mapProvider.panTo(lnglat, options, eventdata);
-    return this;
-  }
+
   public getZoom(): number {
     return this._mapProvider.getZoom();
   }
-  public setZoom(zoom: number, eventdata?: any): this {
-    this._mapProvider.setZoom(zoom, eventdata);
-    return this;
-  }
-  public getBearing(): number {
-    return this._mapProvider.getBearing();
-  }
-  public setBearing(bearing: number, eventData?: any): this {
-    this._mapProvider.setBearing(bearing, eventData);
-    return this;
-  }
-  public rotateTo(bearing: number, options?: AnimationOptions, eventData?: any): this {
-    this._mapProvider.rotateTo(bearing, options, eventData);
-    return this;
-  }
-  public setPitch(pitch: number, eventData?: any): this {
-    this._mapProvider.setPitch(pitch, eventData);
-    return this;
-  }
-  public cameraForBounds(bounds: LngLatBounds, options?: CameraForBoundsOptions): CenterZoomBearing {
-    return this._mapProvider.cameraForBounds(bounds, options);
-  }
+
+
   public fitBounds(bounds: LngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
     this._mapProvider.fitBounds(bounds, options, eventData);
     return this;
   }
 
-  public flyTo(options: FlyToOptions, eventData?: any): this {
-    this._mapProvider.flyTo(options, eventData);
-    return this;
-  }
-
-  public on<T extends never>(type: T, layer: string, listener: (ev: unknown) => void): this;
-  public on<T extends never>(type: T, listener: (ev: unknown) => void): this;
-  public on(type: string, listener: (ev: any) => void): this;
-  public on(type, layer, listener?): this {
-    this._mapProvider.on(type, layer, listener);
-    return this;
-  }
-  public once<T extends never>(type: T, layer: string, listener: (ev: any) => void): this;
-  public once<T extends never>(type: T, listener: (ev: any) => void): this;
-  public once(type: string, listener: (ev: any) => void): this;
-  public once(type, layer, listener?): this {
-    this._mapProvider.once(type, layer, listener);
-    return this;
-  }
 
 }
