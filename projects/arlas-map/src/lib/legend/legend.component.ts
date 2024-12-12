@@ -49,7 +49,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Layer object
    */
-  @Input() public layer: any
+  @Input() public layer: any;
   /**
    * @Input : Angular
    * @description Collection of the layer
@@ -90,8 +90,8 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    */
   @Output() public downloadSourceEmitter: Subject<{ layer: any; downloadType: string; }> = new Subject();
 
-  @ViewChild('width_legend', { static: false }) public lineWidthLegend: any//MapglLegendItemComponent;
-  @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: any//MapglLegendItemComponent;
+  @ViewChild('width_legend', { static: false }) public lineWidthLegend: any;
+  @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: any;
 
   public colorLegend: Legend = {};
   public lineDasharray: Array<number>;

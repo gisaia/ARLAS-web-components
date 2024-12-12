@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import mapboxgl from "mapbox-gl";
+import mapboxgl from 'mapbox-gl';
 
 export type MapboxSourceType = mapboxgl.AnySourceData | mapboxgl.VectorSource | mapboxgl.RasterSource |
 mapboxgl.GeoJSONSource | mapboxgl.GeoJSONSourceRaw |

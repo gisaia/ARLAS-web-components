@@ -29,7 +29,7 @@ export interface MapLayerMouseEvent {
 }
 
 export interface MapMouseEvent {
-    type: string
+    type: string;
     point: ArlasPoint;
     lngLat: LngLat;
 }

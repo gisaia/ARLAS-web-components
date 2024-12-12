@@ -19,29 +19,28 @@
 
 
 export interface OnMoveResult {
-    zoom: number;
-    zoomStart: number;
-    center: Array<number>;
-    centerWithOffset: Array<number>;
-    extend: Array<number>;
-    extendWithOffset: Array<number>;
-    rawExtendWithOffset: Array<number>;
-    extendForLoad: Array<number>;
-    extendForTest: Array<number>;
-    rawExtendForLoad: Array<number>;
-    rawExtendForTest: Array<number>;
-    xMoveRatio: number;
-    yMoveRatio: number;
-    visibleLayers: Set<string>;
+  zoom: number;
+  zoomStart: number;
+  center: Array<number>;
+  centerWithOffset: Array<number>;
+  extend: Array<number>;
+  extendWithOffset: Array<number>;
+  rawExtendWithOffset: Array<number>;
+  extendForLoad: Array<number>;
+  extendForTest: Array<number>;
+  rawExtendForLoad: Array<number>;
+  rawExtendForTest: Array<number>;
+  xMoveRatio: number;
+  yMoveRatio: number;
+  visibleLayers: Set<string>;
+}
+
+export class LngLat {
+  public lng: number;
+  public lat: number;
+
+  public constructor(lng, lat) {
+    this.lng = lng;
+    this.lat = lat;
   }
-  
-  
-  export class LngLat {
-    lng: number;
-    lat: number;
-  
-    constructor(lng, lat) {
-      this.lng = lng;
-      this.lat = lat;
-    }
-  }
+}

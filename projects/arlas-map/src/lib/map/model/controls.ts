@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { marker } from "@biesbjerg/ngx-translate-extract-marker";
+import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 
 
 /** All the map controls configuration

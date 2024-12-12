@@ -1,6 +1,31 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, ARLAS_ID, ArlasMapService, CROSS_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, LngLat, SCROLLABLE_ARLAS_ID } from 'arlas-map';
-import { AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceOptions, GeoJSONSourceRaw, LngLatBounds, Point, Popup, RasterLayer, RasterSource, Source, SymbolLayer } from 'mapbox-gl';
+import {
+  ARLAS_ID, ArlasMapService, FILLSTROKE_LAYER_PREFIX,
+  LngLat, SCROLLABLE_ARLAS_ID
+} from 'arlas-map';
+import {
+  AnyLayer, AnySourceData, GeoJSONSource,
+  GeoJSONSourceRaw, LngLatBounds, Point, Popup, RasterLayer, RasterSource, SymbolLayer
+} from 'mapbox-gl';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasAnyLayer } from './map/model/layers';
@@ -11,7 +36,7 @@ import { ExternalEvent } from 'arlas-map';
 @Injectable()
 export class ArlasMapboxService extends ArlasMapService {
 
-  constructor() {
+  public constructor() {
     super();
   }
 
@@ -99,7 +124,7 @@ export class ArlasMapboxService extends ArlasMapService {
     return {
       type: 'geojson',
       data
-    }
+    };
   };
 
   /**
@@ -119,7 +144,7 @@ export class ArlasMapboxService extends ArlasMapService {
 
   /**
    * @override Mapbox implementation.
-   * Adds the given layer to the map instance, optionnaly before a layer. Otherwise it's added to the top.  
+   * Adds the given layer to the map instance, optionnaly before a layer. Otherwise it's added to the top.
    * @param map Map
    * @param layer Layer to add to the map
    * @param before Identifier of an already added layer. The given Layer (second param) is added under this 'before' layer.
@@ -135,10 +160,10 @@ export class ArlasMapboxService extends ArlasMapService {
 
   /**
    * Executes the 'fn' function on 'eventName' triggered from the given 'layer' of the 'map' instance.
-   * @param eventName 
-   * @param map 
-   * @param layer 
-   * @param fn 
+   * @param eventName Event name.
+   * @param map Map instance.
+   * @param layer Layer identifier.
+   * @param fn Function to execute on event of the given layer.
    */
   public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave', map: ArlasMapboxGL, layer: string, fn: (e) => void): void {
     map.getMapProvider().on(eventName, layer, fn);
@@ -147,9 +172,9 @@ export class ArlasMapboxService extends ArlasMapService {
   /**
    * @override Mapbox implementation.
    * Executes the 'fn' function on 'eventName' triggered from the 'map' instance.
-   * @param eventName 
-   * @param map 
-   * @param fn 
+   * @param eventName Event.
+   * @param map Map instance.
+   * @param fn Function to execute on given event on the map.
    */
   public onMapEvent(eventName: 'load' | 'moveend' | 'zoomend', map: ArlasMapboxGL, fn: (e) => void) {
     map.getMapProvider().on(eventName, fn);
@@ -206,8 +231,8 @@ export class ArlasMapboxService extends ArlasMapService {
   /**
    * @override Mapbox implementation.
    * Removes the source from the map instance
-   * @param map 
-   * @param source 
+   * @param map Map instance
+   * @param source Source identifier.
    */
   public removeSource(map: ArlasMapboxGL, source: string) {
     if (!!source && this.hasSource(map, source)) {
@@ -216,7 +241,7 @@ export class ArlasMapboxService extends ArlasMapService {
   };
 
   /**
-   * @override Mapbox implementation. 
+   * @override Mapbox implementation.
    * Creates a popup at lng,lat with the given message. The popup is not yet added to the map.
    * @param lng Longitude.
    * @param lat Latitude.
@@ -229,7 +254,7 @@ export class ArlasMapboxService extends ArlasMapService {
       closeOnClick: false
     });
     return popup.setLngLat([lat, lng])
-      .setHTML(message)
+      .setHTML(message);
   }
 
   /**
@@ -274,12 +299,12 @@ export class ArlasMapboxService extends ArlasMapService {
 
   /**
    * @override Mapbox implementation.
-   * Checks if there are any layers respecting the given id patters
+   * Checks if there are any layers respecting the given id pattern
     * @param map Map instance.
    * @param layersIdPattern Identifiers pattern.
-   * @returns 
+   * @returns true if any layer's id includes the given id pattern.
    */
-  public hasLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string) {
+  public hasLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): boolean {
     return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)).length > 0;
   }
 
@@ -301,7 +326,7 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param maxZoom Maximal zoom to display the raster.
    * @param minZoom Minimal zoom to display the raster.
    * @param tileSize Size of the tiles fetched to display the raster (in pixels). Default to 256.
-   * @returns 
+   * @returns a raster source instance.
    */
   public createRasterSource(url: string, bounds: number[],
     maxZoom: number, minZoom: number, tileSize: number = 256): RasterSource {
@@ -312,7 +337,7 @@ export class ArlasMapboxService extends ArlasMapService {
       maxzoom: maxZoom,
       minzoom: minZoom,
       tileSize: tileSize
-    }
+    };
   }
 
   /**
@@ -339,7 +364,7 @@ export class ArlasMapboxService extends ArlasMapService {
       layout: {
         visibility: 'visible'
       }
-    }
+    };
     this.addLayer(map, iconLayer, beforeId);
   }
 
@@ -352,7 +377,8 @@ export class ArlasMapboxService extends ArlasMapService {
    * @param iconSize The icon size
    * @param data Geojson data which features will be represented with the given icon.
    */
-  public addIconLayer(map: ArlasMapboxGL, layerId: string, iconName: string, iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>) {
+  public addIconLayer(map: ArlasMapboxGL, layerId: string, iconName: string, iconSize: number,
+    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>) {
     const iconSource: GeoJSONSourceRaw = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, iconSource, map);
@@ -365,7 +391,7 @@ export class ArlasMapboxService extends ArlasMapService {
         'icon-size': iconSize,
         'visibility': 'visible'
       }
-    }
+    };
     this.addLayer(map, iconLayer);
   };
 
@@ -389,7 +415,7 @@ export class ArlasMapboxService extends ArlasMapService {
       layout: {
         'visibility': 'visible'
       },
-    }
+    };
     style.applyStyle(geojsonLayer);
     this.addLayer(map, geojsonLayer);
   }
@@ -435,10 +461,10 @@ export class ArlasMapboxService extends ArlasMapService {
 
   /**
    * @override Mapbox implementation.
-   * Checks if there are any layers respecting the given id patters
+   * Returns a list of layers whose ids include the the given id pattern.
     * @param map Map instance.
    * @param layersIdPattern Identifiers pattern.
-   * @returns 
+   * @returns a list of layers whose ids include the the given id pattern.
    */
   public getLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): ArlasAnyLayer[] {
     return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
@@ -450,9 +476,9 @@ export class ArlasMapboxService extends ArlasMapService {
 
   /**
    * @override Mapbox implementation.
-   * Moves the given layer to the top in map instance OR optionnaly before a layer.  
-   * @param map Map
-   * @param layer Layer to add to the map
+   * Moves the given layer to the top in map instance OR optionnaly before a layer.
+   * @param map Map instance.
+   * @param layer Layer to add to the map.
    * @param before Identifier of an already added layer. The given Layer (second param) is moved under this 'before' layer.
    */
   public moveLayer(map: ArlasMapboxGL, layer: string, before?: string) {

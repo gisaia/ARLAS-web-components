@@ -61,14 +61,14 @@ export class MaplibreBasemapService extends BasemapService {
       (selectedBasemap.styleFile as maplibre.StyleSpecification).layers.forEach(l => {
         this.mapService.removeLayer(map, l.id);
       });
-      this.mapService.removeSource(map, 'arlas_protomaps_source')
+      this.mapService.removeSource(map, 'arlas_protomaps_source');
     }
   }
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
     const protocol = new pmtiles.Protocol();
-    maplibre.addProtocol('pmtiles', (requestParameters: RequestParameters, abortController: AbortController) => {
-      return new Promise((res, rej) => {
+    maplibre.addProtocol('pmtiles', (requestParameters: RequestParameters, abortController: AbortController) =>
+      new Promise((res, rej) => {
         protocol.tile(requestParameters, (error?: Error | null, data?: any | null, cacheControl?: string | null, expires?: string | null) => {
           if (error) {
             rej(error);
@@ -79,8 +79,8 @@ export class MaplibreBasemapService extends BasemapService {
             data
           });
         });
-      });
-    });
+      })
+    );
   }
 
   public getInitStyle(selected: MapLibreBasemapStyle) {

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HistogramData } from "arlas-d3/histograms/utils/HistogramUtils";
+import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 
 export interface LegendData {
   minValue?: string;
@@ -39,7 +39,7 @@ export interface Legend {
 }
 
 export interface CircleLegend extends FillLegend {
-  radius: Legend
+  radius: Legend;
 }
 
 export interface FillLegend {
@@ -52,20 +52,20 @@ export interface FillLegend {
 export interface HeatmapLegend {
   color: Legend;
   colorPalette: string;
-  radius: Legend
+  radius: Legend;
 }
 
 export interface LabelLegend {
   color: Legend;
   colorPalette: string;
-  size: Legend
+  size: Legend;
 }
 
 export interface LineLegend {
   color: Legend;
   colorPalette: string;
   dashes: Array<number>;
-  width: Legend,
+  width: Legend;
 }
 
 export enum PROPERTY_SELECTOR_SOURCE {

@@ -37,7 +37,7 @@ import mapboxgl, {
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import {
   MapLayers, ControlButton, ControlPosition, DrawControlsOption,
-  MapExtent, 
+  MapExtent
 } from 'arlas-map';
 import { ArlasAnyLayer } from './model/layers';
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';

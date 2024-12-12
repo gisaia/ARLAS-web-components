@@ -30,9 +30,8 @@ export class LegendService {
     public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
         filter?: any, translate?: TranslateService): [Legend, string] {
 
-        return [undefined, '']
+        return [undefined, ''];
     };
-    
 
     public getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): CircleLegend {
         return undefined;

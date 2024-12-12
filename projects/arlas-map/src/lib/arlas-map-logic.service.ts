@@ -1,17 +1,36 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { Injectable } from '@angular/core';
 import { ArlasMapService } from './map/service/arlas-map.service';
 import { FeatureCollection } from '@turf/helpers';
 import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
 import { ArlasMapSource } from './map/model/sources';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
-import { ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './map/model/layers';
+import { ExternalEvent, MapLayers } from './map/model/layers';
 import { ElementIdentifier } from 'arlas-web-components';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export abstract class ArlasMapFunctionalService {
+export abstract class MapLogicService {
   /** IMPORTANT NOTE: All the attributes/params that are typed with "any", will have the right type in the implementation. */
   public dataSources: any[] = [];
   public abstract layersMap: Map<string, any>;
@@ -28,7 +47,7 @@ export abstract class ArlasMapFunctionalService {
   public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (dataSourcesIds) {
       dataSourcesIds.forEach(sourceId => {
-        const source = this.mapService.createGeojsonSource(data)
+        const source = this.mapService.createGeojsonSource(data);
         this.dataSources.push(source);
         /** For an implementation that doesn't add a source to map
          * --- for instance Openalayers, adds the source to layer ---
@@ -41,7 +60,7 @@ export abstract class ArlasMapFunctionalService {
 
   public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
-      const source = this.mapService.createGeojsonSource(data)
+      const source = this.mapService.createGeojsonSource(data);
       this.mapService.setSource(labelSourceId, source, map);
     }
   }
@@ -129,7 +148,7 @@ export abstract class ArlasMapFunctionalService {
       if (!!visualisation.layers && visualisation.enabled) {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
-          this.mapService.moveArlasDataLayer(map, l, this.layersMap)
+          this.mapService.moveArlasDataLayer(map, l, this.layersMap);
         }
       }
     }
@@ -143,7 +162,8 @@ export abstract class ArlasMapFunctionalService {
   }
 
 
-  public filterLayersOnEvent(mapLayers: MapLayers<any>, map: AbstractArlasMapGL, visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
+  public filterLayersOnEvent(mapLayers: MapLayers<any>, map: AbstractArlasMapGL,
+    visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
     collection?: string): void {
     if (mapLayers && mapLayers.externalEventLayers) {
       mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
@@ -193,7 +213,8 @@ export abstract class ArlasMapFunctionalService {
     }
   }
 
-  public highlightFeature(mapLayers: MapLayers<any>, map: AbstractArlasMapGL, featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
+  public highlightFeature(mapLayers: MapLayers<any>, map: AbstractArlasMapGL,
+    featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
       const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
       if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
@@ -290,7 +311,4 @@ export abstract class ArlasMapFunctionalService {
   public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
 
   public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>);
-
-
-
 }

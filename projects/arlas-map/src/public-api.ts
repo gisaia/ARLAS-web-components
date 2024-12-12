@@ -1,3 +1,22 @@
+
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 /*
  * Public API Surface of arlas-map
  */
@@ -42,10 +61,11 @@ export { radiusCircleMode } from './lib/draw/modes/circles/radius.circle.mode';
 export { createSupplementaryPointsForCircle, dragPan } from './lib/draw/modes/circles/utils';
 export { stripDirectSelectMode } from './lib/draw/modes/strip/strip.direct.mode';
 export { stripMode } from './lib/draw/modes/strip/strip.mode';
-export { AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
+export {
+  AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
   BindLayerToEvent, ElementIdentifier, GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP,
   MapConfig, MapEventBinds, RESET_BEARING, ZOOM_IN, ZOOM_OUT
- } from './lib/map/AbstractArlasMapGL';
+} from './lib/map/AbstractArlasMapGL';
 export { MapInterface } from './lib/map/interface/map.interface';
 export {
   ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl,
@@ -59,11 +79,14 @@ export {
 } from './lib/map/model/layers';
 export { ArlasMapSource } from './lib/map/model/sources';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
-export { Legend, LegendData, PROPERTY_SELECTOR_SOURCE, CircleLegend, LineLegend, FillLegend, HeatmapLegend, LabelLegend } from './lib/legend/legend.config';
+export {
+  Legend, LegendData, PROPERTY_SELECTOR_SOURCE, CircleLegend, LineLegend,
+  FillLegend, HeatmapLegend, LabelLegend
+} from './lib/legend/legend.config';
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools';
 export * as styles from './lib/draw/themes/default-theme';
 export { ArlasMapComponent } from './lib/arlas-map.component';
 export { ArlasMapService } from './lib/map/service/arlas-map.service';
-export { LngLat, OnMoveResult} from './lib/map/model/map';
+export { LngLat, OnMoveResult } from './lib/map/model/map';
 export { VectorStyle, ArlasCircle, ArlasFill, VectorStyleEnum } from './lib/map/model/vector-style';
-export { ArlasMapFunctionalService } from './lib/arlas-map-logic.service';
+export { MapLogicService } from './lib/arlas-map-logic.service';

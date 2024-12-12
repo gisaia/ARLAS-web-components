@@ -34,7 +34,6 @@ import { ArlasAnyLayer } from '../map/model/layers';
 
 @Injectable()
 export class MapboxBasemapService extends BasemapService {
-  
 
   public constructor(protected http: HttpClient, protected mapService: ArlasMapboxService,
     private mapLogicService: MapLogicService
@@ -63,7 +62,7 @@ export class MapboxBasemapService extends BasemapService {
       (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
         this.mapService.removeLayer(map, l.id);
       });
-      this.mapService.removeSource(map, 'arlas_protomaps_source')
+      this.mapService.removeSource(map, 'arlas_protomaps_source');
     }
   }
 
@@ -118,7 +117,6 @@ export class MapboxBasemapService extends BasemapService {
     }
   }
 
-  
   public setBasemap(s: any, newBasemap: BasemapStyle, map: ArlasMapboxGL, mapSources: Array<ArlasMapSource<MapboxSourceType>>) {
     const selectedBasemapLayersSet = new Set<string>();
     const layers: Array<ArlasAnyLayer> = this.mapService.getAllLayers(map);

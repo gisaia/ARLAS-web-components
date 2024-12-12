@@ -25,7 +25,7 @@ import { ArlasBasemaps } from './basemaps.model';
 import { BasemapService } from './basemap.service';
 import { BasemapStyle } from './basemap.config';
 import { ArlasMapService } from '../map/service/arlas-map.service';
-import { ArlasMapFunctionalService } from '../arlas-map-logic.service';
+import { MapLogicService } from '../arlas-map-logic.service';
 import { takeUntil } from 'rxjs';
 
 @Component({
@@ -47,7 +47,7 @@ export class BasemapComponent implements OnInit, OnDestroy {
   public basemaps: ArlasBasemaps;
 
   public constructor(protected basemapService: BasemapService,
-    protected mapFunctionalService: ArlasMapFunctionalService,
+    protected mapLogicService: MapLogicService,
     protected mapService: ArlasMapService) {
 
       this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());

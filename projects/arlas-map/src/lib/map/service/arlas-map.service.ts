@@ -1,3 +1,22 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 import { Injectable } from '@angular/core';
 import { AbstractArlasMapGL, MapConfig } from '../AbstractArlasMapGL';
 import { AbstractDraw } from '../../draw/AbstractDraw';
@@ -10,7 +29,7 @@ import { VectorStyle } from '../model/vector-style';
 })
 export abstract class ArlasMapService {
 
-  constructor() { }
+  public constructor() { }
 
   public abstract getInitTransformRequest(): Function;
 
@@ -22,7 +41,6 @@ export abstract class ArlasMapService {
 
   public abstract boundsToString(bounds: any): string;
 
- 
   public abstract getPointFromScreen(e, container: HTMLElement);
 
   /** Sets `data` to a Geojson `source` of the map
@@ -42,14 +60,14 @@ export abstract class ArlasMapService {
   public abstract addArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, any>, beforeId?: string);
   public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): any[];
   public abstract getAllLayers(map: AbstractArlasMapGL): any[];
-  
+
   public abstract hasLayer(map: AbstractArlasMapGL, layer: any);
   public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract moveLayer(map: AbstractArlasMapGL, layer: any, beforeId?: string);
   public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, any>, beforeId?: string);
   public abstract onLayerEvent(eventName: any, map: AbstractArlasMapGL, layer: any, fn: (e) => void);
   public abstract removeLayer(map: AbstractArlasMapGL, layer: any);
-  public abstract removeLayers(map: AbstractArlasMapGL, layers: any)
+  public abstract removeLayers(map: AbstractArlasMapGL, layers: any);
   public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract setLayerVisibility(layer: any, isVisible: boolean, map: AbstractArlasMapGL);
   public abstract isLayerVisible(layer: any): boolean;
@@ -66,7 +84,7 @@ export abstract class ArlasMapService {
   public abstract addPopup(map: AbstractArlasMapGL, popup: any);
   public abstract createPopup(lng: number, lat: number, message: string);
   public abstract removePopup(map: AbstractArlasMapGL, popup: any);
-  
+
   public abstract onMapEvent(eventName: any, map: AbstractArlasMapGL, fn: (e) => void);
   public abstract setMapCursor(map: AbstractArlasMapGL, cursor: string): void;
   public abstract flyTo(lat: number, lng: number, zoom: number, map: AbstractArlasMapGL);

@@ -46,7 +46,7 @@ export const HEATMAP_DENSITY = 'Heatmap-density';
 export class MapboxLegendService extends LegendService {
 
     public constructor(public translate: TranslateService) {
-        super()
+        super();
     }
 
     public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
@@ -213,7 +213,7 @@ export class MapboxLegendService extends LegendService {
     };
 
     public static buildRadiusLegend(radiusExpression: string | any, legendData: Map<string, LegendData>): Legend {
-        const radiusLegend: Legend = {}
+        const radiusLegend: Legend = {};
         const circleRadiusEvolution: Array<HistogramData> = new Array();
         if (Array.isArray(radiusExpression)) {
             if (radiusExpression.length >= 3) {
@@ -241,14 +241,10 @@ export class MapboxLegendService extends LegendService {
                         });
                     }
                     radiusLegend.histogram = circleRadiusEvolution;
-                    // if (!!this.circleRadiusLegend.interpolatedElement) {
-                    //   drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend,
-                    //     this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, maxCircleRadius) * 2);
-                    // }
                 }
             }
         }
-        return radiusLegend
+        return radiusLegend;
 
     };
 
@@ -328,7 +324,7 @@ export class MapboxLegendService extends LegendService {
             colorPalette: colors[1],
             strokeColor: strokeColors[0],
             strokeColorPalette: strokeColors[1],
-        })
+        });
     }
 
 
