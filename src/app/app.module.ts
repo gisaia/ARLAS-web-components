@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -126,7 +126,11 @@ const routes: Routes = [
         useFactory: httpLoaderFactory,
         deps: [HttpClient]
       }
-    })
+    }),
+    CollectionModule.forRoot({ loader: {
+                provide: BaseCollectionService,
+                useClass: AwcCollectionService
+            } })
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
   bootstrap: [AppComponent],

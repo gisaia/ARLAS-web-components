@@ -1,12 +1,11 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo.component';
 
 describe('WmtsLayerManagerDemoComponent', () => {
   let component: WmtsLayerManagerDemoComponent;
   let fixture: ComponentFixture<WmtsLayerManagerDemoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ WmtsLayerManagerDemoComponent ]
     })

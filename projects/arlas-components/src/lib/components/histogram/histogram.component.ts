@@ -18,27 +18,22 @@
  */
 
 import {
-  Component, OnInit, Input, Output, ViewEncapsulation,
-  ElementRef, OnChanges, SimpleChanges, AfterViewChecked, ViewChild,
-  OnDestroy
+  AfterViewChecked, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
-
+import { TranslateService } from '@ngx-translate/core';
 import {
   AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
   ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position,
   SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles,
   SwimlaneMode
 } from 'arlas-d3';
-
-import { Subject, fromEvent } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
-
-import { TranslateService } from '@ngx-translate/core';
 import {
   HistogramData, HistogramTooltip, SwimlaneData, SwimlaneOptions, SwimlaneRepresentation
 } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { Subject, fromEvent } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ArlasColorService } from '../../services/color.generator.service';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
 

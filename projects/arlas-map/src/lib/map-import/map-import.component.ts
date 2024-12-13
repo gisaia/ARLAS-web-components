@@ -28,7 +28,7 @@ import * as shp_ from 'shpjs/dist/shp';
 import * as extent_ from 'turf-extent';
 import { parse } from 'wellknown';
 import { valid } from 'geojson-validation';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { Feature } from 'geojson';
 import { ArlasMapComponent } from '../arlas-map.component';

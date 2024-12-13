@@ -17,16 +17,15 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResultFilterComponent } from './result-filter.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { ResultFilterComponent } from './result-filter.component';
 
 describe('ResultFilterComponent', () => {
   let component: ResultFilterComponent;
   let fixture: ComponentFixture<ResultFilterComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResultFilterComponent ],
       imports: [

@@ -19,9 +19,9 @@
 
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
-import { Corner } from '../draw/draw.models';
-import { MapboxAoiDrawService } from '../draw/draw.service';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { Corner } from '../mapgl/draw/draw.models';
+import { MapboxAoiDrawService } from '../mapgl/draw/draw.service';
 import { BboxFormGroup } from './bbox-generator.utils';
 
 @Component({

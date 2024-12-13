@@ -17,15 +17,14 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ResultsDemoComponent } from './results-demo.component';
 
 describe('ResultsDemoComponent', () => {
   let component: ResultsDemoComponent;
   let fixture: ComponentFixture<ResultsDemoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResultsDemoComponent ]
     })

@@ -17,16 +17,15 @@
  * under the License.
  */
 
-import { mix } from 'tinycolor2';
-import { isNumber } from 'util';
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
+import tinycolor from 'tinycolor2';
 
 export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
-  if (+x + '' !== 'NaN' && isNumber(+x)) {
+  if (+x + '' !== 'NaN' && typeof +x === 'number') {
     const num = +x;
     const trunc = Math.trunc(num);
     const decimal = (num + '').split('.');
@@ -138,7 +137,7 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
     // int to rgb
     let hex = (hash & 0x00FFFFFF).toString(16).toUpperCase();
     hex = '00000'.substring(0, 6 - hex.length) + hex;
-    const color = mix(hex, hex);
+    const color = tinycolor.mix(hex, hex);
     color.saturate(color.toHsv().s * saturationWeight + ((1 - saturationWeight) * 100));
     return color.toHexString();
   }

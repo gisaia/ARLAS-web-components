@@ -26,7 +26,7 @@ import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
 import { HttpClient } from '@angular/common/http';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 @Component({
