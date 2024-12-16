@@ -23,13 +23,12 @@
 }
 
 .mapgl-settings__title {
-  margin: 0 0 10px 0 !important;
+  margin: 0 0 20px 0 !important;
 }
 
 .mapgl-settings {
   position: relative;
   overflow: hidden;
-  --mat-dialog-with-actions-content-padding: 12px 24px;
 
   &__description {
     padding-right: 20px;
