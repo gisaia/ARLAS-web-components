@@ -19,7 +19,6 @@
 
 import {
   AbstractArlasMapGL,
-  BindLayerToEvent,
   MapConfig,
   OnMoveResult,
 } from 'arlas-map';
@@ -31,7 +30,6 @@ import mapboxgl, {
   LngLatBounds,
   LngLatBoundsLike,
   MapboxOptions,
-  MapLayerEventType,
   Point
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
@@ -45,18 +43,15 @@ import bbox from '@turf/bbox';
 
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
-  customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<MapLayerEventType>[];
 }
 
 export class ArlasMapboxGL extends AbstractArlasMapGL {
 
-  protected _mapLayers: MapLayers<AnyLayer>;
   protected _mapProvider: mapboxgl.Map;
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
   public startlngLat: mapboxgl.LngLat;
   public endlngLat: mapboxgl.LngLat;
   public movelngLat: mapboxgl.LngLat;
-  public layersMap: Map<string, ArlasAnyLayer>;
 
   public constructor(protected config: ArlasMapboxConfig) {
     super(config);
@@ -82,7 +77,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this;
   }
 
-
+  /**
+   * Creates a mapboxgl map instance
+   * @param config Mapbox configuration at instanciation.
+   */
   protected _initMapProvider(config: ArlasMapboxConfig) {
     this._mapProvider = new mapboxgl.Map(
       config.mapProviderOptions
@@ -139,7 +137,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
 
   public initDrawControls(config: DrawControlsOption) {
-
     if (!(config.draw.control instanceof MapboxDraw)) {
       console.warn(' Draw control is not instance of MapBoxDraw');
     } else {
@@ -157,32 +154,9 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     }
   }
 
-
-  public setLayersMap(mapLayers: MapLayers<AnyLayer>, layers?: Array<AnyLayer>) {
-    if (mapLayers) {
-      const mapLayersCopy = mapLayers;
-      if (layers) {
-        mapLayersCopy.layers = mapLayersCopy.layers.concat(layers);
-      }
-      const layersMap = new Map();
-      mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
-      this.layersMap = layersMap;
-    }
-  }
-
-
   public getMapExtend(): MapExtent {
     const bounds = this.getBounds();
     return { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.getMapProvider().getZoom() };
-  }
-
-  public redrawSource(id: string, data) {
-    if (this.getSource(id) !== undefined) {
-      (this.getSource(id) as mapboxgl.GeoJSONSource).setData({
-        'type': 'FeatureCollection',
-        'features': data
-      });
-    }
   }
 
   public addControl(control: Control | IControl | ControlButton,
@@ -212,11 +186,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
 
   public getLayers() {
     return this.getMapProvider().getStyle().layers;
-  }
-
-  public getColdOrHotLayers() {
-    return this.getLayers().map(layer => layer.id)
-      .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0);
   }
 
   public onLoad(fn: () => void): void {
@@ -343,15 +312,19 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return mapboxBounds;
   }
 
-  public paddedFitBounds(bounds: mapboxgl.LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions) {
-    const paddedOptions = Object.assign({}, options);
-    paddedOptions.padding = {
+  /**
+   * Fits to given bounds + padding provided by the map configuration.
+   * @param bounds
+   */
+  public fitToPaddedBounds(bounds: mapboxgl.LngLatBoundsLike) {
+    const boundsOptions: mapboxgl.FitBoundsOptions = {};
+    boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
       bottom: this._offset.south + this._fitBoundsPadding,
       left: this._offset.west + this._fitBoundsPadding,
       right: this._offset.east + this._fitBoundsPadding
     };
-    this.fitBounds(bounds, paddedOptions);
+    this.fitBounds(bounds, boundsOptions);
   }
 
   public addSourceType(ind: string, protocol: any, cb: (e?) => void) {

@@ -24,7 +24,6 @@ import maplibregl, {
   LngLat,
   LngLatBounds,
   MapGeoJSONFeature,
-  MapLayerEventType,
   MapOptions,
   Point,
   PointLike,
@@ -32,7 +31,7 @@ import maplibregl, {
   StyleSetterOptions,
   TypedStyleLayer
 } from 'maplibre-gl';
-import { AbstractArlasMapGL, BindLayerToEvent, MapConfig, OnMoveResult } from 'arlas-map';
+import { AbstractArlasMapGL, MapConfig, OnMoveResult } from 'arlas-map';
 import { MapLayers } from 'arlas-map';
 import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
 import { ControlButton, DrawControlsOption } from 'arlas-map';
@@ -42,7 +41,6 @@ import bbox from '@turf/bbox';
 
 export interface ArlasMaplibreConfig extends MapConfig<MapOptions> {
   mapLayers: MapLayers<TypedStyleLayer>;
-  customEventBind: (map: AbstractArlasMapGL) => BindLayerToEvent<MapLayerEventType>[];
 }
 
 export class ArlasMaplibreGL extends AbstractArlasMapGL {
@@ -60,10 +58,8 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this;
   }
 
-  protected _mapLayers: MapLayers<TypedStyleLayer>;
   protected _mapProvider: maplibregl.Map;
   public endlngLat: maplibregl.LngLat;
-  public layersMap: Map<string, any>;
   public movelngLat: maplibregl.LngLat;
   public startlngLat: maplibregl.LngLat;
 
@@ -268,11 +264,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this.getMapProvider().getBounds();
   }
 
-  public getColdOrHotLayers() {
-    return this.getLayers().map(layer => layer.id)
-      .filter(id => id.indexOf('.cold') >= 0 || id.indexOf('.hot') >= 0);
-  }
-
   public getEastBounds(): any {
     return this.getBounds().getEast();
   }
@@ -377,15 +368,19 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return maplibreBounds;
   }
 
-  public paddedFitBounds(bounds: LngLatBounds, options?: maplibregl.FitBoundsOptions) {
-    const paddedOptions = Object.assign({}, options);
-    paddedOptions.padding = {
+  /**
+   * Fits to given bounds + padding provided by the map configuration.
+   * @param bounds
+   */
+  public fitToPaddedBounds(bounds: LngLatBounds) {
+    const boundsOptions: maplibregl.FitBoundsOptions = {};
+    boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
       bottom: this._offset.south + this._fitBoundsPadding,
       left: this._offset.west + this._fitBoundsPadding,
       right: this._offset.east + this._fitBoundsPadding
     };
-    this.fitBounds(bounds, paddedOptions);
+    this.fitBounds(bounds, boundsOptions);
   }
 
 

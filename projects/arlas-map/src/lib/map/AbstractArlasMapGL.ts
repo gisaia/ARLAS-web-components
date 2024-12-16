@@ -17,34 +17,12 @@
  * under the License.
  */
 
-import { FeatureCollection } from '@turf/helpers';
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, MapLayers, SCROLLABLE_ARLAS_ID } from './model/layers';
 import { fromEvent, map, Observable, Subscription } from 'rxjs';
-
 import { debounceTime } from 'rxjs/operators';
-import { ArlasMapSource } from './model/sources';
-import { ControlPosition, ControlsOption, DrawControlsOption, IconConfig } from './model/controls';
-import { VisualisationSetConfig } from './model/visualisationsets';
-import { MapInterface } from './interface/map.interface';
+import { ControlPosition, ControlsOption, DrawControlsOption } from './model/controls';
 import { MapExtent } from './model/extent';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { LngLat, OnMoveResult } from './model/map';
-
-
-export interface ElementIdentifier {
-  idFieldName: string;
-  idValue: string;
-}
-
-export interface MapEventBinds<T> {
-  event: T;
-  fn: (e?, map?: AbstractArlasMapGL) => void;
-}
-
-export interface BindLayerToEvent<T> {
-  layers: string[];
-  mapEventBinds: MapEventBinds<T>[];
-}
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 
 /** Conf */
@@ -55,7 +33,6 @@ export interface MapConfig<T> {
   margePanForTest: number;
   wrapLatLng: boolean;
   offset: ArlasMapOffset;
-
   mapProviderOptions?: T;
   maxWidthScale?: number;
   unitScale?: string;
@@ -78,25 +55,15 @@ export const RESET_BEARING = marker('Reset bearing to north');
 export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 
 /**
- *  The aim of this class is to handle all core interaction we have
- *  with a map provider. And also to handle all new behaviour
- *  we create from this provider.
- *
+ * The aim of this class is to handle all core interaction we have
+ * with a map provider.
  * The aim is also to separate the alras map from the angular framework.
- * The advantage is that in arlas-wui we can use an instance of this class (or not) without worrying about the library used
- *
- * it will be instantiated in mapgl and will be responsible for initializing the map and all map behavior.
- *
- * Drawing behavior may be handled by another class.
- *
- * improvement (open to discussion) :
- *  - wrap of provider methode could be implemented in another class in middle of
- *  abstract class.
+ * It will be instantiated in the map.component and will be responsible for initializing the map and all map behavior.
  */
-export abstract class AbstractArlasMapGL implements MapInterface {
+export abstract class AbstractArlasMapGL {
   /**
    *  props and methods with unknown type will be specific to the map provider
-   *  we used.
+   *  we use.
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
@@ -109,21 +76,12 @@ export abstract class AbstractArlasMapGL implements MapInterface {
   protected _fitBoundsPadding: number;
   protected _displayCurrentCoordinates: boolean;
   protected _wrapLatLng: boolean;
-  // @Override
-  protected _mapLayers: MapLayers<any>; // todo: find common type
   protected _controls: ControlsOption;
-  protected _icons: Array<IconConfig>;
-  public mapSources: Array<ArlasMapSource<any>>; // todo: find common type
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
-  protected _emptyData: FeatureCollection<GeoJSON.Geometry> = {
-    'type': 'FeatureCollection',
-    'features': []
-  };
   public currentLat: string;
   public currentLng: string;
   public readonly POLYGON_LABEL_SOURCE = 'polygon_label';
-  protected ICONS_BASE_PATH = 'assets/icons/';
 
   protected _north: number;
   protected _east: number;
@@ -164,18 +122,6 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     this.init(config);
   }
 
-  public abstract on(type: string, listener: (ev: any) => void): this;
-
-  public abstract getZoom(): number;
-
-  public abstract fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
-  public abstract getCanvasContainer(): HTMLElement;
-
-  public abstract queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[];
-
-  public abstract setCenter(center: unknown, unknown?: unknown): this;
-
-  public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   protected init(config: MapConfig<any>): void {
     try {
       this._initMapProvider(config);
@@ -312,48 +258,10 @@ export abstract class AbstractArlasMapGL implements MapInterface {
       }));
   }
 
-  protected abstract _initMapProvider(BaseMapGlConfig): void;
-  protected abstract _initControls(): void;
-  protected abstract _getMoveEnd(visualisationsSets: {
-    visualisations: Map<string, Set<string>>;
-    status: Map<string, boolean>;
-  }): OnMoveResult;
-
-  public abstract initDrawControls(config: DrawControlsOption): void;
-
-  public abstract calcOffsetPoint(): any;
-  public abstract getColdOrHotLayers();
-  public abstract paddedFitBounds(bounds: any, options?: any);
-  public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
-  public abstract enableDragPan(): void;
-  public abstract disableDragPan(): void;
-  public abstract getWestBounds(): any;
-  public abstract getNorthBounds(): any;
-  public abstract getNorthEastBounds(): any;
-  public abstract getSouthBounds(): any;
-  public abstract getSouthWestBounds(): any;
-  public abstract getEastBounds(): any;
-  public abstract getMapProvider(): any;
-  public abstract getMapExtend(): MapExtent;
-  public abstract onLoad(fn: () => void): void;
-
-  public abstract getBounds(): unknown;
-  public abstract resize(eventData?: unknown): this;
-  public abstract getMaxBounds(): unknown;
-  public abstract setMaxBounds(unknown?: unknown): this;
-  public abstract paddedBounds(npad: number, spad: number, epad: number,
-    wpad: number, map: any, SW, NE): LngLat[];
-
-  public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
-    event: string; fn: (e?) => void;
-  });
-
-
   public setLayoutProperty(layer: string, name: string, value: any, options?: any) {
     this.getMapProvider().setLayoutProperty(layer, name, value, options);
     return this;
   }
-
 
   public unsubscribeEvents() {
     this._eventSubscription.forEach(s => s.unsubscribe());
@@ -371,8 +279,44 @@ export abstract class AbstractArlasMapGL implements MapInterface {
     return this.getMapProvider().getPitch();
   }
 
+  protected abstract _initMapProvider(BaseMapGlConfig): void;
+  protected abstract _initControls(): void;
+  protected abstract _getMoveEnd(visualisationsSets: {
+    visualisations: Map<string, Set<string>>;
+    status: Map<string, boolean>;
+  }): OnMoveResult;
 
-
+  public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
+    event: string; fn: (e?) => void;
+  });
+  public abstract calcOffsetPoint(): any;
+  public abstract disableDragPan(): void;
+  public abstract enableDragPan(): void;
+  public abstract fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
+  public abstract fitToPaddedBounds(bounds: any);
+  public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
+  public abstract getBounds(): unknown;
+  public abstract getCanvasContainer(): HTMLElement;
+  public abstract getEastBounds(): any;
+  public abstract getMapExtend(): MapExtent;
+  public abstract getMapProvider(): any;
+  public abstract getMaxBounds(): unknown;
+  public abstract getNorthBounds(): any;
+  public abstract getNorthEastBounds(): any;
+  public abstract getSouthBounds(): any;
+  public abstract getSouthWestBounds(): any;
+  public abstract getWestBounds(): any;
+  public abstract getZoom(): number;
+  public abstract initDrawControls(config: DrawControlsOption): void;
+  public abstract on(type: string, listener: (ev: any) => void): this;
+  public abstract onLoad(fn: () => void): void;
+  public abstract queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[];
+  public abstract resize(eventData?: unknown): this;
+  public abstract setCenter(center: unknown, unknown?: unknown): this;
+  public abstract setMaxBounds(unknown?: unknown): this;
+  public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
+  public abstract paddedBounds(npad: number, spad: number, epad: number,
+    wpad: number, map: any, SW, NE): LngLat[];
 
 }
 

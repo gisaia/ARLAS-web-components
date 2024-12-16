@@ -27,9 +27,9 @@ import { Subject, takeUntil } from 'rxjs';
 import { ArlasColorService } from 'arlas-web-components';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { LegendService } from './legend.service';
 import { MAX_LINE_WIDTH } from './legend.tools';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -103,7 +103,6 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
   private legendData: Map<string, LegendData> = new Map();
-  private MAX_LINE_WIDTH = 10;
   private MAX_CIRLE_RADIUS = 7;
   private LEGEND_WIDTH = 210;
   public colorPalette = '';

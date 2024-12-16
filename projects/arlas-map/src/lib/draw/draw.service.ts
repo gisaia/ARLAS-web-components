@@ -25,6 +25,7 @@ import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { AbstractDraw } from './AbstractDraw';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -41,6 +42,19 @@ export class MapboxAoiDrawService {
 
   public bboxEditionState: EditionState;
   public polygonEditionState: EditionState;
+
+  /** Set to true when the user is drawing a bbox. */
+  public isDrawingBbox = false;
+  /** Set to true when the user is drawing a circle. */
+  public isDrawingCircle = false;
+  /** Set to true when the user is drawing a strip. */
+  public isDrawingStrip = false;
+  /** Set to true when the user is drawing a polygon. */
+  public isDrawingPolygon = false;
+  /** Set to true when the user is in simple draw mode. */
+  public isInSimpleDrawMode = false;
+  /** Set to true when the drawn geometry is selected. */
+  public isDrawSelected = false;
 
   public constructor() {
     this.bboxEditionState = {

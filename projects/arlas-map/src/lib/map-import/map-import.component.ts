@@ -538,7 +538,7 @@ export class MapImportComponent {
       if (importedResult.geojson.features.length > 0) {
         this.dialogRef.componentInstance.isRunning = false;
         if (this.fitResult) {
-          this.mapComponent.paddedFitBounds(extent(importedResult.geojson));
+          this.mapComponent.fitToPaddedBounds(extent(importedResult.geojson));
         }
         if (this.mapComponent.drawData.features.length > 0) {
           this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));

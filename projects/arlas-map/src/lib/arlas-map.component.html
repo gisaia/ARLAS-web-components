@@ -33,7 +33,12 @@
 <arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="map?.currentLat" [currentLng]="map?.currentLng"
   (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
 
-<arlas-basemap *ngIf="showBasemapsList" [mapSources]="map.mapSources" [map]="map" (mouseleave)="hideBasemapSwitcher()"
+<arlas-basemap *ngIf="showBasemapsList" [mapSources]="mapSources" [map]="map" (mouseleave)="hideBasemapSwitcher()"
   (basemapChanged)="onChangeBasemapStyle()"></arlas-basemap>
-<div id="polygon-finish-draw-tooltip" class="draw-tooltip--hide" [class.draw-tooltip--show]="drawClickCounter>1">
-  {{FINISH_DRAWING | translate}}</div>
+
+
+<arlas-draw *ngIf="!!map" [map]="map" [emptyData]="emptyData" [drawData]="drawData"
+  [drawButtonEnabled]="drawButtonEnabled" [drawOption]="drawOption"
+  [drawPolygonVerticesLimit]="drawPolygonVerticesLimit" [preserveDrawingBuffer]="preserveDrawingBuffer"
+  (onAoiChanged)="onAoiChanged.emit($event)"
+  (onAoiEdit)="onAoiEdit.emit($event)"></arlas-draw>

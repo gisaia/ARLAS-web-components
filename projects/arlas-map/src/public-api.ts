@@ -22,7 +22,8 @@
  */
 
 export {
-  MapSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapSettingsDialogComponent, GeoQueryOperator
+  MapSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapSettingsDialogComponent,
+  GeoQueryOperator
 } from './lib/map-settings/map-settings.component';
 export {
   AllowedImportGeometry, MapImportComponent, MapImportDialogComponent
@@ -63,10 +64,9 @@ export { stripDirectSelectMode } from './lib/draw/modes/strip/strip.direct.mode'
 export { stripMode } from './lib/draw/modes/strip/strip.mode';
 export {
   AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
-  BindLayerToEvent, ElementIdentifier, GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP,
-  MapConfig, MapEventBinds, RESET_BEARING, ZOOM_IN, ZOOM_OUT
+  GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP,
+  MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT
 } from './lib/map/AbstractArlasMapGL';
-export { MapInterface } from './lib/map/interface/map.interface';
 export {
   ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl,
   DrawControlsOption, IconConfig, PitchToggle, PitchToggleConfigControls
