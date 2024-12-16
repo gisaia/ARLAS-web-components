@@ -19,7 +19,7 @@
 
 import { Injectable } from '@angular/core';
 import {
-  ARLAS_ID, ArlasMapService, FILLSTROKE_LAYER_PREFIX,
+  ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX,
   LngLat, SCROLLABLE_ARLAS_ID
 } from 'arlas-map';
 import {
@@ -34,7 +34,7 @@ import { MapboxVectorStyle } from './map/model/vector-style';
 import { ExternalEvent } from 'arlas-map';
 
 @Injectable()
-export class ArlasMapboxService extends ArlasMapService {
+export class ArlasMapboxService extends ArlasMapFrameworkService {
 
   public constructor() {
     super();

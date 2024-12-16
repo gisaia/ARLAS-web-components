@@ -27,7 +27,7 @@ import { AbstractArlasMapGL, BasemapService, BasemapStyle } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
 import { ArlasMapboxService } from '../arlas-mapbox.service';
-import { MapLogicService } from '../arlas-map-logic.service';
+import { ArlasMapService } from '../arlas-map.service';
 import { MapboxSourceType } from '../map/model/sources';
 import { ArlasMapSource } from 'arlas-map';
 import { ArlasAnyLayer } from '../map/model/layers';
@@ -35,10 +35,10 @@ import { ArlasAnyLayer } from '../map/model/layers';
 @Injectable()
 export class MapboxBasemapService extends BasemapService {
 
-  public constructor(protected http: HttpClient, protected mapService: ArlasMapboxService,
-    private mapLogicService: MapLogicService
+  public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapboxService,
+    private mapService: ArlasMapService
   ) {
-    super(http, mapService);
+    super(http, mapFrameworkService);
   }
 
   public addProtomapBasemap(map: ArlasMapboxGL) {
@@ -60,9 +60,9 @@ export class MapboxBasemapService extends BasemapService {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
-        this.mapService.removeLayer(map, l.id);
+        this.mapFrameworkService.removeLayer(map, l.id);
       });
-      this.mapService.removeSource(map, 'arlas_protomaps_source');
+      this.mapFrameworkService.removeSource(map, 'arlas_protomaps_source');
     }
   }
 
@@ -119,8 +119,8 @@ export class MapboxBasemapService extends BasemapService {
 
   public setBasemap(s: any, newBasemap: BasemapStyle, map: ArlasMapboxGL, mapSources: Array<ArlasMapSource<MapboxSourceType>>) {
     const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<ArlasAnyLayer> = this.mapService.getAllLayers(map);
-    const sources = this.mapService.getAllSources(map);
+    const layers: Array<ArlasAnyLayer> = this.mapFrameworkService.getAllLayers(map);
+    const sources = this.mapFrameworkService.getAllSources(map);
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
     }
@@ -145,9 +145,9 @@ export class MapboxBasemapService extends BasemapService {
     map.getMapProvider().setStyle(initStyle).once('styledata', () => {
       setTimeout(() => {
         /** the timeout fixes a mapboxgl bug related to layer placement*/
-        this.mapLogicService.declareBasemapSources(sourcesToSave, map);
+        this.mapService.declareBasemapSources(sourcesToSave, map);
         layersToSave.forEach(l => {
-          this.mapService.addLayer(map, l);
+          this.mapFrameworkService.addLayer(map, l);
         });
         localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
         this.basemaps.setSelected(newBasemap);

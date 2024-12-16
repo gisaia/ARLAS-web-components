@@ -32,7 +32,7 @@ import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { Feature } from 'geojson';
 import { ArlasMapComponent } from '../arlas-map.component';
-import { ArlasMapService } from '../map/service/arlas-map.service';
+import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 
 
 const gpsi = gpsi_.default;
@@ -163,7 +163,7 @@ export class MapImportComponent {
   private _currentAllowedGeom: string[];
   public constructor(
     public dialog: MatDialog,
-    public mapService: ArlasMapService
+    public mapService: ArlasMapFrameworkService
   ) { }
 
   public promiseTimeout(ms, promise) {

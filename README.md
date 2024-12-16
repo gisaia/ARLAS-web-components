@@ -1,35 +1,57 @@
-# ARLAS web components :
-
 [![Build Status](https://travis-ci.org/gisaia/ARLAS-web-components.svg?branch=develop)](https://travis-ci.org/gisaia/ARLAS-web-components)
 [![npm version](https://badge.fury.io/js/arlas-web-components.svg)](https://badge.fury.io/js/arlas-web-components)
 
-## About
+# About this repo:
 
-ARLAS-web-components is an Angular library that provides a set of data analytics components.
+This repository contains 4 Angular libraries and one demo Angular application.
 
-## Install
+The 4 libraries are:
+- **arlas-web-components**: contains a set of graphical component to explore data such as : donuts, histograms, powerbars, resultlits, metrics, metrics table,..
+- **arlas-map**: contains one map component dedicated to display ARLAS data. This component is cartographical-framework-free. The libarary also comes with a number of services. Those services provide cartographical interfaces that should be implemented according to your chosen map framework.
+- **arlas-maplibre**: this library provides a maplibregl implementation of the arlas-map library.
+- **arlas-mapbox**: this library provides a maboxgl implementation of the arlas-map library.
 
-To install this library in your npm Angular web app project add the dependency in your package.json :
+> Note 1: **arlas-maplibre** and **arlas-mapbox** both have **arlas-map** as a dependency.
 
+> Note 2: As a consequence, install **arlas-maplibre** or **arlas-mapbox** directly without the need of installing **arlas-map** precedently.
+
+
+
+The demo application has view composed of several tabs. Each tab provides an example of one component of **arlas-web-components** library or an implementation of **arlas-map** library.
+
+
+# Install
+
+To install these libraries in your npm Angular web app project add the dependency in your package.json :
+
+For arlas-web-components:
 ```shell
 $ npm install --save arlas-web-components
 ```
 
-## Documentation
+For arlas-map:
+```shell
+$ npm install --save arlas-maplibre
+```
+Or
+```shell
+$ npm install --save arlas-mapbox
+```
 
-Please find the documentation of all the components [here](https://docs.arlas.io/classes/DonutComponent/).
+# Build
 
-## Build
+## Prequesites:
 
-To build the project you need to have installed
-- [Node](https://nodejs.org/en/) version ^16.0.0 
-- [npm](https://github.com/npm/npm) version ^8.0.0
-- [Angular CLI](https://github.com/angular/angular-cli) version ^14.2.13
+To build the projects you need to have installed
+- [Node](https://nodejs.org/en/) version ^20.0.0 
+- [npm](https://github.com/npm/npm) version ^10.0.0
+- [Angular CLI](https://github.com/angular/angular-cli) version ^18.2.12
   ```
-  $ npm install -g @angular/cli@^14.2.13
+  $ npm install -g @angular/cli@^18.2.12
   ```
+## Proceed to build
 
-Then, clone the project
+Clone the project
 
 ```shell
 $ git clone https://github.com/gisaia/ARLAS-web-components
@@ -41,7 +63,7 @@ Move to the folder
 $ cd ARLAS-web-components
 ```
 
-Install all the project's dependencies
+Install all the projects dependencies
 
 ```shell
 $ npm install
@@ -49,8 +71,25 @@ $ npm install
 
 Build the project with `ng` :
 
+For arlas-web-components
 ```shell
-$ npm run build-release
+$ npm run build-components
+```
+
+For arlas-map
+```shell
+$ npm run build-map
+```
+
+For arlas-maplibre
+```shell
+$ npm run build-maplibre
+```
+
+
+For arlas-mapbox
+```shell
+$ npm run build-mapbox
 ```
 
 The build artifacts will be generated in the `dist/` directory. 
@@ -94,8 +133,8 @@ See also the list of [contributors](https://github.com/gisaia/ARLAS-web-componen
 
 ## License
 
-This project is licensed under the Apache License, Version 2.0 - see the [LICENSE.txt](https://github.com/gisaia/ARLAS-web-components/blob/develop/LICENSE.txt) file for details.
+These projects are licensed under the Apache License, Version 2.0 - see the [LICENSE.txt](https://github.com/gisaia/ARLAS-web-components/blob/develop/LICENSE.txt) file for details.
 
 ## Acknowledgments
 
-This project has been initiated and is maintained by Gisaïa.
+This repository has been initiated and is maintained by Gisaïa.

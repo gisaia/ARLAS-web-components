@@ -1,8 +1,14 @@
 {
   "$schema": "./node_modules/ng-packagr/package.schema.json",
   "name": "arlas-web-components-demo",
-  "version": "27.1.0-dev0",
+  "version": "27.0.0-test-rc.1",
   "license": "Apache-2.0",
+  "workspaces": [
+    "projects/arlas-components",
+    "projects/arlas-map",
+    "projects/arlas-mapbox",
+    "projects/arlas-maplibre"
+  ],
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -10,7 +16,8 @@
     "build:stats": "ng build --stats-json",
     "test": "ng test arlas-web-components",
     "lint": "ng lint arlas-web-components",
-    "build-release": "ng build arlas-web-components --configuration production && ng build arlas-map --configuration production  && cp -r patches dist/arlas-web-components && cp -r patches dist/arlas-map",
+    "build-components": "ng build arlas-web-components --configuration production && cp -r patches dist/arlas-web-components",
+    "build-map": "ng build arlas-map --configuration production && cp -r patches dist/arlas-map",
     "build-mapbox": "ng build arlas-mapbox --configuration production && cp -r patches dist/arlas-mapbox",
     "build-maplibre": "ng build arlas-maplibre --configuration production && cp -r patches dist/arlas-maplibre",
     "e2e": "ng e2e",

@@ -18,45 +18,46 @@
  */
 
 import { Injectable } from '@angular/core';
-import { MapLogicService as AbstractMapLogicService } from 'arlas-map';
-import { ArlasMaplibreService } from './arlas-maplibre.service';
+import { AbstractArlasMapService} from 'arlas-map';
+import { ArlasMapboxService } from './arlas-mapbox.service';
 import { FeatureCollection } from '@turf/helpers';
-import { ArlasMaplibreGL } from './map/ArlasMaplibreGL';
+import { ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasMapSource } from 'arlas-map';
-import { MaplibreSourceType } from './map/model/sources';
-import { ExpressionSpecification, GeoJSONSourceSpecification, TypedStyleLayer } from 'maplibre-gl';
+import { MapboxSourceType } from './map/model/sources';
 import { MapLayers } from 'arlas-map';
 import { LayerMetadata } from 'arlas-map';
+import { Expression, GeoJSONSource } from 'mapbox-gl';
+import { ArlasAnyLayer } from './map/model/layers';
 import { VisualisationSetConfig } from 'arlas-map';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MapLogicService extends AbstractMapLogicService{
-  public dataSources: GeoJSONSourceSpecification[] = [];
-  public layersMap: Map<string, TypedStyleLayer>;
-  public constructor(public mapService: ArlasMaplibreService) {
+export class ArlasMapService extends AbstractArlasMapService {
+  public dataSources: GeoJSONSource[] = [];
+  public layersMap: Map<string, ArlasAnyLayer>;
+  public constructor(public mapService: ArlasMapboxService) {
     super(mapService);
   }
 
   /** Add to map the sources that will host ARLAS data.  */
-  public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMaplibreGL) {
+  public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
     super.declareArlasDataSources(dataSourcesIds, data, map);
   }
 
-  public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMaplibreGL) {
+  public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
     super.declareLabelSources(labelSourceId, data, map);
   }
 
-  public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMaplibreGL) {
+  public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
     super.updateLabelSources(labelSourceId, data, map);
   }
 
-  public declareBasemapSources(basemapSources: Array<ArlasMapSource<MaplibreSourceType>>, map: ArlasMaplibreGL) {
+  public declareBasemapSources(basemapSources: Array<ArlasMapSource<MapboxSourceType>>, map: ArlasMapboxGL) {
     super.declareBasemapSources(basemapSources, map);
   }
 
-  public setLayersMap(mapLayers: MapLayers<TypedStyleLayer>, layers?: Array<TypedStyleLayer>) {
+  public setLayersMap(mapLayers: MapLayers<ArlasAnyLayer>, layers?: Array<ArlasAnyLayer>) {
     if (mapLayers) {
       const mapLayersCopy = mapLayers;
       if (layers) {
@@ -68,12 +69,12 @@ export class MapLogicService extends AbstractMapLogicService{
     }
   }
 
-  public initMapLayers(mapLayers: MapLayers<TypedStyleLayer>, map: ArlasMaplibreGL) {
+  public initMapLayers(mapLayers: MapLayers<ArlasAnyLayer>, map: ArlasMapboxGL) {
    super.initMapLayers(mapLayers, map);
   }
 
-  public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
-    const layer = this.mapService.getLayer(map, l) as TypedStyleLayer;
+  public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
+    const layer = this.mapService.getLayer(map, l) as ArlasAnyLayer;
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
@@ -86,19 +87,19 @@ export class MapLogicService extends AbstractMapLogicService{
           }
         }
       } else {
-        map.setFilter(l, map.layersMap.get(l).filter);
+        map.setFilter(l, this.layersMap.get(l).filter);
         const strokeLayerId = l.replace('_id:', '-fill_stroke-');
         const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
         if (!!strokeLayer) {
           map.setFilter(strokeLayerId,
-            map.layersMap.get(strokeLayerId).filter);
+            this.layersMap.get(strokeLayerId).filter);
         }
       }
     }
   }
 
-  public getVisibleIdsFilter(layer: any, ids: Array<string | number>): ExpressionSpecification[] {
-    const lFilter = this.layersMap.get(layer).filter as ExpressionSpecification;
+  public getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
+    const lFilter = this.layersMap.get(layer).filter as Expression;
     const filters = [];
     if (lFilter) {
       lFilter.forEach(f => {
@@ -119,7 +120,7 @@ export class MapLogicService extends AbstractMapLogicService{
   }
 
   public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<any>,
-    sources: Array<ArlasMapSource<MaplibreSourceType>>, mapLayers: MapLayers<TypedStyleLayer>, map: ArlasMaplibreGL): void {
+    sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasAnyLayer>, map: ArlasMapboxGL): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         map.getMapProvider().addSource(s.id, s.source);
@@ -131,7 +132,7 @@ export class MapLogicService extends AbstractMapLogicService{
     layers.forEach(layer => {
       this.mapService.addLayer(map, layer);
     });
-    this.setLayersMap(mapLayers as MapLayers<TypedStyleLayer>, layers);
+    this.setLayersMap(mapLayers as MapLayers<ArlasAnyLayer>, layers);
     this.reorderLayers(visualisations, map);
   }
 }

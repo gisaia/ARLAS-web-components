@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { ArlasMapService } from './map/service/arlas-map.service';
+import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 
 describe('ArlasMapService', () => {
-  let service: ArlasMapService;
+  let service: ArlasMapFrameworkService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ArlasMapService);
+    service = TestBed.inject(ArlasMapFrameworkService);
   });
 
   it('should be created', () => {

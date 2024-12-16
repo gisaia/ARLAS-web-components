@@ -21,7 +21,6 @@ import * as tinycolor from 'tinycolor2';
 import { Injectable } from '@angular/core';
 import { CircleLegend, getMax, Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
 import { TranslateService } from '@ngx-translate/core';
-import { marker } from '@biesbjerg/ngx-translate-extract-marker';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { MAX_CIRLE_RADIUS } from 'arlas-map';
 import { LineLegend } from 'arlas-map';
@@ -33,6 +32,7 @@ import {
   CirclePaintProps, FillPaintProps, HeatmapPaintProps,
   LinePaintProps, SymbolPaintProps, TypedStyleLayer
 } from 'maplibre-gl';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 export const GET = 'get';
 export const MATCH = 'match';
@@ -346,7 +346,6 @@ export class MaplibreLegendService extends LegendService {
       radius: radius
     });
   }
-
 
   public getLabelLegend(paint: SymbolPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>,
     layer: TypedStyleLayer): LabelLegend {

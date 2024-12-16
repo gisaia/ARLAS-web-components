@@ -211,7 +211,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorPalette = circleLegend.colorPalette;
         this.strokeColorPalette = circleLegend.strokeColorPalette;
         this.radiusLegend = circleLegend.radius;
-        if (!!this.circleRadiusLegend.interpolatedElement) {
+        if (!!this.circleRadiusLegend && !!this.circleRadiusLegend.interpolatedElement) {
           const circleRadiusEvolution = circleLegend.radius.histogram;
           drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend,
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(circleRadiusEvolution)) * 2);
@@ -224,7 +224,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend = lineLegend.color;
         this.colorPalette = lineLegend.colorPalette;
         this.widthLegend = lineLegend.width;
-        if (!!this.lineWidthLegend.interpolatedElement) {
+        if (!!this.lineWidthLegend && !!this.lineWidthLegend.interpolatedElement) {
           const lineWidthEvolution = lineLegend.width.histogram;
           drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);
@@ -247,7 +247,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend = heatmapLegend.color;
         this.colorPalette = heatmapLegend.colorPalette;
         this.radiusLegend = heatmapLegend.radius;
-        if (!!this.circleRadiusLegend.interpolatedElement) {
+        if (!!this.circleRadiusLegend && !!this.circleRadiusLegend.interpolatedElement) {
           const heatmapRadiusEvolution = heatmapLegend.radius.histogram;
           drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, heatmapRadiusEvolution, this.colorLegend,
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(heatmapRadiusEvolution)) * 2);
@@ -260,7 +260,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend = symbolLegend.color;
         this.colorPalette = symbolLegend.colorPalette;
         this.widthLegend = symbolLegend.size;
-        if (!!this.lineWidthLegend.interpolatedElement) {
+        if (!!this.lineWidthLegend && !!this.lineWidthLegend.interpolatedElement) {
           const lineWidthEvolution = symbolLegend.size.histogram;
           drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);

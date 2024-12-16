@@ -37,14 +37,15 @@ import { MapboxAoiDrawService } from './draw/draw.service';
 import { BasemapService } from './basemaps/basemap.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ArlasBasemaps } from './basemaps/basemaps.model';
-import { ArlasMapService } from './map/service/arlas-map.service';
+import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import cleanCoords from '@turf/clean-coords';
 import { ARLAS_VSET } from './map/model/layers';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { OnMoveResult } from './map/model/map';
-import { MapLogicService } from './arlas-map-logic.service';
+import { AbstractArlasMapService } from './arlas-map.service';
 import { latLngToWKT } from './map/tools';
 import { ElementIdentifier } from 'arlas-web-components';
+import * as mapJsonSchema from './arlas-map.schema.json';
 
 @Component({
   selector: 'arlas-map',
@@ -251,8 +252,8 @@ export class ArlasMapComponent implements OnInit {
 
   public constructor(private drawService: MapboxAoiDrawService,
     private basemapService: BasemapService, private translate: TranslateService,
-    protected mapService: ArlasMapService,
-    protected mapLogicService: MapLogicService) {
+    protected mapService: ArlasMapFrameworkService,
+    protected mapLogicService: AbstractArlasMapService) {
   }
 
   public ngOnInit() {
@@ -636,6 +637,10 @@ export class ArlasMapComponent implements OnInit {
   */
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
     this.mapLogicService.selectFeaturesByCollection(this.mapLayers, this.map, features, collection);
+  }
+
+  public static getMapJsonSchema(): Object {
+    return mapJsonSchema;
   }
   /** Destroys all the components subscriptions. */
   public ngOnDestroy(): void {

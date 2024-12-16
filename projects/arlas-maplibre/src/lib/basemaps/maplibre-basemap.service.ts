@@ -23,12 +23,12 @@ import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import maplibre, { AddLayerObject, RequestParameters, TypedStyleLayer } from 'maplibre-gl';
-import { BackgroundLayerSpecification, LayerSpecification } from '@maplibre/maplibre-gl-style-spec';
+import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { BasemapService, BasemapStyle } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 import { ArlasMaplibreService } from '../arlas-maplibre.service';
 import { ArlasMapSource } from 'arlas-map';
-import { MapLogicService } from '../arlas-map-logic.service';
+import { ArlasMapService } from '../arlas-map.service';
 import { MaplibreSourceType } from '../map/model/sources';
 
 @Injectable({
@@ -36,10 +36,10 @@ import { MaplibreSourceType } from '../map/model/sources';
 })
 export class MaplibreBasemapService extends BasemapService {
 
-  public constructor(protected http: HttpClient, protected mapService: ArlasMaplibreService,
-    private mapLogicService: MapLogicService
+  public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMaplibreService,
+    private mapService: ArlasMapService
   ) {
-    super(http, mapService);
+    super(http, mapFrameworkService);
   }
 
   public addProtomapBasemap(map: ArlasMaplibreGL) {
@@ -59,9 +59,9 @@ export class MaplibreBasemapService extends BasemapService {
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as maplibre.StyleSpecification).layers.forEach(l => {
-        this.mapService.removeLayer(map, l.id);
+        this.mapFrameworkService.removeLayer(map, l.id);
       });
-      this.mapService.removeSource(map, 'arlas_protomaps_source');
+      this.mapFrameworkService.removeSource(map, 'arlas_protomaps_source');
     }
   }
 
@@ -126,8 +126,8 @@ export class MaplibreBasemapService extends BasemapService {
 
   public setBasemap(s: any, newBasemap: BasemapStyle, map: ArlasMaplibreGL, mapSources: Array<ArlasMapSource<any>>) {
     const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<TypedStyleLayer> = this.mapService.getAllLayers(map);
-    const sources = this.mapService.getAllSources(map);
+    const layers: Array<TypedStyleLayer> = this.mapFrameworkService.getAllLayers(map);
+    const sources = this.mapFrameworkService.getAllSources(map);
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
     }
@@ -152,9 +152,9 @@ export class MaplibreBasemapService extends BasemapService {
     map.getMapProvider().setStyle(initStyle).once('styledata', () => {
       setTimeout(() => {
         /** the timeout fixes a mapboxgl bug related to layer placement*/
-        this.mapLogicService.declareBasemapSources(sourcesToSave, map);
+        this.mapService.declareBasemapSources(sourcesToSave, map);
         layersToSave.forEach(l => {
-          this.mapService.addLayer(map, l);
+          this.mapFrameworkService.addLayer(map, l);
         });
         localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
         this.basemaps.setSelected(newBasemap);

@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ARLAS_ID, ArlasMapService, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
+import { ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
   GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, Point, Popup,
@@ -33,10 +33,9 @@ import { from } from 'rxjs';
 import { MaplibreVectorStyle } from './map/model/vector-style';
 import { ExternalEvent } from 'arlas-map';
 
+/** Maplibre implementation of ArlasMapFrameworkService */
 @Injectable()
-export class ArlasMaplibreService extends ArlasMapService {
-
-
+export class ArlasMaplibreService extends ArlasMapFrameworkService {
 
   public constructor() {
     super();
@@ -55,7 +54,6 @@ export class ArlasMaplibreService extends ArlasMapService {
   public createDraw(drawOptions: any, enabled: boolean, map: ArlasMaplibreGL): ArlasDraw {
     return new ArlasDraw(drawOptions, enabled, map);
   }
-
 
   public getPointFromScreen(e, container: HTMLElement): Point {
     const rect = container.getBoundingClientRect();
@@ -99,7 +97,6 @@ export class ArlasMaplibreService extends ArlasMapService {
       }
     });
   }
-
 
   /**
    * @override Maplibre implementation.

@@ -3,7 +3,7 @@
   "title": "Map's inputs configuration",
   "description": "The Configuration of the map's inputs",
   "type": "object",
-  "$id": "mapgl.schema.json",
+  "$id": "arlas-map.schema.json",
   "properties": {
     "displayScale": {
       "description": "Whether the scale is displayed",
@@ -26,7 +26,7 @@
       "type": "object",
       "properties": {
         "layers": {
-          "description": "List of mapbox-gl layers",
+          "description": "List of layers",
           "type": "array"
         },
         "events": {
@@ -59,7 +59,7 @@
       "type": "string"
     },
     "mapSources": {
-      "description": "List of mapboxgl sources to add to the map",
+      "description": "List of sources to add to the map as basemaps",
       "type": "array",
       "items": {
         "type": "object",
@@ -69,7 +69,7 @@
             "type": "string"
           },
           "source": {
-            "description": "Mapboxgl source.",
+            "description": "source.",
             "type": "object",
             "properties": {
               "type": {
@@ -128,7 +128,7 @@
           "type": "string"
         },
         "styleFile": {
-          "description": "url to basemap style or a `mapboxgl.Style`",
+          "description": "url to basemap style or a `maplibre.Style`",
           "type": ["string", "object"]
         }
       },
@@ -148,7 +148,7 @@
             "type": "string"
           },
           "styleFile": {
-            "description": "url to basemap style or a `mapboxgl.Style`",
+            "description": "url to basemap style or a `maplibre.Style`",
             "type": ["string","object"]
           }
         },

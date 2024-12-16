@@ -17,17 +17,16 @@
  * under the License.
  */
 
+
 import { Component, ViewChild, OnInit } from '@angular/core';
-import {
-  GeometrySelectModel, GeoQueryOperator,
-  MapglSettingsComponent,
-  MapSettingsService, OperationSelectModel,
-} from '../../../projects/arlas-components/src/public-api';
+
 import { Subject } from 'rxjs';
+
 import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
-import { ArlasMapComponent } from '../../../projects/arlas-map/src/public-api';
-import { ArlasMapboxComponent } from '../../../projects/arlas-mapbox/src/public-api';
 import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
+import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
+import { GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
+   OperationSelectModel } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -36,9 +35,9 @@ import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers
 })
 export class MapglDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapboxComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent;
   // @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
-  @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
+  @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;
@@ -495,7 +494,7 @@ export class MapglDemoComponent implements OnInit {
         ]
       }
     ]
-  };
+  } as any;
 
   public drawOptions = {
     displayControlsDefault: false,
@@ -847,7 +846,7 @@ export class MapglDemoComponent implements OnInit {
   public drawData = {
     'type': 'FeatureCollection',
     'features': []
-  };
+  } as any;
 
   public constructor() { }
 
@@ -881,11 +880,11 @@ export class MapglDemoComponent implements OnInit {
   }
 
   public switchToDrawMode(mode?,opts?) {
-    this.mapComponent.switchToDrawMode(mode, opts);
+    //this.mapComponent.switchToDrawMode(mode, opts);
   }
 
   public delete() {
-    this.mapComponent.deleteSelectedItem();
+    //this.mapComponent.deleteSelectedItem();
   }
 
   public polygonSelect(event) {

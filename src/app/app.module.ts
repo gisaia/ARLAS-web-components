@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient, HttpClientModule, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
@@ -40,10 +40,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import {
+  AwcCollectionService,
+  BaseCollectionService,
+  CollectionModule,
   DonutModule,
   FormatLegendModule,
   HistogramModule,
-  MapglSettingsModule,
   MetricModule,
   MetricsTableModule,
   PowerbarsModule,
@@ -51,9 +53,7 @@ import {
   WmtsLayerManagerModule,
   WmtsLayerManagertDialogComponent
 } from '../../projects/arlas-components/src/public-api';
-import {
-  MapglSettingsDialogComponent
-} from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
+
 import {
   CalendarTimelineModule
 } from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
@@ -62,7 +62,9 @@ import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-de
 import { MapglLibreDemoComponent } from "./mapgl-libre-demo/mapgl-libre-demo.component";
 import { ArlasMaplibreModule } from '../../projects/arlas-maplibre/src/public-api';
 import { ArlasMapboxModule } from '../../projects/arlas-mapbox/src/public-api';
-import { ArlasMapModule } from '../../projects/arlas-map/src/public-api';
+import { ArlasMapModule, MapSettingsModule } from '../../projects/arlas-map/src/public-api';
+import { MaplibreDemoModule } from './mapgl-libre-demo/maplibre-demo.module';
+import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -86,13 +88,12 @@ const routes: Routes = [
     AppComponent,
     HistogramDemoComponent,
     ResultsDemoComponent,
-    MapglDemoComponent,
-    MapglLibreDemoComponent,
     PowerbarsDemoComponent,
     DonutDemoComponent,
     WmtsLayerManagerDemoComponent,
     CalendarTimelineDemoComponent,
-    MetricsTableDemoComponent
+    MetricsTableDemoComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -100,7 +101,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     CalendarTimelineModule,
     FormsModule,
-    MapglSettingsModule,
+    MapSettingsModule,
     MatButtonModule,
     MatIconModule,
     MatRadioModule,
@@ -108,18 +109,19 @@ const routes: Routes = [
     MatSidenavModule,
     MatTabsModule,
     HistogramModule,
+    ArlasMaplibreModule,
+    ArlasMapboxModule,
     ArlasMapModule,
     DonutModule,
     ResultsModule,
     MetricModule,
     MetricsTableModule,
+    MaplibreDemoModule,
+    MapboxDemoModule,
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,
     HttpClientModule,
-    ArlasMaplibreModule,
-    ArlasMapboxModule,
-    ArlasMapModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -133,7 +135,6 @@ const routes: Routes = [
             } })
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
-  bootstrap: [AppComponent],
-  entryComponents: [WmtsLayerManagertDialogComponent, MapglSettingsDialogComponent]
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

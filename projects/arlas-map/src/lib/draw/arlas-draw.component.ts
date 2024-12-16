@@ -21,8 +21,8 @@ import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleCha
 import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
 import { MapboxAoiDrawService } from './draw.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ArlasMapService } from '../map/service/arlas-map.service';
-import { MapLogicService } from '../arlas-map-logic.service';
+import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
+import { AbstractArlasMapService } from '../arlas-map.service';
 import { AoiDimensions, BboxDrawCommand } from './draw.models';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
@@ -106,8 +106,8 @@ export class ArlasDrawComponent implements OnInit {
 
 
   public constructor(private drawService: MapboxAoiDrawService, private _snackBar: MatSnackBar, private translate: TranslateService,
-    protected mapService: ArlasMapService,
-    protected mapLogicService: MapLogicService) {
+    protected mapService: ArlasMapFrameworkService,
+    protected mapLogicService: AbstractArlasMapService) {
     this.drawService.editAoi$.pipe(takeUntilDestroyed()).subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawService.drawBbox$.pipe(takeUntilDestroyed()).subscribe({
       next: (bboxDC: BboxDrawCommand) => {

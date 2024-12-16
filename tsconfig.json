@@ -12,10 +12,13 @@
         "projects/arlas-map/src/public-api.ts",
       ],
       "arlas-mapbox": [
-        "projects/arlas-mapbox/src/public-api.ts"
+        "projects/arlas-mapbox/src/public-api.ts",
+        "dist/arlas-mapbox"
       ],
       "arlas-maplibre": [
+        "projects/arlas-maplibre/src/public-api.ts",
         "dist/arlas-maplibre"
+
       ]
     },
     "outDir": "./dist/out-tsc",

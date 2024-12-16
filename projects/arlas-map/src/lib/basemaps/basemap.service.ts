@@ -23,7 +23,7 @@ import { BasemapStyle } from './basemap.config';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
-import { ArlasMapService } from '../map/service/arlas-map.service';
+import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +41,7 @@ export abstract class BasemapService {
   protected protomapBasemapAddedSource = new Subject<boolean>();
   public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  protected constructor(protected http: HttpClient, protected mapService: ArlasMapService) { }
+  protected constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapFrameworkService) { }
 
   public setBasemaps(basemaps: ArlasBasemaps) {
     this.basemaps = basemaps;
@@ -53,13 +53,13 @@ export abstract class BasemapService {
     /* eslint-disable max-len */
     pmtilesSource['attribution'] = '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>';
     pmtilesSource['attribution'] = pmtilesSource['attribution'] + this.POWERED_BY_ARLAS;
-    this.mapService.setSource('arlas_protomaps_source', pmtilesSource, map);
+    this.mapFrameworkService.setSource('arlas_protomaps_source', pmtilesSource, map);
   }
 
   protected addProtomapLayerToMap(map: AbstractArlasMapGL, styleFile: any) {
     styleFile.layers.forEach(l => {
-      this.mapService.removeLayer(map, l.id);
-      this.mapService.addLayer(map, l);
+      this.mapFrameworkService.removeLayer(map, l.id);
+      this.mapFrameworkService.addLayer(map, l);
     });
   }
 

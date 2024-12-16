@@ -18,15 +18,14 @@
  */
 
 import { Component, ViewChild, OnInit } from '@angular/core';
-import {
-  GeometrySelectModel, GeoQueryOperator, MapglSettingsComponent,
-  MapSettingsService, OperationSelectModel,
-  
-} from '../../../projects/arlas-components/src/public-api';
+
 import { Subject } from 'rxjs';
-import { ArlasMaplibreComponent } from '../../../projects/arlas-maplibre/src/public-api';
+
 import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
 import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
+import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
+import { GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
+   OperationSelectModel } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
 
 
 @Component({
@@ -36,9 +35,9 @@ import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers
 })
 export class MapglLibreDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMaplibreComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent;
   // @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
-  @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
+  @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;
@@ -495,7 +494,7 @@ export class MapglLibreDemoComponent implements OnInit {
         ]
       }
     ]
-  };
+  } as any;
 
   public drawOptions = {
     displayControlsDefault: false,
@@ -847,7 +846,7 @@ export class MapglLibreDemoComponent implements OnInit {
   public drawData = {
     'type': 'FeatureCollection',
     'features': []
-  };
+  } as any;
 
   public constructor() { }
 
@@ -881,11 +880,11 @@ export class MapglLibreDemoComponent implements OnInit {
   }
 
   public switchToDrawMode(mode?,opts?) {
-    this.mapComponent.switchToDrawMode(mode, opts);
+    //this.mapComponent.switchToDrawMode(mode, opts);
   }
 
   public delete() {
-    this.mapComponent.deleteSelectedItem();
+    //this.mapComponent.deleteSelectedItem();
   }
 
   public polygonSelect(event) {

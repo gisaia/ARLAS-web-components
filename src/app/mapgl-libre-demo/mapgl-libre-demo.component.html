@@ -25,15 +25,15 @@
   <!-- <arlas-mapgl-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="5" [maxLoadingTime]="10000"
     [maxFileSize]="1050000" [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']"> -->
   <!-- </arlas-mapgl-import> -->
-  <arlas-mapgl-settings #mapSettings>
+  <arlas-map-settings #mapSettings>
 
-  </arlas-mapgl-settings>
-  <arlas-maplibre #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles"
+  </arlas-map-settings>
+  <arlas-map #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles"
     [margePanForLoad]=40 [margePanForTest]=2 [mapLayers]="mapLayers"
     [displayScale]=true [displayCurrentCoordinates]=true [minZoom]=1 [maxZoom]=28 (onPolygonChange)="polygonChange($event)"
     (onPolygonSelect)="polygonSelect($event)" [drawOption]="drawOptions" [drawData]="drawData" [drawButtonEnabled]="true"
     [drawPolygonVerticesLimit]="5" [transformRequest]="transformRequest" (onAoiChanged)="onAoiChanged($event)"
     [visualisationSetsConfig]="visualisationSets" [visibilityUpdater]="visibilityUpdater"
     (onMapLoaded)="onMapLoaded()" [dataSources]="mapDataSources">
-  </arlas-maplibre>
+  </arlas-map>
 </div>

@@ -18,16 +18,21 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, MapConfig } from '../AbstractArlasMapGL';
-import { AbstractDraw } from '../../draw/AbstractDraw';
-import { LngLat } from '../model/map';
+import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
+import { AbstractDraw } from './draw/AbstractDraw';
+import { LngLat } from './map/model/map';
 import { FeatureCollection } from '@turf/helpers';
-import { VectorStyle } from '../model/vector-style';
+import { VectorStyle } from './map/model/vector-style';
 
+
+/**
+ * This service exposes a list of map interaction methods that are abstract.
+ * Theses methods will be implemented by the chosen cartographical framework to use.
+ */
 @Injectable({
   providedIn: 'root'
 })
-export abstract class ArlasMapService {
+export abstract class ArlasMapFrameworkService {
 
   public constructor() { }
 

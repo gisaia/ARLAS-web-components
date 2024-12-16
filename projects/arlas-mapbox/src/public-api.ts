@@ -25,4 +25,4 @@ export { MapboxLegendService } from './lib/legend/legend.service';
 export * from './lib/arlas-mapbox.service';
 export * from './lib/arlas-mapbox.module';
 export { MapboxBasemapService } from './lib/basemaps/mapbox-basemap.service';
-export { MapLogicService } from './lib/arlas-map-logic.service';
+export { ArlasMapService } from './lib/arlas-map.service';

@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ArlasMapService } from './map/service/arlas-map.service';
+import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import { FeatureCollection } from '@turf/helpers';
 import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
 import { ArlasMapSource } from './map/model/sources';
@@ -26,11 +26,14 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
 import { ExternalEvent, MapLayers } from './map/model/layers';
 import { ElementIdentifier } from 'arlas-web-components';
 
-
+/**
+ * This service propose a set of method to execute the ArlasMapComponent logic.
+ * Do not confuse with ArlasMapFrameworkService that is more dedicated to a framework logic.
+ */
 @Injectable({
   providedIn: 'root'
 })
-export abstract class MapLogicService {
+export abstract class AbstractArlasMapService {
   /** IMPORTANT NOTE: All the attributes/params that are typed with "any", will have the right type in the implementation. */
   public dataSources: any[] = [];
   public abstract layersMap: Map<string, any>;
@@ -41,7 +44,7 @@ export abstract class MapLogicService {
       visualisations: new Map(),
       status: new Map()
     };
-  public constructor(public mapService: ArlasMapService) { }
+  public constructor(public mapService: ArlasMapFrameworkService) { }
 
   /** Add to map the sources that will host ARLAS data.  */
   public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {

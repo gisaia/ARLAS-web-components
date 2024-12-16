@@ -1,6 +1,6 @@
 {
   "name": "arlas-maplibre",
-  "version": "27.0.0-map.beta.1",
+  "version": "27.0.0-test-rc.1",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
@@ -13,12 +13,11 @@
     "@angular/platform-browser-dynamic": "^18.2.13",
     "@angular/router": "^18.2.13",
     "@ngx-translate/core": "^15.0.0",
-    "@ngx-translate/http-loader": "^7.0.0",
-    "rxjs": "~7.4.0",
-    "arlas-map": "27.0.0-map.beta.1"
+    "@ngx-translate/http-loader": "^8.0.0"
   },
   "dependencies": {
-    "tslib": "^2.3.0",
-    "maplibre-gl": "^4.7.1"
+    "maplibre-gl": "^4.7.1",
+    "rxjs": "^7.4.0",
+    "tslib": "^2.3.0"
   }
 }
