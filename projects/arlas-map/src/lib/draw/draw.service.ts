@@ -111,7 +111,6 @@ export class MapboxAoiDrawService {
   }
 
   public setDraw(mapboxDraw: AbstractDraw) {
-    console.log(mapboxDraw)
     this.mapDraw = mapboxDraw;
     this.isReady = true;
     this.onSelectionChange();

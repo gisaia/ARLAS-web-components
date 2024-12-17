@@ -432,7 +432,7 @@ export class ArlasDrawComponent implements OnInit {
     }
   }
 
-  /** 
+  /**
    * @description Triggered drawing a bbox is started:
    * - It disables map drag pan.
    * - It stores in component's scope the start's cooordinates.
@@ -452,7 +452,7 @@ export class ArlasDrawComponent implements OnInit {
     this.start = this.mapService.getPointFromScreen(e, this.canvas);
   };
 
-  /** 
+  /**
    * @description Triggered while moving the mouse when drawing the bbox:
    * - It draws on the map a bbox canvas.
    * - It stores in component's scope the current mouse's cooordinates.
@@ -646,7 +646,7 @@ export class ArlasDrawComponent implements OnInit {
   /**
    * @description Returns all the drawn polygons as wkt or geojson.
    * @param mode 'wkt' | 'geojson'
-   * @returns 
+   * @returns
    */
   public getAllPolygon(mode: 'wkt' | 'geojson'): string | Object {
     let polygon;

@@ -372,7 +372,7 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
-  /** 
+  /**
    * @description Creates the map instance and adds the basemap, arlas data
    * and starts listening to arlas data changes and layers visibility updates.
    * It also starts emiting map moveend event.
@@ -530,7 +530,7 @@ export class ArlasMapComponent implements OnInit {
     this.legendVisibiltyStatus.next(this.visibilityStatus);
   }
 
-  /** 
+  /**
    * @description Emits the visible visualisation set
    * @param visualisationName Name of the visualisation.
    */
