@@ -55,6 +55,7 @@ export class MapboxAoiDrawService {
   public isInSimpleDrawMode = false;
   /** Set to true when the drawn geometry is selected. */
   public isDrawSelected = false;
+  public isReady = false;
 
   public constructor() {
     this.bboxEditionState = {
@@ -112,6 +113,7 @@ export class MapboxAoiDrawService {
   public setDraw(mapboxDraw: AbstractDraw) {
     console.log(mapboxDraw)
     this.mapDraw = mapboxDraw;
+    this.isReady = true;
     this.onSelectionChange();
     this.onRender();
     this.onDelete();

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Feature, FeatureCollection } from '@turf/helpers';
 import { BasemapStyle } from './basemaps/basemap.config';
 import {
@@ -46,6 +46,7 @@ import { AbstractArlasMapService } from './arlas-map.service';
 import { latLngToWKT } from './map/tools';
 import { ElementIdentifier } from 'arlas-web-components';
 import * as mapJsonSchema from './arlas-map.schema.json';
+import { ArlasDrawComponent } from './draw/arlas-draw.component';
 
 @Component({
   selector: 'arlas-map',
@@ -57,8 +58,6 @@ export class ArlasMapComponent implements OnInit {
 
   /** Map instance. */
   public map: AbstractArlasMapGL;
-  /** Draw instance. */
-  public draw: AbstractDraw;
   /** Whether the legend is visible (open) or not.*/
   public legendOpen = true;
   /** DEAD CODE TO REMOVE. KEPT TO THE END OF REFACTOR !!! */
@@ -76,6 +75,9 @@ export class ArlasMapComponent implements OnInit {
   public visibilityStatus = new Map<string, boolean>();
   /** Subscribtion to protomaps basemaps change. Should be unsbscribed when this component is destroyed. */
   protected offlineBasemapChangeSubscription!: Subscription;
+
+  @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent;
+
 
 
   /** ------------------------------------------------------- VISUAL SEPERATOR ----------------------------------------- */
@@ -524,43 +526,7 @@ export class ArlasMapComponent implements OnInit {
     this.onBasemapChanged.next(true);
   }
 
-  /**
-   * Return the polygons geometry in WKT or GeoJson given the mode
-   * @param mode : string
-   */
-  public getAllPolygon(mode: 'wkt' | 'geojson') {
-    let polygon;
-    if (mode === 'wkt') {
-      polygon = latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
-        this.drawService.isCircle(f)).map(f => cleanCoords(f)));
-    } else {
-      polygon = {
-        'type': 'FeatureCollection',
-        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
-          this.drawService.isCircle(f)).map(f => cleanCoords(f))
-      };
-    }
-    return polygon;
-  }
-
-  /**
-   * Return the selected polygon geometry in WKT or GeoJson given the mode
-   * @param mode : string
-   */
-  public getSelectedPolygon(mode: 'wkt' | 'geojson') {
-    let polygon;
-    if (mode === 'wkt') {
-      polygon = latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
-        this.drawService.isCircle(f)));
-    } else {
-      polygon = {
-        'type': 'FeatureCollection',
-        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
-          this.drawService.isCircle(f))
-      };
-    }
-    return polygon;
-  }
+  
 
 
   /**
@@ -650,5 +616,52 @@ export class ArlasMapComponent implements OnInit {
     if (!!this.map) {
       this.map.unsubscribeEvents();
     }
+  }
+
+
+  public addGeoBox() {
+    this.drawComponent.addGeoBox();
+  }
+
+  /**
+   * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
+   */
+  public removeAois() {
+    this.drawComponent.removeAois();
+  }
+
+  /** Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
+  public deleteSelectedItem() {
+    this.drawComponent.deleteSelectedItem();
+  }
+
+
+  public switchToDrawMode(mode?: string, option?: any) {
+    this.drawComponent.switchToDrawMode(mode, option);
+  }
+
+  public switchToDirectSelectMode(option?: { featureIds: Array<string>; allowCircleResize: boolean; }
+    | { featureId: string; allowCircleResize: boolean; }) {
+    this.drawComponent.switchToDirectSelectMode(option);
+  }
+
+  public switchToEditMode() {
+    this.drawComponent.switchToEditMode();
+  }
+
+  /**
+   * Return the polygons geometry in WKT or GeoJson given the mode
+   * @param mode : string
+   */
+  public getAllPolygon(mode: 'wkt' | 'geojson') {
+    return this.drawComponent.getAllPolygon(mode);
+  }
+
+  /**
+   * Return the selected polygon geometry in WKT or GeoJson given the mode
+   * @param mode : string
+   */
+  public getSelectedPolygon(mode: 'wkt' | 'geojson') {
+    return this.drawComponent.getSelectedPolygon(mode);
   }
 }

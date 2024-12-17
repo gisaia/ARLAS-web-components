@@ -880,11 +880,11 @@ export class MapglDemoComponent implements OnInit {
   }
 
   public switchToDrawMode(mode?,opts?) {
-    //this.mapComponent.switchToDrawMode(mode, opts);
+    this.mapComponent.switchToDrawMode(mode, opts);
   }
 
   public delete() {
-    //this.mapComponent.deleteSelectedItem();
+    this.mapComponent.deleteSelectedItem();
   }
 
   public polygonSelect(event) {

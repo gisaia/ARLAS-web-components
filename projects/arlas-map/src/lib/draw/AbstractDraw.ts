@@ -51,6 +51,7 @@ export class AbstractDraw implements DrawEventsInterface {
   public constructor(config: any, enabled: boolean, map: AbstractArlasMapGL) {
     const modes = MapboxDraw.modes;
     this.config = JSON.parse(JSON.stringify(config));
+    console.log(config.modes)
     this.config.modes = Object.assign(modes, config.modes);
     this.drawProvider = new MapboxDraw(this.config);
     this.arlasMap = map;

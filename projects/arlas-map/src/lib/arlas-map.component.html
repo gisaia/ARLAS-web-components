@@ -37,7 +37,7 @@
   (basemapChanged)="onChangeBasemapStyle()"></arlas-basemap>
 
 
-<arlas-draw *ngIf="!!map" [map]="map" [emptyData]="emptyData" [drawData]="drawData"
+<arlas-draw #drawComponent  [map]="map" [emptyData]="emptyData" [drawData]="drawData"
   [drawButtonEnabled]="drawButtonEnabled" [drawOption]="drawOption"
   [drawPolygonVerticesLimit]="drawPolygonVerticesLimit" [preserveDrawingBuffer]="preserveDrawingBuffer"
   (onAoiChanged)="onAoiChanged.emit($event)"

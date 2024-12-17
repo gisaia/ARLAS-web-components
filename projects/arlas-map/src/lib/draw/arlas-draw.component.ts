@@ -43,6 +43,7 @@ import directModeOverride from './modes/directSelectOverride';
 import simpleSelectModeOverride from './modes/simpleSelectOverride';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { MapMouseEvent } from '../map/model/events';
+import { latLngToWKT } from '../map/tools';
 @Component({
   selector: 'arlas-draw',
   templateUrl: './arlas-draw.component.html',
@@ -406,8 +407,9 @@ export class ArlasDrawComponent implements OnInit {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map && this.map.getMapProvider() !== undefined) {
-      if (changes['drawData'] !== undefined) {
+      if (changes['drawData'] !== undefined && this.drawService.isReady) {
         this.drawData = changes['drawData'].currentValue;
+        console.log(this.drawData);
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
           const poly = polygon((feature.geometry as Polygon).coordinates);
@@ -601,6 +603,40 @@ export class ArlasDrawComponent implements OnInit {
     this.drawService.isDrawingCircle = false;
     this.drawService.isDrawingStrip = false;
     this.drawService.isDrawingPolygon = false;
+  }
+
+  public getAllPolygon(mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
+        this.drawService.isCircle(f)).map(f => cleanCoords(f)));
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
+          this.drawService.isCircle(f)).map(f => cleanCoords(f))
+      };
+    }
+    return polygon;
+  }
+
+  /**
+   * Return the selected polygon geometry in WKT or GeoJson given the mode
+   * @param mode : string
+   */
+  public getSelectedPolygon(mode: 'wkt' | 'geojson') {
+    let polygon;
+    if (mode === 'wkt') {
+      polygon = latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
+        this.drawService.isCircle(f)));
+    } else {
+      polygon = {
+        'type': 'FeatureCollection',
+        'features': this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
+          this.drawService.isCircle(f))
+      };
+    }
+    return polygon;
   }
 
   @HostListener('document:keydown', ['$event'])
