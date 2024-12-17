@@ -35,8 +35,14 @@ jobs:
         run: npm run lint
       - name: License check
         run: npm run license-check
-      - name: Build
-        run: npm run build-release
+      - name: Build components
+        run: npm run build-components
+      - name: Build arlas-map
+        run: npm run build-map
+      - name: Build arlas-maplibre
+        run: npm run build-maplibre
+      - name: Build arlas-mapbox
+        run: npm run build-mapbox
       - name: Test
         run: npm run test
       - name: Documentation
