@@ -359,7 +359,7 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
-  /** Adds the custom icons given in the component's input */
+  /** @description Adds the custom icons given in the component's input */
   public addIcons() {
     if (this.icons) {
       this.icons.forEach(icon => {
@@ -372,6 +372,11 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
+  /** 
+   * @description Creates the map instance and adds the basemap, arlas data
+   * and starts listening to arlas data changes and layers visibility updates.
+   * It also starts emiting map moveend event.
+   */
   public declareMap() {
     this.initTransformRequest();
     const config: MapConfig<unknown> = {
@@ -423,17 +428,6 @@ export class ArlasMapComponent implements OnInit {
       this.onMapClosed.next(this.map.getMapExtend());
     });
 
-
-
-    /**
-     *  The other on load initialisation releated with the map are in
-     *  ArlasMapgl in initOnLoad method
-     *  the code below can be executed in as the method executed in
-     *  this part do not need to be executed in specific order
-     *
-     *  !! If you see a better approche let me know.
-     */
-
     this.map.onCustomEvent('beforeOnLoadInit', () => {
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
@@ -468,7 +462,7 @@ export class ArlasMapComponent implements OnInit {
   }
 
   /**
-   * Listens to events on mapLayers input (configured layers).
+   * @description Listens to events on mapLayers input (configured layers).
    */
   public listenToLayersEvents() {
     /** Zooms on the clicked feature of the given layers. */
@@ -506,31 +500,25 @@ export class ArlasMapComponent implements OnInit {
 
   /** ------------------------------------------------------- VISUAL SEPERATOR - LAYERS ----------------------------------------- */
 
-  /** Sets the layers order according to the order of `visualisationSetsConfig` list*/
+  /** Sets the layers order according to the current order of `visualisationSetsConfig` list*/
   public reorderLayers() {
     this.mapLogicService.reorderLayers(this.visualisationSetsConfig, this.map);
   }
 
   /** ------------------------------------------------------- VISUAL SEPERATOR - DRAWING ----------------------------------------- */
 
-
-
-  /**
- * @description Display the basemapswitcher
- */
+  /** @description Display the basemapswitcher */
   public showBasemapSwitcher() {
     this.showBasemapsList = true;
   }
 
+  /** @description Emits event notifiying that the basemap has been changed */
   public onChangeBasemapStyle() {
     this.onBasemapChanged.next(true);
   }
 
-  
-
-
   /**
-   * Update the visibility status of the layer and emit that update
+   * Updates the visibility status of the layer and emits that update.
    * @param visualisation visualisation set name
    * @param l layer id
    * @param visible whether the layer is enabled and visible in the visualisation set
@@ -542,6 +530,10 @@ export class ArlasMapComponent implements OnInit {
     this.legendVisibiltyStatus.next(this.visibilityStatus);
   }
 
+  /** 
+   * @description Emits the visible visualisation set
+   * @param visualisationName Name of the visualisation.
+   */
   public emitVisualisations(visualisationName: string) {
     const layers = this.mapLogicService.updateLayoutVisibility(visualisationName, this.visualisationSetsConfig, this.map);
     this.visualisations.emit(layers);
@@ -618,7 +610,7 @@ export class ArlasMapComponent implements OnInit {
     }
   }
 
-
+  /** @description Displays the geobox */
   public addGeoBox() {
     this.drawComponent.addGeoBox();
   }
@@ -630,36 +622,51 @@ export class ArlasMapComponent implements OnInit {
     this.drawComponent.removeAois();
   }
 
-  /** Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
+  /** @description Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
   public deleteSelectedItem() {
     this.drawComponent.deleteSelectedItem();
   }
 
 
+  /**
+   * @description Switches to a drawing mode of a polygon, circle or radisu circle.
+   * @param mode Draw mode (DRAW_POLYGON, DRAW_CIRCLE or DRAW_RADIUS_CIRCLE). Default to DRAW_POLYGON
+   * @param option Mapboxdraw option.
+   */
   public switchToDrawMode(mode?: string, option?: any) {
     this.drawComponent.switchToDrawMode(mode, option);
   }
 
+  /**
+   * @description Switches to direct_select mode.
+   * @param option Mapboxdraw option.
+   */
   public switchToDirectSelectMode(option?: { featureIds: Array<string>; allowCircleResize: boolean; }
     | { featureId: string; allowCircleResize: boolean; }) {
     this.drawComponent.switchToDirectSelectMode(option);
   }
 
+  /**
+   * @description Switches to simple_select mode.
+   * @param option Mapboxdraw option.
+   */
   public switchToEditMode() {
     this.drawComponent.switchToEditMode();
   }
 
   /**
-   * Return the polygons geometry in WKT or GeoJson given the mode
-   * @param mode : string
+   * @description Returns all the drawn polygons as wkt or geojson.
+   * @param mode 'wkt' | 'geojson'
+   * @returns Wkt string or Geojson object.
    */
   public getAllPolygon(mode: 'wkt' | 'geojson') {
     return this.drawComponent.getAllPolygon(mode);
   }
 
   /**
-   * Return the selected polygon geometry in WKT or GeoJson given the mode
-   * @param mode : string
+   * @description returns the selected polygon geometry in WKT or GeoJson given the mode
+   * @param mode : 'wkt' | 'geojson'
+   * @returns Wkt string or Geojson object.
    */
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     return this.drawComponent.getSelectedPolygon(mode);

@@ -28,7 +28,7 @@ export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.
 
 export type DrawModes = 'SIMPLE_SELECT' | 'DRAW_CIRCLE' | 'DIRECT_SELECT' |
   'DRAW_LINE_STRING' | 'DRAW_POLYGON' | 'DRAW_POINT' | 'DRAW_RADIUS_CIRCLE' |
-  'DRAW_STRIP' | 'DIRECT_STRIP';
+  'DRAW_STRIP' | 'DIRECT_STRIP'| 'STATIC';
 
 export interface DrawEventsInterface {
   onDrawCreate: (...args) => void;

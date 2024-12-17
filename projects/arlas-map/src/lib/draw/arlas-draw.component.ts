@@ -141,6 +141,7 @@ export class ArlasDrawComponent implements OnInit {
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
+    this.draw.setMode('STATIC', 'static');
     this.draw.setMode('DIRECT_STRIP', 'direct_strip');
     const drawControlConfig: DrawControlsOption = {
       draw: { control: this.draw },
@@ -431,6 +432,11 @@ export class ArlasDrawComponent implements OnInit {
     }
   }
 
+  /** 
+   * @description Triggered drawing a bbox is started:
+   * - It disables map drag pan.
+   * - It stores in component's scope the start's cooordinates.
+   */
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
     if (!this.drawService.isDrawingBbox) {
@@ -446,6 +452,11 @@ export class ArlasDrawComponent implements OnInit {
     this.start = this.mapService.getPointFromScreen(e, this.canvas);
   };
 
+  /** 
+   * @description Triggered while moving the mouse when drawing the bbox:
+   * - It draws on the map a bbox canvas.
+   * - It stores in component's scope the current mouse's cooordinates.
+   */
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
     this.current = this.mapService.getPointFromScreen(e, this.canvas);
@@ -467,6 +478,13 @@ export class ArlasDrawComponent implements OnInit {
     this.box.style.height = maxY - minY + 'px';
   };
 
+  /**
+   * @description Triggerd on second click to end drawing the bbox.
+   * - Restores the drag pan on the map.
+   * - Removes the bbox canvas.
+   * - Draws the bbox feature on the map.
+   * @param e Mouse event
+   */
   private mouseup = (e) => {
     const f = this.mapService.getPointFromScreen(e, this.canvas);
     document.removeEventListener('mousemove', this.mousemove);
@@ -485,6 +503,10 @@ export class ArlasDrawComponent implements OnInit {
     this.drawService.endDimensionsEmission();
   };
 
+  /**
+   * @description Draws the bbox feature on the map and removes the bbox canvas.
+   * @param bbox Start/End coordinates of the bbox.
+   */
   private finish(bbox?) {
     if (bbox) {
       const startlng: number = this.map.startlngLat.lng;
@@ -504,7 +526,7 @@ export class ArlasDrawComponent implements OnInit {
   }
 
   /**
-   * Emits the newly drawn bbox. It completes the drawBbox event emitted by the drawService.
+   * @description Emits the newly drawn bbox. It completes the drawBbox event emitted by the drawService.
    * @param east
    * @param south
    * @param west
@@ -558,7 +580,7 @@ export class ArlasDrawComponent implements OnInit {
     this.deleteSelectedItem();
   }
 
-  /** Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
+  /** @description Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
   public deleteSelectedItem() {
     if (this.drawService.isDrawSelected) {
       this.draw.trash();
@@ -569,6 +591,9 @@ export class ArlasDrawComponent implements OnInit {
     this.onAoiChanged.next(this.draw.getAll() as FeatureCollection<GeoJSON.Geometry>);
   }
 
+  /**
+   * @description Shows an invalid-geometry error on a snack bar.
+   */
   public openInvalidGeometrySnackBar() {
     this._snackBar.open(this.translate.instant('Invalid geometry'), this.translate.instant('Ok'), {
       duration: 3 * 1000,
@@ -577,6 +602,11 @@ export class ArlasDrawComponent implements OnInit {
     });
   }
 
+  /**
+   * @description Switches to a drawing mode of a polygon, circle or radisu circle.
+   * @param mode Draw mode (DRAW_POLYGON, DRAW_CIRCLE or DRAW_RADIUS_CIRCLE). Default to DRAW_POLYGON
+   * @param option Mapboxdraw option.
+   */
   public switchToDrawMode(mode?: string, option?: any) {
     const selectedMode = mode ?? this.draw.getMode('DRAW_POLYGON');
     this.drawService.isDrawingCircle = selectedMode === this.draw.getMode('DRAW_CIRCLE')
@@ -586,6 +616,10 @@ export class ArlasDrawComponent implements OnInit {
     this.draw.changeMode(selectedMode, option ?? {});
   }
 
+  /**
+   * @description Switches to direct_select mode.
+   * @param option Mapboxdraw option.
+   */
   public switchToDirectSelectMode(option?: { featureIds: Array<string>; allowCircleResize: boolean; }
     | { featureId: string; allowCircleResize: boolean; }) {
     this.draw.changeMode('direct_select', option);
@@ -595,6 +629,10 @@ export class ArlasDrawComponent implements OnInit {
     this.drawService.isDrawingPolygon = false;
   }
 
+  /**
+   * @description Switches to simple_select mode.
+   * @param option Mapboxdraw option.
+   */
   public switchToEditMode() {
     this.draw.changeMode('simple_select', {
       featureIds: this.draw.getAll().features.map(f => f.id)
@@ -605,7 +643,12 @@ export class ArlasDrawComponent implements OnInit {
     this.drawService.isDrawingPolygon = false;
   }
 
-  public getAllPolygon(mode: 'wkt' | 'geojson') {
+  /**
+   * @description Returns all the drawn polygons as wkt or geojson.
+   * @param mode 'wkt' | 'geojson'
+   * @returns 
+   */
+  public getAllPolygon(mode: 'wkt' | 'geojson'): string | Object {
     let polygon;
     if (mode === 'wkt') {
       polygon = latLngToWKT(this.draw.getAll().features.filter(f => this.drawService.isPolygon(f) ||
@@ -621,10 +664,11 @@ export class ArlasDrawComponent implements OnInit {
   }
 
   /**
-   * Return the selected polygon geometry in WKT or GeoJson given the mode
-   * @param mode : string
+   * @returns the selected polygon geometry in WKT or GeoJson given the mode
+   * @param mode : 'wkt' | 'geojson'
+   * @returns Wkt string or Geojson object.
    */
-  public getSelectedPolygon(mode: 'wkt' | 'geojson') {
+  public getSelectedPolygon(mode: 'wkt' | 'geojson'): string | Object {
     let polygon;
     if (mode === 'wkt') {
       polygon = latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||

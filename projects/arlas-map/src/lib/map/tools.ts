@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export function latLngToWKT(features) {
+export function latLngToWKT(features): string {
   let wktType = 'POLYGON[###]';
   if (features.length > 1) {
     wktType = 'MULTIPOLYGON([###])';

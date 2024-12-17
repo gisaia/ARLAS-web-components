@@ -16,8 +16,16 @@ The 4 libraries are:
 > Note 2: As a consequence, install **arlas-maplibre** or **arlas-mapbox** directly without the need of installing **arlas-map** precedently.
 
 
-
 The demo application has view composed of several tabs. Each tab provides an example of one component of **arlas-web-components** library or an implementation of **arlas-map** library.
+
+## Artchitecture of **arlas-map**, **arlas-maplibre** and **arlas-mapbox**
+
+<img src="./images/arlas-map-library.png">
+
+- **arlas-map** provides the Angular components to be used in your apps.
+- **arlas-map** components logic is declared in different services. Some are implemented when they don't depend directly on a cartographical framework. The rest are declared as abstract.
+- The mapboxgl-js (v1.13) and maplibregl-js implementations are respectively coded in **arlas-mapbox** and **arlas-maplibre** libraries.
+
 
 
 # Install
