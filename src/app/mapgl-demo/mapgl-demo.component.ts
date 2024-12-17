@@ -17,14 +17,16 @@
  * under the License.
  */
 
+
 import { Component, ViewChild, OnInit } from '@angular/core';
-import {
-  ARLAS_VSET,
-  GeometrySelectModel, GeoQueryOperator, MapglComponent, MapglImportComponent, MapglSettingsComponent,
-  MapSettingsService, OperationSelectModel,
-  VisualisationSetConfig
-} from '../../../projects/arlas-components/src/public-api';
+
 import { Subject } from 'rxjs';
+
+import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
+import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
+import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
+import { GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
+   OperationSelectModel } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
 
 @Component({
   selector: 'arlas-mapgl-demo',
@@ -33,9 +35,9 @@ import { Subject } from 'rxjs';
 })
 export class MapglDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: true }) public mapComponent: MapglComponent;
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
-  @ViewChild('mapSettings', { static: true }) public mapSettings: MapglSettingsComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent;
+  // @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
+  @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;
@@ -492,7 +494,7 @@ export class MapglDemoComponent implements OnInit {
         ]
       }
     ]
-  };
+  } as any;
 
   public drawOptions = {
     displayControlsDefault: false,
@@ -844,7 +846,7 @@ export class MapglDemoComponent implements OnInit {
   public drawData = {
     'type': 'FeatureCollection',
     'features': []
-  };
+  } as any;
 
   public constructor() { }
 
@@ -904,7 +906,7 @@ export class MapglDemoComponent implements OnInit {
 
   public onMapLoaded() {
     this.mapComponent.visibilityStatus = new Map();
-    this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET + 'arlas_id:Number of products:1677155990578', true);
+    this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET   + 'arlas_id:Number of products:1677155990578', true);
     this.mapComponent.visibilityStatus.set('Latest products' + ARLAS_VSET + 'arlas_id:Latest products:1677155839933', false);
   }
 }

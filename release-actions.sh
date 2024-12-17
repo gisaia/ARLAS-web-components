@@ -27,17 +27,39 @@ releaseProd(){
     fi
 
     echo "=> Get "$BRANCH" branch of ARLAS-web-components project"
-    git fetch
-    git checkout "$BRANCH"
-    git pull origin "$BRANCH"
+    # git fetch
+    # git checkout "$BRANCH"
+    # git pull origin "$BRANCH"
     echo "=> Test to lint and build the project on "$BRANCH" branch"
     npm --no-git-tag-version version ${VERSION}
     npm --no-git-tag-version --prefix projects/arlas-components version ${VERSION}
+    npm --no-git-tag-version --prefix projects/arlas-map version ${VERSION}
+    npm --no-git-tag-version --prefix projects/arlas-maplibre version ${VERSION}
+    npm --no-git-tag-version --prefix projects/arlas-mapbox version ${VERSION}
+    echo "=> Installing"
+    npm install
+
+    echo "=> Update arlas-web-components library in arlas-map"
+    cd projects/arlas-map
+    npm install arlas-web-components@${VERSION}
+    cd ../..
+    echo "=> Update arlas-map library in arlas-maplibre"
+
+    cd projects/arlas-maplibre
+    npm install arlas-map@${VERSION}
+    cd ../..
+
+    cd projects/arlas-mapbox
+    npm install arlas-map@${VERSION}
+    cd ../..
 
     echo "=> Build the ARLAS-web-components library"
-    npm install
+   
     npm run lint
-    npm run build-release
+    npm run build-components
+    npm run build-map
+    npm run build-maplibre
+    npm run build-mapbox
 
     echo "=> Tag version $VERSION"
     git add .
@@ -68,9 +90,48 @@ releaseProd(){
 
     cp README-NPM.md dist/arlas-web-components/README.md
     cp LICENSE.txt dist/arlas-web-components/LICENSE
+    cp LICENSE.txt dist/arlas-map/LICENSE
+    cp LICENSE.txt dist/arlas-maplibre/LICENSE
+    cp LICENSE.txt dist/arlas-mapbox/LICENSE
     cd dist/arlas-web-components/
 
-    echo "=> Publish to npm"
+    echo "=> Publish arlas-web-components to npm"
+    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+        then
+        echo "  -- tagged as ${STAGE_LOCAL}"
+        npm publish --tag=${STAGE_LOCAL}
+    else
+        npm publish
+    fi
+    cd ../..
+
+    cd dist/arlas-map/
+
+    echo "=> Publish arlas-map to npm"
+    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+        then
+        echo "  -- tagged as ${STAGE_LOCAL}"
+        npm publish --tag=${STAGE_LOCAL}
+    else
+        npm publish
+    fi
+    cd ../..
+
+    cd dist/arlas-maplibre/
+
+    echo "=> Publish arlas-maplibre to npm"
+    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+        then
+        echo "  -- tagged as ${STAGE_LOCAL}"
+        npm publish --tag=${STAGE_LOCAL}
+    else
+        npm publish
+    fi
+    cd ../..
+
+    cd dist/arlas-mapbox/
+
+    echo "=> Publish arlas-mapbox to npm"
     if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
         then
         echo "  -- tagged as ${STAGE_LOCAL}"
@@ -98,6 +159,22 @@ releaseProd(){
     newminor=$(( $minor + 1 ))
     newDevVersion=${major}.${newminor}.0
     npm --no-git-tag-version version ""$newDevVersion"-dev0"
+
+    # remove released dependencies and keep based on npm workspaces for dev.
+    cd projects/arlas-map
+    npm uninstall arlas-web-components
+    cd ../..
+    echo "=> Update arlas-map library in arlas-maplibre"
+
+    cd projects/arlas-maplibre
+    npm uninstall arlas-map
+    cd ../..
+
+    cd projects/arlas-mapbox
+    npm uninstall arlas-map
+    cd ../..
+
+    
     git add .
     commit_message="update package.json to"-"$newDevVersion"
     git commit -m "$commit_message" --allow-empty
