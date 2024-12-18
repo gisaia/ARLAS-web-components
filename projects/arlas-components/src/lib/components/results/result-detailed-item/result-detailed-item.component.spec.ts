@@ -17,16 +17,15 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ResultDetailedItemComponent } from './result-detailed-item.component';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
 
 describe('ResultDetailedItemComponent', () => {
   let component: ResultDetailedItemComponent;
   let fixture: ComponentFixture<ResultDetailedItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResultDetailedItemComponent ],
       imports: [

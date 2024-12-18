@@ -17,15 +17,14 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HistogramDemoComponent } from './histogram-demo.component';
 
 describe('HistogramDemoComponent', () => {
   let component: HistogramDemoComponent;
   let fixture: ComponentFixture<HistogramDemoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ HistogramDemoComponent ]
     })

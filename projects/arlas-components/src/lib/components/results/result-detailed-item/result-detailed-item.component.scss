@@ -74,7 +74,7 @@
     }
   }
 
-  &__actions /* @doc Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/ {
+  .resultdetaileditem__actions /* @doc Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/ {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 0.9em;
     margin: 3px;

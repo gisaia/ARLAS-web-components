@@ -17,20 +17,19 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { HistogramComponent } from './histogram.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { HistogramComponent } from './histogram.component';
 
 describe('HistogramComponent', () => {
   let component: HistogramComponent;
   let fixture: ComponentFixture<HistogramComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HistogramComponent],
       imports: [

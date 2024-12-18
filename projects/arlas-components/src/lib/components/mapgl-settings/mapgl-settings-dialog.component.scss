@@ -23,7 +23,7 @@
 }
 
 .mapgl-settings__title {
-  margin: 0 0 10px 0 !important;
+  margin: 0 0 20px 0 !important;
 }
 
 .mapgl-settings {
@@ -60,8 +60,7 @@
 }
 
 .mapgl-settings__actions {
-  display: unset;
-  float: right;
+  --mat-dialog-actions-alignment: end;
 
   &--apply {
     --mdc-text-button-label-text-color: #ff4081;

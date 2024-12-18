@@ -17,22 +17,20 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResultItemComponent } from './result-item.component';
-import { ArlasColorService } from '../../../services/color.generator.service';
-import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
-import { Item } from '../model/item';
+import { ArlasColorService } from '../../../services/color.generator.service';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
+import { ResultItemComponent } from './result-item.component';
 
 describe('ResultItemComponent', () => {
   let component: ResultItemComponent;
   let fixture: ComponentFixture<ResultItemComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ResultItemComponent ],
       imports: [

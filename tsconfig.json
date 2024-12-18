@@ -15,7 +15,6 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
     "stripInternal": true,
     "skipLibCheck": true,
     "types": [

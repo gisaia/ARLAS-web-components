@@ -17,22 +17,20 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ResultDetailedGridComponent } from './result-detailed-grid.component';
-import { HttpClientModule } from '@angular/common/http';
 
 describe('ResultDetailedGridComponent', () => {
   let component: ResultDetailedGridComponent;
   let fixture: ComponentFixture<ResultDetailedGridComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultDetailedGridComponent ],
-      imports: [
-        HttpClientModule
-      ]
-    })
+    declarations: [ResultDetailedGridComponent],
+    imports: [],
+    providers: [provideHttpClient(withInterceptorsFromDi())]
+})
       .compileComponents();
   }));
 

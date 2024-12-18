@@ -17,32 +17,29 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MapglComponent } from './mapgl.component';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MapboxAoiDrawService } from './draw/draw.service';
+import { MapglComponent } from './mapgl.component';
 
 describe('MapglComponent', () => {
   let component: MapglComponent;
   let fixture: ComponentFixture<MapglComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [MapglComponent],
-      imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
-        HttpClientModule,
+    declarations: [MapglComponent],
+    imports: [TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
         MatIconModule,
         MatButtonModule,
         MatSelectModule,
@@ -51,13 +48,13 @@ describe('MapglComponent', () => {
         MatSlideToggleModule,
         MatTooltipModule,
         MatChipsModule,
-        DragDropModule
-      ],
-      providers: [
+        DragDropModule],
+    providers: [
         HttpClient,
-        MapboxAoiDrawService
-      ]
-    })
+        MapboxAoiDrawService,
+        provideHttpClient(withInterceptorsFromDi())
+    ]
+})
       .compileComponents();
   }));
 

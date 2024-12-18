@@ -17,18 +17,17 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { MetricComponent } from './metric.component';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
+import { MetricComponent } from './metric.component';
 
 describe('MetricComponent', () => {
   let component: MetricComponent;
   let fixture: ComponentFixture<MetricComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MetricComponent, FormatNumberPipe ],
       imports: [

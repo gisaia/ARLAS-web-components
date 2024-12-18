@@ -33,7 +33,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { NgxLoadingModule } from 'ngx-loading';
+import { NgxLoadingModule } from 'ngx-loading-reloaded';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ResultDetailedGridComponent } from './result-detailed-grid/result-detailed-grid.component';
 import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';

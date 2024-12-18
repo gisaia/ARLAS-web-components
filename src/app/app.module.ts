@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,15 +32,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { WmtsLayerManagertDialogComponent } from '../../dist/arlas-web-components/lib/components/wmts-layer-manager/wmts-layer-manager.component';
 import { CalendarTimelineModule } from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
 import { DonutModule } from '../../projects/arlas-components/src/lib/components/donut/donut.module';
 import { HistogramModule } from '../../projects/arlas-components/src/lib/components/histogram/histogram.module';
-import { MapglImportDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.component';
 import { MapglImportModule } from '../../projects/arlas-components/src/lib/components/mapgl-import/mapgl-import.module';
 import { MapglLayerIconModule } from '../../projects/arlas-components/src/lib/components/mapgl-layer-icon/mapgl-layer-icon.module';
 import { MapglLegendModule } from '../../projects/arlas-components/src/lib/components/mapgl-legend/mapgl-legend.module';
-import { MapglSettingsDialogComponent } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.component';
 import { MapglSettingsModule } from '../../projects/arlas-components/src/lib/components/mapgl-settings/mapgl-settings.module';
 import { MapglModule } from '../../projects/arlas-components/src/lib/components/mapgl/mapgl.module';
 import { MetricModule } from '../../projects/arlas-components/src/lib/components/metric/metric.module';
@@ -77,58 +74,50 @@ const routes: Routes = [
   { path: 'multi-collection', component: MetricsTableDemoComponent }
 ];
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    HistogramDemoComponent,
-    ResultsDemoComponent,
-    MapglDemoComponent,
-    PowerbarsDemoComponent,
-    DonutDemoComponent,
-    WmtsLayerManagerDemoComponent,
-    CalendarTimelineDemoComponent,
-    MetricsTableDemoComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormatLegendModule,
-    BrowserAnimationsModule,
-    CalendarTimelineModule,
-    FormsModule,
-    MapglModule,
-    MapglImportModule,
-    MapglSettingsModule,
-    MapglLegendModule,
-    MapglLayerIconModule,
-    MatButtonModule,
-    MatIconModule,
-    MatRadioModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatTabsModule,
-    HistogramModule,
-    DonutModule,
-    ResultsModule,
-    MetricModule,
-    MetricsTableModule,
-    RouterModule.forRoot(routes),
-    PowerbarsModule,
-    WmtsLayerManagerModule,
-    HttpClientModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
-    CollectionModule.forRoot({loader:{
-      provide: BaseCollectionService,
-      useClass: AwcCollectionService
-    }})
-  ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }],
-  bootstrap: [AppComponent],
-  entryComponents: [MapglImportDialogComponent, WmtsLayerManagertDialogComponent, MapglSettingsDialogComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        HistogramDemoComponent,
+        ResultsDemoComponent,
+        MapglDemoComponent,
+        PowerbarsDemoComponent,
+        DonutDemoComponent,
+        WmtsLayerManagerDemoComponent,
+        CalendarTimelineDemoComponent,
+        MetricsTableDemoComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormatLegendModule,
+        BrowserAnimationsModule,
+        CalendarTimelineModule,
+        FormsModule,
+        MapglModule,
+        MapglImportModule,
+        MapglSettingsModule,
+        MapglLegendModule,
+        MapglLayerIconModule,
+        MatButtonModule,
+        MatIconModule,
+        MatRadioModule,
+        MatSelectModule,
+        MatSidenavModule,
+        MatTabsModule,
+        HistogramModule,
+        DonutModule,
+        ResultsModule,
+        MetricModule,
+        MetricsTableModule,
+        RouterModule.forRoot(routes),
+        PowerbarsModule,
+        WmtsLayerManagerModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: httpLoaderFactory,
+                deps: [HttpClient]
+            }
+        }),
+        CollectionModule.forRoot({ loader: {
+                provide: BaseCollectionService,
+                useClass: AwcCollectionService
+            } })], providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }

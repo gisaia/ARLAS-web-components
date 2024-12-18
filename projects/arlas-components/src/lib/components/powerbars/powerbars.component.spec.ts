@@ -17,24 +17,23 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PowerbarsComponent } from './powerbars.component';
-import { ArlasColorService } from '../../services/color.generator.service';
-import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
-import { TranslateModule, TranslateLoader, TranslateFakeLoader } from '@ngx-translate/core';
-import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { ArlasColorService } from '../../services/color.generator.service';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
+import { PowerbarsComponent } from './powerbars.component';
 
 describe('PowerbarsComponent', () => {
   let component: PowerbarsComponent;
   let fixture: ComponentFixture<PowerbarsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PowerbarsComponent, FormatNumberPipe ],
       imports: [
