@@ -165,7 +165,7 @@ tr {
   height: 50px;
   overflow: hidden;
 
-  &--geosort /* @doc Geo-sort toggle in the list header */ {
+  .resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
     font-size: 14px;
     padding-right: 10px;
     margin-left: 5px;
