@@ -54,6 +54,9 @@
         display: flex;
         justify-content: left;
         align-items: center;
+
+        --mdc-filled-text-field-container-color: transparent;
+        --mat-form-field-focus-state-layer-opacity: 0;
       }
     }
   }
