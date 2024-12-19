@@ -13,10 +13,10 @@ The 4 libraries are:
 
 > Note 1: **arlas-maplibre** and **arlas-mapbox** both have **arlas-map** as a dependency.
 
-> Note 2: As a consequence, install **arlas-maplibre** or **arlas-mapbox** directly without the need of installing **arlas-map** precedently.
+> Note 2: As a consequence, you can install **arlas-maplibre** or **arlas-mapbox** directly without the need of installing **arlas-map** precedently.
 
 
-The demo application has view composed of several tabs. Each tab provides an example of one component of **arlas-web-components** library or an implementation of **arlas-map** library.
+The demo application is composed of several tabs. Each tab provides an example of one component of **arlas-web-components** library or an implementation of **arlas-map** library.
 
 ## Artchitecture of **arlas-map**, **arlas-maplibre** and **arlas-mapbox**
 
@@ -51,7 +51,7 @@ $ npm install --save arlas-mapbox
 ## Prequesites:
 
 To build the projects you need to have installed
-- [Node](https://nodejs.org/en/) version ^20.0.0 
+- [Node](https://nodejs.org/en/) version ^18.19.1 
 - [npm](https://github.com/npm/npm) version ^10.0.0
 - [Angular CLI](https://github.com/angular/angular-cli) version ^18.2.12
   ```

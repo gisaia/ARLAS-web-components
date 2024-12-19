@@ -1,24 +1,19 @@
-# ArlasMaplibre
+# arlas-maplibre
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.0.
-
-## Code scaffolding
-
-Run `ng generate component component-name --project arlas-maplibre` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project arlas-maplibre`.
-> Note: Don't forget to add `--project arlas-maplibre` or else it will be added to the default project in your `angular.json` file. 
+**arlas-maplibre** is an Angular library a maplibregl implementation of the arlas-map library.
 
 ## Build
 
-Run `ng build arlas-maplibre` to build the project. The build artifacts will be stored in the `dist/` directory.
+On the root of this repository, run
 
-## Publishing
-
-After building your library with `ng build arlas-maplibre`, go to the dist folder `cd dist/arlas-maplibre` and run `npm publish`.
+```shell
+$ npm run build-maplibre
+```
 
 ## Running unit tests
 
-Run `ng test arlas-maplibre` to execute the unit tests via [Karma](https://karma-runner.github.io).
+On the root of this repository, run
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```shell
+$ npm run test-maplibre
+```

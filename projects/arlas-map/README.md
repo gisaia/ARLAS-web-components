@@ -1,15 +1,20 @@
-# ArlasMap
+# arlas-map
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.0.
+**arlas-map** is an Angular library composed of cartographical components (map, legend, basemap, draw) dedicated to display ARLAS data.
 
-## Code scaffolding
+The components are cartographical-framework-free; except for the draw where MapboxDraw is used.
 
-Run `ng generate component component-name --project arlas-map` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project arlas-map`.
-> Note: Don't forget to add `--project arlas-map` or else it will be added to the default project in your `angular.json` file. 
+The libarary also comes with a number of services. Those services provide cartographical interfaces that should be implemented according to your chosen map framework.
+
+
 
 ## Build
 
-Run `ng build arlas-map` to build the project. The build artifacts will be stored in the `dist/` directory.
+On the root of this repository, run
+
+```shell
+$ npm run build-map
+```
 
 ## Publishing
 
@@ -19,6 +24,3 @@ After building your library with `ng build arlas-map`, go to the dist folder `cd
 
 Run `ng test arlas-map` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
