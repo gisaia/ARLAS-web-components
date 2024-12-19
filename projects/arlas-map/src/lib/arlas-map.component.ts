@@ -44,7 +44,7 @@ import { AbstractArlasMapService } from './arlas-map.service';
 import { ElementIdentifier } from 'arlas-web-components';
 import * as mapJsonSchema from './arlas-map.schema.json';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
-import { MapLayerMouseEvent } from './map/model/events';
+import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
 import { ArlasDataLayer } from './map/model/layers';
 
 @Component({
@@ -59,8 +59,6 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   public map: AbstractArlasMapGL;
   /** Whether the legend is visible (open) or not.*/
   public legendOpen = true;
-  /** DEAD CODE TO REMOVE. KEPT TO THE END OF REFACTOR !!! */
-  private index: any;
   /** Used to clear geojson sources. */
   public emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
@@ -325,13 +323,8 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   }
 
   /** Zooms on clicked feature from map event e. */
-  public zoomOnClick(e) {
-    if (e.features[0].properties.cluster_id !== undefined) {
-      // TODO: should check the this.index is set with good value
-      const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.mapFrameworkService.flyTo(e.lngLat.lat, e.lngLat.lng, expansionZoom, this.map);
-    } else {
-      const zoom = this.map.getZoom();
+  public zoomOnClick(e: MapMouseEvent) {
+    const zoom = this.map.getZoom();
       let newZoom: number;
       if (zoom >= 0 && zoom < 3) {
         newZoom = 4;
@@ -347,7 +340,6 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
         newZoom = 12;
       }
       this.mapFrameworkService.flyTo(e.lngLat.lat, e.lngLat.lng, newZoom, this.map);
-    }
   }
 
   protected queryRender(mapLayerMouseEvent: MapLayerMouseEvent) {
