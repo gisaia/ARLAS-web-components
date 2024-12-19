@@ -158,8 +158,6 @@
             "karmaConfig": "projects/arlas-components/karma.conf.js",
             "styles": [
               "src/styles.css",
-              "node_modules/mapbox-gl/dist/mapbox-gl.css",
-              "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
             ]
           }
@@ -169,9 +167,9 @@
           "options": {
             "eslintConfig": ".eslintrc.json",
             "lintFilePatterns": [
-              "projects/**/*.spec.ts",
-              "projects/**/*.d.ts",
-              "projects/**/*.ts"
+              "projects/arlas-components/**/*.spec.ts",
+              "projects/arlas-components/**/*.d.ts",
+              "projects/arlas-components/**/*.ts"
             ]
           }
         }
@@ -205,6 +203,17 @@
             "tsConfig": "projects/arlas-mapbox/tsconfig.spec.json",
             "karmaConfig": "projects/arlas-mapbox/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.json",
+            "lintFilePatterns": [
+              "projects/arlas-mapbox/**/*.spec.ts",
+              "projects/arlas-mapbox/**/*.d.ts",
+              "projects/arlas-mapbox/**/*.ts"
+            ]
+          }
         }
       }
     },
@@ -236,6 +245,17 @@
             "tsConfig": "projects/arlas-maplibre/tsconfig.spec.json",
             "karmaConfig": "projects/arlas-maplibre/karma.conf.js"
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.json",
+            "lintFilePatterns": [
+              "projects/arlas-maplibre/**/*.spec.ts",
+              "projects/arlas-maplibre/**/*.d.ts",
+              "projects/arlas-maplibre/**/*.ts"
+            ]
+          }
         }
       }
     },
@@ -266,6 +286,17 @@
             "main": "projects/arlas-map/src/test.ts",
             "tsConfig": "projects/arlas-map/tsconfig.spec.json",
             "karmaConfig": "projects/arlas-map/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": ".eslintrc.json",
+            "lintFilePatterns": [
+              "projects/arlas-map/**/*.spec.ts",
+              "projects/arlas-map/**/*.d.ts",
+              "projects/arlas-map/**/*.ts"
+            ]
           }
         }
       }
