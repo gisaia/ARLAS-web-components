@@ -23,24 +23,24 @@ import maplibregl, {
   IControl,
   LngLat,
   LngLatBounds,
+  Map as MaplibreMap,
   MapGeoJSONFeature,
   MapOptions,
   Point,
   PointLike,
   QueryRenderedFeaturesOptions,
   StyleSetterOptions,
-  TypedStyleLayer
 } from 'maplibre-gl';
 import { AbstractArlasMapGL, MapConfig, OnMoveResult } from 'arlas-map';
-import { MapLayers } from 'arlas-map';
 import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
 import { ControlButton, DrawControlsOption } from 'arlas-map';
-import { MapExtent } from 'arlas-map';
+import { MapExtent, ArlasLngLatBounds } from 'arlas-map';
 import bbox from '@turf/bbox';
+import { ArlasLngLat } from 'arlas-map';
 
 
 export interface ArlasMaplibreConfig extends MapConfig<MapOptions> {
-  mapLayers: MapLayers<TypedStyleLayer>;
+  ma
 }
 
 export class ArlasMaplibreGL extends AbstractArlasMapGL {
@@ -277,7 +277,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.getMapProvider().getZoom() };
   }
 
-  public getMapProvider(): maplibregl.Map {
+  public getMapProvider(): MaplibreMap {
     return this._mapProvider;
   }
 
@@ -297,7 +297,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this.getBounds().getSouth();
   }
 
-  public getSouthWestBounds() {
+  public getSouthWestBounds(): ArlasLngLat {
     return this.getBounds().getSouthWest();
   }
 
@@ -339,7 +339,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
 
   /** Gets bounds of the given geometry */
-  public geometryToBound(geometry: any, paddingPercentage?: number): unknown {
+  public geometryToBound(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
     const boundingBox: any = bbox(geometry);
     let west = boundingBox[0];
     let south = boundingBox[1];
@@ -361,18 +361,18 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
       east = east + paddingPercentage * width;
       north = Math.min(90, north + paddingPercentage * height);
     }
-    const maplibreBounds = new LngLatBounds(
-      new LngLat(west, south),
-      new LngLat(east, north)
+    const bounds = new ArlasLngLatBounds(
+      new ArlasLngLat(west, south),
+      new ArlasLngLat(east, north)
     );
-    return maplibreBounds;
+    return bounds;
   }
 
   /**
-   * Fits to given bounds + padding provided by the map configuration.
-   * @param bounds
+   * @description Fits to given bounds + padding provided by the map configuration.
+   * @param bounds Bounds defined by sw and ne coordinates.
    */
-  public fitToPaddedBounds(bounds: LngLatBounds) {
+  public fitToPaddedBounds(bounds: ArlasLngLatBounds) {
     const boundsOptions: maplibregl.FitBoundsOptions = {};
     boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
@@ -385,7 +385,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
 
   public setMaxBounds(lnglatbounds?: maplibregl.LngLatBoundsLike): this {
-    this._mapProvider.setMaxBounds(lnglatbounds);
+    this.getMapProvider().setMaxBounds(lnglatbounds);
     return this;
   }
 
@@ -400,9 +400,18 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
 
-  public fitBounds(bounds: LngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
-    this._mapProvider.fitBounds(bounds, options, eventData);
+  public fitBounds(bounds: ArlasLngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
+    this._mapProvider.fitBounds(this.toMaplibreBound(bounds), options, eventData);
     return this;
+  }
+
+  /**
+   * 
+   * @param bounds Bounds defined by ARLAS
+   * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by maplibre
+   */
+  private toMaplibreBound(bounds: ArlasLngLatBounds) {
+    return new LngLatBounds(bounds.sw, bounds.ne);
   }
 
 

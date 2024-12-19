@@ -18,18 +18,17 @@
  */
 
 import { ArlasPoint } from './geometry';
-import { LngLat } from './map';
+import { ArlasLngLat } from './map';
 
 
-export interface MapLayerMouseEvent {
-    type: string;
-    lngLat: LngLat;
-    /** Any Feature like object. The type is not specified in order to avoid cast issues. */
-    features: any[];
-}
+
 
 export interface MapMouseEvent {
     type: string;
     point: ArlasPoint;
-    lngLat: LngLat;
+    lngLat: ArlasLngLat;
+}
+
+export interface MapLayerMouseEvent extends MapMouseEvent {
+    features: GeoJSON.Feature<GeoJSON.Geometry>[]
 }

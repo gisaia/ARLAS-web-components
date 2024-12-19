@@ -33,7 +33,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './basemap.component.html',
   styleUrls: ['./basemap.component.scss']
 })
-export class BasemapComponent implements OnInit, OnDestroy {
+export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
   private _onDestroy$ = new Subject<boolean>();
 
@@ -46,9 +46,9 @@ export class BasemapComponent implements OnInit, OnDestroy {
   public showList = false;
   public basemaps: ArlasBasemaps;
 
-  public constructor(protected basemapService: BasemapService,
-    protected mapLogicService: AbstractArlasMapService,
-    protected mapService: ArlasMapFrameworkService) {
+  public constructor(protected basemapService: BasemapService<L, S, M>,
+    protected mapLogicService: AbstractArlasMapService<L, S, M>,
+    protected mapService: ArlasMapFrameworkService<L, S, M>) {
 
       this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());
 

@@ -21,7 +21,7 @@ import { fromEvent, map, Observable, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ControlPosition, ControlsOption, DrawControlsOption } from './model/controls';
 import { MapExtent } from './model/extent';
-import { LngLat, OnMoveResult } from './model/map';
+import { ArlasLngLat, ArlasLngLatBounds, OnMoveResult } from './model/map';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 
@@ -67,9 +67,9 @@ export abstract class AbstractArlasMapGL {
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startlngLat: LngLat;
-  public abstract endlngLat: LngLat;
-  public abstract movelngLat: LngLat;
+  public abstract startlngLat: ArlasLngLat;
+  public abstract endlngLat: ArlasLngLat;
+  public abstract movelngLat: ArlasLngLat;
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -292,20 +292,20 @@ export abstract class AbstractArlasMapGL {
   public abstract calcOffsetPoint(): any;
   public abstract disableDragPan(): void;
   public abstract enableDragPan(): void;
-  public abstract fitBounds(bounds: unknown, options?: unknown, unknown?: unknown): this;
-  public abstract fitToPaddedBounds(bounds: any);
+  public abstract fitBounds(bounds: ArlasLngLatBounds, options?: unknown, unknown?: unknown): this;
+  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds);
   public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
-  public abstract getEastBounds(): any;
+  public abstract getEastBounds(): number;
   public abstract getMapExtend(): MapExtent;
   public abstract getMapProvider(): any;
   public abstract getMaxBounds(): unknown;
-  public abstract getNorthBounds(): any;
-  public abstract getNorthEastBounds(): any;
-  public abstract getSouthBounds(): any;
-  public abstract getSouthWestBounds(): any;
-  public abstract getWestBounds(): any;
+  public abstract getNorthBounds(): number;
+  public abstract getNorthEastBounds(): ArlasLngLat;
+  public abstract getSouthBounds(): number;
+  public abstract getSouthWestBounds(): ArlasLngLat;
+  public abstract getWestBounds(): number;
   public abstract getZoom(): number;
   public abstract initDrawControls(config: DrawControlsOption): void;
   public abstract on(type: string, listener: (ev: any) => void): this;
@@ -316,7 +316,7 @@ export abstract class AbstractArlasMapGL {
   public abstract setMaxBounds(unknown?: unknown): this;
   public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   public abstract paddedBounds(npad: number, spad: number, epad: number,
-    wpad: number, map: any, SW, NE): LngLat[];
+    wpad: number, map: any, SW, NE): ArlasLngLat[];
 
 }
 

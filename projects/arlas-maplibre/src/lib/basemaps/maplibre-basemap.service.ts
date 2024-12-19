@@ -22,8 +22,8 @@ import * as pmtiles from 'pmtiles';
 import { MapLibreBasemapStyle } from './basemap.config';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import maplibre, { AddLayerObject, RequestParameters, TypedStyleLayer } from 'maplibre-gl';
-import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
+import maplibre, { AddLayerObject, CanvasSourceSpecification, GeoJSONSource, MapOptions, RequestParameters, TypedStyleLayer } from 'maplibre-gl';
+import { BackgroundLayerSpecification, RasterSourceSpecification, SourceSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { BasemapService, BasemapStyle } from 'arlas-map';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 import { ArlasMaplibreService } from '../arlas-maplibre.service';
@@ -34,7 +34,8 @@ import { MaplibreSourceType } from '../map/model/sources';
 @Injectable({
   providedIn: 'root'
 })
-export class MaplibreBasemapService extends BasemapService {
+export class MaplibreBasemapService extends BasemapService<TypedStyleLayer | AddLayerObject,
+MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions> {
 
   public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMaplibreService,
     private mapService: ArlasMapService

@@ -40,6 +40,8 @@ import {
 import { ArlasAnyLayer } from './model/layers';
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
 import bbox from '@turf/bbox';
+import { ArlasLngLat } from 'arlas-map';
+import { ArlasLngLatBounds } from 'arlas-map';
 
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
@@ -283,7 +285,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
 
 
   /** Gets bounds of the given geometry */
-  public geometryToBound(geometry: any, paddingPercentage?: number): unknown {
+  public geometryToBound(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
     const boundingBox: any = bbox(geometry);
     let west = boundingBox[0];
     let south = boundingBox[1];
@@ -305,18 +307,18 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
       east = east + paddingPercentage * width;
       north = Math.min(90, north + paddingPercentage * height);
     }
-    const mapboxBounds = new LngLatBounds(
-      new LngLat(west, south),
-      new LngLat(east, north)
+    const bounds = new ArlasLngLatBounds(
+      new ArlasLngLat(west, south),
+      new ArlasLngLat(east, north)
     );
-    return mapboxBounds;
+    return bounds;
   }
 
   /**
-   * Fits to given bounds + padding provided by the map configuration.
-   * @param bounds
+   * @description Fits to given bounds + padding provided by the map configuration.
+   * @param bounds Bounds defined by sw and ne coordinates.
    */
-  public fitToPaddedBounds(bounds: mapboxgl.LngLatBoundsLike) {
+  public fitToPaddedBounds(bounds: ArlasLngLatBounds) {
     const boundsOptions: mapboxgl.FitBoundsOptions = {};
     boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
@@ -356,8 +358,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this._mapProvider.getSource(id);
   }
 
-  public fitBounds(bounds: LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData) {
-    this._mapProvider.fitBounds(bounds, options, eventData);
+  public fitBounds(bounds: ArlasLngLatBounds, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData) {
+    this.getMapProvider().fitBounds(this.toMapboxBound(bounds), options, eventData);
     return this;
   }
 
@@ -405,5 +407,15 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   public getBounds() {
     return this.getMapProvider().getBounds();
   }
+
+   /**
+   * 
+   * @param bounds Bounds defined by ARLAS
+   * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by mapbox
+   */
+   private toMapboxBound(bounds: ArlasLngLatBounds) {
+    return new LngLatBounds(bounds.sw, bounds.ne);
+  }
+
 
 }

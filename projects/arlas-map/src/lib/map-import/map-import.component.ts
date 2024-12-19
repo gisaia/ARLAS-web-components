@@ -122,7 +122,7 @@ const SIMPLE_GEOMETRY_OBJECT = ['Polygon', 'Point', 'LineString'];
   templateUrl: './map-import.component.html',
   styleUrls: ['./map-import.component.scss']
 })
-export class MapImportComponent {
+export class MapImportComponent<L, S, M> {
 
   public SHP = 'shp';
   public KML = 'kml';
@@ -151,7 +151,7 @@ export class MapImportComponent {
   };
   private featureIndex = 0;
 
-  @Input() public mapComponent: ArlasMapComponent;
+  @Input() public mapComponent: ArlasMapComponent<L, S, M>;
   @Input() public maxVertexByPolygon: number;
   @Input() public maxFeatures?: number;
   @Input() public maxFileSize?: number;
@@ -163,7 +163,7 @@ export class MapImportComponent {
   private _currentAllowedGeom: string[];
   public constructor(
     public dialog: MatDialog,
-    public mapService: ArlasMapFrameworkService
+    public mapService: ArlasMapFrameworkService<L, S, M>
   ) { }
 
   public promiseTimeout(ms, promise) {
@@ -577,20 +577,20 @@ export class MapImportComponent {
     this.dialogRef.componentInstance.isRunning = false;
     this.dialogRef.componentInstance.errorMessage = error.message;
     switch (this.dialogRef.componentInstance.errorMessage) {
-    case this.TOO_MANY_FEATURES:
-      this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
-      break;
-    case this.TOO_MANY_VERTICES:
-      this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
-      break;
-    case this.FILE_TOO_LARGE:
-      this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
-      break;
-    case this.TIMEOUT:
-      this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
-      break;
-    default:
-      this.dialogRef.componentInstance.errorThreshold = '';
+      case this.TOO_MANY_FEATURES:
+        this.dialogRef.componentInstance.errorThreshold = this.maxFeatures.toString();
+        break;
+      case this.TOO_MANY_VERTICES:
+        this.dialogRef.componentInstance.errorThreshold = this.maxVertexByPolygon.toString();
+        break;
+      case this.FILE_TOO_LARGE:
+        this.dialogRef.componentInstance.errorThreshold = this.formatBytes(this.maxFileSize);
+        break;
+      case this.TIMEOUT:
+        this.dialogRef.componentInstance.errorThreshold = this.maxLoadingTime + ' ms';
+        break;
+      default:
+        this.dialogRef.componentInstance.errorThreshold = '';
     }
     if (this.dialogRef.componentInstance.fileInput) {
       this.dialogRef.componentInstance.fileInput.nativeElement.value = '';

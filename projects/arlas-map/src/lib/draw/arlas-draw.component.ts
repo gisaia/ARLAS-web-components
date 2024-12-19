@@ -50,7 +50,7 @@ import { latLngToWKT } from '../map/tools';
   styleUrls: ['./arlas-draw.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ArlasDrawComponent implements OnInit {
+export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   @Input() public map: AbstractArlasMapGL;
 
@@ -107,8 +107,8 @@ export class ArlasDrawComponent implements OnInit {
 
 
   public constructor(private drawService: MapboxAoiDrawService, private _snackBar: MatSnackBar, private translate: TranslateService,
-    protected mapService: ArlasMapFrameworkService,
-    protected mapLogicService: AbstractArlasMapService) {
+    protected mapService: ArlasMapFrameworkService<L, S, M>,
+    protected mapLogicService: AbstractArlasMapService<L, S, M>) {
     this.drawService.editAoi$.pipe(takeUntilDestroyed()).subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawService.drawBbox$.pipe(takeUntilDestroyed()).subscribe({
       next: (bboxDC: BboxDrawCommand) => {

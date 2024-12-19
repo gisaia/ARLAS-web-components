@@ -30,7 +30,6 @@ import { LegendData } from './legend/legend.config';
 import { MapExtent } from './map/model/extent';
 import { ArlasMapSource } from './map/model/sources';
 import { getLayerName, MapLayers } from './map/model/layers';
-import { AbstractDraw } from './draw/AbstractDraw';
 import { finalize, fromEvent, Subject, Subscription } from 'rxjs';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
 import { MapboxAoiDrawService } from './draw/draw.service';
@@ -38,15 +37,15 @@ import { BasemapService } from './basemaps/basemap.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ArlasBasemaps } from './basemaps/basemaps.model';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
-import cleanCoords from '@turf/clean-coords';
 import { ARLAS_VSET } from './map/model/layers';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { OnMoveResult } from './map/model/map';
+import { ArlasLngLatBounds, OnMoveResult } from './map/model/map';
 import { AbstractArlasMapService } from './arlas-map.service';
-import { latLngToWKT } from './map/tools';
 import { ElementIdentifier } from 'arlas-web-components';
 import * as mapJsonSchema from './arlas-map.schema.json';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
+import { MapLayerMouseEvent } from './map/model/events';
+import { ArlasDataLayer } from './map/model/layers';
 
 @Component({
   selector: 'arlas-map',
@@ -54,7 +53,7 @@ import { ArlasDrawComponent } from './draw/arlas-draw.component';
   styleUrls: ['./arlas-map.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ArlasMapComponent implements OnInit {
+export class ArlasMapComponent<L, S, M> implements OnInit {
 
   /** Map instance. */
   public map: AbstractArlasMapGL;
@@ -76,7 +75,7 @@ export class ArlasMapComponent implements OnInit {
   /** Subscribtion to protomaps basemaps change. Should be unsbscribed when this component is destroyed. */
   protected offlineBasemapChangeSubscription!: Subscription;
 
-  @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent;
+  @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
 
 
 
@@ -94,7 +93,7 @@ export class ArlasMapComponent implements OnInit {
   /** --- LAYERS */
 
   /** @description List of configured (by the builder) layers. */
-  @Input() public mapLayers: MapLayers<unknown>;
+  @Input() public mapLayers: MapLayers<ArlasDataLayer>;
 
   /** --- SCALE & COORDINATES */
 
@@ -253,9 +252,9 @@ export class ArlasMapComponent implements OnInit {
   /** ------------------------------------------------------- VISUAL SEPERATOR - INIT ----------------------------------------- */
 
   public constructor(private drawService: MapboxAoiDrawService,
-    private basemapService: BasemapService, private translate: TranslateService,
-    protected mapService: ArlasMapFrameworkService,
-    protected mapLogicService: AbstractArlasMapService) {
+    private basemapService: BasemapService<L, S, M>, private translate: TranslateService,
+    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
+    protected mapService: AbstractArlasMapService<L, S, M>) {
   }
 
   public ngOnInit() {
@@ -277,7 +276,7 @@ export class ArlasMapComponent implements OnInit {
       this.maxZoom = 0;
     }
     /** BASEMAPS */
-    if (typeof this.defaultBasemapStyle.styleFile === 'string') {
+    if (this.defaultBasemapStyle && typeof this.defaultBasemapStyle.styleFile === 'string') {
       this.defaultBasemapStyle.url = this.defaultBasemapStyle.styleFile;
     }
     this.basemapStyles.forEach(bm => {
@@ -321,7 +320,7 @@ export class ArlasMapComponent implements OnInit {
   /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
   public initTransformRequest() {
     if (!this.transformRequest) {
-      this.transformRequest = this.mapService.getInitTransformRequest();
+      this.transformRequest = this.mapFrameworkService.getInitTransformRequest();
     }
   }
 
@@ -330,7 +329,7 @@ export class ArlasMapComponent implements OnInit {
     if (e.features[0].properties.cluster_id !== undefined) {
       // TODO: should check the this.index is set with good value
       const expansionZoom = this.index.getClusterExpansionZoom(e.features[0].properties.cluster_id);
-      this.mapService.flyTo(e.lngLat.lat, e.lngLat.lng, expansionZoom, this.map);
+      this.mapFrameworkService.flyTo(e.lngLat.lat, e.lngLat.lng, expansionZoom, this.map);
     } else {
       const zoom = this.map.getZoom();
       let newZoom: number;
@@ -347,15 +346,15 @@ export class ArlasMapComponent implements OnInit {
       } else {
         newZoom = 12;
       }
-      this.mapService.flyTo(e.lngLat.lat, e.lngLat.lng, newZoom, this.map);
+      this.mapFrameworkService.flyTo(e.lngLat.lat, e.lngLat.lng, newZoom, this.map);
     }
   }
 
-  protected queryRender(e) {
-    const hasCrossOrDrawLayer = this.mapService.queryFeatures(e, this.map, CROSS_LAYER_PREFIX);
+  protected queryRender(mapLayerMouseEvent: MapLayerMouseEvent) {
+    const hasCrossOrDrawLayer = this.mapFrameworkService.queryFeatures(mapLayerMouseEvent, this.map, CROSS_LAYER_PREFIX);
     if (!this.drawService.isDrawingBbox && !this.drawService.isDrawingPolygon
       && !this.drawService.isDrawingCircle && !this.drawService.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
-      this.onFeatureClick.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      this.onFeatureClick.next({ features: mapLayerMouseEvent.features, point: [mapLayerMouseEvent.lngLat.lng, mapLayerMouseEvent.lngLat.lat] });
     }
   }
 
@@ -366,7 +365,7 @@ export class ArlasMapComponent implements OnInit {
         const iconName = icon.path.split('.')[0];
         const iconPath = this.ICONS_BASE_PATH + icon.path;
         const iconErrorMessage = 'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found';
-        this.mapService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable });
+        this.mapFrameworkService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable });
       });
 
     }
@@ -379,7 +378,7 @@ export class ArlasMapComponent implements OnInit {
    */
   public declareMap() {
     this.initTransformRequest();
-    const config: MapConfig<unknown> = {
+    const config: MapConfig<M> = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
       fitBoundsPadding: this.fitBoundsPadding,
       margePanForLoad: this.margePanForLoad,
@@ -405,7 +404,7 @@ export class ArlasMapComponent implements OnInit {
         pitchWithRotate: false,
         transformRequest: this.transformRequest,
         attributionControl: false,
-      },
+      } as M,
       controls: {
         mapAttribution: {
           enable: true,
@@ -423,7 +422,7 @@ export class ArlasMapComponent implements OnInit {
         }
       }
     };
-    this.map = this.mapService.createMap(config);
+    this.map = this.mapFrameworkService.createMap(config);
     fromEvent(window, 'beforeunload').subscribe(() => {
       this.onMapClosed.next(this.map.getMapExtend());
     });
@@ -432,28 +431,28 @@ export class ArlasMapComponent implements OnInit {
       this.basemapService.declareProtomapProtocol(this.map);
       this.basemapService.addProtomapBasemap(this.map);
       this.addIcons();
-      this.mapLogicService.declareArlasDataSources(this.dataSources, this.emptyData, this.map);
-      this.mapLogicService.declareBasemapSources(this.mapSources, this.map);
-      this.mapLogicService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers, this.map);
+      this.mapService.declareArlasDataSources(this.dataSources, this.emptyData, this.map);
+      this.mapService.declareBasemapSources(this.mapSources, this.map);
+      this.mapService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers, this.map);
       this.listenToLayersEvents();
     });
 
-    this.mapService.onMapEvent('load', this.map, () => {
+    this.mapFrameworkService.onMapEvent('load', this.map, () => {
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          this.mapLogicService.updateVisibility(visibilityStatus, this.visualisationSetsConfig, this.map);
+          this.mapService.updateVisibility(visibilityStatus, this.visualisationSetsConfig, this.map);
         });
       }
       this.onMapLoaded.next(true);
     });
 
-    this.map.onMoveEnd(this.mapLogicService.visualisationsSets).subscribe((moveResult => {
+    this.map.onMoveEnd(this.mapService.visualisationsSets).subscribe((moveResult => {
       this.onMove.next(moveResult);
     }));
 
     if (!!this.redrawSource) {
       this.redrawSource.subscribe(sd => {
-        this.mapService.setDataToGeojsonSource(this.mapService.getSource(sd.source, this.map), {
+        this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map), {
           'type': 'FeatureCollection',
           'features': sd.data
         });
@@ -467,19 +466,19 @@ export class ArlasMapComponent implements OnInit {
   public listenToLayersEvents() {
     /** Zooms on the clicked feature of the given layers. */
     this.mapLayers.events.zoomOnClick.forEach(layerId => {
-      this.mapService.onLayerEvent('click', this.map, layerId, (e) => this.zoomOnClick(e));
+      this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) => this.zoomOnClick(e));
     });
     this.mapLayers.events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
-      this.mapService.onLayerEvent('mousemove', this.map, layerId, (e) =>
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
         this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] }));
       /** Emits an empty object on mouse leaving a feature. */
-      this.mapService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
         this.onFeatureHover.next({}));
     });
     /** Emits the clicked on feature. */
     this.mapLayers.events.emitOnClick.forEach(layerId => {
-      this.mapService.onLayerEvent('click', this.map, layerId, (e) =>
+      this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) =>
         this.queryRender(e));
     });
     const drawPolygonLayers = [
@@ -491,10 +490,10 @@ export class ArlasMapComponent implements OnInit {
       .reduce((p, ac) => ac.concat(p), []);
     /** Sets mouse cursor on drawn features */
     drawPolygonLayers.forEach(layerId => {
-      this.mapService.onLayerEvent('mousemove', this.map, layerId, (e) =>
-        this.mapService.setMapCursor(this.map, 'pointer'));
-      this.mapService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
-        this.mapService.setMapCursor(this.map, ''));
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
+        this.mapFrameworkService.setMapCursor(this.map, 'pointer'));
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
+        this.mapFrameworkService.setMapCursor(this.map, ''));
     });
   }
 
@@ -502,7 +501,7 @@ export class ArlasMapComponent implements OnInit {
 
   /** Sets the layers order according to the current order of `visualisationSetsConfig` list*/
   public reorderLayers() {
-    this.mapLogicService.reorderLayers(this.visualisationSetsConfig, this.map);
+    this.mapService.reorderLayers(this.visualisationSetsConfig, this.map);
   }
 
   /** ------------------------------------------------------- VISUAL SEPERATOR - DRAWING ----------------------------------------- */
@@ -535,7 +534,7 @@ export class ArlasMapComponent implements OnInit {
    * @param visualisationName Name of the visualisation.
    */
   public emitVisualisations(visualisationName: string) {
-    const layers = this.mapLogicService.updateLayoutVisibility(visualisationName, this.visualisationSetsConfig, this.map);
+    const layers = this.mapService.updateLayoutVisibility(visualisationName, this.visualisationSetsConfig, this.map);
     this.visualisations.emit(layers);
     this.reorderLayers();
   }
@@ -559,9 +558,9 @@ export class ArlasMapComponent implements OnInit {
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    const layers = Array.from(this.mapLogicService.findVisualisationSetLayer(visuName, this.visualisationSetsConfig));
+    const layers = Array.from(this.mapService.findVisualisationSetLayer(visuName, this.visualisationSetsConfig));
     moveItemInArray(layers, event.previousIndex, event.currentIndex);
-    this.mapLogicService.setVisualisationSetLayers(visuName, layers, this.visualisationSetsConfig);
+    this.mapService.setVisualisationSetLayers(visuName, layers, this.visualisationSetsConfig);
     this.reorderLayers();
   }
   public hideBasemapSwitcher() {
@@ -571,7 +570,7 @@ export class ArlasMapComponent implements OnInit {
    * Fit to given bounds. Options are for padding.
    * @param bounds Bounds of the map to fit to.
    */
-  public fitToPaddedBounds(bounds: any) {
+  public fitToPaddedBounds(bounds: ArlasLngLatBounds) {
     this.map.fitToPaddedBounds(bounds);
   }
   /**
@@ -583,18 +582,18 @@ export class ArlasMapComponent implements OnInit {
   }
   /** Highlights, in all data sources,the feature(s) having the given elementIdentifier */
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.mapLogicService.highlightFeature(this.mapLayers, this.map, featureToHightLight);
+    this.mapService.highlightFeature(this.mapLayers, this.map, featureToHightLight);
   }
   /** Selects, in all data sources,the feature(s) having the given elementIdentifier */
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    this.mapLogicService.selectFeatures(this.mapLayers, this.map, elementToSelect);
+    this.mapService.selectFeatures(this.mapLayers, this.map, elementToSelect);
   }
   /** Selects, in all data sources, all the features having the given elementIdentifiers and under the given collection.
    * @param features list of features identifiers.
    * @param collection data collection (metadata of the data source).
   */
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    this.mapLogicService.selectFeaturesByCollection(this.mapLayers, this.map, features, collection);
+    this.mapService.selectFeaturesByCollection(this.mapLayers, this.map, features, collection);
   }
 
   public static getMapJsonSchema(): Object {

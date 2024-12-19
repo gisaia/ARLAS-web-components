@@ -21,21 +21,23 @@ import { Injectable } from '@angular/core';
 import { ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
-  GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, Point, Popup,
+  GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, MapOptions, Point, Popup,
   RasterLayerSpecification, RasterSourceSpecification, ResourceType,
   SourceSpecification, SymbolLayerSpecification, TypedStyleLayer
 } from 'maplibre-gl';
 import { ArlasMaplibreConfig, ArlasMaplibreGL } from './map/ArlasMaplibreGL';
 import { ArlasDraw } from './draw/ArlasDraw';
-import { LngLat } from 'arlas-map';
 import { FeatureCollection } from '@turf/helpers';
 import { from } from 'rxjs';
 import { MaplibreVectorStyle } from './map/model/vector-style';
 import { ExternalEvent } from 'arlas-map';
+import { MaplibreSourceType } from './map/model/sources';
+import { AbstractArlasMapGL } from 'arlas-map';
 
 /** Maplibre implementation of ArlasMapFrameworkService */
 @Injectable()
-export class ArlasMaplibreService extends ArlasMapFrameworkService {
+export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLayer | AddLayerObject,
+ MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions> {
 
   public constructor() {
     super();
@@ -55,17 +57,20 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService {
     return new ArlasDraw(drawOptions, enabled, map);
   }
 
-  public getPointFromScreen(e, container: HTMLElement): Point {
+  /**
+   * Gets the Point (geometry) from mouse click on the screen.
+   * @param mouseEvent Click mouse event.
+   * @param container Map container.
+   * @returns a Point instance.
+   */
+  public getPointFromScreen(mouseEvent: MouseEvent, container: HTMLElement): Point {
     const rect = container.getBoundingClientRect();
     return new Point(
-      e.clientX - rect.left - container.clientLeft,
-      e.clientY - rect.top - container.clientTop
+      mouseEvent.clientX - rect.left - container.clientLeft,
+      mouseEvent.clientY - rect.top - container.clientTop
     );
   };
 
-  public getLngLatBound(c1: LngLat, c2: LngLat): LngLatBounds {
-    return new LngLatBounds(c1, c2);
-  }
   public boundsToString(bounds: LngLatBounds): string {
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
@@ -145,7 +150,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService {
 
 
   public getAllSources(map: ArlasMaplibreGL) {
-    return map.getMapProvider().getStyle().sources;
+    return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;
   }
 
   /**
@@ -539,7 +544,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService {
   }
 
   public getSource(sourceId: string, map: ArlasMaplibreGL) {
-    return map.getMapProvider().getSource(sourceId);
+    return (map as AbstractArlasMapGL).getMapProvider().getSource(sourceId);
   }
 
 

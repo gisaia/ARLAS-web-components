@@ -20,7 +20,7 @@
 import { Injectable } from '@angular/core';
 import * as pmtiles from 'pmtiles';
 import { MapboxBasemapStyle } from './basemap.config';
-import mapboxgl from 'mapbox-gl';
+import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { AbstractArlasMapGL, BasemapService, BasemapStyle } from 'arlas-map';
@@ -33,7 +33,7 @@ import { ArlasMapSource } from 'arlas-map';
 import { ArlasAnyLayer } from '../map/model/layers';
 
 @Injectable()
-export class MapboxBasemapService extends BasemapService {
+export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions> {
 
   public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapboxService,
     private mapService: ArlasMapService

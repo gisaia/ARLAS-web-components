@@ -17,6 +17,16 @@
  * under the License.
  */
 
+export interface ArlasDataLayer {
+  id: string;
+  type: string;
+  source?: string;
+  metadata?: LayerMetadata,
+  paint: PaintValue,
+  layout?: any;
+  filter?: any;
+}
+
 export interface MapLayers<T> {
   layers: Array<T>;
   externalEventLayers?: Array<ExternalEventLayer>;

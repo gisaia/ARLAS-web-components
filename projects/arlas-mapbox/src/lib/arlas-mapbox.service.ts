@@ -20,21 +20,22 @@
 import { Injectable } from '@angular/core';
 import {
   ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX,
-  LngLat, SCROLLABLE_ARLAS_ID
+  SCROLLABLE_ARLAS_ID
 } from 'arlas-map';
 import {
   AnyLayer, AnySourceData, GeoJSONSource,
-  GeoJSONSourceRaw, LngLatBounds, Point, Popup, RasterLayer, RasterSource, SymbolLayer
+  GeoJSONSourceRaw, LngLatBounds, MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
 } from 'mapbox-gl';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasAnyLayer } from './map/model/layers';
 import { FeatureCollection } from '@turf/helpers';
 import { MapboxVectorStyle } from './map/model/vector-style';
-import { ExternalEvent } from 'arlas-map';
+import { AbstractArlasMapGL } from 'arlas-map';
+import { MapboxSourceType } from './map/model/sources';
 
 @Injectable()
-export class ArlasMapboxService extends ArlasMapFrameworkService {
+export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions> {
 
   public constructor() {
     super();
@@ -54,17 +55,21 @@ export class ArlasMapboxService extends ArlasMapFrameworkService {
     return (new ArlasDraw(drawOptions, enabled, map));
   }
 
-  public getPointFromScreen(e, container: HTMLElement): Point {
+  /**
+   * Gets the Point (geometry) from mouse click on the screen.
+   * @param mouseEvent Click mouse event.
+   * @param container Map container.
+   * @returns a Point instance.
+   */
+  public getPointFromScreen(mouseEvent: MouseEvent, container: HTMLElement): Point {
     const rect = container.getBoundingClientRect();
     return new Point(
-      e.clientX - rect.left - container.clientLeft,
-      e.clientY - rect.top - container.clientTop
+      mouseEvent.clientX - rect.left - container.clientLeft,
+      mouseEvent.clientY - rect.top - container.clientTop
     );
   };
 
-  public getLngLatBound(c1: LngLat, c2: LngLat): LngLatBounds {
-    return new LngLatBounds(c1, c2);
-  }
+  
   public boundsToString(bounds: LngLatBounds): string {
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
@@ -442,23 +447,6 @@ export class ArlasMapboxService extends ArlasMapFrameworkService {
     return map.getMapProvider().getSource(sourceId);
   }
 
-  public addArlasDataLayer(map: ArlasMapboxGL, layer: ArlasAnyLayer, arlasDataLayers: Map<string, ArlasAnyLayer>, before?: string) {
-    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-    const scrollableLayer = arlasDataLayers.get(scrollableId);
-    if (!!scrollableLayer) {
-      this.addLayer(map, scrollableLayer, before);
-    }
-    this.addLayer(map, layer, before);
-    /** add stroke layer if the layer is a fill */
-    if (layer.type === 'fill') {
-      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = arlasDataLayers.get(strokeId);
-      if (!!strokeLayer) {
-        this.addLayer(map, strokeLayer, before);
-      }
-    }
-  }
-
   /**
    * @override Mapbox implementation.
    * Returns a list of layers whose ids include the the given id pattern.
@@ -489,49 +477,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService {
     }
   }
 
-  public moveArlasDataLayer(map: ArlasMapboxGL, layerId: string, arlasDataLayers: Map<string, ArlasAnyLayer>, before?: string) {
-    const layer = arlasDataLayers.get(layerId);
-    const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-    const scrollableLayer = arlasDataLayers.get(scrollableId);
-    if (!!scrollableLayer && this.hasLayer(map, scrollableId)) {
-      this.moveLayer(map, scrollableId);
-    }
-    if (!!this.hasLayer(map, layerId)) {
-      this.moveLayer(map, layerId);
-      if (layer.type === 'fill') {
-        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        const strokeLayer = arlasDataLayers.get(strokeId);
-        if (!!strokeLayer && this.hasLayer(map, strokeId)) {
-          this.moveLayer(map, strokeId);
-        }
-        if (!!strokeLayer && !!strokeLayer.id) {
-          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-          const selectLayer = arlasDataLayers.get(selectId);
-          if (!!selectLayer && this.hasLayer(map, selectId)) {
-            this.moveLayer(map, selectId);
-          }
-          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-          const hoverLayer = arlasDataLayers.get(hoverId);
-          if (!!hoverLayer && this.hasLayer(map, hoverId)) {
-            this.moveLayer(map, hoverId);
-          }
-        }
-      }
-    }
-    const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
-    const selectLayer = arlasDataLayers.get(selectId);
-    if (!!selectLayer && this.hasLayer(map, selectId)) {
-      this.moveLayer(map, selectId);
-    }
-    const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
-    const hoverLayer = arlasDataLayers.get(hoverId);
-    if (!!hoverLayer && this.hasLayer(map, hoverId)) {
-      this.moveLayer(map, hoverId);
-    }
-  }
+ 
 
   public getAllSources(map: ArlasMapboxGL) {
-    return map.getMapProvider().getStyle().sources;
+    return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;
   }
 
 

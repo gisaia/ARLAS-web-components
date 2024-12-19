@@ -28,7 +28,7 @@ import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 @Injectable({
   providedIn: 'root'
 })
-export abstract class BasemapService {
+export abstract class BasemapService<L, S, M> {
 
   protected POWERED_BY_ARLAS = ' Powered by ARLAS.';
   protected LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
@@ -41,7 +41,7 @@ export abstract class BasemapService {
   protected protomapBasemapAddedSource = new Subject<boolean>();
   public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  protected constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapFrameworkService) { }
+  protected constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>) { }
 
   public setBasemaps(basemaps: ArlasBasemaps) {
     this.basemaps = basemaps;

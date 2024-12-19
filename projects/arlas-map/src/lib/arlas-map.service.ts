@@ -23,7 +23,7 @@ import { FeatureCollection } from '@turf/helpers';
 import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
 import { ArlasMapSource } from './map/model/sources';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
-import { ExternalEvent, MapLayers } from './map/model/layers';
+import { ArlasDataLayer, ExternalEvent, MapLayers } from './map/model/layers';
 import { ElementIdentifier } from 'arlas-web-components';
 
 /**
@@ -33,10 +33,10 @@ import { ElementIdentifier } from 'arlas-web-components';
 @Injectable({
   providedIn: 'root'
 })
-export abstract class AbstractArlasMapService {
+export abstract class AbstractArlasMapService<L, S, M> {
   /** IMPORTANT NOTE: All the attributes/params that are typed with "any", will have the right type in the implementation. */
   public dataSources: any[] = [];
-  public abstract layersMap: Map<string, any>;
+  public abstract layersMap: Map<string, ArlasDataLayer>;
   public visualisationsSets: {
     visualisations: Map<string, Set<string>>;
     status: Map<string, boolean>;
@@ -44,34 +44,34 @@ export abstract class AbstractArlasMapService {
       visualisations: new Map(),
       status: new Map()
     };
-  public constructor(public mapService: ArlasMapFrameworkService) { }
+  public constructor(public mapFrameworkService: ArlasMapFrameworkService<L, S, M>) { }
 
   /** Add to map the sources that will host ARLAS data.  */
   public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (dataSourcesIds) {
       dataSourcesIds.forEach(sourceId => {
-        const source = this.mapService.createGeojsonSource(data);
+        const source = this.mapFrameworkService.createGeojsonSource(data);
         this.dataSources.push(source);
         /** For an implementation that doesn't add a source to map
          * --- for instance Openalayers, adds the source to layer ---
          * the following line should be reconsidered.
          */
-        this.mapService.setSource(sourceId, source, map);
+        this.mapFrameworkService.setSource(sourceId, source, map);
       });
     }
   }
 
   public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
-      const source = this.mapService.createGeojsonSource(data);
-      this.mapService.setSource(labelSourceId, source, map);
+      const source = this.mapFrameworkService.createGeojsonSource(data);
+      this.mapFrameworkService.setSource(labelSourceId, source, map);
     }
   }
 
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
-      const source = this.mapService.getSource(labelSourceId, map);
-      this.mapService.setDataToGeojsonSource(source, data);
+      const source = this.mapFrameworkService.getSource(labelSourceId, map);
+      this.mapFrameworkService.setDataToGeojsonSource(source, data);
     }
   }
 
@@ -84,7 +84,7 @@ export abstract class AbstractArlasMapService {
       });
       mapSourcesMap.forEach((mapSource, id) => {
         if (typeof (mapSource.source) !== 'string') {
-          this.mapService.setSource(id, mapSource.source, map);
+          this.mapFrameworkService.setSource(id, mapSource.source, map);
         }
       });
     }
@@ -111,6 +111,20 @@ export abstract class AbstractArlasMapService {
     }
   }
 
+  public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
+
+
+  /**
+   * Add a layer to the map instance. This method handles any specific treatment when adding ARLAS data.
+   * For instance, in mapbox and maplibre implementation, adding a fill layer needs to add systematically the stroke layer.
+   * @param map Map instance.
+   * @param layer A layer. It could be a layer identifier OR a layer object (it will depend on the framwork implementation).
+   * @param layersMap Map of ARLAS data layers and their ids (the ids being the key of the map).
+   * @param beforeId Identifier of an already added layer. The layers of layersMap are added under this 'beforeId' layer.
+   */
+  public abstract addArlasDataLayer(map: AbstractArlasMapGL, layer: ArlasDataLayer | string,
+    layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
+
   public addArlasDataLayers(visualisationSetsConfig: VisualisationSetConfig[], mapLayers: MapLayers<any>, map: AbstractArlasMapGL) {
     this.initMapLayers(mapLayers, map);
     this.initVisualisationSet(visualisationSetsConfig);
@@ -120,14 +134,14 @@ export abstract class AbstractArlasMapService {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
           const layer = this.layersMap.get(l);
-          this.mapService.addArlasDataLayer(map, layer, this.layersMap);
+          this.addArlasDataLayer(map, layer, this.layersMap);
         }
       }
     }
     this._addExternalEventLayers(mapLayers, map);
     this.visualisationsSets.status.forEach((visible, vs) => {
       this.visualisationsSets.visualisations.get(vs).forEach(l => {
-        this.mapService.setLayerVisibility(l, visible, map);
+        this.mapFrameworkService.setLayerVisibility(l, visible, map);
       });
     });
     this.reorderLayers(visualisationSetsConfig, map);
@@ -138,7 +152,7 @@ export abstract class AbstractArlasMapService {
       mapLayers.layers
         .filter(layer => mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
         .forEach(l => {
-          this.mapService.addLayer(map, l);
+          this.mapFrameworkService.addLayer(map, l);
         });
     }
   }
@@ -151,7 +165,7 @@ export abstract class AbstractArlasMapService {
       if (!!visualisation.layers && visualisation.enabled) {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
-          this.mapService.moveArlasDataLayer(map, l, this.layersMap);
+          this.moveArlasDataLayer(map, l, this.layersMap);
         }
       }
     }
@@ -159,51 +173,14 @@ export abstract class AbstractArlasMapService {
 
   }
 
-  private reorderDrawLayers(map: AbstractArlasMapGL) {
-    this.mapService.getLayersFromPattern(map, '.cold').forEach(l => this.mapService.moveLayer(map, l.id));
-    this.mapService.getLayersFromPattern(map, '.hot').forEach(l => this.mapService.moveLayer(map, l.id));
-  }
+  protected abstract reorderDrawLayers(map: AbstractArlasMapGL);
 
 
-  public filterLayersOnEvent(mapLayers: MapLayers<any>, map: AbstractArlasMapGL,
+  public abstract filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
     visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-    collection?: string): void {
-    if (mapLayers && mapLayers.externalEventLayers) {
-      mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
-        if (this.mapService.hasLayer(map, layer.id)) {
-          let originalLayerIsVisible = false;
-          const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
-          if (isCollectionCompatible) {
-            const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
-            const originalLayer = this.mapService.getAllLayers(map).find(l => l.id === originalLayerId);
-            if (!!originalLayer) {
-              originalLayerIsVisible = this.mapService.isLayerVisible(originalLayer);
-            }
-            const layerFilter: Array<any> = [];
-            const externalEventLayer = this.layersMap.get(layer.id);
-            if (!!externalEventLayer && !!externalEventLayer.filter) {
-              externalEventLayer.filter.forEach(f => {
-                layerFilter.push(f);
-              });
-            }
-            if (layerFilter.length === 0) {
-              layerFilter.push('all');
-            }
-            if (visibilityCondition && originalLayerIsVisible) {
-              layerFilter.push(visibilityFilter);
-              this.mapService.filterGeojsonData(map, layer.id, layerFilter);
-            } else {
-              this.mapService.filterGeojsonData(map, layer.id, (layer as any).filter);
-            }
-            this.mapService.setLayerVisibility(layer.id, visibilityCondition && originalLayerIsVisible, map);
-          }
-        }
-      });
-    }
-  }
+    collection?: string): void;
 
-  public selectFeatures(mapLayers: MapLayers<any>, map: AbstractArlasMapGL, elementToSelect: Array<ElementIdentifier>) {
+  public selectFeatures(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL, elementToSelect: Array<ElementIdentifier>) {
     if (elementToSelect) {
       const ids = elementToSelect.length > 0 ?
         elementToSelect.reduce((memo, element) => {
@@ -212,11 +189,11 @@ export abstract class AbstractArlasMapService {
         }, []) : [];
       const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
       const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-      this.filterLayersOnEvent(mapLayers, map, (elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
+      this.filterLayers(mapLayers, map, (elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
   }
 
-  public highlightFeature(mapLayers: MapLayers<any>, map: AbstractArlasMapGL,
+  public highlightFeature(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
     featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight && featureToHightLight.elementidentifier) {
       const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
@@ -225,15 +202,15 @@ export abstract class AbstractArlasMapService {
       }
       const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
         ['literal', ids]];
-      this.filterLayersOnEvent(mapLayers, map, !featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
+      this.filterLayers(mapLayers, map, !featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
     }
   }
 
-  public selectFeaturesByCollection(mapLayers: MapLayers<any>, map: AbstractArlasMapGL, features: Array<ElementIdentifier>, collection: string) {
+  public selectFeaturesByCollection(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL, features: Array<ElementIdentifier>, collection: string) {
     const ids: Array<number | string> = features.map(f => f.idValue);
     const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
-    this.filterLayersOnEvent(mapLayers, map, (features.length > 0), visibilityFilter, ExternalEvent.select, collection);
+    this.filterLayers(mapLayers, map, (features.length > 0), visibilityFilter, ExternalEvent.select, collection);
   }
 
 
@@ -252,7 +229,7 @@ export abstract class AbstractArlasMapService {
         }
       });
       layersSet.forEach(ll => {
-        this.mapService.setLayerVisibility(ll, false, map);
+        this.mapFrameworkService.setLayerVisibility(ll, false, map);
       });
     }
     this.visualisationsSets.status.set(visualisationName, visuStatus);
@@ -261,7 +238,7 @@ export abstract class AbstractArlasMapService {
       if (this.visualisationsSets.status.get(v)) {
         ls.forEach(l => {
           layers.add(l);
-          this.mapService.setLayerVisibility(l, true, map);
+          this.mapFrameworkService.setLayerVisibility(l, true, map);
         });
       }
     });
@@ -279,7 +256,7 @@ export abstract class AbstractArlasMapService {
           }
         });
         if (layerInVisualisations) {
-          this.mapService.setLayerVisibility(l, false, map);
+          this.mapFrameworkService.setLayerVisibility(l, false, map);
         }
       } else {
         let oneVisualisationEnabled = false;
@@ -290,11 +267,11 @@ export abstract class AbstractArlasMapService {
           }
           if (ls.has(l) && v.enabled) {
             oneVisualisationEnabled = true;
-            this.mapService.setLayerVisibility(l, true, map);
+            this.mapFrameworkService.setLayerVisibility(l, true, map);
           }
         });
         if (!oneVisualisationEnabled && layerInVisualisations) {
-          this.mapService.setLayerVisibility(l, false, map);
+          this.mapFrameworkService.setLayerVisibility(l, false, map);
         }
       }
     });

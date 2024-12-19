@@ -35,7 +35,7 @@ export interface OnMoveResult {
   visibleLayers: Set<string>;
 }
 
-export class LngLat {
+export class ArlasLngLat {
   public lng: number;
   public lat: number;
 
@@ -43,4 +43,35 @@ export class LngLat {
     this.lng = lng;
     this.lat = lat;
   }
+
+  public toArray(): number[] {
+    return [this.lng, this.lat];
+  }
 }
+
+export class ArlasLngLatBounds {
+  sw: ArlasLngLat;
+  ne: ArlasLngLat;
+
+  constructor(sw: ArlasLngLat, ne: ArlasLngLat) {
+    this.sw = sw;
+    this.ne = ne;
+  }
+
+  public getEast() {
+    return this.ne.lng;
+  }
+
+  public getNorth() {
+    return this.ne.lat;
+  }
+
+  public getWest() {
+    return this.sw.lng;
+  }
+
+  public getSouth() {
+    return this.sw.lat;
+  }
+}
+
