@@ -19,7 +19,7 @@
 import tinycolor from 'tinycolor2';
 
 import { Injectable } from '@angular/core';
-import { CircleLegend, getMax, Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
+import { CircleLegend, getMax, HEATMAP_DENSITY, IN, INTERPOLATE, Legend, LegendData, MATCH, NOT_IN, OTHER, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
 import { TranslateService } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { MAX_CIRLE_RADIUS } from 'arlas-map';
