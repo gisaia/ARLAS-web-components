@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { MapglLibreDemoComponent } from './mapgl-libre-demo.component';
 import { MatInputModule } from '@angular/material/input';
@@ -27,7 +27,7 @@ describe('MapglDemoComponent', () => {
   let component: MapglLibreDemoComponent;
   let fixture: ComponentFixture<MapglLibreDemoComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ MapglLibreDemoComponent ],
       imports: [

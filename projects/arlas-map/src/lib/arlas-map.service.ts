@@ -93,6 +93,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
+  
   public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
 
 

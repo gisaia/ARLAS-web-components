@@ -39,7 +39,6 @@ validGeomDrawPolygonMode.fireOnStop = function () {
 };
 
 validGeomDrawPolygonMode.clickOnVertex = function (state) {
-  console.log(MapboxDraw.constants.modes.STATIC);
   return this.changeMode(MapboxDraw.constants.modes.STATIC, {});
 };
 

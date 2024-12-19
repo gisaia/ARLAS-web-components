@@ -26,6 +26,9 @@ import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers
 import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
 import { GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
    OperationSelectModel } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
+import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
+import { AddLayerObject, CanvasSourceSpecification, GeoJSONSource, MapOptions, RasterSourceSpecification, SourceSpecification, TypedStyleLayer } from 'maplibre-gl';
+import { MaplibreSourceType } from '../../../projects/arlas-maplibre/src/lib/map/model/sources';
 
 
 @Component({
@@ -35,8 +38,10 @@ import { GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSetting
 })
 export class MapglLibreDemoComponent implements OnInit {
 
-  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent;
-  // @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapglImportComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<TypedStyleLayer | AddLayerObject,
+  MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions>;
+  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<TypedStyleLayer | AddLayerObject,
+  MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions>;;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';

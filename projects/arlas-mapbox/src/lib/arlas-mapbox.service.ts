@@ -477,15 +477,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     }
   }
 
- 
-
   public getAllSources(map: ArlasMapboxGL) {
     return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;
   }
-
-
-
-
-
-
 }

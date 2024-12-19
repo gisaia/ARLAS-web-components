@@ -27,9 +27,9 @@ releaseProd(){
     fi
 
     echo "=> Get "$BRANCH" branch of ARLAS-web-components project"
-    # git fetch
-    # git checkout "$BRANCH"
-    # git pull origin "$BRANCH"
+    git fetch
+    git checkout "$BRANCH"
+    git pull origin "$BRANCH"
     echo "=> Test to lint and build the project on "$BRANCH" branch"
     npm --no-git-tag-version version ${VERSION}
     npm --no-git-tag-version --prefix projects/arlas-components version ${VERSION}

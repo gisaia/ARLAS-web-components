@@ -294,7 +294,7 @@ export abstract class AbstractArlasMapGL {
   public abstract enableDragPan(): void;
   public abstract fitBounds(bounds: ArlasLngLatBounds, options?: unknown, unknown?: unknown): this;
   public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds);
-  public abstract geometryToBound(geom: any, paddingPercentage?: number): unknown;
+  public abstract geometryToBounds(geom: any, paddingPercentage?: number): unknown;
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
   public abstract getEastBounds(): number;

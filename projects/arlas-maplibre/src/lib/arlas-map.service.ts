@@ -180,6 +180,17 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     this.mapService.getLayersFromPattern(map, '.hot').forEach(l => this.mapService.moveLayer(map, l.id));
   }
 
+  /**
+   * @override Maplibre implementation.
+   * @description Moves the given layer to the top in map instance OR optionnaly before a layer.
+   * This method handles any specific treatment when adding ARLAS data.
+   * For instance, in mapbox implementation, moving a fill layer needs to move systematically the stroke layer.
+   * @param map Map instance.
+   * @param layer A layer. It could be a layer identifier OR a layer object (it will depend on the framwork implementation).
+   * @param arlasDataLayers Map of ARLAS data layers and their ids (the ids being the key of the map).
+   * @param beforeId Identifier of an already added layer. The layers of layersMap are added under this 'beforeId' layer.
+   */
+
   public moveArlasDataLayer(map: ArlasMaplibreGL, layerId: string, arlasDataLayers: Map<string, ArlasDataLayer>, before?: string) {
     const layer = arlasDataLayers.get(layerId);
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);

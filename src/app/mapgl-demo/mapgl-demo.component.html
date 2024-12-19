@@ -14,17 +14,17 @@
   <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
 </div>
 <div class="mapgl-options">
-  <!-- <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
+  <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
     <mat-icon aria-label="Import polygon on your map">get_app</mat-icon>
-  </button> -->
+  </button>
   <button mat-icon-button (click)="openSettings()" class="mapgl-settings-button">
     <mat-icon aria-label="Map settings">layers</mat-icon>
   </button>
 </div>
 <div id="mapgldemo" style="height:94%; width:100%">
-  <!-- <arlas-mapgl-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="5" [maxLoadingTime]="10000"
+  <arlas-map-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="5" [maxLoadingTime]="10000"
     [maxFileSize]="1050000" [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']">
-  </arlas-mapgl-import> -->
+  </arlas-map-import>
   <arlas-map-settings #mapSettings>
 
   </arlas-map-settings>

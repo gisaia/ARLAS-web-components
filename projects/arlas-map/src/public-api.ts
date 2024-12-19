@@ -93,3 +93,4 @@ export { VectorStyle, ArlasCircle, ArlasFill, VectorStyleEnum } from './lib/map/
 export { AbstractArlasMapService } from './lib/arlas-map.service';
 /** Map framework logic */
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
+export {GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER} from './lib/map/model/filters';

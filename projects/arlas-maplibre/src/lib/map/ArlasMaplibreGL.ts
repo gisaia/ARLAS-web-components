@@ -339,7 +339,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
 
   /** Gets bounds of the given geometry */
-  public geometryToBound(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
+  public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
     const boundingBox: any = bbox(geometry);
     let west = boundingBox[0];
     let south = boundingBox[1];

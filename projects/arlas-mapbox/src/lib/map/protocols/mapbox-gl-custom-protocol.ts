@@ -20,7 +20,7 @@
 const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming, transformRequestFunction) => new Promise((res, rej) => {
   const requestParameters: any = {
     url: rawUrl,
-    type:( type ==='vector' || type === 'raster') ? 'arrayBuffer' : 'string',
+    type: (type ==='vector' || type === 'raster') ? 'arrayBuffer' : 'string',
     collectResourceTiming: collectResourceTiming
   };
   if (type === 'raster') {

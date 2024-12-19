@@ -47,7 +47,7 @@ import { MapImportModule } from './map-import/map-import.module';
 import { MapImportComponent } from './map-import/map-import.component';
 import { MapSettingsComponent } from './map-settings/map-settings.component';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
-
+import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 
 
 @NgModule({
@@ -78,7 +78,8 @@ import { ArlasDrawComponent } from './draw/arlas-draw.component';
     CoordinatesModule,
     MapSettingsModule,
     MapImportModule,
-    BasemapModule
+    BasemapModule,
+    MarkerModule
   ],
   providers: [
     MapboxAoiDrawService,

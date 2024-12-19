@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as tinycolor from 'tinycolor2';
+import tinycolor from 'tinycolor2';
 
 import { Injectable } from '@angular/core';
 import { CircleLegend, getMax, Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
@@ -32,15 +32,6 @@ import {
   CirclePaintProps, FillPaintProps, HeatmapPaintProps,
   LinePaintProps, SymbolPaintProps, TypedStyleLayer
 } from 'maplibre-gl';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-
-export const GET = 'get';
-export const MATCH = 'match';
-export const INTERPOLATE = 'interpolate';
-export const OTHER = marker('other_color');
-export const IN = 'in';
-export const NOT_IN = '!';
-export const HEATMAP_DENSITY = 'Heatmap-density';
 
 @Injectable({
   providedIn: 'root'
@@ -201,9 +192,9 @@ export class MaplibreLegendService extends LegendService {
           if (!visibleMode) {
             /** apply greyscale because the layer is not visible */
             colorLegend.interpolatedValues = colorLegend.interpolatedValues
-              .map((c) => tinycolor.default(c.toString()).greyscale().lighten(20).toHexString());
+              .map((c) => tinycolor(c.toString()).greyscale().lighten(20).toHexString());
             palette.forEach(p => {
-              p.value = tinycolor.default(p.value.toString()).greyscale().lighten(20).toHexString();
+              p.value = tinycolor(p.value.toString()).greyscale().lighten(20).toHexString();
             });
           }
           colorPalette = palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');

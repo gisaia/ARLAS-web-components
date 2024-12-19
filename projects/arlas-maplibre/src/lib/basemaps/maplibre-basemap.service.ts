@@ -93,7 +93,7 @@ MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecifica
   }
 
 
-  public fetchSources$(): Observable<readonly unknown[]> {
+  public fetchSources$(): Observable<readonly maplibre.StyleSpecification[]> {
     const sources$: Observable<maplibre.StyleSpecification>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(

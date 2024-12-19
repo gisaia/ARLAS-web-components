@@ -29,15 +29,8 @@ import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
 import { LegendService } from './legend.service';
 import { MAX_LINE_WIDTH } from './legend.tools';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { IN, NOT_IN } from '../map/model/filters';
 
-export const GET = 'get';
-export const MATCH = 'match';
-export const INTERPOLATE = 'interpolate';
-export const OTHER = marker('other_color');
-export const IN = 'in';
-export const NOT_IN = '!';
-export const HEATMAP_DENSITY = 'Heatmap-density';
 
 @Component({
   selector: 'arlas-legend',

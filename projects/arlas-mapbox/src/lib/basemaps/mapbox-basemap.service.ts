@@ -85,7 +85,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
   }
 
 
-  public fetchSources$(): Observable<readonly unknown[]> {
+  public fetchSources$(): Observable<readonly mapboxgl.Style[]> {
     const sources$: Observable<mapboxgl.Style>[] = [];
     this.basemaps.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(

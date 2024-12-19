@@ -178,31 +178,41 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     this.mapService.getLayersFromPattern(map, '.hot').forEach(l => this.mapService.moveLayer(map, l.id));
   }
 
-  public moveArlasDataLayer(map: ArlasMapboxGL, layerId: string, arlasDataLayers: Map<string, ArlasDataLayer>, before?: string) {
+  /**
+   * @override Mapbox implementation.
+   * @description Moves the given layer to the top in map instance OR optionnaly before a layer.
+   * This method handles any specific treatment when adding ARLAS data.
+   * For instance, in mapbox implementation, moving a fill layer needs to move systematically the stroke layer.
+   * @param map Map instance.
+   * @param layer A layer. It could be a layer identifier OR a layer object (it will depend on the framwork implementation).
+   * @param arlasDataLayers Map of ARLAS data layers and their ids (the ids being the key of the map).
+   * @param beforeId Identifier of an already added layer. The layers of layersMap are added under this 'beforeId' layer.
+   */
+  public moveArlasDataLayer(map: ArlasMapboxGL, layerId: string, arlasDataLayers: Map<string, ArlasDataLayer>, beforeId?: string) {
     const layer = arlasDataLayers.get(layerId);
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollableLayer = arlasDataLayers.get(scrollableId);
     if (!!scrollableLayer && this.mapService.hasLayer(map, scrollableId)) {
-      this.mapService.moveLayer(map, scrollableId);
+      this.mapService.moveLayer(map, scrollableId, beforeId);
     }
     if (!!this.mapService.hasLayer(map, layerId)) {
-      this.mapService.moveLayer(map, layerId);
+      this.mapService.moveLayer(map, layerId, beforeId);
       if (layer.type === 'fill') {
         const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
         const strokeLayer = arlasDataLayers.get(strokeId);
         if (!!strokeLayer && this.mapService.hasLayer(map, strokeId)) {
-          this.mapService.moveLayer(map, strokeId);
+          this.mapService.moveLayer(map, strokeId, beforeId);
         }
         if (!!strokeLayer && !!strokeLayer.id) {
           const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
           const selectLayer = arlasDataLayers.get(selectId);
           if (!!selectLayer && this.mapService.hasLayer(map, selectId)) {
-            this.mapService.moveLayer(map, selectId);
+            this.mapService.moveLayer(map, selectId, beforeId);
           }
           const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
           const hoverLayer = arlasDataLayers.get(hoverId);
           if (!!hoverLayer && this.mapService.hasLayer(map, hoverId)) {
-            this.mapService.moveLayer(map, hoverId);
+            this.mapService.moveLayer(map, hoverId, beforeId);
           }
         }
       }
@@ -210,12 +220,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
     const selectLayer = arlasDataLayers.get(selectId);
     if (!!selectLayer && this.mapService.hasLayer(map, selectId)) {
-      this.mapService.moveLayer(map, selectId);
+      this.mapService.moveLayer(map, selectId, beforeId);
     }
     const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
     const hoverLayer = arlasDataLayers.get(hoverId);
     if (!!hoverLayer && this.mapService.hasLayer(map, hoverId)) {
-      this.mapService.moveLayer(map, hoverId);
+      this.mapService.moveLayer(map, hoverId, beforeId);
     }
   }
 
@@ -225,7 +235,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
    * For instance, in mapbox implementation, adding a fill layer needs to add systematically the stroke layer.
    * @param map Map instance.
    * @param layer A layer. It could be a layer identifier OR a layer object (it will depend on the framwork implementation).
-   * @param layersMap Map of ARLAS data layers and their ids (the ids being the key of the map).
+   * @param arlasDataLayers Map of ARLAS data layers and their ids (the ids being the key of the map).
    * @param beforeId Identifier of an already added layer. The layers of layersMap are added under this 'beforeId' layer.
    */
   public addArlasDataLayer(map: ArlasMapboxGL, layer: ArlasDataLayer, arlasDataLayers: Map<string, ArlasDataLayer>, before?: string) {
