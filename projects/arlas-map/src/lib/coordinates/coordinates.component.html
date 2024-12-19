@@ -10,7 +10,7 @@
         <mat-label>{{'Latitude' | translate}}</mat-label>
         <input class="input" matInput [formControl]="coordinatesForm.latitude"
           [placeholder]="placeHolder | translate">
-        <mat-error *ngIf="coordinatesForm.latitude.invalid">{{getErrorMessage(coordinatesForm.latitude) | translate}}
+        <mat-error *ngIf="coordinatesForm.latitude.invalid">{{coordinatesForm.latitude | coordinatesFormError | translate}}
         </mat-error>
       </mat-form-field>
       <div class="coordinate">
@@ -18,7 +18,7 @@
           <mat-label>{{'Longitude' | translate}}</mat-label>
           <input class="input" matInput [formControl]="coordinatesForm.longitude"
             [placeholder]="placeHolder | translate">
-          <mat-error *ngIf="coordinatesForm.longitude.invalid">{{getErrorMessage(coordinatesForm.longitude) |
+          <mat-error *ngIf="coordinatesForm.longitude.invalid">{{coordinatesForm.longitude | coordinatesFormError |
             translate}}</mat-error>
         </mat-form-field>
       </div>

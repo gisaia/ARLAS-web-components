@@ -51,7 +51,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
 
   protected _mapProvider: mapboxgl.Map;
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
-  public startlngLat: mapboxgl.LngLat;
+  public startLngLat: mapboxgl.LngLat;
   public endlngLat: mapboxgl.LngLat;
   public movelngLat: mapboxgl.LngLat;
 
@@ -59,7 +59,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     super(config);
   }
 
-  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: mapboxgl.Map, SW, NE): LngLat[] {
+  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: mapboxgl.Map, SW: ArlasLngLat, NE: ArlasLngLat): LngLat[] {
     const topRight = map.project(NE);
     const bottomLeft = map.project(SW);
     const scale = 1;
@@ -97,7 +97,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   protected _initMapMoveEvents() {
     super._initMapMoveEvents();
     this.getMapProvider().on('mousedown', (e) =>
-      this._updateStartLngLat(e)
+      this._updatestartLngLat(e)
     );
     this.getMapProvider().on('mouseup', (e) =>
       this._updateEndLngLat(e)

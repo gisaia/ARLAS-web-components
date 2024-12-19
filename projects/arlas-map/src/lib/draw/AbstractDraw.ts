@@ -18,8 +18,8 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { Feature } from 'geojson';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
+import { Feature, FeatureCollection, Geometry } from '@turf/helpers';
 
 export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |
   'draw.update' | 'draw.selectionchange' | 'draw.modechange' | 'draw.render' | 'draw.actionable' |
@@ -145,8 +145,8 @@ export class AbstractDraw implements DrawEventsInterface {
     this.arlasMap.on(event, func);
   }
 
-  public add(features: any) {
-    this.drawProvider.add(features);
+  public add(feature: Feature<Geometry> | FeatureCollection<GeoJSON.Geometry>) {
+    this.drawProvider.add(feature);
   }
 
   public get(featureId: string): Feature | undefined {
@@ -162,7 +162,7 @@ export class AbstractDraw implements DrawEventsInterface {
     return this;
   }
 
-  public set(featureCollection: any): Array<string> {
+  public set(featureCollection: FeatureCollection): Array<string> {
     return this.drawProvider.set(featureCollection);
   }
 

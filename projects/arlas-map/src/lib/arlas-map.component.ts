@@ -30,7 +30,7 @@ import { LegendData } from './legend/legend.config';
 import { MapExtent } from './map/model/extent';
 import { ArlasMapSource } from './map/model/sources';
 import { getLayerName, MapLayers } from './map/model/layers';
-import { finalize, fromEvent, Subject, Subscription } from 'rxjs';
+import { finalize, fromEvent, Subject, Subscription, takeUntil } from 'rxjs';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { BasemapService } from './basemaps/basemap.service';
@@ -46,6 +46,7 @@ import * as mapJsonSchema from './arlas-map.schema.json';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
 import { ArlasDataLayer } from './map/model/layers';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'arlas-map',
@@ -66,26 +67,22 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   };
 
   /** Whether the list of basemaps is shown. */
-  public showBasemapsList = false;
+  public showBasemapList = false;
 
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
-  /** Subscribtion to protomaps basemaps change. Should be unsbscribed when this component is destroyed. */
-  protected offlineBasemapChangeSubscription!: Subscription;
+  private _onDestroy$ = new Subject<boolean>();
+
 
   @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
-
-
-
-  /** ------------------------------------------------------- VISUAL SEPERATOR ----------------------------------------- */
 
 
   /** ANGULAR INPUTS */
 
   /** @description Html identifier given to the map container (it's a div ;))*/
   @Input() public id = 'mapgl';
-  /** @description An object with noth,east,south,west properies which represent an offset in pixel */
-  /** Origin is top-left and x axe is west to east and y axe north to south.*/
+  /** @description An object with north,east,south,west properies which represent an offset in pixels */
+  /** Origin is top-left and x-axis is west to east and y-axis north to south.*/
   @Input() public offset: ArlasMapOffset = { north: 0, east: 0, south: 0, west: 0 };
 
   /** --- LAYERS */
@@ -121,13 +118,13 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   @Input() public maxZoom = 22;
   /** @description Min zoom of the map. */
   @Input() public minZoom = 0;
-  /** @description Coordinates of the map's centre when it's first loaded. */
+  /** @description Coordinates of the map's center when it's first loaded. */
   @Input() public initCenter: [number, number] = [2.1972656250000004, 45.706179285330855];
 
   /** --- BOUNDS TO FIT STRATEGY */
 
   /** @description Bounds that the view map fits. It's an array of two corners. */
-  /** Each corner is an lat-long positio. For example: boundsToFit = [[30.51, -54.3],[30.57, -54.2]] */
+  /** Each corner is an lat-long position. For example: boundsToFit = [[30.51, -54.3],[30.57, -54.2]] */
   @Input() public boundsToFit: Array<Array<number>>;
   /** @description The padding added in the top-left and bottom-right corners of a map container that shouldn't be accounted */
   /** for when setting the view to fit bounds.*/
@@ -151,13 +148,13 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
 
   /** @description Feature to highlight. */
   @Input() public featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; };
-  /** @description List of feature to select. */
+  /** @description List of features to select. */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
 
   /** --- SOURCES */
 
   /** @description List of sources to add to the map. */
-  @Input() public mapSources: Array<ArlasMapSource<unknown>>;
+  @Input() public mapSources: Array<ArlasMapSource<S>>;
   /** @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`. */
   @Input() public redrawSource = new Subject<{ source: string; data: Feature<GeoJSON.Geometry>[]; }>();
   /** @description List of data sources names that should be added to the map. Sources should be of type `geojson`. */
@@ -174,7 +171,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   /** @description Maximum number of vertices allowed for a polygon. */
   @Input() public drawPolygonVerticesLimit: number;
   /** @description Whether the drawing buffer is activated */
-  /** If true , the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
+  /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
 
   /** --- ATTRIBUTION */
@@ -195,12 +192,9 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   /** @description Subject of [layerId, boolean] map. The map subscribes to it to keep */
   /** the legend updated with the visibility of the layer.*/
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
-  /** @description List of visualisation sets. A Visualisation set is an entity where to group layers together. */
+  /** @description List of visualisation sets. A Visualisation set is an entity where layers are grouped together. */
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
-
-
-  /** ------------------------------------------------------- VISUAL SEPERATOR ----------------------------------------- */
 
 
   /** ANGULAR OUTPUTS */
@@ -208,31 +202,33 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   /** @description Emits true after the map is loaded and all sources & layers are added. */
   @Output() public onMapLoaded: Subject<boolean> = new Subject<boolean>();
 
-  /** @description Emits the map extent on Tab (which tab ???) close/refresh. */
+  /** @description Emits the map extent when the browser tab is closed/refreshed. */
   @Output() public onMapClosed: EventEmitter<MapExtent> = new EventEmitter<MapExtent>();
 
-  /** @description @deprecated Emits the event of moving the map. */
+  /** 
+   * @deprecated
+   * @description  Emits the event of moving the map. */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();
 
-  /** @description Emits the visible visualisations ids */
+  /** @description Emits the visible visualisation sets' names */
   @Output() public visualisations: EventEmitter<Set<string>> = new EventEmitter();
 
-  /** @description Emits the event of clicking on a feature. */
+  /** @description Emits the features that were clicked on. */
   @Output() public onFeatureClick = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; }>();
 
-  /** @description Emits the event of hovering feature. */
+  /** @description Emits the features that were hovered. */
   @Output() public onFeatureHover = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; } | {}>();
 
-  /** @description Emits the geojson of an aoi added to the map. */
+  /** @description Emits the geojson of all aois added to the map. */
   @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
 
   /** @description Emits the the dimensions of the polygon/bbox that is being drawn. */
   @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
 
-  /** @description Emits the geojson of an aoi added to the map. */
+  /** @description Emits an event when the basemap has been changed by the user. */
   @Output() public onBasemapChanged: Subject<boolean> = new Subject();
 
-  /** @description Emits which layers are displayed in the Legend. */
+  /** @description Emits which layers are displayed on the map. */
   @Output() public legendVisibiltyStatus: Subject<Map<string, boolean>> = new Subject();
 
   /** @description  Notifies that the user wants to download the selected layer */
@@ -246,17 +242,15 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
-
-  /** ------------------------------------------------------- VISUAL SEPERATOR - INIT ----------------------------------------- */
-
   public constructor(private drawService: MapboxAoiDrawService,
     private basemapService: BasemapService<L, S, M>, private translate: TranslateService,
     protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
     protected mapService: AbstractArlasMapService<L, S, M>) {
+      this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
+      .subscribe(() => this.reorderLayers());
   }
 
   public ngOnInit() {
-    this.offlineBasemapChangeSubscription = this.basemapService.protomapBasemapAdded$.subscribe(() => this.reorderLayers());
   }
 
   public ngAfterViewInit() {
@@ -268,7 +262,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
       this.initZoom = 3;
     }
     if (this.maxZoom === undefined || this.maxZoom === null) {
-      this.maxZoom = 22;
+      this.maxZoom = 23;
     }
     if (this.minZoom === undefined || this.minZoom === null) {
       this.maxZoom = 0;
@@ -313,8 +307,6 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     }
   }
 
-  /** ------------------------------------------------------- VISUAL SEPERATOR - MAP ----------------------------------------- */
-
   /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
   public initTransformRequest() {
     if (!this.transformRequest) {
@@ -322,8 +314,10 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     }
   }
 
-  /** Zooms on clicked feature from map event e. */
-  public zoomOnClick(e: MapMouseEvent) {
+  /** Zooms on clicked feature from map mouse event e.
+   * @param mouseEvent Map mouse event provided by the map instance.
+   */
+  public zoomOnClick(mouseEvent: MapMouseEvent) {
     const zoom = this.map.getZoom();
       let newZoom: number;
       if (zoom >= 0 && zoom < 3) {
@@ -339,9 +333,13 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
       } else {
         newZoom = 12;
       }
-      this.mapFrameworkService.flyTo(e.lngLat.lat, e.lngLat.lng, newZoom, this.map);
+      this.mapFrameworkService.flyTo(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng, newZoom, this.map);
   }
 
+  /**
+   * Queries all rendered features on the position that was clicked on, on a layer; and emits those features.
+   * @param mapLayerMouseEvent Map mouse event provided by a layer instance.
+   */
   protected queryRender(mapLayerMouseEvent: MapLayerMouseEvent) {
     const hasCrossOrDrawLayer = this.mapFrameworkService.queryFeatures(mapLayerMouseEvent, this.map, CROSS_LAYER_PREFIX);
     if (!this.drawService.isDrawingBbox && !this.drawService.isDrawingPolygon
@@ -443,7 +441,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     }));
 
     if (!!this.redrawSource) {
-      this.redrawSource.subscribe(sd => {
+      this.redrawSource.pipe(takeUntil(this._onDestroy$)).subscribe(sd => {
         this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map), {
           'type': 'FeatureCollection',
           'features': sd.data
@@ -489,18 +487,14 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     });
   }
 
-  /** ------------------------------------------------------- VISUAL SEPERATOR - LAYERS ----------------------------------------- */
-
   /** Sets the layers order according to the current order of `visualisationSetsConfig` list*/
   public reorderLayers() {
     this.mapService.reorderLayers(this.visualisationSetsConfig, this.map);
   }
 
-  /** ------------------------------------------------------- VISUAL SEPERATOR - DRAWING ----------------------------------------- */
-
   /** @description Display the basemapswitcher */
   public showBasemapSwitcher() {
-    this.showBasemapsList = true;
+    this.showBasemapList = true;
   }
 
   /** @description Emits event notifiying that the basemap has been changed */
@@ -556,7 +550,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     this.reorderLayers();
   }
   public hideBasemapSwitcher() {
-    this.showBasemapsList = false;
+    this.showBasemapList = false;
   }
   /**
    * Fit to given bounds. Options are for padding.
@@ -593,15 +587,14 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   }
   /** Destroys all the components subscriptions. */
   public ngOnDestroy(): void {
-    if (!!this.offlineBasemapChangeSubscription) {
-      this.offlineBasemapChangeSubscription.unsubscribe();
-    }
     if (!!this.map) {
       this.map.unsubscribeEvents();
     }
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
   }
 
-  /** @description Displays the geobox */
+  /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
     this.drawComponent.addGeoBox();
   }
@@ -613,14 +606,14 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     this.drawComponent.removeAois();
   }
 
-  /** @description Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
+  /** @description Deletes the selected drawn geometry. If no drawn geometry is selected, all geometries are deteleted */
   public deleteSelectedItem() {
     this.drawComponent.deleteSelectedItem();
   }
 
 
   /**
-   * @description Switches to a drawing mode of a polygon, circle or radisu circle.
+   * @description Switches to a drawing mode of a DRAW_POLYGON, DRAW_CIRCLE or DRAW_RADIUS_CIRCLE.
    * @param mode Draw mode (DRAW_POLYGON, DRAW_CIRCLE or DRAW_RADIUS_CIRCLE). Default to DRAW_POLYGON
    * @param option Mapboxdraw option.
    */

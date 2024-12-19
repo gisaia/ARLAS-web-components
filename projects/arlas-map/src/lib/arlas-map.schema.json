@@ -158,7 +158,7 @@
       }
     },
     "initCenter": {
-      "description": "Coordinates of the map's centre when it's initialized.",
+      "description": "Coordinates of the map's center when it's initialized.",
       "type": "array",
       "minItems": 2,
       "maxItems": 2,
@@ -204,15 +204,15 @@
       "description": "List of visualisation sets",
       "type": "array",
       "items": {
-        "description": "A Visualisation set is an entity where to group layers together",
+        "description": "A Visualisation set is an entity where layers are grouped together.",
         "type": "object",
         "properties": {
           "name": {
-            "description": "Name of the visualisation set",
+            "description": "Name of the visualisation set.",
             "type": "string"
           },
           "layers": {
-            "description": "List of layers ids grouped in this visualisation set",
+            "description": "List of layers ids grouped in this visualisation set.",
             "type": "array",
             "items": {
               "description": "layer id",

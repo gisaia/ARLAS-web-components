@@ -44,6 +44,7 @@ import simpleSelectModeOverride from './modes/simpleSelectOverride';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { MapMouseEvent } from '../map/model/events';
 import { latLngToWKT } from '../map/tools';
+import { ArlasPoint } from '../map/model/geometry';
 @Component({
   selector: 'arlas-draw',
   templateUrl: './arlas-draw.component.html',
@@ -69,7 +70,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** @description Maximum number of vertices allowed for a polygon. */
   @Input() public drawPolygonVerticesLimit: number;
   /** @description Whether the drawing buffer is activated */
-  /** If true , the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
+  /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
 
   /** @description Emits the geojson of an aoi added to the map. */
@@ -80,10 +81,10 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
 
   /** Set to true when the selected drawn geometry is changed. */
-  protected drawSelectionChanged = false;
-  /** Number of drawn vertices (incremented in draw mode). Reset to 0 when the drawing has finished. */
-  public nbPolygonVertice = 0;
-  /** Number of clicks while drawing !! How is it different from the var above ??? */
+  protected drawnSelectionChanged = false;
+  /** Number of drawn vertices (incremented in draw mode). Reset to 0 when the drawing is finished. */
+  public nbPolygonVertices = 0;
+  /** Number of clicks while drawing a geometry. */
   public drawClickCounter = 0;
 
   /** List of drawn polygons centroid */
@@ -92,14 +93,14 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   /** Drawn geometry's state when editing/updating. */
   protected savedEditFeature = null;
-  /** Map container Html element? */
+  /** Map container Html element */
   protected canvas: HTMLElement;
   /** Canvas of the bbox while being drawn. This variable is set to undefined when the draw ends. */
   private box: HTMLElement;
   /** Point coordinates when the bbox drawing starts*/
-  protected start: any /** it's either mapbox or maplibre Point */;
-  /** Point coordinates when the bbox drawing is being drawn. Changes at move.*/
-  protected current: any;
+  protected start: ArlasPoint;
+  /** Point coordinates when the bbox drawing is being drawn. Changes on move.*/
+  protected current: ArlasPoint;
   /** Message shown to explain how to end drawing. */
   public FINISH_DRAWING = marker('Double click to finish drawing');
   /** Html element that holds the FINISH_DRAWING message. */
@@ -239,7 +240,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           };
           currentFeature.id = this.savedEditFeature.id;
           currentFeature.properties = this.savedEditFeature.properties;
-          this.draw.add(currentFeature);
+          this.draw.add(currentFeature as Feature<Polygon>);
         }
         this.openInvalidGeometrySnackBar();
         this.mapService.setMapCursor(this.map, '');
@@ -252,7 +253,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       });
 
       this.draw.onDrawSelectionchange((e) => {
-        this.drawSelectionChanged = true;
+        this.drawnSelectionChanged = true;
         if (e.features.length > 0) {
           this.drawService.isDrawSelected = true;
         } else {
@@ -323,14 +324,14 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         }
 
         if (this.drawService.isDrawingPolygon) {
-          this.nbPolygonVertice++;
-          if (this.nbPolygonVertice === this.drawPolygonVerticesLimit) {
+          this.nbPolygonVertices++;
+          if (this.nbPolygonVertices === this.drawPolygonVerticesLimit) {
             this.draw.changeMode('static');
             this.drawService.isDrawingPolygon = false;
-            this.nbPolygonVertice = 0;
+            this.nbPolygonVertices = 0;
           }
         } else {
-          this.nbPolygonVertice = 0;
+          this.nbPolygonVertices = 0;
           const features = this.map.queryRenderedFeatures(e.point);
           // edit polygon condition : no arlas feature && mapbox-gl-draw source present
           const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
@@ -375,9 +376,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         this.map.movelngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
-        const startlng: number = this.map.startlngLat.lng;
+        const startlng: number = this.map.startLngLat.lng;
         const endlng: number = this.map.movelngLat.lng;
-        const startlat: number = this.map.startlngLat.lat;
+        const startlat: number = this.map.startLngLat.lat;
         const endlat: number = this.map.movelngLat.lat;
         const west = Math.min(startlng, endlng);
         const north = Math.max(startlat, endlat);
@@ -422,10 +423,10 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           type: 'FeatureCollection',
           features: centroides
         };
-        if (!this.drawSelectionChanged) {
+        if (!this.drawnSelectionChanged) {
           this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         }
-        this.drawSelectionChanged = false;
+        this.drawnSelectionChanged = false;
         this.mapLogicService.updateLabelSources(this.map.POLYGON_LABEL_SOURCE, this.polygonlabeldata, this.map);
       }
 
@@ -433,9 +434,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   }
 
   /**
-   * @description Triggered drawing a bbox is started:
-   * - It disables map drag pan.
-   * - It stores in component's scope the start's cooordinates.
+   * @description Triggered when drawing a bbox has started:
+   * - It disables the map drag pan.
+   * - It stores in the component's scope the start's cooordinates.
    */
   private mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
@@ -455,12 +456,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /**
    * @description Triggered while moving the mouse when drawing the bbox:
    * - It draws on the map a bbox canvas.
-   * - It stores in component's scope the current mouse's cooordinates.
+   * - It stores in the component's scope the current mouse's cooordinates.
    */
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
     this.current = this.mapService.getPointFromScreen(e, this.canvas);
-    // Append the box element if it doesnt exist
+    // Append the box element if it doesn't exist
     if (this.box === undefined) {
       this.box = document.createElement('div');
       this.box.classList.add('boxdraw');
@@ -479,7 +480,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   };
 
   /**
-   * @description Triggerd on second click to end drawing the bbox.
+   * @description Triggerd on the second click to end drawing the bbox.
    * - Restores the drag pan on the map.
    * - Removes the bbox canvas.
    * - Draws the bbox feature on the map.
@@ -509,9 +510,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    */
   private finish(bbox?) {
     if (bbox) {
-      const startlng: number = this.map.startlngLat.lng;
+      const startlng: number = this.map.startLngLat.lng;
       const endlng: number = this.map.endlngLat.lng;
-      const startlat: number = this.map.startlngLat.lat;
+      const startlat: number = this.map.startLngLat.lat;
       const endlat: number = this.map.endlngLat.lat;
       const west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
@@ -564,7 +565,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.endDimensionsEmission();
   }
 
-  /** @description Displays the geobox */
+  /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
     this.mapService.setMapCursor(this.map, 'crosshair');
     this.drawService.enableBboxEdition();
@@ -580,7 +581,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.deleteSelectedItem();
   }
 
-  /** @description Deletes the selected draw geometry. If no drawn geometry is selected. All geometries are deteleted */
+  /** @description Deletes the selected drawn geometry. If no drawn geometry is selected, all geometries are deteleted */
   public deleteSelectedItem() {
     if (this.drawService.isDrawSelected) {
       this.draw.trash();

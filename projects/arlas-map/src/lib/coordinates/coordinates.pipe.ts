@@ -17,9 +17,20 @@
  * under the License.
  */
 
-/** Font sizes **/
-$xxs-font-size: 9px;
-$xs-font-size: 10px;
-$sm-font-size: 12px;
-$default-font-size: 14px;
-$title-font-size: 18px;
+import { Pipe, PipeTransform } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+
+@Pipe({
+  name: 'coordinatesFormError'
+})
+export class CoordinatesErrorPipe implements PipeTransform {
+
+  public transform(formControl: FormControl | FormGroup): string {
+    if (formControl.hasError('required')) {
+      return marker('You must enter a coordinate');
+    }
+    return formControl.hasError('pattern') ? marker('1.1 or 1°6\'3"') : '';
+  }
+
+}

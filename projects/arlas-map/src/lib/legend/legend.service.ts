@@ -25,7 +25,7 @@ import { TranslateService } from '@ngx-translate/core';
 @Injectable({
     providedIn: 'root'
 })
-export class LegendService {
+export abstract class LegendService {
 
     public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
         filter?: any, translate?: TranslateService): [Legend, string] {

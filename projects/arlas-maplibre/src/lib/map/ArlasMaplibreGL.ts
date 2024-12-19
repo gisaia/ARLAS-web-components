@@ -40,7 +40,7 @@ import { ArlasLngLat } from 'arlas-map';
 
 
 export interface ArlasMaplibreConfig extends MapConfig<MapOptions> {
-  ma
+
 }
 
 export class ArlasMaplibreGL extends AbstractArlasMapGL {
@@ -61,7 +61,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   protected _mapProvider: maplibregl.Map;
   public endlngLat: maplibregl.LngLat;
   public movelngLat: maplibregl.LngLat;
-  public startlngLat: maplibregl.LngLat;
+  public startLngLat: maplibregl.LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);
@@ -82,7 +82,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return new maplibregl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
-  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: maplibregl.Map, SW, NE): LngLat[] {
+  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: maplibregl.Map, SW: ArlasLngLat, NE: ArlasLngLat): LngLat[] {
     const topRight = map.project(NE);
     const bottomLeft = map.project(SW);
     const scale = 1;
@@ -222,7 +222,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   protected _initMapMoveEvents(): void {
     super._initMapMoveEvents();
     this.getMapProvider().on('mousedown', (e) =>
-      this._updateStartLngLat(e)
+      this._updatestartLngLat(e)
     );
     this.getMapProvider().on('mouseup', (e) =>
       this._updateEndLngLat(e)

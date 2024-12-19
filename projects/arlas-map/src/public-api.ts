@@ -41,6 +41,7 @@ export * from './lib/arlas-map-framework.service';
 export * from './lib/arlas-map.component';
 export * from './lib/arlas-map.module';
 export { CoordinatesComponent } from './lib/coordinates/coordinates.component';
+export { CoordinatesErrorPipe } from './lib/coordinates/coordinates.pipe';
 export { BasemapComponent } from './lib/basemaps/basemap.component';
 export { BasemapStyle } from './lib/basemaps/basemap.config';
 export { BasemapService } from './lib/basemaps/basemap.service';

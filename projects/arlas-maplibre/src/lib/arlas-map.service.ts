@@ -43,24 +43,60 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     super(mapService);
   }
 
-  /** Add to map the sources that will host ARLAS data.  */
+  /**
+    * @description Declares the arlas data sources provided in configuration.
+    * @param dataSourcesIds Identifiers of arlas data sources.
+    * @param data A feature collection.
+    * @param map Map instance.
+    */
   public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMaplibreGL) {
-    super.declareArlasDataSources(dataSourcesIds, data, map);
+    if (dataSourcesIds) {
+      dataSourcesIds.forEach(sourceId => {
+        const source = this.mapFrameworkService.createGeojsonSource(data);
+        this.dataSources.push(source as GeoJSONSourceSpecification);
+        this.mapFrameworkService.setSource(sourceId, source, map);
+      });
+    }
   }
 
+  /**
+   * Declares label sources for draw layers.
+   * @param labelSourceId Label source identifier.
+   * @param data  A feature collection.
+   * @param map Map instance.
+   */
   public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMaplibreGL) {
-    super.declareLabelSources(labelSourceId, data, map);
+    if (labelSourceId) {
+      const source = this.mapFrameworkService.createGeojsonSource(data);
+      this.mapFrameworkService.setSource(labelSourceId, source, map);
+    }
   }
 
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMaplibreGL) {
     super.updateLabelSources(labelSourceId, data, map);
   }
 
+  /**
+   * Declares basemap sources
+   * @param basemapSources List of basemap sources.
+   * @param map Map instance.
+   */
   public declareBasemapSources(basemapSources: Array<ArlasMapSource<MaplibreSourceType>>, map: ArlasMaplibreGL) {
-    super.declareBasemapSources(basemapSources, map);
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
+    if (basemapSources) {
+      basemapSources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        if (typeof (mapSource.source) !== 'string') {
+          this.mapFrameworkService.setSource(id, mapSource.source, map);
+        }
+      });
+    }
   }
 
-  public setLayersMap(mapLayers: MapLayers<TypedStyleLayer>, layers?: Array<TypedStyleLayer>) {
+  public setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>) {
     if (mapLayers) {
       const mapLayersCopy = mapLayers;
       if (layers) {
@@ -72,7 +108,7 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     }
   }
 
-  public initMapLayers(mapLayers: MapLayers<TypedStyleLayer>, map: ArlasMaplibreGL) {
+  public initMapLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMaplibreGL) {
     super.initMapLayers(mapLayers, map);
   }
 
@@ -122,8 +158,8 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     return filters;
   }
 
-  public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<any>,
-    sources: Array<ArlasMapSource<MaplibreSourceType>>, mapLayers: MapLayers<TypedStyleLayer>, map: ArlasMaplibreGL): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<ArlasDataLayer>,
+    sources: Array<ArlasMapSource<MaplibreSourceType>>, mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMaplibreGL): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         map.getMapProvider().addSource(s.id, s.source);
@@ -133,9 +169,9 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
     this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
     layers.forEach(layer => {
-      this.mapService.addLayer(map, layer);
+      this.mapService.addLayer(map, layer as LayerSpecification);
     });
-    this.setLayersMap(mapLayers as MapLayers<TypedStyleLayer>, layers);
+    this.setLayersMap(mapLayers, layers);
     this.reorderLayers(visualisations, map);
   }
 

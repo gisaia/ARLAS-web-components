@@ -57,7 +57,7 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 /**
  * The aim of this class is to handle all core interaction we have
  * with a map provider.
- * The aim is also to separate the alras map from the angular framework.
+ * The aim is also to separate the Arlas map from the Angular framework.
  * It will be instantiated in the map.component and will be responsible for initializing the map and all map behavior.
  */
 export abstract class AbstractArlasMapGL {
@@ -67,7 +67,7 @@ export abstract class AbstractArlasMapGL {
    *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startlngLat: ArlasLngLat;
+  public abstract startLngLat: ArlasLngLat;
   public abstract endlngLat: ArlasLngLat;
   public abstract movelngLat: ArlasLngLat;
   protected _offset: ArlasMapOffset;
@@ -206,8 +206,8 @@ export abstract class AbstractArlasMapGL {
     this._yMoveRatio = Math.abs(this._dragEndY - this._dragStartY) / e.target._canvas.clientHeight;
   }
 
-  protected _updateStartLngLat(e: any): void {
-    this.startlngLat = e.lngLat;
+  protected _updatestartLngLat(e: any): void {
+    this.startLngLat = e.lngLat;
   }
 
 
@@ -316,7 +316,7 @@ export abstract class AbstractArlasMapGL {
   public abstract setMaxBounds(unknown?: unknown): this;
   public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   public abstract paddedBounds(npad: number, spad: number, epad: number,
-    wpad: number, map: any, SW, NE): ArlasLngLat[];
+    wpad: number, map: any, SW: ArlasLngLat, NE: ArlasLngLat): ArlasLngLat[];
 
 }
 

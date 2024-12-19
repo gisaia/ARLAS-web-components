@@ -34,9 +34,15 @@ import { ElementIdentifier } from 'arlas-web-components';
   providedIn: 'root'
 })
 export abstract class AbstractArlasMapService<L, S, M> {
-  /** IMPORTANT NOTE: All the attributes/params that are typed with "any", will have the right type in the implementation. */
-  public dataSources: any[] = [];
-  public abstract layersMap: Map<string, ArlasDataLayer>;
+  /** @description List of arlas data sources declared in configuration */
+  public dataSources: S[] = [];
+  /** @description Map of ARLAS data layers and their ids (the ids being the key of the map).  */
+  public layersMap: Map<string, ArlasDataLayer>;
+  /** 
+   * @description Object to describe visualisation sets
+   * - visulisations: a map of <visualisation name, set of layers identifiers>;
+   * - status: a map of <visualisation name, visibility status>
+   */
   public visualisationsSets: {
     visualisations: Map<string, Set<string>>;
     status: Map<string, boolean>;
@@ -44,30 +50,23 @@ export abstract class AbstractArlasMapService<L, S, M> {
       visualisations: new Map(),
       status: new Map()
     };
+
   public constructor(public mapFrameworkService: ArlasMapFrameworkService<L, S, M>) { }
 
-  /** Add to map the sources that will host ARLAS data.  */
-  public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
-    if (dataSourcesIds) {
-      dataSourcesIds.forEach(sourceId => {
-        const source = this.mapFrameworkService.createGeojsonSource(data);
-        this.dataSources.push(source);
-        /** For an implementation that doesn't add a source to map
-         * --- for instance Openalayers, adds the source to layer ---
-         * the following line should be reconsidered.
-         */
-        this.mapFrameworkService.setSource(sourceId, source, map);
-      });
-    }
-  }
+  /**
+   * @description Declares the arlas data sources provided in configuration.
+   * @param dataSourcesIds Identifiers of arlas data sources.
+   * @param data A feature collection.
+   * @param map Map instance.
+   */
+  public abstract declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL): void;
 
-  public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
-    if (labelSourceId) {
-      const source = this.mapFrameworkService.createGeojsonSource(data);
-      this.mapFrameworkService.setSource(labelSourceId, source, map);
-    }
-  }
+  public abstract declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL): void;
 
+  public abstract declareBasemapSources(basemapSources: Array<ArlasMapSource<any>>, map: AbstractArlasMapGL): void;
+
+  public abstract setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>);
+  
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
       const source = this.mapFrameworkService.getSource(labelSourceId, map);
@@ -75,25 +74,8 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  public declareBasemapSources(basemapSources: Array<ArlasMapSource<any>>, map: AbstractArlasMapGL) {
-    // Add sources defined as input in mapSources;
-    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
-    if (basemapSources) {
-      basemapSources.forEach(mapSource => {
-        mapSourcesMap.set(mapSource.id, mapSource);
-      });
-      mapSourcesMap.forEach((mapSource, id) => {
-        if (typeof (mapSource.source) !== 'string') {
-          this.mapFrameworkService.setSource(id, mapSource.source, map);
-        }
-      });
-    }
-  }
-
-  public abstract setLayersMap(mapLayers: MapLayers<any>, layers?: Array<any>);
-
   /**
-   * Inits a map of visulisation from the configuration.
+   * @description Inits a map of visulisation sets from the configuration.
    * @param visualisationSetsConfig Visualisation set configuration.
    */
   public initVisualisationSet(visualisationSetsConfig: VisualisationSetConfig[]) {
@@ -125,7 +107,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public abstract addArlasDataLayer(map: AbstractArlasMapGL, layer: ArlasDataLayer | string,
     layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
 
-  public addArlasDataLayers(visualisationSetsConfig: VisualisationSetConfig[], mapLayers: MapLayers<any>, map: AbstractArlasMapGL) {
+  public addArlasDataLayers(visualisationSetsConfig: VisualisationSetConfig[], mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL) {
     this.initMapLayers(mapLayers, map);
     this.initVisualisationSet(visualisationSetsConfig);
     for (let i = visualisationSetsConfig.length - 1; i >= 0; i--) {

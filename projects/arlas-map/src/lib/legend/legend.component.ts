@@ -62,7 +62,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() public zoom: number;
   /**
    * @Input : Angular
-   * @description Whether the layer is enabled or disabled.
+   * @description Whether the layer is enabled.
    */
   @Input() public enabled: boolean;
   /**

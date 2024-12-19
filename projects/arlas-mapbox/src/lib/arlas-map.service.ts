@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID} from 'arlas-map';
+import { AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
 import { ArlasMapboxService } from './arlas-mapbox.service';
 import { FeatureCollection } from '@turf/helpers';
 import { ArlasMapboxGL } from './map/ArlasMapboxGL';
@@ -41,24 +41,60 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     super(mapService);
   }
 
-  /** Add to map the sources that will host ARLAS data.  */
+  /**
+    * @description Declares the arlas data sources provided in configuration.
+    * @param dataSourcesIds Identifiers of arlas data sources.
+    * @param data A feature collection.
+    * @param map Map instance.
+    */
   public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
-    super.declareArlasDataSources(dataSourcesIds, data, map);
+    if (dataSourcesIds) {
+      dataSourcesIds.forEach(sourceId => {
+        const source = this.mapFrameworkService.createGeojsonSource(data);
+        this.dataSources.push(source as GeoJSONSource);
+        this.mapFrameworkService.setSource(sourceId, source, map);
+      });
+    }
   }
 
+  /**
+   * Declares label sources for draw layers.
+   * @param labelSourceId Label source identifier.
+   * @param data  A feature collection.
+   * @param map Map instance.
+   */
   public declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
-    super.declareLabelSources(labelSourceId, data, map);
+    if (labelSourceId) {
+      const source = this.mapFrameworkService.createGeojsonSource(data);
+      this.mapFrameworkService.setSource(labelSourceId, source, map);
+    }
   }
 
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
     super.updateLabelSources(labelSourceId, data, map);
   }
 
+  /**
+   * Declares basemap sources
+   * @param basemapSources List of basemap sources.
+   * @param map Map instance.
+   */
   public declareBasemapSources(basemapSources: Array<ArlasMapSource<MapboxSourceType>>, map: ArlasMapboxGL) {
-    super.declareBasemapSources(basemapSources, map);
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
+    if (basemapSources) {
+      basemapSources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        if (typeof (mapSource.source) !== 'string') {
+          this.mapFrameworkService.setSource(id, mapSource.source, map);
+        }
+      });
+    }
   }
 
-  public setLayersMap(mapLayers: MapLayers<ArlasAnyLayer>, layers?: Array<ArlasAnyLayer>) {
+  public setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>) {
     if (mapLayers) {
       const mapLayersCopy = mapLayers;
       if (layers) {
@@ -70,8 +106,8 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     }
   }
 
-  public initMapLayers(mapLayers: MapLayers<ArlasAnyLayer>, map: ArlasMapboxGL) {
-   super.initMapLayers(mapLayers, map);
+  public initMapLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL) {
+    super.initMapLayers(mapLayers, map);
   }
 
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
@@ -120,8 +156,8 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     return filters;
   }
 
-  public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<any>,
-    sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasAnyLayer>, map: ArlasMapboxGL): void {
+  public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<ArlasDataLayer>,
+    sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         map.getMapProvider().addSource(s.id, s.source);
@@ -131,9 +167,9 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
     this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
     layers.forEach(layer => {
-      this.mapService.addLayer(map, layer);
+      this.mapService.addLayer(map, layer as ArlasAnyLayer);
     });
-    this.setLayersMap(mapLayers as MapLayers<ArlasAnyLayer>, layers);
+    this.setLayersMap(mapLayers as MapLayers<ArlasDataLayer>, layers);
     this.reorderLayers(visualisations, map);
   }
 
