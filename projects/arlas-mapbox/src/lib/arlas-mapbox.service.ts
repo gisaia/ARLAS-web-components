@@ -35,7 +35,8 @@ import { AbstractArlasMapGL } from 'arlas-map';
 import { MapboxSourceType } from './map/model/sources';
 
 @Injectable()
-export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions> {
+export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType
+  | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions> {
 
   public constructor() {
     super();
@@ -69,7 +70,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     );
   };
 
-  
+
   public boundsToString(bounds: LngLatBounds): string {
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }

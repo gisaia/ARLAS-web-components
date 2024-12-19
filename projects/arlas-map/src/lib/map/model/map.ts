@@ -50,10 +50,10 @@ export class ArlasLngLat {
 }
 
 export class ArlasLngLatBounds {
-  sw: ArlasLngLat;
-  ne: ArlasLngLat;
+  public sw: ArlasLngLat;
+  public ne: ArlasLngLat;
 
-  constructor(sw: ArlasLngLat, ne: ArlasLngLat) {
+  public constructor(sw: ArlasLngLat, ne: ArlasLngLat) {
     this.sw = sw;
     this.ne = ne;
   }

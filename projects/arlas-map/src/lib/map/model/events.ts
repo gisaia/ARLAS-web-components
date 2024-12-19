@@ -20,15 +20,12 @@
 import { ArlasPoint } from './geometry';
 import { ArlasLngLat } from './map';
 
-
-
-
 export interface MapMouseEvent {
-    type: string;
-    point: ArlasPoint;
-    lngLat: ArlasLngLat;
+  type: string;
+  point: ArlasPoint;
+  lngLat: ArlasLngLat;
 }
 
 export interface MapLayerMouseEvent extends MapMouseEvent {
-    features: GeoJSON.Feature<GeoJSON.Geometry>[]
+  features: GeoJSON.Feature<GeoJSON.Geometry>[];
 }

@@ -409,13 +409,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
 
    /**
-   * 
+   *
    * @param bounds Bounds defined by ARLAS
    * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by mapbox
    */
    private toMapboxBound(bounds: ArlasLngLatBounds) {
     return new LngLatBounds(bounds.sw, bounds.ne);
   }
-
-
 }

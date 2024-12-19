@@ -28,3 +28,4 @@ export const OTHER = marker('other_color');
 export const IN = 'in';
 export const NOT_IN = '!';
 export const HEATMAP_DENSITY = 'Heatmap-density';
+

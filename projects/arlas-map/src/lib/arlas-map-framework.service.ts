@@ -63,7 +63,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    */
   public abstract getPointFromScreen(mouseEvent: MouseEvent, container: HTMLElement): ArlasPoint;
 
-  /** 
+  /**
    * @description Sets `data` to a Geojson `source` of the map
    * @param source A Geojson source
    * @param data A feature collection object.
@@ -80,7 +80,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    * @param beforeId Identifier of an already added layer. The 'layer' is added under this 'beforeId' layer.
    */
   public abstract addLayer(map: AbstractArlasMapGL, layer: L, beforeId?: L | string);
-  
+
   public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): L[];
   public abstract getAllLayers(map: AbstractArlasMapGL): L[];
 

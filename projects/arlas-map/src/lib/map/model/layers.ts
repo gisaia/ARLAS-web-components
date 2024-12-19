@@ -21,8 +21,8 @@ export interface ArlasDataLayer {
   id: string;
   type: string;
   source?: string;
-  metadata?: LayerMetadata,
-  paint: PaintValue,
+  metadata?: LayerMetadata;
+  paint: PaintValue;
   layout?: any;
   filter?: any;
 }

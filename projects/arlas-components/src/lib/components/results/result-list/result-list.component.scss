@@ -165,7 +165,7 @@ tr {
   height: 50px;
   overflow: hidden;
 
-  &--geosort /* @doc Geo-sort toggle in the list header */ {
+  .resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
     font-size: 14px;
     padding-right: 10px;
     margin-left: 5px;
@@ -306,11 +306,6 @@ tr {
     flex: 1;
 
     --mdc-typography-body1-font-size: 14px;
-
-    &-option {
-      line-height: 30px !important;
-      height: 30px !important;
-    }
   }
 }
 
@@ -353,6 +348,11 @@ tr {
 // Style of the sort select panel
 .cdk-overlay-pane:has(.mat-mdc-select-panel.resultlist__tools--sort) {
   width: auto !important;
+
+  --mat-select-trigger-text-tracking: 0;
+  --mat-optgroup-label-text-tracking: 0;
+  --mat-option-label-text-tracking: 0;
+  --mat-option-label-text-size: 14px;
 
   .mat-mdc-optgroup-label,
   .mat-mdc-option {

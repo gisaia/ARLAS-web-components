@@ -205,7 +205,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   /** @description Emits the map extent when the browser tab is closed/refreshed. */
   @Output() public onMapClosed: EventEmitter<MapExtent> = new EventEmitter<MapExtent>();
 
-  /** 
+  /**
    * @deprecated
    * @description  Emits the event of moving the map. */
   @Output() public onMove: EventEmitter<OnMoveResult> = new EventEmitter<OnMoveResult>();

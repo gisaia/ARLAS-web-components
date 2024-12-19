@@ -38,7 +38,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public dataSources: S[] = [];
   /** @description Map of ARLAS data layers and their ids (the ids being the key of the map).  */
   public layersMap: Map<string, ArlasDataLayer>;
-  /** 
+  /**
    * @description Object to describe visualisation sets
    * - visulisations: a map of <visualisation name, set of layers identifiers>;
    * - status: a map of <visualisation name, visibility status>
@@ -66,7 +66,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public abstract declareBasemapSources(basemapSources: Array<ArlasMapSource<any>>, map: AbstractArlasMapGL): void;
 
   public abstract setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>);
-  
+
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
       const source = this.mapFrameworkService.getSource(labelSourceId, map);
@@ -93,9 +93,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  
   public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
-
 
   /**
    * Add a layer to the map instance. This method handles any specific treatment when adding ARLAS data.
@@ -189,7 +187,8 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  public selectFeaturesByCollection(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL, features: Array<ElementIdentifier>, collection: string) {
+  public selectFeaturesByCollection(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
+    features: Array<ElementIdentifier>, collection: string) {
     const ids: Array<number | string> = features.map(f => f.idValue);
     const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
