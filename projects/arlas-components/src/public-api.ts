@@ -26,24 +26,7 @@ export { DonutComponent } from './lib/components/donut/donut.component';
 export { DonutModule } from './lib/components/donut/donut.module';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { HistogramModule } from './lib/components/histogram/histogram.module';
-export { MapglImportComponent, MapglImportDialogComponent } from './lib/components/mapgl-import/mapgl-import.component';
-export { CoordinatesComponent } from './lib/components/mapgl/coordinates/coordinates.component';
-export { Coordinate, PointFormGroup } from './lib/tools/coordinates.tools';
 export { FilterOperator } from './lib/tools/models/term-filters';
-export { MapglImportModule } from './lib/components/mapgl-import/mapgl-import.module';
-export { MapglLayerIconComponent } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.component';
-export { MapglLayerIconModule } from './lib/components/mapgl-layer-icon/mapgl-layer-icon.module';
-export {
-  MapLayers, ARLAS_VSET, LayerEvents, FILLSTROKE_LAYER_PREFIX, ARLAS_ID, PaintValue,
-  ExternalEventLayer, ExternalEvent, SCROLLABLE_ARLAS_ID, FillStroke, LayerMetadata, PaintColor, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
-} from './lib/components/mapgl/model/mapLayers';
-export { BasemapStyle } from './lib/components/mapgl/basemaps/basemap.config';
-export { MapboxBasemapService } from './lib/components/mapgl/basemaps/basemap.service';
-export { ArlasBasemaps } from './lib/components/mapgl/basemaps/basemaps';
-export { MapSource } from './lib/components/mapgl/model/mapSource';
-export { MapExtend, LegendData, Legend, PROPERTY_SELECTOR_SOURCE, ArlasAnyLayer } from './lib/components/mapgl/mapgl.component.util';
-export { AoiDimensions as AoiEdition } from './lib/components/mapgl/draw/draw.models';
-export { MapboxAoiDrawService } from './lib/components/mapgl/draw/draw.service';
 export { PowerBar } from './lib/components/powerbars/model/powerbar';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';
 export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/thumbnailFitEnum';
@@ -55,8 +38,6 @@ export {
 } from './lib/components/results/utils/results.utils';
 export { Item, ItemDetailGroup } from './lib/components/results/model/item';
 export { Column } from './lib/components/results/model/column';
-export { MapglComponent, VisualisationSetConfig, IconConfig, OnMoveResult, CROSS_LAYER_PREFIX } from './lib/components/mapgl/mapgl.component';
-export { MapglModule } from './lib/components/mapgl/mapgl.module';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
 export { ResultActionsComponent } from './lib/components/results/result-actions/result-actions.component';
@@ -67,25 +48,15 @@ export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services
 export { ArlasColorService } from './lib/services/color.generator.service';
 export { CollectionService, BaseCollectionService, AwcCollectionService } from './lib/services/collection.service';
 export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
-export { LayerIdToName } from './lib/components/mapgl-legend/layer-name.pipe';
-export { MapglLegendComponent } from './lib/components/mapgl-legend/mapgl-legend.component';
-export { MapglLegendItemComponent } from './lib/components/mapgl-legend/mapgl-legend-item/mapgl-legend-item.component';
-export { MapglLegendModule } from './lib/components/mapgl-legend/mapgl-legend.module';
-export { MapglSettingsModule } from './lib/components/mapgl-settings/mapgl-settings.module';
 export { MetricComponent } from './lib/components/metric/metric.component';
 export { MetricModule } from './lib/components/metric/metric.module';
-export { BboxGeneratorComponent } from './lib/components/bbox-generator/bbox-generator.component';
-export { BboxFormErrorPipe } from './lib/components/bbox-generator/bbox-form-error.pipe';
-export { BboxGeneratorModule } from './lib/components/bbox-generator/bbox-generator.module';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
 export { PowerbarsModule } from './lib/components/powerbars/powerbars.module';
-export { MetricsTableModule} from './lib/components/metrics-table/metrics-table.module';
+export { MetricsTableModule } from './lib/components/metrics-table/metrics-table.module';
 export { MetricsTableComponent } from './lib/components/metrics-table/metrics-table.component';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarModule } from './lib/components/powerbars/powerbar/powerbar.module';
-export {
-  MapglSettingsComponent, MapSettingsService, GeoQuery, GeometrySelectModel, OperationSelectModel, MapglSettingsDialogComponent, GeoQueryOperator
-} from './lib/components/mapgl-settings/mapgl-settings.component';
+
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { WmtsLayerManagertDialogComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
