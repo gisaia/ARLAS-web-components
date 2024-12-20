@@ -117,11 +117,11 @@ export const CustomProtocol = (mapLibrary) => {
       // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
       loadTile(tile, callback) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        let _a, _b;
+        let _c, _d;
         const rawUrl = tile.tileID.canonical.url(this.tiles, this.scheme);
         const protocol = rawUrl.substring(0, rawUrl.indexOf('://'));
-        if (!alreadySupported && ((_a = mapLibrary._protocols) === null || _a === void 0 ? void 0 : _a.has(protocol))) {
-          const loadFn = (_b = mapLibrary._protocols) === null || _b === void 0 ? void 0 : _b.get(protocol);
+        if (!alreadySupported && ((_c = mapLibrary._protocols) === null || _c === void 0 ? void 0 : _c.has(protocol))) {
+          const loadFn = (_d = mapLibrary._protocols) === null || _d === void 0 ? void 0 : _d.get(protocol);
           getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming,
             this.map._requestManager._transformRequestFn.bind(this)).then((url: string) => {
               tile.tileID.canonical.url = function () {
