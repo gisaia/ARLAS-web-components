@@ -22,9 +22,9 @@ import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import {
-  CircleLegend, FillLegend, getMax, HEATMAP_DENSITY, HeatmapLegend, IN, INTERPOLATE,
+  CircleLegend, FillLegend, getMax, HEATMAP_DENSITY, HeatmapLegend, INTERPOLATE,
   LabelLegend, LayerMetadata, Legend, LegendData, LegendService, LineLegend, MATCH,
-  MAX_CIRLE_RADIUS, MAX_LINE_WIDTH, NOT_IN, OTHER, PROPERTY_SELECTOR_SOURCE
+  MAX_CIRLE_RADIUS, MAX_LINE_WIDTH, OTHER, PROPERTY_SELECTOR_SOURCE
 } from 'arlas-map';
 import {
   CirclePaintProps, FillPaintProps, HeatmapPaintProps,
@@ -41,32 +41,7 @@ export class MaplibreLegendService extends LegendService {
   }
 
   public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
-    filter.forEach((f, idx) => {
-      if (idx !== 0 && idx !== filter.length - 1) {
-        switch (f[0]) {
-          case IN: {
-            if (f[1][1] === field) {
-              const valuesToKeep: Array<string> = f[2][1];
-              colorLegendValues.forEach((val, key) => {
-                if (!(valuesToKeep.includes(key))) {
-                  colorLegendValues.delete(key);
-                }
-              });
-            }
-            break;
-          }
-          case NOT_IN: {
-            if (f[1][0] === IN && f[1][1][1] === field) {
-              const valuesToExclude: Array<string> = f[1][2][1];
-              valuesToExclude.forEach(value => {
-                colorLegendValues.delete(value);
-              });
-            }
-            break;
-          }
-        }
-      }
-    });
+    LegendService.filterLegend(colorLegendValues, filter, field);
   }
 
   public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,

@@ -20,36 +20,65 @@
 import { Injectable } from '@angular/core';
 import { CircleLegend, FillLegend, HeatmapLegend, LabelLegend, Legend, LegendData, LineLegend } from './legend.config';
 import { TranslateService } from '@ngx-translate/core';
+import { IN, NOT_IN } from '../map/model/filters';
 
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export abstract class LegendService {
 
-    public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
-        filter?: any, translate?: TranslateService): [Legend, string] {
+  public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
+    filter?: any, translate?: TranslateService): [Legend, string] {
 
-        return [undefined, ''];
-    };
+    return [undefined, ''];
+  };
 
-    public getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): CircleLegend {
-        return undefined;
-    }
+  public getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): CircleLegend {
+    return undefined;
+  }
 
-    public getLineLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LineLegend {
-        return undefined;
-    }
+  public getLineLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LineLegend {
+    return undefined;
+  }
 
-    public getFillLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): FillLegend {
-        return undefined;
-    }
+  public getFillLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): FillLegend {
+    return undefined;
+  }
 
-    public getHeatmapLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): HeatmapLegend {
-        return undefined;
-    }
+  public getHeatmapLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): HeatmapLegend {
+    return undefined;
+  }
 
-    public getLabelLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LabelLegend {
-        return undefined;
-    }
+  public getLabelLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LabelLegend {
+    return undefined;
+  }
+  public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
+    filter.forEach((f, idx) => {
+      if (idx !== 0 && idx !== filter.length - 1) {
+        switch (f[0]) {
+          case IN: {
+            if (f[1][1] === field) {
+              const valuesToKeep: Array<string> = f[2][1];
+              colorLegendValues.forEach((val, key) => {
+                if (!(valuesToKeep.includes(key))) {
+                  colorLegendValues.delete(key);
+                }
+              });
+            }
+            break;
+          }
+          case NOT_IN: {
+            if (f[1][0] === IN && f[1][1][1] === field) {
+              const valuesToExclude: Array<string> = f[1][2][1];
+              valuesToExclude.forEach(value => {
+                colorLegendValues.delete(value);
+              });
+            }
+            break;
+          }
+        }
+      }
+    });
+  }
 }

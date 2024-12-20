@@ -25,7 +25,7 @@ import {
   FillLegend,
   getMax, HEATMAP_DENSITY,
   HeatmapLegend,
-  IN, INTERPOLATE,
+  INTERPOLATE,
   LabelLegend,
   LayerMetadata,
   Legend, LegendData,
@@ -34,9 +34,9 @@ import {
   MATCH,
   MAX_CIRLE_RADIUS,
   MAX_LINE_WIDTH,
-  NOT_IN, OTHER, PROPERTY_SELECTOR_SOURCE
+  OTHER, PaintValue, PROPERTY_SELECTOR_SOURCE
 } from 'arlas-map';
-import { CirclePaint, FillPaint, HeatmapPaint, Layer, LinePaint, SymbolPaint } from 'mapbox-gl';
+import { CirclePaint, Expression, FillPaint, HeatmapPaint, Layer, LinePaint, StyleFunction, SymbolPaint } from 'mapbox-gl';
 import tinycolor from 'tinycolor2';
 
 
@@ -50,34 +50,10 @@ export class MapboxLegendService extends LegendService {
   }
 
   public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
-    filter.forEach((f, idx) => {
-      if (idx !== 0 && idx !== filter.length - 1) {
-        switch (f[0]) {
-          case IN: {
-            if (f[1][1] === field) {
-              const valuesToKeep: Array<string> = f[2][1];
-              colorLegendValues.forEach((val, key) => {
-                if (!(valuesToKeep.includes(key))) {
-                  colorLegendValues.delete(key);
-                }
-              });
-            }
-            break;
-          }
-          case NOT_IN: {
-            if (f[1][0] === IN && f[1][1][1] === field) {
-              const valuesToExclude: Array<string> = f[1][2][1];
-              valuesToExclude.forEach(value => {
-                colorLegendValues.delete(value);
-              });
-            }
-            break;
-          }
-        }
-      }
-    });
+    LegendService.filterLegend(colorLegendValues, filter, field);
   }
-  public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
+
+  public static buildColorLegend(colorExpression: string | StyleFunction | Expression | PaintValue, visibleMode: boolean, legendData: Map<string, LegendData>,
     filter?: any, translate?: TranslateService): [Legend, string] {
 
     const colorLegend: Legend = { visible: true };
