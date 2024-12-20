@@ -9,8 +9,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 
 describe('MapglImportComponent', () => {
-  let component: MapImportComponent;
-  let fixture: ComponentFixture<MapImportComponent>;
+  let component: MapImportComponent<any, any, any>;
+  let fixture: ComponentFixture<MapImportComponent<any, any, any>>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 
 describe('ArlasMapService', () => {
-  let service: ArlasMapFrameworkService;
+  let service: ArlasMapFrameworkService<any, any, any>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
