@@ -28,7 +28,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 import { TranslateModule } from '@ngx-translate/core';
-import { ArlasColorService, FormatLegendModule, FormatNumberModule, GetCollectionDisplayModule, GetColorModule, GetValueModule } from 'arlas-web-components';
+import {
+  ArlasColorService, FormatLegendModule, FormatNumberModule,
+  GetCollectionDisplayModule, GetColorModule, GetValueModule
+} from 'arlas-web-components';
 import { ArlasMapComponent } from './arlas-map.component';
 import { GetCollectionPipe } from './arlas-map.pipe';
 import { BasemapModule } from './basemaps/basemap.module';
