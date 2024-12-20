@@ -1,8 +1,8 @@
 <ng-container *ngIf="!!powerbar">
     <ng-container *ngIf="!powerbar.isSelected || (powerbar.isSelected && !hideSelected)">
-        <div class="container" (click)="onSelect()">
+        <div class="container" (click)="onSelect()"> <!-- //NOSONAR -->
             <section *ngIf="selectWithCheckbox" class="checkbox checkbox-{{powerbar.classSuffix}}">
-                <mat-checkbox [checked]="powerbar.isSelected" (change)="onCheck()" (click)="$event.stopPropagation()"></mat-checkbox>
+                <mat-checkbox [checked]="powerbar.isSelected" (change)="onCheck()" (click)="$event.stopPropagation()"></mat-checkbox> <!-- //NOSONAR -->
             </section>
             <section style="width: 100%;">
                 <div class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}"

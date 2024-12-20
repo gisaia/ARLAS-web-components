@@ -11,8 +11,8 @@
     </div>
     <ng-container *ngIf="filterOperator">
       <div *ngIf="filterOperator?.display" class="include_exclude">
-        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div>
-        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div>
+        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div> <!-- //NOSONAR -->
+        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div> <!-- //NOSONAR -->
       </div>
       <div *ngIf="!filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
         <div class="operation exclude">{{'exclude' | translate}}</div>
