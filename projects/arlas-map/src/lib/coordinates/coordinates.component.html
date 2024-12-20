@@ -1,4 +1,4 @@
-<div class="current-coordinate" (click)="switchToEditionMode()" [matTooltip]="'Enter coordinates and centre the map' | translate"
+<div class="current-coordinate" (click)="switchToEditionMode()" (keyDown)="switchToEditionMode()" [matTooltip]="'Enter coordinates and centre the map' | translate"
   matTooltipPosition="above" *ngIf="!editionMode; else editing">
   <span class="lat"> {{ 'Lat:' | translate }} {{ currentLat | number:'1.5-5' }} </span>
   <span class="lng"> {{ 'Lng:' | translate }} {{ currentLng | number:'1.5-5' }} </span>
@@ -27,7 +27,7 @@
         <span class="label">{{'Move to' | translate}}</span>
       </button>
     </div>
-    <div class="exit" (click)="editionMode = false">
+    <div class="exit" (click)="editionMode = false" (keyDown)="editionMode = false">
       <mat-icon>clear</mat-icon>
     </div>
   </div>

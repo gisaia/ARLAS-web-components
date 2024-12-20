@@ -24,7 +24,7 @@
             </button>
           </mat-menu>
         </div>
-        <div class="detail_button" (click)="showDetail($event)">
+        <div class="detail_button" (click)="showDetail($event)" (keyDown)="showDetail($event)">
           <mat-icon class="detail_icon">{{ detail ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
         </div>
       </div>
