@@ -62,7 +62,7 @@ export class MapglDemoComponent {
   public drawOptions = drawOptions;
 
   public mapDataSources = mapDataSources;
-  public mapSources = mapSources;
+  public mapSources = mapSources
   public visualisationSets: Array<VisualisationSetConfig> = visualisationSets;
 
   public visibilityUpdater = new Subject<Map<string, boolean>>();

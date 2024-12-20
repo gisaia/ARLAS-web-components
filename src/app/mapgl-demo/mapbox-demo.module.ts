@@ -25,7 +25,6 @@ import { AbstractArlasMapService } from '../../../projects/arlas-map/src/lib/arl
 import { ArlasMapFrameworkService } from '../../../projects/arlas-map/src/lib/arlas-map-framework.service';
 import { ArlasMapboxService } from '../../../projects/arlas-mapbox/src/lib/arlas-mapbox.service';
 import { ArlasMapboxModule } from '../../../projects/arlas-mapbox/src/lib/arlas-mapbox.module';
-import { MapglDemoComponent } from './mapgl-demo.component';
 import { BasemapService } from '../../../projects/arlas-map/src/lib/basemaps/basemap.service';
 import { LegendService } from '../../../projects/arlas-map/src/lib/legend/legend.service';
 import { MapboxBasemapService } from '../../../projects/arlas-mapbox/src/lib/basemaps/mapbox-basemap.service';
@@ -46,8 +45,6 @@ import { MapSettingsModule } from '../../../projects/arlas-map/src/lib/map-setti
         MapSettingsModule,
         ArlasMapModule
     ],
-    declarations: [MapglDemoComponent,],
-    exports: [MapglDemoComponent],
     providers: [
         {
             provide: AbstractArlasMapService,
