@@ -25,67 +25,18 @@ export const defaultBasemapStyle = {
   styleFile: 'https://api.maptiler.com/maps/basic/style.json?key=xIhbu1RwgdbxfZNmoXn4',
   image: 'https://cloud.maptiler.com/static/img/maps/basic.png'
 };
+
+export function getStyle(name: string) {
+  return ({
+    name,
+    styleFile: `https://api.maptiler.com/maps/${name}/style.json?key=xIhbu1RwgdbxfZNmoXn4`,
+    image: `https://cloud.maptiler.com/static/img/maps/${name}.png`
+  })
+}
 export const basemapStyles = [
-  {
-    name: 'Basic',
-    styleFile: 'https://api.maptiler.com/maps/basic/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/basic.png'
-  },
-  {
-    name: 'Bright',
-    styleFile: 'https://api.maptiler.com/maps/bright/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/bright.png'
-  },
-  {
-    name: 'Pastel',
-    styleFile: 'https://api.maptiler.com/maps/pastel/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/pastel.png'
-  },
-  {
-    name: 'Satellite Hybrid',
-    styleFile: 'https://api.maptiler.com/maps/hybrid/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/hybrid.png'
-  },
-  {
-    name: 'Streets',
-    styleFile: 'https://api.maptiler.com/maps/streets/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/streets.png'
-  },
-  {
-    name: 'Topo',
-    styleFile: 'https://api.maptiler.com/maps/topo/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/topo.png'
-  },
-  {
-    name: 'Topographique',
-    styleFile: 'https://api.maptiler.com/maps/topographique/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/topographique.png'
-  },
-  {
-    name: 'Voyager',
-    styleFile: 'https://api.maptiler.com/maps/voyager/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://cloud.maptiler.com/static/img/maps/voyager.png'
-  },
-  {
-    name: 'Positron',
-    styleFile: 'https://api.maptiler.com/maps/8bb9093c-9865-452b-8be4-7a397f552b49/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://api.maptiler.com/maps/8bb9093c-9865-452b-8be4-7a397f552b49/0/0/0.png?key=xIhbu1RwgdbxfZNmoXn4'
-  },
-  {
-    name: 'Dark Topo',
-    styleFile: 'https://api.maptiler.com/maps/99521f88-ff7f-4c7b-b1dc-05a5a773b1f1/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://api.maptiler.com/maps/99521f88-ff7f-4c7b-b1dc-05a5a773b1f1/0/0/0.png?key=xIhbu1RwgdbxfZNmoXn4'
-  },
-  {
-    name: 'Streets-dark',
-    styleFile: 'https://api.maptiler.com/maps/a1e62ee0-aca6-451a-a4b8-42250422a212/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    image: 'https://api.maptiler.com/maps/a1e62ee0-aca6-451a-a4b8-42250422a212/0/0/0.png?key=xIhbu1RwgdbxfZNmoXn4'
-  },
-  {
-    name: 'Streets-light',
-    styleFile: 'https://api.maptiler.com/maps/208a41eb-368f-4003-8e3c-2dba0d90b3cb/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-    'image': 'https://api.maptiler.com/maps/208a41eb-368f-4003-8e3c-2dba0d90b3cb/0/0/0.png?key=xIhbu1RwgdbxfZNmoXn4'
-  }
+  getStyle('basic'),
+  getStyle('bright'),
+  getStyle('hybrid')
 ];
 
 export const geojsondata = {

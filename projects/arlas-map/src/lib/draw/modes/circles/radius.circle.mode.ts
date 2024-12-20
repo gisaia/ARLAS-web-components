@@ -21,6 +21,7 @@ import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import circle from '@turf/circle';
 import length from '@turf/length';
 import numeral from 'numeral';
+import { displayFeatures, updateCoordinates } from '../utils';
 
 export const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
@@ -29,21 +30,6 @@ radiusCircleMode.fireOnStop = function () {
     this.map.fire('draw.onStop', 'draw end');
   };
 
-function createVertex(parentId, coordinates, path, selected) {
-    return {
-        type: 'Feature',
-        properties: {
-            meta: 'vertex',
-            parent: parentId,
-            coord_path: path,
-            active: selected ? 'true' : 'false',
-        },
-        geometry: {
-            type: 'Point',
-            coordinates,
-        },
-    };
-}
 
 function getDisplayMeasurements(feature) {
     // should log both metric and standard display strings for the current drawn feature
@@ -144,17 +130,7 @@ radiusCircleMode.clickAnywhere = function (state, e) {
         e.lngLat.lng,
         e.lngLat.lat
     );
-    if (state.direction === 'forward') {
-        state.currentVertexPosition += 1; // eslint-disable-line
-        state.line.updateCoordinate(
-            state.currentVertexPosition,
-            e.lngLat.lng,
-            e.lngLat.lat
-        );
-    } else {
-        state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
-    }
-
+    updateCoordinates(state, e);
     return null;
 };
 
@@ -199,41 +175,7 @@ radiusCircleMode.onStop = function (state) {
 };
 
 radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
-    const isActiveLine = geojson.properties.id === state.line.id;
-    geojson.properties.active = isActiveLine ? 'true' : 'false';
-    if (!isActiveLine) {
-        if (!geojson.geometry.coordinates[0][0]) {
-            return null;
-        }
-        return display(geojson);
-    }
-
-    // Only render the line if it has at least one real coordinate
-    if (geojson.geometry.coordinates.length < 2) {
-        return null;
-    }
-    geojson.properties.meta = 'feature';
-
-    // displays center vertex as a point feature
-    display(
-        createVertex(
-            state.line.id,
-            geojson.geometry.coordinates[
-            state.direction === 'forward'
-                ? geojson.geometry.coordinates.length - 2
-                : 1
-            ],
-            `${state.direction === 'forward'
-                ? geojson.geometry.coordinates.length - 2
-                : 1
-            }`,
-            false
-        )
-    );
-
-    // displays the line as it is drawn
-    display(geojson);
-
+    displayFeatures(state, geojson, display);
     const displayMeasurements = getDisplayMeasurements(geojson);
 
     // create custom feature for the current pointer position

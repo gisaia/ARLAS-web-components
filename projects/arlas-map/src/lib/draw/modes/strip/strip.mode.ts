@@ -18,30 +18,15 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { polygon, point, bearingToAzimuth } from '@turf/helpers';
-import rhumbDestination from '@turf/rhumb-destination';
-import rhumbBearing from '@turf/rhumb-bearing';
+import { bearingToAzimuth, point, polygon } from '@turf/helpers';
 import length from '@turf/length';
+import rhumbBearing from '@turf/rhumb-bearing';
+import rhumbDestination from '@turf/rhumb-destination';
 import transformRotate from '@turf/transform-rotate';
 import transformTranslate from '@turf/transform-translate';
+import { displayFeatures, updateCoordinates } from '../utils';
 
 export const stripMode = { ...MapboxDraw.modes.draw_line_string };
-
-function createVertex(parentId, coordinates, path, selected) {
-    return {
-        type: 'Feature',
-        properties: {
-            meta: 'vertex',
-            parent: parentId,
-            coord_path: path,
-            active: selected ? 'true' : 'false',
-        },
-        geometry: {
-            type: 'Point',
-            coordinates,
-        },
-    };
-}
 
 export function rotateStrip(start, end, state, currentMaxBearing = 0, options: any = {}) {
     const properties = options.properties ? options.properties : {};
@@ -149,16 +134,7 @@ stripMode.clickAnywhere = function (state, e) {
         e.lngLat.lng,
         e.lngLat.lat
     );
-    if (state.direction === 'forward') {
-        state.currentVertexPosition += 1; // eslint-disable-line
-        state.line.updateCoordinate(
-            state.currentVertexPosition,
-            e.lngLat.lng,
-            e.lngLat.lat
-        );
-    } else {
-        state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
-    }
+    updateCoordinates(state, e);
     return null;
 };
 
@@ -177,7 +153,7 @@ stripMode.onMouseMove = function (state, e) {
             const translatedPoint = transformTranslate(endPoint, translateDistance, bearing);
             const stripFeature = buildStrip(start, translatedPoint.geometry.coordinates, state.halfSwath);
             stripFeature.properties.parent = state.line.id;
-            (stripFeature.properties as any).meta = 'strip';
+            (stripFeature.properties).meta = 'strip';
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
             state.currentMaxBearing = bearing;
             state.isStripDrew = true;
@@ -228,40 +204,8 @@ stripMode.onStop = function (state) {
 };
 
 stripMode.toDisplayFeatures = function (state, geojson, display) {
-    const isActiveLine = geojson.properties.id === state.line.id;
-    geojson.properties.active = isActiveLine ? 'true' : 'false';
-    if (!isActiveLine) {
-        if (!geojson.geometry.coordinates[0][0]) {
-            return null;
-        }
-        return display(geojson);
-    }
+    displayFeatures(state, geojson, display);
 
-    // Only render the line if it has at least one real coordinate
-    if (geojson.geometry.coordinates.length < 2) {
-        return null;
-    }
-    geojson.properties.meta = 'feature';
-
-    // displays center vertex as a point feature
-    display(
-        createVertex(
-            state.line.id,
-            geojson.geometry.coordinates[
-            state.direction === 'forward'
-                ? geojson.geometry.coordinates.length - 2
-                : 1
-            ],
-            `${state.direction === 'forward'
-                ? geojson.geometry.coordinates.length - 2
-                : 1
-            }`,
-            false
-        )
-    );
-
-    // displays the line as it is drawn
-    display(geojson);
 
     // create custom feature for the current pointer position
     const currentVertex = {
