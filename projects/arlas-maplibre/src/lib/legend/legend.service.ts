@@ -16,15 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import tinycolor from 'tinycolor2';
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import {
-  CircleLegend, FillLegend, getMax, HEATMAP_DENSITY, HeatmapLegend, INTERPOLATE,
+  CircleLegend, FillLegend, getMax, HeatmapLegend, INTERPOLATE,
   LabelLegend, LayerMetadata, Legend, LegendData, LegendService, LineLegend, MATCH,
-  MAX_CIRLE_RADIUS, MAX_LINE_WIDTH, OTHER, PROPERTY_SELECTOR_SOURCE
+  MAX_CIRLE_RADIUS, MAX_LINE_WIDTH, PROPERTY_SELECTOR_SOURCE
 } from 'arlas-map';
 import {
   CirclePaintProps, FillPaintProps, HeatmapPaintProps,
@@ -46,92 +45,17 @@ export class MaplibreLegendService extends LegendService {
 
   public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
     filter?: any, translate?: TranslateService): [Legend, string] {
-    const colorLegend: Legend = { visible: true };
-    let colorPalette = '';
-    if (typeof colorExpression === 'string') {
-      colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
-      colorLegend.fixValue = colorExpression;
-    } else if (Array.isArray(colorExpression)) {
-      if (colorExpression.length === 2) {
-        /** color = ["get", "field"]  ==> Generated or Provided */
-        const field = colorExpression[1];
-        colorLegend.title = field;
-        LegendService.setProvidedColorLegend(colorLegend, field, legendData, filter, translate);
-      } else if (colorExpression.length >= 3) {
-        if (colorExpression[0] === MATCH) {
-          LegendService.setMatchColorLegend(colorLegend, colorExpression, legendData, filter, translate);
-        } else if (colorExpression[0] === INTERPOLATE) {
-          colorPalette = LegendService.setInterpolatedColorLegend(colorLegend, colorExpression, legendData, visibleMode);
-        }
-      }
-    }
+    return LegendService.buildColorLegend(colorExpression, visibleMode, legendData, filter, translate);
 
-    colorLegend.visible = visibleMode;
-    return [colorLegend, colorPalette];
   };
 
   public static buildRadiusLegend(radiusExpression: string | any, legendData: Map<string, LegendData>): Legend {
-    const radiusLegend: Legend = {};
-    const circleRadiusEvolution: Array<HistogramData> = new Array();
-    if (Array.isArray(radiusExpression)) {
-      if (radiusExpression.length >= 3) {
-        if (radiusExpression[0] === INTERPOLATE) {
-          const field = radiusExpression[2][1];
-          radiusExpression.filter((w, i) => i >= 3).forEach((w, i) => {
-            if (i % 2 === 0) {
-              circleRadiusEvolution.push({ key: w, value: radiusExpression[i + 1 + 3] });
-            }
-          });
-          radiusLegend.title = field;
-          if (legendData?.get(field)) {
-            radiusLegend.minValue = legendData.get(field).minValue;
-            radiusLegend.maxValue = legendData.get(field).maxValue;
-          } else {
-            radiusLegend.minValue = circleRadiusEvolution[0].key + '';
-            radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
-          }
-          radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          const maxCircleRadius = getMax(circleRadiusEvolution);
-          if (maxCircleRadius > MAX_CIRLE_RADIUS) {
-            circleRadiusEvolution.forEach(lw => lw.value = lw.value * MAX_CIRLE_RADIUS / maxCircleRadius);
-          }
-          radiusLegend.histogram = circleRadiusEvolution;
-        }
-      }
-    }
-    return radiusLegend;
-
+    return LegendService.buildRadiusLegend(radiusExpression, legendData);
   };
 
-  private static buildWidthLegend(width: number | any,
-    data: Map<string, LegendData>): Legend {
-    /** if the line width is fix then it is not added to the legend*/
-    const legend: Legend = {};
-    if (Array.isArray(width)) {
-      if (width.length >= 3) {
-        if (width[0] === INTERPOLATE) {
-          const field = width[2][1];
-          legend.title = field;
-          if (data?.get(field)) {
-            legend.minValue = data.get(field).minValue;
-            legend.maxValue = data.get(field).maxValue;
-          }
-          legend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
-          const lineWidthEvolution: Array<HistogramData> = new Array();
-          width.filter((w, i) => i >= 3).forEach((w, i) => {
-            if (i % 2 === 0) {
-              lineWidthEvolution.push({ key: w, value: width[i + 1 + 3] });
-            }
-          });
-          const maxLineWidth = getMax(lineWidthEvolution);
-          if (maxLineWidth > MAX_LINE_WIDTH) {
-            lineWidthEvolution.forEach(lw => lw.value = lw.value * MAX_LINE_WIDTH / maxLineWidth);
-          }
-          legend.histogram = lineWidthEvolution;
-        }
-      }
-    }
-    return legend;
+  protected static buildWidthLegend(lineWidth: number | any,
+    legendData: Map<string, LegendData>): Legend {
+    return LegendService.buildWidthLegend(lineWidth, legendData);
   }
 
   public getCircleLegend(paint: CirclePaintProps, visibileMode: boolean, legendData:

@@ -97,7 +97,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   private legendData: Map<string, LegendData> = new Map();
   public colorPalette = '';
   public strokeColorPalette = '';
-  
+
   private readonly MAX_CIRLE_RADIUS = 7;
   private readonly LEGEND_WIDTH = 210;
   private readonly _onDestroy$ = new Subject<boolean>();

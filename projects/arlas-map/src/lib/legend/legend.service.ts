@@ -20,20 +20,17 @@
 import { Injectable } from '@angular/core';
 import { CircleLegend, FillLegend, HeatmapLegend, LabelLegend, Legend, LegendData, LineLegend, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { TranslateService } from '@ngx-translate/core';
-import { HEATMAP_DENSITY, IN, NOT_IN, OTHER } from '../map/model/filters';
+import { HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from '../map/model/filters';
 import tinycolor from 'tinycolor2';
+import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { getMax } from './legend.component';
+import { MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './legend.tools';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class LegendService {
-
-  public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
-    filter?: any, translate?: TranslateService): [Legend, string] {
-
-    return [undefined, ''];
-  };
 
   public getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): CircleLegend {
     return undefined;
@@ -55,7 +52,8 @@ export abstract class LegendService {
     return undefined;
   }
 
-  public static setProvidedColorLegend(colorLegend: Legend, field: string, legendData: Map<string, LegendData>, filter, translate: TranslateService) {
+  public static setProvidedColorLegend(colorLegend: Legend, field: string,
+    legendData: Map<string, LegendData>, filter, translate: TranslateService) {
     colorLegend.title = field;
     if (!Array.isArray(field)) {
       colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
@@ -132,7 +130,8 @@ export abstract class LegendService {
   }
 
 
-  public static setInterpolatedColorLegend(colorLegend: Legend, colorExpression: any[], legendData: Map<string, LegendData>,
+  public static setInterpolatedColorLegend(colorLegend: Legend, colorExpression: any[],
+    legendData: Map<string, LegendData>,
     visibleMode: boolean) {
     colorLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
     /** color = ["interplate", ['linear'], ["get", "field"], 0, 1... ]**/
@@ -205,4 +204,95 @@ export abstract class LegendService {
       }
     });
   }
+
+  public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
+    filter?: any, translate?: TranslateService): [Legend, string] {
+    const colorLegend: Legend = { visible: true };
+    let colorPalette = '';
+    if (typeof colorExpression === 'string') {
+      colorLegend.type = PROPERTY_SELECTOR_SOURCE.fix;
+      colorLegend.fixValue = colorExpression;
+    } else if (Array.isArray(colorExpression)) {
+      if (colorExpression.length === 2) {
+        /** color = ["get", "field"]  ==> Generated or Provided */
+        const field = colorExpression[1];
+        colorLegend.title = field;
+        LegendService.setProvidedColorLegend(colorLegend, field, legendData, filter, translate);
+      } else if (colorExpression.length >= 3) {
+        if (colorExpression[0] === MATCH) {
+          LegendService.setMatchColorLegend(colorLegend, colorExpression, legendData, filter, translate);
+        } else if (colorExpression[0] === INTERPOLATE) {
+          colorPalette = LegendService.setInterpolatedColorLegend(colorLegend, colorExpression, legendData, visibleMode);
+        }
+      }
+    }
+
+    colorLegend.visible = visibleMode;
+    return [colorLegend, colorPalette];
+  };
+
+  public static buildRadiusLegend(radiusExpression: string | any, legendData: Map<string, LegendData>): Legend {
+    const radiusLegend: Legend = {};
+    const circleRadiusEvolution: Array<HistogramData> = new Array();
+    if (Array.isArray(radiusExpression)) {
+      if (radiusExpression.length >= 3) {
+        if (radiusExpression[0] === INTERPOLATE) {
+          const field = radiusExpression[2][1];
+          radiusExpression.filter((w, i) => i >= 3).forEach((w, i) => {
+            if (i % 2 === 0) {
+              circleRadiusEvolution.push({ key: w, value: radiusExpression[i + 1 + 3] });
+            }
+          });
+          radiusLegend.title = field;
+          if (legendData?.get(field)) {
+            radiusLegend.minValue = legendData.get(field).minValue;
+            radiusLegend.maxValue = legendData.get(field).maxValue;
+          } else {
+            radiusLegend.minValue = circleRadiusEvolution[0].key + '';
+            radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
+          }
+          radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+          const maxCircleRadius = getMax(circleRadiusEvolution);
+          if (maxCircleRadius > MAX_CIRLE_RADIUS) {
+            circleRadiusEvolution.forEach(lw => lw.value = lw.value * MAX_CIRLE_RADIUS / maxCircleRadius);
+          }
+          radiusLegend.histogram = circleRadiusEvolution;
+        }
+      }
+    }
+    return radiusLegend;
+
+  };
+
+  protected static buildWidthLegend(lineWidth: number | any,
+    legendData: Map<string, LegendData>): Legend {
+    /** if the line width is fix then it is not added to the legend*/
+    const widthLegend: Legend = {};
+    if (Array.isArray(lineWidth)) {
+      if (lineWidth.length >= 3) {
+        if (lineWidth[0] === INTERPOLATE) {
+          const field = lineWidth[2][1];
+          widthLegend.title = field;
+          if (legendData?.get(field)) {
+            widthLegend.minValue = legendData.get(field).minValue;
+            widthLegend.maxValue = legendData.get(field).maxValue;
+          }
+          widthLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+          const lineWidthEvolution: Array<HistogramData> = new Array();
+          lineWidth.filter((w, i) => i >= 3).forEach((w, i) => {
+            if (i % 2 === 0) {
+              lineWidthEvolution.push({ key: w, value: lineWidth[i + 1 + 3] });
+            }
+          });
+          const maxLineWidth = getMax(lineWidthEvolution);
+          if (maxLineWidth > MAX_LINE_WIDTH) {
+            lineWidthEvolution.forEach(lw => lw.value = lw.value * MAX_LINE_WIDTH / maxLineWidth);
+          }
+          widthLegend.histogram = lineWidthEvolution;
+        }
+      }
+    }
+    return widthLegend;
+  }
+
 }

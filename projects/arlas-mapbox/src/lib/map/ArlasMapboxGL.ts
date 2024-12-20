@@ -53,19 +53,20 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     super(config);
   }
 
-  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: mapboxgl.Map, SW: ArlasLngLat, NE: ArlasLngLat): LngLat[] {
-    const topRight = map.project(NE);
-    const bottomLeft = map.project(SW);
+  public paddedBounds(npad: number, spad: number, epad: number, wpad: number,
+    mapboxMapInstance: mapboxgl.Map, SW: ArlasLngLat, NE: ArlasLngLat): LngLat[] {
+    const topRight = mapboxMapInstance.project(NE);
+    const bottomLeft = mapboxMapInstance.project(SW);
     const scale = 1;
-    const southWestToPoint = map.project(SW);
-    const southWestPoint = new Point(((southWestToPoint.x - bottomLeft.x) * scale) - wpad, ((southWestToPoint.y - topRight.y) * scale) + spad);
+    const swToPoint = mapboxMapInstance.project(SW);
+    const southWestPoint = new Point(((swToPoint.x - bottomLeft.x) * scale) - wpad, ((swToPoint.y - topRight.y) * scale) + spad);
     const southWestWorld = new Point(southWestPoint.x / scale + bottomLeft.x, southWestPoint.y / scale + topRight.y);
-    const swWorld = map.unproject(southWestWorld);
-    const northEastToPoint = map.project(NE);
-    const northEastPoint = new Point(((northEastToPoint.x - bottomLeft.x) * scale) + epad, ((northEastToPoint.y - topRight.y) * scale) - npad);
+    const sw = mapboxMapInstance.unproject(southWestWorld);
+    const neToPoint = mapboxMapInstance.project(NE);
+    const northEastPoint = new Point(((neToPoint.x - bottomLeft.x) * scale) + epad, ((neToPoint.y - topRight.y) * scale) - npad);
     const northEastWorld = new Point(northEastPoint.x / scale + bottomLeft.x, northEastPoint.y / scale + topRight.y);
-    const neWorld = map.unproject(northEastWorld);
-    return [swWorld, neWorld];
+    const ne = mapboxMapInstance.unproject(northEastWorld);
+    return [sw, ne];
   }
 
   public on(type: string, listener: (ev: any) => void): this {
@@ -246,33 +247,32 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
 
     const panLoad = this._margePanForLoad * Math.max(height, width) / 100;
     const panTest = this._margePanForTest * Math.max(height, width) / 100;
-    const extendForLoadLatLng = this.paddedBounds(panLoad, panLoad, panLoad, panLoad, this.getMapProvider(), southWest, northEast);
-    const extendForTestdLatLng = this.paddedBounds(panTest, panTest, panTest, panTest, this.getMapProvider(), southWest, northEast);
-    onMoveData.extendForLoad = [
-      extendForLoadLatLng[1].wrap().lat,
-      extendForLoadLatLng[0].wrap().lng,
-      extendForLoadLatLng[0].wrap().lat,
-      extendForLoadLatLng[1].wrap().lng
-    ];
+    const loadLatLngExtent = this.paddedBounds(panLoad, panLoad, panLoad, panLoad, this.getMapProvider(), southWest, northEast);
+    const testLatLngExtent = this.paddedBounds(panTest, panTest, panTest, panTest, this.getMapProvider(), southWest, northEast);
     onMoveData.extendForTest = [
-      extendForTestdLatLng[1].wrap().lat,
-      extendForTestdLatLng[0].wrap().lng,
-      extendForTestdLatLng[0].wrap().lat,
-      extendForTestdLatLng[1].wrap().lng
+      testLatLngExtent[1].wrap().lat,
+      testLatLngExtent[0].wrap().lng,
+      testLatLngExtent[0].wrap().lat,
+      testLatLngExtent[1].wrap().lng
     ];
-    onMoveData.rawExtendForLoad = [
-      extendForLoadLatLng[1].lat,
-      extendForLoadLatLng[0].lng,
-      extendForLoadLatLng[0].lat,
-      extendForLoadLatLng[1].lng,
+    onMoveData.extendForLoad = [
+      loadLatLngExtent[1].wrap().lat,
+      loadLatLngExtent[0].wrap().lng,
+      loadLatLngExtent[0].wrap().lat,
+      loadLatLngExtent[1].wrap().lng
     ];
     onMoveData.rawExtendForTest = [
-      extendForTestdLatLng[1].lat,
-      extendForTestdLatLng[0].lng,
-      extendForTestdLatLng[0].lat,
-      extendForTestdLatLng[1].lng,
+      testLatLngExtent[1].lat,
+      testLatLngExtent[0].lng,
+      testLatLngExtent[0].lat,
+      testLatLngExtent[1].lng,
     ];
-
+    onMoveData.rawExtendForLoad = [
+      loadLatLngExtent[1].lat,
+      loadLatLngExtent[0].lng,
+      loadLatLngExtent[0].lat,
+      loadLatLngExtent[1].lng,
+    ];
     return onMoveData;
   }
 
@@ -401,12 +401,12 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this.getMapProvider().getBounds();
   }
 
-   /**
-   *
-   * @param bounds Bounds defined by ARLAS
-   * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by mapbox
-   */
-   private toMapboxBound(bounds: ArlasLngLatBounds) {
+  /**
+  *
+  * @param bounds Bounds defined by ARLAS
+  * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by mapbox
+  */
+  private toMapboxBound(bounds: ArlasLngLatBounds) {
     return new LngLatBounds(bounds.sw, bounds.ne);
   }
 }
