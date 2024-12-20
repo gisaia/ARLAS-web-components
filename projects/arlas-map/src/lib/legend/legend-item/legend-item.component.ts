@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 
 @Component({
@@ -25,7 +25,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   templateUrl: './legend-item.component.html',
   styleUrls: ['./legend-item.component.scss']
 })
-export class LegendItemComponent implements OnInit {
+export class LegendItemComponent {
   @Input() public legend: Legend;
   @Input() public title: string;
   @Input() public layer: any;
@@ -35,8 +35,5 @@ export class LegendItemComponent implements OnInit {
   protected PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
   public constructor() { }
-
-  public ngOnInit(): void {
-  }
 
 }

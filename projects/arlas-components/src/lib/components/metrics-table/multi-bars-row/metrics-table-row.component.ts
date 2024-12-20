@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PowerBar } from '../../powerbars/model/powerbar';
 import { MetricsTableRow } from '../model/metrics-table';
 
@@ -27,7 +27,7 @@ import { MetricsTableRow } from '../model/metrics-table';
   templateUrl: './metrics-table-row.component.html',
   styleUrls: ['./metrics-table-row.component.scss']
 })
-export class MetricsTableRowComponent implements OnInit {
+export class MetricsTableRowComponent {
   @Input() public displayCheckBox: boolean;
   @Input() public hideSelection: boolean;
   @Input() public metricsTableRow: MetricsTableRow;
@@ -41,10 +41,6 @@ export class MetricsTableRowComponent implements OnInit {
 
 
   public constructor() { }
-
-  public ngOnInit(): void {
-
-  }
 
   public selectRow() {
     this.updateRowState();

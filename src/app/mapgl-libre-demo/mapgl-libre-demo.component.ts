@@ -17,17 +17,22 @@
  * under the License.
  */
 
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
 import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
 import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
 import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
-import { GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
-   OperationSelectModel } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
+import {
+  GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
+  OperationSelectModel
+} from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
 import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
-import { AddLayerObject, CanvasSourceSpecification, GeoJSONSource, MapOptions, RasterSourceSpecification, SourceSpecification, TypedStyleLayer } from 'maplibre-gl';
+import {
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, MapOptions, RasterSourceSpecification,
+  SourceSpecification, TypedStyleLayer
+} from 'maplibre-gl';
 import { MaplibreSourceType } from '../../../projects/arlas-maplibre/src/lib/map/model/sources';
 
 
@@ -36,12 +41,12 @@ import { MaplibreSourceType } from '../../../projects/arlas-maplibre/src/lib/map
   templateUrl: './mapgl-libre-demo.component.html',
   styleUrls: ['./mapgl-libre-demo.component.css']
 })
-export class MapglLibreDemoComponent implements OnInit {
+export class MapglLibreDemoComponent {
 
   @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<TypedStyleLayer | AddLayerObject,
-  MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions>;
+    MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions>;
   @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<TypedStyleLayer | AddLayerObject,
-  MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions>;;
+    MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions>;;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';
@@ -831,20 +836,20 @@ export class MapglLibreDemoComponent implements OnInit {
   ];
 
   public visualisationSets: Array<VisualisationSetConfig> = [{
-      'name': 'Latest products',
-      'layers': [
-        'arlas_id:Latest products:1677155839933'
-      ],
-      'enabled': true
-    },
-    {
-      'name': 'All products',
-      'layers': [
-        'arlas_id:Number of products:1677155990578',
-        'arlas_id:Density of products:1677155972496'
-      ],
-      'enabled': true
-    }];
+    'name': 'Latest products',
+    'layers': [
+      'arlas_id:Latest products:1677155839933'
+    ],
+    'enabled': true
+  },
+  {
+    'name': 'All products',
+    'layers': [
+      'arlas_id:Number of products:1677155990578',
+      'arlas_id:Density of products:1677155972496'
+    ],
+    'enabled': true
+  }];
 
   public visibilityUpdater = new Subject<Map<string, boolean>>();
 
@@ -855,36 +860,33 @@ export class MapglLibreDemoComponent implements OnInit {
 
   public constructor() { }
 
-  public ngOnInit(): void {
-  }
-
   public polygonChange(event) {
     console.log(event);
   }
 
   public getWKT() {
     switch (this.modeChoice) {
-    case 'all':
-      console.log(this.mapComponent.getAllPolygon('wkt'));
-      break;
-    case 'selected':
-      console.log(this.mapComponent.getSelectedPolygon('wkt'));
-      break;
+      case 'all':
+        console.log(this.mapComponent.getAllPolygon('wkt'));
+        break;
+      case 'selected':
+        console.log(this.mapComponent.getSelectedPolygon('wkt'));
+        break;
     }
   }
 
   public getGeojson() {
     switch (this.modeChoice) {
-    case 'all':
-      console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
-      break;
-    case 'selected':
-      console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
-      break;
+      case 'all':
+        console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
+        break;
+      case 'selected':
+        console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
+        break;
     }
   }
 
-  public switchToDrawMode(mode?,opts?) {
+  public switchToDrawMode(mode?, opts?) {
     this.mapComponent.switchToDrawMode(mode, opts);
   }
 
@@ -1022,7 +1024,7 @@ export class MapSettings implements MapSettingsService {
 
   public getGeoQueries(): Map<string, [GeometrySelectModel[], OperationSelectModel[], string]> {
     const geoQueriesMap = new Map<string, [GeometrySelectModel[], OperationSelectModel[], string]>();
-    geoQueriesMap.set('Test', [[{path: 'centroid'}], this.getOperations(), 'Display name Test']);
+    geoQueriesMap.set('Test', [[{ path: 'centroid' }], this.getOperations(), 'Display name Test']);
     return geoQueriesMap;
   }
 

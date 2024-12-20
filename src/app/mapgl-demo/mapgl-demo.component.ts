@@ -18,7 +18,7 @@
  */
 
 
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
@@ -37,7 +37,7 @@ import { GeoJSONSource, GeoJSONSourceRaw, MapboxOptions } from 'mapbox-gl';
   templateUrl: './mapgl-demo.component.html',
   styleUrls: ['./mapgl-demo.component.css']
 })
-export class MapglDemoComponent implements OnInit {
+export class MapglDemoComponent {
 
   @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;
   @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;;
@@ -853,9 +853,6 @@ export class MapglDemoComponent implements OnInit {
   } as any;
 
   public constructor() { }
-
-  public ngOnInit(): void {
-  }
 
   public polygonChange(event) {
     console.log(event);

@@ -1,6 +1,7 @@
 <div *ngIf="showList" class="basemap-container">
   <ng-container *ngFor="let style of basemaps?._styles">
-    <div *ngIf="!style.errored" class="basemap" [class.selected]="style.name === basemaps?._selectedStyle?.name" (click)="onChangeBasemap(style)">
+    <div *ngIf="!style.errored" class="basemap" [class.selected]="style.name === basemaps?._selectedStyle?.name"
+    (click)="onChangeBasemap(style)" (keyDown)="onChangeBasemap(style)">
       <div class="image">
         <img *ngIf="!!style?.image && style?.image !== ''" src="{{style?.image}}" (error)="style.image = null" />
         <div *ngIf="!style?.image || (!!style?.image && style?.image === '')" class="no-image">

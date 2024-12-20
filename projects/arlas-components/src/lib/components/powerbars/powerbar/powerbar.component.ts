@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PowerBar } from '../model/powerbar';
 import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 
@@ -26,7 +26,7 @@ import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componen
     templateUrl: './powerbar.component.html',
     styleUrls: ['./powerbar.component.css']
 })
-export class PowerbarComponent implements OnInit {
+export class PowerbarComponent {
 
     @Input() public powerbar: PowerBar;
     /**
@@ -67,10 +67,6 @@ export class PowerbarComponent implements OnInit {
 
 
     public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
-
-
-    public ngOnInit(): void {
-    }
 
     public onCheck() {
         this.onCheckEvent.emit(true);

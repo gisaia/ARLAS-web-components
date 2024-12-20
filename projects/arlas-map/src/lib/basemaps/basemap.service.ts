@@ -47,7 +47,7 @@ export abstract class BasemapService<L, S, M> {
     this.basemaps = basemaps;
   }
 
-  public addProtomapBasemap(map: AbstractArlasMapGL) { };
+  public abstract addProtomapBasemap(map: AbstractArlasMapGL);
 
   protected addPMtilesToSource(map: AbstractArlasMapGL, pmtilesSource: any) {
     /* eslint-disable max-len */
@@ -71,7 +71,7 @@ export abstract class BasemapService<L, S, M> {
 
   public abstract declareProtomapProtocol(map: AbstractArlasMapGL): void;
   public cloneStyleFile<T>(selected: any) {
-    return Object.assign({}, selected.styleFile as T);
+    return { ...selected.styleFile as T};
   }
 
   public buildInitStyle<StyleType, LayerSpec>(clonedStyleFile: StyleType) {

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
 import { select } from 'd3-selection';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 
@@ -26,7 +26,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   templateUrl: './layer-icon.component.html',
   styleUrls: ['./layer-icon.component.scss']
 })
-export class LayerIconComponent implements OnInit, AfterViewInit, OnChanges {
+export class LayerIconComponent implements AfterViewInit, OnChanges {
   @Input() public layer: any;
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
@@ -36,9 +36,6 @@ export class LayerIconComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
 
   public constructor() {
-  }
-
-  public ngOnInit() {
   }
 
   public ngAfterViewInit() {
@@ -57,7 +54,6 @@ export class LayerIconComponent implements OnInit, AfterViewInit, OnChanges {
 
   private drawIcons(): void {
     const type = this.layer.type;
-    const paint = this.layer.paint;
     const source: string = this.layer.source as string;
     switch (type) {
       case 'circle':

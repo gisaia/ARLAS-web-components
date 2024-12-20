@@ -1,7 +1,7 @@
 <div id="{{id}}" class="map__container">
   <div class="map__visu-list">
     <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
-      <mat-icon (click)="legendOpen=!legendOpen">layers</mat-icon>
+      <mat-icon (click)="legendOpen=!legendOpen" (keyDown)="legendOpen=!legendOpen">layers</mat-icon>
     </div>
     <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
       (cdkDropListDropped)="drop($event)">
