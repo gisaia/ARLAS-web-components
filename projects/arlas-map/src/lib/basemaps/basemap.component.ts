@@ -35,7 +35,7 @@ import { takeUntil } from 'rxjs';
 })
 export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly _onDestroy$ = new Subject<boolean>();
 
   @Input() public map: AbstractArlasMapGL;
   @Input() public mapSources: Array<ArlasMapSource<any>>;
@@ -47,8 +47,8 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
   public basemaps: ArlasBasemaps;
 
   public constructor(protected basemapService: BasemapService<L, S, M>,
-    protected mapLogicService: AbstractArlasMapService<L, S, M>,
-    protected mapService: ArlasMapFrameworkService<L, S, M>) {
+    protected mapService: AbstractArlasMapService<L, S, M>,
+    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>) {
 
       this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());
 
@@ -60,9 +60,9 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
   protected initBasemaps() {
     this.basemaps = this.basemapService.basemaps;
-    if (!!this.basemaps) {
+    if (this.basemaps) {
       const styles = this.basemaps.styles();
-      if (!!styles) {
+      if (styles) {
         this.showList = styles.length > 0;
         styles.filter(bm => !bm.image).forEach(bm => {
           if (bm.type !== 'protomap' && !!bm.url) {

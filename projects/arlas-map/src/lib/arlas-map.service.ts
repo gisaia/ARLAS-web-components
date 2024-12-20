@@ -87,9 +87,9 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  public initMapLayers(mapLayers: MapLayers<any>, map: AbstractArlasMapGL) {
+  public initMapLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL) {
     if (mapLayers) {
-      this.setLayersMap(mapLayers as MapLayers<any>);
+      this.setLayersMap(mapLayers);
     }
   }
 
@@ -111,7 +111,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
     this.initVisualisationSet(visualisationSetsConfig);
     for (let i = visualisationSetsConfig.length - 1; i >= 0; i--) {
       const visualisation: VisualisationSetConfig = visualisationSetsConfig[i];
-      if (!!visualisation.layers) {
+      if (visualisation.layers) {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
           const layer = this.layersMap.get(l);
@@ -128,12 +128,12 @@ export abstract class AbstractArlasMapService<L, S, M> {
     this.reorderLayers(visualisationSetsConfig, map);
   }
 
-  private _addExternalEventLayers(mapLayers: MapLayers<any>, map: AbstractArlasMapGL) {
-    if (!!mapLayers.externalEventLayers) {
+  private _addExternalEventLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL) {
+    if (mapLayers.externalEventLayers) {
       mapLayers.layers
         .filter(layer => mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
         .forEach(l => {
-          this.mapFrameworkService.addLayer(map, l);
+          this.mapFrameworkService.addLayer(map, l as L);
         });
     }
   }
@@ -176,7 +176,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   public highlightFeature(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
     featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    if (featureToHightLight && featureToHightLight.elementidentifier) {
+    if (featureToHightLight?.elementidentifier) {
       const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
       if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
         ids.push(+featureToHightLight.elementidentifier.idValue);
@@ -204,7 +204,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
       this.visualisationsSets.visualisations.forEach((ls, v) => {
         if (v !== visualisationName) {
           ls.forEach(ll => {
-            if (layersSet && layersSet.has(ll)) {
+            if (layersSet?.has(ll)) {
               layersSet.delete(ll);
             }
           });

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, Output } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
@@ -76,7 +76,7 @@ export interface MapSettingsService {
   templateUrl: './map-settings-dialog.component.html',
   styleUrls: ['./map-settings-dialog.component.scss']
 })
-export class MapSettingsDialogComponent implements OnInit {
+export class MapSettingsDialogComponent {
   /**
    * @Output : Angular
    * Emits the geo-query to apply. A geo-query is defined by
@@ -92,13 +92,11 @@ export class MapSettingsDialogComponent implements OnInit {
   public collectionsColors = new Array<string>();
   public selectionsSnapshot = new Map<string, string>();
 
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly _onDestroy$ = new Subject<boolean>();
 
   public constructor(
-    private dialogRef: MatDialogRef<MapSettingsComponent>,
-    private colorGeneratorLoader: ArlasColorService) { }
-
-  public ngOnInit() { }
+    private readonly dialogRef: MatDialogRef<MapSettingsComponent>,
+    private readonly colorGeneratorLoader: ArlasColorService) { }
 
   public ngOnDestroy() {
     this._onDestroy$.next(true);
@@ -161,7 +159,7 @@ export class MapSettingsDialogComponent implements OnInit {
   templateUrl: './map-settings.component.html',
   styleUrls: ['./map-settings.component.scss']
 })
-export class MapSettingsComponent implements OnInit {
+export class MapSettingsComponent {
 
   /**
    * @Output : Angular
@@ -174,8 +172,6 @@ export class MapSettingsComponent implements OnInit {
   public dialogRef: MatDialogRef<MapSettingsDialogComponent>;
 
   public constructor(public dialog: MatDialog) { }
-
-  public ngOnInit() { }
 
   public openDialog(mapSettingsService: MapSettingsService) {
     this.dialogRef = this.dialog.open(MapSettingsDialogComponent, { data: null, panelClass: 'map-settings-dialog' });

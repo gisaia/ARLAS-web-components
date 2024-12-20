@@ -64,7 +64,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** Draw instance. */
   public draw: AbstractDraw;
   /** @description Features drawn at component start */
-  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
+  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
@@ -88,7 +88,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   public drawClickCounter = 0;
 
   /** List of drawn polygons centroid */
-  public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
+  public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
 
 
   /** Drawn geometry's state when editing/updating. */
@@ -107,9 +107,10 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   protected finishDrawTooltip: HTMLElement;
 
 
-  public constructor(private drawService: MapboxAoiDrawService, private _snackBar: MatSnackBar, private translate: TranslateService,
-    protected mapService: ArlasMapFrameworkService<L, S, M>,
-    protected mapLogicService: AbstractArlasMapService<L, S, M>) {
+  public constructor(private readonly drawService: MapboxAoiDrawService, private readonly _snackBar: MatSnackBar,
+    private readonly translate: TranslateService,
+    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
+    protected mapService: AbstractArlasMapService<L, S, M>) {
     this.drawService.editAoi$.pipe(takeUntilDestroyed()).subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawService.drawBbox$.pipe(takeUntilDestroyed()).subscribe({
       next: (bboxDC: BboxDrawCommand) => {
@@ -138,7 +139,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         }
       }
     };
-    this.draw = this.mapService.createDraw(drawOptions, this.drawButtonEnabled, this.map);
+    this.draw = this.mapFrameworkService.createDraw(drawOptions, this.drawButtonEnabled, this.map);
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
@@ -161,8 +162,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     };
     this.map.initDrawControls(drawControlConfig);
     this.drawService.setDraw(this.draw);
-    this.mapService.onMapEvent('load', this.map, () => {
-      this.mapLogicService.declareLabelSources('', this.polygonlabeldata, this.map);
+    this.mapFrameworkService.onMapEvent('load', this.map, () => {
+      this.mapService.declareLabelSources('', this.polygonlabeldata, this.map);
       this.draw.changeMode('static');
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
@@ -214,12 +215,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       this.draw.onDrawOnStart((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.mapService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map, '');
       });
       this.draw.onDrawOnStop((e) => {
         window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
-        this.mapService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map, '');
       });
 
       this.draw.onDrawInvalidGeometry((e) => {
@@ -243,7 +244,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           this.draw.add(currentFeature as Feature<Polygon>);
         }
         this.openInvalidGeometrySnackBar();
-        this.mapService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map, '');
       });
 
       this.draw.onDrawEditSaveInitialFeature((edition) => {
@@ -273,7 +274,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           this.drawService.isDrawingStrip = false;
           this.drawService.isInSimpleDrawMode = false;
           this.draw.changeMode('static');
-          this.mapService.setMapCursor(this.map, '');
+          this.mapFrameworkService.setMapCursor(this.map, '');
         }
       });
       this.draw.onDrawModeChange((e) => {
@@ -286,7 +287,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         if (e.mode === 'simple_select') {
           this.drawService.isInSimpleDrawMode = true;
         } else if (e.mode === 'static') {
-          this.mapService.setMapCursor(this.map, '');
+          this.mapFrameworkService.setMapCursor(this.map, '');
         } else if (e.mode === 'direct_select') {
           const selectedFeatures = this.draw.getSelectedFeatures();
           const selectedIds = this.draw.getSelectedIds();
@@ -313,12 +314,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
             }
           } else {
             this.drawService.isInSimpleDrawMode = false;
-            this.mapService.setMapCursor(this.map, '');
+            this.mapFrameworkService.setMapCursor(this.map, '');
           }
         }
       });
 
-      this.mapService.onMapEvent('click', this.map, (e) => {
+      this.mapFrameworkService.onMapEvent('click', this.map, (e) => {
         if (this.drawService.isDrawingCircle) {
           return;
         }
@@ -362,17 +363,17 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     });
 
     // Mouse events
-    this.mapService.onMapEvent('mousedown', this.map, (e: MapMouseEvent) => {
+    this.mapFrameworkService.onMapEvent('mousedown', this.map, (e: MapMouseEvent) => {
       this.drawService.startBboxDrawing();
     });
-    this.mapService.onMapEvent('mouseup', this.map, (e: MapMouseEvent) => {
+    this.mapFrameworkService.onMapEvent('mouseup', this.map, (e: MapMouseEvent) => {
       this.drawService.stopBboxDrawing();
     });
 
-    this.mapService.onMapEvent('mousemove', this.map, (e: MapMouseEvent) => {
+    this.mapFrameworkService.onMapEvent('mousemove', this.map, (e: MapMouseEvent) => {
       const lngLat = e.lngLat;
       if (this.drawService.isDrawingBbox || this.drawService.isDrawingPolygon) {
-        this.mapService.setMapCursor(this.map, 'crosshair');
+        this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
         this.map.movelngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
@@ -427,7 +428,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         }
         this.drawnSelectionChanged = false;
-        this.mapLogicService.updateLabelSources(this.map.POLYGON_LABEL_SOURCE, this.polygonlabeldata, this.map);
+        this.mapService.updateLabelSources(this.map.POLYGON_LABEL_SOURCE, this.polygonlabeldata, this.map);
       }
 
     }
@@ -450,7 +451,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     document.addEventListener('mouseup', this.mouseup);
     // Capture the first xy coordinates
     const rect = this.canvas.getBoundingClientRect();
-    this.start = this.mapService.getPointFromScreen(e, this.canvas);
+    this.start = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
   };
 
   /**
@@ -460,7 +461,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    */
   private mousemove = (e) => {
     // Capture the ongoing xy coordinates
-    this.current = this.mapService.getPointFromScreen(e, this.canvas);
+    this.current = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
     // Append the box element if it doesn't exist
     if (this.box === undefined) {
       this.box = document.createElement('div');
@@ -487,10 +488,10 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * @param e Mouse event
    */
   private mouseup = (e) => {
-    const f = this.mapService.getPointFromScreen(e, this.canvas);
+    const f = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
     document.removeEventListener('mousemove', this.mousemove);
     document.removeEventListener('mouseup', this.mouseup);
-    this.mapService.setMapCursor(this.map, '');
+    this.mapFrameworkService.setMapCursor(this.map, '');
     this.map.enableDragPan();
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
@@ -567,7 +568,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
-    this.mapService.setMapCursor(this.map, 'crosshair');
+    this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
     this.drawService.enableBboxEdition();
     this.drawService.isDrawingBbox = true;
   }
@@ -576,7 +577,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
   public removeAois() {
-    this.mapService.setMapCursor(this.map, '');
+    this.mapFrameworkService.setMapCursor(this.map, '');
     this.drawService.isDrawingBbox = false;
     this.deleteSelectedItem();
   }
@@ -687,11 +688,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape' && this.drawService.isDrawingBbox) {
-      this.mapService.setMapCursor(this.map, '');
+      this.mapFrameworkService.setMapCursor(this.map, '');
       this.drawService.isDrawingBbox = false;
       document.removeEventListener('mousemove', this.mousemove);
       document.removeEventListener('mouseup', this.mouseup);
-      this.mapService.setMapCursor(this.map, '');
+      this.mapFrameworkService.setMapCursor(this.map, '');
       if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;

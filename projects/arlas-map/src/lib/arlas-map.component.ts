@@ -17,36 +17,38 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { Feature, FeatureCollection } from '@turf/helpers';
-import { BasemapStyle } from './basemaps/basemap.config';
-import {
-  ArlasMapOffset, AbstractArlasMapGL, MapConfig,
-  ZOOM_IN, ZOOM_OUT, RESET_BEARING, CROSS_LAYER_PREFIX
-} from './map/AbstractArlasMapGL';
-import { IconConfig, ControlPosition } from './map/model/controls';
-import { AoiDimensions } from './draw/draw.models';
-import { LegendData } from './legend/legend.config';
-import { MapExtent } from './map/model/extent';
-import { ArlasMapSource } from './map/model/sources';
-import { getLayerName, MapLayers } from './map/model/layers';
-import { finalize, fromEvent, Subject, Subscription, takeUntil } from 'rxjs';
-import { VisualisationSetConfig } from './map/model/visualisationsets';
-import { MapboxAoiDrawService } from './draw/draw.service';
-import { BasemapService } from './basemaps/basemap.service';
-import { TranslateService } from '@ngx-translate/core';
-import { ArlasBasemaps } from './basemaps/basemaps.model';
-import { ArlasMapFrameworkService } from './arlas-map-framework.service';
-import { ARLAS_VSET } from './map/model/layers';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ArlasLngLatBounds, OnMoveResult } from './map/model/map';
-import { AbstractArlasMapService } from './arlas-map.service';
-import { ElementIdentifier } from 'arlas-web-components';
-import * as mapJsonSchema from './arlas-map.schema.json';
-import { ArlasDrawComponent } from './draw/arlas-draw.component';
-import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
-import { ArlasDataLayer } from './map/model/layers';
+import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslateService } from '@ngx-translate/core';
+import { Feature, FeatureCollection } from '@turf/helpers';
+import { ElementIdentifier } from 'arlas-web-components';
+import { finalize, fromEvent, Subject, takeUntil } from 'rxjs';
+import { ArlasMapFrameworkService } from './arlas-map-framework.service';
+import * as mapJsonSchema from './arlas-map.schema.json';
+import { AbstractArlasMapService } from './arlas-map.service';
+import { BasemapStyle } from './basemaps/basemap.config';
+import { BasemapService } from './basemaps/basemap.service';
+import { ArlasBasemaps } from './basemaps/basemaps.model';
+import { ArlasDrawComponent } from './draw/arlas-draw.component';
+import { AoiDimensions } from './draw/draw.models';
+import { MapboxAoiDrawService } from './draw/draw.service';
+import { LegendData } from './legend/legend.config';
+import {
+  AbstractArlasMapGL,
+  ArlasMapOffset,
+  CROSS_LAYER_PREFIX,
+  MapConfig,
+  RESET_BEARING,
+  ZOOM_IN, ZOOM_OUT
+} from './map/AbstractArlasMapGL';
+import { ControlPosition, IconConfig } from './map/model/controls';
+import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
+import { MapExtent } from './map/model/extent';
+import { ARLAS_VSET, ArlasDataLayer, getLayerName, MapLayers } from './map/model/layers';
+import { ArlasLngLatBounds, OnMoveResult } from './map/model/map';
+import { ArlasMapSource } from './map/model/sources';
+import { VisualisationSetConfig } from './map/model/visualisationsets';
 
 @Component({
   selector: 'arlas-map',
@@ -54,7 +56,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrls: ['./arlas-map.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ArlasMapComponent<L, S, M> implements OnInit {
+export class ArlasMapComponent<L, S, M> {
 
   /** Map instance. */
   public map: AbstractArlasMapGL;
@@ -71,7 +73,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
 
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly _onDestroy$ = new Subject<boolean>();
 
 
   @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
@@ -165,7 +167,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   /**  @description Options object for draw tools : https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#options */
   @Input() public drawOption: any = {};
   /** @description Features drawn at component start */
-  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = Object.assign({}, this.emptyData);
+  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
@@ -242,15 +244,12 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
-  public constructor(private drawService: MapboxAoiDrawService,
-    private basemapService: BasemapService<L, S, M>, private translate: TranslateService,
+  public constructor(private readonly drawService: MapboxAoiDrawService,
+    private readonly basemapService: BasemapService<L, S, M>, private readonly translate: TranslateService,
     protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
     protected mapService: AbstractArlasMapService<L, S, M>) {
       this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
       .subscribe(() => this.reorderLayers());
-  }
-
-  public ngOnInit() {
   }
 
   public ngAfterViewInit() {
@@ -273,7 +272,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     }
     this.basemapStyles.forEach(bm => {
       if (typeof bm.styleFile === 'string') {
-        bm.url = (bm.styleFile as string);
+        bm.url = (bm.styleFile);
       }
     });
     this.basemapService.setBasemaps(new ArlasBasemaps(this.defaultBasemapStyle, this.basemapStyles));
@@ -286,9 +285,6 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
     if (this.map && this.map.getMapProvider() !== undefined) {
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
-        const canvas = this.map.getCanvasContainer();
-        const positionInfo = canvas.getBoundingClientRect();
-        const width = positionInfo.width;
         this.map.fitBounds(newBoundsToFit, {
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
@@ -440,7 +436,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
       this.onMove.next(moveResult);
     }));
 
-    if (!!this.redrawSource) {
+    if (this.redrawSource) {
       this.redrawSource.pipe(takeUntil(this._onDestroy$)).subscribe(sd => {
         this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map), {
           'type': 'FeatureCollection',
@@ -587,7 +583,7 @@ export class ArlasMapComponent<L, S, M> implements OnInit {
   }
   /** Destroys all the components subscriptions. */
   public ngOnDestroy(): void {
-    if (!!this.map) {
+    if (this.map) {
       this.map.unsubscribeEvents();
     }
     this._onDestroy$.next(true);

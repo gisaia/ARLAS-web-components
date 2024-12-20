@@ -19,15 +19,13 @@
 import tinycolor from 'tinycolor2';
 
 import { Injectable } from '@angular/core';
-import { CircleLegend, getMax, HEATMAP_DENSITY, IN, INTERPOLATE, Legend, LegendData, MATCH, NOT_IN, OTHER, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
 import { TranslateService } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { MAX_CIRLE_RADIUS } from 'arlas-map';
-import { LineLegend } from 'arlas-map';
-import { MAX_LINE_WIDTH } from 'arlas-map';
-import { LayerMetadata } from 'arlas-map';
-import { FillLegend, HeatmapLegend } from 'arlas-map';
-import { LabelLegend, LegendService } from 'arlas-map';
+import {
+  CircleLegend, FillLegend, getMax, HEATMAP_DENSITY, HeatmapLegend, IN, INTERPOLATE,
+  LabelLegend, LayerMetadata, Legend, LegendData, LegendService, LineLegend, MATCH,
+  MAX_CIRLE_RADIUS, MAX_LINE_WIDTH, NOT_IN, OTHER, PROPERTY_SELECTOR_SOURCE
+} from 'arlas-map';
 import {
   CirclePaintProps, FillPaintProps, HeatmapPaintProps,
   LinePaintProps, SymbolPaintProps, TypedStyleLayer
@@ -91,7 +89,7 @@ export class MaplibreLegendService extends LegendService {
             colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
           }
           colorLegend.manualValues = new Map();
-          if (legendData && legendData.get(field)) {
+          if (legendData?.get(field)) {
             const keysToColors = legendData.get(field).keysColorsMap;
             const colorList = Array.from(keysToColors.keys()).map(k => [k, keysToColors.get(k)]).flat();
             for (let i = 0; i < colorList.length; i += 2) {
@@ -104,7 +102,7 @@ export class MaplibreLegendService extends LegendService {
             colorLegend.manualValues.set('', '#eee');
           }
 
-          if (!!filter) {
+          if (filter) {
             MaplibreLegendService.filterLegend(colorLegend.manualValues, filter,
               (field as string).endsWith('_arlas__color') ? (field as string).slice(0, -13) : field);
           }
@@ -122,7 +120,7 @@ export class MaplibreLegendService extends LegendService {
           colorLegend.title = field;
           colorLegend.manualValues = new Map();
           let keysToColors: Map<string, string>;
-          if (legendData && legendData.get(field + '_color')) {
+          if (legendData?.get(field + '_color')) {
             // If there is a legendData, use only the colors in the keysToColors
             keysToColors = legendData.get(field + '_color').keysColorsMap;
           } else {
@@ -146,15 +144,13 @@ export class MaplibreLegendService extends LegendService {
               }
               colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
               break;
-            } else {
-              if (keysToColors.has(colorExpression[i] + '')) {
-                colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
-                  colorExpression[i + 1]);
-              }
+            } else if (keysToColors.has(colorExpression[i] + '')) {
+              colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
+                colorExpression[i + 1]);
             }
           }
 
-          if (!!filter) {
+          if (filter) {
             MaplibreLegendService.filterLegend(colorLegend.manualValues, filter, field);
           }
         } else if (colorExpression[0] === INTERPOLATE) {
@@ -178,11 +174,11 @@ export class MaplibreLegendService extends LegendService {
           const maximum = palette.slice(-1)[0].proportion;
           palette.forEach(c => colorLegend.interpolatedValues.push(c.value));
           const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
-          if (legendData && legendData.get(field) && field !== 'count') {
+          if (legendData?.get(field) && field !== 'count') {
             colorLegend.minValue = legendData.get(field).minValue;
             colorLegend.maxValue = legendData.get(field).maxValue;
             // For heatmaps, the count is used to fetch data, so we use it for the legend
-          } else if (field === HEATMAP_DENSITY && legendData && legendData.get('count')) {
+          } else if (field === HEATMAP_DENSITY && legendData?.get('count')) {
             colorLegend.minValue = legendData.get('count').minValue;
             colorLegend.maxValue = legendData.get('count').maxValue;
           } else {
@@ -218,7 +214,7 @@ export class MaplibreLegendService extends LegendService {
             }
           });
           radiusLegend.title = field;
-          if (legendData && legendData.get(field)) {
+          if (legendData?.get(field)) {
             radiusLegend.minValue = legendData.get(field).minValue;
             radiusLegend.maxValue = legendData.get(field).maxValue;
           } else {
@@ -228,10 +224,7 @@ export class MaplibreLegendService extends LegendService {
           radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
           const maxCircleRadius = getMax(circleRadiusEvolution);
           if (maxCircleRadius > MAX_CIRLE_RADIUS) {
-            circleRadiusEvolution.map(lw => {
-              lw.value = lw.value * MAX_CIRLE_RADIUS / maxCircleRadius;
-              return lw;
-            });
+            circleRadiusEvolution.forEach(lw => lw.value = lw.value * MAX_CIRLE_RADIUS / maxCircleRadius);
           }
           radiusLegend.histogram = circleRadiusEvolution;
         }
@@ -250,7 +243,7 @@ export class MaplibreLegendService extends LegendService {
         if (lineWidth[0] === INTERPOLATE) {
           const field = lineWidth[2][1];
           widthLegend.title = field;
-          if (legendData && legendData.get(field)) {
+          if (legendData?.get(field)) {
             widthLegend.minValue = legendData.get(field).minValue;
             widthLegend.maxValue = legendData.get(field).maxValue;
           }
@@ -263,10 +256,7 @@ export class MaplibreLegendService extends LegendService {
           });
           const maxLineWidth = getMax(lineWidthEvolution);
           if (maxLineWidth > MAX_LINE_WIDTH) {
-            lineWidthEvolution.map(lw => {
-              lw.value = lw.value * MAX_LINE_WIDTH / maxLineWidth;
-              return lw;
-            });
+            lineWidthEvolution.forEach(lw => lw.value = lw.value * MAX_LINE_WIDTH / maxLineWidth);
           }
           widthLegend.histogram = lineWidthEvolution;
         }

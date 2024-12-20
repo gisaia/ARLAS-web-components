@@ -45,7 +45,7 @@ const extent = extent_.default;
   selector: 'arlas-map-import-dialog',
   styleUrls: ['./map-import-dialog.component.scss']
 })
-export class MapImportDialogComponent implements OnInit {
+export class MapImportDialogComponent {
   public displayError = false;
   public isRunning = false;
   public fitResult = false;
@@ -85,8 +85,6 @@ export class MapImportDialogComponent implements OnInit {
     }
     this.changeType();
   }
-
-  public ngOnInit(): void { }
 
   public onFileChange(files: FileList) {
     this.file.next(files.item(0));
@@ -144,7 +142,7 @@ export class MapImportComponent<L, S, M> {
   private tooManyVertex = false;
   private fitResult = false;
   private jszip: JSZip;
-  private SOURCE_NAME_POLYGON_LABEL = 'polygon_label';
+  private readonly SOURCE_NAME_POLYGON_LABEL = 'polygon_label';
   private emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
     'features': []
@@ -332,9 +330,7 @@ export class MapImportComponent<L, S, M> {
       readKmzFile = readKmlFile.then(result => new Promise<string>((resolve, reject) => {
         this.jszip.loadAsync(result).then(kmzContent => {
           const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === this.KML)[0];
-          this.jszip.file(kmlFile).async('text').then(function (data) {
-            resolve(data);
-          });
+          this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
         });
       }));
     }
@@ -534,22 +530,20 @@ export class MapImportComponent<L, S, M> {
       throw new Error(this.TOO_MANY_VERTICES);
     } else if (this.maxFeatures && importedResult.geojson.features.length > this.maxFeatures) {
       throw new Error(this.TOO_MANY_FEATURES);
-    } else {
-      if (importedResult.geojson.features.length > 0) {
-        this.dialogRef.componentInstance.isRunning = false;
-        if (this.fitResult) {
-          this.mapComponent.fitToPaddedBounds(extent(importedResult.geojson));
-        }
-        if (this.mapComponent.drawData.features.length > 0) {
-          this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
-        }
-        this.mapComponent.drawComponent.draw.changeMode('static');
-        this.imported.next(importedResult.geojson.features);
-        this.mapComponent.onAoiChanged.next(importedResult.geojson);
-        this.dialogRef.close();
-      } else {
-        throw new Error(marker('No polygon to display in this file'));
+    } else if (importedResult.geojson.features.length > 0) {
+      this.dialogRef.componentInstance.isRunning = false;
+      if (this.fitResult) {
+        this.mapComponent.fitToPaddedBounds(extent(importedResult.geojson));
       }
+      if (this.mapComponent.drawData.features.length > 0) {
+        this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
+      }
+      this.mapComponent.drawComponent.draw.changeMode('static');
+      this.imported.next(importedResult.geojson.features);
+      this.mapComponent.onAoiChanged.next(importedResult.geojson);
+      this.dialogRef.close();
+    } else {
+      throw new Error(marker('No polygon to display in this file'));
     }
   }
 

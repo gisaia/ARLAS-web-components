@@ -153,11 +153,11 @@ export class AbstractDraw implements DrawEventsInterface {
     return this.drawProvider.get(featureId);
   }
 
-  public delete(ids: string | Array<string>): AbstractDraw {
+  public delete(ids: string | Array<string>): this {
     this.drawProvider.delete(ids);
     return this;
   }
-  public deleteAll(): AbstractDraw {
+  public deleteAll(): this {
     this.drawProvider.deleteAll();
     return this;
   }
@@ -166,16 +166,16 @@ export class AbstractDraw implements DrawEventsInterface {
     return this.drawProvider.set(featureCollection);
   }
 
-  public trash(): AbstractDraw {
+  public trash(): this {
     this.drawProvider.trash();
     return this;
   }
 
-  public combineFeatures(): AbstractDraw {
+  public combineFeatures(): this {
     this.drawProvider.combineFeatures();
     return this;
   }
-  public uncombineFeatures(): AbstractDraw {
+  public uncombineFeatures(): this {
     this.drawProvider.uncombineFeatures();
     return this;
   }
@@ -204,12 +204,12 @@ export class AbstractDraw implements DrawEventsInterface {
     return this.getSelected().features;
   }
 
-  public setFeatureProperty(featureId: string, property: string, value: any): AbstractDraw {
+  public setFeatureProperty(featureId: string, property: string, value: any): this {
     this.drawProvider.setFeatureProperty(featureId, property, value);
     return this;
   }
 
-  public changeMode(mode: string, opt?: any): AbstractDraw {
+  public changeMode(mode: string, opt?: any): this {
     this.drawProvider.changeMode(mode, opt);
     return this;
   }

@@ -21,6 +21,8 @@ import {
   AbstractArlasMapGL,
   MapConfig,
   OnMoveResult,
+  MapLayers, ControlButton, ControlPosition, DrawControlsOption,
+  MapExtent, ArlasLngLatBounds, ArlasLngLat
 } from 'arlas-map';
 import mapboxgl, {
   AnyLayer,
@@ -28,20 +30,12 @@ import mapboxgl, {
   IControl,
   LngLat,
   LngLatBounds,
-  LngLatBoundsLike,
   MapboxOptions,
   Point
 } from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import {
-  MapLayers, ControlButton, ControlPosition, DrawControlsOption,
-  MapExtent
-} from 'arlas-map';
-import { ArlasAnyLayer } from './model/layers';
+import MapboxDraw from '@mapbox/mapbox-gl-draw';;
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
 import bbox from '@turf/bbox';
-import { ArlasLngLat } from 'arlas-map';
-import { ArlasLngLatBounds } from 'arlas-map';
 
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
@@ -141,7 +135,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   public initDrawControls(config: DrawControlsOption) {
     if (!(config.draw.control instanceof MapboxDraw)) {
       console.warn(' Draw control is not instance of MapBoxDraw');
-    } else {
     }
     this.addControl(config.draw.control as Control, (config.draw?.position ?? 'top-right'));
 

@@ -17,26 +17,25 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import * as pmtiles from 'pmtiles';
-import { MapboxBasemapStyle } from './basemap.config';
-import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
-import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AbstractArlasMapGL, BasemapService, BasemapStyle } from 'arlas-map';
-import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
-import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
-import { ArlasMapboxService } from '../arlas-mapbox.service';
+import { Injectable } from '@angular/core';
+import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
+import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
+import * as pmtiles from 'pmtiles';
+import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
-import { MapboxSourceType } from '../map/model/sources';
-import { ArlasMapSource } from 'arlas-map';
+import { ArlasMapboxService } from '../arlas-mapbox.service';
+import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { ArlasAnyLayer } from '../map/model/layers';
+import { MapboxSourceType } from '../map/model/sources';
+import { CustomProtocol } from '../map/protocols/mapbox-gl-custom-protocol';
+import { MapboxBasemapStyle } from './basemap.config';
 
 @Injectable()
 export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions> {
 
   public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapboxService,
-    private mapService: ArlasMapService
+    private readonly mapService: ArlasMapService
   ) {
     super(http, mapFrameworkService);
   }
@@ -69,7 +68,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
   public declareProtomapProtocol(map: ArlasMapboxGL) {
     const protocol = new pmtiles.Protocol();
     if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
-      /** addSourceType is private */
+      /** addSourceType is private readonly */
       (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));
       (mapboxgl as any).addProtocol('pmtiles', protocol.tile);
     }
@@ -92,13 +91,13 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
         tap(sf => {
           Object.keys(sf.sources).forEach(k => {
             const attribution = sf.sources[k]['attribution'];
-            if (!!attribution) {
+            if (attribution) {
               sf.sources[k]['attribution'] = attribution + this.POWERED_BY_ARLAS;
             } else {
               sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
             }
           });
-          s.styleFile = sf as mapboxgl.Style;
+          s.styleFile = sf;
         }),
         catchError(() => {
             s.errored = true;
@@ -127,7 +126,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
     const layersToSave = new Array<ArlasAnyLayer>();
     const sourcesToSave = new Array<ArlasMapSource<MapboxSourceType>>();
     layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
-      layersToSave.push(l as ArlasAnyLayer);
+      layersToSave.push(l);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
         sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] as MapboxSourceType });
       }

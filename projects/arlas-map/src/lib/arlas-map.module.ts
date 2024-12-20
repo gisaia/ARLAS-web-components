@@ -17,37 +17,32 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { ArlasMapComponent } from './arlas-map.component';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MapboxAoiDrawService } from './draw/draw.service';
-import { LayerIconComponent } from './legend/legend-icon/layer-icon.component';
-import { LegendComponent } from './legend/legend.component';
-import { LegendItemComponent } from './legend/legend-item/legend-item.component';
-import { LayerIdToName } from './legend/layer-name.pipe';
-import { MatMenuModule } from '@angular/material/menu';
-import { GetCollectionDisplayModule } from 'arlas-web-components';
-import { ArlasColorService } from 'arlas-web-components';
-import { GetColorModule } from 'arlas-web-components';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { GetCollectionPipe } from './arlas-map.pipe';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { GetValueModule } from 'arlas-web-components';
 import { CommonModule } from '@angular/common';
-import { FormatNumberModule } from 'arlas-web-components';
-import { FormatLegendModule } from 'arlas-web-components';
+import { NgModule } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
+import { TranslateModule } from '@ngx-translate/core';
+import { ArlasColorService, FormatLegendModule, FormatNumberModule, GetCollectionDisplayModule, GetColorModule, GetValueModule } from 'arlas-web-components';
+import { ArlasMapComponent } from './arlas-map.component';
+import { GetCollectionPipe } from './arlas-map.pipe';
 import { BasemapModule } from './basemaps/basemap.module';
 import { CoordinatesModule } from './coordinates/coordinates.module';
-import { MapSettingsModule } from './map-settings/map-settings.module';
-import { MapImportModule } from './map-import/map-import.module';
-import { MapImportComponent } from './map-import/map-import.component';
-import { MapSettingsComponent } from './map-settings/map-settings.component';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
-import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
+import { MapboxAoiDrawService } from './draw/draw.service';
+import { LayerIdToName } from './legend/layer-name.pipe';
+import { LayerIconComponent } from './legend/legend-icon/layer-icon.component';
+import { LegendItemComponent } from './legend/legend-item/legend-item.component';
+import { LegendComponent } from './legend/legend.component';
+import { MapImportComponent } from './map-import/map-import.component';
+import { MapImportModule } from './map-import/map-import.module';
+import { MapSettingsComponent } from './map-settings/map-settings.component';
+import { MapSettingsModule } from './map-settings/map-settings.module';
 
 
 @NgModule({

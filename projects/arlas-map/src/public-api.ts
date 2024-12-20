@@ -76,7 +76,7 @@ export { MapExtent } from './lib/map/model/extent';
 export {
   ARLAS_ID, ARLAS_VSET, ExternalEvent, ExternalEventLayer, FILLSTROKE_LAYER_PREFIX, FillStroke, HOVER_LAYER_PREFIX,
   LayerEvents, LayerMetadata, MapLayers, MetadataHiddenProps, PaintColor, PaintValue, SCROLLABLE_ARLAS_ID, SELECT_LAYER_PREFIX,
-  getLayerName, ArlasDataLayer
+  getLayerName, ArlasDataLayer,
 } from './lib/map/model/layers';
 export { ArlasMapSource } from './lib/map/model/sources';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
@@ -87,10 +87,11 @@ export {
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools';
 export * as styles from './lib/draw/themes/default-theme';
 export { ArlasMapComponent } from './lib/arlas-map.component';
-export { ArlasLngLat, OnMoveResult, ArlasLngLatBounds } from './lib/map/model/map';
+export { ArlasLngLat, OnMoveResult, ArlasLngLatBounds, } from './lib/map/model/map';
 export { VectorStyle, ArlasCircle, ArlasFill, VectorStyleEnum } from './lib/map/model/vector-style';
 /** Map component logic */
 export { AbstractArlasMapService } from './lib/arlas-map.service';
 /** Map framework logic */
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
-export {GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER} from './lib/map/model/filters';
+export { GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from './lib/map/model/filters';
+export { MapLayerMouseEvent, MapMouseEvent} from './lib/map/model/events';
