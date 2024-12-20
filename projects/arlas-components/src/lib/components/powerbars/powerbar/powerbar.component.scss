@@ -21,27 +21,29 @@
     display: flex;
     align-items: flex-start;
 
-    --mdc-checkbox-state-layer-size: 10px
-}
+    --mdc-checkbox-state-layer-size: 10px;
 
-/* Change the size of the checkbox below 18px */
-.container ::ng-deep.mdc-checkbox__native-control {
-    top: 0 !important;
-    right: 0 !important;
-    left: 0 !important;
-}
-.container ::ng-deep.mdc-checkbox,
-.container ::ng-deep.mdc-checkbox__background,
-.container ::ng-deep.mat-mdc-checkbox-touch-target,
-.container ::ng-deep.mdc-checkbox__ripple,
-.container ::ng-deep.mat-mdc-checkbox-ripple  {
-    width: 10px;
-    height: 10px;
-    top: 0 !important;
-    left: 0 !important;
-}
-.container ::ng-deep.mat-mdc-checkbox-touch-target {
-    transform: unset;
+    /* Change the size of the checkbox below 18px */
+    ::ng-deep.mdc-checkbox__native-control {
+        top: 0 !important;
+        right: 0 !important;
+        left: 0 !important;
+    }
+
+    ::ng-deep.mdc-checkbox,
+    ::ng-deep.mdc-checkbox__background,
+    ::ng-deep.mat-mdc-checkbox-touch-target,
+    ::ng-deep.mdc-checkbox__ripple,
+    ::ng-deep.mat-mdc-checkbox-ripple {
+        width: 10px;
+        height: 10px;
+        top: 0 !important;
+        left: 0 !important;
+    }
+
+    ::ng-deep.mat-mdc-checkbox-touch-target {
+        transform: unset;
+    }
 }
 
 .checkbox {
@@ -83,7 +85,7 @@
     border-radius: 2px;
 }
 
-.powerbar__powerbar--top-group {
+.powerbars__powerbar--top-group {
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -91,7 +93,7 @@
     width: 100%;
 }
 
-.powerbar__powerbar--term /* @doc Style of terms.*/
+.powerbars__powerbar--term /* @doc Style of terms.*/
 {
     font-size: 10px;
     width: 70%;
@@ -104,7 +106,7 @@
     text-align: left;
 }
 
-.powerbar__powerbar--count /* @doc Style of counts.*/
+.powerbars__powerbar--count /* @doc Style of counts.*/
 {
     font-size: 10px;
     width: 100%;
@@ -115,12 +117,12 @@
     text-align: right;
 }
 
-.powerbar__powerbar--selected
+.powerbars__powerbar--selected
 {
     font-weight: bold;
 }
 
-.powerbar__powerbar--term-unselected-bar {
+.powerbars__powerbar--term-unselected-bar {
     color: #888;
 }
 

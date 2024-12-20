@@ -17,16 +17,16 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PowerBar } from '../model/powerbar';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { PowerBar } from '../model/powerbar';
 
 @Component({
     selector: 'arlas-powerbar',
     templateUrl: './powerbar.component.html',
-    styleUrls: ['./powerbar.component.css']
+    styleUrls: ['./powerbar.component.scss']
 })
-export class PowerbarComponent implements OnInit {
+export class PowerbarComponent {
 
     @Input() public powerbar: PowerBar;
     /**
@@ -65,15 +65,15 @@ export class PowerbarComponent implements OnInit {
 
     @Output() public onCheckEvent: EventEmitter<boolean> = new EventEmitter();
 
+    @Output() public onClickEvent = new EventEmitter<boolean>();
 
     public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
-
-
-    public ngOnInit(): void {
-    }
 
     public onCheck() {
         this.onCheckEvent.emit(true);
     }
 
+    public onSelect() {
+        this.onClickEvent.emit(true);
+    }
 }

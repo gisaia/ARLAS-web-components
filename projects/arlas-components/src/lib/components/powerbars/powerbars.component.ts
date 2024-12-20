@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -18,16 +17,16 @@
  * under the License.
  */
 
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, EventEmitter, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { SimpleNode, TreeNode } from 'arlas-d3';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
+import tinycolor from 'tinycolor2';
+import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
 import { ArlasColorService } from '../../services/color.generator.service';
+import { FilterOperator } from '../../tools/models/term-filters';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
-import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
-import * as tinycolor from 'tinycolor2';
-import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
-import { FilterOperator } from '../../tools/models/term-filters';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
@@ -37,7 +36,7 @@ import { FilterOperator } from '../../tools/models/term-filters';
 @Component({
   selector: 'arlas-powerbars',
   templateUrl: './powerbars.component.html',
-  styleUrls: ['./powerbars.component.css']
+  styleUrls: ['./powerbars.component.scss']
 })
 
 export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
@@ -69,7 +68,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * @Input : Angular
    * @description Css class name to use to customize a specific powerbar's style.
    */
-  @Input() public customizedCssClass;
+  @Input() public customizedCssClass: string;
   /**
    * @Input : Angular
    * @description List of selected paths in `inputData` from which the powerbars to select
@@ -95,7 +94,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale.
    */
-  @Input() public colorsSaturationWeight;
+  @Input() public colorsSaturationWeight: number;
 
   /**
    * @Input : Angular
@@ -172,8 +171,8 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   @Output() public searchedTerm = new Subject<string>();
 
   public powerBarsList: Array<PowerBar>;
-  public selectedPowerbarsSet: Set<PowerBar> = new Set<PowerBar>();
-  public selectedPowerbarsTerms: Set<string> = new Set<string>();
+  public selectedPowerbarsSet = new Set<PowerBar>();
+  public selectedPowerbarsTerms = new Set<string>();
 
   /**
    * @constant
@@ -194,11 +193,15 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  public constructor(private colorService: ArlasColorService) {
-    this.colorService.changekeysToColors$.subscribe(() => {
+  private readonly _onDestroy$ = new Subject<boolean>();
+
+  public constructor(private readonly colorService: ArlasColorService) {
+    this.colorService.changekeysToColors$
+      .pipe(takeUntil(this._onDestroy$))
+      .subscribe(() => {
         this.powerBarsList.forEach(p => {
           if (this.useColorService) {
-            const rgbaColor = tinycolor.default(this.colorService.getColor(p.term, this.keysToColors,
+            const rgbaColor = tinycolor(this.colorService.getColor(p.term, this.keysToColors,
               this.colorsSaturationWeight)).toRgb();
             p.color = this.getPowerbarColor(rgbaColor);
           }
@@ -211,28 +214,30 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   public ngOnInit() {
-    if (!!this.missingLeafEvent) {
-      this.missingLeafEvent.subscribe(data => {
-        if (this.selectedPaths !== undefined && this.selectedPaths !== null) {
-          this.setSelectedPowerbars(this.selectedPaths);
-          data.filter(d => !!d.value).forEach(d => {
-            const value = d.value;
-            const key = d.key;
-            const missingLeaf = Array.from(this.selectedPowerbarsSet).filter(pw => pw.term === key)[0];
-            const missingLeafToUpdate = Object.assign({}, missingLeaf);
-            missingLeafToUpdate.count = value;
-            missingLeafToUpdate.isSelected = true;
-            missingLeafToUpdate.classSuffix = this.SELECTED_BAR;
-            if (this.useColorService) {
-              const rgbaColor = tinycolor.default(this.colorService.getColor(missingLeafToUpdate.term, this.keysToColors,
-                this.colorsSaturationWeight)).toRgb();
-              missingLeafToUpdate.color = this.getPowerbarColor(rgbaColor);
-            }
-            this.selectedPowerbarsSet.delete(missingLeaf);
-            this.selectedPowerbarsSet.add(missingLeafToUpdate);
-          });
-        }
-      });
+    if (this.missingLeafEvent) {
+      this.missingLeafEvent
+        .pipe(takeUntil(this._onDestroy$))
+        .subscribe(data => {
+          if (this.selectedPaths !== undefined && this.selectedPaths !== null) {
+            this.setSelectedPowerbars(this.selectedPaths);
+            data.filter(d => !!d.value).forEach(d => {
+              const value = d.value;
+              const key = d.key;
+              const missingLeaf = Array.from(this.selectedPowerbarsSet).filter(pw => pw.term === key)[0];
+              const missingLeafToUpdate = {...missingLeaf};
+              missingLeafToUpdate.count = value;
+              missingLeafToUpdate.isSelected = true;
+              missingLeafToUpdate.classSuffix = this.SELECTED_BAR;
+              if (this.useColorService) {
+                const rgbaColor = tinycolor(this.colorService.getColor(missingLeafToUpdate.term, this.keysToColors,
+                  this.colorsSaturationWeight)).toRgb();
+                missingLeafToUpdate.color = this.getPowerbarColor(rgbaColor);
+              }
+              this.selectedPowerbarsSet.delete(missingLeaf);
+              this.selectedPowerbarsSet.add(missingLeafToUpdate);
+            });
+          }
+        });
     }
 
     if (this.level > 1) {
@@ -273,6 +278,11 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+  public ngOnDestroy() {
+    this._onDestroy$.next(true);
+    this._onDestroy$.complete();
+  }
+
   /**
    * @description Select or deselect a PowerBar and emits the terms list of selected bars
    */
@@ -283,8 +293,11 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       powerBar.isSelected = false;
       this.selectedPowerbarsTerms.delete(powerBar.term);
       this.selectedPowerbarsSet.delete(powerBar);
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      (this.selectedPowerbarsTerms.size === 0) ? this.clearSelection() : powerBar.classSuffix = this.UNSELECTED_BAR;
+      if (this.selectedPowerbarsTerms.size === 0) {
+        this.clearSelection();
+      } else {
+        powerBar.classSuffix = this.UNSELECTED_BAR;
+      }
     } else {
       if (this.selectedPaths) {
         Object.assign(selectedPaths, this.selectedPaths);
@@ -317,7 +330,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
         powerBar.isSelected = true;
         powerBar.classSuffix = this.SELECTED_BAR;
         if (this.useColorService) {
-          const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
+          const rgbaColor = tinycolor(this.colorService.getColor(powerBar.term, this.keysToColors,
             this.colorsSaturationWeight)).toRgb();
           powerBar.color = this.getPowerbarColor(rgbaColor);
         }
@@ -393,12 +406,12 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
           currentPath.reverse();
           powerBar.path = currentPath;
           if (this.useColorService) {
-            const rgbaColor = tinycolor.default(this.colorService.getColor(powerBar.term, this.keysToColors,
+            const rgbaColor = tinycolor(this.colorService.getColor(powerBar.term, this.keysToColors,
               this.colorsSaturationWeight)).toRgb();
             powerBar.color = this.getPowerbarColor(rgbaColor);
           }
           if (this.useColorFromData) {
-            powerBar.color = child.color.toString()[0] === '#' ? child.color.toString() : '#'.concat(child.color.toString());
+            powerBar.color = child.color.toString().startsWith('#') ? child.color.toString() : '#'.concat(child.color.toString());
           }
           powerBarsList.push(powerBar);
         }
