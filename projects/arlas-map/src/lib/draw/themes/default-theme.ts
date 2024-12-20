@@ -17,6 +17,28 @@
  * under the License.
  */
 
+const roundLineLayout = {
+  'line-cap': 'round',
+  'line-join': 'round'
+};
+
+const dashedLinePaint = {
+  'line-color': '#fbb03b',
+  'line-dasharray': [0.2, 2],
+  'line-width': 2
+};
+
+const linePaint = {
+  'line-color': '#3bb2d0',
+  'line-width': 2
+};
+
+const rotatePointFilter = ['all',
+  ['==', 'meta', 'midpoint'],
+  ['==', 'actionType', 'rotation'],
+  ['==', '$type', 'Point'],
+  ['!=', 'mode', 'static']
+];
 export default [
   {
     'id': 'gl-draw-polygon-fill-inactive',
@@ -61,28 +83,15 @@ export default [
       ['==', '$type', 'Polygon'],
       ['!=', 'mode', 'static']
     ],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#3bb2d0',
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+    'paint': linePaint
   },
   {
     'id': 'gl-draw-polygon-stroke-active',
     'type': 'line',
     'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#fbb03b',
-      'line-dasharray': [0.2, 2],
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+    'paint': dashedLinePaint
   },
   {
     'id': 'gl-draw-line-inactive',
@@ -92,14 +101,9 @@ export default [
       ['==', '$type', 'LineString'],
       ['!=', 'mode', 'static']
     ],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#3bb2d0',
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+
+    'paint': linePaint
   },
   {
     'id': 'gl-draw-line-active',
@@ -108,15 +112,8 @@ export default [
       ['==', '$type', 'LineString'],
       ['==', 'active', 'true']
     ],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#fbb03b',
-      'line-dasharray': [0.2, 2],
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+    'paint': dashedLinePaint
   },
   {
     'id': 'gl-draw-polygon-and-line-vertex-stroke-inactive',
@@ -212,23 +209,16 @@ export default [
     'id': 'gl-draw-polygon-stroke-static',
     'type': 'line',
     'filter': ['all', ['==', 'mode', 'static'], ['==', '$type', 'Polygon']],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#3bb2d0',
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+
+    'paint': linePaint
   },
   {
     'id': 'gl-draw-line-static',
     'type': 'line',
     'filter': ['all', ['==', 'mode', 'static'], ['==', '$type', 'LineString']],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
+    'layout': roundLineLayout,
+
     'paint': {
       'line-color': '#404040',
       'line-width': 2
@@ -253,25 +243,14 @@ export default [
       ['!=', 'mode', 'static']
       // ['==', 'active', 'true']
     ],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#fbb03b',
-      'line-dasharray': [0.2, 2],
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+
+    'paint': dashedLinePaint
   },
   {
     'id': 'gl-draw-polygon-rotate-point-stroke',
     'type': 'circle',
-    'filter': ['all',
-      ['==', 'meta', 'midpoint'],
-      ['==', 'actionType', 'rotation'],
-      ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
-    ],
+    'filter': rotatePointFilter,
     'paint': {
       'circle-radius': 4,
       'circle-color': '#fff'
@@ -280,12 +259,7 @@ export default [
   {
     'id': 'gl-draw-polygon-rotate-point',
     'type': 'circle',
-    'filter': ['all',
-      ['==', 'meta', 'midpoint'],
-      ['==', 'actionType', 'rotation'],
-      ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
-    ],
+    'filter': rotatePointFilter,
     'paint': {
       'circle-radius': 2,
       'circle-color': '#fbb03b'
@@ -294,12 +268,7 @@ export default [
   {
     'id': 'gl-draw-polygon-rotate-point-icon',
     'type': 'symbol',
-    'filter': ['all',
-      ['==', 'meta', 'midpoint'],
-      ['==', 'actionType', 'rotation'],
-      ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
-    ],
+    'filter': rotatePointFilter,
     'layout': {
       'icon-image': 'rotate',
       'icon-allow-overlap': true,
@@ -325,15 +294,9 @@ export default [
       ['!=', 'mode', 'static']
       // ['==', 'active', 'true']
     ],
-    'layout': {
-      'line-cap': 'round',
-      'line-join': 'round'
-    },
-    'paint': {
-      'line-color': '#fbb03b',
-      'line-dasharray': [0.2, 2],
-      'line-width': 2
-    }
+    'layout': roundLineLayout,
+
+    'paint': dashedLinePaint
   },
   {
     'id': 'gl-draw-polygon-resize-point-stroke',
