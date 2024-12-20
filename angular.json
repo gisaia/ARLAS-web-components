@@ -155,7 +155,7 @@
           "options": {
             "main": "projects/arlas-components/src/test.ts",
             "tsConfig": "projects/arlas-components/tsconfig.spec.json",
-            "karmaConfig": "projects/arlas-components/karma.conf.js",
+            "karmaConfig": "./karma.conf.js",
             "styles": [
               "src/styles.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
@@ -201,7 +201,7 @@
           "options": {
             "main": "projects/arlas-mapbox/src/test.ts",
             "tsConfig": "projects/arlas-mapbox/tsconfig.spec.json",
-            "karmaConfig": "projects/arlas-mapbox/karma.conf.js"
+            "karmaConfig": "./karma.conf.js"
           }
         },
         "lint": {
@@ -243,7 +243,7 @@
           "options": {
             "main": "projects/arlas-maplibre/src/test.ts",
             "tsConfig": "projects/arlas-maplibre/tsconfig.spec.json",
-            "karmaConfig": "projects/arlas-maplibre/karma.conf.js"
+            "karmaConfig": "./karma.conf.js"
           }
         },
         "lint": {
@@ -285,7 +285,7 @@
           "options": {
             "main": "projects/arlas-map/src/test.ts",
             "tsConfig": "projects/arlas-map/tsconfig.spec.json",
-            "karmaConfig": "projects/arlas-map/karma.conf.js"
+            "karmaConfig": "./karma.conf.js"
           }
         },
         "lint": {
