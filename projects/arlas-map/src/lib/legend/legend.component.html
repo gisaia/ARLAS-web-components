@@ -1,0 +1,47 @@
+
+<div class="layer_wrapper">
+    <div class=collection_color [matTooltip]="'Collection:' | translate: {collection: (collection | getCollectionDisplayName)}"
+      [style.backgroundColor]="!!collection ? (collection | getColor) : 'transparent'"></div>
+    <div class="layer_container" >
+      <div class="layer_icon_container">
+        <div class="layer_icon" >
+          <arlas-layer-icon [layer]="layer" [colorLegend]="colorLegend" [strokeColorLegend]="strokeColorLegend"
+            [lineDasharray]="lineDasharray" [widthLegend]="widthLegend" [radiusLegend]="radiusLegend"></arlas-layer-icon>
+        </div>
+        <div class="layer_name" [style.color]="visibleMode ? '#444': '#d3d3d3'">
+          {{layer?.id | layerIdToName | translate}}
+        </div>
+      </div>
+      <div class="layer_detail">
+        <div class="download_button">
+          <mat-icon class="download_icon" [matMenuTriggerFor]="menu" [matTooltip]="'Download the layer\'s data' | translate">file_download</mat-icon>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="downloadLayerSource(layer, 'csv')">
+              {{'CSV' | translate}}
+            </button>
+            <button mat-menu-item (click)="downloadLayerSource(layer, 'geojson')">
+              {{'GeoJson' | translate}}
+            </button>
+          </mat-menu>
+        </div>
+        <div class="detail_button" (click)="showDetail($event)" (keyDown)="showDetail($event)">
+          <mat-icon class="detail_icon">{{ detail ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
+        </div>
+      </div>
+    </div>
+  
+    <div [hidden]="!detail" class="legend-wrapper">
+      <arlas-legend-item [hidden]="!colorLegend.type" [legend]="colorLegend" [layer]="layer"
+        [title]="'Fill:' | marker" [colorPalette]="colorPalette"></arlas-legend-item>
+  
+      <arlas-legend-item [hidden]="!strokeColorLegend.type" [legend]="strokeColorLegend" [layer]="layer"
+        [title]="'Stroke:' | marker" [colorPalette]="colorPalette"></arlas-legend-item>
+  
+      <arlas-legend-item [hidden]="!widthLegend.type" #width_legend [legend]="widthLegend" [layer]="layer"
+        [title]="'Width:' | marker"></arlas-legend-item>
+  
+      <arlas-legend-item [hidden]="!radiusLegend.type" #radius_legend [legend]="radiusLegend" [layer]="layer"
+        [title]="'Radius:' | marker"></arlas-legend-item>
+    </div>
+  </div>
+  

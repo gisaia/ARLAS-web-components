@@ -133,7 +133,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   protected uniqueTitles: MetricsTableHeader[];
 
 
-  public constructor(private colorService: ArlasColorService, private cdr: ChangeDetectorRef) {
+  public constructor(private readonly colorService: ArlasColorService, private readonly cdr: ChangeDetectorRef) {
     this.colorService.changekeysToColors$.subscribe(() => {
       this.powerBarsMap.forEach(powerbarsRow => {
         powerbarsRow.forEach(p => {
@@ -159,7 +159,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
         this.ngOnInit();
       }
     }
-    if (!!changes.selectedTerms) {
+    if (changes.selectedTerms) {
       this.updateSelection(this.selectedTerms);
     }
   }
@@ -181,8 +181,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
       }
     });
     this.titleAreDifferent = this.uniqueTitles.length === this.metricsTable?.data[0]?.data.length;
-    if (!this.titleAreDifferent) {
-    }
+
   }
 
   private updateSelectedTermWithDefaultValue() {
@@ -260,14 +259,12 @@ export class MetricsTableComponent implements OnInit, OnChanges {
     if (this.selectedRows.has(key)) {
       row.selected = false;
       this.selectedRows.delete(key);
-    } else {
-      if (row) {
+    } else if (row) {
         row.selected = true;
         this.selectedRows.set(key, row);
       } else {
         /** If we select a row that does not exists, it means we data is not  */
       }
-    }
   }
 
   public togglePendingMode() {

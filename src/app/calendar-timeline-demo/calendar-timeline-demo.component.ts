@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Granularity } from 'arlas-d3';
 import { Subject } from 'rxjs';
 
@@ -28,13 +28,10 @@ import { Subject } from 'rxjs';
   templateUrl: './calendar-timeline-demo.component.html',
   styleUrls: ['./calendar-timeline-demo.component.css']
 })
-export class CalendarTimelineDemoComponent implements OnInit {
+export class CalendarTimelineDemoComponent {
   public granularity: Subject<Granularity> = new Subject();
 
   public constructor() { }
-
-  public ngOnInit(): void {
-  }
 
   public day() {
     this.granularity.next(Granularity.day);

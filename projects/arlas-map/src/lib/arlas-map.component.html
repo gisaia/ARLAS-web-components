@@ -1,0 +1,44 @@
+<div id="{{id}}" class="map__container">
+  <div class="map__visu-list">
+    <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
+      <mat-icon (click)="legendOpen=!legendOpen" (keyDown)="legendOpen=!legendOpen">layers</mat-icon>
+    </div>
+    <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
+      (cdkDropListDropped)="drop($event)">
+      <div cdkDrag class="map__visu-item" *ngFor="let visu of visualisationSetsConfig">
+        <div cdkDragHandle class="map__visu-title">
+          <span class="map__visu-title-text" [class.map__visu-title-text--disabled]="!visu.enabled">
+            {{visu.name | translate}}</span>
+          <mat-slide-toggle [checked]="visu.enabled" (change)="emitVisualisations(visu.name)"
+            [matTooltip]="'show_layers' | translate" [hideIcon]="true"></mat-slide-toggle>
+        </div>
+        <div class="map__visu-content" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
+          <div cdkDrag *ngFor="let l of visu.layers" class="map__visu-layer"
+            [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) | getValue:visibilityStatus) !== true">
+            <div cdkDragHandle class="map__visu-layer-drag">
+              <mat-icon>drag_indicator</mat-icon>
+            </div>
+            <arlas-legend [collection]="l | getCollection: mapService.layersMap " [enabled]="visu.enabled"
+              [layer]="l | getValue: mapService.layersMap " [zoom]="map?.zoom"
+              (visibilityStatus)="emitLegendVisibility(visu.name, l, $event)" [legendUpdater]="legendUpdater"
+              [visibilityUpdater]="visibilityUpdater"
+              (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-legend>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="map?.currentLat" [currentLng]="map?.currentLng"
+  (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
+
+<arlas-basemap *ngIf="showBasemapList" [mapSources]="mapSources" [map]="map" (mouseleave)="hideBasemapSwitcher()"
+  (basemapChanged)="onChangeBasemapStyle()"></arlas-basemap>
+
+
+<arlas-draw #drawComponent *ngIf="map"  [map]="map" [emptyData]="emptyData" [drawData]="drawData"
+  [drawButtonEnabled]="drawButtonEnabled" [drawOption]="drawOption"
+  [drawPolygonVerticesLimit]="drawPolygonVerticesLimit" [preserveDrawingBuffer]="preserveDrawingBuffer"
+  (onAoiChanged)="onAoiChanged.emit($event)"
+  (onAoiEdit)="onAoiEdit.emit($event)"></arlas-draw>

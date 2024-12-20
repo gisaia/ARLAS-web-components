@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MetricsTable } from '../../../projects/arlas-components/src/lib/components/metrics-table/model/metrics-table';
 @Component({
   selector: 'arlas-multi-bar-demo',
   templateUrl: './metrics-table-demo.component.html',
   styleUrls: ['./metrics-table-demo.component.css'],
 })
-export class MetricsTableDemoComponent implements OnInit {
+export class MetricsTableDemoComponent {
   public multiBarTableSameTitle: MetricsTable = {
     header: [
       // eslint-disable-next-line max-len
@@ -505,8 +505,5 @@ export class MetricsTableDemoComponent implements OnInit {
     ]
   };
   public constructor() { }
-
-  public ngOnInit(): void {
-  }
 
 }
