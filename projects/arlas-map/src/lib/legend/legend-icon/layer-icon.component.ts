@@ -455,14 +455,12 @@ export function populateListFromLegend(list: Array<string | number>, legend: Leg
     list.push(legend.fixValue);
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = legend.interpolatedValues;
-    if (iv) {
-      if (iv.length === 1) {
-        list.push(iv[0], iv[0], iv[0]);
-      } else if (iv.length === 2) {
-        list.push(iv[0], iv[0], iv[1]);
-      } else if (iv.length >= 3) {
-        list.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
-      }
+    if (iv?.length === 1) {
+      list.push(iv[0], iv[0], iv[0]);
+    } else if (iv.length === 2) {
+      list.push(iv[0], iv[0], iv[1]);
+    } else if (iv.length >= 3) {
+      list.push(iv[0], iv[Math.trunc(iv.length / 2)], iv[iv.length - 1]);
     }
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
     || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, ElementRef, Inject, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, Input, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
@@ -310,15 +310,20 @@ export class MapImportComponent<L, S, M> {
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
         reject(new Error(this.FILE_TOO_LARGE));
-      } else {
-        if (this.currentFile.name.split('.').pop().toLowerCase() === this.KML) {
+      } else if (this.currentFile.name.split('.').pop().toLowerCase() === this.KML) {
           reader.readAsText(this.currentFile);
         } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
           reader.readAsArrayBuffer(this.currentFile);
         } else {
           reject(new Error(marker('Only `kml` or `zip` file is allowed')));
         }
-      }
+    });
+  }
+
+  private resolveFileFromGzip(result, resolve) {
+    this.jszip.loadAsync(result).then(kmzContent => {
+      const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === this.KML)[0];
+      this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
     });
   }
 
@@ -328,10 +333,7 @@ export class MapImportComponent<L, S, M> {
     let readKmzFile = readKmlFile;
     if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
       readKmzFile = readKmlFile.then(result => new Promise<string>((resolve, reject) => {
-        this.jszip.loadAsync(result).then(kmzContent => {
-          const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === this.KML)[0];
-          this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
-        });
+      this.resolveFileFromGzip(result, resolve);
       }));
     }
 
@@ -434,14 +436,18 @@ export class MapImportComponent<L, S, M> {
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
         reject(new Error(this.FILE_TOO_LARGE));
-      } else {
-        if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
+      } else if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
           reject(new Error(marker('Only `zip` file is allowed')));
         } else {
           reader.readAsArrayBuffer(this.currentFile);
         }
-      }
     });
+  }
+
+  private areFilesInvalid(zipResult): boolean {
+    const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
+    return (testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length < 3) &&
+    (testArray.filter(elem => elem === 'json').length !== 1);
   }
 
   public processAllShape() {
@@ -449,11 +455,7 @@ export class MapImportComponent<L, S, M> {
 
     const zipLoaderPromise = fileReaderPromise.then((buffer: ArrayBuffer) => new Promise<any>((resolve, reject) => {
       this.jszip.loadAsync(buffer).then(zipResult => {
-        const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
-        if (
-          !(testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length >= 3) &&
-          !(testArray.filter(elem => elem === 'json').length === 1)
-        ) {
+        if (this.areFilesInvalid(zipResult)) {
           reject(new Error(marker('Zip file must contain at least a `*.shp`, `*.shx` and `*.dbf` or a `*.json`')));
         } else {
           resolve(buffer);

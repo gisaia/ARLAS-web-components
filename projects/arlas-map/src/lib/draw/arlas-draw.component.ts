@@ -18,33 +18,33 @@
  */
 
 import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
-import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
-import { MapboxAoiDrawService } from './draw.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { TranslateService } from '@ngx-translate/core';
+import centroid from '@turf/centroid';
+import cleanCoords from '@turf/clean-coords';
+import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 import { AbstractArlasMapService } from '../arlas-map.service';
-import { AoiDimensions, BboxDrawCommand } from './draw.models';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
-import { AbstractDraw } from './AbstractDraw';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import cleanCoords from '@turf/clean-coords';
-import centroid from '@turf/centroid';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { DrawControlsOption } from '../map/model/controls';
-import * as styles from './themes/default-theme';
+import { MapMouseEvent } from '../map/model/events';
+import { ArlasPoint } from '../map/model/geometry';
+import { latLngToWKT } from '../map/tools';
+import { AbstractDraw } from './AbstractDraw';
+import { AoiDimensions, BboxDrawCommand } from './draw.models';
+import { MapboxAoiDrawService } from './draw.service';
 import limitVertexDirectSelectMode from './modes/LimitVertexDirectSelectMode';
 import validGeomDrawPolygonMode from './modes/ValidGeomDrawPolygonMode';
 import { circleMode } from './modes/circles/circle.mode';
 import radiusCircleMode from './modes/circles/radius.circle.mode';
-import stripMode from './modes/strip/strip.mode';
-import { stripDirectSelectMode } from './modes/strip/strip.direct.mode';
 import directModeOverride from './modes/directSelectOverride';
 import simpleSelectModeOverride from './modes/simpleSelectOverride';
-import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
-import { MapMouseEvent } from '../map/model/events';
-import { latLngToWKT } from '../map/tools';
-import { ArlasPoint } from '../map/model/geometry';
+import { stripDirectSelectMode } from './modes/strip/strip.direct.mode';
+import stripMode from './modes/strip/strip.mode';
+import * as styles from './themes/default-theme';
 @Component({
   selector: 'arlas-draw',
   templateUrl: './arlas-draw.component.html',
@@ -64,7 +64,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** Draw instance. */
   public draw: AbstractDraw;
   /** @description Features drawn at component start */
-  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
+  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
@@ -88,7 +88,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   public drawClickCounter = 0;
 
   /** List of drawn polygons centroid */
-  public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
+  public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
 
 
   /** Drawn geometry's state when editing/updating. */
@@ -117,6 +117,154 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         this.drawBbox(bboxDC.east, bboxDC.south, bboxDC.west, bboxDC.north);
       }
     });
+  }
+
+  /**
+   * @description Stops the drawing mode by changing to static mode.
+   */
+  private stopDrawingAtVerticeLimit() {
+    if (this.nbPolygonVertices === this.drawPolygonVerticesLimit) {
+      this.draw.changeMode('static');
+      this.drawService.isDrawingPolygon = false;
+      this.nbPolygonVertices = 0;
+    }
+  }
+
+  private listenToDrawOnCreate() {
+    this.draw.on('draw.create', (e) => {
+      this.onAoiChanged.next(
+        {
+          'type': 'FeatureCollection',
+          'features': this.draw.getAllFeatures().filter(fc =>
+            this.drawService.isValidPolygon(fc) ||
+            this.drawService.isValidCircle(fc)
+          ).map(f => cleanCoords(f))
+        });
+    });
+  }
+
+  private listenToDrawUpdate() {
+    this.draw.on('draw.update', (e) => {
+      if (e) {
+        const features = e.features;
+        if (features && features.length > 0) {
+          this.savedEditFeature = { ...features[0] };
+          this.savedEditFeature.coordinates = [[]];
+          features[0].geometry.coordinates[0].forEach(f => this.savedEditFeature.coordinates[0].push(f));
+        }
+      }
+    });
+  }
+
+  private listenToDrawDelete() {
+    this.draw.on('draw.delete', (e) => {
+      this.onAoiChanged.next(
+        {
+          'type': 'FeatureCollection',
+          'features': this.draw.getAllFeatures().filter(fc =>
+            this.drawService.isPolygon(fc) ||
+            this.drawService.isCircle(fc)
+          ).map(f => cleanCoords(f))
+        });
+    });
+  }
+
+  private listenToDrawInvalidGeometry() {
+    this.draw.onDrawInvalidGeometry((e) => {
+      if (this.savedEditFeature) {
+        const featureCoords = this.savedEditFeature.coordinates[0].slice();
+        if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
+          featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
+          featureCoords.push(featureCoords[0]);
+        }
+        const currentFeature = {
+          id: '',
+          type: 'Feature',
+          geometry: {
+            'type': 'Polygon',
+            'coordinates': [featureCoords]
+          },
+          properties: {}
+        };
+        currentFeature.id = this.savedEditFeature.id;
+        currentFeature.properties = this.savedEditFeature.properties;
+        this.draw.add(currentFeature as Feature<Polygon>);
+      }
+      this.openInvalidGeometrySnackBar();
+      this.mapFrameworkService.setMapCursor(this.map, '');
+    });
+  }
+
+  private listenToDrawSelectionChange() {
+    this.draw.onDrawSelectionchange((e) => {
+      this.drawnSelectionChanged = true;
+      if (e.features.length > 0) {
+        this.drawService.isDrawSelected = true;
+      } else {
+        this.savedEditFeature = null;
+        this.drawService.isDrawSelected = false;
+        this.onAoiChanged.next(
+          {
+            'type': 'FeatureCollection',
+            'features': this.draw.getAllFeatures().filter(fc =>
+              this.drawService.isValidPolygon(fc) ||
+              this.drawService.isValidCircle(fc)
+            ).map(f => cleanCoords(f))
+          });
+        this.drawService.isDrawingBbox = false;
+        this.drawService.isDrawingPolygon = false;
+        this.drawService.isDrawingCircle = false;
+        this.drawService.isDrawingStrip = false;
+        this.drawService.isInSimpleDrawMode = false;
+        this.draw.changeMode('static');
+        this.mapFrameworkService.setMapCursor(this.map, '');
+      }
+    });
+  }
+
+  private listenToDrawModeChange() {
+    this.draw.onDrawModeChange((e) => {
+      this.drawService.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
+      this.drawService.isDrawingStrip = e.mode === this.draw.getMode('DIRECT_STRIP');
+      this.drawService.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
+      if (this.drawService.isDrawingPolygon || this.drawService.isDrawingCircle || this.drawService.isDrawingStrip || e.mode === 'static') {
+        this.drawService.isInSimpleDrawMode = false;
+      }
+      if (e.mode === 'simple_select') {
+        this.drawService.isInSimpleDrawMode = true;
+      } else if (e.mode === 'static') {
+        this.mapFrameworkService.setMapCursor(this.map, '');
+      } else if (e.mode === 'direct_select') {
+        const selectedFeatures = this.draw.getSelectedFeatures();
+        const selectedIds = this.draw.getSelectedIds();
+        if (selectedFeatures && selectedIds && selectedIds.length > 0) {
+          if (selectedFeatures[0].properties.source === 'bbox') {
+            this.draw.changeMode('simple_select', {
+              featureIds: [selectedIds[0]]
+            });
+            this.drawService.isInSimpleDrawMode = true;
+          } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta !== 'strip') {
+            this.draw.changeMode('limit_vertex', {
+              featureId: selectedIds[0],
+              maxVertexByPolygon: this.drawPolygonVerticesLimit,
+              selectedCoordPaths: (selectedFeatures[0] as Feature<Geometry>).geometry.coordinates
+            });
+            this.drawService.isInSimpleDrawMode = false;
+          } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
+            this.draw.changeMode('direct_strip', {
+              featureId: selectedIds[0],
+              maxLength: selectedFeatures[0].properties.maxLength,
+              halfSwath: selectedFeatures[0].properties.halfSwath,
+            });
+            this.drawService.isInSimpleDrawMode = false;
+          }
+        } else {
+          this.drawService.isInSimpleDrawMode = false;
+          this.mapFrameworkService.setMapCursor(this.map, '');
+        }
+      }
+    });
+
   }
 
   public ngOnInit(): void {
@@ -167,38 +315,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       this.draw.changeMode('static');
       this.canvas = this.map.getCanvasContainer();
       this.canvas.addEventListener('mousedown', this.mousedown, true);
-      this.draw.on('draw.create', (e) => {
-        this.onAoiChanged.next(
-          {
-            'type': 'FeatureCollection',
-            'features': this.draw.getAllFeatures().filter(fc =>
-              this.drawService.isValidPolygon(fc) ||
-              this.drawService.isValidCircle(fc)
-            ).map(f => cleanCoords(f))
-          });
-      });
-
-      this.draw.on('draw.update', (e) => {
-        if (e) {
-          const features = e.features;
-          if (features && features.length > 0) {
-            this.savedEditFeature = Object.assign({}, features[0]);
-            this.savedEditFeature.coordinates = [[]];
-            features[0].geometry.coordinates[0].forEach(f => this.savedEditFeature.coordinates[0].push(f));
-          }
-        }
-      });
-      this.draw.on('draw.delete', (e) => {
-        this.onAoiChanged.next(
-          {
-            'type': 'FeatureCollection',
-            'features': this.draw.getAllFeatures().filter(fc =>
-              this.drawService.isPolygon(fc) ||
-              this.drawService.isCircle(fc)
-            ).map(f => cleanCoords(f))
-          });
-      });
-
+      this.listenToDrawOnCreate();
+      this.listenToDrawUpdate();
+      this.listenToDrawDelete();
       const mouseMoveForDraw = (e: MouseEvent) => {
         const x = e.clientX;
         const y = e.clientY;
@@ -223,114 +342,23 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         this.mapFrameworkService.setMapCursor(this.map, '');
       });
 
-      this.draw.onDrawInvalidGeometry((e) => {
-        if (this.savedEditFeature) {
-          const featureCoords = this.savedEditFeature.coordinates[0].slice();
-          if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
-            featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
-            featureCoords.push(featureCoords[0]);
-          }
-          const currentFeature = {
-            id: '',
-            type: 'Feature',
-            geometry: {
-              'type': 'Polygon',
-              'coordinates': [featureCoords]
-            },
-            properties: {}
-          };
-          currentFeature.id = this.savedEditFeature.id;
-          currentFeature.properties = this.savedEditFeature.properties;
-          this.draw.add(currentFeature as Feature<Polygon>);
-        }
-        this.openInvalidGeometrySnackBar();
-        this.mapFrameworkService.setMapCursor(this.map, '');
-      });
+      this.listenToDrawInvalidGeometry();
 
       this.draw.onDrawEditSaveInitialFeature((edition) => {
-        this.savedEditFeature = Object.assign({}, edition.feature);
+        this.savedEditFeature = { ...edition.feature };
         this.savedEditFeature.coordinates = [[]];
         edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
       });
 
-      this.draw.onDrawSelectionchange((e) => {
-        this.drawnSelectionChanged = true;
-        if (e.features.length > 0) {
-          this.drawService.isDrawSelected = true;
-        } else {
-          this.savedEditFeature = null;
-          this.drawService.isDrawSelected = false;
-          this.onAoiChanged.next(
-            {
-              'type': 'FeatureCollection',
-              'features': this.draw.getAllFeatures().filter(fc =>
-                this.drawService.isValidPolygon(fc) ||
-                this.drawService.isValidCircle(fc)
-              ).map(f => cleanCoords(f))
-            });
-          this.drawService.isDrawingBbox = false;
-          this.drawService.isDrawingPolygon = false;
-          this.drawService.isDrawingCircle = false;
-          this.drawService.isDrawingStrip = false;
-          this.drawService.isInSimpleDrawMode = false;
-          this.draw.changeMode('static');
-          this.mapFrameworkService.setMapCursor(this.map, '');
-        }
-      });
-      this.draw.onDrawModeChange((e) => {
-        this.drawService.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
-        this.drawService.isDrawingStrip = e.mode === this.draw.getMode('DIRECT_STRIP');
-        this.drawService.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
-        if (this.drawService.isDrawingPolygon || this.drawService.isDrawingCircle || this.drawService.isDrawingStrip || e.mode === 'static') {
-          this.drawService.isInSimpleDrawMode = false;
-        }
-        if (e.mode === 'simple_select') {
-          this.drawService.isInSimpleDrawMode = true;
-        } else if (e.mode === 'static') {
-          this.mapFrameworkService.setMapCursor(this.map, '');
-        } else if (e.mode === 'direct_select') {
-          const selectedFeatures = this.draw.getSelectedFeatures();
-          const selectedIds = this.draw.getSelectedIds();
-          if (selectedFeatures && selectedIds && selectedIds.length > 0) {
-            if (selectedFeatures[0].properties.source === 'bbox') {
-              this.draw.changeMode('simple_select', {
-                featureIds: [selectedIds[0]]
-              });
-              this.drawService.isInSimpleDrawMode = true;
-            } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta !== 'strip') {
-              this.draw.changeMode('limit_vertex', {
-                featureId: selectedIds[0],
-                maxVertexByPolygon: this.drawPolygonVerticesLimit,
-                selectedCoordPaths: (selectedFeatures[0] as Feature<Geometry>).geometry.coordinates
-              });
-              this.drawService.isInSimpleDrawMode = false;
-            } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
-              this.draw.changeMode('direct_strip', {
-                featureId: selectedIds[0],
-                maxLength: selectedFeatures[0].properties.maxLength,
-                halfSwath: selectedFeatures[0].properties.halfSwath,
-              });
-              this.drawService.isInSimpleDrawMode = false;
-            }
-          } else {
-            this.drawService.isInSimpleDrawMode = false;
-            this.mapFrameworkService.setMapCursor(this.map, '');
-          }
-        }
-      });
-
+      this.listenToDrawSelectionChange();
+      this.listenToDrawModeChange();
       this.mapFrameworkService.onMapEvent('click', this.map, (e) => {
         if (this.drawService.isDrawingCircle) {
           return;
         }
-
         if (this.drawService.isDrawingPolygon) {
           this.nbPolygonVertices++;
-          if (this.nbPolygonVertices === this.drawPolygonVerticesLimit) {
-            this.draw.changeMode('static');
-            this.drawService.isDrawingPolygon = false;
-            this.nbPolygonVertices = 0;
-          }
+          this.stopDrawingAtVerticeLimit();
         } else {
           this.nbPolygonVertices = 0;
           const features = this.map.queryRenderedFeatures(e.point);
@@ -341,7 +369,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
             const candidates = features.filter(f => f.source.startsWith('mapbox-gl-draw'));
             // edit only on click on the border of the polygon
             const candidatesProperties = candidates.filter(f => f.layer.id?.indexOf('stroke') >= 0)[0]?.properties;
-            if (candidatesProperties && !!candidatesProperties.id) {
+            if (candidatesProperties?.id) {
               if (candidatesProperties.user_meta === 'strip') {
                 this.draw.changeMode('direct_strip', {
                   featureId: candidatesProperties.id,
@@ -439,7 +467,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * - It disables the map drag pan.
    * - It stores in the component's scope the start's cooordinates.
    */
-  private mousedown = (e) => {
+  private readonly mousedown = (e) => {
     // Continue the rest of the function if we add a geobox.
     if (!this.drawService.isDrawingBbox) {
       return;
@@ -450,7 +478,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     document.addEventListener('mousemove', this.mousemove);
     document.addEventListener('mouseup', this.mouseup);
     // Capture the first xy coordinates
-    const rect = this.canvas.getBoundingClientRect();
     this.start = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
   };
 
@@ -459,7 +486,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * - It draws on the map a bbox canvas.
    * - It stores in the component's scope the current mouse's cooordinates.
    */
-  private mousemove = (e) => {
+  private readonly mousemove = (e) => {
     // Capture the ongoing xy coordinates
     this.current = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
     // Append the box element if it doesn't exist
@@ -487,7 +514,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * - Draws the bbox feature on the map.
    * @param e Mouse event
    */
-  private mouseup = (e) => {
+  private readonly mouseup = (e) => {
     const f = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
     document.removeEventListener('mousemove', this.mousemove);
     document.removeEventListener('mouseup', this.mouseup);
@@ -496,12 +523,10 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     // Capture xy coordinates
     if (this.start.x !== f.x && this.start.y !== f.y) {
       this.finish([[this.start, f], [e.lngLat]]);
-    } else {
-      if (this.box) {
+    } else if (this.box) {
         this.box.parentNode.removeChild(this.box);
         this.box = undefined;
       }
-    }
     this.drawService.endDimensionsEmission();
   };
 
@@ -552,9 +577,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         coordinates: coordinates
       }
     };
-    const geoboxdata = Object.assign({}, this.emptyData);
+    const geoboxdata = { ...this.emptyData};
     geoboxdata.features = [];
-    if (this.drawData && this.drawData.features && this.drawData.features.length > 0) {
+    if (this.drawData?.features && this.drawData.features.length > 0) {
       this.drawData.features.forEach(df => geoboxdata.features.push(df));
     }
     geoboxdata.features.push(polygonGeojson);

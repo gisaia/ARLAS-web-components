@@ -20,16 +20,15 @@
 import { AfterViewInit, Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { ArlasColorService } from 'arlas-web-components';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
 import { Subject, takeUntil } from 'rxjs';
-import { ArlasColorService } from 'arlas-web-components';
-import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
+import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { LegendService } from './legend.service';
 import { MAX_LINE_WIDTH } from './legend.tools';
-import { IN, NOT_IN } from '../map/model/filters';
 
 
 @Component({
@@ -96,12 +95,12 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
   private legendData: Map<string, LegendData> = new Map();
-  private MAX_CIRLE_RADIUS = 7;
-  private LEGEND_WIDTH = 210;
   public colorPalette = '';
   public strokeColorPalette = '';
-
-  private _onDestroy$ = new Subject<boolean>();
+  
+  private readonly MAX_CIRLE_RADIUS = 7;
+  private readonly LEGEND_WIDTH = 210;
+  private readonly _onDestroy$ = new Subject<boolean>();
 
   public constructor(
     public translate: TranslateService,
@@ -115,7 +114,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
       .subscribe(legendDataPerCollection => {
 
         this.legendData = legendDataPerCollection.get(this.collection);
-        if (!!this.layer) {
+        if (this.layer) {
           this.drawLegends(this.visibleMode);
         }
       });
@@ -123,7 +122,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
       .pipe(takeUntil(this._onDestroy$))
       .subscribe(visibilityUpdater => {
         /** check legend visibility according to Data source status (mapcontirbutor) */
-        if (!!this.layer) {
+        if (this.layer) {
           /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
           this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
         } else {
@@ -149,7 +148,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
             this.visibleMode = false;
           }
         }
-        if (!!this.layer) {
+        if (this.layer) {
           this.drawLegends(this.visibleMode);
         }
         this.visibilityStatus.next(this.visibleMode);
@@ -157,14 +156,14 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   }
 
   public ngAfterViewInit() {
-    if (!!this.layer) {
+    if (this.layer) {
       this.drawLegends(this.visibleMode);
     }
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['layer'] !== undefined) {
-      if (!!this.layer) {
+      if (this.layer) {
         this.drawLegends(this.visibleMode);
       }
     }
@@ -204,7 +203,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorPalette = circleLegend.colorPalette;
         this.strokeColorPalette = circleLegend.strokeColorPalette;
         this.radiusLegend = circleLegend.radius;
-        if (!!this.circleRadiusLegend && !!this.circleRadiusLegend.interpolatedElement) {
+        if (this.circleRadiusLegend?.interpolatedElement) {
           const circleRadiusEvolution = circleLegend.radius.histogram;
           drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend,
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(circleRadiusEvolution)) * 2);
@@ -217,7 +216,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend = lineLegend.color;
         this.colorPalette = lineLegend.colorPalette;
         this.widthLegend = lineLegend.width;
-        if (!!this.lineWidthLegend && !!this.lineWidthLegend.interpolatedElement) {
+        if (this.lineWidthLegend?.interpolatedElement) {
           const lineWidthEvolution = lineLegend.width.histogram;
           drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);
@@ -228,10 +227,8 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         const fillLegend = this.legendService.getFillLegend(paint, visibileMode, this.legendData, this.layer);
         this.colorLegend = fillLegend.color;
         this.colorPalette = fillLegend.colorPalette;
-        if (!!fillLegend.strokeColor && !!fillLegend.strokeColorPalette) {
-          this.strokeColorLegend = fillLegend.color;
-          this.strokeColorPalette = fillLegend.colorPalette;
-        }
+        this.strokeColorLegend = fillLegend?.strokeColor;
+        this.strokeColorPalette = fillLegend?.strokeColorPalette;
         break;
       }
       case 'heatmap': {
@@ -240,7 +237,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         this.colorLegend = heatmapLegend.color;
         this.colorPalette = heatmapLegend.colorPalette;
         this.radiusLegend = heatmapLegend.radius;
-        if (!!this.circleRadiusLegend && !!this.circleRadiusLegend.interpolatedElement) {
+        if (this.circleRadiusLegend?.interpolatedElement) {
           const heatmapRadiusEvolution = heatmapLegend.radius.histogram;
           drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, heatmapRadiusEvolution, this.colorLegend,
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(heatmapRadiusEvolution)) * 2);
@@ -248,7 +245,6 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       }
       case 'symbol': {
-        // todo: fix text size
         const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer);
         this.colorLegend = symbolLegend.color;
         this.colorPalette = symbolLegend.colorPalette;
@@ -264,39 +260,12 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
     if (!this.colorLegend.fixValue) {
       this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
     }
-    const layer = Object.assign({}, this.layer);
+    const layer = { ...this.layer };
     this.layer = null;
-    this.layer = Object.assign({}, layer);
+    this.layer = { ...layer };
   }
 
-  public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
-    filter.forEach((f, idx) => {
-      if (idx !== 0 && idx !== filter.length - 1) {
-        switch (f[0]) {
-          case IN: {
-            if (f[1][1] === field) {
-              const valuesToKeep: Array<string> = f[2][1];
-              colorLegendValues.forEach((val, key) => {
-                if (!(valuesToKeep.includes(key))) {
-                  colorLegendValues.delete(key);
-                }
-              });
-            }
-            break;
-          }
-          case NOT_IN: {
-            if (f[1][0] === IN && f[1][1][1] === field) {
-              const valuesToExclude: Array<string> = f[1][2][1];
-              valuesToExclude.forEach(value => {
-                colorLegendValues.delete(value);
-              });
-            }
-            break;
-          }
-        }
-      }
-    });
-  }
+
 }
 
 /**
