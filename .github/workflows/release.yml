@@ -1,4 +1,5 @@
 name: Release ARLAS-web-components
+run-name: Release ARLAS-web-components ${{inputs.version}} ${{inputs.stage}} ${{inputs.stage_iteration}}
 
 on:
   workflow_dispatch:
