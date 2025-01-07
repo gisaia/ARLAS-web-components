@@ -23,6 +23,7 @@ import { ControlPosition, ControlsOption, DrawControlsOption } from './model/con
 import { MapExtent } from './model/extent';
 import { ArlasLngLat, ArlasLngLatBounds, OnMoveResult } from './model/map';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import bbox from '@turf/bbox';
 
 
 /** Conf */
@@ -294,7 +295,6 @@ export abstract class AbstractArlasMapGL {
   public abstract enableDragPan(): void;
   public abstract fitBounds(bounds: ArlasLngLatBounds, options?: unknown, unknown?: unknown): this;
   public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds);
-  public abstract geometryToBounds(geom: any, paddingPercentage?: number): unknown;
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
   public abstract getEastBounds(): number;
@@ -317,6 +317,37 @@ export abstract class AbstractArlasMapGL {
   public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   public abstract paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: any, SW: ArlasLngLat, NE: ArlasLngLat): ArlasLngLat[];
+
+
+  /** Gets bounds of the given geometry */
+  public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
+    const boundingBox: any = bbox(geometry);
+    let west = boundingBox[0];
+    let south = boundingBox[1];
+    let east = boundingBox[2];
+    let north = boundingBox[3];
+    if (paddingPercentage !== undefined) {
+      let width = east - west;
+      let height = north - south;
+      /** if there is one hit, then west=east ===> we consider a width of 0.05°*/
+      if (width === 0) {
+        width = 0.05;
+      }
+      /** if there is one hit, then north=south ===> we consider a height of 0.05°*/
+      if (height === 0) {
+        height = 0.05;
+      }
+      west = west - paddingPercentage * width;
+      south = Math.max(-90, south - paddingPercentage * height);
+      east = east + paddingPercentage * width;
+      north = Math.min(90, north + paddingPercentage * height);
+    }
+    const bounds = new ArlasLngLatBounds(
+      new ArlasLngLat(west, south),
+      new ArlasLngLat(east, north)
+    );
+    return bounds;
+  }
 
 }
 

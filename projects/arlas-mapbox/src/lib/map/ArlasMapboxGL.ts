@@ -35,7 +35,6 @@ import mapboxgl, {
 } from 'mapbox-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';;
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
-import bbox from '@turf/bbox';
 
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
@@ -274,37 +273,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
       loadLatLngExtent[1].lng,
     ];
     return onMoveData;
-  }
-
-
-  /** Gets bounds of the given geometry */
-  public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
-    const boundingBox: any = bbox(geometry);
-    let west = boundingBox[0];
-    let south = boundingBox[1];
-    let east = boundingBox[2];
-    let north = boundingBox[3];
-    if (paddingPercentage !== undefined) {
-      let width = east - west;
-      let height = north - south;
-      /** if there is one hit, then west=east ===> we consider a width of 0.05°*/
-      if (width === 0) {
-        width = 0.05;
-      }
-      /** if there is one hit, then north=south ===> we consider a height of 0.05°*/
-      if (height === 0) {
-        height = 0.05;
-      }
-      west = west - paddingPercentage * width;
-      south = Math.max(-90, south - paddingPercentage * height);
-      east = east + paddingPercentage * width;
-      north = Math.min(90, north + paddingPercentage * height);
-    }
-    const bounds = new ArlasLngLatBounds(
-      new ArlasLngLat(west, south),
-      new ArlasLngLat(east, north)
-    );
-    return bounds;
   }
 
   /**
