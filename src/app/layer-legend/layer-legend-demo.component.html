@@ -1,0 +1,9 @@
+@for (l of layersLeg.keys(); track l){
+  <arlas-mapgl-layer-icon
+    [layer]="layersLeg.get(l)?.layer"
+    [colorLegend]="layersLeg.get(l)?.colorLegend"
+    [strokeColorLegend]="layersLeg.get(l)?.strokeColorLegend"
+    [iconStyleType]="layersLeg.get(l)?.aggType"
+    [lineDasharray]="layersLeg.get(l)?.lineDashArray">
+  </arlas-mapgl-layer-icon>
+}

@@ -58,6 +58,7 @@ import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.componen
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
 import { ArlasMapModule, MapSettingsModule } from 'arlas-map';
+import { LayerLegendDemoComponent } from "./layer-legend/layer-legend-demo.component";
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -73,7 +74,8 @@ const routes: Routes = [
   { path: 'calendar-timeline', component: CalendarTimelineDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
-  { path: 'multi-collection', component: MetricsTableDemoComponent }
+  { path: 'multi-collection', component: MetricsTableDemoComponent },
+  { path: 'layer-legend', component: LayerLegendDemoComponent }
 ];
 
 @NgModule({
@@ -85,7 +87,8 @@ const routes: Routes = [
     DonutDemoComponent,
     WmtsLayerManagerDemoComponent,
     CalendarTimelineDemoComponent,
-    MetricsTableDemoComponent
+    MetricsTableDemoComponent,
+    LayerLegendDemoComponent
   ],
   imports: [
     BrowserAnimationsModule,
