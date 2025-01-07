@@ -33,6 +33,7 @@ import { FeatureCollection } from '@turf/helpers';
 import { MapboxVectorStyle } from './map/model/vector-style';
 import { AbstractArlasMapGL } from 'arlas-map';
 import { MapboxSourceType } from './map/model/sources';
+import { ArlasLngLatBounds } from 'arlas-map';
 
 @Injectable()
 export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType
@@ -71,7 +72,8 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   };
 
 
-  public boundsToString(bounds: LngLatBounds): string {
+  public getBoundsAsString(map: ArlasMapboxGL): string {
+    const bounds = map.getBounds();
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
 

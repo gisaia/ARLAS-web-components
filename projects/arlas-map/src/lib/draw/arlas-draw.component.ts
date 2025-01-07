@@ -406,13 +406,13 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       const lngLat = e.lngLat;
       if (this.drawService.isDrawingBbox || this.drawService.isDrawingPolygon) {
         this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
-        this.map.movelngLat = lngLat;
+        this.map.moveLngLat = lngLat;
       }
       if (this.drawService.bboxEditionState.isDrawing) {
         const startlng: number = this.map.startLngLat.lng;
-        const endlng: number = this.map.movelngLat.lng;
+        const endlng: number = this.map.moveLngLat.lng;
         const startlat: number = this.map.startLngLat.lat;
-        const endlat: number = this.map.movelngLat.lat;
+        const endlat: number = this.map.moveLngLat.lat;
         const west = Math.min(startlng, endlng);
         const north = Math.max(startlat, endlat);
         const east = Math.max(startlng, endlng);
@@ -541,9 +541,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   private finish(bbox?) {
     if (bbox) {
       const startlng: number = this.map.startLngLat.lng;
-      const endlng: number = this.map.endlngLat.lng;
+      const endlng: number = this.map.endLngLat.lng;
       const startlat: number = this.map.startLngLat.lat;
-      const endlat: number = this.map.endlngLat.lat;
+      const endlat: number = this.map.endLngLat.lat;
       const west = Math.min(startlng, endlng);
       const north = Math.max(startlat, endlat);
       const east = Math.max(startlng, endlng);

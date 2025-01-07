@@ -57,7 +57,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
     return new ArlasLngLatBounds(c1, c2);
   }
 
-  public abstract boundsToString(bounds: any): string;
+  public abstract getBoundsAsString(map: AbstractArlasMapGL): string;
 
   /**
    * @description Gets the Point (geometry) from mouse click on the screen.

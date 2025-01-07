@@ -64,12 +64,12 @@ export abstract class AbstractArlasMapGL {
   /**
    *  props and methods with unknown type will be specific to the map provider
    *  we use.
-   *  ex: endlnglat will have a type Maplibre.Pointlike/ Mapbox.Point
+   *  ex: endLngLat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
   public abstract startLngLat: ArlasLngLat;
-  public abstract endlngLat: ArlasLngLat;
-  public abstract movelngLat: ArlasLngLat;
+  public abstract endLngLat: ArlasLngLat;
+  public abstract moveLngLat: ArlasLngLat;
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -198,7 +198,7 @@ export abstract class AbstractArlasMapGL {
   }
 
   protected _updateEndLngLat(e: any): void {
-    this.endlngLat = e.lngLat;
+    this.endLngLat = e.lngLat;
   }
 
   protected _updateMoveRatio(e: any): void {
@@ -206,7 +206,7 @@ export abstract class AbstractArlasMapGL {
     this._yMoveRatio = Math.abs(this._dragEndY - this._dragStartY) / e.target._canvas.clientHeight;
   }
 
-  protected _updatestartLngLat(e: any): void {
+  protected _updateStartLngLat(e: any): void {
     this.startLngLat = e.lngLat;
   }
 

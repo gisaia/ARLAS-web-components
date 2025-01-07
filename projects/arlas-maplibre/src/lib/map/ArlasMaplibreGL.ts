@@ -59,8 +59,8 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   protected _mapProvider: maplibregl.Map;
-  public endlngLat: maplibregl.LngLat;
-  public movelngLat: maplibregl.LngLat;
+  public endLngLat: maplibregl.LngLat;
+  public moveLngLat: maplibregl.LngLat;
   public startLngLat: maplibregl.LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
@@ -222,7 +222,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   protected _initMapMoveEvents(): void {
     super._initMapMoveEvents();
     this.getMapProvider().on('mousedown', (e) =>
-      this._updatestartLngLat(e)
+      this._updateStartLngLat(e)
     );
     this.getMapProvider().on('mouseup', (e) =>
       this._updateEndLngLat(e)

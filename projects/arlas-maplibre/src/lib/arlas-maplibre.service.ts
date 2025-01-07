@@ -27,7 +27,7 @@ import {
 } from 'arlas-map';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
-  GeoJSONSourceSpecification, LayerSpecification, LngLatBounds, MapOptions, Point, Popup,
+  GeoJSONSourceSpecification, LayerSpecification, MapOptions, Point, Popup,
   RasterLayerSpecification, RasterSourceSpecification, ResourceType,
   SourceSpecification, SymbolLayerSpecification, TypedStyleLayer
 } from 'maplibre-gl';
@@ -74,7 +74,8 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     );
   };
 
-  public boundsToString(bounds: LngLatBounds): string {
+  public getBoundsAsString(map: ArlasMaplibreGL): string {
+    const bounds = map.getBounds();
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
 

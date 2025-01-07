@@ -17,7 +17,6 @@ describe('ArlasMapComponent', () => {
       protomapBasemapAdded$: from('')
     });
     mockBasemapService.fetchSources$.and.returnValue(from(''));
-    // mockBasemapService.setBasemaps$.and.returnValue(from(''));
 
     TestBed.configureTestingModule({
       imports: [
