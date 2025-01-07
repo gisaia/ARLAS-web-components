@@ -33,6 +33,10 @@ import { ElementIdentifier } from 'arlas-web-components';
 @Injectable({
   providedIn: 'root'
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export abstract class AbstractArlasMapService<L, S, M> {
   /** @description List of arlas data sources declared in configuration */
   public dataSources: S[] = [];

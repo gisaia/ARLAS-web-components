@@ -28,6 +28,10 @@ import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 @Injectable({
   providedIn: 'root'
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export abstract class BasemapService<L, S, M> {
 
   protected POWERED_BY_ARLAS = ' Powered by ARLAS.';

@@ -33,6 +33,10 @@ import { takeUntil } from 'rxjs';
   templateUrl: './basemap.component.html',
   styleUrls: ['./basemap.component.scss']
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
   private readonly _onDestroy$ = new Subject<boolean>();

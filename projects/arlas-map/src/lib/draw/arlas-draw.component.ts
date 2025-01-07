@@ -51,6 +51,10 @@ import * as styles from './themes/default-theme';
   styleUrls: ['./arlas-draw.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   @Input() public map: AbstractArlasMapGL;

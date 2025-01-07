@@ -56,6 +56,10 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
   styleUrls: ['./arlas-map.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export class ArlasMapComponent<L, S, M> {
 
   /** Map instance. */

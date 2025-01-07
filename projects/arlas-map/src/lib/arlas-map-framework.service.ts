@@ -33,6 +33,10 @@ import { MapLayerMouseEvent } from './map/model/events';
 @Injectable({
   providedIn: 'root'
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export abstract class ArlasMapFrameworkService<L, S, M> {
 
   public constructor() { }

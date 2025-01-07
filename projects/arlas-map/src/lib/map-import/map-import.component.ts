@@ -120,6 +120,10 @@ const SIMPLE_GEOMETRY_OBJECT = ['Polygon', 'Point', 'LineString'];
   templateUrl: './map-import.component.html',
   styleUrls: ['./map-import.component.scss']
 })
+/** L: a layer class/interface.
+ *  S: a source class/interface.
+ *  M: a Map configuration class/interface.
+ */
 export class MapImportComponent<L, S, M> {
 
   public SHP = 'shp';
