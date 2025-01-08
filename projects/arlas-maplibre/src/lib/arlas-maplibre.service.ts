@@ -52,6 +52,15 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     });
   }
 
+  /**
+    * Fits the map to its current bounds. To be used when a map container is resized.
+    * @param map Map instance.
+    */
+  public fitMapBounds(map: ArlasMaplibreGL) {
+    map.getMapProvider().fitBounds(map.getMapProvider().getBounds());
+  };
+
+
   public createMap(config: ArlasMaplibreConfig): ArlasMaplibreGL {
     return new ArlasMaplibreGL(config);
   }

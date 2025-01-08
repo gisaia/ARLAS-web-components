@@ -339,9 +339,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
   /**
    * @description Fits to given bounds + padding provided by the map configuration.
-   * @param bounds Bounds defined by sw and ne coordinates.
+   * @param bounds Bounds defined by sw and ne coordinates Or a [west, south, east, north] array.
    */
-  public fitToPaddedBounds(bounds: ArlasLngLatBounds) {
+  public fitToPaddedBounds(bounds: ArlasLngLatBounds | Array<number>) {
     const boundsOptions: maplibregl.FitBoundsOptions = {};
     boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
@@ -369,7 +369,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
 
-  public fitBounds(bounds: ArlasLngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
+  public fitBounds(bounds: ArlasLngLatBounds | number[] | LngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
     this._mapProvider.fitBounds(this.toMaplibreBound(bounds), options, eventData);
     return this;
   }
@@ -379,8 +379,13 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
    * @param bounds Bounds defined by ARLAS
    * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by maplibre
    */
-  private toMaplibreBound(bounds: ArlasLngLatBounds) {
-    return new LngLatBounds(bounds.sw, bounds.ne);
+  private toMaplibreBound(bounds: ArlasLngLatBounds | number[] | LngLatBounds) {
+    if (bounds instanceof ArlasLngLatBounds) {
+      return new LngLatBounds(bounds.sw, bounds.ne);
+    } else {
+      return new LngLatBounds(bounds as [number, number, number, number]);
+
+    }
   }
 
 

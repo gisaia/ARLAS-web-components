@@ -77,6 +77,15 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     return bounds.getWest() + ',' + bounds.getSouth() + ',' + bounds.getEast() + ',' + bounds.getNorth();
   }
 
+
+  /**
+  * Fits the map to its current bounds. To be used when a map container is resized.
+  * @param map Map instance.
+  */
+  public fitMapBounds(map: ArlasMapboxGL) {
+    map.getMapProvider().fitBounds(map.getMapProvider().getBounds());
+  };
+
   public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
     if (!!source) {
       source.setData(data);

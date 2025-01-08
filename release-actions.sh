@@ -41,16 +41,16 @@ releaseProd(){
 
     echo "=> Update arlas-web-components library in arlas-map"
     cd projects/arlas-map
-    npm install arlas-web-components@${VERSION}
+    npm install arlas-web-components@~${VERSION}
     cd ../..
     echo "=> Update arlas-map library in arlas-maplibre"
 
     cd projects/arlas-maplibre
-    npm install arlas-map@${VERSION}
+    npm install arlas-map@~${VERSION}
     cd ../..
 
     cd projects/arlas-mapbox
-    npm install arlas-map@${VERSION}
+    npm install arlas-map@~${VERSION}
     cd ../..
 
     echo "=> Build the ARLAS-web-components library"

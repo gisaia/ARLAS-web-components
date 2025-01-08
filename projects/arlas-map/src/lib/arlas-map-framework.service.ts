@@ -57,6 +57,12 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
     return new ArlasLngLatBounds(c1, c2);
   }
 
+  /**
+   * Fits the map to its current bounds. To be used when a map container is resized.
+   * @param map Map instance.
+   */
+  public abstract fitMapBounds(map: AbstractArlasMapGL);
+
   public abstract getBoundsAsString(map: AbstractArlasMapGL): string;
 
   /**

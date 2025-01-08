@@ -293,8 +293,8 @@ export abstract class AbstractArlasMapGL {
   public abstract calcOffsetPoint(): any;
   public abstract disableDragPan(): void;
   public abstract enableDragPan(): void;
-  public abstract fitBounds(bounds: ArlasLngLatBounds, options?: unknown, unknown?: unknown): this;
-  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds);
+  public abstract fitBounds(bounds: ArlasLngLatBounds | number[], options?: unknown, unknown?: unknown): this;
+  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]);
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
   public abstract getEastBounds(): number;
