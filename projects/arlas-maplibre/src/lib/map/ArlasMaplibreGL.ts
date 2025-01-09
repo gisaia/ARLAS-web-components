@@ -17,30 +17,28 @@
  * under the License.
  */
 
+import {
+  AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds,
+  ControlButton, DrawControlsOption, MapConfig, MapExtent, OnMoveResult
+} from 'arlas-map';
 import maplibregl, {
   ControlPosition,
   FitBoundsOptions,
   IControl,
   LngLat,
   LngLatBounds,
-  Map as MaplibreMap,
   MapGeoJSONFeature,
+  Map as MaplibreMap,
   MapOptions,
   Point,
   PointLike,
   QueryRenderedFeaturesOptions,
   StyleSetterOptions,
 } from 'maplibre-gl';
-import { AbstractArlasMapGL, MapConfig, OnMoveResult } from 'arlas-map';
 import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
-import { ControlButton, DrawControlsOption } from 'arlas-map';
-import { MapExtent, ArlasLngLatBounds } from 'arlas-map';
-import { ArlasLngLat } from 'arlas-map';
 
 
-export interface ArlasMaplibreConfig extends MapConfig<MapOptions> {
-
-}
+export interface ArlasMaplibreConfig extends MapConfig<MapOptions> { }
 
 export class ArlasMaplibreGL extends AbstractArlasMapGL {
   public setCenter(lngLat: [number, number]) {
@@ -341,7 +339,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
    * @description Fits to given bounds + padding provided by the map configuration.
    * @param bounds Bounds defined by sw and ne coordinates Or a [west, south, east, north] array.
    */
-  public fitToPaddedBounds(bounds: ArlasLngLatBounds | Array<number>) {
+  public fitToPaddedBounds(bounds: ArlasLngLatBounds | [number, number, number, number]) {
     const boundsOptions: maplibregl.FitBoundsOptions = {};
     boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,

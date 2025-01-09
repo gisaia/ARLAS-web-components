@@ -279,7 +279,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
    * @description Fits to given bounds + padding provided by the map configuration.
    * @param bounds Bounds defined by sw and ne coordinates Or a [west, south, east, north] array.
    */
-  public fitToPaddedBounds(bounds: ArlasLngLatBounds | Array<number>) {
+  public fitToPaddedBounds(bounds: ArlasLngLatBounds | [number, number, number, number]) {
     const boundsOptions: mapboxgl.FitBoundsOptions = {};
     boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
