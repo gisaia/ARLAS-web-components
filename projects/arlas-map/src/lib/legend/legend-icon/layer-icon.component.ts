@@ -120,10 +120,9 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, st
   if(iconStyle  && iconStyle === 'h3') {
     const r = 5;
      [
-      drawHexagon(4, 4, r),
-      drawHexagon(10, 4, r),
-      drawHexagon(10, 10, r),
-      drawHexagon(4, 10, r)
+      drawHexagon(12, 4, 5),
+      drawHexagon(5, 8, 4.5),
+      drawHexagon(11.5, 11.7, 4),
     ].forEach((hex, i) => {
        svg.append('g').append('polygon')
          .data([hex])
