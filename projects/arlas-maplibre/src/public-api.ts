@@ -26,3 +26,5 @@ export { MaplibreLegendService } from './lib/legend/legend.service';
 export { MaplibreBasemapService   } from './lib/basemaps/maplibre-basemap.service';
 export { MaplibreVectorStyle   } from './lib/map/model/vector-style';
 export { ArlasMapService } from './lib/arlas-map.service';
+export { MaplibreSourceType } from './lib/map/model/sources';
+

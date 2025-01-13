@@ -81,6 +81,12 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract setDataToGeojsonSource(source: S | string, data: FeatureCollection<GeoJSON.Geometry>);
 
 
+  /**
+   * Returns the canvas element of the map
+   * @param map Map instance.
+   */
+  public abstract getCanvas(map: AbstractArlasMapGL): HTMLCanvasElement;
+
   public abstract addImage(name: string, url: string, map: AbstractArlasMapGL, errorMessage: string, opt?: any);
 
   /**

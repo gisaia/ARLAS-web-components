@@ -28,7 +28,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
-import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapSettingsComponent, MapSettingsDialogComponent } from './map-settings.component';
 import { GetCollectionDisplayModule } from 'arlas-web-components';
@@ -37,7 +36,6 @@ import { GetCollectionDisplayModule } from 'arlas-web-components';
 @NgModule({
     imports: [
         CommonModule,
-        BrowserModule,
         FormsModule,
         MatTabsModule,
         MatDialogModule,

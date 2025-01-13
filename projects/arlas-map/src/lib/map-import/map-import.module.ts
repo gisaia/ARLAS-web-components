@@ -26,7 +26,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapImportComponent, MapImportDialogComponent } from './map-import.component';
 
@@ -35,7 +34,6 @@ import { MapImportComponent, MapImportDialogComponent } from './map-import.compo
 @NgModule({
   imports: [
     CommonModule,
-    BrowserModule,
     FormsModule,
     MatButtonModule,
     MatCheckboxModule,

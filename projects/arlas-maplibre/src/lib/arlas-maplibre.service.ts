@@ -46,6 +46,14 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     super();
   }
 
+  /**
+     * Returns the canvas element of the map
+     * @param map Map instance.
+     */
+  public getCanvas(map: ArlasMaplibreGL): HTMLCanvasElement {
+    return map.getMapProvider().getCanvas();
+  }
+
   public getInitTransformRequest(): Function {
     return (url: string, resourceType: ResourceType) => ({
       url,

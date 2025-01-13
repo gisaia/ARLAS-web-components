@@ -18,17 +18,20 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID } from 'arlas-map';
-import { ArlasMaplibreService } from './arlas-maplibre.service';
 import { FeatureCollection } from '@turf/helpers';
+import {
+  AbstractArlasMapService, ARLAS_ID, ArlasDataLayer, ArlasMapSource,
+  ExternalEvent, FILLSTROKE_LAYER_PREFIX, LayerMetadata, MapLayers,
+  SCROLLABLE_ARLAS_ID, VisualisationSetConfig
+} from 'arlas-map';
+import {
+  AddLayerObject, CanvasSourceSpecification, ExpressionSpecification,
+  GeoJSONSource, GeoJSONSourceSpecification, LayerSpecification, MapOptions,
+  RasterSourceSpecification, SourceSpecification, TypedStyleLayer
+} from 'maplibre-gl';
+import { ArlasMaplibreService } from './arlas-maplibre.service';
 import { ArlasMaplibreGL } from './map/ArlasMaplibreGL';
-import { ArlasMapSource } from 'arlas-map';
 import { MaplibreSourceType } from './map/model/sources';
-import { AddLayerObject, CanvasSourceSpecification, ExpressionSpecification, FilterSpecification, GeoJSONSource, GeoJSONSourceSpecification, LayerSpecification, MapOptions, RasterSourceSpecification, SourceSpecification, TypedStyleLayer } from 'maplibre-gl';
-import { MapLayers } from 'arlas-map';
-import { LayerMetadata } from 'arlas-map';
-import { VisualisationSetConfig } from 'arlas-map';
-import { ArlasDataLayer } from 'arlas-map';
 
 @Injectable({
   providedIn: 'root'

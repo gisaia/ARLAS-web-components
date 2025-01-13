@@ -27,7 +27,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
-import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -96,7 +95,6 @@ const routes: Routes = [
   ],
   exports: [MapglDemoComponent],
   imports: [
-    BrowserModule,
     FormatLegendModule,
     BrowserAnimationsModule,
     CalendarTimelineModule,

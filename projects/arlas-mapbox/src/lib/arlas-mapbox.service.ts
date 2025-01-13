@@ -18,22 +18,22 @@
  */
 
 import { Injectable } from '@angular/core';
+import { FeatureCollection } from '@turf/helpers';
 import {
+  AbstractArlasMapGL,
   ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX,
   SCROLLABLE_ARLAS_ID
 } from 'arlas-map';
 import {
   AnyLayer, AnySourceData, GeoJSONSource,
-  GeoJSONSourceRaw, LngLatBounds, MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
+  GeoJSONSourceRaw,
+  MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
 } from 'mapbox-gl';
-import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasDraw } from './draw/ArlasDraw';
+import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';
-import { FeatureCollection } from '@turf/helpers';
-import { MapboxVectorStyle } from './map/model/vector-style';
-import { AbstractArlasMapGL } from 'arlas-map';
 import { MapboxSourceType } from './map/model/sources';
-import { ArlasLngLatBounds } from 'arlas-map';
+import { MapboxVectorStyle } from './map/model/vector-style';
 
 @Injectable()
 export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType
@@ -41,6 +41,14 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
 
   public constructor() {
     super();
+  }
+
+  /**
+   * Returns the canvas element of the map.
+   * @param map Map instance.
+   */
+  public getCanvas(map: ArlasMapboxGL): HTMLCanvasElement {
+    return map.getMapProvider().getCanvas();
   }
 
   public getInitTransformRequest(): Function {
@@ -87,7 +95,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   };
 
   public setDataToGeojsonSource(source: GeoJSONSource, data: FeatureCollection<GeoJSON.Geometry>) {
-    if (!!source) {
+    if (source) {
       source.setData(data);
     }
   }

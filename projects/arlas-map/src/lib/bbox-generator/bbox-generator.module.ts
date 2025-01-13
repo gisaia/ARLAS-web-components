@@ -23,7 +23,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { BrowserModule } from '@angular/platform-browser';
 import { TranslateModule } from '@ngx-translate/core';
 import { BboxGeneratorComponent } from './bbox-generator.component';
 import { NgModule } from '@angular/core';
@@ -33,7 +32,6 @@ import { BboxFormErrorPipe } from './bbox-form-error.pipe';
 @NgModule({
   imports: [
     CommonModule,
-    BrowserModule,
     FormsModule,
     MatDialogModule,
     MatFormFieldModule,
