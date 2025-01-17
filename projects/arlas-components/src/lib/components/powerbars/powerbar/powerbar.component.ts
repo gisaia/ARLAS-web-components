@@ -18,7 +18,6 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { PowerBar } from '../model/powerbar';
 import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { PowerBar } from '../model/powerbar';
 
