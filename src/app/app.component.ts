@@ -30,6 +30,7 @@ export class AppComponent implements OnInit {
   public activeLinkIndex = 0;
   public navLinks = [
     '/',
+    '/maplibre',
     '/donut',
     '/histogram',
     '/powerbars',
@@ -39,7 +40,9 @@ export class AppComponent implements OnInit {
     '/multi-collection'
   ];
 
-  public constructor(private translate: TranslateService, private router: Router) {
+ 
+
+  public constructor(private readonly translate: TranslateService, private readonly router: Router) {
     this.translate.setDefaultLang('fr');
   }
 

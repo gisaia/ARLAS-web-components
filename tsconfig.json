@@ -3,13 +3,27 @@
   "compilerOptions": {
     "importHelpers": true,
     "paths": {
-      "arlas-components": [
-        "dist/arlas-components/arlas-components",
-        "dist/arlas-components"
+      "arlas-web-components": [
+        "dist/arlas-web-components",
+        "projects/arlas-components/src/public-api.ts",
+      ],
+      "arlas-map": [
+        "dist/arlas-map",
+        "projects/arlas-map/src/public-api.ts",
+      ],
+      "arlas-mapbox": [
+        "projects/arlas-mapbox/src/public-api.ts",
+        "dist/arlas-mapbox"
+      ],
+      "arlas-maplibre": [
+        "projects/arlas-maplibre/src/public-api.ts",
+        "dist/arlas-maplibre"
+
       ]
     },
     "outDir": "./dist/out-tsc",
-    "baseUrl": "src",
+    "baseUrl": "./",
+    "rootDir": "./",
     "sourceMap": true,
     "declaration": true,
     "moduleResolution": "node",
@@ -28,8 +42,7 @@
       "node_modules/@types"
     ],
     "lib": [
-      "es2015",
-      "es6",
+      "es2019",
       "dom"
     ],
     "module": "es2015",

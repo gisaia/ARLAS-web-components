@@ -16,11 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { CommonModule } from '@angular/common';
 import { GetValuePipe } from './get-value.pipe';
 import { NgModule } from '@angular/core';
 
 @NgModule({
   imports: [
+    CommonModule
   ],
   declarations: [
     GetValuePipe

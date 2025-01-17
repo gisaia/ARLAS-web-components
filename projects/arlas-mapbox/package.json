@@ -1,0 +1,24 @@
+{
+  "name": "arlas-mapbox",
+  "version": "27.0.0-z-rc.0",
+  "peerDependencies": {
+    "@angular/animations": "^18.2.13",
+    "@angular/cdk": "^18.2.14",
+    "@angular/common": "^18.2.13",
+    "@angular/compiler": "^18.2.13",
+    "@angular/core": "^18.2.13",
+    "@angular/forms": "^18.2.13",
+    "@angular/material": "^18.2.14",
+    "@angular/platform-browser": "^18.2.13",
+    "@angular/platform-browser-dynamic": "^18.2.13",
+    "@angular/router": "^18.2.13",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0"
+  },
+  "dependencies": {
+    "arlas-map": "~27.0.0-z-rc.0",
+    "mapbox-gl": "^1.6.1",
+    "rxjs": "^7.4.0",
+    "tslib": "^2.3.0"
+  }
+}
