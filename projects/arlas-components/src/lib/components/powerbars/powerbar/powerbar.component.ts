@@ -20,11 +20,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PowerBar } from '../model/powerbar';
 import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { PowerBar } from '../model/powerbar';
 
 @Component({
     selector: 'arlas-powerbar',
     templateUrl: './powerbar.component.html',
-    styleUrls: ['./powerbar.component.css']
+    styleUrls: ['./powerbar.component.scss']
 })
 export class PowerbarComponent {
 
@@ -65,6 +66,7 @@ export class PowerbarComponent {
 
     @Output() public onCheckEvent: EventEmitter<boolean> = new EventEmitter();
 
+    @Output() public onClickEvent = new EventEmitter<boolean>();
 
     public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
@@ -72,4 +74,7 @@ export class PowerbarComponent {
         this.onCheckEvent.emit(true);
     }
 
+    public onSelect() {
+        this.onClickEvent.emit(true);
+    }
 }
