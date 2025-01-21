@@ -12,6 +12,17 @@ usage(){
 	exit 1
 }
 
+send_chat_message(){
+    MESSAGE=$1
+    if [ -z "$GOOGLE_CHAT_RELEASE_CHANEL" ] ; then
+        echo "Environement variable GOOGLE_CHAT_RELEASE_CHANEL is not definied ... skipping message publishing"
+    else
+        DATA='{"text":"'${MESSAGE}'"}'
+        echo $DATA
+        curl -X POST --header "Content-Type:application/json" $GOOGLE_CHAT_RELEASE_CHANEL -d "${DATA}"
+    fi
+}
+
 
 # ARGUMENTS $1 = VERSION  $2 = ref_branch $3 stage $4 stage iteration (for beta & rc)
 releaseProd(){
@@ -41,16 +52,16 @@ releaseProd(){
 
     echo "=> Update arlas-web-components library in arlas-map"
     cd projects/arlas-map
-    npm install arlas-web-components@~${VERSION}
+    npm install --save-exact arlas-web-components@${VERSION}
     cd ../..
     echo "=> Update arlas-map library in arlas-maplibre"
 
     cd projects/arlas-maplibre
-    npm install arlas-map@~${VERSION}
+    npm install --save-exact arlas-map@${VERSION}
     cd ../..
 
     cd projects/arlas-mapbox
-    npm install arlas-map@~${VERSION}
+    npm install --save-exact arlas-map@${VERSION}
     cd ../..
 
     echo "=> Build the ARLAS-web-components library"
@@ -180,6 +191,10 @@ releaseProd(){
     git commit -m "$commit_message" --allow-empty
     git push origin "$BRANCH"
     echo "Well done :)"
+    if [ "$STAGE_LOCAL" == "stable" ] || [ "$STAGE_LOCAL" == "rc" ];
+        then
+        send_chat_message "Release of arlas-web-components, version ${VERSION}"
+    fi
 
 }
 
