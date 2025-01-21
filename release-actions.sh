@@ -193,7 +193,7 @@ releaseProd(){
     echo "Well done :)"
     if [ "$STAGE_LOCAL" == "stable" ] || [ "$STAGE_LOCAL" == "rc" ];
         then
-        send_chat_message "Release of arlas-web-component, version ${VERSION}"
+        send_chat_message "Release of arlas-web-components, version ${VERSION}"
     fi
 
 }
