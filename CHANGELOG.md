@@ -1,5 +1,17 @@
 # Change Log
 
+## [v27.0.0-rc.3](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.3) (2025-01-21)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.2...v27.0.0-rc.3)
+
+**New stuff:**
+
+- Refactor the map components to include maplibre implementation [\#898](https://github.com/gisaia/ARLAS-web-components/issues/898)
+
+**Fixed bugs:**
+
+- setMapboxDraw has wrong type [\#793](https://github.com/gisaia/ARLAS-web-components/issues/793)
+
 ## [v27.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.2) (2024-12-18)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.7...v27.0.0-rc.2)
