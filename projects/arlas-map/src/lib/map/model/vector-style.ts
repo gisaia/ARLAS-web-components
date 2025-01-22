@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { ArlasPaint, PaintValue } from '../model/layers';
+
 
 /** This file describes how to style a vector layer */
 
@@ -27,40 +29,25 @@ export enum VectorStyleEnum {
 }
 
 export interface ArlasCircle {
-    'circle-color': any;
-    'circle-radius': any;
-    'circle-blur': any;
-    'circle-opacity': any;
-    'circle-stroke-width': any;
-    'circle-stroke-color': any;
-    'circle-stroke-opacity': any;
+    'circle-color': PaintValue;
+    'circle-radius': PaintValue;
+    'circle-blur': PaintValue;
+    'circle-opacity': PaintValue;
+    'circle-stroke-width': PaintValue;
+    'circle-stroke-color': PaintValue;
+    'circle-stroke-opacity': PaintValue;
 }
 
 export interface ArlasFill {
-    'fill-color': any;
-    'fill-opacity': any;
-    'fill-outline-color': any;
+    'fill-color': PaintValue;
+    'fill-opacity': PaintValue;
+    'fill-outline-color': PaintValue;
 }
-
-export abstract class VectorStyle {
+export class VectorStyle {
     public type: VectorStyleEnum;
-    public style: ArlasCircle | ArlasFill;
-    public constructor(type: VectorStyleEnum, style: ArlasCircle | ArlasFill ) {
+    public style: ArlasPaint;
+    public constructor(type: VectorStyleEnum, style: ArlasPaint) {
         this.type = type;
         this.style = style;
     }
-
-    public applyStyle(layer: any) {
-        switch (this.type) {
-            case VectorStyleEnum.circle:
-                this.circle(layer);
-                break;
-            case VectorStyleEnum.fill:
-                this.fill(layer);
-                break;
-        }
-    }
-
-    public abstract circle(layer: any);
-    public abstract fill(layer: any);
 }

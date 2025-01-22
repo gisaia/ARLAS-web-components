@@ -22,7 +22,8 @@ import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL,
   ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX,
-  SCROLLABLE_ARLAS_ID
+  SCROLLABLE_ARLAS_ID,
+  VectorStyle
 } from 'arlas-map';
 import {
   AnyLayer, AnySourceData, GeoJSONSource,
@@ -33,7 +34,6 @@ import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';
 import { MapboxSourceType } from './map/model/sources';
-import { MapboxVectorStyle } from './map/model/vector-style';
 
 @Injectable()
 export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType
@@ -428,7 +428,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param style Vector style to apply to the geojson
    * @param data Geojson data which features will be styled with the given style.
    */
-  public addGeojsonLayer(map: ArlasMapboxGL, layerId: string, style: MapboxVectorStyle,
+  public addGeojsonLayer(map: ArlasMapboxGL, layerId: string, style: VectorStyle,
     data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void {
     const source: GeoJSONSourceRaw = this.createGeojsonSource(data);
     const sourceId = layerId;
@@ -437,11 +437,11 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
       id: layerId,
       source: sourceId,
       type: style.type,
+      paint: style.style,
       layout: {
         'visibility': 'visible'
       },
     };
-    style.applyStyle(geojsonLayer);
     this.addLayer(map, geojsonLayer);
   }
 

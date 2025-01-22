@@ -76,7 +76,7 @@ export { MapExtent } from './lib/map/model/extent';
 export {
   ARLAS_ID, ARLAS_VSET, ExternalEvent, ExternalEventLayer, FILLSTROKE_LAYER_PREFIX, FillStroke, HOVER_LAYER_PREFIX,
   LayerEvents, LayerMetadata, MapLayers, MetadataHiddenProps, PaintColor, PaintValue, SCROLLABLE_ARLAS_ID, SELECT_LAYER_PREFIX,
-  getLayerName, ArlasDataLayer,
+  getLayerName, ArlasDataLayer, ArlasPaint
 } from './lib/map/model/layers';
 export { ArlasMapSource } from './lib/map/model/sources';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';

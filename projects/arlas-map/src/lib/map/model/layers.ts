@@ -22,7 +22,7 @@ export interface ArlasDataLayer {
   type: string;
   source?: string;
   metadata?: LayerMetadata;
-  paint: PaintValue;
+  paint: ArlasPaint;
   layout?: any;
   filter?: any;
 }
@@ -49,6 +49,7 @@ export enum ExternalEvent {
   hover = 'hover'
 }
 
+
 export interface FillStroke {
   width?: PaintValue;
   opacity?: number;
@@ -72,7 +73,7 @@ export interface MetadataHiddenProps {
 }
 
 export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
-
+export type ArlasPaint = { [key: string]: PaintValue };
 export interface PaintColor {
   property: string;
   type: string;
