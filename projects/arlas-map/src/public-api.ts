@@ -88,7 +88,7 @@ export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.to
 export * as styles from './lib/draw/themes/default-theme';
 export { ArlasMapComponent } from './lib/arlas-map.component';
 export { ArlasLngLat, OnMoveResult, ArlasLngLatBounds, } from './lib/map/model/map';
-export { VectorStyle, ArlasCircle, ArlasFill, VectorStyleEnum } from './lib/map/model/vector-style';
+export { VectorStyle, VectorStyleEnum } from './lib/map/model/vector-style';
 /** Map component logic */
 export { AbstractArlasMapService } from './lib/arlas-map.service';
 /** Map framework logic */

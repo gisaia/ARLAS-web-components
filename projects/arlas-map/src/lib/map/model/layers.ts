@@ -73,7 +73,7 @@ export interface MetadataHiddenProps {
 }
 
 export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
-export type ArlasPaint = { [key: string]: PaintValue };
+export interface ArlasPaint { [key: string]: PaintValue; }
 export interface PaintColor {
   property: string;
   type: string;

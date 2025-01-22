@@ -28,21 +28,6 @@ export enum VectorStyleEnum {
     line = 'line'
 }
 
-export interface ArlasCircle {
-    'circle-color': PaintValue;
-    'circle-radius': PaintValue;
-    'circle-blur': PaintValue;
-    'circle-opacity': PaintValue;
-    'circle-stroke-width': PaintValue;
-    'circle-stroke-color': PaintValue;
-    'circle-stroke-opacity': PaintValue;
-}
-
-export interface ArlasFill {
-    'fill-color': PaintValue;
-    'fill-opacity': PaintValue;
-    'fill-outline-color': PaintValue;
-}
 export class VectorStyle {
     public type: VectorStyleEnum;
     public style: ArlasPaint;
