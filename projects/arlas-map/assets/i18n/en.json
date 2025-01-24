@@ -83,5 +83,7 @@
 	"Show": "Show",
 	"Download": "Download",
 	"None": "None",
-	"Heatmap-density": "Density"
+	"Heatmap-density": "Density",
+	"a_operation": "Operation",
+	"b_geometryPath": "Geometry"
 }
