@@ -444,7 +444,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     if (this.map && this.map.getMapProvider() !== undefined) {
       if (changes['drawData'] !== undefined && this.drawService.isReady) {
         this.drawData = changes['drawData'].currentValue;
-        console.log(this.drawData);
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
           const poly = polygon((feature.geometry as Polygon).coordinates);
