@@ -78,6 +78,12 @@ $default-font-size: 14px;
         ::ng-deep.mat-mdc-form-field-subscript-wrapper {
             display: none;
         }
+
+        .move {
+            .label {
+                background-color: white;
+            }
+        }
     }
 
     .exit {
