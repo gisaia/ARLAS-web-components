@@ -75,7 +75,7 @@
   overflow-x: hidden;
   padding-bottom: 5px;
 
-  .powerbar-scrollable {
+  &__scrollable {
     display: flex;
     flex-direction: column;
     max-height: 255px;

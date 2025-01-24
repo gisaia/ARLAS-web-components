@@ -20,7 +20,7 @@
     </ng-container>
   </div>
 
-  <div class="powerbars--container" [class.powerbar-scrollable]="scrollable" [ngClass]="customizedCssClass">
+  <div class="powerbars--container" [class.powerbars--container__scrollable]="scrollable" [ngClass]="customizedCssClass">
     <ng-container *ngIf="groupSelections">
       <div *ngIf="selectedPowerbarsSet.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
         [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
