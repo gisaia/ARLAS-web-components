@@ -21,7 +21,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'arlas-layer-legend',
+  selector: 'arlas-layer-legend-demo',
   templateUrl: './layer-legend-demo.component.html',
   styleUrl: './layer-legend-demo.component.scss'
 })
