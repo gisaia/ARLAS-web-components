@@ -70,6 +70,7 @@ export interface LayerMetadata {
   isScrollableLayer?: boolean;
   hiddenProps?: MetadataHiddenProps;
   showLegend?: boolean;
+  aggType?: string;
 }
 export interface MetadataHiddenProps {
   geomType?: string;

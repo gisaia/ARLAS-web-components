@@ -28,7 +28,6 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 })
 export class LayerIconComponent implements AfterViewInit, OnChanges {
   @Input() public layer: any;
-  @Input() public iconStyleType = '';
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
@@ -79,7 +78,7 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
       }
       case 'fill': {
         if (source.startsWith('cluster')) {
-          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, this.iconStyleType);
+          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, this.layer.metadata?.aggType);
         } else if (source.startsWith('feature-metric')) {
           drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
         } else {
@@ -118,7 +117,6 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, st
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   if(iconStyle  && iconStyle === 'h3') {
-    const r = 5;
      [
       drawHexagon(12, 4, 5),
       drawHexagon(5, 8, 4.5),
