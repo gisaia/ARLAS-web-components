@@ -129,10 +129,13 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    CollectionModule.forRoot({ loader: {
-                provide: BaseCollectionService,
-                useClass: AwcCollectionService
-            } })
+    CollectionModule.forRoot({
+      loader: {
+        provide: BaseCollectionService,
+        useClass: AwcCollectionService
+      }
+    }),
+    ArlasMapModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent]
