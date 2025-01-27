@@ -148,6 +148,7 @@ protected layersLeg = new Map([
         "metadata": {
           "collection": "courses",
           "collectionDisplayName": "courses",
+          "aggType": "h3",
           "hiddenProps": {
             "geomType": "circle-heatmap"
           }
@@ -195,7 +196,7 @@ protected layersLeg = new Map([
         "minValue": "0",
         "maxValue": "1"
       },
-      "aggType": "tile"
+
     }
   ],
   [
@@ -226,7 +227,8 @@ protected layersLeg = new Map([
         "metadata": {
           "collection": "courses",
           "collectionDisplayName": "courses",
-          "isScrollableLayer": false
+          "isScrollableLayer": false,
+          "aggType": null
         }
       },
       "colorLegend": {
@@ -234,7 +236,7 @@ protected layersLeg = new Map([
         "type": "Fix",
         "fixValue": "#ff0000"
       },
-      "aggType": null
+
     }
   ],
   [
@@ -257,6 +259,7 @@ protected layersLeg = new Map([
         "metadata": {
           "collection": "courses",
           "collectionDisplayName": "courses",
+          "aggType": "h3",
           "stroke": {
             "color": "#fff",
             "width": 0,
@@ -274,7 +277,7 @@ protected layersLeg = new Map([
         "type": "Fix",
         "fixValue": "#fff"
       },
-      "aggType": "h3"
+
     }
   ]
 ])
