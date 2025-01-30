@@ -349,18 +349,16 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param url Url to the raster source.
    * @param bounds Bounds of the image [west, south, east, north].
    * @param maxZoom Maximal zoom to display the raster.
-   * @param minZoom Minimal zoom to display the raster.
    * @param tileSize Size of the tiles fetched to display the raster (in pixels). Default to 256.
    * @returns a raster source instance.
    */
   public createRasterSource(url: string, bounds: number[],
-    maxZoom: number, minZoom: number, tileSize: number = 256): RasterSource {
+    maxZoom: number, tileSize: number = 256): RasterSource {
     return {
       type: 'raster',
       tiles: [url],
       bounds: bounds as [number, number, number, number],
       maxzoom: maxZoom,
-      minzoom: minZoom,
       tileSize: tileSize
     };
   }
@@ -372,14 +370,13 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   * @param url Url to the raster source.
   * @param bounds Bounds of the image [west, south, east, north].
   * @param maxZoom Maximal zoom to display the raster.
-  * @param minZoom Minimal zoom to display the raster.
   * @param tileSize Size of the tiles fetched to display the raster (in pixels). Default to 256.
   * @param beforeId Identifier of an already added layer. The raster Layer is added under this 'beforeId' layer.
   */
 
   public addRasterLayer(map: ArlasMapboxGL, layerId: string, url: string, bounds: number[],
-    maxZoom: number, minZoom: number, tileSize: number, beforeId?: string): void {
-    const rasterSource: RasterSource = this.createRasterSource(url, bounds, maxZoom, minZoom, tileSize);
+    maxZoom: number, tileSize: number, beforeId?: string): void {
+    const rasterSource: RasterSource = this.createRasterSource(url, bounds, maxZoom, tileSize);
     const sourceId = layerId;
     this.setSource(sourceId, rasterSource, map);
     const iconLayer: RasterLayer = {

@@ -130,7 +130,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract addIconLayer(map: AbstractArlasMapGL, layerId: string, iconName: string,
     iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>);
   public abstract addRasterLayer(map: AbstractArlasMapGL, layerId: string, url: string, bounds: number[],
-    maxZoom: number, minZoom: number, tileSize: number, beforeId?: string): void;
+    maxZoom: number, tileSize: number, beforeId?: string): void;
 
   public abstract addGeojsonLayer(map: AbstractArlasMapGL, layerId: string, style: VectorStyle,
     data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>
@@ -141,6 +141,6 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
 
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): S;
   public abstract createRasterSource(url: string, bounds: number[],
-    maxZoom: number, minZoom: number, tileSize: number): S;
+    maxZoom: number, tileSize: number): S;
 
 }
