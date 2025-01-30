@@ -67,6 +67,7 @@ export interface LayerMetadata {
   stroke?: FillStroke;
   isScrollableLayer?: boolean;
   hiddenProps?: MetadataHiddenProps;
+  aggType?: string;
 }
 export interface MetadataHiddenProps {
   geomType?: string;

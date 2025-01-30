@@ -52,6 +52,7 @@ import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
+import { LayerLegendDemoComponent } from "./layer-legend/layer-legend-demo.component";
 
 import {
   CalendarTimelineModule
@@ -78,7 +79,8 @@ const routes: Routes = [
   { path: 'calendar-timeline', component: CalendarTimelineDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
-  { path: 'multi-collection', component: MetricsTableDemoComponent }
+  { path: 'multi-collection', component: MetricsTableDemoComponent },
+  { path: 'layer-legend', component: LayerLegendDemoComponent }
 ];
 
 @NgModule({
@@ -91,7 +93,8 @@ const routes: Routes = [
     WmtsLayerManagerDemoComponent,
     CalendarTimelineDemoComponent,
     MetricsTableDemoComponent,
-    MapglDemoComponent
+    MapglDemoComponent,
+    LayerLegendDemoComponent
   ],
   exports: [MapglDemoComponent],
   imports: [
@@ -126,10 +129,13 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    CollectionModule.forRoot({ loader: {
-                provide: BaseCollectionService,
-                useClass: AwcCollectionService
-            } })
+    CollectionModule.forRoot({
+      loader: {
+        provide: BaseCollectionService,
+        useClass: AwcCollectionService
+      }
+    }),
+    ArlasMapModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent]

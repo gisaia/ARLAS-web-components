@@ -22,14 +22,14 @@ import { Component, ViewChild } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
-import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
-import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
-import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
+import { VisualisationSetConfig } from 'arlas-map';
+import { ARLAS_VSET } from 'arlas-map';
+import { ArlasMapComponent } from 'arlas-map';
 import {
   GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
   OperationSelectModel
-} from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
-import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
+} from 'arlas-map';
+import { MapImportComponent } from 'arlas-map';
 import { ArlasAnyLayer } from '../../../projects/arlas-mapbox/src/lib/map/model/layers';
 import { MapboxSourceType } from '../../../projects/arlas-mapbox/src/lib/map/model/sources';
 import { GeoJSONSource, GeoJSONSourceRaw, MapboxOptions } from 'mapbox-gl';
@@ -46,7 +46,7 @@ import {
 export class MapglDemoComponent {
 
   @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;;
+  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';
