@@ -51,18 +51,13 @@ releaseProd(){
     npm install
 
     echo "=> Update arlas-web-components library in arlas-map"
-    cd projects/arlas-map
-    npm install --save-exact arlas-web-components@${VERSION}
-    cd ../..
+    npm install --save-exact arlas-web-components@${VERSION} --workspace=projects/arlas-map
+    
     echo "=> Update arlas-map library in arlas-maplibre"
+    npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-maplibre
 
-    cd projects/arlas-maplibre
-    npm install --save-exact arlas-map@${VERSION}
-    cd ../..
-
-    cd projects/arlas-mapbox
-    npm install --save-exact arlas-map@${VERSION}
-    cd ../..
+    echo "=> Update arlas-map library in arlas-mapbox"
+    npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-mapbox
 
     echo "=> Build the ARLAS-web-components library"
    
@@ -172,20 +167,15 @@ releaseProd(){
     npm --no-git-tag-version version ""$newDevVersion"-dev0"
 
     # remove released dependencies and keep based on npm workspaces for dev.
-    cd projects/arlas-map
-    npm uninstall arlas-web-components
-    cd ../..
-    echo "=> Update arlas-map library in arlas-maplibre"
-
-    cd projects/arlas-maplibre
-    npm uninstall arlas-map
-    cd ../..
-
-    cd projects/arlas-mapbox
-    npm uninstall arlas-map
-    cd ../..
-
+    echo "=> Uninstall arlas-web-components  library in arlas-map"
+    npm uninstall arlas-web-components --workspace=projects/arlas-map
     
+    echo "=> Uninstall arlas-map library in arlas-maplibre"
+    npm uninstall arlas-map --workspace=projects/arlas-maplibre
+
+    echo "=> Uninstall arlas-map library in arlas-mapbox"
+    npm uninstall arlas-map --workspace=projects/arlas-mapbox
+
     git add .
     commit_message="update package.json to"-"$newDevVersion"
     git commit -m "$commit_message" --allow-empty
