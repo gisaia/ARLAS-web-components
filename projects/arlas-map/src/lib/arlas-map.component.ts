@@ -398,7 +398,10 @@ export class ArlasMapComponent<L, S, M> {
       controls: {
         mapAttribution: {
           enable: true,
-          position: this.mapAttributionPosition
+          position: this.mapAttributionPosition,
+          config: {
+            compact: false
+          }
         },
         scale: {
           enable: this.displayScale
