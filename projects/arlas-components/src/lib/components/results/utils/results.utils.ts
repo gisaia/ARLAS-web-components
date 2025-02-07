@@ -71,9 +71,12 @@ export class ActionHandler {
   }
 }
 
+export type ElementIdentifierEventType = 'leave' | 'click' | 'hover';
+
 export interface ElementIdentifier {
   idFieldName: string;
   idValue: string;
+  event?: ElementIdentifierEventType;
 }
 
 export interface FieldsConfiguration {

@@ -37,8 +37,10 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
-  PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
+import {
+  Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
+  PageQuery, ResultListOptions, matchAndReplace, ElementIdentifierEventType
+} from '../utils/results.utils';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 
@@ -794,10 +796,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets and emits the hovered item's identifier
    */
-  public setConsultedItem(identifier: string) {
+  public setConsultedItem(identifier: string, event: ElementIdentifierEventType) {
     const elementidentifier: ElementIdentifier = {
       idFieldName: this.fieldsConfiguration.idFieldName,
-      idValue: identifier
+      idValue: identifier,
+      event
     };
     this.debouncer.next(elementidentifier);
   }
@@ -807,7 +810,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @param item hovered item
    */
   public onEnterItem(item: Item): void {
-    this.setConsultedItem(item.identifier);
+    this.setConsultedItem(item.identifier, 'hover');
     this.notifier.notifyItemHover(item);
   }
 
@@ -816,7 +819,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @param item item previously hovered
    */
   public onLeaveItem(item: Item): void {
-    this.setConsultedItem('leave-' + item.identifier);
+    this.setConsultedItem(item.identifier, 'leave');
   }
 
   /**
@@ -826,7 +829,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public onClickItem(item: Item): void {
     const elementidentifier: ElementIdentifier = {
       idFieldName: this.fieldsConfiguration.idFieldName,
-      idValue: item.identifier
+      idValue: item.identifier,
+      event: 'click'
     };
     this.clickOnItemEvent.next(elementidentifier);
   }
