@@ -63,6 +63,7 @@ import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar
 import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
 import { MaplibreDemoModule } from './mapgl-libre-demo/maplibre-demo.module';
 import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-demo.component';
+import { CogVisualisationComponent } from './cog-visualisation/cog-visualisation.component';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -78,7 +79,8 @@ const routes: Routes = [
   { path: 'calendar-timeline', component: CalendarTimelineDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
-  { path: 'multi-collection', component: MetricsTableDemoComponent }
+  { path: 'multi-collection', component: MetricsTableDemoComponent },
+  { path: 'cog-visualisation', component: CogVisualisationComponent }
 ];
 
 @NgModule({
