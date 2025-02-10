@@ -1,0 +1,16 @@
+<div mat-dialog-content  class="visualisations">
+  @for (visualisation of data.visualisations; track visualisation) {
+    <div [mat-dialog-close]="visualisation">
+      <arlas-result-cog-visualisation-shortcut
+      [title]="visualisation.name"
+      [description]="visualisation.description"
+      ></arlas-result-cog-visualisation-shortcut>
+    </div>
+  }
+
+  <div [mat-dialog-close]="{name: 'No visualisation', visualisation: false}">
+    <arlas-result-cog-visualisation-shortcut
+      [title]="'No visualisation' | translate"
+    ></arlas-result-cog-visualisation-shortcut>
+  </div>
+</div>

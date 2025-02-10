@@ -61,6 +61,10 @@ export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { WmtsLayerManagertDialogComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { ResultDetailedGridComponent } from './lib/components/results/result-detailed-grid/result-detailed-grid.component';
+export { ResultCogVisualisationShortcutComponent } from
+    './lib/components/results/result-cog-visualisation-shortcut/result-cog-visualisation-shortcut.component';
+export { ResultCogVisualisationModalComponent } from
+    './lib/components/results/result-cog-visualisation-modal/result-cog-visualisation-modal.component';
 export { ResultScrollDirective } from './lib/components/results/result-directive/result-scroll.directive';
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';

@@ -31,6 +31,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ArlasMapModule, MapSettingsModule } from 'arlas-map';
 import { ArlasMapboxModule } from 'arlas-mapbox';
 import { ArlasMaplibreModule } from 'arlas-maplibre';
 import {
@@ -57,7 +58,8 @@ import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-de
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
-import { ArlasMapModule, MapSettingsModule } from 'arlas-map';
+
+import { CogVisualisationComponent } from './cog-visualisation/cog-visualisation.component';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -73,7 +75,8 @@ const routes: Routes = [
   { path: 'calendar-timeline', component: CalendarTimelineDemoComponent },
   { path: 'list', component: ResultsDemoComponent },
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
-  { path: 'multi-collection', component: MetricsTableDemoComponent }
+  { path: 'multi-collection', component: MetricsTableDemoComponent },
+  { path: 'cog-visualisation', component: CogVisualisationComponent }
 ];
 
 @NgModule({

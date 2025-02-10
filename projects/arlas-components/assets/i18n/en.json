@@ -41,5 +41,7 @@
 	"METRIC_COLUMN_min": "minimal",
 	"METRIC_COLUMN_max": "maximal",
 	"METRIC_COLUMN_cardinality": "cardinality of",
-	"None": "None"
+	"None": "None",
+  "Moisture Index (NDMi) is used to determine vegetation water content": "Moisture Index (NDMi) is used to determine vegetation water content",
+  "Normalized Difference Vegetation Index": "Normalized Difference Vegetation Index"
 }
