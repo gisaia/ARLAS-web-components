@@ -54,10 +54,6 @@
         "layers", "events"
       ]
     },
-    "idFeatureField": {
-      "description": "Field name of the identifier",
-      "type": "string"
-    },
     "mapSources": {
       "description": "List of sources to add to the map as basemaps",
       "type": "array",
@@ -246,6 +242,6 @@
     }
   },
   "required": [
-      "mapLayers", "idFeatureField", "margePanForLoad", "margePanForTest"
+      "mapLayers", "margePanForLoad", "margePanForTest"
   ]
 }
