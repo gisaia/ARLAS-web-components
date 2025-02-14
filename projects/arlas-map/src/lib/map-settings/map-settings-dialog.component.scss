@@ -17,9 +17,8 @@
  * under the License.
  */
 
-::ng-deep .map-settings-dialog .mat-dialog-container {
-  overflow: inherit;
-  position: relative;
+::ng-deep .map-settings-dialog .mdc-dialog__surface {
+  padding: 0 15px;
 }
 
 .mapgl-settings__title {
