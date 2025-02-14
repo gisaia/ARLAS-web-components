@@ -207,7 +207,8 @@ export class MapImportComponent<L, S, M> {
   }
 
   public openDialog(defaultFitResult?: boolean) {
-    this.dialogRef = this.dialog.open(MapImportDialogComponent, { data: { allowedImportType: this.allowedImportType, defaultFitResult } });
+    this.dialogRef = this.dialog.open(MapImportDialogComponent,
+      { data: { allowedImportType: this.allowedImportType, defaultFitResult }, panelClass: 'map-import-dialog' });
     this.dialogRef.componentInstance.file.subscribe((file: File) => {
       this.currentFile = file;
     });

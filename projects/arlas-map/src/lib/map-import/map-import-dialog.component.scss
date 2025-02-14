@@ -17,6 +17,10 @@
  * under the License.
  */
 
+::ng-deep .map-settings-dialog .mdc-dialog__surface {
+  padding: 0 15px;
+}
+
 .mapgl-import-body {
   min-width: 500px;
   display: flex;
