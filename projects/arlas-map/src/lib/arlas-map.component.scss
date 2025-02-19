@@ -81,11 +81,17 @@
   --mdc-switch-track-height: 5px;
   --mdc-switch-handle-width: 12px;
   --mdc-switch-state-layer-size: 0;
+  --mat-switch-selected-handle-horizontal-margin: 0 1px;
 
   .mdc-switch__handle {
     --mat-switch-unselected-handle-size: 12px;
     --mat-switch-selected-handle-size: 12px;
     --mat-switch-pressed-handle-size: 12px;
+
+    --mdc-switch-unselected-handle-color: lightgrey;
+    --mdc-switch-unselected-focus-handle-color: lightgrey;
+    --mdc-switch-unselected-hover-handle-color: lightgrey;
+    --mdc-switch-unselected-pressed-handle-color: lightgrey;
   }
 
   &-text {

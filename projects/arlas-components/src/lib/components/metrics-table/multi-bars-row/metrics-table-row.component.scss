@@ -22,11 +22,11 @@
 
   ::ng-deep {
     arlas-powerbar {
-      .powerbar__powerbar--count {
+      .powerbars__powerbar--count {
         text-align: left;
       }
 
-      .powerbar__powerbar--term {
+      .powerbars__powerbar--term {
         display: none;
       }
 
@@ -75,6 +75,8 @@
 }
 
 .multi-bar-row {
+  height: 25px;
+
   &--selected {
     font-weight: bold;
     opacity: 1;
