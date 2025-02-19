@@ -38,6 +38,7 @@ import maplibregl, {
 import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
 
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ArlasMaplibreConfig extends MapConfig<MapOptions> { }
 
 export class ArlasMaplibreGL extends AbstractArlasMapGL {
@@ -373,7 +374,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   /**
-   * 
    * @param bounds Bounds defined by ARLAS
    * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by maplibre
    */
