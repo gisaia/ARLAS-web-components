@@ -18,7 +18,7 @@
  */
 
 import { Component } from '@angular/core';
-import { MatDialogContent } from '@angular/material/dialog';
+import { MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import {
   ResultCogVisualisationShortcutComponent
 } from '../result-cog-visualisation-shortcut/result-cog-visualisation-shortcut.component';
@@ -34,7 +34,8 @@ export interface CogVisualisationConfig {
   standalone: true,
   imports: [
     MatDialogContent,
-    ResultCogVisualisationShortcutComponent
+    ResultCogVisualisationShortcutComponent,
+    MatDialogClose
   ],
   templateUrl: './result-cog-visualisation-modal.component.html',
   styleUrl: './result-cog-visualisation-modal.component.scss'
@@ -60,5 +61,4 @@ export class ResultCogVisualisationModalComponent {
         ' Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s,',
     }
   ];
-
 }

@@ -16,3 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+.visualisations{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
