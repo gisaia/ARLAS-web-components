@@ -112,6 +112,7 @@
       *ngIf="selectedGridItem !== null && resultMode === ModeEnum.grid && isDetailledGridOpen">
       <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
         <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth"
+          [activatedActionsPerItem]="activatedActionsPerItem"
           [detailHeight]="detailedGridHeight" [idFieldName]="fieldsConfiguration.idFieldName"
           [isDetailShowed]="isDetailledGridOpen" (actionOnItemEvent)="triggerActionOnItem($event)"
           [showEmptyGroup]="showEmptyGroup" [useHttp]="fieldsConfiguration.useHttpQuicklooks"
