@@ -1,5 +1,13 @@
 # Change Log
 
+## [v27.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.4) (2025-02-25)
+
+[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.3...v27.0.4)
+
+**Miscellaneous:**
+
+- Reversible actions state is not updated on detail view of resutlist [\#912](https://github.com/gisaia/ARLAS-web-components/issues/912) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v27.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.3) (2025-02-19)
 
 [Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.2...v27.0.3)
