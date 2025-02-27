@@ -76,6 +76,7 @@
 
 .multi-bar-row {
   height: 25px;
+  cursor: pointer;
 
   &--selected {
     font-weight: bold;
@@ -89,7 +90,6 @@
   &--unselected {
     &:hover {
       opacity: 0.8;
-      cursor: pointer;
     }
   }
 
