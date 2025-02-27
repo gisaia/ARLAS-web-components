@@ -17,8 +17,17 @@
  * under the License.
  */
 
-::ng-deep .map-settings-dialog .mdc-dialog__surface {
-  padding: 0 15px;
+ ::ng-deep.map-import-dialog {
+  --mdc-dialog-subhead-size: 20px;
+  --mdc-dialog-subhead-tracking: 0;
+  --mat-dialog-with-actions-content-padding: 0;
+
+  .mdc-dialog__surface {
+    padding: 12px 24px;
+  }
+  .mat-mdc-dialog-content {
+    padding: 0;
+  }
 }
 
 .mapgl-import-body {
