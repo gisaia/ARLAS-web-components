@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultCogVisualisationShortcutComponent } from './result-cog-visualisation-shortcut.component';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 describe('CogVisualisationShortcutComponent', () => {
   let component: ResultCogVisualisationShortcutComponent;
@@ -8,7 +9,9 @@ describe('CogVisualisationShortcutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultCogVisualisationShortcutComponent]
+      imports: [ResultCogVisualisationShortcutComponent,
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+      ]
     })
     .compileComponents();
 

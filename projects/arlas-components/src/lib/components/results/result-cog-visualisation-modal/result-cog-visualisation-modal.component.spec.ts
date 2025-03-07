@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultCogVisualisationModalComponent } from './result-cog-visualisation-modal.component';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 describe('ResultCogVisualisationModalComponent', () => {
   let component: ResultCogVisualisationModalComponent;
@@ -8,7 +10,10 @@ describe('ResultCogVisualisationModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultCogVisualisationModalComponent]
+      imports: [ResultCogVisualisationModalComponent,
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+      ],
+      providers: [ {provide: MAT_DIALOG_DATA, useValue: {}}]
     })
     .compileComponents();
 
