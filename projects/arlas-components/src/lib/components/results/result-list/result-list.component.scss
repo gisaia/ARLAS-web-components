@@ -308,11 +308,12 @@ tr {
   }
 
   .resultlist__tools--sort-direction {
-    cursor: pointer;
-    transform: rotate(90deg);
-    font-size: 18px;
-    height: 18px;
-    width: 18px;
+    mat-icon {
+      transform: rotate(90deg);
+      font-size: 18px;
+      height: 18px;
+      width: 18px;
+    }
 
     &.reversed {
       transform: rotate(-90deg);

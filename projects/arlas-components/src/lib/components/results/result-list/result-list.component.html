@@ -61,8 +61,10 @@
               }
           </mat-select>
           @if (sortedColumn?.fieldName) {
-            <mat-icon class="resultlist__tools--sort-direction" [class.reversed]="sortedColumn.sortDirection === SortEnum.asc"
-              (click)="setDirection($event)" [matTooltip]="'Change sort direction' | translate">trending_flat</mat-icon>
+            <mat-button mat-icon-button class="resultlist__tools--sort-direction" (click)="setDirection($event)"
+                (keydown)="setDirection($event)" [matTooltip]="'Change sort direction' | translate">
+              <mat-icon [class.reversed]="sortedColumn.sortDirection === SortEnum.asc">trending_flat</mat-icon>
+            </mat-button>
           }
         </div>
         <ng-container *ngIf="hasGridMode">

@@ -53,7 +53,7 @@ export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'n
 })
 export class FormatLegendPipe implements PipeTransform {
 
-  public constructor(private collectionService: CollectionService) {
+  public constructor(private readonly collectionService: CollectionService) {
   }
   private readonly metrics: string[] = [
     'avg',
@@ -159,8 +159,8 @@ export class FormatLegendPipe implements PipeTransform {
   }
 
   public containsMetrics(value: string) {
-    for (let i = 0; i < this.metrics.length; i++) {
-      if (value.includes(this.metrics[i])) {
+    for (const metric of this.metrics) {
+      if (value.includes(metric)) {
         return true;
       }
     }
