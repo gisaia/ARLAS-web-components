@@ -31,38 +31,33 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ArlasMapboxModule } from 'arlas-mapbox';
+import { ArlasMaplibreModule } from 'arlas-maplibre';
 import {
   AwcCollectionService,
   BaseCollectionService,
+  CalendarTimelineModule,
   CollectionModule,
   DonutModule,
-  FormatLegendModule,
   HistogramModule,
   MetricModule,
   MetricsTableModule,
   PowerbarsModule,
   ResultsModule,
-  WmtsLayerManagerModule,
-  WmtsLayerManagertDialogComponent
-} from '../../projects/arlas-components/src/public-api';
+  WmtsLayerManagerModule
+} from 'arlas-web-components';
 import { AppComponent } from './app.component';
+import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
+import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
 import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
+import { MaplibreDemoModule } from './mapgl-libre-demo/maplibre-demo.module';
+import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-demo.component';
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
-
-import {
-  CalendarTimelineModule
-} from '../../projects/arlas-components/src/lib/components/calendar-timeline/calendar-timeline.module';
-import { ArlasMapModule, MapSettingsModule } from '../../projects/arlas-map/src/public-api';
-import { ArlasMapboxModule } from '../../projects/arlas-mapbox/src/public-api';
-import { ArlasMaplibreModule } from '../../projects/arlas-maplibre/src/public-api';
-import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
-import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
-import { MaplibreDemoModule } from './mapgl-libre-demo/maplibre-demo.module';
-import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-demo.component';
+import { ArlasMapModule, MapSettingsModule } from 'arlas-map';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -95,7 +90,6 @@ const routes: Routes = [
   ],
   exports: [MapglDemoComponent],
   imports: [
-    FormatLegendModule,
     BrowserAnimationsModule,
     CalendarTimelineModule,
     FormsModule,

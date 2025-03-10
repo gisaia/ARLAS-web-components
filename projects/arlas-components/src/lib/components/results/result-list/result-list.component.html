@@ -43,33 +43,29 @@
             {{GEOSORT_BUTTON | translate}}</mat-slide-toggle>
           <mat-select class="resultlist__tools--sort" [panelClass]="'resultlist__tools--sort'"
             [compareWith]="byFieldName" (selectionChange)="setSortedColumn($event)"
-            [(ngModel)]="currentSortedColumn" placeholder="{{'Sort on' | translate}}">
+            [ngModel]="sortedColumn" placeholder="{{'Sort on' | translate}}">
               <mat-select-trigger>
-                <span *ngIf="sortedColumn && sortedColumn.fieldName !== ''">
-                  {{lastSortedColumn.columnName | translate}} - {{(SortEnum[sortedColumn.sortDirection] | uppercase) + '_short' | translate}}
-                </span>
+                @if (sortedColumn?.fieldName) {
+                  <span>
+                    {{sortedColumn.columnName | translate}}
+                  </span>
+                }
               </mat-select-trigger>
               <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>
-              <mat-optgroup [label]="'Column' | translate" class="resultlist__tools--sort-group">
-                <ng-container *ngFor="let column of columns">
-                  <mat-option *ngIf="!column.isIdField && !column.isToggleField" [value]="column" class="resultlist__tools--sort-option">
+              @for (column of columns; track column.fieldName) {
+                @if (!column.isIdField && !column.isToggleField) {
+                  <mat-option [value]="column" class="resultlist__tools--sort-option">
                     {{column.columnName | translate}}
                   </mat-option>
-                </ng-container>
-              </mat-optgroup>
-              <mat-optgroup [label]="'Direction' | translate" class="resultlist__tools--sort-group">
-                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
-                  <mat-radio-group>
-                    <mat-radio-button [value]="'asc'" [checked]="sortedColumn.sortDirection === SortEnum.asc" (change)="setDirection('asc')">{{'ASC' | translate}}</mat-radio-button>
-                  </mat-radio-group>
-                </mat-option>
-                <mat-option [disabled]="true" class="resultlist__tools--sort-option">
-                  <mat-radio-group>
-                    <mat-radio-button [value]="'desc'" [checked]="sortedColumn.sortDirection === SortEnum.desc" (change)="setDirection('desc')">{{'DESC' | translate}}</mat-radio-button>
-                  </mat-radio-group>
-                </mat-option>
-              </mat-optgroup>
+                }
+              }
           </mat-select>
+          @if (sortedColumn?.fieldName) {
+            <mat-button mat-icon-button class="resultlist__tools--sort-direction" (click)="setDirection($event)"
+                (keydown)="setDirection($event)" [matTooltip]="'Change sort direction' | translate">
+              <mat-icon [class.reversed]="sortedColumn.sortDirection === SortEnum.asc">trending_flat</mat-icon>
+            </mat-button>
+          }
         </div>
         <ng-container *ngIf="hasGridMode">
           <div class="resultlist__tools--separator">|</div>

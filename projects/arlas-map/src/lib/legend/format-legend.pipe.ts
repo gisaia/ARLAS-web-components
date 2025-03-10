@@ -18,7 +18,7 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { CollectionService } from '../../services/collection.service';
+import { CollectionService } from 'arlas-web-components';
 
 export interface LegendParamsResult {
   translateKey: string;
@@ -53,15 +53,15 @@ export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'n
 })
 export class FormatLegendPipe implements PipeTransform {
 
-  public constructor(private collectionService: CollectionService) {
+  public constructor(private readonly collectionService: CollectionService) {
   }
   private readonly metrics: string[] = [
-    marker('avg'),
-    marker('sum'),
-    marker('min'),
-    marker('max'),
-    marker('cardinality'),
-    marker('count')
+    'avg',
+    'sum',
+    'min',
+    'max',
+    'cardinality',
+    'count'
   ];
 
   public transform(field: string): LegendParamsResult | null {
@@ -159,8 +159,8 @@ export class FormatLegendPipe implements PipeTransform {
   }
 
   public containsMetrics(value: string) {
-    for (let i = 0; i < this.metrics.length; i++) {
-      if (value.includes(this.metrics[i])) {
+    for (const metric of this.metrics) {
+      if (value.includes(metric)) {
         return true;
       }
     }
