@@ -168,12 +168,9 @@ tr {
   .resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
     font-size: 14px;
     padding-right: 10px;
-    margin-left: 5px;
-    flex: 1;
     // Correct label wrapping
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
 
     --mdc-switch-track-height: 10px;
     --mdc-switch-handle-width: 15px;
@@ -233,9 +230,7 @@ tr {
 }
 
 .resultlist__tools--mode /* @doc Sets the choose-mode-toggle-button container style.*/ {
-  flex: 1;
   text-align: right;
-  max-width: 90px;
 
   .mat-button-toggle-label-content {
     line-height: 36px !important;
@@ -303,8 +298,25 @@ tr {
 
   .resultlist__tools--sort {
     flex: 1;
+    padding-right: 5px;
 
     --mdc-typography-body1-font-size: 14px;
+
+    .mat-mdc-select-trigger {
+      gap: 5px;
+    }
+  }
+
+  .resultlist__tools--sort-direction {
+    cursor: pointer;
+    transform: rotate(90deg);
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+
+    &.reversed {
+      transform: rotate(-90deg);
+    }
   }
 }
 
@@ -349,17 +361,11 @@ tr {
   width: auto !important;
 
   --mat-select-trigger-text-tracking: 0;
-  --mat-optgroup-label-text-tracking: 0;
   --mat-option-label-text-tracking: 0;
   --mat-option-label-text-size: 14px;
 
-  .mat-mdc-optgroup-label,
   .mat-mdc-option {
     min-height: 30px;
-  }
-
-  .mat-mdc-optgroup-label .mdc-list-item__primary-text {
-    color: grey;
   }
 
   // Buttons are disabled to avoid the list closing when clicking

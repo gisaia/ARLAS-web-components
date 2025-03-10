@@ -464,9 +464,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public columns: Array<Column>;
   public items: Array<Item> = new Array<Item>();
-  public sortedColumn: { fieldName: string; sortDirection: SortEnum; } = { fieldName: '', sortDirection: SortEnum.asc };
-  public lastSortedColumn: Column;
-
+  public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
+    = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
 
   // Heights of table elements
   public tbodyHeight: number = null;
@@ -620,9 +619,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     }
     if (changes['currentSortedColumn'] !== undefined && changes['currentSortedColumn'].currentValue) {
-      this.sortedColumn.fieldName = changes['currentSortedColumn'].currentValue.fieldName;
-      this.sortedColumn.sortDirection = changes['currentSortedColumn'].currentValue.sortDirection;
-      this.lastSortedColumn = changes['currentSortedColumn'].currentValue;
+      this.sortedColumn = {
+        columnName: changes['currentSortedColumn'].currentValue.columnName,
+        fieldName: changes['currentSortedColumn'].currentValue.fieldName,
+        sortDirection: changes['currentSortedColumn'].currentValue.sortDirection
+      };
     }
   }
 
@@ -756,23 +757,31 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
   }
 
-  public setDirection(direction: string) {
-    this.sortedColumn.sortDirection = SortEnum[direction];
-    if (this.lastSortedColumn) {
-      this.sort(this.lastSortedColumn);
+  public setDirection(event: PointerEvent) {
+    event.stopPropagation();
+    if (this.sortedColumn.sortDirection === SortEnum.asc) {
+      this.sortedColumn.sortDirection = SortEnum.desc;
+    } else {
+      this.sortedColumn.sortDirection = SortEnum.asc;
     }
+    this.sort(this.sortedColumn as any);
   }
 
   public setSortedColumn(event: MatSelectChange) {
     if (event.value) {
-      this.lastSortedColumn = event.value;
-      this.sortedColumn.fieldName = event.value.fieldName;
-      this.sort(event.value);
+      this.sortedColumn = {
+        columnName: event.value.columnName,
+        fieldName: event.value.fieldName,
+        sortDirection: this.sortedColumn?.sortDirection ?? SortEnum.none
+      };
     } else {
-      this.sortedColumn.sortDirection = SortEnum.none;
-      this.sortedColumn.fieldName = '';
-      this.sort(this.sortedColumn as any);
+      this.sortedColumn = {
+        columnName: '',
+        fieldName: '',
+        sortDirection: SortEnum.none
+      };
     }
+    this.sort(this.sortedColumn as any);
   }
 
   /**
@@ -785,7 +794,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     });
     // Reset column filter when geo sort request
-    this.sortedColumn.fieldName = '';
+    this.sortedColumn = null;
     this.currentSortedColumn = null;
 
     this.geoSortEvent.next(this.GEO_DISTANCE);
