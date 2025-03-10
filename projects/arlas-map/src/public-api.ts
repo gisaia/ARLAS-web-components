@@ -85,6 +85,7 @@ export {
   FillLegend, HeatmapLegend, LabelLegend
 } from './lib/legend/legend.config';
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools';
+export { FormatLegendPipe } from './lib/legend/format-legend.pipe';
 export * as styles from './lib/draw/themes/default-theme';
 export { ArlasMapComponent } from './lib/arlas-map.component';
 export { ArlasLngLat, OnMoveResult, ArlasLngLatBounds, } from './lib/map/model/map';

@@ -80,7 +80,5 @@ export { GetFieldDisplayModule } from './lib/pipes/get-field-display-name/get-fi
 export { GetFieldDisplayNamePipe } from './lib/pipes/get-field-display-name/get-field-display-name.pipe';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
-export { FormatLegendPipe } from './lib/pipes/format-legend/format-legend.pipe';
-export { FormatLegendModule } from './lib/pipes/format-legend/format-legend.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';

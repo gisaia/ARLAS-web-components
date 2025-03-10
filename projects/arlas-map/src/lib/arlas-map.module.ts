@@ -29,7 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  ArlasColorService, FormatLegendModule, FormatNumberModule,
+  ArlasColorService, FormatNumberModule,
   GetCollectionDisplayModule, GetColorModule, GetValueModule
 } from 'arlas-web-components';
 import { ArlasMapComponent } from './arlas-map.component';
@@ -38,6 +38,7 @@ import { BasemapModule } from './basemaps/basemap.module';
 import { CoordinatesModule } from './coordinates/coordinates.module';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { MapboxAoiDrawService } from './draw/draw.service';
+import { FormatLegendPipe } from './legend/format-legend.pipe';
 import { LayerIdToName } from './legend/layer-name.pipe';
 import { LayerIconComponent } from './legend/legend-icon/layer-icon.component';
 import { LegendItemComponent } from './legend/legend-item/legend-item.component';
@@ -56,7 +57,8 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     LegendItemComponent,
     ArlasDrawComponent,
     LayerIdToName,
-    GetCollectionPipe
+    GetCollectionPipe,
+    FormatLegendPipe
   ],
   imports: [
     MatSnackBarModule,
@@ -71,7 +73,6 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     DragDropModule,
     GetValueModule,
     FormatNumberModule,
-    FormatLegendModule,
     CommonModule,
     CoordinatesModule,
     MapSettingsModule,
@@ -91,7 +92,8 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     ArlasMapComponent,
     MapImportComponent,
     MapSettingsComponent,
-    GetCollectionPipe
+    GetCollectionPipe,
+    FormatLegendPipe
   ]
 })
 export class ArlasMapModule { }
