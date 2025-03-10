@@ -1,0 +1,8 @@
+@for (l of layersLeg.keys(); track l){
+  <arlas-layer-icon
+    [layer]="layersLeg.get(l)?.layer"
+    [colorLegend]="layersLeg.get(l)?.colorLegend"
+    [strokeColorLegend]="layersLeg.get(l)?.strokeColorLegend"
+    [lineDasharray]="layersLeg.get(l)?.lineDashArray">
+  </arlas-layer-icon>
+}
