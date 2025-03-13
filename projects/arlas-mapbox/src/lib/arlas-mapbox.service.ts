@@ -461,7 +461,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   }
 
   public getSource(sourceId: string, map: ArlasMapboxGL) {
-    return map.getMapProvider().getSource(sourceId);
+    return map.getMapProvider().getSource(sourceId) as MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw;
   }
 
   /**
