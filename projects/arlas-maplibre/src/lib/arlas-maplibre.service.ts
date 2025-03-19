@@ -574,12 +574,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
   }
 
   public getSource(sourceId: string, map: ArlasMaplibreGL) {
-    return (map as AbstractArlasMapGL).getMapProvider().getSource(sourceId);
+    return map.getMapProvider()
+      .getSource(sourceId) as MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification;
   }
-
-
-
-
-
-
 }
