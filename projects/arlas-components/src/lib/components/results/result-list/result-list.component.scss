@@ -313,9 +313,10 @@ tr {
       font-size: 18px;
       height: 18px;
       width: 18px;
+      cursor: pointer;
     }
 
-    &.reversed {
+    .reversed {
       transform: rotate(-90deg);
     }
   }
