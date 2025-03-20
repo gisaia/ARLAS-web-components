@@ -16,7 +16,7 @@
     "@ngx-translate/http-loader": "^8.0.0"
   },
   "dependencies": {
-    "maplibre-gl": "^4.7.1",
+    "maplibre-gl": "^5.2.0",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0"
   }
