@@ -50,6 +50,7 @@ export interface ControlsOption {
   scale?: ConfigControls;
   pitchToggle?: PitchToggleConfigControls;
   navigationControl?: ConfigControls;
+  globe?: ConfigControls;
 }
 
 export interface DrawConfigControl extends ConfigControls {

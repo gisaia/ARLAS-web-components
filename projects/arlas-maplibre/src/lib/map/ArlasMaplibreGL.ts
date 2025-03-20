@@ -214,6 +214,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
           new maplibregl.NavigationControl(this._controls.navigationControl.config),
           this._controls.navigationControl?.position ?? 'top-right');
       }
+      if (this._controls?.globe?.enable) {
+        this.addControl(
+          new maplibregl.GlobeControl(),
+          'top-right');
+      }
     }
   }
 

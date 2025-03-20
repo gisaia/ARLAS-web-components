@@ -12,6 +12,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start-maplibre": "ng serve --configuration=development-opensource",
     "test-components": "ng test arlas-web-components",
     "test-map": "ng test arlas-map",
     "test-mapbox": "ng test arlas-mapbox",

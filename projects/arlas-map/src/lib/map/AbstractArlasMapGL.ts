@@ -109,6 +109,7 @@ export abstract class AbstractArlasMapGL {
 
   protected evented = new EventTarget();
 
+  
   protected constructor(protected config: MapConfig<any>) {
     this.config = config;
     this._offset = config.offset;

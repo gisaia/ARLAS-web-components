@@ -129,6 +129,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
           new mapboxgl.NavigationControl(this._controls.navigationControl.config),
           this._controls.navigationControl?.position ?? 'top-right');
       }
+
+      if (this._controls?.globe?.enable) {
+        console.warn('Globe is not implemented for Mapbox version < v1.13')
+      }
     }
   }
 
