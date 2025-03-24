@@ -293,7 +293,6 @@
 
 **Fixed bugs:**
 
-- Layers that are hidden in the visualisation set keep displayed on the map [\#514](https://github.com/gisaia/ARLAS-web-components/issues/514) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Metric short values are wrong [\#616](https://github.com/gisaia/ARLAS-web-components/issues/616) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - 0 is displayed as 0e0000 [\#613](https://github.com/gisaia/ARLAS-web-components/issues/613)
 
@@ -361,8 +360,8 @@
 
 **Fixed bugs:**
 
-- Metric short values should show 100k instead of 0.1M [\#571](https://github.com/gisaia/ARLAS-web-components/issues/571) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - Swimlane tooltip hides the buckets [\#569](https://github.com/gisaia/ARLAS-web-components/issues/569) [[SWIMLANE](https://github.com/gisaia/ARLAS-web-components/labels/SWIMLANE)]
+- Metric short values should show 100k instead of 0.1M [\#571](https://github.com/gisaia/ARLAS-web-components/issues/571) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - Swimlane tooltip should not be displayed for infinity values [\#568](https://github.com/gisaia/ARLAS-web-components/issues/568) [[SWIMLANE](https://github.com/gisaia/ARLAS-web-components/labels/SWIMLANE)]
 
 ## [v17.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.1) (2021-08-03)
@@ -421,6 +420,10 @@
 
 - Support importing MultiPolygon [\#507](https://github.com/gisaia/ARLAS-web-components/issues/507) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
+**Fixed bugs:**
+
+- Layers that are hidden in the visualisation set keep displayed on the map [\#514](https://github.com/gisaia/ARLAS-web-components/issues/514) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v14.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.1) (2021-02-01)
 
 ## [v14.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.0) (2021-01-29)
@@ -435,6 +438,10 @@
 
 ## [v12.7.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.4) (2021-01-13)
 
+**New stuff:**
+
+- Add validity geometry check in import file component [\#496](https://github.com/gisaia/ARLAS-web-components/issues/496)
+
 ## [v14.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.1) (2020-12-18)
 
 **New stuff:**
@@ -448,10 +455,6 @@
 
 ## [v14.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0) (2020-11-09)
 
-**New stuff:**
-
-- Add validity geometry check in import file component [\#496](https://github.com/gisaia/ARLAS-web-components/issues/496)
-
 ## [v13.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.3) (2020-09-14)
 
 ## [v13.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.2) (2020-07-17)
@@ -462,19 +465,25 @@
 
 ## [v13.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.1) (2020-07-10)
 
+**New stuff:**
+
+- Add translate in sort field list [\#483](https://github.com/gisaia/ARLAS-web-components/pull/483) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+
+**Fixed bugs:**
+
+- Position the legend manager relatively to the map container [\#477](https://github.com/gisaia/ARLAS-web-components/issues/477) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v12.7.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.3) (2020-06-30)
+
+**New stuff:**
+
+- Add pipe translate in Sort field list for ASC/DESC [\#479](https://github.com/gisaia/ARLAS-web-components/issues/479) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v1.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v1.1.1) (2020-06-30)
 
 **New stuff:**
 
-- Add pipe translate in Sort field list for ASC/DESC [\#479](https://github.com/gisaia/ARLAS-web-components/issues/479) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
-- Add translate in sort field list [\#483](https://github.com/gisaia/ARLAS-web-components/pull/483) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 - Add translate in sort field list [\#480](https://github.com/gisaia/ARLAS-web-components/pull/480) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
-
-**Fixed bugs:**
-
-- Position the legend manager relatively to the map container [\#477](https://github.com/gisaia/ARLAS-web-components/issues/477) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v13.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.0) (2020-06-17)
 
@@ -534,8 +543,8 @@
 
 **Fixed bugs:**
 
-- Metric component doesn't update when the value is equal to 0 [\#406](https://github.com/gisaia/ARLAS-web-components/issues/406) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - Wrong tbody heigth [\#402](https://github.com/gisaia/ARLAS-web-components/issues/402) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Metric component doesn't update when the value is equal to 0 [\#406](https://github.com/gisaia/ARLAS-web-components/issues/406) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 
 ## [v12.6.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.0) (2020-03-12)
 
@@ -566,6 +575,7 @@
 
 - Grid mode : images and thumbnails are sometimes displayed when they shouldn't  [\#383](https://github.com/gisaia/ARLAS-web-components/issues/383) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Resultlist : Set icon colors independently from title [\#381](https://github.com/gisaia/ARLAS-web-components/issues/381) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- \[Grid Mode\] Tooltips on tiles stay rendered when we hover actions buttons [\#374](https://github.com/gisaia/ARLAS-web-components/issues/374) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 **Miscellaneous:**
 
@@ -579,7 +589,6 @@
 **Fixed bugs:**
 
 - Resultlist : Set icon colors independently from title [\#377](https://github.com/gisaia/ARLAS-web-components/issues/377) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
-- \[Grid Mode\] Tooltips on tiles stay rendered when we hover actions buttons [\#374](https://github.com/gisaia/ARLAS-web-components/issues/374) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Grid mode : images and thumbnails are sometimes displayed when they shouldn't [\#371](https://github.com/gisaia/ARLAS-web-components/issues/371) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 **Miscellaneous:**
@@ -687,14 +696,11 @@
 
 ## [v11.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.1) (2019-10-10)
 
-**New stuff:**
-
-- Authorize raster-tile source as basemap [\#316](https://github.com/gisaia/ARLAS-web-components/issues/316) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
-
 ## [v11.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.0) (2019-10-09)
 
 **New stuff:**
 
+- Authorize raster-tile source as basemap [\#316](https://github.com/gisaia/ARLAS-web-components/issues/316) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Add a button to show the entire quicklook [\#308](https://github.com/gisaia/ARLAS-web-components/issues/308) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 -  Access to action buttons without to show detail [\#307](https://github.com/gisaia/ARLAS-web-components/issues/307) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Enable style object in map style [\#320](https://github.com/gisaia/ARLAS-web-components/pull/320) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
@@ -726,8 +732,8 @@
 
 **Fixed bugs:**
 
-- Validation of drawing geometry not work at first drawing [\#299](https://github.com/gisaia/ARLAS-web-components/issues/299) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Apply i18n in layer switcher menu [\#298](https://github.com/gisaia/ARLAS-web-components/issues/298) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Validation of drawing geometry not work at first drawing [\#299](https://github.com/gisaia/ARLAS-web-components/issues/299) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v11.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.3) (2019-07-31)
 
@@ -824,6 +830,7 @@
 **New stuff:**
 
 - Feature/import shp [\#262](https://github.com/gisaia/ARLAS-web-components/pull/262) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
+- Put draw layer on top [\#253](https://github.com/gisaia/ARLAS-web-components/pull/253) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 **Miscellaneous:**
 
@@ -837,7 +844,6 @@
 **New stuff:**
 
 - Improve performance with draw tools [\#254](https://github.com/gisaia/ARLAS-web-components/pull/254) ([sebbousquet](https://github.com/sebbousquet))
-- Put draw layer on top [\#253](https://github.com/gisaia/ARLAS-web-components/pull/253) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v10.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.0) (2019-04-02)
 
@@ -862,6 +868,7 @@
 - Change Donuts input format [\#230](https://github.com/gisaia/ARLAS-web-components/issues/230) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)]
 - Change powerbars inputs format [\#219](https://github.com/gisaia/ARLAS-web-components/issues/219) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 - Colorize powerbars/donuts/resultlist using the same color service [\#212](https://github.com/gisaia/ARLAS-web-components/issues/212) [[DONUT](https://github.com/gisaia/ARLAS-web-components/labels/DONUT)] [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Refactor Histogram and Donuts according to changes of arlas-d3@6.0.0 [\#215](https://github.com/gisaia/ARLAS-web-components/pull/215) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 **New stuff:**
 
@@ -869,12 +876,16 @@
 - Create a new component : y log axis \(logarithmic gauge\) [\#216](https://github.com/gisaia/ARLAS-web-components/issues/216)
 - Display coordinates of the mouse pointer [\#213](https://github.com/gisaia/ARLAS-web-components/issues/213) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Emit init position of the map on first loading [\#209](https://github.com/gisaia/ARLAS-web-components/issues/209) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Emit init value in moveend bus [\#210](https://github.com/gisaia/ARLAS-web-components/pull/210) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 **Fixed bugs:**
 
+- Fix color of powerbars and update json schema [\#947](https://github.com/gisaia/ARLAS-web-components/issues/947) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 - ResultList fix : Check existence of nativeElements parentNodes and childNodes [\#228](https://github.com/gisaia/ARLAS-web-components/pull/228) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 - Update powerbars demo inputs [\#226](https://github.com/gisaia/ARLAS-web-components/pull/226) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 - Fix construction of selected powerbars list [\#224](https://github.com/gisaia/ARLAS-web-components/pull/224) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+- Fix color for result list : apply toString\(\) to itemData.get method [\#222](https://github.com/gisaia/ARLAS-web-components/pull/222) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
+- sort powerbar list [\#221](https://github.com/gisaia/ARLAS-web-components/pull/221) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v9.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.3) (2019-01-16)
 
@@ -905,10 +916,10 @@
 - MAP: Add basemap switcher button [\#194](https://github.com/gisaia/ARLAS-web-components/issues/194) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - POWERBARS: Add search filter in title zone [\#193](https://github.com/gisaia/ARLAS-web-components/issues/193) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 - POWERBARS : customize bar color from term value [\#191](https://github.com/gisaia/ARLAS-web-components/issues/191) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
-- Move geosort action [\#201](https://github.com/gisaia/ARLAS-web-components/pull/201) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 - Improve filter field in powerbars [\#200](https://github.com/gisaia/ARLAS-web-components/pull/200) ([sebbousquet](https://github.com/sebbousquet))
-- Add search field on top of powerbars [\#197](https://github.com/gisaia/ARLAS-web-components/pull/197) ([sebbousquet](https://github.com/sebbousquet))
 - Fix routing strategy in demo [\#196](https://github.com/gisaia/ARLAS-web-components/pull/196) ([sebbousquet](https://github.com/sebbousquet))
+- Move geosort action [\#201](https://github.com/gisaia/ARLAS-web-components/pull/201) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Add search field on top of powerbars [\#197](https://github.com/gisaia/ARLAS-web-components/pull/197) ([sebbousquet](https://github.com/sebbousquet))
 - Custom css powerbars with term value [\#195](https://github.com/gisaia/ARLAS-web-components/pull/195) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
 
 **Fixed bugs:**
@@ -943,8 +954,8 @@
 **New stuff:**
 
 - Add css class in \<td\> arlas-filter [\#182](https://github.com/gisaia/ARLAS-web-components/issues/182) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
-- Add css class for column filter [\#184](https://github.com/gisaia/ARLAS-web-components/pull/184) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 - Add selected item as input [\#180](https://github.com/gisaia/ARLAS-web-components/pull/180) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
+- Add css class for column filter [\#184](https://github.com/gisaia/ARLAS-web-components/pull/184) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 
 **Fixed bugs:**
 
@@ -979,12 +990,15 @@
 - RESULTLIST :  add the possibility to hide filter's input/dropdown of a sepcified column [\#167](https://github.com/gisaia/ARLAS-web-components/issues/167) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Apply geosort on geo-auto-sort activation [\#168](https://github.com/gisaia/ARLAS-web-components/pull/168) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
+**Fixed bugs:**
+
+- Improve draw bbox management [\#165](https://github.com/gisaia/ARLAS-web-components/pull/165) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
+
 ## [v7.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.0) (2018-07-25)
 
 **Fixed bugs:**
 
 - MAP: Crash when null selection with geobox \(simple click instead of rectangle\) [\#125](https://github.com/gisaia/ARLAS-web-components/issues/125) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
-- Improve draw bbox management [\#165](https://github.com/gisaia/ARLAS-web-components/pull/165) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 **Miscellaneous:**
 
@@ -1027,8 +1041,8 @@
 
 **Miscellaneous:**
 
-- RESULTLIST : Improve thumbail grid url gestion  [\#149](https://github.com/gisaia/ARLAS-web-components/issues/149) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - RESULTLIST : wrap \<tbody\> with \<table\> [\#89](https://github.com/gisaia/ARLAS-web-components/issues/89) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- RESULTLIST : Improve thumbail grid url gestion  [\#149](https://github.com/gisaia/ARLAS-web-components/issues/149) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - ALL : implement routing to different demos [\#82](https://github.com/gisaia/ARLAS-web-components/issues/82) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
 
 ## [v7.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.0.0) (2018-06-15)
@@ -1060,10 +1074,6 @@
 
 ## [v6.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.0) (2018-05-23)
 
-**Fixed bugs:**
-
-- MAP/HISTOGRAM : An error is thrown when we draw a BBOX in Bering strait [\#87](https://github.com/gisaia/ARLAS-web-components/issues/87)
-
 ## [v5.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v5.1.2) (2018-05-21)
 
 **New stuff:**
@@ -1072,6 +1082,7 @@
 
 **Fixed bugs:**
 
+- MAP/HISTOGRAM : An error is thrown when we draw a BBOX in Bering strait [\#87](https://github.com/gisaia/ARLAS-web-components/issues/87)
 - Fix bbox bug anti-meridien [\#130](https://github.com/gisaia/ARLAS-web-components/pull/130) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v5.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v5.1.1) (2018-05-15)
