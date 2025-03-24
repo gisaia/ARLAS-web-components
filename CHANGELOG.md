@@ -2,19 +2,36 @@
 
 ## [v27.0.7](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.7) (2025-03-19)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.6...v27.0.7)
+**New stuff:**
+
+- Make the mouse cursor : pointer when hovering the sort icon [\#921](https://github.com/gisaia/ARLAS-web-components/issues/921) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Fixed bugs:**
+
+- reverse the sort icon direction on click [\#922](https://github.com/gisaia/ARLAS-web-components/issues/922) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v27.0.6](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.6) (2025-03-10)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.5...v27.0.6)
+**New stuff:**
+
+- separate sort column and direction selection [\#926](https://github.com/gisaia/ARLAS-web-components/issues/926) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Miscellaneous:**
+
+- correct i18n:extract command [\#925](https://github.com/gisaia/ARLAS-web-components/issues/925)
+- move FormatLegendPipe to arlas-map library as it is map related [\#924](https://github.com/gisaia/ARLAS-web-components/issues/924) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v27.0.5](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.5) (2025-02-28)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.4...v27.0.5)
+**Miscellaneous:**
+
+- cursor should be pointer when hovering row [\#927](https://github.com/gisaia/ARLAS-web-components/issues/927) [[METRICS-TABLE](https://github.com/gisaia/ARLAS-web-components/labels/METRICS-TABLE)]
 
 ## [v27.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.4) (2025-02-25)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.3...v27.0.4)
+**Fixed bugs:**
+
+- Reversible actions state is not updated on detail view [\#928](https://github.com/gisaia/ARLAS-web-components/issues/928) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 **Miscellaneous:**
 
@@ -22,311 +39,143 @@
 
 ## [v27.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.3) (2025-02-19)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.2...v27.0.3)
+**Fixed bugs:**
+
+- Realign metrics table/visu toggle/list action style with angular15 [\#929](https://github.com/gisaia/ARLAS-web-components/issues/929) [[METRICS-TABLE](https://github.com/gisaia/ARLAS-web-components/labels/METRICS-TABLE)]
 
 ## [v27.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.2) (2025-02-17)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.1...v27.0.2)
+**Miscellaneous:**
+
+- resize metrics table checkbox [\#933](https://github.com/gisaia/ARLAS-web-components/issues/933) [[METRICS-TABLE](https://github.com/gisaia/ARLAS-web-components/labels/METRICS-TABLE)]
+- remove max width for select [\#932](https://github.com/gisaia/ARLAS-web-components/issues/932) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- remove idFeatureField in arlas-map schema [\#930](https://github.com/gisaia/ARLAS-web-components/issues/930) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v27.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.1) (2025-02-05)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0...v27.0.1)
+**Fixed bugs:**
+
+- Remove minzoom handling for raster sources [\#937](https://github.com/gisaia/ARLAS-web-components/issues/937) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Miscellaneous:**
+
+- refactor release script [\#939](https://github.com/gisaia/ARLAS-web-components/issues/939)
+- add missing translation keys [\#938](https://github.com/gisaia/ARLAS-web-components/issues/938) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- map attributions shouldn't be compact by default [\#934](https://github.com/gisaia/ARLAS-web-components/issues/934) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v27.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0) (2025-01-30)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.7...v27.0.0)
+**Breaking changes:**
 
-## [v27.0.0-rc.7](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.7) (2025-01-27)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.6...v27.0.0-rc.7)
-
-## [v27.0.0-rc.6](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.6) (2025-01-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.5...v27.0.0-rc.6)
-
-## [v27.0.0-rc.5](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.5) (2025-01-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.4...v27.0.0-rc.5)
-
-## [v27.0.0-rc.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.4) (2025-01-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.3...v27.0.0-rc.4)
-
-## [v27.0.0-rc.3](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.3) (2025-01-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.2...v27.0.0-rc.3)
-
-**New stuff:**
-
-- Refactor the map components to include maplibre implementation [\#898](https://github.com/gisaia/ARLAS-web-components/issues/898)
+- idFeatureField input is removed from map component [\#940](https://github.com/gisaia/ARLAS-web-components/issues/940) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Refactor the map components to include maplibre implementation [\#898](https://github.com/gisaia/ARLAS-web-components/issues/898) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 **Fixed bugs:**
 
+- scrollable powerbars were not scrollable anymore [\#935](https://github.com/gisaia/ARLAS-web-components/issues/935) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 - setMapboxDraw has wrong type [\#793](https://github.com/gisaia/ARLAS-web-components/issues/793)
-
-## [v27.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.2) (2024-12-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.7...v27.0.0-rc.2)
-
-## [v27.0.0-beta.7](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.7) (2024-12-16)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.6...v27.0.0-beta.7)
-
-## [v27.0.0-beta.6](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.6) (2024-12-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.5...v27.0.0-beta.6)
-
-## [v27.0.0-beta.5](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.5) (2024-12-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.4...v27.0.0-beta.5)
-
-## [v27.0.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.4) (2024-12-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.3...v27.0.0-beta.4)
-
-## [v27.0.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.3) (2024-12-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-rc.1...v27.0.0-beta.3)
-
-## [v27.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-rc.1) (2024-12-03)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.12...v27.0.0-rc.1)
 
 ## [v26.0.12](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.12) (2024-12-02)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.11...v26.0.12)
+**Miscellaneous:**
+
+- improve list detail render [\#941](https://github.com/gisaia/ARLAS-web-components/issues/941) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v26.0.11](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.11) (2024-11-26)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.2...v26.0.11)
-
 **Fixed bugs:**
 
-- actions update needs existence verification [\#888](https://github.com/gisaia/ARLAS-web-components/issues/888)
-
-## [v27.0.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.2) (2024-11-14)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.10...v27.0.0-beta.2)
+- when updating actions list, check if the list is initialised [\#942](https://github.com/gisaia/ARLAS-web-components/issues/942) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- when updating actions list, check if this actions list is initialised [\#888](https://github.com/gisaia/ARLAS-web-components/issues/888) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v26.0.10](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.10) (2024-11-12)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.9...v26.0.10)
+**Fixed bugs:**
+
+- restore css classes of actions buttons [\#943](https://github.com/gisaia/ARLAS-web-components/issues/943) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v26.0.9](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.9) (2024-11-12)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.8...v26.0.9)
+**Fixed bugs:**
+
+- check if there is an already selected grid item before closing the details div [\#944](https://github.com/gisaia/ARLAS-web-components/issues/944) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v26.0.8](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.8) (2024-11-12)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.7...v26.0.8)
 
 **Fixed bugs:**
 
 - Legend can sometimes not display fully [\#881](https://github.com/gisaia/ARLAS-web-components/issues/881) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Fix draw strip mode [\#945](https://github.com/gisaia/ARLAS-web-components/issues/945) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v26.0.7](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.7) (2024-11-06)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.6...v26.0.7)
+**New stuff:**
+
+- new angular pipe to transform field names to field display names [\#936](https://github.com/gisaia/ARLAS-web-components/issues/936) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
 
 ## [v26.0.6](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.6) (2024-10-30)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v27.0.0-beta.1...v26.0.6)
-
-## [v27.0.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.0-beta.1) (2024-10-29)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.6-beta.1...v27.0.0-beta.1)
-
-## [v26.0.6-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.6-beta.1) (2024-09-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.5...v26.0.6-beta.1)
-
 ## [v26.0.5](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.5) (2024-09-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.4...v26.0.5)
 
 ## [v26.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.4) (2024-09-12)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.3...v26.0.4)
-
 ## [v26.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.3) (2024-09-10)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.2...v26.0.3)
 
 ## [v26.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.2) (2024-09-10)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.1...v26.0.2)
-
 ## [v26.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.1) (2024-09-06)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0...v26.0.1)
 
 ## [v26.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0) (2024-08-30)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-rc.4...v26.0.0)
+## [v25.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.2) (2024-07-12)
 
-## [v26.0.0-rc.4](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-rc.4) (2024-08-29)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-rc.3...v26.0.0-rc.4)
-
-## [v26.0.0-rc.3](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-rc.3) (2024-08-23)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-rc.2...v26.0.0-rc.3)
-
-## [v26.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-rc.2) (2024-08-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-rc.1...v26.0.0-rc.2)
-
-## [v26.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-rc.1) (2024-08-20)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.2.0-beta.1...v26.0.0-rc.1)
-
-## [v25.2.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.2.0-beta.1) (2024-08-06)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-beta.2...v25.2.0-beta.1)
+## [v25.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.1) (2024-07-09)
 
 **Miscellaneous:**
 
 - Add a title to the technical details in a resultlist [\#836](https://github.com/gisaia/ARLAS-web-components/issues/836) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
-## [v26.0.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-beta.2) (2024-07-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v26.0.0-beta.1...v26.0.0-beta.2)
-
-## [v26.0.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0-beta.1) (2024-07-15)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.1.2...v26.0.0-beta.1)
-
-## [v25.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.2) (2024-07-12)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.1.1...v25.1.2)
-
-## [v25.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.1) (2024-07-09)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.1.0...v25.1.1)
-
 ## [v25.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.0) (2024-07-05)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.2...v25.1.0)
-
-**Miscellaneous:**
-
-- Add a new input `chartYLabel` \(chartXLabel already exists\) [\#799](https://github.com/gisaia/ARLAS-web-components/issues/799) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 
 ## [v25.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.2) (2024-06-18)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.1...v25.0.2)
-
 ## [v25.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.1) (2024-06-04)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0...v25.0.1)
 
 ## [v25.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0) (2024-05-15)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-rc.2...v25.0.0)
+**New stuff:**
 
-## [v25.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-rc.2) (2024-05-14)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-rc.1...v25.0.0-rc.2)
-
-## [v25.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-rc.1) (2024-05-13)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-rc.0...v25.0.0-rc.1)
-
-## [v25.0.0-rc.0](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-rc.0) (2024-05-03)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.7...v25.0.0-rc.0)
+- Add a new input `chartYLabel` \(chartXLabel already exists\) [\#799](https://github.com/gisaia/ARLAS-web-components/issues/799) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 
 **Fixed bugs:**
 
-- transformRequest Input should have a default value [\#785](https://github.com/gisaia/ARLAS-web-components/issues/785)
+- Mapcomponent : transformRequest Input should have a default value [\#785](https://github.com/gisaia/ARLAS-web-components/issues/785) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 **Miscellaneous:**
 
 - Use markers to detect all texts to be translated [\#811](https://github.com/gisaia/ARLAS-web-components/issues/811)
 
-## [v25.0.0-beta.7](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.7) (2024-05-02)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.6...v25.0.0-beta.7)
-
-## [v25.0.0-beta.6](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.6) (2024-04-29)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.8...v25.0.0-beta.6)
-
 ## [v24.3.8](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.8) (2024-04-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.7...v24.3.8)
 
 ## [v24.3.7](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.7) (2024-04-19)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.7-beta.0...v24.3.7)
-
-## [v24.3.7-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.7-beta.0) (2024-04-17)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.5...v24.3.7-beta.0)
-
-## [v25.0.0-beta.5](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.5) (2024-04-12)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.6...v25.0.0-beta.5)
-
 ## [v24.3.6](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.6) (2024-04-05)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.4...v24.3.6)
-
-## [v25.0.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.4) (2024-03-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.3...v25.0.0-beta.4)
-
-## [v25.0.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.3) (2024-03-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.5...v25.0.0-beta.3)
 
 ## [v24.3.5](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.5) (2024-03-20)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.2...v24.3.5)
-
-## [v25.0.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.2) (2024-03-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.4...v25.0.0-beta.2)
-
 ## [v24.3.4](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.4) (2024-03-01)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.3...v24.3.4)
 
 ## [v24.3.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.3) (2024-02-15)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v25.0.0-beta.1...v24.3.3)
-
-## [v25.0.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.0.0-beta.1) (2024-02-15)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.2...v25.0.0-beta.1)
-
 ## [v24.3.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.2) (2023-12-20)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.1...v24.3.2)
-
 ## [v24.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.1) (2023-12-15)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0...v24.3.1)
 
 **Fixed bugs:**
 
 - An error is thrown when we attempt to re-add the same source type to mapbox library [\#774](https://github.com/gisaia/ARLAS-web-components/issues/774)
 
 ## [v24.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0) (2023-12-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-rc.2...v24.3.0)
-
-**Fixed bugs:**
-
-- Not coherent behavior of area/lenght div with polygons/bbox [\#771](https://github.com/gisaia/ARLAS-web-components/issues/771)
-
-## [v24.3.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-rc.2) (2023-12-07)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-rc.1...v24.3.0-rc.2)
-
-## [v24.3.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-rc.1) (2023-11-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.1...v24.3.0-rc.1)
 
 **New stuff:**
 
@@ -336,171 +185,47 @@
 **Fixed bugs:**
 
 - chosen basemap is not stored in localstorage anymore [\#763](https://github.com/gisaia/ARLAS-web-components/issues/763)
+- Not coherent behavior of area/lenght div with polygons/bbox [\#771](https://github.com/gisaia/ARLAS-web-components/issues/771)
 - ColorService is instantiated several times in case of using it in lazy loaded modules [\#755](https://github.com/gisaia/ARLAS-web-components/issues/755)
-
-## [v24.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1) (2023-11-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.1-beta.2...v24.2.1)
-
-## [v24.2.1-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1-beta.2) (2023-11-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.1-beta.1...v24.2.1-beta.2)
-
-## [v24.2.1-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1-beta.1) (2023-11-20)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.8...v24.2.1-beta.1)
-
-## [v24.3.0-beta.8](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.8) (2023-11-16)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.7...v24.3.0-beta.8)
-
-## [v24.3.0-beta.7](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.7) (2023-11-15)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.6...v24.3.0-beta.7)
-
-## [v24.3.0-beta.6](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.6) (2023-11-10)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.5...v24.3.0-beta.6)
-
-## [v24.3.0-beta.5](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.5) (2023-11-09)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.4...v24.3.0-beta.5)
-
-## [v24.3.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.4) (2023-10-31)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.3...v24.3.0-beta.4)
-
-## [v24.3.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.3) (2023-10-27)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.2...v24.3.0-beta.3)
 
 **Miscellaneous:**
 
 - Display bbox/polygons area and width/height [\#753](https://github.com/gisaia/ARLAS-web-components/issues/753) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
-## [v24.3.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.2) (2023-10-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.3.0-beta.1...v24.3.0-beta.2)
-
-## [v24.3.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.3.0-beta.1) (2023-10-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.4-beta.2...v24.3.0-beta.1)
-
-## [v24.1.4-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.4-beta.2) (2023-10-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.4-beta.1...v24.1.4-beta.2)
-
-## [v24.1.4-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.4-beta.1) (2023-10-12)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.2.0...v24.1.4-beta.1)
+## [v24.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.1) (2023-11-22)
 
 ## [v24.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.2.0) (2023-09-29)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.3...v24.2.0)
-
 ## [v24.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.3) (2023-07-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.2...v24.1.3)
 
 ## [v24.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.2) (2023-07-12)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.1...v24.1.2)
-
 ## [v24.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.1) (2023-06-19)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.0...v24.1.1)
-
 ## [v24.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0) (2023-06-01)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.0-beta.4...v24.1.0)
-
-## [v24.1.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.4) (2023-05-31)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.0-beta.3...v24.1.0-beta.4)
-
-## [v24.1.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.3) (2023-05-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.0-beta.2...v24.1.0-beta.3)
-
-## [v24.1.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.2) (2023-05-17)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.1.0-beta.1...v24.1.0-beta.2)
 
 **New stuff:**
 
 - select powerbars using checkboxes optionally [\#727](https://github.com/gisaia/ARLAS-web-components/issues/727) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
-
-## [v24.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.1.0-beta.1) (2023-05-10)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.0.1...v24.1.0-beta.1)
-
-**New stuff:**
-
 - make grouping selections optional [\#725](https://github.com/gisaia/ARLAS-web-components/issues/725) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
 ## [v24.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v24.0.1) (2023-04-20)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v24.0.0...v24.0.1)
-
 ## [v24.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v24.0.0) (2023-04-19)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.2.2...v24.0.0)
 
 ## [v23.2.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.2.2) (2023-03-24)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.2.1...v23.2.2)
-
 ## [v23.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.2.1) (2023-03-14)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.2.0...v23.2.1)
 
 ## [v23.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v23.2.0) (2023-02-10)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0...v23.2.0)
-
 ## [v23.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0) (2022-11-28)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.4...v23.1.0)
-
-## [v23.1.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.4) (2022-11-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.3...v23.1.0-beta.4)
-
-## [v23.1.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.3) (2022-11-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.2...v23.1.0-beta.3)
-
-## [v23.1.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.2) (2022-11-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.1.0-beta.1...v23.1.0-beta.2)
-
-## [v23.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.1.0-beta.1) (2022-11-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.5-beta.2...v23.1.0-beta.1)
-
-## [v23.0.5-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.5-beta.2) (2022-10-26)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.5-beta.1...v23.0.5-beta.2)
-
-## [v23.0.5-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.5-beta.1) (2022-10-26)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.4...v23.0.5-beta.1)
 
 ## [v22.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.4) (2022-10-26)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.3...v22.0.4)
-
 ## [v22.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.3) (2022-09-28)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.1...v22.0.3)
-
 ## [v23.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.1) (2022-09-27)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0...v23.0.1)
-
-**New stuff:**
-
-- Change icon of filters/draw actions  [\#524](https://github.com/gisaia/ARLAS-web-components/issues/524) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 **Fixed bugs:**
 
@@ -508,27 +233,13 @@
 
 ## [v23.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.0) (2022-07-11)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0-rc.2...v23.0.0)
-
-## [v23.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.0-rc.2) (2022-07-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.2...v23.0.0-rc.2)
-
 **Fixed bugs:**
 
 - Result set List : layout problem [\#669](https://github.com/gisaia/ARLAS-web-components/issues/669)
 
 ## [v22.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.2) (2022-07-08)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v23.0.0-rc.1...v22.0.2)
-
-## [v23.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v23.0.0-rc.1) (2022-07-08)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.1...v23.0.0-rc.1)
-
 ## [v22.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.1) (2022-07-05)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v22.0.0...v22.0.1)
 
 **New stuff:**
 
@@ -540,53 +251,30 @@
 
 ## [v22.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v22.0.0) (2022-05-24)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v21.0.0...v22.0.0)
-
 **New stuff:**
 
 - Add html identifier to map container [\#656](https://github.com/gisaia/ARLAS-web-components/issues/656) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Add preserveDrawingBuffer input to the map [\#654](https://github.com/gisaia/ARLAS-web-components/issues/654) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
-- Externalise Basemaps choice from map settings [\#525](https://github.com/gisaia/ARLAS-web-components/issues/525)
+- Externalise Basemaps choice from map settings [\#525](https://github.com/gisaia/ARLAS-web-components/issues/525) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 
 ## [v21.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v21.0.0) (2022-04-05)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v21.0.0-beta.1...v21.0.0)
+**New stuff:**
+
+- Change icon of filters/draw actions  [\#524](https://github.com/gisaia/ARLAS-web-components/issues/524) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 **Fixed bugs:**
 
 - Display color and size legend for label layers [\#650](https://github.com/gisaia/ARLAS-web-components/issues/650)
-
-## [v21.0.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v21.0.0-beta.1) (2022-03-14)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.1.0...v21.0.0-beta.1)
-
-**Fixed bugs:**
-
 - Selected powerbars show 0 when they are not in the 10 first results [\#517](https://github.com/gisaia/ARLAS-web-components/issues/517) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
 ## [v20.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v20.1.0) (2022-02-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.1.0-beta.3...v20.1.0)
-
-## [v20.1.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v20.1.0-beta.3) (2022-02-17)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.1.0-beta.2...v20.1.0-beta.3)
-
-## [v20.1.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v20.1.0-beta.2) (2022-02-16)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.1.0-beta.1...v20.1.0-beta.2)
-
-## [v20.1.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v20.1.0-beta.1) (2022-02-15)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0...v20.1.0-beta.1)
 
 **New stuff:**
 
 - Add option to exclude selected bars from the global filter instead of including them [\#562](https://github.com/gisaia/ARLAS-web-components/issues/562) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
 ## [v20.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v20.0.0) (2022-02-02)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0-rc.2...v20.0.0)
 
 **New stuff:**
 
@@ -596,25 +284,7 @@
 
 - Columns titles are incorrectly aligned if values of a column are too long [\#623](https://github.com/gisaia/ARLAS-web-components/issues/623) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
-## [v20.0.0-rc.2](https://github.com/gisaia/ARLAS-web-components/tree/v20.0.0-rc.2) (2022-01-07)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.0.0-rc.1...v20.0.0-rc.2)
-
-## [v20.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v20.0.0-rc.1) (2022-01-07)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v20.21.20-beta.22...v20.0.0-rc.1)
-
-## [v20.21.20-beta.22](https://github.com/gisaia/ARLAS-web-components/tree/v20.21.20-beta.22) (2021-12-24)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v0.0.0-beta.20...v20.21.20-beta.22)
-
-## [v0.0.0-beta.20](https://github.com/gisaia/ARLAS-web-components/tree/v0.0.0-beta.20) (2021-12-24)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.2.0...v0.0.0-beta.20)
-
 ## [v19.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.2.0) (2021-12-06)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.1.0...v19.2.0)
 
 **New stuff:**
 
@@ -623,13 +293,11 @@
 
 **Fixed bugs:**
 
-- Metric short values are wrong [\#616](https://github.com/gisaia/ARLAS-web-components/issues/616)
-- 0 is displayed as 0e0000 [\#613](https://github.com/gisaia/ARLAS-web-components/issues/613)
 - Layers that are hidden in the visualisation set keep displayed on the map [\#514](https://github.com/gisaia/ARLAS-web-components/issues/514) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Metric short values are wrong [\#616](https://github.com/gisaia/ARLAS-web-components/issues/616) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
+- 0 is displayed as 0e0000 [\#613](https://github.com/gisaia/ARLAS-web-components/issues/613)
 
 ## [v19.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.1.0) (2021-10-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.4...v19.1.0)
 
 **New stuff:**
 
@@ -644,27 +312,17 @@
 
 ## [v19.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.4) (2021-10-11)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.3...v19.0.4)
-
-**New stuff:**
-
-- Action buttons of the list should support several field for the css class [\#580](https://github.com/gisaia/ARLAS-web-components/issues/580) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
-
 **Fixed bugs:**
 
 - External layers visibility is always hidden after toggle of legend [\#599](https://github.com/gisaia/ARLAS-web-components/issues/599) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v19.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.3) (2021-09-30)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.2...v19.0.3)
-
 **Fixed bugs:**
 
 - Fill color for cluster legend icon is wrong [\#595](https://github.com/gisaia/ARLAS-web-components/issues/595) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v19.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.2) (2021-09-28)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.1...v19.0.2)
 
 **Fixed bugs:**
 
@@ -673,16 +331,13 @@
 
 ## [v19.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.1) (2021-09-27)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.0...v19.0.1)
-
 ## [v19.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.0) (2021-09-27)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.6...v19.0.0)
 
 **New stuff:**
 
 - Add new output to notif when the basemap has been changed [\#590](https://github.com/gisaia/ARLAS-web-components/issues/590) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Improve Grid title style [\#587](https://github.com/gisaia/ARLAS-web-components/issues/587) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Action buttons of the list should support several field for the css class [\#580](https://github.com/gisaia/ARLAS-web-components/issues/580) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Add stroke layer that corresponds to a fill layer if it exists [\#565](https://github.com/gisaia/ARLAS-web-components/issues/565) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 **Fixed bugs:**
@@ -692,15 +347,7 @@
 
 ## [v12.7.6](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.6) (2021-09-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v19.0.0-beta.3...v12.7.6)
-
-## [v19.0.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v19.0.0-beta.3) (2021-09-20)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.1.0...v19.0.0-beta.3)
-
 ## [v18.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.1.0) (2021-09-10)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.2...v18.1.0)
 
 **Fixed bugs:**
 
@@ -708,33 +355,21 @@
 
 ## [v18.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.2) (2021-08-16)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.2...v18.0.2)
-
 ## [v17.2.2](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.2) (2021-08-16)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.1...v17.2.2)
 
 ## [v18.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.1) (2021-08-06)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.1...v18.0.1)
-
 **Fixed bugs:**
 
-- Metric short values should show 100k instead of 0.1M [\#571](https://github.com/gisaia/ARLAS-web-components/issues/571)
-- Swimlane tooltip hides the buckets [\#569](https://github.com/gisaia/ARLAS-web-components/issues/569)
-- Swimlane tooltip should not be displayed for infinity values [\#568](https://github.com/gisaia/ARLAS-web-components/issues/568)
+- Metric short values should show 100k instead of 0.1M [\#571](https://github.com/gisaia/ARLAS-web-components/issues/571) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
+- Swimlane tooltip hides the buckets [\#569](https://github.com/gisaia/ARLAS-web-components/issues/569) [[SWIMLANE](https://github.com/gisaia/ARLAS-web-components/labels/SWIMLANE)]
+- Swimlane tooltip should not be displayed for infinity values [\#568](https://github.com/gisaia/ARLAS-web-components/issues/568) [[SWIMLANE](https://github.com/gisaia/ARLAS-web-components/labels/SWIMLANE)]
 
 ## [v17.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.1) (2021-08-03)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.2.1...v17.2.1)
-
 ## [v18.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v18.2.1) (2021-08-03)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v18.0.0...v18.2.1)
-
 ## [v18.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v18.0.0) (2021-07-08)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.2.0...v18.0.0)
 
 **New stuff:**
 
@@ -743,40 +378,24 @@
 
 **Fixed bugs:**
 
-- numbers with xxx numerals are not shown correctly as short value [\#554](https://github.com/gisaia/ARLAS-web-components/issues/554)
+- numbers with xxx numerals are not shown correctly as short value [\#554](https://github.com/gisaia/ARLAS-web-components/issues/554) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 
 ## [v17.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.2.0) (2021-06-24)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.1.0...v17.2.0)
-
 ## [v17.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.1.0) (2021-06-04)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0...v17.1.0)
 
 **New stuff:**
 
-- Apply value precision for short value metrics [\#549](https://github.com/gisaia/ARLAS-web-components/issues/549)
+- Apply value precision for short value metrics [\#549](https://github.com/gisaia/ARLAS-web-components/issues/549) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 
 ## [v17.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0) (2021-05-19)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v17.0.0-beta.0...v17.0.0)
 
 **Fixed bugs:**
 
 - Map layer Icon doesn't handle cricle strokes and dasharrays [\#546](https://github.com/gisaia/ARLAS-web-components/issues/546) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Text appears behind the rightband [\#545](https://github.com/gisaia/ARLAS-web-components/issues/545) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
-## [v17.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v17.0.0-beta.0) (2021-05-10)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.1.0...v17.0.0-beta.0)
-
-**New stuff:**
-
-- Add a level notion in layers [\#173](https://github.com/gisaia/ARLAS-web-components/issues/173) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
-
 ## [v16.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.1.0) (2021-04-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.3...v16.1.0)
 
 **New stuff:**
 
@@ -790,39 +409,21 @@
 
 ## [v16.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.3) (2021-03-29)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.2...v16.0.3)
-
 ## [v16.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.2) (2021-03-26)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.1...v16.0.2)
 
 ## [v16.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.1) (2021-03-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v16.0.0...v16.0.1)
-
 ## [v16.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v16.0.0) (2021-03-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0...v16.0.0)
-
 ## [v15.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0) (2021-02-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v15.0.0-beta.0...v15.0.0)
 
 **New stuff:**
 
 - Support importing MultiPolygon [\#507](https://github.com/gisaia/ARLAS-web-components/issues/507) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
-## [v15.0.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v15.0.0-beta.0) (2021-02-03)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.3.1...v15.0.0-beta.0)
-
 ## [v14.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.1) (2021-02-01)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.3.0...v14.3.1)
-
 ## [v14.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.3.0) (2021-01-29)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.2.0...v14.3.0)
 
 **New stuff:**
 
@@ -830,19 +431,11 @@
 
 ## [v14.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.2.0) (2021-01-18)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.5...v14.2.0)
-
 ## [v12.7.5](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.5) (2021-01-13)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.4...v12.7.5)
 
 ## [v12.7.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.4) (2021-01-13)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.1.1...v12.7.4)
-
 ## [v14.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.1) (2020-12-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.1.0...v14.1.1)
 
 **New stuff:**
 
@@ -851,31 +444,17 @@
 
 ## [v14.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.1.0) (2020-12-07)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.1...v14.1.0)
-
 ## [v14.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.1) (2020-11-09)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.0...v14.0.1)
-
 ## [v14.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0) (2020-11-09)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v14.0.0-rc.1...v14.0.0)
 
 **New stuff:**
 
 - Add validity geometry check in import file component [\#496](https://github.com/gisaia/ARLAS-web-components/issues/496)
 
-## [v14.0.0-rc.1](https://github.com/gisaia/ARLAS-web-components/tree/v14.0.0-rc.1) (2020-09-29)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.3...v14.0.0-rc.1)
-
 ## [v13.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.3) (2020-09-14)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.2...v13.0.3)
-
 ## [v13.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.2) (2020-07-17)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.1...v13.0.2)
 
 **Fixed bugs:**
 
@@ -883,15 +462,9 @@
 
 ## [v13.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.1) (2020-07-10)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.3...v13.0.1)
-
 ## [v12.7.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.3) (2020-06-30)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v1.1.1...v12.7.3)
-
 ## [v1.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v1.1.1) (2020-06-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v13.0.0...v1.1.1)
 
 **New stuff:**
 
@@ -905,12 +478,10 @@
 
 ## [v13.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v13.0.0) (2020-06-17)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.2...v13.0.0)
-
 **Breaking changes:**
 
 - Delete 'Gauge' component [\#424](https://github.com/gisaia/ARLAS-web-components/issues/424)
-- Remove 'Layers and styles' tab [\#422](https://github.com/gisaia/ARLAS-web-components/issues/422)
+- Remove 'Layers and styles' tab [\#422](https://github.com/gisaia/ARLAS-web-components/issues/422) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 
 **New stuff:**
 
@@ -929,24 +500,18 @@
 
 **Miscellaneous:**
 
-- Display numbers with space between thousands, millions, ...  [\#438](https://github.com/gisaia/ARLAS-web-components/issues/438)
+- Display numbers with space between thousands, millions, ...  [\#438](https://github.com/gisaia/ARLAS-web-components/issues/438) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - Display numbers with space between thousands, millions, ... [\#437](https://github.com/gisaia/ARLAS-web-components/issues/437) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v12.7.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.2) (2020-04-29)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.1...v12.7.2)
-
 ## [v12.7.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.1) (2020-04-29)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.7.0...v12.7.1)
 
 **New stuff:**
 
 - add a new input to describe xlabel in case of one bucket [\#419](https://github.com/gisaia/ARLAS-web-components/issues/419) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 
 ## [v12.7.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.7.0) (2020-04-10)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.3...v12.7.0)
 
 **Miscellaneous:**
 
@@ -955,57 +520,43 @@
 
 ## [v12.6.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.3) (2020-03-26)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.2...v12.6.3)
-
 **Fixed bugs:**
 
-- Set metric value to '-' when it becomes undefined [\#410](https://github.com/gisaia/ARLAS-web-components/issues/410)
+- Set metric value to '-' when it becomes undefined [\#410](https://github.com/gisaia/ARLAS-web-components/issues/410) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 
 ## [v12.6.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.2) (2020-03-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.1...v12.6.2)
-
 **Fixed bugs:**
 
-- Fix regression of introducing NAN in metric component [\#408](https://github.com/gisaia/ARLAS-web-components/issues/408)
+- Fix regression of introducing NAN in metric component [\#408](https://github.com/gisaia/ARLAS-web-components/issues/408) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 
 ## [v12.6.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.1) (2020-03-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.6.0...v12.6.1)
-
 **Fixed bugs:**
 
-- Metric component doesn't update when the value is equal to 0 [\#406](https://github.com/gisaia/ARLAS-web-components/issues/406)
+- Metric component doesn't update when the value is equal to 0 [\#406](https://github.com/gisaia/ARLAS-web-components/issues/406) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - Wrong tbody heigth [\#402](https://github.com/gisaia/ARLAS-web-components/issues/402) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v12.6.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.6.0) (2020-03-12)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.5.0...v12.6.0)
-
 **New stuff:**
 
-- Add swimlaneRepresentation input [\#400](https://github.com/gisaia/ARLAS-web-components/issues/400)
-- Add swimlaneOptions input to configure graphical aspects of the swimlane [\#399](https://github.com/gisaia/ARLAS-web-components/issues/399)
+- Add swimlaneRepresentation input [\#400](https://github.com/gisaia/ARLAS-web-components/issues/400) [[SWIMLANE](https://github.com/gisaia/ARLAS-web-components/labels/SWIMLANE)]
+- Add swimlaneOptions input to configure graphical aspects of the swimlane [\#399](https://github.com/gisaia/ARLAS-web-components/issues/399) [[SWIMLANE](https://github.com/gisaia/ARLAS-web-components/labels/SWIMLANE)]
 
 ## [v12.5.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.5.0) (2020-02-14)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.4.0...v12.5.0)
-
 **New stuff:**
 
-- Add properties for to better reprenset modes in map settings  [\#396](https://github.com/gisaia/ARLAS-web-components/issues/396)
+- Add properties for to better reprenset modes in map settings  [\#396](https://github.com/gisaia/ARLAS-web-components/issues/396) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 
 ## [v12.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.4.0) (2020-02-06)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.3.0...v12.4.0)
 
 **Miscellaneous:**
 
 - Emit additional geohashes that are beyond the current extent of the map [\#391](https://github.com/gisaia/ARLAS-web-components/issues/391) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v12.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.3.0) (2020-01-27)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.5.0...v12.3.0)
 
 **New stuff:**
 
@@ -1025,8 +576,6 @@
 
 ## [v11.5.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.5.0) (2020-01-15)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.2.0...v11.5.0)
-
 **Fixed bugs:**
 
 - Resultlist : Set icon colors independently from title [\#377](https://github.com/gisaia/ARLAS-web-components/issues/377) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
@@ -1040,29 +589,23 @@
 
 ## [v12.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.2.0) (2020-01-06)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.4...v12.2.0)
-
 **Breaking changes:**
 
 - FieldsConfiguration interface is different from the one used in ARLAS-web-contributors [\#360](https://github.com/gisaia/ARLAS-web-components/issues/360) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v12.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.4) (2019-12-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.3...v12.1.4)
-
 **Fixed bugs:**
 
-- Topology styles list cannot be hidden when clicking outside of its container [\#365](https://github.com/gisaia/ARLAS-web-components/issues/365)
+- Topology styles list cannot be hidden when clicking outside of its container [\#365](https://github.com/gisaia/ARLAS-web-components/issues/365) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 - Radio buttons for ASC and DESC sorts get deselected by other Radio buttons groups [\#364](https://github.com/gisaia/ARLAS-web-components/issues/364) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 **Miscellaneous:**
 
-- Replace Initialisation value \(NaN\) by 0 [\#362](https://github.com/gisaia/ARLAS-web-components/issues/362)
+- Replace Initialisation value \(NaN\) by 0 [\#362](https://github.com/gisaia/ARLAS-web-components/issues/362) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
 - Remove yarn.lock [\#352](https://github.com/gisaia/ARLAS-web-components/issues/352) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)]
 
 ## [v12.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.3) (2019-12-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.2...v12.1.3)
 
 **Fixed bugs:**
 
@@ -1070,15 +613,11 @@
 
 ## [v12.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.2) (2019-12-18)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.1...v12.1.2)
-
 **Fixed bugs:**
 
 - Manage layers ids conflicts [\#171](https://github.com/gisaia/ARLAS-web-components/issues/171) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v12.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.1) (2019-12-18)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.1.0...v12.1.1)
 
 **New stuff:**
 
@@ -1087,15 +626,13 @@
 
 **Fixed bugs:**
 
-- Topology mode styles are not displayed [\#356](https://github.com/gisaia/ARLAS-web-components/issues/356)
+- Topology mode styles are not displayed [\#356](https://github.com/gisaia/ARLAS-web-components/issues/356) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 
 **Miscellaneous:**
 
 - Color service send exception on none found value [\#350](https://github.com/gisaia/ARLAS-web-components/issues/350) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 
 ## [v12.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.1.0) (2019-12-04)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.0.1...v12.1.0)
 
 **New stuff:**
 
@@ -1107,19 +644,15 @@
 
 ## [v12.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v12.0.1) (2019-11-21)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v12.0.0...v12.0.1)
-
 **New stuff:**
 
 - Update build target to `es6` [\#343](https://github.com/gisaia/ARLAS-web-components/issues/343)
 
 **Fixed bugs:**
 
-- Fix Mapsettings CSS [\#345](https://github.com/gisaia/ARLAS-web-components/issues/345)
+- Fix Mapsettings CSS [\#345](https://github.com/gisaia/ARLAS-web-components/issues/345) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 
 ## [v12.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v12.0.0) (2019-11-20)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.1...v12.0.0)
 
 **Breaking changes:**
 
@@ -1128,8 +661,8 @@
 
 **New stuff:**
 
-- Add Metric component [\#334](https://github.com/gisaia/ARLAS-web-components/issues/334)
-- MapSettingsComponent : New component for configuring layers [\#332](https://github.com/gisaia/ARLAS-web-components/issues/332)
+- Add Metric component [\#334](https://github.com/gisaia/ARLAS-web-components/issues/334) [[METRIC](https://github.com/gisaia/ARLAS-web-components/labels/METRIC)]
+- MapSettingsComponent : New component for configuring layers [\#332](https://github.com/gisaia/ARLAS-web-components/issues/332) [[MAP_SETTINGS](https://github.com/gisaia/ARLAS-web-components/labels/MAP_SETTINGS)]
 - Add translate pipe to powerbars [\#328](https://github.com/gisaia/ARLAS-web-components/pull/328) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
 
 **Fixed bugs:**
@@ -1137,8 +670,6 @@
 - Chartype should not be a mandatory input [\#329](https://github.com/gisaia/ARLAS-web-components/issues/329) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 
 ## [v11.4.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.1) (2019-10-23)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.4.0...v11.4.1)
 
 **New stuff:**
 
@@ -1150,23 +681,17 @@
 
 ## [v11.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.4.0) (2019-10-16)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.3.1...v11.4.0)
-
 **Breaking changes:**
 
 - Remove BBOX output/input [\#300](https://github.com/gisaia/ARLAS-web-components/issues/300) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v11.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.1) (2019-10-10)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.3.0...v11.3.1)
-
 **New stuff:**
 
 - Authorize raster-tile source as basemap [\#316](https://github.com/gisaia/ARLAS-web-components/issues/316) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v11.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.3.0) (2019-10-09)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.2.1...v11.3.0)
 
 **New stuff:**
 
@@ -1181,15 +706,11 @@
 
 ## [v11.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.2.1) (2019-10-02)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.2.0...v11.2.1)
-
 **Fixed bugs:**
 
 - HotFix method accessiblity [\#314](https://github.com/gisaia/ARLAS-web-components/pull/314) ([mbarbet](https://github.com/mbarbet))
 
 ## [v11.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.2.0) (2019-10-02)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.1.0...v11.2.0)
 
 **New stuff:**
 
@@ -1198,8 +719,6 @@
 - Add WMTS layer style manager [\#311](https://github.com/gisaia/ARLAS-web-components/pull/311) ([mbarbet](https://github.com/mbarbet))
 
 ## [v11.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.1.0) (2019-09-16)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.3...v11.1.0)
 
 **New stuff:**
 
@@ -1212,15 +731,11 @@
 
 ## [v11.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.3) (2019-07-31)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.2...v11.0.3)
-
 **Fixed bugs:**
 
 - Emit 'selectedItemEvent' after in between selection [\#297](https://github.com/gisaia/ARLAS-web-components/pull/297) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v11.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.2) (2019-07-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.1...v11.0.2)
 
 **Fixed bugs:**
 
@@ -1228,15 +743,11 @@
 
 ## [v11.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.1) (2019-07-26)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v11.0.0...v11.0.1)
-
 **Fixed bugs:**
 
 - Remove unused outputs and unexisting method in HTML file [\#294](https://github.com/gisaia/ARLAS-web-components/pull/294) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v11.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v11.0.0) (2019-07-26)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.2.0...v11.0.0)
 
 **Breaking changes:**
 
@@ -1255,8 +766,6 @@
 
 ## [v10.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.2.0) (2019-07-04)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.5...v10.2.0)
-
 **New stuff:**
 
 - Add button to clear all selection [\#280](https://github.com/gisaia/ARLAS-web-components/issues/280) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
@@ -1271,15 +780,11 @@
 
 ## [v10.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.5) (2019-06-19)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.4...v10.1.5)
-
 **Fixed bugs:**
 
 - Fix zip content validation [\#274](https://github.com/gisaia/ARLAS-web-components/pull/274) ([sebbousquet](https://github.com/sebbousquet))
 
 ## [v10.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.4) (2019-06-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.3...v10.1.4)
 
 **New stuff:**
 
@@ -1293,15 +798,11 @@
 
 ## [v10.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.3) (2019-05-29)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.2...v10.1.3)
-
 **Fixed bugs:**
 
 - Fix version of @types/mapbox [\#268](https://github.com/gisaia/ARLAS-web-components/pull/268) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v10.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.2) (2019-05-24)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.1...v10.1.2)
 
 **Fixed bugs:**
 
@@ -1309,16 +810,12 @@
 
 ## [v10.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.1) (2019-05-24)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.1.0...v10.1.1)
-
 **New stuff:**
 
 - Add transformRequest options [\#264](https://github.com/gisaia/ARLAS-web-components/pull/264) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
 - Add more detail in error message during shape import [\#263](https://github.com/gisaia/ARLAS-web-components/pull/263) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
 
 ## [v10.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.1.0) (2019-05-22)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.2...v10.1.0)
 
 **Breaking changes:**
 
@@ -1335,11 +832,7 @@
 
 ## [v10.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.2) (2019-05-07)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.1...v10.0.2)
-
 ## [v10.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.1) (2019-04-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v10.0.0...v10.0.1)
 
 **New stuff:**
 
@@ -1347,8 +840,6 @@
 - Put draw layer on top [\#253](https://github.com/gisaia/ARLAS-web-components/pull/253) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v10.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v10.0.0) (2019-04-02)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.3.0...v10.0.0)
 
 **New stuff:**
 
@@ -1358,23 +849,13 @@
 
 ## [v9.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.3.0) (2019-03-25)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/9.3.0-beta.0...v9.3.0)
-
 **New stuff:**
 
 - Beta/9.3.x [\#241](https://github.com/gisaia/ARLAS-web-components/pull/241) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([sebbousquet](https://github.com/sebbousquet))
 
-## [9.3.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/9.3.0-beta.0) (2019-03-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.1...9.3.0-beta.0)
-
 ## [v9.2.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.1) (2019-02-06)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0...v9.2.1)
-
 ## [v9.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0) (2019-02-06)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.5...v9.2.0)
 
 **Breaking changes:**
 
@@ -1395,53 +876,7 @@
 - Update powerbars demo inputs [\#226](https://github.com/gisaia/ARLAS-web-components/pull/226) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 - Fix construction of selected powerbars list [\#224](https://github.com/gisaia/ARLAS-web-components/pull/224) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
-## [v9.2.0-beta.5](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.5) (2019-02-01)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.4...v9.2.0-beta.5)
-
-**Fixed bugs:**
-
-- Fix color of powerbars and update json schema [\#223](https://github.com/gisaia/ARLAS-web-components/pull/223) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
-
-## [v9.2.0-beta.4](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.4) (2019-01-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.3...v9.2.0-beta.4)
-
-**Fixed bugs:**
-
-- Fix color for result list : apply toString\(\) to itemData.get method [\#222](https://github.com/gisaia/ARLAS-web-components/pull/222) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
-
-## [v9.2.0-beta.3](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.3) (2019-01-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.2...v9.2.0-beta.3)
-
-**Fixed bugs:**
-
-- sort powerbar list [\#221](https://github.com/gisaia/ARLAS-web-components/pull/221) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
-
-## [v9.2.0-beta.2](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.2) (2019-01-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.1...v9.2.0-beta.2)
-
-## [v9.2.0-beta.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.1) (2019-01-30)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.2.0-beta.0...v9.2.0-beta.1)
-
-## [v9.2.0-beta.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.2.0-beta.0) (2019-01-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.3...v9.2.0-beta.0)
-
-**Breaking changes:**
-
-- Refactor Histogram and Donuts according to changes of arlas-d3@6.0.0 [\#215](https://github.com/gisaia/ARLAS-web-components/pull/215) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
-
-**New stuff:**
-
-- Emit init value in moveend bus [\#210](https://github.com/gisaia/ARLAS-web-components/pull/210) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)] ([mbarbet](https://github.com/mbarbet))
-
 ## [v9.1.3](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.3) (2019-01-16)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.2...v9.1.3)
 
 **Fixed bugs:**
 
@@ -1449,15 +884,11 @@
 
 ## [v9.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.2) (2019-01-11)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.1...v9.1.2)
-
 **Fixed bugs:**
 
 - Fix width full powerbars [\#207](https://github.com/gisaia/ARLAS-web-components/pull/207) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v9.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.1) (2019-01-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.1.0...v9.1.1)
 
 **New stuff:**
 
@@ -1468,8 +899,6 @@
 - Fix: set isSelected to false when a powerbar is no longer selected [\#205](https://github.com/gisaia/ARLAS-web-components/issues/205) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
 
 ## [v9.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.1.0) (2019-01-09)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v9.0.0...v9.1.0)
 
 **New stuff:**
 
@@ -1491,8 +920,6 @@
 
 ## [v9.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v9.0.0) (2018-11-28)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v8.0.1...v9.0.0)
-
 **Breaking changes:**
 
 - Feature/angular6 [\#189](https://github.com/gisaia/ARLAS-web-components/pull/189) [[ALL](https://github.com/gisaia/ARLAS-web-components/labels/ALL)] ([mbarbet](https://github.com/mbarbet))
@@ -1503,15 +930,11 @@
 
 ## [v8.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.1) (2018-11-05)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v8.0.0...v8.0.1)
-
 **Fixed bugs:**
 
 - Fix bug selectAll list [\#188](https://github.com/gisaia/ARLAS-web-components/pull/188) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
 
 ## [v8.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v8.0.0) (2018-10-17)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.4.2...v8.0.0)
 
 **Breaking changes:**
 
@@ -1529,15 +952,9 @@
 
 ## [v7.4.2](https://github.com/gisaia/ARLAS-web-components/tree/v7.4.2) (2018-09-25)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.4.1...v7.4.2)
-
 ## [v7.4.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.4.1) (2018-09-25)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.4.0...v7.4.1)
-
 ## [v7.4.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.4.0) (2018-09-14)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.3.1...v7.4.0)
 
 **Breaking changes:**
 
@@ -1557,16 +974,12 @@
 
 ## [v7.3.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.1) (2018-07-27)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.3.0...v7.3.1)
-
 **New stuff:**
 
 - RESULTLIST :  add the possibility to hide filter's input/dropdown of a sepcified column [\#167](https://github.com/gisaia/ARLAS-web-components/issues/167) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
 - Apply geosort on geo-auto-sort activation [\#168](https://github.com/gisaia/ARLAS-web-components/pull/168) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v7.3.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.3.0) (2018-07-25)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.2.0...v7.3.0)
 
 **Fixed bugs:**
 
@@ -1579,8 +992,6 @@
 
 ## [v7.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.2.0) (2018-07-21)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.1.1...v7.2.0)
-
 **New stuff:**
 
 - HISTOGRAMS : Add an output that is emitted at the end of plot [\#157](https://github.com/gisaia/ARLAS-web-components/issues/157) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
@@ -1592,15 +1003,11 @@
 
 ## [v7.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.1) (2018-07-13)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.1.0...v7.1.1)
-
 **New stuff:**
 
 - Update mapcomponent configuration schema [\#161](https://github.com/gisaia/ARLAS-web-components/pull/161) ([MohamedHamouGisaia](https://github.com/MohamedHamouGisaia))
 
 ## [v7.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.1.0) (2018-07-11)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v7.0.0...v7.1.0)
 
 **New stuff:**
 
@@ -1626,8 +1033,6 @@
 
 ## [v7.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v7.0.0) (2018-06-15)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v6.0.1...v7.0.0)
-
 **Breaking changes:**
 
 - Add an output to the MapComponent for the map switch layer controller [\#136](https://github.com/gisaia/ARLAS-web-components/issues/136) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
@@ -1648,8 +1053,6 @@
 
 ## [v6.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.1) (2018-05-29)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v6.0.0...v6.0.1)
-
 **New stuff:**
 
 - Add no view image [\#134](https://github.com/gisaia/ARLAS-web-components/pull/134) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)] ([mbarbet](https://github.com/mbarbet))
@@ -1657,15 +1060,11 @@
 
 ## [v6.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v6.0.0) (2018-05-23)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.1.2...v6.0.0)
-
 **Fixed bugs:**
 
 - MAP/HISTOGRAM : An error is thrown when we draw a BBOX in Bering strait [\#87](https://github.com/gisaia/ARLAS-web-components/issues/87)
 
 ## [v5.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v5.1.2) (2018-05-21)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.1.1...v5.1.2)
 
 **New stuff:**
 
@@ -1677,19 +1076,13 @@
 
 ## [v5.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v5.1.1) (2018-05-15)
 
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.1.0...v5.1.1)
-
 ## [v5.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v5.1.0) (2018-04-27)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v5.0.0...v5.1.0)
 
 **Breaking changes:**
 
 - Feature/angular5 [\#123](https://github.com/gisaia/ARLAS-web-components/pull/123) ([sebbousquet](https://github.com/sebbousquet))
 
 ## [v5.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v5.0.0) (2018-04-23)
-
-[Full Changelog](https://github.com/gisaia/ARLAS-web-components/compare/v4.0.0...v5.0.0)
 
 
 
