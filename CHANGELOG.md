@@ -92,7 +92,9 @@
 
 **Fixed bugs:**
 
+- Values of layer stroke colors field are not displayed in the legend [\#954](https://github.com/gisaia/ARLAS-web-components/issues/954) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - restore css classes of actions buttons [\#943](https://github.com/gisaia/ARLAS-web-components/issues/943) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+- Legend can sometimes not display fully [\#881](https://github.com/gisaia/ARLAS-web-components/issues/881) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v26.0.9](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.9) (2024-11-12)
 
@@ -104,7 +106,6 @@
 
 **Fixed bugs:**
 
-- Legend can sometimes not display fully [\#881](https://github.com/gisaia/ARLAS-web-components/issues/881) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 - Fix draw strip mode [\#945](https://github.com/gisaia/ARLAS-web-components/issues/945) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 ## [v26.0.7](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.7) (2024-11-06)
@@ -115,25 +116,49 @@
 
 ## [v26.0.6](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.6) (2024-10-30)
 
+**New stuff:**
+
+- display collection unit in case one bucket is returned [\#949](https://github.com/gisaia/ARLAS-web-components/issues/949) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+**Fixed bugs:**
+
+- add a new attribute to control when an action should be shown [\#948](https://github.com/gisaia/ARLAS-web-components/issues/948) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v26.0.5](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.5) (2024-09-22)
+
+**Fixed bugs:**
+
+- Bump to arlas-d3 11.2.5, to patch histogram selection bugs [\#951](https://github.com/gisaia/ARLAS-web-components/issues/951) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
 
 ## [v26.0.4](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.4) (2024-09-12)
 
+**New stuff:**
+
+- fix the display of info icon on the selected grid element, mixed with hover event [\#950](https://github.com/gisaia/ARLAS-web-components/issues/950) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v26.0.3](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.3) (2024-09-10)
+
+**Miscellaneous:**
+
+- Fix high vulnerabilities in npm packages [\#952](https://github.com/gisaia/ARLAS-web-components/issues/952)
 
 ## [v26.0.2](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.2) (2024-09-10)
 
 ## [v26.0.1](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.1) (2024-09-06)
 
+**Fixed bugs:**
+
+- remove info icon on closing detail [\#953](https://github.com/gisaia/ARLAS-web-components/issues/953) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
 ## [v26.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0) (2024-08-30)
-
-## [v25.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.2) (2024-07-12)
-
-## [v25.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.1) (2024-07-09)
 
 **Miscellaneous:**
 
 - Add a title to the technical details in a resultlist [\#836](https://github.com/gisaia/ARLAS-web-components/issues/836) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+## [v25.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.2) (2024-07-12)
+
+## [v25.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.1) (2024-07-09)
 
 ## [v25.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.0) (2024-07-05)
 
