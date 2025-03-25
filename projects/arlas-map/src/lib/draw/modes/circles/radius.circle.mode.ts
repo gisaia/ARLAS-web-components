@@ -76,11 +76,8 @@ const doubleClickZoom = {
         setTimeout(() => {
             // First check we've got a map and some context.
             if (
-                !ctx.map ||
-                !ctx.map.doubleClickZoom ||
-                !ctx._ctx ||
-                !ctx._ctx.store ||
-                !ctx._ctx.store.getInitialConfigValue
+                !ctx.map?.doubleClickZoom ||
+                !ctx._ctx?.store?.getInitialConfigValue
             ) {
                 return;
             }
@@ -161,7 +158,6 @@ radiusCircleMode.onStop = function (state) {
     // remove last added coordinate
     state.line.removeCoordinate('0');
     if (state.line.isValid()) {
-        const geojson = state.line.toGeoJSON();
         this.deleteFeature([state.line.id], { silent: true });
 
         this.map.fire('draw.create', {
@@ -176,23 +172,26 @@ radiusCircleMode.onStop = function (state) {
 
 radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
     displayFeatures(state, geojson, display);
-    const displayMeasurements = getDisplayMeasurements(geojson);
 
-    // create custom feature for the current pointer position
-    const currentVertex = {
-        type: 'Feature',
-        properties: {
-            meta: 'currentPosition',
-            radiusMetric: displayMeasurements.metric,
-            radiusStandard: displayMeasurements.standard,
-            parent: state.line.id,
-        },
-        geometry: {
-            type: 'Point',
-            coordinates: geojson.geometry.coordinates[1],
-        },
-    };
-    display(currentVertex);
+    if (geojson.geometry.coordinates.length >= 2 && geojson.geometry.coordinates[1]) {
+        const displayMeasurements = getDisplayMeasurements(geojson);
+
+        // create custom feature for the current pointer position
+        const currentVertex = {
+            type: 'Feature',
+            properties: {
+                meta: 'currentPosition',
+                radiusMetric: displayMeasurements.metric,
+                radiusStandard: displayMeasurements.standard,
+                parent: state.line.id,
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: geojson.geometry.coordinates[1],
+            },
+        };
+        display(currentVertex);
+    }
 
     return null;
 };

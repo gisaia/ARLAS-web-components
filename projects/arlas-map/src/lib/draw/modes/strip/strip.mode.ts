@@ -65,11 +65,8 @@ const doubleClickZoom = {
         setTimeout(() => {
             // First check we've got a map and some context.
             if (
-                !ctx.map ||
-                !ctx.map.doubleClickZoom ||
-                !ctx._ctx ||
-                !ctx._ctx.store ||
-                !ctx._ctx.store.getInitialConfigValue
+                !ctx.map?.doubleClickZoom ||
+                !ctx._ctx?.store?.getInitialConfigValue
             ) {
                 return;
             }
@@ -142,34 +139,34 @@ stripMode.onMouseMove = function (state, e) {
     if (state.currentVertexPosition === 1) {
         MapboxDraw.modes.draw_line_string.onMouseMove.call(this, state, e);
         const geojson = state.line.toGeoJSON();
-        const stripLenght = length(geojson, { units: 'kilometers' });
+        const stripLength = length(geojson, { units: 'kilometers' });
         const start = geojson.geometry.coordinates[0];
         const end = [e.lngLat.lng, e.lngLat.lat];
         const startPoint = point(start);
         const endPoint = point(end);
         const bearing = rhumbBearing(startPoint, endPoint);
-        if (stripLenght > state.maxLength && state.isStripDrew === undefined) {
-            const translateDistance = -(stripLenght - state.maxLength);
+        if (stripLength > state.maxLength && state.isStripDrew === undefined) {
+            const translateDistance = -(stripLength - state.maxLength);
             const translatedPoint = transformTranslate(endPoint, translateDistance, bearing);
             const stripFeature = buildStrip(start, translatedPoint.geometry.coordinates, state.halfSwath);
             stripFeature.properties.parent = state.line.id;
-            (stripFeature.properties).meta = 'strip';
+            stripFeature.properties.meta = 'strip';
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
             state.currentMaxBearing = bearing;
             state.isStripDrew = true;
             state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
-        } else if (stripLenght <= state.maxLength || state.isStripDrew === undefined) {
+        } else if (stripLength <= state.maxLength || state.isStripDrew === undefined) {
             const stripFeature = buildStrip(start, end, state.halfSwath);
             stripFeature.properties.parent = state.line.id;
-            (stripFeature.properties as any).meta = 'strip';
+            stripFeature.properties.meta = 'strip';
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
             state.currentMaxBearing = bearing;
             state.isStripDrew = true;
             state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
-        } else if (state.isStripDrew && stripLenght > state.maxLength) {
+        } else if (state.isStripDrew && stripLength > state.maxLength) {
             const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
             stripFeature.properties.parent = state.line.id;
-            (stripFeature.properties as any).meta = 'strip';
+            stripFeature.properties.meta = 'strip';
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
             state.strip.properties['bearingAngle'] = bearingToAzimuth(state.currentMaxBearing);
         }
@@ -191,7 +188,6 @@ stripMode.onStop = function (state) {
     // remove last added coordinate
     state.line.removeCoordinate('0');
     if (state.line.isValid()) {
-        const geojson = state.line.toGeoJSON();
         this.deleteFeature([state.line.id], { silent: true });
 
         this.map.fire('draw.create', {
@@ -206,20 +202,21 @@ stripMode.onStop = function (state) {
 stripMode.toDisplayFeatures = function (state, geojson, display) {
     displayFeatures(state, geojson, display);
 
-
-    // create custom feature for the current pointer position
-    const currentVertex = {
-        type: 'Feature',
-        properties: {
-            meta: 'currentPosition',
-            parent: state.line.id,
-        },
-        geometry: {
-            type: 'Point',
-            coordinates: geojson.geometry.coordinates[1],
-        },
-    };
-    display(currentVertex);
+    if (geojson.geometry.coordinates.length >= 2 && geojson.geometry.coordinates[1]) {
+        // create custom feature for the current pointer position
+        const currentVertex = {
+            type: 'Feature',
+            properties: {
+                meta: 'currentPosition',
+                parent: state.line.id,
+            },
+            geometry: {
+                type: 'Point',
+                coordinates: geojson.geometry.coordinates[1],
+            },
+        };
+        display(currentVertex);
+    }
 
     return null;
 };
