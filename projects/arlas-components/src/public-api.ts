@@ -86,3 +86,6 @@ export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-colle
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
+export {
+  CogVisualisationConfig, VisualisationInterface, ItemFamily
+} from './lib/components/results/result-cog-visualisation-modal/result-cog-visualisation-modal.component';

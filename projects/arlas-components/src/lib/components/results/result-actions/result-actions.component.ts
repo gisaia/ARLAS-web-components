@@ -18,11 +18,11 @@
  */
 
 import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Item } from '../model/item';
-import { Action, ActionHandler } from '../utils/results.utils';
 import { filter, Subject, take, takeUntil } from 'rxjs';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
+import { Item } from '../model/item';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { Action, ActionHandler } from '../utils/results.utils';
 
 
 /**
@@ -74,10 +74,14 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
         this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
         /** We check if reversible actions has 'fields'.
          * - If one of the fields values is absent in the current item, the action will be hidden. */
-        this.actions.filter(a => ActionHandler.isReversible(a) && a.fields && a.show === undefined).forEach(a => {
-          this.detailedDataRetriever.getValues(i.identifier, a.fields).pipe(take(1)).subscribe({
-            next: (values: string[]) => a.show = values.filter(v => !v).length === 0
-          });
+        this.actions.filter(a => ActionHandler.isReversible(a) && a.show === undefined).forEach(a => {
+          if (a.fields) {
+            this.detailedDataRetriever.getValues(i.identifier, a.fields).pipe(
+              take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
+          } else if (a.filters) {
+            this.detailedDataRetriever.getMatch(i.identifier, a.filters).pipe(
+              take(1)).subscribe(v => a.show = v);
+          }
         });
       }
     });

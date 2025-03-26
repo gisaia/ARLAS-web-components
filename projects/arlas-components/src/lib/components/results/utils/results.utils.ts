@@ -28,9 +28,26 @@ export class ResultListOptions {
   public showDetailIconName = 'add_circle_outline';
   public hideDetailIconName = 'remove_circle_outline';
   public defautlImgUrl = './assets/no-view.png';
+}
 
+/**
+ * Possible operations on field values based on string or numerical fields
+ */
+export enum Operations {
+  Eq,
+  Gte,
+  Gt,
+  Lte,
+  Lt,
+  Like,
+  Ne,
+  Range
+}
 
-  public constructor() {}
+export interface ActionFilter {
+  field: string;
+  op: Operations;
+  value: string;
 }
 
 export interface Action {
@@ -48,7 +65,10 @@ export interface Action {
   icon?: string;
   /** If this attribute is set, it means that this action needs these fields values in order to be accomplished.
    * If those fields values don't exist for an item, then the action could not be completed and therefore should be hidden. */
-  fields?: string [];
+  fields?: string[];
+  /** If this attribute is set, it means that this action needs for the conditions described to be true in order to be accomplished.
+   * If the conditions are not met, then the action could not be completed and therefore should be hidden. */
+  filters?: Array<ActionFilter>;
   /** Calculated attribute that tells if the action should be shown or not. */
   show?: boolean;
   /** For global actions, even if no item is selected, the action will be enabled */
@@ -145,7 +165,7 @@ export function matchAndReplace(data: Map<string, ItemDataType>, template: strin
   let replaced = template;
   template.match(/{(.+?)}/g)?.forEach(t => {
     const key: string = t.replace('{', '').replace('}', '');
-    if (!!data.get(key)) {
+    if (data.get(key)) {
       replaced = replaced.replace(t, data.get(key).toString());
     }
   });

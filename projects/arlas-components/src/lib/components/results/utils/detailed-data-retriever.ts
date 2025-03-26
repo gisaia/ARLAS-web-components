@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action } from '../utils/results.utils';
+import { AdditionalInfo, Action, ActionFilter } from '../utils/results.utils';
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
 
@@ -29,5 +29,7 @@ export interface DetailedDataRetriever {
   getData(identifier: string): Observable<AdditionalInfo>;
 
   getActions(item: Item): Observable<Array<Action>>;
+
+  getMatch(identifier: string, filters: ActionFilter[]): Observable<boolean>;
 
 }
