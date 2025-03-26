@@ -21,23 +21,8 @@
 
       ]
     },
-    "outDir": "./dist/out-tsc",
-    "baseUrl": "./",
-    "rootDir": "./",
-    "sourceMap": true,
-    "declaration": true,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "stripInternal": true,
     "skipLibCheck": true,
-    "types": [
-      "mapbox-gl",
-      "geojson"
-    ],
-    "target": "ES2022",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -45,7 +30,22 @@
       "es2019",
       "dom"
     ],
-    "module": "es2015",
+
+    "outDir": "./dist/out-tsc",
+    "baseUrl": "src",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "target": "ES2022",
+    "types": [
+      "node",
+      "geojson"
+    ],
+    "module": "esnext",
     "useDefineForClassFields": false
   },
   "exclude": [

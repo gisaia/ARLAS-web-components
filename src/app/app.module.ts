@@ -59,11 +59,6 @@ import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
 import { ArlasMapModule, MapSettingsModule } from 'arlas-map';
 
-
-export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
-
 const routes: Routes = [
   { path: '', component: MapglDemoComponent },
   { path: 'maplibre', component: MapglDemoComponent },
@@ -75,6 +70,10 @@ const routes: Routes = [
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
   { path: 'multi-collection', component: MetricsTableDemoComponent }
 ];
+
+export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 
 @NgModule({
   declarations: [
@@ -88,8 +87,20 @@ const routes: Routes = [
     MetricsTableDemoComponent,
     MapglDemoComponent
   ],
-  exports: [MapglDemoComponent],
+  exports: [
+    AppComponent,
+    MapglDemoComponent,
+    HistogramDemoComponent,
+    ResultsDemoComponent,
+    PowerbarsDemoComponent,
+    DonutDemoComponent,
+    WmtsLayerManagerDemoComponent,
+    CalendarTimelineDemoComponent,
+    MetricsTableDemoComponent
+  ],
   imports: [
+    RouterModule.forRoot(routes),
+
     BrowserAnimationsModule,
     CalendarTimelineModule,
     FormsModule,
@@ -110,7 +121,6 @@ const routes: Routes = [
     MetricsTableModule,
     MapboxDemoModule,
     MaplibreDemoModule,
-    RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,
     TranslateModule.forRoot({
@@ -120,10 +130,12 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    CollectionModule.forRoot({ loader: {
-                provide: BaseCollectionService,
-                useClass: AwcCollectionService
-            } })
+    CollectionModule.forRoot({
+      loader: {
+        provide: BaseCollectionService,
+        useClass: AwcCollectionService
+      }
+    })
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent]

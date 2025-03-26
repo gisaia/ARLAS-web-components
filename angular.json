@@ -18,10 +18,10 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": {
-              "base": "dist"
+              "base": "dist",
+              "browser": ""
             },
             "index": "src/index.html",
-            "tsConfig": "src/tsconfig.app.json",
             "polyfills": [
               "src/polyfills.ts"
             ],
@@ -35,8 +35,7 @@
               "node_modules/maplibre-gl/dist/maplibre-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
               "node_modules/iv-viewer/dist/iv-viewer.css"
-            ],
-            "browser": "src/main.ts"
+            ]
           },
           "configurations": {
             "development": {
@@ -56,10 +55,20 @@
               "extractLicenses": true,
               "fileReplacements": [
                 {
-                  "src": "src/environments/environment.ts",
-                  "replaceWith": "src/environments/environment.prod.ts"
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development-opensource": {
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": true,
+              "browser": "src/main-opensource.ts",
+              "tsConfig": "src/tsconfig.app.opensource.json",
+              "namedChunks": true,
+              "extractLicenses": false,
+              "budgets": []
             }
           }
         },
@@ -73,10 +82,13 @@
               "buildTarget": "arlas-web-components-demo:build:development"
             },
             "production": {
-              "buildTarget": "arlas-web-components:build:production"
+              "buildTarget": "arlas-web-components-demo:build:production"
+            },
+            "development-opensource": {
+              "buildTarget": "arlas-web-components-demo:build:development-opensource"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development-opensource"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",

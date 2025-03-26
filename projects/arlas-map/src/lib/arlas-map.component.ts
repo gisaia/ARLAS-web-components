@@ -203,6 +203,10 @@ export class ArlasMapComponent<L, S, M> {
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
 
+  /** --- GLOBE */
+
+  @Input() enableGlobe: boolean;
+
   /** ANGULAR OUTPUTS */
 
   /** @description Emits true after the map is loaded and all sources & layers are added. */
@@ -412,6 +416,9 @@ export class ArlasMapComponent<L, S, M> {
         pitchToggle: {
           enable: true,
           config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
+        },
+        globe: {
+          enable: this.enableGlobe === true ? true : false
         }
       }
     };
