@@ -18,30 +18,32 @@
  */
 
 import { CommonModule } from '@angular/common';
-
 import { NgModule } from '@angular/core';
-import { ArlasMapService } from '../../../projects/arlas-mapbox/src/lib/arlas-map.service';
-import { AbstractArlasMapService } from '../../../projects/arlas-map/src/lib/arlas-map.service';
+import { FormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
 import { ArlasMapFrameworkService } from '../../../projects/arlas-map/src/lib/arlas-map-framework.service';
-import { ArlasMapboxService } from '../../../projects/arlas-mapbox/src/lib/arlas-mapbox.service';
-import { ArlasMapboxModule } from '../../../projects/arlas-mapbox/src/lib/arlas-mapbox.module';
+import { ArlasMapModule } from '../../../projects/arlas-map/src/lib/arlas-map.module';
+import { AbstractArlasMapService } from '../../../projects/arlas-map/src/lib/arlas-map.service';
 import { BasemapService } from '../../../projects/arlas-map/src/lib/basemaps/basemap.service';
 import { LegendService } from '../../../projects/arlas-map/src/lib/legend/legend.service';
+import { MapSettingsModule } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.module';
+import { ArlasMapService } from '../../../projects/arlas-mapbox/src/lib/arlas-map.service';
+import { ArlasMapboxService } from '../../../projects/arlas-mapbox/src/lib/arlas-mapbox.service';
 import { MapboxBasemapService } from '../../../projects/arlas-mapbox/src/lib/basemaps/mapbox-basemap.service';
 import { MapboxLegendService } from '../../../projects/arlas-mapbox/src/lib/legend/legend.service';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
-import { ArlasMapModule } from '../../../projects/arlas-map/src/lib/arlas-map.module';
-import { MapSettingsModule } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.module';
+import { MapglDemoComponent } from './mapgl-demo.component';
 
 @NgModule({
+    declarations: [
+        MapglDemoComponent
+    ],
+    exports: [MapglDemoComponent],
     imports: [
         CommonModule,
         MatRadioModule,
         MatIconModule,
         FormsModule,
-        ArlasMapboxModule,
         MapSettingsModule,
         ArlasMapModule
     ],
@@ -50,7 +52,7 @@ import { MapSettingsModule } from '../../../projects/arlas-map/src/lib/map-setti
             provide: AbstractArlasMapService,
             useClass: ArlasMapService
         },
-        ArlasMapService,
+        ArlasMapboxService,
         {
             provide: BasemapService,
             useClass: MapboxBasemapService
@@ -63,8 +65,8 @@ import { MapSettingsModule } from '../../../projects/arlas-map/src/lib/map-setti
             provide: ArlasMapFrameworkService,
             useClass: ArlasMapboxService
         },
-    ]
-})
-export class MapboxDemoModule {
+        MapboxBasemapService
+    ],
 
-}
+})
+export class MapboxDemoModule { }

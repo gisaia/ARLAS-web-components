@@ -85,10 +85,8 @@ const routes: Routes = [
     DonutDemoComponent,
     WmtsLayerManagerDemoComponent,
     CalendarTimelineDemoComponent,
-    MetricsTableDemoComponent,
-    MapglDemoComponent
+    MetricsTableDemoComponent
   ],
-  exports: [MapglDemoComponent],
   imports: [
     BrowserAnimationsModule,
     CalendarTimelineModule,
@@ -120,10 +118,12 @@ const routes: Routes = [
         deps: [HttpClient]
       }
     }),
-    CollectionModule.forRoot({ loader: {
-                provide: BaseCollectionService,
-                useClass: AwcCollectionService
-            } })
+    CollectionModule.forRoot({
+      loader: {
+        provide: BaseCollectionService,
+        useClass: AwcCollectionService
+      }
+    }),
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())],
   bootstrap: [AppComponent]
