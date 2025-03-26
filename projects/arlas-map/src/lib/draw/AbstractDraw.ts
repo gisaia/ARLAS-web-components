@@ -213,7 +213,4 @@ export class AbstractDraw implements DrawEventsInterface {
     this.drawProvider.changeMode(mode, opt);
     return this;
   }
-
-
-
 }
