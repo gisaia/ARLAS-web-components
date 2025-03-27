@@ -61,10 +61,6 @@ export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts
 export { WmtsLayerManagerComponent, GetTilesInfo, LayerParam, Dimension } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { WmtsLayerManagertDialogComponent } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { ResultDetailedGridComponent } from './lib/components/results/result-detailed-grid/result-detailed-grid.component';
-export { ResultCogVisualisationShortcutComponent } from
-    './lib/components/results/result-cog-visualisation-shortcut/result-cog-visualisation-shortcut.component';
-export { ResultCogVisualisationModalComponent } from
-    './lib/components/results/result-cog-visualisation-modal/result-cog-visualisation-modal.component';
 export { ResultScrollDirective } from './lib/components/results/result-directive/result-scroll.directive';
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
@@ -86,6 +82,7 @@ export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-colle
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
-export {
-  CogVisualisationConfig, VisualisationInterface, ItemFamily
-} from './lib/components/results/result-cog-visualisation-modal/result-cog-visualisation-modal.component';
+
+export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
+export { CogModalComponent } from './lib/components/cog/cog-modal/cog-modal.component';
+export { CogVisualisationConfig, VisualisationInterface, DataGroup } from './lib/components/cog/model';

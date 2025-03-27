@@ -1,0 +1,10 @@
+<div mat-dialog-content class="visualisations">
+  @for (visualisation of data.visualisations; track visualisation;) {
+    <div [mat-dialog-close]="visualisation" class="visualisation">
+      <arlas-cog-preview
+        [title]="visualisation.name"
+        [description]="visualisation.description"
+      ></arlas-cog-preview>
+    </div>
+  }
+</div>

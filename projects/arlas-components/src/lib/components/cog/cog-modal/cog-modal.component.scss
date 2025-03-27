@@ -23,11 +23,11 @@
   gap: 6px;
 }
 
-arlas-result-cog-visualisation-shortcut {
-  display: block;
-}
-
-arlas-result-cog-visualisation-shortcut:hover {
+.visualisation {
   cursor: pointer;
-  background: rgba(0, 0, 0, 0.05);
+  color: black;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
 }

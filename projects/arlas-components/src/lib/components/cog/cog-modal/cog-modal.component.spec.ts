@@ -1,21 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResultCogVisualisationShortcutComponent } from './result-cog-visualisation-shortcut.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { CogModalComponent } from './cog-modal.component';
 
-describe('CogVisualisationShortcutComponent', () => {
-  let component: ResultCogVisualisationShortcutComponent;
-  let fixture: ComponentFixture<ResultCogVisualisationShortcutComponent>;
+describe('CogModalComponent', () => {
+  let component: CogModalComponent;
+  let fixture: ComponentFixture<CogModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultCogVisualisationShortcutComponent,
+      imports: [CogModalComponent,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
-      ]
+      ],
+      providers: [ {provide: MAT_DIALOG_DATA, useValue: {}}]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ResultCogVisualisationShortcutComponent);
+    fixture = TestBed.createComponent(CogModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -17,46 +17,25 @@
  * under the License.
  */
 
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
-import {
-  ResultCogVisualisationShortcutComponent
-} from '../result-cog-visualisation-shortcut/result-cog-visualisation-shortcut.component';
 import { TranslateModule } from '@ngx-translate/core';
-
-export interface CogVisualisationConfig {
-  picture: string;
-  title: string;
-  description: string;
-}
-
-export interface VisualisationInterface {
-  name: string;
-  description: string;
-  itemsFamilies: ItemFamily[];
-}
-
-export interface ItemFamily {
-  protocol: string;
-  visualisationUrl: string;
-  url: string;
-  filter: {field: string; values: string[];};
-
-}
+import { CogPreviewComponent } from '../cog-preview/cog-preview.component';
+import { VisualisationInterface } from '../model';
 
 
 @Component({
-  selector: 'arlas-result-cog-visualisation-modal',
+  selector: 'arlas-cog-modal',
   standalone: true,
   imports: [
     MatDialogContent,
-    ResultCogVisualisationShortcutComponent,
+    CogPreviewComponent,
     MatDialogClose,
     TranslateModule
   ],
-  templateUrl: './result-cog-visualisation-modal.component.html',
-  styleUrl: './result-cog-visualisation-modal.component.scss'
+  templateUrl: './cog-modal.component.html',
+  styleUrl: './cog-modal.component.scss'
 })
-export class ResultCogVisualisationModalComponent {
+export class CogModalComponent {
   public data: {visualisations: VisualisationInterface[];} = inject(MAT_DIALOG_DATA);
 }

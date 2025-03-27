@@ -67,8 +67,11 @@ export interface Action {
    * If those fields values don't exist for an item, then the action could not be completed and therefore should be hidden. */
   fields?: string[];
   /** If this attribute is set, it means that this action needs for the conditions described to be true in order to be accomplished.
+   * Each list of the filters are joined by OR whereas each element of each list is joined by AND.
    * If the conditions are not met, then the action could not be completed and therefore should be hidden. */
-  filters?: Array<ActionFilter>;
+  filters?: Array<Array<ActionFilter>>;
+  /** Indicates what array of filters has been matched based on the queries made */
+  matched?: Array<boolean>;
   /** Calculated attribute that tells if the action should be shown or not. */
   show?: boolean;
   /** For global actions, even if no item is selected, the action will be enabled */

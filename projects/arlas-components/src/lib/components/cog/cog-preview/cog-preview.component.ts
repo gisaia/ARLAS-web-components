@@ -23,17 +23,17 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
-  selector: 'arlas-result-cog-visualisation-shortcut',
+  selector: 'arlas-cog-preview',
   standalone: true,
   imports: [
     NgOptimizedImage,
     TranslateModule,
     MatTooltip
   ],
-  templateUrl: './result-cog-visualisation-shortcut.component.html',
-  styleUrl: './result-cog-visualisation-shortcut.component.scss'
+  templateUrl: './cog-preview.component.html',
+  styleUrl: './cog-preview.component.scss'
 })
-export class ResultCogVisualisationShortcutComponent {
+export class CogPreviewComponent {
   public title = input<string>();
   public description = input<string>();
   public picture = input<string>('./assets/no-view.png');

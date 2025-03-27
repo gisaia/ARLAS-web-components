@@ -62,11 +62,11 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   @Output() public actionOnItemEvent: Subject<Action> = new Subject<Action>();
 
   /** Destroy subscriptions. */
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly _onDestroy$ = new Subject<boolean>();
 
   public actions: Action[];
 
-  public constructor(private notifier: ResultlistNotifierService) {
+  public constructor(private readonly notifier: ResultlistNotifierService) {
     /** When an Item is hovered: */
     this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter((i: Item) => i.identifier === this.item.identifier)).subscribe({
       next: (i: Item) => {
@@ -80,7 +80,10 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
               take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
           } else if (a.filters) {
             this.detailedDataRetriever.getMatch(i.identifier, a.filters).pipe(
-              take(1)).subscribe(v => a.show = v);
+              take(1)).subscribe(v => {
+                a.matched = v;
+                a.show = v.filter(v => v).length > 0;
+            });
           }
         });
       }
@@ -161,13 +164,14 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
             reverseAction: action.reverseAction,
             icon: action.icon,
             fields: action.fields,
+            filters: action.filters,
             show: action.show
           });
         });
         this.actions = item.actions;
         this.updateActions();
       });
-    } else if (item && item.actions && item.actions.length > 0) {
+    } else if (item?.actions?.length > 0) {
       this.actions = item.actions;
       this.updateActions();
     }
