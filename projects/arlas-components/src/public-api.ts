@@ -82,6 +82,7 @@ export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-colle
 export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
+export { ResultlistNotifierService } from './lib/services/resultlist.notifier.service';
 
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
 export { CogModalComponent } from './lib/components/cog/cog-modal/cog-modal.component';

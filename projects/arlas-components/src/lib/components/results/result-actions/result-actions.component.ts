@@ -88,6 +88,21 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
         });
       }
     });
+
+    /** When actions need to be refreshed */
+    this.notifier.refreshActions$.pipe(takeUntil(this._onDestroy$), filter(v => !v || v !== this.item.identifier)).subscribe({
+      next: () => {
+        this.detailedDataRetriever.getActions(this.item).pipe(take(1)).subscribe(actions => {
+          actions.forEach(a => {
+            const action = this.item.actions.find(v => v.id === a.id);
+            if (action) {
+              action.filters = a.filters;
+              action.show = undefined;
+            }
+          });
+        });
+      }
+    });
   }
 
   public ngOnInit(): void {

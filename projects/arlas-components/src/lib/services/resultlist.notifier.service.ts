@@ -29,10 +29,14 @@ export class ResultlistNotifierService {
   private itemHoveredSource: Subject<Item> = new Subject();
   public itemHovered$: Observable<Item> = this.itemHoveredSource.asObservable();
 
+  private refreshActionsSource = new Subject<string>();
+  public refreshActions$ = this.refreshActionsSource.asObservable();
+
   public notifyItemHover(item: Item) {
     this.itemHoveredSource.next(item);
   }
 
+  public refreshActions(id?: string) {
+    this.refreshActionsSource.next(id);
+  }
 }
-
-
