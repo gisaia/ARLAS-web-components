@@ -40,6 +40,10 @@
     cursor: pointer;
     color: grey;
 
+    &--unmatched {
+      cursor: not-allowed;
+    }
+
     &--matched {
       color: black;
     }

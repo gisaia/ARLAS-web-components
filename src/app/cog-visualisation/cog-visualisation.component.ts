@@ -35,26 +35,30 @@ import { CogModalComponent, CogPreviewComponent, CogVisualisationData } from 'ar
 export class CogVisualisationComponent {
   public readonly dialog = inject(MatDialog);
   public openDialog() {
+    const data = {
+      visualisations: [
+        {
+          visualisation: {name: 'NDVI', description: 'NDVI description'},
+          match: 'all'
+        },
+        {
+          visualisation: {name: 'TCI', description: 'TCI description'},
+          match: 'partial'
+        },
+        {
+          visualisation: {name: 'SWIR', description: 'SWIR description'},
+          match: 'none'
+        }
+      ],
+      loading: true
+    };
+
     const dialogRef = this.dialog.open(CogModalComponent, {
-      data : {
-        visualisations: [
-          {
-            visualisation: {name: 'NDVI', description: 'NDVI description'},
-            match: 'all'
-          },
-          {
-            visualisation: {name: 'TCI', description: 'TCI description'},
-            match: 'partial'
-          },
-          {
-            visualisation: {name: 'SWIR', description: 'SWIR description'},
-            match: 'none'
-          }
-        ],
-        loading: true
-      },
+      data : data,
       width: '600px',
       height:'30vh'
     });
+
+    setTimeout(() => data.loading = false, 5000);
   }
 }
