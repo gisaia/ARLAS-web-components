@@ -85,5 +85,5 @@ export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
 export { ResultlistNotifierService } from './lib/services/resultlist.notifier.service';
 
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
-export { CogModalComponent } from './lib/components/cog/cog-modal/cog-modal.component';
+export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
 export { CogVisualisationConfig, VisualisationInterface, DataGroup } from './lib/components/cog/model';

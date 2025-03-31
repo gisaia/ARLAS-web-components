@@ -19,9 +19,16 @@
 
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
 import { CogPreviewComponent } from '../cog-preview/cog-preview.component';
 import { VisualisationInterface } from '../model';
+
+
+export interface CogVisualisationData {
+  visualisation: VisualisationInterface;
+  match: 'all' | 'partial' | 'none';
+}
 
 
 @Component({
@@ -31,11 +38,12 @@ import { VisualisationInterface } from '../model';
     MatDialogContent,
     CogPreviewComponent,
     MatDialogClose,
-    TranslateModule
+    TranslateModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './cog-modal.component.html',
   styleUrl: './cog-modal.component.scss'
 })
 export class CogModalComponent {
-  public data: {visualisations: VisualisationInterface[];} = inject(MAT_DIALOG_DATA);
+  public data: { visualisations: CogVisualisationData[]; loading: boolean; } = inject(MAT_DIALOG_DATA);
 }

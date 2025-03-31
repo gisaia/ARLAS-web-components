@@ -19,7 +19,7 @@
  */
 
 import { Observable, from, of } from 'rxjs';
-import { AdditionalInfo, Attachment } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
+import { ActionFilter, AdditionalInfo, Attachment } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 import { Action, DetailedDataRetriever, Item } from '../../../../projects/arlas-components/src/public-api';
 
 
@@ -81,6 +81,9 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       });
     }
     return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments }));
+  }
 
+  public getMatch(identifier: string, filters: ActionFilter[][]): Observable<Array<boolean>> {
+    return of(filters.map(_ => Math.random() < 0.5));
   }
 }

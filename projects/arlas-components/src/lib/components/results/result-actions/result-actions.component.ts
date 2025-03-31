@@ -68,18 +68,18 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
 
   public constructor(private readonly notifier: ResultlistNotifierService) {
     /** When an Item is hovered: */
-    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter((i: Item) => i.identifier === this.item.identifier)).subscribe({
-      next: (i: Item) => {
+    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter(id => id === this.item.identifier)).subscribe({
+      next: id => {
         /** Always show non reversible actions. */
         this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
         /** We check if reversible actions has 'fields'.
          * - If one of the fields values is absent in the current item, the action will be hidden. */
         this.actions.filter(a => ActionHandler.isReversible(a) && a.show === undefined).forEach(a => {
           if (a.fields) {
-            this.detailedDataRetriever.getValues(i.identifier, a.fields).pipe(
+            this.detailedDataRetriever.getValues(id, a.fields).pipe(
               take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
           } else if (a.filters) {
-            this.detailedDataRetriever.getMatch(i.identifier, a.filters).pipe(
+            this.detailedDataRetriever.getMatch(id, a.filters).pipe(
               take(1)).subscribe(v => {
                 a.matched = v;
                 a.show = v.filter(v => v).length > 0;

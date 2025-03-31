@@ -36,6 +36,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 export class CogPreviewComponent {
   public title = input<string>();
   public description = input<string>();
-  public picture = input<string>('./assets/no-view.png');
+  public preview = input<string>('./assets/no-view.png');
   public showTooltipTitle = input<boolean>(false);
 }

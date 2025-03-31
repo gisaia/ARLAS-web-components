@@ -26,14 +26,14 @@ import { Item } from '../components/results/model/item';
 })
 export class ResultlistNotifierService {
 
-  private itemHoveredSource: Subject<Item> = new Subject();
-  public itemHovered$: Observable<Item> = this.itemHoveredSource.asObservable();
+  private itemHoveredSource = new Subject<string>();
+  public itemHovered$ = this.itemHoveredSource.asObservable();
 
   private refreshActionsSource = new Subject<string>();
   public refreshActions$ = this.refreshActionsSource.asObservable();
 
-  public notifyItemHover(item: Item) {
-    this.itemHoveredSource.next(item);
+  public notifyItemHover(id: string) {
+    this.itemHoveredSource.next(id);
   }
 
   public refreshActions(id?: string) {

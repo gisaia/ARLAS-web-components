@@ -1,9 +1,9 @@
 <div class="visualisation">
   <div class="visualisation-content">
     <img class="visualisation-picture"
-         [ngSrc]="picture()"
-         width="80" height="80"
-         alt="coverage visualisation">
+         [ngSrc]="preview()"
+         width="80" height="80" priority
+         [alt]="'Visualisation preview' | translate">
     <div class="visualisation-info">
       @if(showTooltipTitle()) {
         <span [matTooltip]="title() | translate" class="visualisation-info_title">{{title() | translate}}</span>

@@ -19,7 +19,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { CogModalComponent, CogPreviewComponent } from 'arlas-web-components';
+import { CogModalComponent, CogPreviewComponent, CogVisualisationData } from 'arlas-web-components';
 
 @Component({
   selector: 'arlas-cog-visualisation',
@@ -35,8 +35,23 @@ import { CogModalComponent, CogPreviewComponent } from 'arlas-web-components';
 export class CogVisualisationComponent {
   public readonly dialog = inject(MatDialog);
   public openDialog() {
-    this.dialog.open(CogModalComponent, {data : {
-      visualisations : [{name: 'toto', description : 'tata'}]
+    const dialogRef = this.dialog.open(CogModalComponent, {
+      data : {
+        visualisations: [
+          {
+            visualisation: {name: 'NDVI', description: 'NDVI description'},
+            match: 'all'
+          },
+          {
+            visualisation: {name: 'TCI', description: 'TCI description'},
+            match: 'partial'
+          },
+          {
+            visualisation: {name: 'SWIR', description: 'SWIR description'},
+            match: 'none'
+          }
+        ],
+        loading: true
       },
       width: '600px',
       height:'30vh'
