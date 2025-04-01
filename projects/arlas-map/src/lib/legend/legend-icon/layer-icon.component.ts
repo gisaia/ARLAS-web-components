@@ -151,12 +151,12 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, st
     strokeColor = getOneColor(strokeColorLegend);
   }
   const polygon = [
-    { 'x': 0, 'y': 0 },
-    { 'x': 18, 'y': 0 },
-    { 'x': 13, 'y': 15 },
-    { 'x': 1, 'y': 15 },
-    { 'x': 8, 'y': 7 },
-    { 'x': 0, 'y': 0 }];
+    { 'x': 0, 'y': 2 },
+    { 'x': 18, 'y': 2 },
+    { 'x': 13, 'y': 18 },
+    { 'x': 1, 'y': 18 },
+    { 'x': 8, 'y': 9 },
+    { 'x': 0, 'y': 2 }];
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').selectAll('polygon')
