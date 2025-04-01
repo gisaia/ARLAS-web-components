@@ -11,6 +11,7 @@
         <arlas-cog-preview
           [title]="v.visualisation.name"
           [description]="v.visualisation.description"
+          [preview]="v.preview ?? DEFAULT_IMAGE"
         ></arlas-cog-preview>
         <div class="visualisation__item__error">
           {{ 'No selected products match this visualisation' | translate }}
@@ -21,6 +22,7 @@
         <arlas-cog-preview
           [title]="v.visualisation.name"
           [description]="v.visualisation.description"
+          [preview]="v.preview ?? DEFAULT_IMAGE"
         ></arlas-cog-preview>
         @if (v.match === 'partial') {
           <div class="visualisation__item__warning">

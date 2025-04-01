@@ -39,15 +39,18 @@ export class CogVisualisationComponent {
       visualisations: [
         {
           visualisation: {name: 'NDVI', description: 'NDVI description'},
-          match: 'all'
+          match: 'all',
+          preview: './assets/logo-gisaia.png'
         },
         {
           visualisation: {name: 'TCI', description: 'TCI description'},
-          match: 'partial'
+          match: 'partial',
+          // preview: './assets/no-view.png'
         },
         {
           visualisation: {name: 'SWIR', description: 'SWIR description'},
-          match: 'none'
+          match: 'none',
+          preview: './assets/no-view.png'
         }
       ],
       loading: true

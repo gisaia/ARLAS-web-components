@@ -28,6 +28,7 @@ import { VisualisationInterface } from '../model';
 export interface CogVisualisationData {
   visualisation: VisualisationInterface;
   match: 'all' | 'partial' | 'none';
+  preview?: string;
 }
 
 
@@ -46,4 +47,6 @@ export interface CogVisualisationData {
 })
 export class CogModalComponent {
   public data: { visualisations: CogVisualisationData[]; loading: boolean; } = inject(MAT_DIALOG_DATA);
+
+  protected readonly DEFAULT_IMAGE = './assets/no-view.png';
 }
