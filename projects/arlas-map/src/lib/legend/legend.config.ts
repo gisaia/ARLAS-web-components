@@ -32,7 +32,8 @@ export interface Legend {
   maxValue?: string;
   fixValue?: string | number;
   interpolatedValues?: Array<string | number>;
-  manualValues?: Map<string, string | number>;
+  /** Map (field, (color & highlight)) */
+  manualValues?: Map<string, {color: string | number; highlight: boolean;}>;
   visible?: boolean;
   /** data to be plotted as histogram in the legend */
   histogram?: Array<HistogramData>;

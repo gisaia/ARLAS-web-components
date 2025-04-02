@@ -133,4 +133,9 @@ export class MaplibreLegendService extends LegendService {
     });
   }
 
+  public getColorField(paint: CirclePaintProps | LinePaintProps | FillPaintProps | HeatmapPaintProps | SymbolPaintProps,
+      layerType: string): string {
+    const key = (layerType === 'symbol' ? 'text' : layerType) + '-color';
+    return paint[key]?.[1]?.[1];
+  }
 }

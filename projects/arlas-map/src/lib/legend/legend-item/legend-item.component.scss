@@ -33,16 +33,27 @@
     }
 
     &--manual {
+        --arlas-legend-item-gap: 6px;
+
         display: flex;
         flex-flow: wrap;
         margin-top: 5px;
         max-height: 160px;
         overflow-y: auto;
+        gap: 0 var(--arlas-legend-item-gap);
 
         &__item {
+            --arlas-legend-item-highlight-size: 2px;
+
             display: flex;
             align-items: center;
-            min-width: 50%;
+            min-width: calc(50% - var(--arlas-legend-item-gap) / 2 - 2 * var(--arlas-legend-item-highlight-size));
+            height: calc(24px - 2 * var(--arlas-legend-item-highlight-size));
+            margin: var(--arlas-legend-item-highlight-size);
+
+            &--highlighted {
+                box-shadow: 0 0 10px var(--arlas-legend-item-highlight-size) lightgrey;
+            }
 
             .circle-tip {
                 width: 12px;

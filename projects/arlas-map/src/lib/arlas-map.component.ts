@@ -34,6 +34,7 @@ import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { AoiDimensions } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { LegendData } from './legend/legend.config';
+import { LegendService } from './legend/legend.service';
 import {
   AbstractArlasMapGL,
   ArlasMapOffset, ArlasMapOption,
@@ -248,10 +249,14 @@ export class ArlasMapComponent<L, S, M> {
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
-  public constructor(private readonly drawService: MapboxAoiDrawService,
-    private readonly basemapService: BasemapService<L, S, M>, private readonly translate: TranslateService,
+  public constructor(
+    private readonly drawService: MapboxAoiDrawService,
+    private readonly basemapService: BasemapService<L, S, M>,
+    private readonly translate: TranslateService,
     protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
-    protected mapService: AbstractArlasMapService<L, S, M>) {
+    protected mapService: AbstractArlasMapService<L, S, M>,
+    private readonly legendService: LegendService
+  ) {
       this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
       .subscribe(() => this.reorderLayers());
   }
@@ -466,11 +471,19 @@ export class ArlasMapComponent<L, S, M> {
     });
     this.mapLayers.events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
-      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
-        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] }));
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
+        this.legendService.highlightFeatures(layerId, e.features);
+        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      });
+      this.mapFrameworkService.onLayerEvent('mouseenter', this.map, layerId, (e) => {
+        this.legendService.highlightFeatures(layerId, e.features);
+        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      });
       /** Emits an empty object on mouse leaving a feature. */
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
-        this.onFeatureHover.next({}));
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
+        this.legendService.highlightFeatures(layerId, []);
+        this.onFeatureHover.next({});
+      });
     });
     /** Emits the clicked on feature. */
     this.mapLayers.events.emitOnClick.forEach(layerId => {

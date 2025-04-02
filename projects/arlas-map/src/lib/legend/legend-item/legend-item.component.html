@@ -8,8 +8,9 @@
   <div class="legend--manual" *ngIf="legend.type === PROPERTY_SELECTOR_SOURCE.manual
         || legend.type === PROPERTY_SELECTOR_SOURCE.generated
         || legend.type === PROPERTY_SELECTOR_SOURCE.provided">
-    <div class="legend--manual__item" *ngFor="let manualColor of legend.manualValues | keyvalue">
-      <div [style.backgroundColor]="manualColor.value"
+    <div class="legend--manual__item" *ngFor="let manualColor of legend.manualValues | keyvalue"
+        [class.legend--manual__item--highlighted]="manualColor.value.highlight">
+      <div [style.backgroundColor]="manualColor.value.color"
         [class.circle-tip]="layer.type === 'circle'"
         [class.line-tip]="layer.type === 'line'"
         [class.fill-tip]="layer.type === 'fill'">

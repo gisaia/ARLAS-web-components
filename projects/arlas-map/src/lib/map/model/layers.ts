@@ -27,6 +27,8 @@ export interface ArlasDataLayer {
   paint: ArlasPaint;
   layout?: any;
   filter?: any;
+  minzoom: number;
+  maxzoom: number;
 }
 
 export interface MapLayers<T> {
