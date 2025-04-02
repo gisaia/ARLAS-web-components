@@ -23,14 +23,17 @@ import { TranslateService } from '@ngx-translate/core';
 import { HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from '../map/model/filters';
 import tinycolor from 'tinycolor2';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { getMax } from './legend.component';
-import { MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './legend.tools';
+import { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './legend.tools';
+import { Subject } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export abstract class LegendService {
+  /** Emits for each layerId that was hovered the properties associated to the features in order to highlight the right ones in the legend */
+  protected highlightSource = new Subject<{layerId: string; properties: Array<{[name: string]: any;}>; }>();
+  public highlight$ = this.highlightSource.asObservable();
 
   public getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): CircleLegend {
     return undefined;
@@ -52,6 +55,13 @@ export abstract class LegendService {
     return undefined;
   }
 
+  /** Based on the paint of a layer and its type, returns the field used for the color matching */
+  public abstract getColorField(paint: any, layerType: string): string;
+
+  public highlightFeatures(layerId: string, features: Array<GeoJSON.Feature<GeoJSON.Geometry>>) {
+    this.highlightSource.next({layerId, properties: features.map(f => f.properties)});
+  }
+
   public static setProvidedColorLegend(colorLegend: Legend, field: string,
     legendData: Map<string, LegendData>, filter, translate: TranslateService) {
     colorLegend.title = field;
@@ -65,13 +75,13 @@ export abstract class LegendService {
         const keysToColors = legendData.get(field).keysColorsMap;
         const colorList = Array.from(keysToColors.keys()).map(k => [k, keysToColors.get(k)]).flat();
         for (let i = 0; i < colorList.length; i += 2) {
-          colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], colorList[i + 1]);
+          colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], { color: colorList[i + 1], highlight: false});
         }
         if (colorList.length === 0) {
-          colorLegend.manualValues.set('', '#eee');
+          colorLegend.manualValues.set('', { color: '#eee', highlight: false });
         }
       } else {
-        colorLegend.manualValues.set('', '#eee');
+        colorLegend.manualValues.set('', { color: '#eee', highlight: false });
       }
       if (filter) {
         LegendService.filterLegend(colorLegend.manualValues, filter,
@@ -114,13 +124,13 @@ export abstract class LegendService {
       if (hasDefaultColor && i === colorsLength - 3) {
         if (keysToColors.has(colorExpression[i] + '')) {
           colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
-            colorExpression[i + 1]);
+            {color: colorExpression[i + 1], highlight: false});
         }
-        colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, colorExpression[i + 2]);
+        colorLegend.manualValues.set(translate ? translate.instant(OTHER) : OTHER, {color: colorExpression[i + 2], highlight: false});
         break;
       } else if (keysToColors.has(colorExpression[i] + '')) {
         colorLegend.manualValues.set(translate ? translate.instant(colorExpression[i] + '') : colorExpression[i],
-          colorExpression[i + 1]);
+          {color: colorExpression[i + 1], highlight: false});
       }
     }
 
@@ -176,7 +186,7 @@ export abstract class LegendService {
 
   }
 
-  public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
+  public static filterLegend(colorLegendValues: Map<string, any>, filter: any[], field: string) {
     filter.forEach((f, idx) => {
       if (idx !== 0 && idx !== filter.length - 1) {
         switch (f[0]) {

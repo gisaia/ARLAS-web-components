@@ -25,6 +25,8 @@ export interface ArlasDataLayer {
   paint: ArlasPaint;
   layout?: any;
   filter?: any;
+  minzoom: number;
+  maxzoom: number;
 }
 
 export interface MapLayers<T> {
@@ -67,6 +69,7 @@ export interface LayerMetadata {
   stroke?: FillStroke;
   isScrollableLayer?: boolean;
   hiddenProps?: MetadataHiddenProps;
+  showLegend?: boolean;
 }
 export interface MetadataHiddenProps {
   geomType?: string;

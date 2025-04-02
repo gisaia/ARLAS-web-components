@@ -182,8 +182,8 @@ export function getOneColor(legend: Legend): string {
     color = legend.fixValue + '';
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
     || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const mv = legend.manualValues as Map<string, string>;
-    color = mv.values().next().value;
+    const mv = legend.manualValues;
+    color = mv.values().next().value.color;
   }
   return color;
 }
@@ -276,8 +276,8 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray
     }
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
     || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const mv = colorLegend.manualValues as Map<string, string>;
-    lineColor = mv.values().next().value;
+    const mv = colorLegend.manualValues;
+    lineColor = mv.values().next().value.color;
   }
   let svgDashArray = '0';
   if (!!dashArray && dashArray.length > 1) {
@@ -464,16 +464,16 @@ export function populateListFromLegend(list: Array<string | number>, legend: Leg
     }
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
     || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const iv = legend.manualValues as Map<string, string>;
+    const iv = legend.manualValues;
     if (iv) {
       if (iv.size === 1) {
-        const color = iv.values().next().value;
+        const color = iv.values().next().value.color;
         list.push(color, color, color);
       } else if (iv.size === 2) {
-        list.push(Array.from(iv.values())[0], Array.from(iv.values())[0], Array.from(iv.values())[1]);
+        list.push(Array.from(iv.values())[0].color, Array.from(iv.values())[0].color, Array.from(iv.values())[1].color);
       } else if (iv.size >= 3) {
-        list.push(Array.from(iv.values())[0], Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)],
-          Array.from(iv.values())[Array.from(iv.keys()).length - 1]);
+        list.push(Array.from(iv.values())[0].color, Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)].color,
+          Array.from(iv.values())[Array.from(iv.keys()).length - 1].color);
       }
     } else if (!iv || iv.size === 0) {
       list.push('#eee', '#eee', '#eee');
