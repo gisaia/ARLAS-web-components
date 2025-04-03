@@ -475,10 +475,6 @@ export class ArlasMapComponent<L, S, M> {
         this.legendService.highlightFeatures(layerId, e.features);
         this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
       });
-      this.mapFrameworkService.onLayerEvent('mouseenter', this.map, layerId, (e) => {
-        this.legendService.highlightFeatures(layerId, e.features);
-        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
-      });
       /** Emits an empty object on mouse leaving a feature. */
       this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
         this.legendService.highlightFeatures(layerId, []);

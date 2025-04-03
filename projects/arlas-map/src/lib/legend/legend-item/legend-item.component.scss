@@ -20,7 +20,9 @@
 @import "../../../../assets/styles/sizes.scss";
 
 .legend {
-    padding-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     &__title {
         text-align: center;
@@ -38,7 +40,7 @@
         display: flex;
         flex-flow: wrap;
         margin-top: 5px;
-        max-height: 160px;
+        max-height: 300px;
         overflow-y: auto;
         gap: 0 var(--arlas-legend-item-gap);
 
@@ -88,7 +90,40 @@
 
     &--interpolated {
         height: 100%;
-        padding-top: 5px;
+        // Leave enough space on each side for the cursor values
+        width: calc(100% - 25px);
+        position: relative;
+
+        --arlas-legend-item-arrow-size: 5px;
+
+        margin-top: var(--arlas-legend-item-arrow-size);
+
+        &__cursor {
+            position: absolute;
+            // Create the arrow down
+            width: 0;
+            height: 0;
+            border-left: var(--arlas-legend-item-arrow-size) solid transparent;
+            border-right: var(--arlas-legend-item-arrow-size) solid transparent;
+            // Add some transparency to allow to visualize when a lot of elements are present at once
+            border-top: var(--arlas-legend-item-arrow-size) solid #00000070;
+
+            top: calc(-1* var(--arlas-legend-item-arrow-size));
+
+            // Properly align the tip of the arrow with where it points
+            transform: translate(-50%, 0);
+        }
+
+        &__cursor__value {
+            position: absolute;
+            bottom: 0;
+            background-color: white;
+            box-shadow: 0 0 5px 2px lightgray;
+            white-space: nowrap;
+
+            // Properly align with the value
+            transform: translate(-50%, 0);
+        }
 
         &__palette {
             height: 5px;
