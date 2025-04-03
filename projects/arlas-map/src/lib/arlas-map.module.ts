@@ -30,7 +30,8 @@ import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ArlasColorService, FormatNumberModule,
-  GetCollectionDisplayModule, GetColorModule, GetValueModule
+  GetCollectionDisplayModule, GetColorModule, GetValueModule,
+  ShortenNumberModule
 } from 'arlas-web-components';
 import { ArlasMapComponent } from './arlas-map.component';
 import { GetCollectionPipe } from './arlas-map.pipe';
@@ -78,7 +79,8 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     MapSettingsModule,
     MapImportModule,
     BasemapModule,
-    MarkerModule
+    MarkerModule,
+    ShortenNumberModule
   ],
   providers: [
     MapboxAoiDrawService,

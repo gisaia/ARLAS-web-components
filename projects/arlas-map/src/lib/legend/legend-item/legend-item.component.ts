@@ -17,8 +17,13 @@
  * under the License.
  */
 
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, Input, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter } from 'rxjs';
+import { OTHER } from '../../map/model/filters';
+import { ArlasDataLayer } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
+import { LegendService } from '../legend.service';
 
 @Component({
   selector: 'arlas-legend-item',
@@ -28,12 +33,91 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 export class LegendItemComponent {
   @Input() public legend: Legend;
   @Input() public title: string;
-  @Input() public layer: any;
+  @Input() public layer: ArlasDataLayer;
   @Input() public colorPalette: string;
   @ViewChild('interpolated_svg', { read: ElementRef, static: false }) public interpolatedElement: ElementRef;
 
   protected PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
-  public constructor() { }
+  /** List of cursors to display around the interpolated legend */
+  public cursors = new Array<{position: number; value: string;}>();
+  // TODO: find the right value?
+  /** Maximum number of cursors before not displaying their values */
+  public MAX_CURSOR_VALUES = 3;
+  // TODO: find the right value?
+  /** Minimum distance between two cursors to display their value */
+  public MIN_CURSOR_VALUE_DISTANCE = 15;
 
+  public constructor(
+    private readonly legendService: LegendService,
+    private readonly destroyRef: DestroyRef
+  ) { }
+
+  public ngOnInit() {
+    // TODO: parameter whether this is wanted?
+    this.legendService.highlight$
+      .pipe(filter(v => v.layerId === this.layer.id), takeUntilDestroyed(this.destroyRef))
+      .subscribe(highlight => {
+        console.log(this.legend);
+
+        if (this.legend.manualValues) {
+          const colorField = this.legendService.getColorField(this.layer.paint, this.layer.type);
+          if (!colorField) {
+            return;
+          }
+
+          // Get all the unique values from the properties
+          const valuesToHighlight = new Set(highlight.properties.map(p => {
+            const value = p[colorField];
+            if (!this.legend.manualValues.has(value)) {
+              return OTHER;
+            }
+            return value;
+          }));
+
+          // Based on what is received, change the highlight
+          this.legend.manualValues.forEach((v, k) => {
+            v.highlight = valuesToHighlight.has(k);
+          });
+        }
+
+        if (this.legend.interpolatedValues) {
+          if (!this.legend.title) {
+            return;
+          }
+
+          const colorField = this.legend.title;
+
+          if (this.legend.title.endsWith('normalized')) {
+            const valueField = colorField.split(':')[0] + ':_arlas__short_format';
+
+            this.cursors = highlight.properties
+              .map(p => ({ position: Math.min(100, 100 * p[colorField]), value: p[valueField]}));
+          } else {
+            const min = +this.legend.minValue;
+            const max = +this.legend.maxValue;
+
+            this.cursors = highlight.properties
+              .map(p => ({ position: Math.min(100, 100 * (p[colorField] - min) / (max - min)), value: p[colorField] }));
+          }
+
+          if (this.cursors.length <= this.MAX_CURSOR_VALUES) {
+            this.cursors.sort((a, b) => a.position - b.position);
+
+            // Remove some of the values if they are too close to one another
+            let lastCursorWithValue = 0;
+            this.cursors.forEach((c, idx) => {
+              if (idx < this.cursors.length - 1
+                  && this.cursors[idx + 1].position - this.cursors[lastCursorWithValue].position < this.MIN_CURSOR_VALUE_DISTANCE) {
+                this.cursors[idx + 1].value = undefined;
+              } else {
+                lastCursorWithValue = idx;
+              }
+            });
+          } else {
+            this.cursors.forEach(c => c.value = undefined);
+          }
+        }
+      });
+  }
 }
