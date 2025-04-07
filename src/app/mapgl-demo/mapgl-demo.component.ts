@@ -19,22 +19,24 @@
 
 
 import { Component, ViewChild } from '@angular/core';
-
+import { GeoJSONSource, GeoJSONSourceRaw, MapboxOptions } from 'mapbox-gl';
 import { Subject } from 'rxjs';
-
-import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
-import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
 import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
+import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
 import {
   GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
   OperationSelectModel
 } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
-import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
+import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
+import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
 import { ArlasAnyLayer } from '../../../projects/arlas-mapbox/src/lib/map/model/layers';
 import { MapboxSourceType } from '../../../projects/arlas-mapbox/src/lib/map/model/sources';
-import { GeoJSONSource, GeoJSONSourceRaw, MapboxOptions } from 'mapbox-gl';
 import {
-  defaultBasemapStyle, basemapStyles, geojsondata, drawOptions, mapDataSources, mapLayers,
+  basemapStyles,
+  defaultBasemapStyle,
+  drawOptions,
+  geojsondata,
+  mapDataSources, mapLayers,
   mapSources, visualisationSets
 } from '../../tools/map.constants';
 
@@ -45,7 +47,9 @@ import {
 })
 export class MapglDemoComponent {
 
+  // eslint-disable-next-line max-len
   @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;
+  // eslint-disable-next-line max-len
   @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
@@ -53,7 +57,7 @@ export class MapglDemoComponent {
   public idToSelect: number;
   public actionDisabled = false;
   public drawEnabled = true;
-  public defaultBasemapStyle = defaultBasemapStyle
+  public defaultBasemapStyle = defaultBasemapStyle;
   public basemapStyles = basemapStyles;
 
   public geojsondata = geojsondata;
@@ -62,7 +66,7 @@ export class MapglDemoComponent {
   public drawOptions = drawOptions;
 
   public mapDataSources = mapDataSources;
-  public mapSources = mapSources
+  public mapSources = mapSources;
   public visualisationSets: Array<VisualisationSetConfig> = visualisationSets;
 
   public visibilityUpdater = new Subject<Map<string, boolean>>();
