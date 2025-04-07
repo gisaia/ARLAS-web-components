@@ -18,8 +18,10 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import distance from '@turf/distance';
 import { bearingToAzimuth, point, polygon } from '@turf/helpers';
 import length from '@turf/length';
+import midpoint from '@turf/midpoint';
 import rhumbBearing from '@turf/rhumb-bearing';
 import rhumbDestination from '@turf/rhumb-destination';
 import transformRotate from '@turf/transform-rotate';
@@ -58,6 +60,22 @@ export function buildStrip(start, end, halfSwath, options: any = {}) {
     properties.start = start;
     properties.end = end;
     return polygon([coordinates], properties);
+}
+
+export function computeStripProperties(coordinates) {
+    const properties = new Map();
+
+    // Compute bearing
+    const bearingAngle = rhumbBearing(point(coordinates[0]), point(coordinates[3]));
+    properties['bearingAngle'] = bearingToAzimuth(bearingAngle);
+
+    // Compute origin
+    properties['origin'] = midpoint(point(coordinates[0]), point(coordinates[1])).geometry.coordinates;
+
+    // Compute length
+    properties['length'] = distance(point(coordinates[1]), point(coordinates[2]), { units: 'kilometers' });
+
+    return properties;
 }
 
 const doubleClickZoom = {
@@ -154,7 +172,7 @@ stripMode.onMouseMove = function (state, e) {
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
             state.currentMaxBearing = bearing;
             state.isStripDrew = true;
-            state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
+            Object.assign(state.strip.properties, computeStripProperties(stripFeature.geometry.coordinates[0]));
         } else if (stripLength <= state.maxLength || state.isStripDrew === undefined) {
             const stripFeature = buildStrip(start, end, state.halfSwath);
             stripFeature.properties.parent = state.line.id;
@@ -162,13 +180,13 @@ stripMode.onMouseMove = function (state, e) {
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
             state.currentMaxBearing = bearing;
             state.isStripDrew = true;
-            state.strip.properties['bearingAngle'] = bearingToAzimuth(bearing);
+            Object.assign(state.strip.properties, computeStripProperties(stripFeature.geometry.coordinates[0]));
         } else if (state.isStripDrew && stripLength > state.maxLength) {
             const stripFeature = rotateStrip(start, end, state, state.currentMaxBearing);
             stripFeature.properties.parent = state.line.id;
             stripFeature.properties.meta = 'strip';
             state.strip.setCoordinates(stripFeature.geometry.coordinates);
-            state.strip.properties['bearingAngle'] = bearingToAzimuth(state.currentMaxBearing);
+            Object.assign(state.strip.properties, computeStripProperties(stripFeature.geometry.coordinates[0]));
         }
     }
 };
