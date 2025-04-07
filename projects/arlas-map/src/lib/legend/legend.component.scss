@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- @import "../../../assets/styles/sizes.scss";
+@import "../../../assets/styles/sizes.scss";
 
 .layer_name {
-  font-size: $sm-font-size;
+  font-size: $default-font-size;
 }
 
 .layer_wrapper {
@@ -44,7 +44,7 @@
 }
 .layer_icon_container {
   display: flex;
-  padding-left: 3px;
+  padding-left: 5px;
 }
 .layer_detail {
   display: flex;
