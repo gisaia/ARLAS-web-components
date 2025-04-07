@@ -1,9 +1,9 @@
 <div id="{{id}}" class="map__container">
-  <div class="map__visu-list">
+  <div class="map__visu-list" *ngIf="visualisationSetsConfig?.length > 0">
     <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
       <mat-icon (click)="legendOpen=!legendOpen" (keyDown)="legendOpen=!legendOpen">layers</mat-icon>
     </div>
-    <div [hidden]="!legendOpen" *ngIf="visualisationSetsConfig" class="map__visu-list--container" cdkDropList
+    <div [hidden]="!legendOpen" class="map__visu-list--container" cdkDropList
       (cdkDropListDropped)="drop($event)">
       <div cdkDrag class="map__visu-item" *ngFor="let visu of visualisationSetsConfig">
         <div cdkDragHandle class="map__visu-title">
@@ -37,7 +37,7 @@
   (basemapChanged)="onChangeBasemapStyle()"></arlas-basemap>
 
 
-<arlas-draw #drawComponent *ngIf="map"  [map]="map" [emptyData]="emptyData" [drawData]="drawData"
+<arlas-draw #drawComponent *ngIf="map" [map]="map" [emptyData]="emptyData" [drawData]="drawData"
   [drawButtonEnabled]="drawButtonEnabled" [drawOption]="drawOption"
   [drawPolygonVerticesLimit]="drawPolygonVerticesLimit" [preserveDrawingBuffer]="preserveDrawingBuffer"
   (onAoiChanged)="onAoiChanged.emit($event)"
