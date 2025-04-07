@@ -32,13 +32,8 @@ import { ArlasMapService } from '../../../projects/arlas-mapbox/src/lib/arlas-ma
 import { ArlasMapboxService } from '../../../projects/arlas-mapbox/src/lib/arlas-mapbox.service';
 import { MapboxBasemapService } from '../../../projects/arlas-mapbox/src/lib/basemaps/mapbox-basemap.service';
 import { MapboxLegendService } from '../../../projects/arlas-mapbox/src/lib/legend/legend.service';
-import { MapglDemoComponent } from './mapgl-demo.component';
 
 @NgModule({
-    declarations: [
-        MapglDemoComponent
-    ],
-    exports: [MapglDemoComponent],
     imports: [
         CommonModule,
         MatRadioModule,
