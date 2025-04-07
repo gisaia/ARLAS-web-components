@@ -51,6 +51,8 @@
 	"Zoom in": "Acercarse",
 	"Zoom out": "Alejarse",
 	"Reset bearing to north": "Restablecer el rumbo al norte",
+	"Enable globe": "Activar globo",
+	"Disable globe": "Desactivar globo",
 	"other_color": "Otro",
 	"Toggle Pitch": "Activar/Quitar inclinación del mapa",
 	"legend without metric": "{{field}} ({{normalized}})",
