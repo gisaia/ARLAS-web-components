@@ -113,8 +113,7 @@
   overflow-x: hidden;
 
   .cdk-visually-hidden {
-    // By forcing this height, it removes the scrolling-bar when there is overflow:auto
-    height: 2px;
+    display: none;
   }
 }
 

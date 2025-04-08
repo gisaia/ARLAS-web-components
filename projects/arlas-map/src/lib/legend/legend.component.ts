@@ -340,7 +340,8 @@ export function getMiddleColor(colorLegend: Legend): string {
       if (iv.size === 1) {
         color = iv.keys().next().value;
       } else if (iv.size >= 2) {
-        color = Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)].color as string;
+        const values = Array.from(iv.values());
+        color = values[Math.trunc(values.length / 2)].color as string;
       }
     }
   }
