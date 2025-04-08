@@ -81,8 +81,8 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
           } else if (a.filters) {
             this.detailedDataRetriever.getMatch(id, a.filters).pipe(
               take(1)).subscribe(v => {
-                a.matched = v;
-                a.show = v.filter(v => v).length > 0;
+                a.matched = v.matched;
+                a.show = v.matched.filter(v => v).length > 0;
             });
           }
         });

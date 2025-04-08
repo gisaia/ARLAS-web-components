@@ -17,9 +17,14 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action, ActionFilter } from '../utils/results.utils';
+import { AdditionalInfo, Action, ActionFilter, ItemDataType } from '../utils/results.utils';
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
+
+export interface MatchInfo {
+  matched: Array<boolean>;
+  data: Map<string, ItemDataType>;
+}
 
 
 export interface DetailedDataRetriever {
@@ -30,6 +35,6 @@ export interface DetailedDataRetriever {
 
   getActions(item: Item): Observable<Array<Action>>;
 
-  getMatch(identifier: string, filters: ActionFilter[][]): Observable<Array<boolean>>;
+  getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
 
 }
