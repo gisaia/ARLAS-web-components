@@ -186,7 +186,7 @@ export abstract class LegendService {
 
   }
 
-  public static filterLegend(colorLegendValues: Map<string, any>, filter: any[], field: string) {
+  public static filterLegend(colorLegendValues: Map<string, {color: string | number; highlight: boolean;}>, filter: any[], field: string) {
     filter.forEach((f, idx) => {
       if (idx !== 0 && idx !== filter.length - 1) {
         switch (f[0]) {

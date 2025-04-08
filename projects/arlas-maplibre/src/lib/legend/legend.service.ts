@@ -39,7 +39,7 @@ export class MaplibreLegendService extends LegendService {
     super();
   }
 
-  public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
+  public static filterLegend(colorLegendValues: Map<string, {color: string | number; highlight: boolean;}>, filter: any[], field: string) {
     LegendService.filterLegend(colorLegendValues, filter, field);
   }
 

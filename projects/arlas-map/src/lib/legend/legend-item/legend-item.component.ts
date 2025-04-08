@@ -58,66 +58,81 @@ export class LegendItemComponent {
     this.legendService.highlight$
       .pipe(filter(v => v.layerId === this.layer.id), takeUntilDestroyed(this.destroyRef))
       .subscribe(highlight => {
-        console.log(this.legend);
-
         if (this.legend.manualValues) {
-          const colorField = this.legendService.getColorField(this.layer.paint, this.layer.type);
-          if (!colorField) {
-            return;
-          }
-
-          // Get all the unique values from the properties
-          const valuesToHighlight = new Set(highlight.properties.map(p => {
-            const value = p[colorField];
-            if (!this.legend.manualValues.has(value)) {
-              return OTHER;
-            }
-            return value;
-          }));
-
-          // Based on what is received, change the highlight
-          this.legend.manualValues.forEach((v, k) => {
-            v.highlight = valuesToHighlight.has(k);
-          });
+          this.highlightKeywords(highlight);
         }
 
         if (this.legend.interpolatedValues) {
-          if (!this.legend.title) {
-            return;
-          }
-
-          const colorField = this.legend.title;
-
-          if (this.legend.title.endsWith('normalized')) {
-            const valueField = colorField.split(':')[0] + ':_arlas__short_format';
-
-            this.cursors = highlight.properties
-              .map(p => ({ position: Math.min(100, 100 * p[colorField]), value: p[valueField]}));
-          } else {
-            const min = +this.legend.minValue;
-            const max = +this.legend.maxValue;
-
-            this.cursors = highlight.properties
-              .map(p => ({ position: Math.min(100, 100 * (p[colorField] - min) / (max - min)), value: p[colorField] }));
-          }
-
-          if (this.cursors.length <= this.MAX_CURSOR_VALUES) {
-            this.cursors.sort((a, b) => a.position - b.position);
-
-            // Remove some of the values if they are too close to one another
-            let lastCursorWithValue = 0;
-            this.cursors.forEach((c, idx) => {
-              if (idx < this.cursors.length - 1
-                  && this.cursors[idx + 1].position - this.cursors[lastCursorWithValue].position < this.MIN_CURSOR_VALUE_DISTANCE) {
-                this.cursors[idx + 1].value = undefined;
-              } else {
-                lastCursorWithValue = idx;
-              }
-            });
-          } else {
-            this.cursors.forEach(c => c.value = undefined);
-          }
+          this.displayCursors(highlight);
         }
       });
+  }
+
+  /**
+   * Change the 'highlight' state of the keywords in the legend to make them pop more
+   * @param highlight The features'values to highlight
+   */
+  private highlightKeywords(highlight: {layerId: string; properties: Array<{[name: string]: any;}>; }) {
+    const colorField = this.legendService.getColorField(this.layer.paint, this.layer.type);
+    if (!colorField) {
+      return;
+    }
+
+    // Get all the unique values from the properties
+    const valuesToHighlight = new Set(highlight.properties.map(p => {
+      const value = p[colorField];
+      if (!this.legend.manualValues.has(value)) {
+        return OTHER;
+      }
+      return value;
+    }));
+
+    // Based on what is received, change the highlight
+    this.legend.manualValues.forEach((v, k) => {
+      v.highlight = valuesToHighlight.has(k);
+    });
+  }
+
+  /**
+   * For every different value to highlight, add a cursor above the legend.
+   * If there are less than a certain number of cursors, also display their values if they don't overlap.
+   * @param highlight The features'values to highlight
+   */
+  private displayCursors(highlight: {layerId: string; properties: Array<{[name: string]: any;}>; }) {
+    if (!this.legend.title) {
+      return;
+    }
+
+    const colorField = this.legend.title;
+
+    if (this.legend.title.endsWith('normalized')) {
+      const valueField = colorField.split(':')[0] + ':_arlas__short_format';
+
+      this.cursors = highlight.properties
+        .map(p => ({ position: Math.min(100, 100 * p[colorField]), value: p[valueField]}));
+    } else {
+      const min = +this.legend.minValue;
+      const max = +this.legend.maxValue;
+
+      this.cursors = highlight.properties
+        .map(p => ({ position: Math.min(100, 100 * (p[colorField] - min) / (max - min)), value: p[colorField] }));
+    }
+
+    if (this.cursors.length <= this.MAX_CURSOR_VALUES) {
+      this.cursors.sort((a, b) => a.position - b.position);
+
+      // Remove some of the values if they are too close to one another
+      let lastCursorWithValue = 0;
+      this.cursors.forEach((c, idx) => {
+        if (idx < this.cursors.length - 1
+            && this.cursors[idx + 1].position - this.cursors[lastCursorWithValue].position < this.MIN_CURSOR_VALUE_DISTANCE) {
+          this.cursors[idx + 1].value = undefined;
+        } else {
+          lastCursorWithValue = idx;
+        }
+      });
+    } else {
+      this.cursors.forEach(c => c.value = undefined);
+    }
   }
 }
