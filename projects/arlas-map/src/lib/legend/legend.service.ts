@@ -236,7 +236,8 @@ export abstract class LegendService {
     const circleRadiusEvolution: Array<HistogramData> = new Array();
     if (Array.isArray(radiusExpression)) {
       if (radiusExpression.length >= 3) {
-        if (radiusExpression[0] === INTERPOLATE) {
+        // Filter out the zoom-dependent radius layers (circle-heatmap)
+        if (radiusExpression[0] === INTERPOLATE && radiusExpression[2].length > 1) {
           const field = radiusExpression[2][1];
           radiusExpression.filter((w, i) => i >= 3).forEach((w, i) => {
             if (i % 2 === 0) {
