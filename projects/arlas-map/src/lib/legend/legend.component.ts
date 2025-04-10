@@ -17,7 +17,9 @@
  * under the License.
  */
 
-import { AfterViewInit, Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  AfterViewInit, Component, computed, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild, WritableSignal
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { ArlasColorService } from 'arlas-web-components';
@@ -85,11 +87,20 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('width_legend', { static: false }) public lineWidthLegend: any;
   @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: any;
 
-  public colorLegend: Legend = {};
   public lineDasharray: Array<number>;
-  public strokeColorLegend: Legend = {};
-  public widthLegend: Legend = {};
-  public radiusLegend: Legend = {};
+
+  public colorLegend: WritableSignal<Legend> = signal({});
+  public hasColorLegend = computed(() => this.colorLegend().type !== undefined && this.colorLegend().type !== 'Fix');
+
+  public strokeColorLegend: WritableSignal<Legend> = signal({});
+  public hasStrokeLegend = computed(() => this.strokeColorLegend().type !== undefined && this.strokeColorLegend().type !== 'Fix');
+
+  public widthLegend: WritableSignal<Legend> = signal({});
+  public hasWidthLegend = computed(() => this.widthLegend().type !== undefined && this.widthLegend().type !== 'Fix');
+
+  public radiusLegend: WritableSignal<Legend> = signal({});
+  public hasRadiusLegend = computed(() => this.radiusLegend().type !== undefined && this.radiusLegend().type !== 'Fix');
+
   public detail = false;
   public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
@@ -198,14 +209,14 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
     switch (type) {
       case 'circle': {
         const circleLegend = this.legendService.getCircleLegend(paint, visibileMode, this.legendData, this.layer);
-        this.colorLegend = circleLegend.color;
-        this.strokeColorLegend = circleLegend.strokeColor;
+        this.colorLegend.set(circleLegend.color);
+        this.strokeColorLegend.set(circleLegend.strokeColor);
         this.colorPalette = circleLegend.colorPalette;
         this.strokeColorPalette = circleLegend.strokeColorPalette;
-        this.radiusLegend = circleLegend.radius;
+        this.radiusLegend.set(circleLegend.radius);
         if (this.circleRadiusLegend?.interpolatedElement) {
           const circleRadiusEvolution = circleLegend.radius.histogram;
-          drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend,
+          drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(circleRadiusEvolution)) * 2);
         }
         break;
@@ -213,52 +224,52 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
       case 'line': {
         const lineLegend = this.legendService.getLineLegend(paint, visibileMode, this.legendData, this.layer);
         this.lineDasharray = lineLegend.dashes;
-        this.colorLegend = lineLegend.color;
+        this.colorLegend.set(lineLegend.color);
         this.colorPalette = lineLegend.colorPalette;
-        this.widthLegend = lineLegend.width;
+        this.widthLegend.set(lineLegend.width);
         if (this.lineWidthLegend?.interpolatedElement) {
           const lineWidthEvolution = lineLegend.width.histogram;
-          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
+          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);
         }
         break;
       }
       case 'fill': {
         const fillLegend = this.legendService.getFillLegend(paint, visibileMode, this.legendData, this.layer);
-        this.colorLegend = fillLegend.color;
+        this.colorLegend.set(fillLegend.color);
         this.colorPalette = fillLegend.colorPalette;
-        this.strokeColorLegend = fillLegend?.strokeColor;
+        this.strokeColorLegend.set(fillLegend?.strokeColor);
         this.strokeColorPalette = fillLegend?.strokeColorPalette;
         break;
       }
       case 'heatmap': {
         const heatmapLegend = this.legendService.getHeatmapLegend(paint, visibileMode, this.legendData, this.layer);
 
-        this.colorLegend = heatmapLegend.color;
+        this.colorLegend.set(heatmapLegend.color);
         this.colorPalette = heatmapLegend.colorPalette;
-        this.radiusLegend = heatmapLegend.radius;
+        this.radiusLegend.set(heatmapLegend.radius);
         if (this.circleRadiusLegend?.interpolatedElement) {
           const heatmapRadiusEvolution = heatmapLegend.radius.histogram;
-          drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, heatmapRadiusEvolution, this.colorLegend,
+          drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, heatmapRadiusEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(heatmapRadiusEvolution)) * 2);
         }
         break;
       }
       case 'symbol': {
         const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer);
-        this.colorLegend = symbolLegend.color;
+        this.colorLegend.set(symbolLegend.color);
         this.colorPalette = symbolLegend.colorPalette;
-        this.widthLegend = symbolLegend.size;
+        this.widthLegend.set(symbolLegend.size);
         if (!!this.lineWidthLegend && !!this.lineWidthLegend.interpolatedElement) {
           const lineWidthEvolution = symbolLegend.size.histogram;
-          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend,
+          drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);
         }
         break;
       }
     }
-    if (!this.colorLegend.fixValue) {
-      this.colorLegend.fixValue = visibileMode ? '#444' : '#d3d3d3';
+    if (!this.colorLegend().fixValue) {
+      this.colorLegend().fixValue = visibileMode ? '#444' : '#d3d3d3';
     }
     const layer = { ...this.layer };
     this.layer = null;
