@@ -357,8 +357,10 @@ export class ArlasMapComponent<L, S, M> {
         const iconErrorMessage = 'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found';
         this.mapFrameworkService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable });
       });
-
     }
+
+    this.mapFrameworkService.addImage('rotate', this.ICONS_BASE_PATH + 'rotate/01.png', this.map, 'Rotate not found');
+    this.mapFrameworkService.addImage('resize', this.ICONS_BASE_PATH + 'resize/01.png', this.map, 'Resize not found');
   }
 
   /**

@@ -1,4 +1,4 @@
-<div *ngIf="legend && legend.type && legend.visible !== false" class="legend">
+<div *ngIf="legend && legend.type && legend.visible !== false && layer" class="legend">
   <ng-container *ngIf="(legend.title | formatLegend) as l">
     <div class="legend__title">
       {{ title | translate}} {{ l.translateKey | translate: {metric: l.metric | translate, field: l.field | translate, normalized: l.normalized | translate: {normalizedKey: l.normalizedKey | translate} } }}

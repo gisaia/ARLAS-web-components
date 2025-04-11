@@ -18,15 +18,15 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { bearingToAzimuth, point } from '@turf/helpers';
 import center from '@turf/center';
-import midpoint from '@turf/midpoint';
 import distance from '@turf/distance';
+import { point } from '@turf/helpers';
+import midpoint from '@turf/midpoint';
 import rhumbDestination from '@turf/rhumb-destination';
 
-import transformRotate from '@turf/transform-rotate';
 import rhumbBearing from '@turf/rhumb-bearing';
-import { buildStrip } from './strip.mode';
+import transformRotate from '@turf/transform-rotate';
+import { buildStrip, computeStripProperties } from './strip.mode';
 
 export const stripDirectSelectMode: any = {};
 
@@ -302,8 +302,7 @@ stripDirectSelectMode.dragRotatePoint = function (state, e, delta) {
         });
     state.start = undefined;
     state.feature.incomingCoords(rotatedFeature.geometry.coordinates);
-    const bearingAngle = rhumbBearing(point(rotatedFeature.geometry.coordinates[0][0]), point(rotatedFeature.geometry.coordinates[0][3]));
-    state.feature.properties['bearingAngle'] = bearingToAzimuth(bearingAngle);
+    Object.assign(state.feature.properties, computeStripProperties(state.feature.coordinates[0]));
     this.fireUpdate();
 };
 
@@ -326,6 +325,7 @@ stripDirectSelectMode.dragResizePoint = function (state, e, delta) {
     const newPolygon = buildStrip(state.start, end, state.halfSwath);
     if (dist <= state.maxLength) {
         state.feature.setCoordinates(newPolygon.geometry.coordinates);
+        Object.assign(state.feature.properties, computeStripProperties(state.feature.coordinates[0]));
         this.fireUpdate();
     }
 };
@@ -336,6 +336,7 @@ stripDirectSelectMode.dragFeature = function (state, e, delta) {
     MapboxDraw.lib.moveFeatures(this.getSelected(), delta);
     state.dragMoveLocation = e.lngLat;
     state.start = undefined;
+    Object.assign(state.feature.properties, computeStripProperties(state.feature.coordinates[0]));
     this.fireUpdate();
 };
 
