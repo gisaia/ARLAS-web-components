@@ -1,12 +1,5 @@
 # Change Log
 
-## [v27.0.8](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.8) (2025-04-11)
-
-**Fixed bugs:**
-
-- Creating a strip or a circle does not display anything after the first point is set [\#957](https://github.com/gisaia/ARLAS-web-components/issues/957) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
-- correct return type of getSource [\#923](https://github.com/gisaia/ARLAS-web-components/issues/923) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
-
 ## [v27.0.7](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.7) (2025-03-19)
 
 **New stuff:**
