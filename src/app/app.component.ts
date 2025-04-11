@@ -37,7 +37,8 @@ export class AppComponent implements OnInit {
     '/calendar-timeline',
     '/list',
     '/wmts-layer-manager',
-    '/multi-collection'
+    '/multi-collection',
+    '/layer-legend'
   ];
 
  
