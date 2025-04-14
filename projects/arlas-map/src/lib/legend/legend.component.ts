@@ -101,6 +101,9 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   public radiusLegend: WritableSignal<Legend> = signal({});
   public hasRadiusLegend = computed(() => this.radiusLegend().type !== undefined && this.radiusLegend().type !== 'Fix');
 
+  public displayLegendDetailToggle = computed(() =>
+    this.hasColorLegend() || this.hasStrokeLegend() || this.hasWidthLegend() || this.hasRadiusLegend());
+
   public detail = false;
   public visibleMode = false;
   public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
