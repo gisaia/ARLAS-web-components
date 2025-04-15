@@ -20,10 +20,10 @@
             <div>
               <div class="container">
                 <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
-                  [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
+                  [style]="{'background': header.color}" [matTooltip]="header.title | getCollectionDisplayName |  translate"></div>
                 <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
-                <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | translate"
-                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | getCollectionDisplayName |  translate }}
+                <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | getCollectionDisplayName |  translate"
+                  *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | getCollectionDisplayName | translate }}
                 </div>
               </div>
               <div class="multi-bar__header-rowfield" [matTooltip]="header.rowfield | translate" *ngIf="showRowField">{{
@@ -37,7 +37,7 @@
             [style.width.px]="header.span * 70" [attr.colspan]="header.span">
             <div class="container">
               <div *ngIf="headerDisplayMode === 'chip' || headerDisplayMode === 'full'" class="header-indicator"
-                [style]="{'background': header.color}" [matTooltip]="header.title | translate"></div>
+                [style]="{'background': header.color}" [matTooltip]="header.title | getCollectionDisplayName | translate"></div>
               <div class="separator" *ngIf="headerDisplayMode === 'full'"></div>
               <div class="multi-bar__header-title-with-indicator" [matTooltip]="header.title | getCollectionDisplayName | translate"
                 *ngIf="headerDisplayMode === 'title' || headerDisplayMode === 'full'">{{ header.title | getCollectionDisplayName | translate }}
