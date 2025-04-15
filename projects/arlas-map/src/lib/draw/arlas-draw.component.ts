@@ -744,6 +744,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         this.drawService.isDrawingStrip = false;
         this.drawService.isDrawingPolygon = false;
         this.draw.changeMode('static');
+      } else if (this.drawService.isInSimpleDrawMode) {
+        this.drawService.isInSimpleDrawMode = false;
+        this.draw.changeMode('simple_select', { featureIds: [] });
       }
     }
   }
