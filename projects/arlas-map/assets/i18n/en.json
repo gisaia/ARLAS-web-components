@@ -51,6 +51,8 @@
 	"Zoom in": "Zoom in",
 	"Zoom out": "Zoom out",
 	"Reset bearing to north": "Reset bearing to north",
+	"Enable globe": "Enable globe",
+	"Disable globe": "Disable globe",
 	"other_color": "Other",
 	"Toggle Pitch": "Toggle pitch",
 	"legend without metric": "{{field}} ({{normalized}})",

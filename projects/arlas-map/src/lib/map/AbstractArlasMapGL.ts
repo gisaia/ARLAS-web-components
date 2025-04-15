@@ -54,6 +54,8 @@ export const ZOOM_IN = marker('Zoom in');
 export const ZOOM_OUT = marker('Zoom out');
 export const RESET_BEARING = marker('Reset bearing to north');
 export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
+export const ENABLE_GLOBE = marker('Enable globe');
+export const DISABLE_GLOBE = marker('Disable globe');
 
 /**
  * The aim of this class is to handle all core interaction we have

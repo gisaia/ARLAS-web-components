@@ -51,6 +51,8 @@
 	"Zoom in": "Zoomer",
 	"Zoom out": "Dézoomer",
 	"Reset bearing to north": "Réinitialiser l'orientation vers le nord",
+	"Enable globe": "Activer le globe",
+	"Disable globe": "Désactiver le globe",
 	"other_color": "Autre",
 	"Toggle Pitch": "Activer/Enlever l'inclinaison",
 	"legend without metric": "{{field}} ({{normalized}})",

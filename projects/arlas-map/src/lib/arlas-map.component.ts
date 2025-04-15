@@ -38,6 +38,8 @@ import {
   AbstractArlasMapGL,
   ArlasMapOffset,
   CROSS_LAYER_PREFIX,
+  DISABLE_GLOBE,
+  ENABLE_GLOBE,
   MapConfig,
   RESET_BEARING,
   ZOOM_IN, ZOOM_OUT
@@ -202,6 +204,9 @@ export class ArlasMapComponent<L, S, M> {
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
+  /** --- GLOBE */
+  /** Whether to allow to switch to globe mode */
+  @Input() public enableGlobe: boolean;
 
   /** ANGULAR OUTPUTS */
 
@@ -268,7 +273,7 @@ export class ArlasMapComponent<L, S, M> {
       this.maxZoom = 23;
     }
     if (this.minZoom === undefined || this.minZoom === null) {
-      this.maxZoom = 0;
+      this.minZoom = 0;
     }
     /** BASEMAPS */
     if (this.defaultBasemapStyle && typeof this.defaultBasemapStyle.styleFile === 'string') {
@@ -391,7 +396,9 @@ export class ArlasMapComponent<L, S, M> {
         locale: {
           'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
           'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
-          'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
+          'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING),
+          'GlobeControl.Enable': this.translate.instant(ENABLE_GLOBE),
+          'GlobeControl.Disable': this.translate.instant(DISABLE_GLOBE)
         },
         pitchWithRotate: false,
         transformRequest: this.transformRequest,
@@ -414,6 +421,9 @@ export class ArlasMapComponent<L, S, M> {
         pitchToggle: {
           enable: true,
           config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
+        },
+        globe: {
+          enable: this.enableGlobe === true
         }
       }
     };

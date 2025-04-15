@@ -39,8 +39,6 @@ export interface ConfigControls {
 }
 
 export interface PitchToggleConfigControls extends ConfigControls {
-  enable: boolean;
-  position?: ControlPosition;
   config: { bearing: number; pitch: number; minpitchzoom: number; };
   overrideEvent?: { event: any; fn: (e?) => void; };
 }
@@ -50,6 +48,7 @@ export interface ControlsOption {
   scale?: ConfigControls;
   pitchToggle?: PitchToggleConfigControls;
   navigationControl?: ConfigControls;
+  globe?: ConfigControls;
 }
 
 export interface DrawConfigControl extends ConfigControls {
