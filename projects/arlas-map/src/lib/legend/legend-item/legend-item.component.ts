@@ -17,13 +17,14 @@
  * under the License.
  */
 
-import { Component, DestroyRef, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, Input, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs';
 import { OTHER } from '../../map/model/filters';
 import { ArlasDataLayer } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 import { LegendService } from '../legend.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'arlas-legend-item',
@@ -35,28 +36,26 @@ export class LegendItemComponent {
   @Input() public title: string;
   @Input() public layer: ArlasDataLayer;
   @Input() public colorPalette: string;
+  /** Whether to display highlights of the legend on hover of the map features */
+  @Input() public highlightLegend = true;
   @ViewChild('interpolated_svg', { read: ElementRef, static: false }) public interpolatedElement: ElementRef;
 
   protected PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
   /** List of cursors to display around the interpolated legend */
   public cursors = new Array<{position: number; value: string;}>();
-  // TODO: find the right value?
-  /** Maximum number of cursors before not displaying their values */
-  public MAX_CURSOR_VALUES = 3;
-  // TODO: find the right value?
-  /** Minimum distance between two cursors to display their value */
-  public MIN_CURSOR_VALUE_DISTANCE = 15;
+
+  public hasHighlightedKeywords = signal(false);
 
   public constructor(
     private readonly legendService: LegendService,
-    private readonly destroyRef: DestroyRef
+    private readonly destroyRef: DestroyRef,
+    private readonly translate: TranslateService
   ) { }
 
   public ngOnInit() {
-    // TODO: parameter whether this is wanted?
     this.legendService.highlight$
-      .pipe(filter(v => v.layerId === this.layer.id), takeUntilDestroyed(this.destroyRef))
+      .pipe(filter(v => this.highlightLegend && v.layerId === this.layer.id), takeUntilDestroyed(this.destroyRef))
       .subscribe(highlight => {
         if (this.legend.manualValues) {
           this.highlightKeywords(highlight);
@@ -78,11 +77,13 @@ export class LegendItemComponent {
       return;
     }
 
+    this.hasHighlightedKeywords.set(highlight.properties.length > 0);
+
     // Get all the unique values from the properties
     const valuesToHighlight = new Set(highlight.properties.map(p => {
       const value = p[colorField];
       if (!this.legend.manualValues.has(value)) {
-        return OTHER;
+        return this.translate.instant(OTHER);
       }
       return value;
     }));
@@ -94,8 +95,8 @@ export class LegendItemComponent {
   }
 
   /**
-   * For every different value to highlight, add a cursor above the legend.
-   * If there are less than a certain number of cursors, also display their values if they don't overlap.
+   * For every different value to highlight, add a cursor on the legend.
+   * Only the topmost feature's value will be displayed.
    * @param highlight The features'values to highlight
    */
   private displayCursors(highlight: {layerId: string; properties: Array<{[name: string]: any;}>; }) {
@@ -118,21 +119,11 @@ export class LegendItemComponent {
         .map(p => ({ position: Math.min(100, 100 * (p[colorField] - min) / (max - min)), value: p[colorField] }));
     }
 
-    if (this.cursors.length <= this.MAX_CURSOR_VALUES) {
-      this.cursors.sort((a, b) => a.position - b.position);
-
-      // Remove some of the values if they are too close to one another
-      let lastCursorWithValue = 0;
-      this.cursors.forEach((c, idx) => {
-        if (idx < this.cursors.length - 1
-            && this.cursors[idx + 1].position - this.cursors[lastCursorWithValue].position < this.MIN_CURSOR_VALUE_DISTANCE) {
-          this.cursors[idx + 1].value = undefined;
-        } else {
-          lastCursorWithValue = idx;
-        }
-      });
-    } else {
-      this.cursors.forEach(c => c.value = undefined);
-    }
+    // Keep the value only for the topmost feature (first in array)
+    this.cursors.forEach((c, idx) => {
+      if (idx !== 0) {
+        c.value = undefined;
+      }
+    });
   }
 }

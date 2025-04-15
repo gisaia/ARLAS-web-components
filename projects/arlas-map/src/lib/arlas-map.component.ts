@@ -202,7 +202,8 @@ export class ArlasMapComponent<L, S, M> {
   /** @description List of visualisation sets. A Visualisation set is an entity where layers are grouped together. */
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
-
+  /** @description Whether to highlight the keywords or color of hovered features */
+  @Input() public highlightLegend = true;
 
   /** ANGULAR OUTPUTS */
 
@@ -472,12 +473,10 @@ export class ArlasMapComponent<L, S, M> {
     this.mapLayers.events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
       this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
-        this.legendService.highlightFeatures(layerId, e.features);
         this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
       });
       /** Emits an empty object on mouse leaving a feature. */
       this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
-        this.legendService.highlightFeatures(layerId, []);
         this.onFeatureHover.next({});
       });
     });
@@ -502,6 +501,22 @@ export class ArlasMapComponent<L, S, M> {
           this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
         } else {
           this.mapFrameworkService.setMapCursor(this.map, '');
+        }
+      });
+    });
+
+    // For each layer other than select and hover layers, listen to the events of enter and exit of the mouse
+    this.mapLayers.layers.filter(l => !l.id.startsWith('arlas-select') && !l.id.startsWith('arlas-hover')).forEach(layer => {
+      /** Emits the hovered feature on mousemove. */
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layer.id, (e) => {
+        if (this.highlightLegend) {
+          this.legendService.highlightFeatures(layer.id, e.features);
+        }
+      });
+      /** Emits an empty object on mouse leaving a feature. */
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layer.id, (e) => {
+        if (this.highlightLegend) {
+          this.legendService.highlightFeatures(layer.id, []);
         }
       });
     });

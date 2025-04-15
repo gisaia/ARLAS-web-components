@@ -9,8 +9,9 @@
         || legend.type === PROPERTY_SELECTOR_SOURCE.generated
         || legend.type === PROPERTY_SELECTOR_SOURCE.provided">
     <div class="legend--manual__item" *ngFor="let manualColor of legend.manualValues | keyvalue"
-        [class.legend--manual__item--highlighted]="manualColor.value.highlight">
-      <div [style.backgroundColor]="manualColor.value.color"
+        [class.legend--manual__item--highlighted]="manualColor.value.highlight"
+        [class.legend--manual__item--lessened]="!manualColor.value.highlight && hasHighlightedKeywords()">
+      <div class="legend--manual__item__color" [style.backgroundColor]="manualColor.value.color"
         [class.circle-tip]="layer.type === 'circle'"
         [class.line-tip]="layer.type === 'line'"
         [class.fill-tip]="layer.type === 'fill'">
@@ -23,10 +24,9 @@
 
   <div class="legend--interpolated" *ngIf="legend.type === PROPERTY_SELECTOR_SOURCE.interpolated">
     @for (cursor of cursors; track cursor.value) {
-      <div class="legend--interpolated__cursor" [style.left]="cursor.position + '%'"></div>
+      <div class="legend--interpolated__cursor" [style.left]="cursor.position + '%'" [class.legend--interpolated__cursor--main]="$first"></div>
       @if (cursor.value) {
         <div class="legend--interpolated__cursor__value" [style.left]="cursor.position + '%'">
-          <!-- TODO: to shorten or not? with what precision? -->
           {{ cursor.value | shortenNumber }}
         </div>
       }

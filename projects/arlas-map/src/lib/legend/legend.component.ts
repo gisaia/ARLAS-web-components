@@ -71,6 +71,11 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * the legend updated with the visibility of the layer.
    */
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
+  /**
+   * @Input : Angular
+   * @description Whether to highlight the keywords or color of hovered features
+   */
+  @Input() public highlightLegend = true;
 
   /**
    * @Output : Angular
