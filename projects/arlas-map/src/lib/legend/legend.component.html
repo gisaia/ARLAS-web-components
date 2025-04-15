@@ -29,19 +29,18 @@
         </div>
       </div>
     </div>
-  
+
     <div [hidden]="!detail" class="legend-wrapper">
       <arlas-legend-item [hidden]="!colorLegend.type" [legend]="colorLegend" [layer]="layer"
-        [title]="'Fill:' | marker" [colorPalette]="colorPalette"></arlas-legend-item>
-  
+        [title]="'Fill:' | marker" [colorPalette]="colorPalette" [highlightLegend]="highlightLegend"></arlas-legend-item>
+
       <arlas-legend-item [hidden]="!strokeColorLegend.type" [legend]="strokeColorLegend" [layer]="layer"
-        [title]="'Stroke:' | marker" [colorPalette]="colorPalette"></arlas-legend-item>
-  
+        [title]="'Stroke:' | marker" [colorPalette]="colorPalette" [highlightLegend]="highlightLegend"></arlas-legend-item>
+
       <arlas-legend-item [hidden]="!widthLegend.type" #width_legend [legend]="widthLegend" [layer]="layer"
-        [title]="'Width:' | marker"></arlas-legend-item>
-  
+        [title]="'Width:' | marker" [highlightLegend]="highlightLegend"></arlas-legend-item>
+
       <arlas-legend-item [hidden]="!radiusLegend.type" #radius_legend [legend]="radiusLegend" [layer]="layer"
-        [title]="'Radius:' | marker"></arlas-legend-item>
+        [title]="'Radius:' | marker" [highlightLegend]="highlightLegend"></arlas-legend-item>
     </div>
   </div>
-  
