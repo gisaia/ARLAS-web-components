@@ -78,7 +78,13 @@ stripDirectSelectMode.onSetup = function (opts) {
         uncombineFeatures: false,
         trash: true
     });
+    this.addFeature(feature);
+
     return state;
+};
+
+stripDirectSelectMode.fireOnStop = function () {
+    this.map.fire('draw.onStop', 'draw end');
 };
 
 stripDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
@@ -108,6 +114,7 @@ stripDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
 stripDirectSelectMode.onStop = function () {
     MapboxDraw.lib.doubleClickZoom.enable(this);
     this.clearSelectedCoordinates();
+    this.fireOnStop();
 };
 
 stripDirectSelectMode.pathsToCoordinates = function (featureId, paths) {

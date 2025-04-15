@@ -70,6 +70,10 @@ export class MapboxAoiDrawService {
     };
   }
 
+  public isDrawing() {
+    return this.isDrawingBbox || this.isDrawingCircle || this.isDrawingPolygon || this.isDrawingStrip;
+  }
+
   public drawBbox(fCorner: Corner, sCorner: Corner) {
     const west = Math.min(fCorner.lng, sCorner.lng);
     const east = Math.max(fCorner.lng, sCorner.lng);
@@ -136,6 +140,11 @@ export class MapboxAoiDrawService {
   public deleteAll() {
     this.registeringMode = true;
     this.mapDraw.deleteAll();
+  }
+
+  /** Deletes all the features from Mapboxdraw object that have not been saved */
+  public deleteUnregisteredFeatures() {
+    this.mapDraw.delete(this.getUnregistredFeatures().map(f => f.id.toString()));
   }
 
   /** Returns the area of the given feature */
@@ -322,7 +331,7 @@ export class MapboxAoiDrawService {
    */
   public isValidCircle(feature): boolean {
     const coordinates = feature.geometry.coordinates;
-    return this.isCircle(feature) && coordinates && coordinates[0] !== null && feature.properties.center;
+    return this.isCircle(feature) && coordinates && coordinates[0] !== null && coordinates[0][0] !== null && feature.properties.center;
   }
 
   public isValidPolygon(feature): boolean {

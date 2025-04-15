@@ -487,8 +487,13 @@ export class ArlasMapComponent<L, S, M> {
     drawPolygonLayers.forEach(layerId => {
       this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
         this.mapFrameworkService.setMapCursor(this.map, 'pointer'));
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
-        this.mapFrameworkService.setMapCursor(this.map, ''));
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
+        if (this.drawService.isDrawing()) {
+          this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
+        } else {
+          this.mapFrameworkService.setMapCursor(this.map, '');
+        }
+      });
     });
   }
 

@@ -125,7 +125,6 @@ stripMode.onSetup = function (opts) {
     });
     this.addFeature(polygon);
 
-
     return {
         ...props,
         strip: polygon,
@@ -133,6 +132,10 @@ stripMode.onSetup = function (opts) {
         maxLength,
         meta: 'strip'
     };
+};
+
+stripMode.fireOnStop = function () {
+    this.map.fire('draw.onStop', 'draw end');
 };
 
 stripMode.clickAnywhere = function (state, e) {
@@ -215,6 +218,7 @@ stripMode.onStop = function (state) {
         this.deleteFeature([state.line.id], { silent: true });
         this.changeMode('simple_select', {}, { silent: true });
     }
+    this.fireOnStop();
 };
 
 stripMode.toDisplayFeatures = function (state, geojson, display) {
