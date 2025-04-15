@@ -18,16 +18,20 @@
  */
 
 .arlas-metric /* @doc Style of the metric container.*/ {
+  line-height: normal;
+  padding-top: 10px;
+  padding-bottom: 10px;
   &__title /* @doc Style of the metric title (above value).*/ {
     text-align: center;
     white-space: nowrap;
     display: flex;
     justify-content: center;
+    font-size: 16px;
   }
 
   &__value /* @doc Style of the metric value*/ {
     font-weight: 400;
-    font-size: 1.8em;
+    font-size: 25px;
     padding: 5px 0;
     white-space: nowrap;
     display: flex;
@@ -35,8 +39,8 @@
   }
 
   &__description /* @doc Style of the metric description (below value).*/ {
-    font-size: 1.3rem;
-    font-weight: 100;
+    font-size: 16px;
+    font-weight: 300;
     display: flex;
     justify-content: center;
   }
