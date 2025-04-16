@@ -18,9 +18,10 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
+import {
+  AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
   ArlasMapSource, LayerMetadata, MapLayers, VisualisationSetConfig, ArlasDataLayer
- } from 'arlas-map';
+} from 'arlas-map';
 import { ArlasMapboxService } from './arlas-mapbox.service';
 import { FeatureCollection } from '@turf/helpers';
 import { ArlasMapboxGL } from './map/ArlasMapboxGL';
@@ -108,6 +109,32 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     super.initMapLayers(mapLayers, map);
   }
 
+  public applyRangeFilter(map: ArlasMapboxGL, sources: string, field: string, start: number, end: number): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sources);
+    layers.forEach(layer => {
+      map.setFilter(layer.id, this.getRangeFilter(layer.id, field, start, end));
+      const strokeLayerId = layer.id.replace('_id:', '-fill_stroke-');
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setFilter(strokeLayerId, this.getRangeFilter(layer.id, field, start, end));
+      }
+    });
+  }
+
+  public removeFilter(map: ArlasMapboxGL, sources: string): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sources);
+    layers.forEach(layer => {
+      map.setFilter(layer.id, this.layersMap.get(layer.id).filter);
+      const strokeLayerId = layer.id.replace('_id:', '-fill_stroke-');
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setFilter(strokeLayerId,
+          this.layersMap.get(strokeLayerId).filter);
+      }
+    });
+  }
+
+
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l);
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
@@ -132,6 +159,23 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
       }
     }
   }
+
+  public getRangeFilter(layerId: any, field: string, start: number, end: number): Expression[] {
+    const lFilter = this.layersMap.get(layerId).filter as Expression;
+    const filters = [];
+    if (lFilter) {
+      lFilter.forEach(f => {
+        filters.push(f);
+      });
+    }
+    if (filters.length === 0) {
+      filters.push('all');
+    }
+    filters.push(['<=', ['get', field], end], ['>=', ['get', field], start]);
+    return filters;
+  }
+
+
 
   public getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
     const lFilter = this.layersMap.get(layer).filter as Expression;

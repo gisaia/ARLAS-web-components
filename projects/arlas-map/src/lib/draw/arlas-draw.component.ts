@@ -387,7 +387,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
                 });
                 this.drawService.isInSimpleDrawMode = true;
               }
-
             }
           }
         }

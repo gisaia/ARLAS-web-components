@@ -115,6 +115,46 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     super.initMapLayers(mapLayers, map);
   }
 
+  public applyRangeFilter(map: ArlasMaplibreGL, sources: string, field: string, start: number, end: number): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sources);
+    layers.forEach(layer => {
+      map.setFilter(layer.id, this.getRangeFilter(layer.id, field, start, end));
+      const strokeLayerId = layer.id.replace('_id:', '-fill_stroke-');
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setFilter(strokeLayerId, this.getRangeFilter(layer.id, field, start, end));
+      }
+    });
+  }
+
+  public removeFilter(map: ArlasMaplibreGL, sources: string): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sources);
+    layers.forEach(layer => {
+      map.setFilter(layer.id, this.layersMap.get(layer.id).filter);
+      const strokeLayerId = layer.id.replace('_id:', '-fill_stroke-');
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setFilter(strokeLayerId,
+          this.layersMap.get(strokeLayerId).filter);
+      }
+    });
+  }
+
+  public getRangeFilter(layerId: any, field: string, start: number, end: number): ExpressionSpecification[] {
+    const lFilter = this.layersMap.get(layerId).filter as ExpressionSpecification;
+    const filters = [];
+    if (lFilter) {
+      lFilter.forEach(f => {
+        filters.push(f);
+      });
+    }
+    if (filters.length === 0) {
+      filters.push('all');
+    }
+    filters.push(['<=', ['get', field], end], ['>=', ['get', field], start]);
+    return filters;
+  }
+
   public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l) as TypedStyleLayer;
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {

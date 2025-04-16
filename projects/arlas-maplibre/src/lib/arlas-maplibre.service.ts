@@ -447,6 +447,11 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern));
   }
 
+  public getLayersStartingWithSource(map: ArlasMaplibreGL, sourceIdPattern: string): TypedStyleLayer[] {
+    return map.getMapProvider().getStyle().layers.filter(l => !!(l as TypedStyleLayer).source && ((l as TypedStyleLayer).source as string).startsWith(sourceIdPattern)) as TypedStyleLayer[];
+
+  }
+
   /**
   * @override Maplibre implementation.
   * Set the mouse cursor when it's over the map

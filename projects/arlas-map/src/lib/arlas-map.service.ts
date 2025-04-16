@@ -277,4 +277,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
 
   public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>);
+
+  public abstract applyRangeFilter(map: AbstractArlasMapGL, sources: string, field: string, start: number, end: number): void
+  public abstract removeFilter(map: AbstractArlasMapGL, sources: string);
 }
