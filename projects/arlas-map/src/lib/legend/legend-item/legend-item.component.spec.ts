@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { LegendItemComponent } from './legend-item.component';
 
 describe('LegendItemComponent', () => {
@@ -7,7 +8,10 @@ describe('LegendItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LegendItemComponent ]
+      declarations: [ LegendItemComponent ],
+      imports: [
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+      ]
     })
       .compileComponents();
 
