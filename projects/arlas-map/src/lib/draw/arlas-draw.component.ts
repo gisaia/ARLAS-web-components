@@ -84,8 +84,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
 
 
-  /** Set to true when the selected drawn geometry is changed. */
-  protected drawnSelectionChanged = false;
   /** Number of drawn vertices (incremented in draw mode). Reset to 0 when the drawing is finished. */
   public nbPolygonVertices = 0;
   /** Number of clicks while drawing a geometry. */
@@ -201,7 +199,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   private listenToDrawSelectionChange() {
     this.draw.onDrawSelectionchange((e) => {
-      this.drawnSelectionChanged = true;
       if (e.features.length > 0) {
         this.drawService.isDrawSelected = true;
       } else {
@@ -443,7 +440,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.map && this.map.getMapProvider() !== undefined) {
       if (changes['drawData'] !== undefined && this.drawService.isReady) {
-        this.drawData = changes['drawData'].currentValue;
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
           const poly = polygon((feature.geometry as Polygon).coordinates);
@@ -455,10 +451,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           type: 'FeatureCollection',
           features: centroides
         };
-        if (!this.drawnSelectionChanged) {
-          this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
-        }
-        this.drawnSelectionChanged = false;
+
+        this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
         this.mapService.updateLabelSources(this.map.POLYGON_LABEL_SOURCE, this.polygonlabeldata, this.map);
       }
 
