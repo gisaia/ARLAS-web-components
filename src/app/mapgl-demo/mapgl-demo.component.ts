@@ -130,6 +130,10 @@ export class MapglDemoComponent {
     this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET + 'arlas_id:Number of products:1677155990578', true);
     this.mapComponent.visibilityStatus.set('Latest products' + ARLAS_VSET + 'arlas_id:Latest products:1677155839933', false);
   }
+
+  public addGeoBox() {
+    this.mapComponent.addGeoBox();
+  }
 }
 
 export class MapSettings implements MapSettingsService {
