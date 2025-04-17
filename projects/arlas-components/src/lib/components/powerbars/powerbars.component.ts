@@ -170,6 +170,18 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @Output() public searchedTerm = new Subject<string>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the overed powerbar
+   */
+  @Output() public overPowerBarEvent = new Subject<PowerBar>();
+
+  /**
+   * @Output : Angular
+   * @description Emits the out of powerbar
+   */
+  @Output() public outPowerBarEvent = new Subject<PowerBar>();
+
   public powerBarsList: Array<PowerBar>;
   public selectedPowerbarsSet = new Set<PowerBar>();
   public selectedPowerbarsTerms = new Set<string>();
@@ -359,6 +371,14 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       this.filterOperator.value = op;
       this.filterOperatorEvent.next(op);
     }
+  }
+
+  public overOnPowerbar(powerbar: PowerBar){
+    this.overPowerBarEvent.next(powerbar);
+  }
+
+  public outOnPowerbar(powerbar: PowerBar){
+    this.outPowerBarEvent.next(powerbar);
   }
 
   private clearSelection(): void {
