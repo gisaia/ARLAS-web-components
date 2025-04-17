@@ -5,9 +5,7 @@
                 <mat-checkbox [checked]="powerbar.isSelected" (change)="onCheck()" (click)="$event.stopPropagation()"></mat-checkbox> <!-- //NOSONAR -->
             </section>
             <section style="width: 100%;">
-                <div class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}"
-                    matTooltip="{{(powerbar.count | formatNumber:NUMBER_FORMAT_CHAR) + ' ' + (unit | translate)}}"
-                    [matTooltipPosition]="'after'">
+                <div class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}" (mouseover)="emitOver(powerbar)" (mouseout)="emitOut(powerbar)" > <!-- //NOSONAR -->
                     <div class="powerbars__powerbar--top-group">
                         <div [class.powerbars__powerbar--selected]="powerbar.isSelected" class="powerbars__powerbar--term powerbars__powerbar--term-{{powerbar.classSuffix}} powerbars__powerbar--term--{{powerbar.term}}">
                             {{powerbar.term | translate}}

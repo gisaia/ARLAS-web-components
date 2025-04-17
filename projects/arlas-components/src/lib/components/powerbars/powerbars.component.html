@@ -35,6 +35,8 @@
             [numberShorteningPrecision]="numberShorteningPrecision"
             (onCheckEvent)="clickOnPowerbar(selectedPowerbar)"
             (onClickEvent)="clickOnPowerbar(selectedPowerbar)"
+            (onOverEvent)="overOnPowerbar($event)"
+            (onOutEvent)="outOnPowerbar($event)"
           ></arlas-powerbar>
         </div>
       </div>
@@ -52,6 +54,8 @@
           [hideSelected]="groupSelections"
           (onCheckEvent)="clickOnPowerbar(powerbar)"
           (onClickEvent)="clickOnPowerbar(powerbar)"
+          (onOverEvent)="overOnPowerbar($event)"
+          (onOutEvent)="outOnPowerbar($event)"
         ></arlas-powerbar>
       </div>
     </div>

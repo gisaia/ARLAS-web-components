@@ -67,6 +67,10 @@ export class PowerbarComponent {
 
     @Output() public onClickEvent = new EventEmitter<boolean>();
 
+    @Output() public onOverEvent = new EventEmitter<PowerBar>();
+
+    @Output() public onOutEvent = new EventEmitter<PowerBar>();
+
     public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
     public onCheck() {
@@ -75,5 +79,13 @@ export class PowerbarComponent {
 
     public onSelect() {
         this.onClickEvent.emit(true);
+    }
+
+    public emitOut(powerBar: PowerBar){
+        this.onOutEvent.emit(powerBar);
+    }
+
+    public emitOver(powerBar: PowerBar){
+        this.onOverEvent.emit(powerBar);
     }
 }
