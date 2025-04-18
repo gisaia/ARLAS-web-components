@@ -1,16 +1,9 @@
 <div class="visualisation">
-  <div class="visualisation-content">
-    <img class="visualisation-picture"
-        [ngSrc]="preview()"
-        width="80" height="80" priority
-        [alt]="'Visualisation preview' | translate">
-    <div class="visualisation-info">
-      @if(showTooltipTitle()) {
-        <span [matTooltip]="title() | translate" class="visualisation-info_title">{{title() | translate}}</span>
-      } @else {
-        <span class="visualisation-info_title">{{title() | translate}}</span>
-      }
-      <span class="visualisation-info_subtitle">{{description() | translate}}</span>
-    </div>
+  <img class="visualisation__preview"
+      [ngSrc]="preview()" width="80" height="80" priority
+      [alt]="'Visualisation preview' | translate">
+  <div class="visualisation__info">
+    <span class="visualisation__info__title">{{title() | translate}}</span>
+    <span class="visualisation__info__description">{{description() | translate}}</span>
   </div>
 </div>

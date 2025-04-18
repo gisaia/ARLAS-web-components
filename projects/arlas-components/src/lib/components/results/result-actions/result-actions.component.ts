@@ -70,37 +70,14 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
     /** When an Item is hovered: */
     this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter(id => id === this.item.identifier)).subscribe({
       next: id => {
-        /** Always show non reversible actions. */
-        this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
-        /** We check if reversible actions has 'fields'.
-         * - If one of the fields values is absent in the current item, the action will be hidden. */
-        this.actions.filter(a => ActionHandler.isReversible(a) && a.show === undefined).forEach(a => {
-          if (a.fields) {
-            this.detailedDataRetriever.getValues(id, a.fields).pipe(
-              take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
-          } else if (a.filters) {
-            this.detailedDataRetriever.getMatch(id, a.filters).pipe(
-              take(1)).subscribe(v => {
-                a.matched = v.matched;
-                a.show = v.matched.filter(v => v).length > 0;
-            });
-          }
-        });
+        this.onItemHovered();
       }
     });
 
     /** When actions need to be refreshed */
     this.notifier.refreshActions$.pipe(takeUntil(this._onDestroy$), filter(v => !v || v !== this.item.identifier)).subscribe({
       next: () => {
-        this.detailedDataRetriever.getActions(this.item).pipe(take(1)).subscribe(actions => {
-          actions.forEach(a => {
-            const action = this.item.actions.find(v => v.id === a.id);
-            if (action) {
-              action.filters = a.filters;
-              action.show = undefined;
-            }
-          });
-        });
+        this.onRefreshActions();
       }
     });
   }
@@ -190,6 +167,43 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
       this.actions = item.actions;
       this.updateActions();
     }
+  }
+
+  /**
+   * Update the visibility of actions after the item has been hovered
+   */
+  private onItemHovered() {
+    /** Always show non reversible actions. */
+    this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
+    /** We check if reversible actions has 'fields'.
+     * - If one of the fields values is absent in the current item, the action will be hidden. */
+    this.actions.filter(a => ActionHandler.isReversible(a) && a.show === undefined).forEach(a => {
+      if (a.fields) {
+        this.detailedDataRetriever.getValues(this.item.identifier, a.fields).pipe(
+          take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
+      } else if (a.filters) {
+        this.detailedDataRetriever.getMatch(this.item.identifier, a.filters).pipe(
+          take(1)).subscribe(v => {
+            a.matched = v.matched;
+            a.show = v.matched.filter(v => v).length > 0;
+        });
+      }
+    });
+  }
+
+  /**
+   * Resets the filters and visibility of the actions
+   */
+  private onRefreshActions() {
+    this.detailedDataRetriever.getActions(this.item).pipe(take(1)).subscribe(actions => {
+      actions.forEach(a => {
+        const action = this.item.actions.find(v => v.id === a.id);
+        if (action) {
+          ActionHandler.reset(action, a.filters);
+        }
+      });
+      this.updateActions();
+    });
   }
 
   public ngOnDestroy(): void {

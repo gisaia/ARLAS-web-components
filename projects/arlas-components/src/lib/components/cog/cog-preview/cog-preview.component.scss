@@ -16,39 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-:host {
-  display: block;
-  padding: 6px;
-}
 
 .visualisation {
-  &-content {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
+  display: flex;
+  padding: 10px;
+  gap: 10px;
 
-  &-picture {
-    height: auto;
+  &__preview {
+    height: 80px;
+    width: 80px;
     max-width: 100%;
   }
 
-  &-info {
+  &__info {
     display: flex;
     flex-direction: column;
     max-width: 450px;
     line-height: 18px;
     overflow: hidden;
 
-    &_title {
+    &__title {
       width: 100%;
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+      padding-bottom: 5px;
     }
 
-    &_subtitle {
-      font-size: 12px;
+    &__description {
+      font-size: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 }

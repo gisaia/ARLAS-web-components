@@ -19,7 +19,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { CogModalComponent, CogPreviewComponent, CogVisualisationData } from 'arlas-web-components';
+import { CogModalComponent, CogPreviewComponent } from 'arlas-web-components';
 
 @Component({
   selector: 'arlas-cog-visualisation',
@@ -40,7 +40,8 @@ export class CogVisualisationComponent {
         {
           visualisation: {name: 'NDVI', description: 'NDVI description'},
           match: 'all',
-          preview: './assets/logo-gisaia.png'
+          preview: './assets/logo-gisaia.png',
+          selected: true
         },
         {
           visualisation: {name: 'TCI', description: 'TCI description'},
@@ -59,7 +60,7 @@ export class CogVisualisationComponent {
     const dialogRef = this.dialog.open(CogModalComponent, {
       data : data,
       width: '600px',
-      height:'30vh'
+      maxHeight:'50vh'
     });
 
     setTimeout(() => data.loading = false, 5000);

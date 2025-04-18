@@ -5,20 +5,23 @@
     </div>
   }
 
+  <div class="visualisation__title">{{ 'Choose a visualisation' | translate }}</div>
+
   @for (v of data.visualisations; track v;) {
     @if (v.match === 'none') {
-      <div class="visualisation__item visualisation__item--unmatched">
+      <div class="visualisation__item visualisation__item--unmatched" [class.visualisation__item--selected]="v.selected">
         <arlas-cog-preview
           [title]="v.visualisation.name"
           [description]="v.visualisation.description"
           [preview]="v.preview ?? DEFAULT_IMAGE"
         ></arlas-cog-preview>
         <div class="visualisation__item__error">
-          {{ 'No selected products match this visualisation' | translate }}
+          {{ 'The visualisation cannot be applied to the visualised elements' | translate }}
         </div>
       </div>
     } @else {
-      <div [mat-dialog-close]="v.visualisation" class="visualisation__item" [class.visualisation__item--matched]="v.match === 'all'">
+      <div [mat-dialog-close]="v.visualisation" class="visualisation__item visualisation__item--matched"
+          [class.visualisation__item--selected]="v.selected">
         <arlas-cog-preview
           [title]="v.visualisation.name"
           [description]="v.visualisation.description"
@@ -26,10 +29,12 @@
         ></arlas-cog-preview>
         @if (v.match === 'partial') {
           <div class="visualisation__item__warning">
-            {{ 'Not all products match this visualisation' | translate }}
+            {{ 'The visualisation cannot be applied to all of the visualised elements' | translate }}
           </div>
         }
       </div>
     }
   }
+
+  <button mat-stroked-button [mat-dialog-close]="" class="visualisation__exit">{{ 'Cancel' | translate }}</button>
 </div>

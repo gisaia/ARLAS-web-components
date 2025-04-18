@@ -92,6 +92,11 @@ export class ActionHandler {
   public static reverse(a: Action): void {
     a.activated = false;
   }
+
+  public static reset(a: Action, filters?: ActionFilter[][]): void {
+    a.filters = filters;
+    a.show = undefined;
+  }
 }
 
 export interface ElementIdentifier {

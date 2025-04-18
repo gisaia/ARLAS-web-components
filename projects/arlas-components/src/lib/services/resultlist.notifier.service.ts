@@ -18,18 +18,19 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
-import { Item } from '../components/results/model/item';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResultlistNotifierService {
 
-  private itemHoveredSource = new Subject<string>();
+  private readonly itemHoveredSource = new Subject<string>();
   public itemHovered$ = this.itemHoveredSource.asObservable();
 
-  private refreshActionsSource = new Subject<string>();
+  private readonly refreshActionsSource = new Subject<string>();
+  /** Emits an event every time the actions of the items are to be refreshed.
+   * Emits the id of the item taht triggered the event.  */
   public refreshActions$ = this.refreshActionsSource.asObservable();
 
   public notifyItemHover(id: string) {

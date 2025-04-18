@@ -17,18 +17,16 @@
  * under the License.
  */
 
-import { Component, input } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
+import { Component, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'arlas-cog-preview',
   standalone: true,
   imports: [
     NgOptimizedImage,
-    TranslateModule,
-    MatTooltip
+    TranslateModule
   ],
   templateUrl: './cog-preview.component.html',
   styleUrl: './cog-preview.component.scss'
@@ -37,5 +35,4 @@ export class CogPreviewComponent {
   public title = input<string>();
   public description = input<string>();
   public preview = input<string>('./assets/no-view.png');
-  public showTooltipTitle = input<boolean>(false);
 }

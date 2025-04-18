@@ -29,6 +29,7 @@ export interface CogVisualisationData {
   visualisation: VisualisationInterface;
   match: 'all' | 'partial' | 'none';
   preview?: string;
+  selected?: boolean;
 }
 
 
