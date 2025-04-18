@@ -143,7 +143,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
       this.addControl(addGeoBoxButton, config.addGeoBox?.position ?? 'top-right', config.addGeoBox?.overrideEvent);
 
     }
-    if (config.addGeoBox.enable) {
+    if (config.removeAois.enable) {
       const removeAoisButton = new MapBoxControlButton('removeaois');
       this.addControl(removeAoisButton, config.removeAois?.position ?? 'top-right', config.removeAois?.overrideEvent);
     }

@@ -226,7 +226,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   private listenToDrawModeChange() {
     this.draw.onDrawModeChange((e) => {
       this.drawService.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
-      this.drawService.isDrawingStrip = e.mode === this.draw.getMode('DIRECT_STRIP');
+      this.drawService.isDrawingStrip = e.mode === this.draw.getMode('DRAW_STRIP') || e.mode === this.draw.getMode('DIRECT_STRIP');
       this.drawService.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
       if (this.drawService.isDrawingPolygon || this.drawService.isDrawingCircle || this.drawService.isDrawingStrip || e.mode === 'static') {
         this.drawService.isInSimpleDrawMode = false;
@@ -285,7 +285,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           direct_strip: stripDirectSelectMode,
           direct_select: directModeOverride,
           simple_select: simpleSelectModeOverride
-        }
+        },
+        suppressAPIEvents: true
       }
     };
     this.draw = this.mapFrameworkService.createDraw(drawOptions, this.drawButtonEnabled, this.map);
@@ -627,8 +628,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   }
 
   /**
-   * @description Switches to a drawing mode of a polygon, circle or radisu circle.
-   * @param mode Draw mode (DRAW_POLYGON, DRAW_CIRCLE or DRAW_RADIUS_CIRCLE). Default to DRAW_POLYGON
+   * @description Switches to a drawing mode of a polygon, circle, radius circle or strip.
+   * @param mode Draw mode (DRAW_POLYGON, DRAW_CIRCLE, DRAW_RADIUS_CIRCLE or DRAW_STRIP). Default to DRAW_POLYGON
    * @param option Mapboxdraw option.
    */
   public switchToDrawMode(mode?: string, option?: any) {
@@ -636,7 +637,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.isDrawingCircle = selectedMode === this.draw.getMode('DRAW_CIRCLE')
       || selectedMode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
     this.drawService.isDrawingPolygon = selectedMode === this.draw.getMode('DRAW_POLYGON');
+    this.drawService.isDrawingStrip = selectedMode === this.draw.getMode('DRAW_STRIP');
+    this.drawService.isDrawingBbox = false;
     this.drawService.isInSimpleDrawMode = false;
+
+    this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
     this.draw.changeMode(selectedMode, option ?? {});
   }
 
@@ -651,6 +656,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.isDrawingCircle = false;
     this.drawService.isDrawingStrip = false;
     this.drawService.isDrawingPolygon = false;
+    this.drawService.isDrawingBbox = false;
   }
 
   /**
@@ -665,6 +671,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.isDrawingCircle = false;
     this.drawService.isDrawingStrip = false;
     this.drawService.isDrawingPolygon = false;
+    this.drawService.isDrawingBbox = false;
   }
 
   /**
@@ -709,18 +716,32 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.key === 'Escape' && this.drawService.isDrawingBbox) {
-      this.mapFrameworkService.setMapCursor(this.map, '');
-      this.drawService.isDrawingBbox = false;
-      document.removeEventListener('mousemove', this.mousemove);
-      document.removeEventListener('mouseup', this.mouseup);
-      this.mapFrameworkService.setMapCursor(this.map, '');
-      if (this.box) {
-        this.box.parentNode.removeChild(this.box);
-        this.box = undefined;
+    if (event.key === 'Escape') {
+      if (this.drawService.isDrawingBbox) {
+        document.removeEventListener('mouseup', this.mouseup);
+
+        if (this.box) {
+          this.box.parentNode.removeChild(this.box);
+          this.box = undefined;
+        }
+        this.map.enableDragPan();
+        this.drawService.endDimensionsEmission();
       }
-      this.map.enableDragPan();
-      this.drawService.endDimensionsEmission();
+
+      if (this.drawService.isDrawing()) {
+        this.drawService.deleteUnregisteredFeatures();
+        this.mapFrameworkService.setMapCursor(this.map, '');
+        document.removeEventListener('mousemove', this.mousemove);
+
+        this.drawService.isDrawingBbox = false;
+        this.drawService.isDrawingCircle = false;
+        this.drawService.isDrawingStrip = false;
+        this.drawService.isDrawingPolygon = false;
+        this.draw.changeMode('static');
+      } else if (this.drawService.isInSimpleDrawMode) {
+        this.drawService.isInSimpleDrawMode = false;
+        this.draw.changeMode('simple_select', { featureIds: [] });
+      }
     }
   }
 

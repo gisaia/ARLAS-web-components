@@ -28,7 +28,7 @@ export const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
 radiusCircleMode.fireOnStop = function () {
     this.map.fire('draw.onStop', 'draw end');
-  };
+};
 
 
 function getDisplayMeasurements(feature) {
@@ -105,7 +105,6 @@ radiusCircleMode.onSetup = function (opts) {
         },
     });
     this.addFeature(polygon);
-
 
     return {
         ...props,
