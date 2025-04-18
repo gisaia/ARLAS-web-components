@@ -52,7 +52,7 @@ export { ResultGridTileComponent } from './lib/components/results/result-grid-ti
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
 export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
 export { ResultsModule } from './lib/components/results/results.module';
-export { DetailedDataRetriever } from './lib/components/results/utils/detailed-data-retriever';
+export { DetailedDataRetriever, MatchInfo } from './lib/components/results/utils/detailed-data-retriever';
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { ModeEnum } from './lib/components/results/utils/enumerations/modeEnum';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';
