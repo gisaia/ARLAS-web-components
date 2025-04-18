@@ -16,7 +16,7 @@
           [preview]="v.preview ?? DEFAULT_IMAGE"
         ></arlas-cog-preview>
         <div class="visualisation__item__error">
-          {{ 'The visualisation cannot be applied to the visualised elements' | translate }}
+          {{ 'Cannot be applied to the currently visualised elements' | translate }}
         </div>
       </div>
     } @else {
@@ -29,7 +29,7 @@
         ></arlas-cog-preview>
         @if (v.match === 'partial') {
           <div class="visualisation__item__warning">
-            {{ 'The visualisation cannot be applied to all of the visualised elements' | translate }}
+            {{ 'Cannot be applied to all of the currently visualised elements' | translate }}
           </div>
         }
       </div>

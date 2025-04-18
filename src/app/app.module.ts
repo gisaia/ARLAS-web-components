@@ -49,6 +49,7 @@ import {
 } from 'arlas-web-components';
 import { AppComponent } from './app.component';
 import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar-timeline-demo.component';
+import { CogVisualisationComponent } from './cog-visualisation/cog-visualisation.component';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
 import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
@@ -58,8 +59,6 @@ import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-de
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
-
-import { CogVisualisationComponent } from './cog-visualisation/cog-visualisation.component';
 
 
 export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
