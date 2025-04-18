@@ -18,6 +18,11 @@
 	"METRIC_COLUMN_TITLE": "{{metric}} {{field}}",
 	"COUNT_COLUMN_TITLE": "count",
 	"Remove this selection": "Remove this selection",
+	"Visualisation preview": "Visualisation preview",
+	"Choose a visualisation": "Choose a visualisation",
+	"Cannot be applied to the currently visualised elements": "Cannot be applied to the currently visualised elements",
+	"Cannot be applied to all of the currently visualised elements": "Cannot be applied to all of the currently visualised elements",
+	"Cancel": "Cancel",
 	"Filter on": "Filter on",
 	"Global actions": "Global actions",
 	"Geo sort action": "Sort according to the distance to the map center",
@@ -41,5 +46,7 @@
 	"METRIC_COLUMN_min": "minimal",
 	"METRIC_COLUMN_max": "maximal",
 	"METRIC_COLUMN_cardinality": "cardinality of",
-	"None": "None"
+	"None": "None",
+	"Moisture Index (NDMi) is used to determine vegetation water content": "Moisture Index (NDMi) is used to determine vegetation water content",
+	"Normalized Difference Vegetation Index": "Normalized Difference Vegetation Index"
 }

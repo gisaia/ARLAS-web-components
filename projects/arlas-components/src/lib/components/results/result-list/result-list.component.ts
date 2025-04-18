@@ -817,7 +817,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public onEnterItem(item: Item): void {
     this.setConsultedItem(item.identifier);
-    this.notifier.notifyItemHover(item);
+    this.notifier.notifyItemHover(item.identifier);
   }
 
   /**
