@@ -38,12 +38,13 @@
           [width]="tableWidth * 80 / 100"
           (actionOnItemEvent)="triggerActionOnItem($event)"></arlas-result-actions>
       </div>
-      <mat-icon id= "{{'open-detail-' + rowItem?.identifier}}" matTooltip="{{SHOW_DETAILS | translate}}" class="resultitem__cell__toggle--icon" *ngIf="!rowItem?.isDetailToggled; else cancel_toggle" (click) = "toggle()">{{options.showDetailIconName}}</mat-icon>
-      <ng-template #cancel_toggle>
-        <mat-icon id= "{{'close-detail-' + rowItem?.identifier}}"   matTooltip="{{HIDE_DETAILS | translate}}" class="resultitem__cell__toggle--icon" (click) = "toggle()">{{options.hideDetailIconName}}</mat-icon>
-      </ng-template>
+      @if (detailedDataRetriever.detailsConfig?.length>0) {
+        <mat-icon id= "{{'open-detail-' + rowItem?.identifier}}" matTooltip="{{SHOW_DETAILS | translate}}" class="resultitem__cell__toggle--icon" *ngIf="!rowItem?.isDetailToggled; else cancel_toggle" (click) = "toggle()">{{options.showDetailIconName}}</mat-icon>
+        <ng-template #cancel_toggle>
+          <mat-icon id= "{{'close-detail-' + rowItem?.identifier}}"   matTooltip="{{HIDE_DETAILS | translate}}" class="resultitem__cell__toggle--icon" (click) = "toggle()">{{options.hideDetailIconName}}</mat-icon>
+        </ng-template>
+      }
     </td>
-
   </ng-container>
 
 

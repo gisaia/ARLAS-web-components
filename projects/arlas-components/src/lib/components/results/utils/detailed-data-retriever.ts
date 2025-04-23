@@ -21,8 +21,21 @@ import { AdditionalInfo, Action } from '../utils/results.utils';
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
 
+export interface FieldDetail {
+  path: string;
+  label: string;
+  process: string;
+}
+
+export interface Detail {
+  name: string;
+  order: number;
+  fields: Array<FieldDetail>;
+}
 
 export interface DetailedDataRetriever {
+
+  detailsConfig: Array<Detail>;
 
   getValues(identifier: string, fields: string[]): Observable<string[]>;
 
