@@ -18,6 +18,7 @@
  */
 
 import { Component, inject } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
@@ -41,7 +42,8 @@ export interface CogVisualisationData {
     CogPreviewComponent,
     MatDialogClose,
     TranslateModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonModule
   ],
   templateUrl: './cog-modal.component.html',
   styleUrl: './cog-modal.component.scss'

@@ -41,13 +41,14 @@
   &__title {
     font-size: 20px;
     color: black;
+    padding: 10px 0;
   }
 
   &__item {
     cursor: pointer;
     color: grey;
-    border: 1px solid white;
-    border-radius: 4px;
+    border: 2px solid white;
+    border-radius: 6px;
     position: relative;
     background-color: white;
 
@@ -60,12 +61,11 @@
     }
 
     &--selected {
-      border-color: rgb(0, 190, 255);
+      border-color: #1a73e8;
     }
 
     &:hover {
-      background: rgb(227, 227, 227);
-      border-color: black;
+      border-color: #bbbbbb;
     }
 
     &__warning,
@@ -86,12 +86,9 @@
   }
 
   &__exit {
-    cursor: pointer;
     align-self: end;
-    background-color: white;
-    border: 1px solid;
-    border-radius: 5px;
-    padding: 5px 10px;
     font-size: 14px;
+    margin-bottom: 6px;
+    --mdc-outlined-button-label-text-tracking: 0;
   }
 }
