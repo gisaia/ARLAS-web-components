@@ -1,6 +1,26 @@
 # Change Log
 
+## [v27.0.9](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.9) (2025-04-28)
+
+**New stuff:**
+
+- \[Draw\] add a tooltip in each drawing step to indicate the next action to user [\#988](https://github.com/gisaia/ARLAS-web-components/issues/988) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- \[draw\] Implement rectangle draw mode to replace the current bbox [\#987](https://github.com/gisaia/ARLAS-web-components/issues/987) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- always redraw draw geometries when changed [\#976](https://github.com/gisaia/ARLAS-web-components/issues/976) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- When the legend is empty, hide the button used to display the legend. [\#971](https://github.com/gisaia/ARLAS-web-components/issues/971)
+- Remove radius legend that is not field dependent [\#970](https://github.com/gisaia/ARLAS-web-components/issues/970) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Miscellaneous:**
+
+- Restore spacing between powerbars [\#985](https://github.com/gisaia/ARLAS-web-components/issues/985) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+- Bump to arlas-d3 version 12.0.1 [\#982](https://github.com/gisaia/ARLAS-web-components/issues/982) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
 ## [v27.0.8](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.8) (2025-04-11)
+
+**New stuff:**
+
+- Size up legend font [\#959](https://github.com/gisaia/ARLAS-web-components/issues/959) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- bump to latest maplibre version in order to activate globe view [\#915](https://github.com/gisaia/ARLAS-web-components/issues/915) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
 
 **Fixed bugs:**
 
