@@ -70,6 +70,8 @@
 	"Click to create a circle centered on this point": "Haga clic para crear un círculo centrado en este punto",
 	"Click to set the origin of the strip": "Haga clic para fijar el origen de la banda",
 	"Click again to set the length and bearing of the strip": "Haga clic de nuevo para fijar la longitud y el rumbo de la banda",
+	"Click to set the first corner of the rectangle": "Haga clic para fijar la primera esquina del rectángulo",
+	"Click again to complete the rectangle": "Haga clic de nuevo para completar el rectángulo",
 	"You must enter a coordinate": "Introduzca una coordenada",
 	"1.1 or 1°6'3\"": "1.1 o 1°6'3\"",
 	"Enter coordinates in decimal or sexagesimal degrees": "Introduzca las coordenadas en grados decimales o sexagesimales.",
