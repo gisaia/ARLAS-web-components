@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, signal, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
@@ -31,20 +31,21 @@ import { AbstractArlasMapService } from '../arlas-map.service';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
 import { DrawControlsOption } from '../map/model/controls';
 import { MapMouseEvent } from '../map/model/events';
-import { ArlasPoint } from '../map/model/geometry';
 import { latLngToWKT } from '../map/tools';
-import { AbstractDraw } from './AbstractDraw';
+import { AbstractDraw, DrawModes } from './AbstractDraw';
 import { AoiDimensions, BboxDrawCommand } from './draw.models';
 import { MapboxAoiDrawService } from './draw.service';
-import limitVertexDirectSelectMode from './modes/LimitVertexDirectSelectMode';
-import validGeomDrawPolygonMode from './modes/ValidGeomDrawPolygonMode';
+import { limitVertexDirectSelectMode } from './modes/LimitVertexDirectSelectMode';
+import { validGeomDrawPolygonMode } from './modes/ValidGeomDrawPolygonMode';
 import { circleMode } from './modes/circles/circle.mode';
-import radiusCircleMode from './modes/circles/radius.circle.mode';
-import directModeOverride from './modes/directSelectOverride';
-import simpleSelectModeOverride from './modes/simpleSelectOverride';
+import { radiusCircleMode } from './modes/circles/radius.circle.mode';
+import { directModeOverride } from './modes/directSelectOverride';
+import { rectangleMode } from './modes/rectangleMode';
+import { simpleSelectModeOverride } from './modes/simpleSelectOverride';
 import { stripDirectSelectMode } from './modes/strip/strip.direct.mode';
-import stripMode from './modes/strip/strip.mode';
+import { stripMode } from './modes/strip/strip.mode';
 import * as styles from './themes/default-theme';
+
 @Component({
   selector: 'arlas-draw',
   templateUrl: './arlas-draw.component.html',
@@ -97,22 +98,18 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   protected savedEditFeature = null;
   /** Map container Html element */
   protected canvas: HTMLElement;
-  /** Canvas of the bbox while being drawn. This variable is set to undefined when the draw ends. */
-  private box: HTMLElement;
-  /** Point coordinates when the bbox drawing starts*/
-  protected start: ArlasPoint;
-  /** Point coordinates when the bbox drawing is being drawn. Changes on move.*/
-  protected current: ArlasPoint;
-  /** Message shown to explain how to end drawing. */
-  public FINISH_DRAWING = marker('Double click to finish drawing');
-  /** Html element that holds the FINISH_DRAWING message. */
-  protected finishDrawTooltip: HTMLElement;
+  /** Html element that holds the drawing message. */
+  protected drawTooltipElement: HTMLElement;
+  /** Message shown to explain how to draw. */
+  public drawTooltipMessage = signal<string>('');
 
-
-  public constructor(private readonly drawService: MapboxAoiDrawService, private readonly _snackBar: MatSnackBar,
+  public constructor(
+    private readonly drawService: MapboxAoiDrawService,
+    private readonly _snackBar: MatSnackBar,
     private readonly translate: TranslateService,
     protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
-    protected mapService: AbstractArlasMapService<L, S, M>) {
+    protected mapService: AbstractArlasMapService<L, S, M>
+  ) {
     this.drawService.editAoi$.pipe(takeUntilDestroyed()).subscribe(ae => this.onAoiEdit.emit(ae));
     this.drawService.drawBbox$.pipe(takeUntilDestroyed()).subscribe({
       next: (bboxDC: BboxDrawCommand) => {
@@ -129,6 +126,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       this.draw.changeMode('static');
       this.drawService.isDrawingPolygon = false;
       this.nbPolygonVertices = 0;
+      this.drawClickCounter = 0;
     }
   }
 
@@ -212,12 +210,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
               this.drawService.isValidCircle(fc)
             ).map(f => cleanCoords(f))
           });
-        this.drawService.isDrawingBbox = false;
-        this.drawService.isDrawingPolygon = false;
-        this.drawService.isDrawingCircle = false;
-        this.drawService.isDrawingStrip = false;
-        this.drawService.isInSimpleDrawMode = false;
-        this.draw.changeMode('static');
+        this.switchToStaticMode();
         this.mapFrameworkService.setMapCursor(this.map, '');
       }
     });
@@ -225,9 +218,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   private listenToDrawModeChange() {
     this.draw.onDrawModeChange((e) => {
+      this.updateTooltipMessage();
       this.drawService.isDrawingPolygon = e.mode === this.draw.getMode('DRAW_POLYGON');
       this.drawService.isDrawingStrip = e.mode === this.draw.getMode('DRAW_STRIP') || e.mode === this.draw.getMode('DIRECT_STRIP');
       this.drawService.isDrawingCircle = e.mode === this.draw.getMode('DRAW_CIRCLE') || e.mode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
+      this.drawService.isDrawingBbox = e.mode === this.draw.getMode('DRAW_RECTANGLE');
       if (this.drawService.isDrawingPolygon || this.drawService.isDrawingCircle || this.drawService.isDrawingStrip || e.mode === 'static') {
         this.drawService.isInSimpleDrawMode = false;
       }
@@ -269,7 +264,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.finishDrawTooltip = document.getElementById('polygon-finish-draw-tooltip');
+    this.drawTooltipElement = document.getElementById('arlas-draw-tooltip');
     const drawStyles = styles.default;
     const drawOptions = {
       ...this.drawOption,
@@ -283,6 +278,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           draw_radius_circle: radiusCircleMode,
           draw_strip: stripMode,
           direct_strip: stripDirectSelectMode,
+          draw_rectangle: rectangleMode,
           direct_select: directModeOverride,
           simple_select: simpleSelectModeOverride
         },
@@ -295,6 +291,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
     this.draw.setMode('STATIC', 'static');
     this.draw.setMode('DIRECT_STRIP', 'direct_strip');
+    this.draw.setMode('DRAW_RECTANGLE', 'draw_rectangle');
     const drawControlConfig: DrawControlsOption = {
       draw: { control: this.draw },
       addGeoBox: {
@@ -314,32 +311,18 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.setDraw(this.draw);
     this.mapFrameworkService.onMapEvent('load', this.map, () => {
       this.mapService.declareLabelSources('', this.polygonlabeldata, this.map);
-      this.draw.changeMode('static');
+      this.switchToStaticMode();
       this.canvas = this.map.getCanvasContainer();
-      this.canvas.addEventListener('mousedown', this.mousedown, true);
       this.listenToDrawOnCreate();
       this.listenToDrawUpdate();
       this.listenToDrawDelete();
-      const mouseMoveForDraw = (e: MouseEvent) => {
-        const x = e.clientX;
-        const y = e.clientY;
-        this.finishDrawTooltip.style.top = (y + 20) + 'px';
-        this.finishDrawTooltip.style.left = (x + 20) + 'px';
-      };
+      this.canvas.addEventListener('mousemove', this.mouseMoveForDraw, true);
 
-      this.draw.onDrawOnClick((e) => {
-        if (this.drawClickCounter === 0) {
-          window.addEventListener('mousemove', mouseMoveForDraw);
-        }
-        this.drawClickCounter++;
-      });
       this.draw.onDrawOnStart((e) => {
-        window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.mapFrameworkService.setMapCursor(this.map, '');
       });
       this.draw.onDrawOnStop((e) => {
-        window.removeEventListener('mousemove', mouseMoveForDraw);
         this.drawClickCounter = 0;
         this.mapFrameworkService.setMapCursor(this.map, '');
       });
@@ -355,6 +338,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       this.listenToDrawSelectionChange();
       this.listenToDrawModeChange();
       this.mapFrameworkService.onMapEvent('click', this.map, (e) => {
+        if (this.drawService.isDrawing()) {
+          this.drawClickCounter++;
+          this.updateTooltipMessage();
+        }
+
         if (this.drawService.isDrawingCircle) {
           return;
         }
@@ -385,54 +373,16 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
                 });
                 this.drawService.isInSimpleDrawMode = true;
               }
-
             }
           }
         }
       });
     });
 
-    // Mouse events
-    this.mapFrameworkService.onMapEvent('mousedown', this.map, (e: MapMouseEvent) => {
-      this.drawService.startBboxDrawing();
-    });
-    this.mapFrameworkService.onMapEvent('mouseup', this.map, (e: MapMouseEvent) => {
-      this.drawService.stopBboxDrawing();
-    });
-
     this.mapFrameworkService.onMapEvent('mousemove', this.map, (e: MapMouseEvent) => {
-      const lngLat = e.lngLat;
       if (this.drawService.isDrawingBbox || this.drawService.isDrawingPolygon) {
         this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
-        this.map.moveLngLat = lngLat;
-      }
-      if (this.drawService.bboxEditionState.isDrawing) {
-        const startlng: number = this.map.startLngLat.lng;
-        const endlng: number = this.map.moveLngLat.lng;
-        const startlat: number = this.map.startLngLat.lat;
-        const endlat: number = this.map.moveLngLat.lat;
-        const west = Math.min(startlng, endlng);
-        const north = Math.max(startlat, endlat);
-        const east = Math.max(startlng, endlng);
-        const south = Math.min(startlat, endlat);
-        const coordinates = [[
-          [east, south],
-          [east, north],
-          [west, north],
-          [west, south],
-          [east, south],
-        ]];
-        const polygonGeojson = {
-          type: 'Feature',
-          properties: {
-            source: 'bbox'
-          },
-          geometry: {
-            type: 'Polygon',
-            coordinates: coordinates
-          }
-        };
-        this.drawService.emitDimensions(polygonGeojson as Feature);
+        this.map.moveLngLat = e.lngLat;
       }
     });
 
@@ -461,103 +411,68 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   }
 
   /**
-   * @description Triggered when drawing a bbox has started:
-   * - It disables the map drag pan.
-   * - It stores in the component's scope the start's cooordinates.
+   * Update the tooltip message when drawing to reflect drawing mode and state
    */
-  private readonly mousedown = (e) => {
-    // Continue the rest of the function if we add a geobox.
-    if (!this.drawService.isDrawingBbox) {
-      return;
+  public updateTooltipMessage() {
+    let tooltipMessage;
+    switch (this.draw.getCurrentMode().toLocaleUpperCase() as DrawModes) {
+      case 'DRAW_RADIUS_CIRCLE':
+        if (this.drawClickCounter === 0) {
+          tooltipMessage = marker('Click to set the center of the circle');
+        } else {
+          tooltipMessage = marker('Click again to set the radius of the circle');
+        }
+        break;
+      case 'DRAW_POLYGON':
+        if (this.drawClickCounter < 2) {
+          tooltipMessage = marker('Click to set a corner of the polygon');
+        } else {
+          tooltipMessage = marker('Double click to finish drawing');
+        }
+        break;
+      case 'DRAW_CIRCLE':
+        tooltipMessage = marker('Click to create a circle centered on this point');
+        break;
+      case 'DRAW_STRIP':
+        if (this.drawClickCounter === 0) {
+          tooltipMessage = marker('Click to set the origin of the strip');
+        } else {
+          tooltipMessage = marker('Click again to set the length and bearing of the strip');
+        }
+        break;
+      case 'DRAW_RECTANGLE':
+        if (this.drawClickCounter === 0) {
+          tooltipMessage = marker('Click to set the first corner of the rectangle');
+        } else {
+          tooltipMessage = marker('Click again to complete the rectangle');
+        }
+        break;
+      case 'STATIC':
+      case 'SIMPLE_SELECT':
+        this.drawClickCounter = 0;
+        break;
+      default:
+        break;
     }
-    // Disable default drag zooming when we add a geobox.
-    this.map.disableDragPan();
-    // Call functions for the following events
-    document.addEventListener('mousemove', this.mousemove);
-    document.addEventListener('mouseup', this.mouseup);
-    // Capture the first xy coordinates
-    this.start = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
-  };
 
-  /**
-   * @description Triggered while moving the mouse when drawing the bbox:
-   * - It draws on the map a bbox canvas.
-   * - It stores in the component's scope the current mouse's cooordinates.
-   */
-  private readonly mousemove = (e) => {
-    // Capture the ongoing xy coordinates
-    this.current = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
-    // Append the box element if it doesn't exist
-    if (this.box === undefined) {
-      this.box = document.createElement('div');
-      this.box.classList.add('boxdraw');
-      this.canvas.appendChild(this.box);
-    }
-    const minX = Math.min(this.start.x, this.current.x);
-    const maxX = Math.max(this.start.x, this.current.x);
-    const minY = Math.min(this.start.y, this.current.y);
-    const maxY = Math.max(this.start.y, this.current.y);
-    // Adjust width and xy position of the box element ongoing
-    const pos = 'translate(' + minX + 'px,' + minY + 'px)';
-    this.box.style.transform = pos;
-    this.box.style.webkitTransform = pos;
-    this.box.style.width = maxX - minX + 'px';
-    this.box.style.height = maxY - minY + 'px';
-  };
-
-  /**
-   * @description Triggerd on the second click to end drawing the bbox.
-   * - Restores the drag pan on the map.
-   * - Removes the bbox canvas.
-   * - Draws the bbox feature on the map.
-   * @param e Mouse event
-   */
-  private readonly mouseup = (e) => {
-    const f = this.mapFrameworkService.getPointFromScreen(e, this.canvas);
-    document.removeEventListener('mousemove', this.mousemove);
-    document.removeEventListener('mouseup', this.mouseup);
-    this.mapFrameworkService.setMapCursor(this.map, '');
-    this.map.enableDragPan();
-    // Capture xy coordinates
-    if (this.start.x !== f.x && this.start.y !== f.y) {
-      this.finish([[this.start, f], [e.lngLat]]);
-    } else if (this.box) {
-        this.box.parentNode.removeChild(this.box);
-        this.box = undefined;
-      }
-    this.drawService.endDimensionsEmission();
-  };
-
-  /**
-   * @description Draws the bbox feature on the map and removes the bbox canvas.
-   * @param bbox Start/End coordinates of the bbox.
-   */
-  private finish(bbox?) {
-    if (bbox) {
-      const startlng: number = this.map.startLngLat.lng;
-      const endlng: number = this.map.endLngLat.lng;
-      const startlat: number = this.map.startLngLat.lat;
-      const endlat: number = this.map.endLngLat.lat;
-      const west = Math.min(startlng, endlng);
-      const north = Math.max(startlat, endlat);
-      const east = Math.max(startlng, endlng);
-      const south = Math.min(startlat, endlat);
-      this.drawBbox(east, south, west, north);
-      if (this.box) {
-        this.box.parentNode.removeChild(this.box);
-        this.box = undefined;
-      }
-    }
+    this.drawTooltipMessage.set(tooltipMessage);
   }
 
+  private readonly mouseMoveForDraw = (e: MouseEvent) => {
+    const x = e.clientX;
+    const y = e.clientY;
+    this.drawTooltipElement.style.top = (y + 20) + 'px';
+    this.drawTooltipElement.style.left = (x + 20) + 'px';
+  };
+
   /**
-   * @description Emits the newly drawn bbox. It completes the drawBbox event emitted by the drawService.
+   * @description Emits the bbox drawn by the BboxGenerator component
    * @param east
    * @param south
    * @param west
    * @param north
    */
-  protected drawBbox(east, south, west, north) {
+  protected drawBbox(east: number, south: number, west: number, north: number) {
     const coordinates = [[
       [east, south],
       [east, north],
@@ -585,15 +500,13 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.addFeatures(geoboxdata, /** deleteOld */ true);
     this.onAoiChanged.next(geoboxdata);
     this.drawService.isDrawingBbox = false;
-    this.drawService.disableBboxEdition();
     this.drawService.endDimensionsEmission();
   }
 
   /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
     this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
-    this.drawService.enableBboxEdition();
-    this.drawService.isDrawingBbox = true;
+    this.switchToDrawMode('draw_rectangle');
   }
 
   /**
@@ -638,11 +551,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       || selectedMode === this.draw.getMode('DRAW_RADIUS_CIRCLE');
     this.drawService.isDrawingPolygon = selectedMode === this.draw.getMode('DRAW_POLYGON');
     this.drawService.isDrawingStrip = selectedMode === this.draw.getMode('DRAW_STRIP');
-    this.drawService.isDrawingBbox = false;
+    this.drawService.isDrawingBbox = selectedMode === this.draw.getMode('DRAW_RECTANGLE');
     this.drawService.isInSimpleDrawMode = false;
 
     this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
     this.draw.changeMode(selectedMode, option ?? {});
+    this.updateTooltipMessage();
   }
 
   /**
@@ -661,7 +575,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   /**
    * @description Switches to simple_select mode.
-   * @param option Mapboxdraw option.
    */
   public switchToEditMode() {
     this.draw.changeMode('simple_select', {
@@ -672,6 +585,19 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.isDrawingStrip = false;
     this.drawService.isDrawingPolygon = false;
     this.drawService.isDrawingBbox = false;
+  }
+
+  /**
+   * @description Switches to static mode.
+   */
+  public switchToStaticMode() {
+    this.draw.changeMode('static');
+    this.drawService.isInSimpleDrawMode = false;
+    this.drawService.isDrawingBbox = false;
+    this.drawService.isDrawingCircle = false;
+    this.drawService.isDrawingStrip = false;
+    this.drawService.isDrawingPolygon = false;
+    this.updateTooltipMessage();
   }
 
   /**
@@ -717,30 +643,15 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   @HostListener('document:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.key === 'Escape') {
-      if (this.drawService.isDrawingBbox) {
-        document.removeEventListener('mouseup', this.mouseup);
-
-        if (this.box) {
-          this.box.parentNode.removeChild(this.box);
-          this.box = undefined;
-        }
-        this.map.enableDragPan();
-        this.drawService.endDimensionsEmission();
-      }
-
       if (this.drawService.isDrawing()) {
         this.drawService.deleteUnregisteredFeatures();
         this.mapFrameworkService.setMapCursor(this.map, '');
-        document.removeEventListener('mousemove', this.mousemove);
 
-        this.drawService.isDrawingBbox = false;
-        this.drawService.isDrawingCircle = false;
-        this.drawService.isDrawingStrip = false;
-        this.drawService.isDrawingPolygon = false;
-        this.draw.changeMode('static');
+        this.switchToStaticMode();
       } else if (this.drawService.isInSimpleDrawMode) {
         this.drawService.isInSimpleDrawMode = false;
         this.draw.changeMode('simple_select', { featureIds: [] });
+        this.updateTooltipMessage();
       }
     }
   }

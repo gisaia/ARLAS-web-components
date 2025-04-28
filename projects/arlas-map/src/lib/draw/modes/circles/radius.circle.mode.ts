@@ -120,7 +120,7 @@ radiusCircleMode.clickAnywhere = function (state, e) {
         state.line.addCoordinate(0, e.lngLat.lng, e.lngLat.lat);
         return this.changeMode('simple_select', { featureIds: [state.line.id] });
     }
-    this.updateUIClasses({ mouse: 'add' });
+    this.updateUIClasses({ mouse: MapboxDraw.constants.cursors.ADD });
     state.line.updateCoordinate(
         state.currentVertexPosition,
         e.lngLat.lng,

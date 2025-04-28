@@ -27,12 +27,6 @@ export interface AoiDimensions {
   };
 }
 
-export interface EditionState {
-  enabled: boolean;
-  isDrawing: boolean;
-  isEditing: boolean;
-}
-
 export interface Corner {
   lat: number;
   lng: number;

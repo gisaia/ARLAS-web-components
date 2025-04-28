@@ -18,14 +18,14 @@
  */
 
 import { Injectable } from '@angular/core';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import area from '@turf/area';
-import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import bbox from '@turf/bbox';
+import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
-import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { AbstractDraw } from './AbstractDraw';
+import { AoiDimensions, BboxDrawCommand, Corner } from './draw.models';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -39,9 +39,6 @@ export class MapboxAoiDrawService {
 
   private drawBboxSource = new Subject<BboxDrawCommand>();
   public drawBbox$ = this.drawBboxSource.asObservable();
-
-  public bboxEditionState: EditionState;
-  public polygonEditionState: EditionState;
 
   /** Set to true when the user is drawing a bbox. */
   public isDrawingBbox = false;
@@ -57,18 +54,7 @@ export class MapboxAoiDrawService {
   public isDrawSelected = false;
   public isReady = false;
 
-  public constructor() {
-    this.bboxEditionState = {
-      enabled: false,
-      isDrawing: false,
-      isEditing: false
-    };
-    this.polygonEditionState = {
-      enabled: false,
-      isDrawing: false,
-      isEditing: false
-    };
-  }
+  public constructor() { }
 
   public isDrawing() {
     return this.isDrawingBbox || this.isDrawingCircle || this.isDrawingPolygon || this.isDrawingStrip;
@@ -85,33 +71,6 @@ export class MapboxAoiDrawService {
       south,
       north
     });
-  }
-
-  public enableBboxEdition() {
-    this.bboxEditionState.enabled = true;
-    this.bboxEditionState.isDrawing = false;
-    this.bboxEditionState.isEditing = false;
-    this.emitStartBBox();
-  }
-
-  public startBboxDrawing() {
-    if (this.bboxEditionState.enabled) {
-      this.bboxEditionState.isDrawing = true;
-      this.bboxEditionState.isEditing = false;
-    }
-  }
-
-  public stopBboxDrawing() {
-    if (this.bboxEditionState.enabled) {
-      this.bboxEditionState.isDrawing = false;
-      this.bboxEditionState.isEditing = false;
-    }
-  }
-
-  public disableBboxEdition() {
-    this.bboxEditionState.enabled = false;
-    this.bboxEditionState.isDrawing = false;
-    this.bboxEditionState.isEditing = false;
   }
 
   public setDraw(mapboxDraw: AbstractDraw) {
@@ -174,7 +133,6 @@ export class MapboxAoiDrawService {
         this.editionId = features[0].id;
       } else {
         this.editionId = undefined;
-        this.disableBboxEdition();
         this.endDimensionsEmission();
       }
     });
