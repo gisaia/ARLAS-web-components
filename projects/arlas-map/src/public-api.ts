@@ -52,7 +52,7 @@ export { BboxGeneratorModule } from './lib/bbox-generator/bbox-generator.module'
 export { BboxFormGroup } from './lib/bbox-generator/bbox-generator.utils';
 export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { AbstractDraw } from './lib/draw/AbstractDraw';
-export { AoiDimensions as AoiEdition, Corner, EditionState } from './lib/draw/draw.models';
+export { AoiDimensions as AoiEdition, Corner } from './lib/draw/draw.models';
 export { MapboxAoiDrawService } from './lib/draw/draw.service';
 export { limitVertexDirectSelectMode } from './lib/draw/modes/LimitVertexDirectSelectMode';
 export { validGeomDrawPolygonMode } from './lib/draw/modes/ValidGeomDrawPolygonMode';

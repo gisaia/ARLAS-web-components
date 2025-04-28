@@ -503,7 +503,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.endDimensionsEmission();
   }
 
-  // TODO: to keep?
   /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
     this.mapFrameworkService.setMapCursor(this.map, 'crosshair');

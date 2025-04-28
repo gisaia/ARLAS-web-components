@@ -25,7 +25,7 @@ import { Feature, FeatureCollection, lineString } from '@turf/helpers';
 import length from '@turf/length';
 import { Subject } from 'rxjs';
 import { AbstractDraw } from './AbstractDraw';
-import { AoiDimensions, BboxDrawCommand, Corner, EditionState } from './draw.models';
+import { AoiDimensions, BboxDrawCommand, Corner } from './draw.models';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -39,9 +39,6 @@ export class MapboxAoiDrawService {
 
   private drawBboxSource = new Subject<BboxDrawCommand>();
   public drawBbox$ = this.drawBboxSource.asObservable();
-
-  // TODO: is it used?
-  public polygonEditionState: EditionState;
 
   /** Set to true when the user is drawing a bbox. */
   public isDrawingBbox = false;
@@ -57,13 +54,7 @@ export class MapboxAoiDrawService {
   public isDrawSelected = false;
   public isReady = false;
 
-  public constructor() {
-    this.polygonEditionState = {
-      enabled: false,
-      isDrawing: false,
-      isEditing: false
-    };
-  }
+  public constructor() { }
 
   public isDrawing() {
     return this.isDrawingBbox || this.isDrawingCircle || this.isDrawingPolygon || this.isDrawingStrip;
