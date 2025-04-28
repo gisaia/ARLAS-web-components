@@ -48,13 +48,12 @@
     align-items: baseline;
 
     .operation {
-      font-size: 0.6em;
+      font-size: 10px;
       color: #aaa;
       border-radius: 3px;
-      font-weight: bold;
       margin-right: 5px;
       cursor: pointer;
-      padding-bottom: 3px;
+      padding-bottom: 5px;
 
       &--selected {
         color: #555;
@@ -63,7 +62,6 @@
     }
     .exclude {
       color: #555;
-      font-weight: bold;
       cursor: unset ;
     }
   }
@@ -73,7 +71,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: 5px;
+  padding-bottom: 8px;
 
   &__scrollable {
     display: flex;
