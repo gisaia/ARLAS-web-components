@@ -1,5 +1,11 @@
 # Change Log
 
+## [v27.0.11](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.11) (2025-04-29)
+
+**Fixed bugs:**
+
+- Map minimum zoom is not properly initialized [\#995](https://github.com/gisaia/ARLAS-web-components/issues/995) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v27.0.10](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.10) (2025-04-29)
 
 **New stuff:**
