@@ -27,7 +27,7 @@ import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
 import { Subject, takeUntil } from 'rxjs';
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
+import { ARLAS_ID, ArlasDataLayer, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { LegendService } from './legend.service';
 import { MAX_LINE_WIDTH } from './legend.tools';
@@ -43,7 +43,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Layer object
    */
-  @Input() public layer: any;
+  @Input() public layer: ArlasDataLayer;
   /**
    * @Input : Angular
    * @description Collection of the layer
@@ -213,7 +213,11 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
       case 'circle': {
         const circleLegend = this.legendService.getCircleLegend(paint, visibileMode, this.legendData, this.layer);
         this.colorLegend.set(circleLegend.color);
-        this.strokeColorLegend.set(circleLegend.strokeColor);
+
+        // For circle-heatmap layer the stroke can't be configured, so hide it
+        if (this.layer.metadata?.hiddenProps?.geomType !== 'circle-heatmap') {
+          this.strokeColorLegend.set(circleLegend.strokeColor);
+        }
         this.colorPalette = circleLegend.colorPalette;
         this.strokeColorPalette = circleLegend.strokeColorPalette;
         this.radiusLegend.set(circleLegend.radius);

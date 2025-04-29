@@ -20,6 +20,8 @@
 export interface ArlasDataLayer {
   id: string;
   type: string;
+  minzoom?: number;
+  maxzoom?: number;
   source?: string;
   metadata?: LayerMetadata;
   paint: ArlasPaint;
@@ -67,6 +69,7 @@ export interface LayerMetadata {
   stroke?: FillStroke;
   isScrollableLayer?: boolean;
   hiddenProps?: MetadataHiddenProps;
+  showLegend?: boolean;
 }
 export interface MetadataHiddenProps {
   geomType?: string;
