@@ -267,9 +267,8 @@ export class ArlasMapComponent<L, S, M> {
     if (this.maxZoom === undefined || this.maxZoom === null) {
       this.maxZoom = 23;
     }
-    if (this.minZoom === undefined || this.minZoom === null) {
-      this.maxZoom = 0;
-    }
+    this.minZoom = this.minZoom ?? 0;
+
     /** BASEMAPS */
     if (this.defaultBasemapStyle && typeof this.defaultBasemapStyle.styleFile === 'string') {
       this.defaultBasemapStyle.url = this.defaultBasemapStyle.styleFile;
