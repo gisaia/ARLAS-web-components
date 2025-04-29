@@ -132,7 +132,6 @@ export class MapboxAoiDrawService {
       if (this.hasFeatures(features)) {
         this.editionId = features[0].id;
       } else {
-        this.editionId = undefined;
         this.endDimensionsEmission();
       }
     });
@@ -149,7 +148,6 @@ export class MapboxAoiDrawService {
   private onDelete() {
     this.mapDraw.on('draw.delete', (e) => {
       e.features.forEach(f => this.unregister(f.id));
-      this.editionId = undefined;
       this.endDimensionsEmission();
     });
   }
@@ -158,7 +156,6 @@ export class MapboxAoiDrawService {
   private onStop() {
     this.mapDraw.on('draw.onStop', (e) => {
       this.register(this.editionId);
-      this.editionId = undefined;
       this.endDimensionsEmission();
     });
   }
@@ -215,6 +212,7 @@ export class MapboxAoiDrawService {
 
   /** Stops emitting Aoi dimension info */
   public endDimensionsEmission() {
+    this.editionId = undefined;
     this.editAoiSource.next({
       area: 0,
       envelope: {

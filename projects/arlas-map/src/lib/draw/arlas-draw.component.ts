@@ -648,6 +648,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         this.mapFrameworkService.setMapCursor(this.map, '');
 
         this.switchToStaticMode();
+        this.drawService.endDimensionsEmission();
       } else if (this.drawService.isInSimpleDrawMode) {
         this.drawService.isInSimpleDrawMode = false;
         this.draw.changeMode('simple_select', { featureIds: [] });
