@@ -1,5 +1,15 @@
 # Change Log
 
+## [v27.0.10](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.10) (2025-04-29)
+
+**New stuff:**
+
+- handle sub 1000 numbers with shorten pipe [\#990](https://github.com/gisaia/ARLAS-web-components/issues/990)
+
+**Fixed bugs:**
+
+- Escaping draw mode keeps the dimensions card open [\#991](https://github.com/gisaia/ARLAS-web-components/issues/991) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v27.0.9](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.9) (2025-04-28)
 
 **New stuff:**
