@@ -17,24 +17,22 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action, ActionFilter, ItemDataType } from '../utils/results.utils';
-import { Observable } from 'rxjs';
-import { Item } from '../model/item';
+import { NgOptimizedImage } from '@angular/common';
+import { Component, input } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
-export interface MatchInfo {
-  matched: Array<boolean>;
-  data: Map<string, ItemDataType>;
-}
-
-
-export interface DetailedDataRetriever {
-
-  getValues(identifier: string, fields: string[]): Observable<string[]>;
-
-  getData(identifier: string): Observable<AdditionalInfo>;
-
-  getActions(item: Item): Observable<Array<Action>>;
-
-  getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
-
+@Component({
+  selector: 'arlas-cog-preview',
+  standalone: true,
+  imports: [
+    NgOptimizedImage,
+    TranslateModule
+  ],
+  templateUrl: './cog-preview.component.html',
+  styleUrl: './cog-preview.component.scss'
+})
+export class CogPreviewComponent {
+  public title = input<string>();
+  public description = input<string>();
+  public preview = input<string>('./assets/no-view.png');
 }

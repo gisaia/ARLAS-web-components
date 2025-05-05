@@ -17,24 +17,23 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action, ActionFilter, ItemDataType } from '../utils/results.utils';
-import { Observable } from 'rxjs';
-import { Item } from '../model/item';
+import { ActionFilter } from '../results/utils/results.utils';
 
-export interface MatchInfo {
-  matched: Array<boolean>;
-  data: Map<string, ItemDataType>;
+export interface CogVisualisationConfig {
+  picture: string;
+  title: string;
+  description: string;
 }
 
+export interface VisualisationInterface {
+  name: string;
+  description: string;
+  dataGroups: DataGroup[];
+}
 
-export interface DetailedDataRetriever {
-
-  getValues(identifier: string, fields: string[]): Observable<string[]>;
-
-  getData(identifier: string): Observable<AdditionalInfo>;
-
-  getActions(item: Item): Observable<Array<Action>>;
-
-  getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
-
+export interface DataGroup {
+  protocol: string;
+  visualisationUrl: string;
+  url: string;
+  filters: Array<ActionFilter>;
 }

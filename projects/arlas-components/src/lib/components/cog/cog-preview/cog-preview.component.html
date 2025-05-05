@@ -1,0 +1,9 @@
+<div class="visualisation">
+  <img class="visualisation__preview"
+      [ngSrc]="preview()" width="80" height="80" priority
+      [alt]="'Visualisation preview' | translate">
+  <div class="visualisation__info">
+    <span class="visualisation__info__title">{{title() | translate}}</span>
+    <span class="visualisation__info__description">{{description() | translate}}</span>
+  </div>
+</div>
