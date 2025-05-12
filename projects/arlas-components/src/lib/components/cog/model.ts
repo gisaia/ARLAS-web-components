@@ -34,6 +34,6 @@ export interface VisualisationInterface {
 export interface DataGroup {
   protocol: string;
   visualisationUrl: string;
-  url: string;
+  name: string;
   filters: Array<ActionFilter>;
 }
