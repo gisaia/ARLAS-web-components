@@ -36,7 +36,7 @@ import { MapboxAoiDrawService } from './draw/draw.service';
 import { LegendData } from './legend/legend.config';
 import {
   AbstractArlasMapGL,
-  ArlasMapOffset,
+  ArlasMapOffset, ArlasMapOption,
   CROSS_LAYER_PREFIX,
   MapConfig,
   RESET_BEARING,
@@ -369,6 +369,25 @@ export class ArlasMapComponent<L, S, M> {
    */
   public declareMap() {
     this.initTransformRequest();
+    const arlasMapOption: ArlasMapOption = {
+      container: this.id,
+      style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
+      center: this.initCenter,
+      zoom: this.initZoom,
+      maxZoom: this.maxZoom,
+      minZoom: this.minZoom,
+      renderWorldCopies: true,
+      preserveDrawingBuffer: this.preserveDrawingBuffer,
+      locale: {
+        'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
+        'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
+        'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
+      },
+      pitchWithRotate: false,
+      transformRequest: this.transformRequest,
+      attributionControl: false,
+    };
+    const mapProviderOptions = this.mapFrameworkService.buildMapProviderOption(arlasMapOption);
     const config: MapConfig<M> = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
       fitBoundsPadding: this.fitBoundsPadding,
@@ -378,24 +397,7 @@ export class ArlasMapComponent<L, S, M> {
       wrapLatLng: this.wrapLatLng,
       maxWidthScale: this.maxWidthScale,
       unitScale: this.unitScale,
-      mapProviderOptions: {
-        container: this.id,
-        style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
-        center: this.initCenter,
-        zoom: this.initZoom,
-        maxZoom: this.maxZoom,
-        minZoom: this.minZoom,
-        renderWorldCopies: true,
-        preserveDrawingBuffer: this.preserveDrawingBuffer,
-        locale: {
-          'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
-          'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
-          'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
-        },
-        pitchWithRotate: false,
-        transformRequest: this.transformRequest,
-        attributionControl: false,
-      } as M,
+      mapProviderOptions,
       controls: {
         mapAttribution: {
           enable: true,

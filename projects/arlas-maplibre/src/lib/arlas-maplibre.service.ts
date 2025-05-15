@@ -26,6 +26,7 @@ import {
   FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
   VectorStyle
 } from 'arlas-map';
+import { ArlasMapOption } from 'arlas-map/src/lib/map/AbstractArlasMapGL';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
   GeoJSONSourceSpecification, LayerSpecification, MapOptions, Point, Popup,
@@ -68,6 +69,24 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     map.getMapProvider().fitBounds(map.getMapProvider().getBounds());
   };
 
+  public buildMapProviderOption(mapOption: ArlasMapOption): MapOptions{
+    return  {
+      container: mapOption.container,
+      style: mapOption.style,
+      center: mapOption.center,
+      zoom: mapOption.zoom,
+      maxZoom: mapOption.maxZoom,
+      minZoom: mapOption.minZoom,
+      renderWorldCopies: mapOption.renderWorldCopies,
+      canvasContextAttributes: {
+        preserveDrawingBuffer: mapOption.preserveDrawingBuffer
+      },
+      locale: mapOption.locale,
+      pitchWithRotate: mapOption.pitchWithRotate,
+      transformRequest: mapOption.transformRequest,
+      attributionControl: mapOption.attributionControl,
+    } as MapOptions;
+  }
 
   public createMap(config: ArlasMaplibreConfig): ArlasMaplibreGL {
     return new ArlasMaplibreGL(config);
