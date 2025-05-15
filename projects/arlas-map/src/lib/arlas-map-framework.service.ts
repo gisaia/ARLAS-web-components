@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
+import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
 import { AbstractDraw } from './draw/AbstractDraw';
 import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
 import { FeatureCollection } from '@turf/helpers';
@@ -42,7 +42,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public constructor() { }
 
   public abstract getInitTransformRequest(): Function;
-
+  public abstract buildMapProviderOption(mapOption: ArlasMapOption): M;
   public abstract createMap(config: MapConfig<M>): AbstractArlasMapGL;
 
   public abstract createDraw(drawOptions, enabled: boolean, map: AbstractArlasMapGL): AbstractDraw;
