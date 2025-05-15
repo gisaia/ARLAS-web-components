@@ -17,24 +17,37 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action, ActionFilter, ItemDataType } from '../utils/results.utils';
-import { Observable } from 'rxjs';
-import { Item } from '../model/item';
+.visualisation {
+  display: flex;
+  padding: 10px;
+  gap: 10px;
 
-export interface MatchInfo {
-  matched: Array<boolean>;
-  data: Map<string, ItemDataType>;
-}
+  &__preview {
+    height: 80px;
+    width: 80px;
+    max-width: 100%;
+  }
 
+  &__info {
+    display: flex;
+    flex-direction: column;
+    max-width: 450px;
+    line-height: 18px;
+    overflow: hidden;
 
-export interface DetailedDataRetriever {
+    &__title {
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      padding-bottom: 5px;
+    }
 
-  getValues(identifier: string, fields: string[]): Observable<string[]>;
-
-  getData(identifier: string): Observable<AdditionalInfo>;
-
-  getActions(item: Item): Observable<Array<Action>>;
-
-  getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
-
+    &__description {
+      font-size: 14px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
 }
