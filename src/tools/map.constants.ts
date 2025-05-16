@@ -31,7 +31,7 @@ export function getStyle(name: string) {
     name,
     styleFile: `https://api.maptiler.com/maps/${name}/style.json?key=xIhbu1RwgdbxfZNmoXn4`,
     image: `https://cloud.maptiler.com/static/img/maps/${name}.png`
-  })
+  });
 }
 export const basemapStyles = [
   getStyle('basic'),

@@ -103,7 +103,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract hasLayer(map: AbstractArlasMapGL, layer: L | string);
   public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract moveLayer(map: AbstractArlasMapGL, layer: L | string, beforeId?: string);
-  public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: any, fn: (e) => void);
+  public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: L | string, fn: (e) => void);
   public abstract removeLayer(map: AbstractArlasMapGL, layer: L | string);
   public abstract removeLayers(map: AbstractArlasMapGL, layers: L[] | string[]);
   public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
@@ -140,7 +140,6 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: L | string, filter: any);
 
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): S;
-  public abstract createRasterSource(url: string, bounds: number[],
-    maxZoom: number, tileSize: number): S;
+  public abstract createRasterSource(url: string, bounds: number[], maxZoom: number, tileSize: number): S;
 
 }

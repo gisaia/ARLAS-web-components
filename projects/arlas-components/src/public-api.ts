@@ -23,6 +23,7 @@
 export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TimelineData, TreeNode } from 'arlas-d3';
 export { CalendarTimelineComponent, TranslationDirection } from './lib/components/calendar-timeline/calendar-timeline.component';
 export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
+export { CogLegendComponent } from './lib/components/cog/cog-legend/cog-legend.component';
 export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
 export { CogVisualisationConfig, DataGroup, VisualisationInterface } from './lib/components/cog/model';

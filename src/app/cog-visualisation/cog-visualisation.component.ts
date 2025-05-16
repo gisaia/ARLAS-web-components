@@ -19,15 +19,15 @@
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { CogModalComponent, CogPreviewComponent } from 'arlas-web-components';
+import { CogLegendComponent, CogModalComponent, CogPreviewComponent } from 'arlas-web-components';
 
 @Component({
   selector: 'arlas-cog-visualisation',
   standalone: true,
   imports: [
     CogPreviewComponent,
-    CogModalComponent,
-    MatButton
+    MatButton,
+    CogLegendComponent
   ],
   templateUrl: './cog-visualisation.component.html',
   styleUrl: './cog-visualisation.component.scss'
@@ -57,7 +57,7 @@ export class CogVisualisationComponent {
       loading: true
     };
 
-    const dialogRef = this.dialog.open(CogModalComponent, {
+    this.dialog.open(CogModalComponent, {
       data : data,
       width: '600px',
       maxHeight:'50vh'

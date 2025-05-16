@@ -1,0 +1,12 @@
+<div class="legend">
+    <div class="legend__name">{{ name() | translate }}</div>
+    <div class="legend__detail">
+        @if (minimum() | shortenNumber; as shortMin) {
+            <div class="legend__detail__min">{{ shortMin }}</div>
+        }
+        <img class="legend__detail__color-ramp" [src]="colormapImage()" [style.width.px]="colormapWidth()" alt="Color map">
+        @if (maximum() | shortenNumber; as shortMax) {
+            <div class="legend__detail__max">{{ shortMax }}</div>
+        }
+    </div>
+</div>
