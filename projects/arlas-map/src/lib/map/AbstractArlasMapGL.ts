@@ -40,6 +40,25 @@ export interface MapConfig<T> {
   controls?: ControlsOption;
 }
 
+export interface ArlasMapOption {
+  container: string;
+  style: any;
+  center: [number, number];
+  zoom: number;
+  maxZoom: number;
+  minZoom: number;
+  renderWorldCopies: boolean;
+  preserveDrawingBuffer: boolean;
+  locale: {
+    'NavigationControl.ZoomIn'?: string;
+    'NavigationControl.ZoomOut'?: string;
+    'NavigationControl.ResetBearing'?: string;
+  };
+  pitchWithRotate: boolean;
+  transformRequest: unknown;
+  attributionControl: boolean;
+}
+
 export interface ArlasMapOffset {
   north: number;
   east: number;
