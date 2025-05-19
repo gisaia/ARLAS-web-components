@@ -1,6 +1,6 @@
 {
   "name": "arlas-mapbox",
-  "version": "27.1.0-beta.1",
+  "version": "27.1.0-beta.2",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
@@ -16,6 +16,7 @@
     "@ngx-translate/http-loader": "^8.0.0"
   },
   "dependencies": {
+    "arlas-map": "27.1.0-beta.2",
     "mapbox-gl": "^1.6.1",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0"
