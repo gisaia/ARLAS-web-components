@@ -184,7 +184,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
       } else if (a.filters) {
         this.detailedDataRetriever.getMatch(this.item.identifier, a.filters).pipe(
           take(1)).subscribe(v => {
-            if (a.filters.length === a.matched.length) {
+            if (a.filters.length === v.matched.length) {
               a.matched = v.matched;
               a.show = v.matched.filter(v => v).length > 0;
             } else {
