@@ -23,11 +23,11 @@ import {
   AbstractArlasMapGL,
   ARLAS_ID,
   ArlasMapFrameworkService,
+  ArlasMapOption,
   FILLSTROKE_LAYER_PREFIX,
   SCROLLABLE_ARLAS_ID,
   VectorStyle
 } from 'arlas-map';
-import { ArlasMapOption } from 'arlas-map/src/lib/map/AbstractArlasMapGL';
 import {
   AnyLayer,
   AnySourceData,
