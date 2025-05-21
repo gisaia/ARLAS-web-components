@@ -98,3 +98,4 @@ export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
 export { GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from './lib/map/model/filters';
 export { MapLayerMouseEvent, MapMouseEvent} from './lib/map/model/events';
 export { latLngToWKT } from './lib/map/tools';
+export { ArlasMapOption } from './lib/map/AbstractArlasMapGL';
