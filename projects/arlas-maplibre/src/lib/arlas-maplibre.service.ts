@@ -22,11 +22,11 @@ import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL,
   ARLAS_ID, ArlasMapFrameworkService,
+  ArlasMapOption,
   ExternalEvent,
   FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
   VectorStyle
 } from 'arlas-map';
-import { ArlasMapOption } from 'arlas-map/src/lib/map/AbstractArlasMapGL';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
   GeoJSONSourceSpecification, LayerSpecification, MapOptions, Point, Popup,
