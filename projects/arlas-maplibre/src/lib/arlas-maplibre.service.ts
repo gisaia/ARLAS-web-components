@@ -22,6 +22,7 @@ import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL,
   ARLAS_ID, ArlasMapFrameworkService,
+  ArlasMapOption,
   ExternalEvent,
   FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
   VectorStyle
@@ -68,6 +69,24 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     map.getMapProvider().fitBounds(map.getMapProvider().getBounds());
   };
 
+  public buildMapProviderOption(mapOption: ArlasMapOption): MapOptions{
+    return  {
+      container: mapOption.container,
+      style: mapOption.style,
+      center: mapOption.center,
+      zoom: mapOption.zoom,
+      maxZoom: mapOption.maxZoom,
+      minZoom: mapOption.minZoom,
+      renderWorldCopies: mapOption.renderWorldCopies,
+      canvasContextAttributes: {
+        preserveDrawingBuffer: mapOption.preserveDrawingBuffer
+      },
+      locale: mapOption.locale,
+      pitchWithRotate: mapOption.pitchWithRotate,
+      transformRequest: mapOption.transformRequest,
+      attributionControl: mapOption.attributionControl,
+    } as MapOptions;
+  }
 
   public createMap(config: ArlasMaplibreConfig): ArlasMaplibreGL {
     return new ArlasMaplibreGL(config);
