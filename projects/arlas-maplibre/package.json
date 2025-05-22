@@ -1,6 +1,6 @@
 {
   "name": "arlas-maplibre",
-  "version": "27.0.11",
+  "version": "27.0.12",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
