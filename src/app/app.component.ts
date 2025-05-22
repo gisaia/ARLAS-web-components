@@ -39,6 +39,7 @@ export class AppComponent implements OnInit {
     '/wmts-layer-manager',
     '/multi-collection',
     '/cog-visualisation'
+    '/layer-legend'
   ];
 
 
