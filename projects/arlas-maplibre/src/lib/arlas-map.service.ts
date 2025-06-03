@@ -20,12 +20,13 @@
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
+  AbstractArlasMapGL,
   AbstractArlasMapService, ARLAS_ID, ArlasDataLayer, ArlasMapSource,
   ExternalEvent, FILLSTROKE_LAYER_PREFIX, LayerMetadata, MapLayers,
   SCROLLABLE_ARLAS_ID, VisualisationSetConfig
 } from 'arlas-map';
 import {
-  AddLayerObject, CanvasSourceSpecification, ExpressionSpecification,
+  AddLayerObject, CanvasSourceSpecification, Expression, ExpressionSpecification,
   GeoJSONSource, GeoJSONSourceSpecification, LayerSpecification, MapOptions,
   RasterSourceSpecification, SourceSpecification, TypedStyleLayer
 } from 'maplibre-gl';
@@ -38,6 +39,7 @@ import { MaplibreSourceType } from './map/model/sources';
 })
 export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | AddLayerObject,
   MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions> {
+
   public layersMap: Map<string, ArlasDataLayer>;
 
 
@@ -114,6 +116,77 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
   public initMapLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMaplibreGL) {
     super.initMapLayers(mapLayers, map);
   }
+
+  /**
+      * Applies an opacity style to map layers based on a specified range of field values.
+      * This function iterates over all layers whose source IDs start with the given sourceIdPrefix
+      * and adjusts the opacity of features within those layers. Features with field values
+      * within the specified range (between start and end values) will have the insideOpacity
+      * applied, while features with values outside this range will have the outsideOpacity applied.
+      *
+      * @param {AbstractArlasMapGL} map - The map instance on which the opacity style will be applied.
+      * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
+      * @param {string} field - The name of the field on which the range filter is applied.
+      * @param {number} start - The start value of the range filter.
+      * @param {number} end - The end value of the range filter.
+      * @param {number} insideOpacity - The opacity value to apply to features with field values within the specified range.
+      * @param {number} outsideOpacity - The opacity value to apply to features with field values outside the specified range.
+      */
+  public adjustOpacityByRange(map: ArlasMaplibreGL, sourceIdPrefix: string, field: string,
+    start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    layers.forEach(layer => {
+      map.setLayerOpacity(layer.id, layer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+      const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setLayerOpacity(strokeLayerId, strokeLayer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+      }
+    });
+  }
+
+  /**
+   * Generates a Maplibre GL style expression that applies different style values based on a specified range.
+   *
+   * @param {string} field - The name of the field to evaluate for the range condition.
+   * @param {number} start - The start value of the range. Features with field values greater than or equal to this value are considered.
+   * @param {number} end - The end value of the range. Features with field values less than or equal to this value are considered.
+   * @param {number} inValue - The style value to apply if the field value is within the specified range.
+   * @param {number} outValue - The style value to apply if the field value is outside the specified range.
+   *
+   * @returns {Expression} A Maplibre GL style expression that applies `inValue` or `outValue` based on the range condition.
+   */
+  private getRangeStyle(field: string, start: number, end: number, inValue: number, outValue: number): Expression {
+    const rangeStyle = [
+      'case',
+      ['all',
+        ['>=', ['get', field], start],
+        ['<=', ['get', field], end]
+      ],
+      inValue, // the style value if field is between 'start' and 'end'
+      outValue // the style value otherwise
+    ] as any;
+    return rangeStyle;
+  }
+
+  /**
+   * Resets the initial configured opacity style of the map layers whose source IDs start with the given sourceIdPrefix.
+   *
+   * @param {AbstractArlasMapGL} map - The map instance.
+   * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
+   */
+  public resetOpacity(map: ArlasMaplibreGL, sourceIdPrefix: string): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    layers.forEach(layer => {
+      map.setLayerOpacity(layer.id, layer.type, this.layersMap?.get(layer.id)?.paint[layer.type + '-opacity'] as Expression | number);
+      const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setLayerOpacity(strokeLayerId, strokeLayer.type,
+          this.layersMap?.get(layer.id)?.paint[layer.type + '-opacity'] as Expression | number);
+      }
+    });
+  };
 
   public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l) as TypedStyleLayer;

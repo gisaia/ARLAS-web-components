@@ -98,6 +98,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract addLayer(map: AbstractArlasMapGL, layer: L, beforeId?: L | string);
 
   public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): L[];
+  public abstract getLayersStartingWithSource(map: AbstractArlasMapGL, sourceIdPattern: string): L[];
   public abstract getAllLayers(map: AbstractArlasMapGL): L[];
 
   public abstract hasLayer(map: AbstractArlasMapGL, layer: L | string);

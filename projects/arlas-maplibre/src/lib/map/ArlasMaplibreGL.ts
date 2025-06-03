@@ -23,6 +23,7 @@ import {
 } from 'arlas-map';
 import maplibregl, {
   ControlPosition,
+  Expression,
   FitBoundsOptions,
   IControl,
   LngLat,
@@ -249,6 +250,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     this._mapProvider.setFilter(layer, filter as any, options);
     return this;
   }
+
+  public setLayerOpacity(layer: string, layerType: string, opacityValue: Expression | number): this {
+      this._mapProvider.setPaintProperty(layer, layerType + '-opacity', opacityValue);
+      return this;
+    }
 
   public disableDragPan(): void {
     this.getMapProvider().dragPan.disable();
