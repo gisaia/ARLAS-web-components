@@ -27,6 +27,7 @@ import {
 import mapboxgl, {
   AnyLayer,
   Control,
+  Expression,
   IControl,
   LngLat,
   LngLatBounds,
@@ -353,6 +354,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
 
   public setFilter(layer: string, filter?: any[] | boolean | null, options?: mapboxgl.FilterOptions | null): this {
     this._mapProvider.setFilter(layer, filter, options);
+    return this;
+  }
+
+  public setLayerOpacity(layer: string, layerType: string, opacityValue: Expression | number): this {
+    this._mapProvider.setPaintProperty(layer, layerType + '-opacity', opacityValue);
     return this;
   }
 
