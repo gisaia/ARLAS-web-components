@@ -49,7 +49,7 @@ export class MapboxLegendService extends LegendService {
     super();
   }
 
-  public static filterLegend(colorLegendValues: Map<string, string | number>, filter: any[], field: string) {
+  public static filterLegend(colorLegendValues: Map<string, {color: string | number; highlight: boolean;}>, filter: any[], field: string) {
     LegendService.filterLegend(colorLegendValues, filter, field);
   }
 
@@ -141,4 +141,8 @@ export class MapboxLegendService extends LegendService {
     });
   }
 
+  public getColorField(paint: CirclePaint | LinePaint | FillPaint | HeatmapPaint | SymbolPaint, layerType: string): string {
+    const key = (layerType === 'symbol' ? 'text' : layerType) + '-color';
+    return paint[key]?.[1]?.[1];
+  }
 }

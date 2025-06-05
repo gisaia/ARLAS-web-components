@@ -34,6 +34,7 @@ import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { AoiDimensions } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { LegendData } from './legend/legend.config';
+import { LegendService } from './legend/legend.service';
 import {
   AbstractArlasMapGL,
   ArlasMapOffset, ArlasMapOption,
@@ -201,7 +202,8 @@ export class ArlasMapComponent<L, S, M> {
   /** @description List of visualisation sets. A Visualisation set is an entity where layers are grouped together. */
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
-
+  /** @description Whether to highlight the keywords or color of hovered features */
+  @Input() public highlightLegend = true;
 
   /** ANGULAR OUTPUTS */
 
@@ -248,10 +250,14 @@ export class ArlasMapComponent<L, S, M> {
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
-  public constructor(private readonly drawService: MapboxAoiDrawService,
-    private readonly basemapService: BasemapService<L, S, M>, private readonly translate: TranslateService,
+  public constructor(
+    private readonly drawService: MapboxAoiDrawService,
+    private readonly basemapService: BasemapService<L, S, M>,
+    private readonly translate: TranslateService,
     protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
-    protected mapService: AbstractArlasMapService<L, S, M>) {
+    protected mapService: AbstractArlasMapService<L, S, M>,
+    private readonly legendService: LegendService
+  ) {
       this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
       .subscribe(() => this.reorderLayers());
   }
@@ -466,11 +472,13 @@ export class ArlasMapComponent<L, S, M> {
     });
     this.mapLayers.events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
-      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
-        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] }));
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
+        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      });
       /** Emits an empty object on mouse leaving a feature. */
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
-        this.onFeatureHover.next({}));
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
+        this.onFeatureHover.next({});
+      });
     });
     /** Emits the clicked on feature. */
     this.mapLayers.events.emitOnClick.forEach(layerId => {
@@ -493,6 +501,22 @@ export class ArlasMapComponent<L, S, M> {
           this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
         } else {
           this.mapFrameworkService.setMapCursor(this.map, '');
+        }
+      });
+    });
+
+    // For each layer other than select and hover layers, listen to the events of enter and exit of the mouse
+    this.mapLayers.layers.filter(l => !l.id.startsWith('arlas-select') && !l.id.startsWith('arlas-hover')).forEach(layer => {
+      /** Emits the hovered feature on mousemove. */
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layer.id, (e) => {
+        if (this.highlightLegend) {
+          this.legendService.highlightFeatures(layer.id, e.features);
+        }
+      });
+      /** Emits an empty object on mouse leaving a feature. */
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layer.id, (e) => {
+        if (this.highlightLegend) {
+          this.legendService.highlightFeatures(layer.id, []);
         }
       });
     });

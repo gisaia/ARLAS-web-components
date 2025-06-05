@@ -111,6 +111,10 @@
   max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
+
+  .cdk-visually-hidden {
+    display: none;
+  }
 }
 
 .map__visu-layer {
