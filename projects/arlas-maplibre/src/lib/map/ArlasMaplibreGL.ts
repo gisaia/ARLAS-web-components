@@ -23,6 +23,7 @@ import {
 } from 'arlas-map';
 import maplibregl, {
   ControlPosition,
+  Expression,
   FitBoundsOptions,
   IControl,
   LngLat,
@@ -134,7 +135,12 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
+        visualisationsSets.visualisations.get(vs).forEach(l => {
+          const layer = this._mapProvider.getLayer(l);
+          if (layer.minzoom <= this.zoom && this.zoom <= layer.maxzoom) {
+            visibleLayers.add(l);
+          }
+        });
       }
     });
     const onMoveData: OnMoveResult = {
@@ -258,6 +264,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this;
   }
 
+  public setLayerOpacity(layer: string, layerType: string, opacityValue: Expression | number): this {
+      this._mapProvider.setPaintProperty(layer, layerType + '-opacity', opacityValue);
+      return this;
+    }
+
   public disableDragPan(): void {
     this.getMapProvider().dragPan.disable();
   }
@@ -343,6 +354,13 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     this.getMapProvider().on('load', fn);
   }
 
+  public onIdle(fn: () => void): void {
+    this.getMapProvider().on('idle', fn);
+  }
+
+  public off(type: string, listener: (ev: any) => void) {
+    this.getMapProvider().off(type, listener);
+  }
 
   /**
    * @description Fits to given bounds + padding provided by the map configuration.
