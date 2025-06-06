@@ -329,6 +329,7 @@ export abstract class AbstractArlasMapGL {
   public abstract initDrawControls(config: DrawControlsOption): void;
   public abstract on(type: string, listener: (ev: any) => void): this;
   public abstract onLoad(fn: () => void): void;
+  public abstract onIdle(fn: () => void): void;
   public abstract queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[];
   public abstract resize(eventData?: unknown): this;
   public abstract setCenter(center: unknown, unknown?: unknown): this;

@@ -117,32 +117,22 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     super.initMapLayers(mapLayers, map);
   }
 
-  /**
-      * Applies an opacity style to map layers based on a specified range of field values.
-      * This function iterates over all layers whose source IDs start with the given sourceIdPrefix
-      * and adjusts the opacity of features within those layers. Features with field values
-      * within the specified range (between start and end values) will have the insideOpacity
-      * applied, while features with values outside this range will have the outsideOpacity applied.
-      *
-      * @param {AbstractArlasMapGL} map - The map instance on which the opacity style will be applied.
-      * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
-      * @param {string} field - The name of the field on which the range filter is applied.
-      * @param {number} start - The start value of the range filter.
-      * @param {number} end - The end value of the range filter.
-      * @param {number} insideOpacity - The opacity value to apply to features with field values within the specified range.
-      * @param {number} outsideOpacity - The opacity value to apply to features with field values outside the specified range.
-      */
   public adjustOpacityByRange(map: ArlasMaplibreGL, sourceIdPrefix: string, field: string,
     start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
-    layers.forEach(layer => {
-      map.setLayerOpacity(layer.id, layer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
-      const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-      if (strokeLayer) {
-        map.setLayerOpacity(strokeLayerId, strokeLayer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
-      }
-    });
+    const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
+
+    layers
+      .filter(l => this.mapService.isLayerVisible(l as LayerSpecification))
+      .forEach(layer => {
+        console.log(layer);
+        map.setLayerOpacity(layer.id, layer.type, style);
+        const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+        const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+        if (strokeLayer) {
+          map.setLayerOpacity(strokeLayerId, strokeLayer.type, style);
+        }
+      });
   }
 
   /**
