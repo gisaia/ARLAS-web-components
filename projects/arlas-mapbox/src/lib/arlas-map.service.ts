@@ -157,11 +157,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   public resetOpacity(map: ArlasMapboxGL, sourceIdPrefix: string): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
     layers.forEach(layer => {
-      map.setLayerOpacity(layer.id, layer.type, this.layersMap?.get(layer.id)?.paint[layer.type + 'opacity'] as Expression | number);
+      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + '-opacity'] as Expression | number;
+      map.setLayerOpacity(layer.id, layer.type, layerOpacity);
       const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
       const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
       if (strokeLayer) {
-        map.setLayerOpacity(strokeLayerId, strokeLayer.type, this.layersMap?.get(layer.id)?.paint[layer.type + 'opacity'] as Expression | number);
+        map.setLayerOpacity(strokeLayerId, strokeLayer.type, layerOpacity);
       }
     });
   };

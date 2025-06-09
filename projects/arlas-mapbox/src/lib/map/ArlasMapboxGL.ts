@@ -367,8 +367,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this;
   }
 
-  public setLayerOpacity(layer: string, layerType: string, opacityValue: Expression | number): this {
-    this._mapProvider.setPaintProperty(layer, layerType + '-opacity', opacityValue);
+  public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
+    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + '-opacity', opacityValue);
     return this;
   }
 
@@ -398,5 +398,9 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
       return new LngLatBounds(bounds as [number, number, number, number]);
 
     }
+  }
+
+  public layerTypeToPaintKeyword(layerType: string): string {
+    return layerType === 'symbol' ? 'text' : layerType;
   }
 }

@@ -337,7 +337,12 @@ export abstract class AbstractArlasMapGL {
   public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   public abstract paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: any, SW: ArlasLngLat, NE: ArlasLngLat): ArlasLngLat[];
-
+  public abstract setLayerOpacity(layerId: string, layerType: string, opacityValue: any): this;
+  /**
+   * Returns the corresponding keyword for paint style based on the layer type
+   * @param layerType Type of the layer
+   */
+  public abstract layerTypeToPaintKeyword(layerType: string): string;
 
   /** Gets bounds of the given geometry */
   public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
