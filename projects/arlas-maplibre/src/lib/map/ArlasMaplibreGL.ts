@@ -19,7 +19,8 @@
 
 import {
   AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds,
-  ControlButton, DrawControlsOption, MapConfig, MapExtent, OnMoveResult
+  ControlButton, DrawControlsOption, MapConfig, MapExtent, OnMoveResult,
+  OPACITY_SUFFIX
 } from 'arlas-map';
 import maplibregl, {
   ControlPosition,
@@ -257,7 +258,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
-    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + '-opacity', opacityValue);
+    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX, opacityValue);
     return this;
   }
 

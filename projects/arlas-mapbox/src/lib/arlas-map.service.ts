@@ -18,16 +18,22 @@
  */
 
 import { Injectable } from '@angular/core';
-import {
-  AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
-  ArlasMapSource, LayerMetadata, MapLayers, VisualisationSetConfig, ArlasDataLayer
-} from 'arlas-map';
-import { ArlasMapboxService } from './arlas-mapbox.service';
 import { FeatureCollection } from '@turf/helpers';
-import { ArlasMapboxGL } from './map/ArlasMapboxGL';
-import { MapboxSourceType } from './map/model/sources';
+import {
+  AbstractArlasMapService, ARLAS_ID,
+  ArlasDataLayer,
+  ArlasMapSource,
+  ExternalEvent, FILLSTROKE_LAYER_PREFIX,
+  LayerMetadata, MapLayers,
+  OPACITY_SUFFIX,
+  SCROLLABLE_ARLAS_ID,
+  VisualisationSetConfig
+} from 'arlas-map';
 import { Expression, GeoJSONSource, MapboxOptions } from 'mapbox-gl';
+import { ArlasMapboxService } from './arlas-mapbox.service';
+import { ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';
+import { MapboxSourceType } from './map/model/sources';
 
 
 @Injectable({
@@ -157,7 +163,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   public resetOpacity(map: ArlasMapboxGL, sourceIdPrefix: string): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
     layers.forEach(layer => {
-      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + '-opacity'] as Expression | number;
+      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
       map.setLayerOpacity(layer.id, layer.type, layerOpacity);
       const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
       const strokeLayer = this.mapService.getLayer(map, strokeLayerId);

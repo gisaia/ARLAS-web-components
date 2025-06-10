@@ -22,7 +22,7 @@ import {
   MapConfig,
   OnMoveResult,
   MapLayers, ControlButton, ControlPosition, DrawControlsOption,
-  MapExtent, ArlasLngLatBounds, ArlasLngLat
+  MapExtent, ArlasLngLatBounds, ArlasLngLat, OPACITY_SUFFIX
 } from 'arlas-map';
 import mapboxgl, {
   AnyLayer,
@@ -34,7 +34,7 @@ import mapboxgl, {
   MapboxOptions,
   Point
 } from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';;
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
 import { ArlasAnyLayer } from './model/layers';
 
@@ -368,7 +368,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
 
   public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
-    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + '-opacity', opacityValue);
+    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX, opacityValue);
     return this;
   }
 
