@@ -1,6 +1,6 @@
 {
   "name": "arlas-web-components",
-  "version": "27.0.8",
+  "version": "27.1.0-beta.2",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
@@ -22,7 +22,7 @@
     "zone.js": "^0.14.0"
   },
   "dependencies": {
-    "arlas-d3": "~12.0.0",
+    "arlas-d3": "~12.1.0",
     "iv-viewer": "^2.2.1",
     "ng-lazyload-image": "^9.1.3",
     "ngx-loading-reloaded": "^18.0.0",

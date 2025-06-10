@@ -1,6 +1,6 @@
 {
   "name": "arlas-mapbox",
-  "version": "27.0.8",
+  "version": "27.1.0-beta.2",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",

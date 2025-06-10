@@ -18,11 +18,11 @@
  */
 
 import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Item } from '../model/item';
-import { Action, ActionHandler } from '../utils/results.utils';
 import { filter, Subject, take, takeUntil } from 'rxjs';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
+import { Item } from '../model/item';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { Action, ActionHandler } from '../utils/results.utils';
 
 
 /**
@@ -62,23 +62,22 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   @Output() public actionOnItemEvent: Subject<Action> = new Subject<Action>();
 
   /** Destroy subscriptions. */
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly _onDestroy$ = new Subject<boolean>();
 
   public actions: Action[];
 
-  public constructor(private notifier: ResultlistNotifierService) {
+  public constructor(private readonly notifier: ResultlistNotifierService) {
     /** When an Item is hovered: */
-    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter((i: Item) => i.identifier === this.item.identifier)).subscribe({
-      next: (i: Item) => {
-        /** Always show non reversible actions. */
-        this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
-        /** We check if reversible actions has 'fields'.
-         * - If one of the fields values is absent in the current item, the action will be hidden. */
-        this.actions.filter(a => ActionHandler.isReversible(a) && a.fields && a.show === undefined).forEach(a => {
-          this.detailedDataRetriever.getValues(i.identifier, a.fields).pipe(take(1)).subscribe({
-            next: (values: string[]) => a.show = values.filter(v => !v).length === 0
-          });
-        });
+    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter(id => id === this.item.identifier)).subscribe({
+      next: id => {
+        this.onItemHovered();
+      }
+    });
+
+    /** When actions need to be refreshed */
+    this.notifier.refreshActions$.pipe(takeUntil(this._onDestroy$), filter(v => !v || v !== this.item.identifier)).subscribe({
+      next: () => {
+        this.onRefreshActions();
       }
     });
   }
@@ -157,16 +156,58 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
             reverseAction: action.reverseAction,
             icon: action.icon,
             fields: action.fields,
+            filters: action.filters,
             show: action.show
           });
         });
         this.actions = item.actions;
         this.updateActions();
       });
-    } else if (item && item.actions && item.actions.length > 0) {
+    } else if (item?.actions?.length > 0) {
       this.actions = item.actions;
       this.updateActions();
     }
+  }
+
+  /**
+   * Update the visibility of actions after the item has been hovered
+   */
+  private onItemHovered() {
+    /** Always show non reversible actions. */
+    this.actions.filter(a => !ActionHandler.isReversible(a)).forEach(a => a.show = true);
+    /** We check if reversible actions has 'fields'.
+     * - If one of the fields values is absent in the current item, the action will be hidden. */
+    this.actions.filter(a => ActionHandler.isReversible(a) && a.show === undefined).forEach(a => {
+      if (a.fields) {
+        this.detailedDataRetriever.getValues(this.item.identifier, a.fields).pipe(
+          take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
+      } else if (a.filters) {
+        this.detailedDataRetriever.getMatch(this.item.identifier, a.filters).pipe(
+          take(1)).subscribe(v => {
+            if (a.filters.length === v.matched.length) {
+              a.matched = v.matched;
+              a.show = v.matched.filter(v => v).length > 0;
+            } else {
+              a.show = false;
+            }
+        });
+      }
+    });
+  }
+
+  /**
+   * Resets the filters and visibility of the actions
+   */
+  private onRefreshActions() {
+    this.detailedDataRetriever.getActions(this.item).pipe(take(1)).subscribe(actions => {
+      actions.forEach(a => {
+        const action = this.item.actions.find(v => v.id === a.id);
+        if (action) {
+          ActionHandler.reset(action, a.filters);
+        }
+      });
+      this.updateActions();
+    });
   }
 
   public ngOnDestroy(): void {

@@ -40,6 +40,27 @@ export interface MapConfig<T> {
   controls?: ControlsOption;
 }
 
+export interface ArlasMapOption {
+  container: string;
+  style: any;
+  center: [number, number];
+  zoom: number;
+  maxZoom: number;
+  minZoom: number;
+  renderWorldCopies: boolean;
+  preserveDrawingBuffer: boolean;
+  locale: {
+    'NavigationControl.ZoomIn'?: string;
+    'NavigationControl.ZoomOut'?: string;
+    'NavigationControl.ResetBearing'?: string;
+    'GlobeControl.Enable'?: string;
+    'GlobeControl.Disable'?: string;
+  };
+  pitchWithRotate: boolean;
+  transformRequest: unknown;
+  attributionControl: boolean;
+}
+
 export interface ArlasMapOffset {
   north: number;
   east: number;
@@ -54,7 +75,9 @@ export const ZOOM_IN = marker('Zoom in');
 export const ZOOM_OUT = marker('Zoom out');
 export const RESET_BEARING = marker('Reset bearing to north');
 export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
-
+export const OPACITY_SUFFIX = '-opacity';
+export const ENABLE_GLOBE = marker('Enable globe');
+export const DISABLE_GLOBE = marker('Disable globe');
 /**
  * The aim of this class is to handle all core interaction we have
  * with a map provider.
@@ -310,6 +333,7 @@ export abstract class AbstractArlasMapGL {
   public abstract initDrawControls(config: DrawControlsOption): void;
   public abstract on(type: string, listener: (ev: any) => void): this;
   public abstract onLoad(fn: () => void): void;
+  public abstract onIdle(fn: () => void): void;
   public abstract queryRenderedFeatures(pointOrBox?: unknown, options?: { layers?: string[]; filter?: any[]; }): any[];
   public abstract resize(eventData?: unknown): this;
   public abstract setCenter(center: unknown, unknown?: unknown): this;
@@ -317,7 +341,12 @@ export abstract class AbstractArlasMapGL {
   public abstract setFilter(layer: string, filter?: boolean | any[], options?: unknown): this;
   public abstract paddedBounds(npad: number, spad: number, epad: number,
     wpad: number, map: any, SW: ArlasLngLat, NE: ArlasLngLat): ArlasLngLat[];
-
+  public abstract setLayerOpacity(layerId: string, layerType: string, opacityValue: any): this;
+  /**
+   * Returns the corresponding keyword for paint style based on the layer type
+   * @param layerType Type of the layer
+   */
+  public abstract layerTypeToPaintKeyword(layerType: string): string;
 
   /** Gets bounds of the given geometry */
   public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {

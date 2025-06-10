@@ -146,7 +146,7 @@ stripMode.clickAnywhere = function (state, e) {
             featureIds: [state.line.id]
         });
     }
-    this.updateUIClasses({ mouse: 'add' });
+    this.updateUIClasses({ mouse: MapboxDraw.constants.cursors.ADD });
     state.line.updateCoordinate(
         state.currentVertexPosition,
         e.lngLat.lng,

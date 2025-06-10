@@ -64,7 +64,7 @@
 .powerbars__powerbar--selected-no-mounted-bar/* @doc Sets selected powerbars but not return in aggregation containers. A powerbar container's width is 100% of the component's container.*/
 {
     margin-top: 0px;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
 }
 
 .powerbars__powerbar--neutral-state:hover,
@@ -108,7 +108,7 @@
 
 .powerbars__powerbar--count /* @doc Style of counts.*/
 {
-    font-size: 10px;
+    font-size: 12px;
     width: 100%;
     cursor: pointer;
     position:relative;

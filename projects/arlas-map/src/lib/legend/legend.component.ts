@@ -27,10 +27,10 @@ import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
 import { Subject, takeUntil } from 'rxjs';
-import { ARLAS_ID, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
+import { ARLAS_ID, ArlasDataLayer, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { LegendService } from './legend.service';
-import { MAX_LINE_WIDTH } from './legend.tools';
+import { getMax, MAX_LINE_WIDTH } from './legend.tools';
 
 
 @Component({
@@ -43,7 +43,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * @Input : Angular
    * @description Layer object
    */
-  @Input() public layer: any;
+  @Input() public layer: ArlasDataLayer;
   /**
    * @Input : Angular
    * @description Collection of the layer
@@ -71,6 +71,11 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * the legend updated with the visibility of the layer.
    */
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
+  /**
+   * @Input : Angular
+   * @description Whether to highlight the keywords or color of hovered features
+   */
+  @Input() public highlightLegend = true;
 
   /**
    * @Output : Angular
@@ -119,7 +124,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   public constructor(
     public translate: TranslateService,
     public colorService: ArlasColorService,
-    public legendService: LegendService
+    private readonly legendService: LegendService
   ) { }
 
   public ngOnInit() {
@@ -213,7 +218,11 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
       case 'circle': {
         const circleLegend = this.legendService.getCircleLegend(paint, visibileMode, this.legendData, this.layer);
         this.colorLegend.set(circleLegend.color);
-        this.strokeColorLegend.set(circleLegend.strokeColor);
+
+        // For circle-heatmap layer the stroke can't be configured, so hide it
+        if (this.layer.metadata?.hiddenProps?.geomType !== 'circle-heatmap') {
+          this.strokeColorLegend.set(circleLegend.strokeColor);
+        }
         this.colorPalette = circleLegend.colorPalette;
         this.strokeColorPalette = circleLegend.strokeColorPalette;
         this.radiusLegend.set(circleLegend.radius);
@@ -331,12 +340,13 @@ export function getMiddleColor(colorLegend: Legend): string {
     }
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
     || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
-    const iv = colorLegend.manualValues as Map<string, string>;
+    const iv = colorLegend.manualValues;
     if (iv) {
       if (iv.size === 1) {
         color = iv.keys().next().value;
       } else if (iv.size >= 2) {
-        color = Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)];
+        const values = Array.from(iv.values());
+        color = values[Math.trunc(values.length / 2)].color as string;
       }
     }
   }
@@ -395,8 +405,4 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
     .style('stroke', circleColor)
     .style('stroke-width', 0.5);
 
-}
-
-export function getMax(data: Array<HistogramData>): number {
-  return Math.max(...data.map(hd => +hd.value));
 }

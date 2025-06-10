@@ -170,6 +170,18 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @Output() public searchedTerm = new Subject<string>();
 
+  /**
+   * @Output : Angular
+   * @description Emits the overed powerbar
+   */
+  @Output() public overPowerBarEvent = new Subject<PowerBar>();
+
+  /**
+   * @Output : Angular
+   * @description Emits the out of powerbar
+   */
+  @Output() public outPowerBarEvent = new Subject<PowerBar>();
+
   public powerBarsList: Array<PowerBar>;
   public selectedPowerbarsSet = new Set<PowerBar>();
   public selectedPowerbarsTerms = new Set<string>();
@@ -361,6 +373,14 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
+  public overOnPowerbar(powerbar: PowerBar){
+    this.overPowerBarEvent.next(powerbar);
+  }
+
+  public outOnPowerbar(powerbar: PowerBar){
+    this.outPowerBarEvent.next(powerbar);
+  }
+
   private clearSelection(): void {
     this.powerBarsList.forEach(powerBar => {
       powerBar.classSuffix = this.NEUTRAL_STATE;
@@ -449,16 +469,10 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     // calculate progression
     this.powerBarsList.forEach(powerBar => {
       powerBar.progression = powerBar.count / sum * 100;
-      if (powerBar.progression !== 0 && powerBar.progression !== 100) {
-        powerBar.progression += 1;
-      }
       powerBar.progression = Math.min(powerBar.progression, 100);
     });
     this.selectedPowerbarsSet.forEach(selectedPowerBar => {
       selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
-      if (selectedPowerBar.progression !== 0 && selectedPowerBar.progression !== 100) {
-        selectedPowerBar.progression += 1;
-      }
       selectedPowerBar.progression = Math.min(selectedPowerBar.progression, 100);
     });
   }

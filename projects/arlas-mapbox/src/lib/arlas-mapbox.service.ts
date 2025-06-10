@@ -21,14 +21,24 @@ import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL,
-  ARLAS_ID, ArlasMapFrameworkService, FILLSTROKE_LAYER_PREFIX,
+  ARLAS_ID,
+  ArlasMapFrameworkService,
+  ArlasMapOption,
+  FILLSTROKE_LAYER_PREFIX,
   SCROLLABLE_ARLAS_ID,
   VectorStyle
 } from 'arlas-map';
 import {
-  AnyLayer, AnySourceData, GeoJSONSource,
+  AnyLayer,
+  AnySourceData,
+  GeoJSONSource,
   GeoJSONSourceRaw,
-  MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
+  MapboxOptions,
+  Point,
+  Popup,
+  RasterLayer,
+  RasterSource,
+  SymbolLayer
 } from 'mapbox-gl';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
@@ -55,6 +65,23 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     return (url: string, resourceType: mapboxgl.ResourceType) => ({
       url,
     });
+  }
+
+  public buildMapProviderOption(mapOption: ArlasMapOption): MapboxOptions{
+    return  {
+      container: mapOption.container,
+      style: mapOption.style,
+      center: mapOption.center,
+      zoom: mapOption.zoom,
+      maxZoom: mapOption.maxZoom,
+      minZoom: mapOption.minZoom,
+      renderWorldCopies: mapOption.renderWorldCopies,
+      preserveDrawingBuffer: mapOption.preserveDrawingBuffer,
+      locale: mapOption.locale,
+      pitchWithRotate: mapOption.pitchWithRotate,
+      transformRequest: mapOption.transformRequest,
+      attributionControl: mapOption.attributionControl,
+    } as MapboxOptions;
   }
 
   public createMap(config: ArlasMapboxConfig): ArlasMapboxGL {
@@ -473,6 +500,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    */
   public getLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): ArlasAnyLayer[] {
     return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
+  }
+
+  public getLayersStartingWithSource(map: ArlasMapboxGL, sourceId: string): ArlasAnyLayer[] {
+    return map.getMapProvider().getStyle().layers.filter(l => ((l as ArlasAnyLayer).source as string).startsWith(sourceId)) as ArlasAnyLayer[];
   }
 
   public getAllLayers(map: ArlasMapboxGL): ArlasAnyLayer[] {

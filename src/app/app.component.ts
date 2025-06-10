@@ -37,10 +37,11 @@ export class AppComponent implements OnInit {
     '/calendar-timeline',
     '/list',
     '/wmts-layer-manager',
-    '/multi-collection'
+    '/multi-collection',
+    '/cog-visualisation'
   ];
 
- 
+
 
   public constructor(private readonly translate: TranslateService, private readonly router: Router) {
     this.translate.setDefaultLang('fr');

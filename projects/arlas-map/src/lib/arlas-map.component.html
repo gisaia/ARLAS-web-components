@@ -21,7 +21,7 @@
             <arlas-legend [collection]="l | getCollection: mapService.layersMap " [enabled]="visu.enabled"
               [layer]="l | getValue: mapService.layersMap " [zoom]="map?.zoom"
               (visibilityStatus)="emitLegendVisibility(visu.name, l, $event)" [legendUpdater]="legendUpdater"
-              [visibilityUpdater]="visibilityUpdater"
+              [visibilityUpdater]="visibilityUpdater" [highlightLegend]="highlightLegend"
               (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-legend>
           </div>
         </div>
@@ -29,7 +29,6 @@
     </div>
   </div>
 </div>
-
 <arlas-coordinates *ngIf="displayCurrentCoordinates" [currentLat]="map?.currentLat" [currentLng]="map?.currentLng"
   (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
 

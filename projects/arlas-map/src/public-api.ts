@@ -52,7 +52,7 @@ export { BboxGeneratorModule } from './lib/bbox-generator/bbox-generator.module'
 export { BboxFormGroup } from './lib/bbox-generator/bbox-generator.utils';
 export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { AbstractDraw } from './lib/draw/AbstractDraw';
-export { AoiDimensions as AoiEdition, BboxDrawCommand, Corner, EditionState } from './lib/draw/draw.models';
+export { AoiDimensions as AoiEdition, Corner } from './lib/draw/draw.models';
 export { MapboxAoiDrawService } from './lib/draw/draw.service';
 export { limitVertexDirectSelectMode } from './lib/draw/modes/LimitVertexDirectSelectMode';
 export { validGeomDrawPolygonMode } from './lib/draw/modes/ValidGeomDrawPolygonMode';
@@ -63,10 +63,11 @@ export { radiusCircleMode } from './lib/draw/modes/circles/radius.circle.mode';
 export { createSupplementaryPointsForCircle, dragPan } from './lib/draw/modes/circles/utils';
 export { stripDirectSelectMode } from './lib/draw/modes/strip/strip.direct.mode';
 export { stripMode } from './lib/draw/modes/strip/strip.mode';
+export { rectangleMode } from './lib/draw/modes/rectangleMode';
 export {
   AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
   GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP,
-  MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT
+  MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT, OPACITY_SUFFIX
 } from './lib/map/AbstractArlasMapGL';
 export {
   ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl,
@@ -96,3 +97,5 @@ export { AbstractArlasMapService } from './lib/arlas-map.service';
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
 export { GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from './lib/map/model/filters';
 export { MapLayerMouseEvent, MapMouseEvent} from './lib/map/model/events';
+export { latLngToWKT } from './lib/map/tools';
+export { ArlasMapOption } from './lib/map/AbstractArlasMapGL';

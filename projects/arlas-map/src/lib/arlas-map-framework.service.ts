@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, MapConfig } from './map/AbstractArlasMapGL';
+import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
 import { AbstractDraw } from './draw/AbstractDraw';
 import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
 import { FeatureCollection } from '@turf/helpers';
@@ -42,7 +42,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public constructor() { }
 
   public abstract getInitTransformRequest(): Function;
-
+  public abstract buildMapProviderOption(mapOption: ArlasMapOption): M;
   public abstract createMap(config: MapConfig<M>): AbstractArlasMapGL;
 
   public abstract createDraw(drawOptions, enabled: boolean, map: AbstractArlasMapGL): AbstractDraw;
@@ -98,12 +98,13 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract addLayer(map: AbstractArlasMapGL, layer: L, beforeId?: L | string);
 
   public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): L[];
+  public abstract getLayersStartingWithSource(map: AbstractArlasMapGL, sourceIdPattern: string): L[];
   public abstract getAllLayers(map: AbstractArlasMapGL): L[];
 
   public abstract hasLayer(map: AbstractArlasMapGL, layer: L | string);
   public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract moveLayer(map: AbstractArlasMapGL, layer: L | string, beforeId?: string);
-  public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: any, fn: (e) => void);
+  public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: L | string, fn: (e) => void);
   public abstract removeLayer(map: AbstractArlasMapGL, layer: L | string);
   public abstract removeLayers(map: AbstractArlasMapGL, layers: L[] | string[]);
   public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
@@ -140,7 +141,6 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: L | string, filter: any);
 
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): S;
-  public abstract createRasterSource(url: string, bounds: number[],
-    maxZoom: number, tileSize: number): S;
+  public abstract createRasterSource(url: string, bounds: number[], maxZoom: number, tileSize: number): S;
 
 }

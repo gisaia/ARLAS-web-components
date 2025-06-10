@@ -34,10 +34,13 @@ import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { AoiDimensions } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { LegendData } from './legend/legend.config';
+import { LegendService } from './legend/legend.service';
 import {
   AbstractArlasMapGL,
-  ArlasMapOffset,
+  ArlasMapOffset, ArlasMapOption,
   CROSS_LAYER_PREFIX,
+  DISABLE_GLOBE,
+  ENABLE_GLOBE,
   MapConfig,
   RESET_BEARING,
   ZOOM_IN, ZOOM_OUT
@@ -202,6 +205,13 @@ export class ArlasMapComponent<L, S, M> {
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
   @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
 
+  /** --- GLOBE */
+  /** @description Whether to allow to switch to globe mode */
+  @Input() public enableGlobe: boolean;
+
+  /** --- LEGEND HIGHLIGHTS */
+  /** @description Whether to highlight the keywords or color of hovered features */
+  @Input() public highlightLegend = true;
 
   /** ANGULAR OUTPUTS */
 
@@ -248,10 +258,14 @@ export class ArlasMapComponent<L, S, M> {
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
-  public constructor(private readonly drawService: MapboxAoiDrawService,
-    private readonly basemapService: BasemapService<L, S, M>, private readonly translate: TranslateService,
+  public constructor(
+    private readonly drawService: MapboxAoiDrawService,
+    private readonly basemapService: BasemapService<L, S, M>,
+    private readonly translate: TranslateService,
     protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
-    protected mapService: AbstractArlasMapService<L, S, M>) {
+    protected mapService: AbstractArlasMapService<L, S, M>,
+    private readonly legendService: LegendService
+  ) {
       this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
       .subscribe(() => this.reorderLayers());
   }
@@ -267,9 +281,8 @@ export class ArlasMapComponent<L, S, M> {
     if (this.maxZoom === undefined || this.maxZoom === null) {
       this.maxZoom = 23;
     }
-    if (this.minZoom === undefined || this.minZoom === null) {
-      this.maxZoom = 0;
-    }
+    this.minZoom = this.minZoom ?? 0;
+
     /** BASEMAPS */
     if (this.defaultBasemapStyle && typeof this.defaultBasemapStyle.styleFile === 'string') {
       this.defaultBasemapStyle.url = this.defaultBasemapStyle.styleFile;
@@ -370,6 +383,27 @@ export class ArlasMapComponent<L, S, M> {
    */
   public declareMap() {
     this.initTransformRequest();
+    const arlasMapOption: ArlasMapOption = {
+      container: this.id,
+      style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
+      center: this.initCenter,
+      zoom: this.initZoom,
+      maxZoom: this.maxZoom,
+      minZoom: this.minZoom,
+      renderWorldCopies: true,
+      preserveDrawingBuffer: this.preserveDrawingBuffer,
+      locale: {
+        'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
+        'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
+        'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING),
+        'GlobeControl.Enable': this.translate.instant(ENABLE_GLOBE),
+        'GlobeControl.Disable': this.translate.instant(DISABLE_GLOBE)
+      },
+      pitchWithRotate: false,
+      transformRequest: this.transformRequest,
+      attributionControl: false,
+    };
+    const mapProviderOptions = this.mapFrameworkService.buildMapProviderOption(arlasMapOption);
     const config: MapConfig<M> = {
       displayCurrentCoordinates: this.displayCurrentCoordinates,
       fitBoundsPadding: this.fitBoundsPadding,
@@ -379,24 +413,7 @@ export class ArlasMapComponent<L, S, M> {
       wrapLatLng: this.wrapLatLng,
       maxWidthScale: this.maxWidthScale,
       unitScale: this.unitScale,
-      mapProviderOptions: {
-        container: this.id,
-        style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
-        center: this.initCenter,
-        zoom: this.initZoom,
-        maxZoom: this.maxZoom,
-        minZoom: this.minZoom,
-        renderWorldCopies: true,
-        preserveDrawingBuffer: this.preserveDrawingBuffer,
-        locale: {
-          'NavigationControl.ZoomIn': this.translate.instant(ZOOM_IN),
-          'NavigationControl.ZoomOut': this.translate.instant(ZOOM_OUT),
-          'NavigationControl.ResetBearing': this.translate.instant(RESET_BEARING)
-        },
-        pitchWithRotate: false,
-        transformRequest: this.transformRequest,
-        attributionControl: false,
-      } as M,
+      mapProviderOptions,
       controls: {
         mapAttribution: {
           enable: true,
@@ -414,6 +431,9 @@ export class ArlasMapComponent<L, S, M> {
         pitchToggle: {
           enable: true,
           config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
+        },
+        globe: {
+          enable: this.enableGlobe === true
         }
       }
     };
@@ -465,11 +485,13 @@ export class ArlasMapComponent<L, S, M> {
     });
     this.mapLayers.events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
-      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
-        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] }));
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
+        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+      });
       /** Emits an empty object on mouse leaving a feature. */
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) =>
-        this.onFeatureHover.next({}));
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
+        this.onFeatureHover.next({});
+      });
     });
     /** Emits the clicked on feature. */
     this.mapLayers.events.emitOnClick.forEach(layerId => {
@@ -492,6 +514,22 @@ export class ArlasMapComponent<L, S, M> {
           this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
         } else {
           this.mapFrameworkService.setMapCursor(this.map, '');
+        }
+      });
+    });
+
+    // For each layer other than select and hover layers, listen to the events of enter and exit of the mouse
+    this.mapLayers.layers.filter(l => !l.id.startsWith('arlas-select') && !l.id.startsWith('arlas-hover')).forEach(layer => {
+      /** Emits the hovered feature on mousemove. */
+      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layer.id, (e) => {
+        if (this.highlightLegend) {
+          this.legendService.highlightFeatures(layer.id, e.features);
+        }
+      });
+      /** Emits an empty object on mouse leaving a feature. */
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layer.id, (e) => {
+        if (this.highlightLegend) {
+          this.legendService.highlightFeatures(layer.id, []);
         }
       });
     });
