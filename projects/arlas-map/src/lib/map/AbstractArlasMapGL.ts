@@ -53,6 +53,8 @@ export interface ArlasMapOption {
     'NavigationControl.ZoomIn'?: string;
     'NavigationControl.ZoomOut'?: string;
     'NavigationControl.ResetBearing'?: string;
+    'GlobeControl.Enable'?: string;
+    'GlobeControl.Disable'?: string;
   };
   pitchWithRotate: boolean;
   transformRequest: unknown;
@@ -74,8 +76,8 @@ export const ZOOM_OUT = marker('Zoom out');
 export const RESET_BEARING = marker('Reset bearing to north');
 export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 export const OPACITY_SUFFIX = '-opacity';
-
-
+export const ENABLE_GLOBE = marker('Enable globe');
+export const DISABLE_GLOBE = marker('Disable globe');
 /**
  * The aim of this class is to handle all core interaction we have
  * with a map provider.
