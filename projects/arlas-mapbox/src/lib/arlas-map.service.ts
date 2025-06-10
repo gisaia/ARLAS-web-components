@@ -18,15 +18,22 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapService, ARLAS_ID, ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
-  ArlasMapSource, LayerMetadata, MapLayers, VisualisationSetConfig, ArlasDataLayer
- } from 'arlas-map';
-import { ArlasMapboxService } from './arlas-mapbox.service';
 import { FeatureCollection } from '@turf/helpers';
-import { ArlasMapboxGL } from './map/ArlasMapboxGL';
-import { MapboxSourceType } from './map/model/sources';
+import {
+  AbstractArlasMapService, ARLAS_ID,
+  ArlasDataLayer,
+  ArlasMapSource,
+  ExternalEvent, FILLSTROKE_LAYER_PREFIX,
+  LayerMetadata, MapLayers,
+  OPACITY_SUFFIX,
+  SCROLLABLE_ARLAS_ID,
+  VisualisationSetConfig
+} from 'arlas-map';
 import { Expression, GeoJSONSource, MapboxOptions } from 'mapbox-gl';
+import { ArlasMapboxService } from './arlas-mapbox.service';
+import { ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';
+import { MapboxSourceType } from './map/model/sources';
 
 
 @Injectable({
@@ -108,6 +115,64 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     super.initMapLayers(mapLayers, map);
   }
 
+  public adjustOpacityByRange(map: ArlasMapboxGL, sourceIdPrefix: string, field: string,
+    start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    layers
+      .filter(l => this.mapService.isLayerVisible(l))
+      .forEach(layer => {
+        map.setLayerOpacity(layer.id, layer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+        const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+        const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+        if (strokeLayer) {
+          map.setLayerOpacity(strokeLayerId, strokeLayer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+        }
+      });
+  }
+
+  /**
+   * Generates a Mapbox GL style expression that applies different style values based on a specified range.
+   *
+   * @param {string} field - The name of the field to evaluate for the range condition.
+   * @param {number} start - The start value of the range. Features with field values greater than or equal to this value are considered.
+   * @param {number} end - The end value of the range. Features with field values less than or equal to this value are considered.
+   * @param {number} inValue - The style value to apply if the field value is within the specified range.
+   * @param {number} outValue - The style value to apply if the field value is outside the specified range.
+   *
+   * @returns {Expression} A Mapbox GL style expression that applies `inValue` or `outValue` based on the range condition.
+   */
+  private getRangeStyle(field: string, start: number, end: number, inValue: number, outValue: number): Expression {
+    const rangeStyle = [
+      'case',
+      ['all',
+        ['>=', ['get', field], start],
+        ['<=', ['get', field], end]
+      ],
+      inValue, // the style value if field is between 'start' and 'end'
+      outValue // the style value otherwise
+    ] as Expression;
+    return rangeStyle;
+  }
+
+  /**
+   * Resets the initial configured opacity style of the map layers whose source IDs start with the given sourceIdPrefix.
+   *
+   * @param {AbstractArlasMapGL} map - The map instance.
+   * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
+   */
+  public resetOpacity(map: ArlasMapboxGL, sourceIdPrefix: string): void {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    layers.forEach(layer => {
+      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
+      map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
+      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
+      if (strokeLayer) {
+        map.setLayerOpacity(strokeLayerId, strokeLayer.type, layerOpacity);
+      }
+    });
+  };
+
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l);
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
@@ -115,7 +180,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
         // Tests value in camel and kebab case due to an unknown issue on other projects
         if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
           map.setFilter(l, this.getVisibleIdsFilter(l, ids));
-          const strokeLayerId = l.replace('_id:', '-fill_stroke-');
+          const strokeLayerId = l.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
           const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
           if (strokeLayer) {
             map.setFilter(strokeLayerId, this.getVisibleIdsFilter(strokeLayerId, ids));
@@ -123,7 +188,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
         }
       } else {
         map.setFilter(l, this.layersMap.get(l).filter);
-        const strokeLayerId = l.replace('_id:', '-fill_stroke-');
+        const strokeLayerId = l.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
         const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
         if (strokeLayer) {
           map.setFilter(strokeLayerId,
@@ -132,6 +197,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
       }
     }
   }
+
+
+
+
+
+
 
   public getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
     const lFilter = this.layersMap.get(layer).filter as Expression;

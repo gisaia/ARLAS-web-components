@@ -22,19 +22,21 @@ import {
   MapConfig,
   OnMoveResult,
   MapLayers, ControlButton, ControlPosition, DrawControlsOption,
-  MapExtent, ArlasLngLatBounds, ArlasLngLat
+  MapExtent, ArlasLngLatBounds, ArlasLngLat, OPACITY_SUFFIX
 } from 'arlas-map';
 import mapboxgl, {
   AnyLayer,
   Control,
+  Expression,
   IControl,
   LngLat,
   LngLatBounds,
   MapboxOptions,
   Point
 } from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';;
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
+import { ArlasAnyLayer } from './model/layers';
 
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
   mapLayers: MapLayers<AnyLayer>;
@@ -187,6 +189,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     this.getMapProvider().on('load', fn);
   }
 
+  public onIdle(fn: () => void): void {
+    this.getMapProvider().on('idle', fn);
+  }
+
   public calcOffsetPoint() {
     return new mapboxgl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
@@ -224,7 +230,12 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
+        visualisationsSets.visualisations.get(vs).forEach(l => {
+          const layer = this._mapProvider.getLayer(l) as ArlasAnyLayer;
+          if (layer.minzoom <= this.zoom && this.zoom <= layer.maxzoom) {
+            visibleLayers.add(l);
+          }
+        });
       }
     });
     const onMoveData: OnMoveResult = {
@@ -356,6 +367,11 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this;
   }
 
+  public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
+    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX, opacityValue);
+    return this;
+  }
+
   public setMaxBounds(lnglatbounds?: mapboxgl.LngLatBoundsLike): this {
     this._mapProvider.setMaxBounds(lnglatbounds);
     return this;
@@ -382,5 +398,9 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
       return new LngLatBounds(bounds as [number, number, number, number]);
 
     }
+  }
+
+  public layerTypeToPaintKeyword(layerType: string): string {
+    return layerType === 'symbol' ? 'text' : layerType;
   }
 }

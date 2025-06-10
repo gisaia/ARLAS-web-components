@@ -19,10 +19,12 @@
 
 import {
   AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds,
-  ControlButton, DrawControlsOption, MapConfig, MapExtent, OnMoveResult
+  ControlButton, DrawControlsOption, MapConfig, MapExtent, OnMoveResult,
+  OPACITY_SUFFIX
 } from 'arlas-map';
 import maplibregl, {
   ControlPosition,
+  Expression,
   FitBoundsOptions,
   IControl,
   LngLat,
@@ -134,7 +136,12 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        visualisationsSets.visualisations.get(vs).forEach(l => visibleLayers.add(l));
+        visualisationsSets.visualisations.get(vs).forEach(l => {
+          const layer = this._mapProvider.getLayer(l);
+          if (layer.minzoom <= this.zoom && this.zoom <= layer.maxzoom) {
+            visibleLayers.add(l);
+          }
+        });
       }
     });
     const onMoveData: OnMoveResult = {
@@ -258,6 +265,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this;
   }
 
+  public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
+    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX, opacityValue);
+    return this;
+  }
+
   public disableDragPan(): void {
     this.getMapProvider().dragPan.disable();
   }
@@ -335,14 +347,13 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     }
   }
 
-  public isLayerVisible(layer: any): boolean {
-    return layer.layout.visibility === 'visible';
-  }
-
   public onLoad(fn: () => void): void {
     this.getMapProvider().on('load', fn);
   }
 
+  public onIdle(fn: () => void): void {
+    this.getMapProvider().on('idle', fn);
+  }
 
   /**
    * @description Fits to given bounds + padding provided by the map configuration.
@@ -377,7 +388,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
 
   public fitBounds(bounds: ArlasLngLatBounds | number[] | LngLatBounds, options?: FitBoundsOptions, eventData?: any): this {
-    this._mapProvider.fitBounds(this.toMaplibreBound(bounds), options, eventData);
+    this._mapProvider.fitBounds(ArlasMaplibreGL.toMaplibreBound(bounds), options, eventData);
     return this;
   }
 
@@ -385,7 +396,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
    * @param bounds Bounds defined by ARLAS
    * @returns Transforms the ArlasLngLatBounds to LngLatBounds as defined by maplibre
    */
-  private toMaplibreBound(bounds: ArlasLngLatBounds | number[] | LngLatBounds) {
+  public static toMaplibreBound(bounds: ArlasLngLatBounds | number[] | LngLatBounds) {
     if (bounds instanceof ArlasLngLatBounds) {
       return new LngLatBounds(bounds.sw, bounds.ne);
     } else {
@@ -394,5 +405,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     }
   }
 
-
+  public layerTypeToPaintKeyword(layerType: string): string {
+    return layerType === 'symbol' ? 'text' : layerType;
+  }
 }

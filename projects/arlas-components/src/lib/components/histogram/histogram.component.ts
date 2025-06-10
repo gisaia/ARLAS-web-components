@@ -25,7 +25,8 @@ import {
   AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
   ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position,
   SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles,
-  SwimlaneMode
+  SwimlaneMode,
+  XBucket
 } from 'arlas-d3';
 import {
   HistogramData, HistogramTooltip, SwimlaneData, SwimlaneOptions, SwimlaneRepresentation
@@ -338,7 +339,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
    * @Output : Angular
    * @description Emits the hovered bucket key (key as in HistogramData).
    */
-  @Output() public hoveredBucketEvent: Subject<Date | number> = new Subject<Date | number>();
+  @Output() public hoveredBucketEvent: Subject<XBucket> = new Subject<XBucket>();
   /**
    * @Output : Angular
    * @description Emits an event informing that the chart finished plotting.

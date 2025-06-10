@@ -67,7 +67,7 @@ export { rectangleMode } from './lib/draw/modes/rectangleMode';
 export {
   AbstractArlasMapGL, ArlasMapOffset, CROSS_LAYER_PREFIX,
   GEOJSON_SOURCE_TYPE, LAYER_SWITCHER_TOOLTIP,
-  MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT
+  MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT, OPACITY_SUFFIX
 } from './lib/map/AbstractArlasMapGL';
 export {
   ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl,
