@@ -21,6 +21,17 @@ import { AdditionalInfo, Action, ActionFilter, ItemDataType } from '../utils/res
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
 
+export interface FieldDetail {
+  path: string;
+  label: string;
+  process: string;
+}
+
+export interface Detail {
+  name: string;
+  order: number;
+  fields: Array<FieldDetail>;
+}
 export interface MatchInfo {
   matched: Array<boolean>;
   data: Map<string, ItemDataType>;
@@ -28,6 +39,8 @@ export interface MatchInfo {
 
 
 export interface DetailedDataRetriever {
+
+  detailsConfig: Array<Detail>;
 
   getValues(identifier: string, fields: string[]): Observable<string[]>;
 
