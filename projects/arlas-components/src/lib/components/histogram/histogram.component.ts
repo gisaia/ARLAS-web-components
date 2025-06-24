@@ -475,6 +475,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
   public resizeHistogram(): void {
     if (this.histogram) {
       this.histogram.resize(this.el.nativeElement.childNodes[0]);
+      this.dataPlottedEvent.next('RESIZE');
     }
   }
 
