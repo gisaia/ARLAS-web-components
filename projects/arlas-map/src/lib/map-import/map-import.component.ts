@@ -19,25 +19,23 @@
 
 import { Component, ElementRef, Inject, Input, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
-import JSZip from 'jszip';
 import { FeatureCollection, polygon } from '@turf/helpers';
+import { Feature } from 'geojson';
+import * as gpsi_ from 'geojson-polygon-self-intersections';
+import { valid } from 'geojson-validation';
+import JSZip from 'jszip';
 import { Subject } from 'rxjs';
 import * as shp_ from 'shpjs/dist/shp';
-import * as extent_ from 'turf-extent';
 import { parse } from 'wellknown';
-import { valid } from 'geojson-validation';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import * as gpsi_ from 'geojson-polygon-self-intersections';
-import { Feature } from 'geojson';
-import { ArlasMapComponent } from '../arlas-map.component';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
+import { ArlasMapComponent } from '../arlas-map.component';
 
 
 const gpsi = gpsi_.default;
 const shp = shp_.default;
-const extent = extent_.default;
 
 
 @Component({
@@ -540,7 +538,7 @@ export class MapImportComponent<L, S, M> {
     } else if (importedResult.geojson.features.length > 0) {
       this.dialogRef.componentInstance.isRunning = false;
       if (this.fitResult) {
-        this.mapComponent.fitToPaddedBounds(extent(importedResult.geojson));
+        this.mapComponent.fitToPaddedBounds(this.mapComponent.map.geometryToBounds(importedResult.geojson));
       }
       if (this.mapComponent.drawData.features.length > 0) {
         this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
