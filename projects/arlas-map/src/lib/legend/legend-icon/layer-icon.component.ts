@@ -106,9 +106,9 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
  * @param svgNode SVG element on which we append the rectangles using d3.
  * @param colorLegend Color legend, to give the drawn icons rectangles the same color on the map
  * @param strokeColorLegend Color legend, to give the drawn icons rectangles the same stroke color on the map
- * @param iconStyle used to define a more precise shape for an icon
+ * @param fillShape used to define a more precise shape for an icon
  */
-export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, iconStyle?: string) {
+export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, fillShape?: string) {
   const fillFourColors = getClusterFillColors(colorLegend);
   let strokeFourColors = fillFourColors;
   if (strokeColorLegend) {
@@ -116,7 +116,7 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, st
   }
   const svg = select(svgNode);
   svg.selectAll('g').remove();
-  if(iconStyle  && iconStyle === 'h3') {
+  if(fillShape === 'h3') {
      [
       drawHexagon(12, 4, 5),
       drawHexagon(5, 8, 4.5),
