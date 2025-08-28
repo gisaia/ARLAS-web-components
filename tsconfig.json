@@ -42,10 +42,11 @@
       "node_modules/@types"
     ],
     "lib": [
-      "es2019",
-      "dom"
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
     ],
-    "module": "es2015",
+    "module": "esnext",
     "useDefineForClassFields": false
   },
   "exclude": [

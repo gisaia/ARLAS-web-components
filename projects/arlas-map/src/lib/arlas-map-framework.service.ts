@@ -78,7 +78,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    * @param source A Geojson source
    * @param data A feature collection object.
    */
-  public abstract setDataToGeojsonSource(source: S | string, data: FeatureCollection<GeoJSON.Geometry>);
+  public abstract setDataToGeojsonSource(source: S, data: FeatureCollection<GeoJSON.Geometry>);
 
 
   /**

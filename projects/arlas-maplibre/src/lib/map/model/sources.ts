@@ -1,4 +1,3 @@
-
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -17,5 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export type MaplibreSourceType = maplibregl.VectorSourceSpecification | maplibregl.RasterSourceSpecification |
-maplibregl.GeoJSONSourceSpecification;
+
+import {
+    CanvasSourceSpecification,
+    GeoJSONSourceSpecification,
+    RasterSourceSpecification,
+    SourceSpecification,
+    VectorSourceSpecification
+} from 'maplibre-gl';
+
+export type MaplibreSourceType = VectorSourceSpecification | RasterSourceSpecification | GeoJSONSourceSpecification
+    | SourceSpecification | CanvasSourceSpecification;

@@ -19,16 +19,18 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
 import {
-  CircleLegend, FillLegend, getMax, HeatmapLegend, INTERPOLATE,
-  LabelLegend, LayerMetadata, Legend, LegendData, LegendService, LineLegend, MATCH,
-  MAX_CIRLE_RADIUS, MAX_LINE_WIDTH, PROPERTY_SELECTOR_SOURCE
+  ArlasDataLayer,
+  CircleLegend, FillLegend, HeatmapLegend, LabelLegend,
+  LayerMetadata, Legend, LegendData, LegendService, LineLegend
 } from 'arlas-map';
-import {
-  CirclePaintProps, FillPaintProps, HeatmapPaintProps,
-  LinePaintProps, SymbolPaintProps, TypedStyleLayer
-} from 'maplibre-gl';
+import { CirclePaintProps } from 'maplibre-gl/src/style/style_layer/circle_style_layer_properties.g';
+import { FillPaintProps } from 'maplibre-gl/src/style/style_layer/fill_style_layer_properties.g';
+import { HeatmapPaintProps } from 'maplibre-gl/src/style/style_layer/heatmap_style_layer_properties.g';
+import { LinePaintProps } from 'maplibre-gl/src/style/style_layer/line_style_layer_properties.g';
+import { SymbolPaintProps } from 'maplibre-gl/src/style/style_layer/symbol_style_layer_properties.g';
+import { TypedStyleLayer } from 'maplibre-gl/src/style/style_layer/typed_style_layer';
+import { ArlasLayerSpecification } from '../map/model/layers';
 
 @Injectable({
   providedIn: 'root'
@@ -58,14 +60,14 @@ export class MaplibreLegendService extends LegendService {
     return LegendService.buildWidthLegend(lineWidth, legendData);
   }
 
-  public getCircleLegend(paint: CirclePaintProps, visibileMode: boolean, legendData:
-    Map<string, LegendData>, layer: TypedStyleLayer): CircleLegend {
-    const p: CirclePaintProps = paint;
-    const colors = MaplibreLegendService.buildColorLegend(p['circle-color'], visibileMode,
+  public getCircleLegend(
+    paint: CirclePaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
+  ): CircleLegend {
+    const colors = MaplibreLegendService.buildColorLegend(paint['circle-color'], visibileMode,
       legendData, layer.filter, this.translate);
-    const strokeColors = MaplibreLegendService.buildColorLegend(p['circle-stroke-color'], visibileMode, legendData,
+    const strokeColors = MaplibreLegendService.buildColorLegend(paint['circle-stroke-color'], visibileMode, legendData,
       layer.filter, this.translate);
-    const radius = MaplibreLegendService.buildRadiusLegend(p['circle-radius'], legendData);
+    const radius = MaplibreLegendService.buildRadiusLegend(paint['circle-radius'], legendData);
     return ({
       color: colors[0],
       colorPalette: colors[1],
@@ -75,22 +77,24 @@ export class MaplibreLegendService extends LegendService {
     });
   }
 
-  public getLineLegend(paint: LinePaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: TypedStyleLayer): LineLegend {
-    const p: LinePaintProps = paint;
-    const colors = MaplibreLegendService.buildColorLegend(p['line-color'], visibileMode, legendData, layer.filter, this.translate);
-    const width = MaplibreLegendService.buildWidthLegend(p['line-width'], legendData);
+  public getLineLegend(
+    paint: LinePaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
+  ): LineLegend {
+    const colors = MaplibreLegendService.buildColorLegend(paint['line-color'], visibileMode, legendData, layer.filter, this.translate);
+    const width = MaplibreLegendService.buildWidthLegend(paint['line-width'], legendData);
     return ({
       color: colors[0],
       colorPalette: colors[1],
       width: width,
       // todo check dashes
-      dashes: p['line-dasharray'] as any
+      dashes: paint['line-dasharray'] as any
     });
   }
 
-  public getFillLegend(paint: FillPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: TypedStyleLayer): FillLegend {
-    const p: FillPaintProps = paint;
-    const colors = MaplibreLegendService.buildColorLegend(p['fill-color'], visibileMode, legendData, layer.filter, this.translate);
+  public getFillLegend(
+    paint: FillPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
+  ): FillLegend {
+    const colors = MaplibreLegendService.buildColorLegend(paint['fill-color'], visibileMode, legendData, layer.filter, this.translate);
     const metadata = layer.metadata as LayerMetadata;
     let strokeColors: [Legend, string] = [undefined, ''];
     if (!!layer.metadata && !!metadata.stroke) {
@@ -106,11 +110,11 @@ export class MaplibreLegendService extends LegendService {
   }
 
 
-  public getHeatmapLegend(paint: HeatmapPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>,
-    layer: TypedStyleLayer): HeatmapLegend {
-    const p: HeatmapPaintProps = paint;
-    const colors = MaplibreLegendService.buildColorLegend(p['heatmap-color'], visibileMode, legendData, layer.filter, this.translate);
-    const radius = MaplibreLegendService.buildRadiusLegend(p['heatmap-radius'], legendData);
+  public getHeatmapLegend(
+    paint: HeatmapPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
+  ): HeatmapLegend {
+    const colors = MaplibreLegendService.buildColorLegend(paint['heatmap-color'], visibileMode, legendData, layer.filter, this.translate);
+    const radius = MaplibreLegendService.buildRadiusLegend(paint['heatmap-radius'], legendData);
     if (layer.source.toString().startsWith('feature-metric')) {
       colors[0].visible = false;
     }
@@ -121,11 +125,11 @@ export class MaplibreLegendService extends LegendService {
     });
   }
 
-  public getLabelLegend(paint: SymbolPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>,
-    layer: TypedStyleLayer): LabelLegend {
-    const p: SymbolPaintProps = paint;
-    const colors = MaplibreLegendService.buildColorLegend(p['text-color'], visibileMode, legendData, layer.filter, this.translate);
-    const size = MaplibreLegendService.buildWidthLegend(p['text-size'], legendData);
+  public getLabelLegend(
+    paint: SymbolPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
+  ): LabelLegend {
+    const colors = MaplibreLegendService.buildColorLegend(paint['text-color'], visibileMode, legendData, layer.filter, this.translate);
+    const size = MaplibreLegendService.buildWidthLegend(paint['text-size'], legendData);
     return ({
       color: colors[0],
       colorPalette: colors[1],

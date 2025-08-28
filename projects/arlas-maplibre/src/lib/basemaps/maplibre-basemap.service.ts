@@ -17,25 +17,24 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import * as pmtiles from 'pmtiles';
-import { MapLibreBasemapStyle } from './basemap.config';
-import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import maplibre, { AddLayerObject, CanvasSourceSpecification, GeoJSONSource, MapOptions, RequestParameters, TypedStyleLayer } from 'maplibre-gl';
-import { BackgroundLayerSpecification, RasterSourceSpecification, SourceSpecification } from '@maplibre/maplibre-gl-style-spec';
-import { BasemapService, BasemapStyle } from 'arlas-map';
-import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
-import { ArlasMaplibreService } from '../arlas-maplibre.service';
-import { ArlasMapSource } from 'arlas-map';
+import { Injectable } from '@angular/core';
+import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
+import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
+import maplibre, { AddLayerObject, GeoJSONSource, MapOptions, RequestParameters } from 'maplibre-gl';
+import * as pmtiles from 'pmtiles';
+import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
+import { ArlasMaplibreService } from '../arlas-maplibre.service';
+import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
+import { ArlasLayerSpecification } from '../map/model/layers';
 import { MaplibreSourceType } from '../map/model/sources';
+import { MapLibreBasemapStyle } from './basemap.config';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MaplibreBasemapService extends BasemapService<TypedStyleLayer | AddLayerObject,
-MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions> {
+export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
 
   public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMaplibreService,
     private mapService: ArlasMapService
@@ -127,7 +126,7 @@ MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecifica
 
   public setBasemap(s: any, newBasemap: BasemapStyle, map: ArlasMaplibreGL, mapSources: Array<ArlasMapSource<any>>) {
     const selectedBasemapLayersSet = new Set<string>();
-    const layers: Array<TypedStyleLayer> = this.mapFrameworkService.getAllLayers(map);
+    const layers = this.mapFrameworkService.getAllLayers(map);
     const sources = this.mapFrameworkService.getAllSources(map);
     if (s.layers) {
       s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
@@ -154,7 +153,7 @@ MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecifica
       setTimeout(() => {
         /** the timeout fixes a mapboxgl bug related to layer placement*/
         this.mapService.declareBasemapSources(sourcesToSave, map);
-        layersToSave.forEach(l => {
+        layersToSave.forEach((l: ArlasLayerSpecification) => {
           this.mapFrameworkService.addLayer(map, l);
         });
         localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
