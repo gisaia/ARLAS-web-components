@@ -20,17 +20,14 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  ArlasDataLayer,
-  CircleLegend, FillLegend, HeatmapLegend, LabelLegend,
-  LayerMetadata, Legend, LegendData, LegendService, LineLegend
+  ArlasDataLayer, CircleLegend, FillLegend, HeatmapLegend,
+  LabelLegend, Legend, LegendData, LegendService, LineLegend
 } from 'arlas-map';
 import { CirclePaintProps } from 'maplibre-gl/src/style/style_layer/circle_style_layer_properties.g';
 import { FillPaintProps } from 'maplibre-gl/src/style/style_layer/fill_style_layer_properties.g';
 import { HeatmapPaintProps } from 'maplibre-gl/src/style/style_layer/heatmap_style_layer_properties.g';
 import { LinePaintProps } from 'maplibre-gl/src/style/style_layer/line_style_layer_properties.g';
 import { SymbolPaintProps } from 'maplibre-gl/src/style/style_layer/symbol_style_layer_properties.g';
-import { TypedStyleLayer } from 'maplibre-gl/src/style/style_layer/typed_style_layer';
-import { ArlasLayerSpecification } from '../map/model/layers';
 
 @Injectable({
   providedIn: 'root'
@@ -95,10 +92,9 @@ export class MaplibreLegendService extends LegendService {
     paint: FillPaintProps, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
   ): FillLegend {
     const colors = MaplibreLegendService.buildColorLegend(paint['fill-color'], visibileMode, legendData, layer.filter, this.translate);
-    const metadata = layer.metadata as LayerMetadata;
     let strokeColors: [Legend, string] = [undefined, ''];
-    if (!!layer.metadata && !!metadata.stroke) {
-      strokeColors = MaplibreLegendService.buildColorLegend(metadata.stroke.color, visibileMode, legendData,
+    if (layer.metadata?.stroke) {
+      strokeColors = MaplibreLegendService.buildColorLegend(layer.metadata.stroke.color, visibileMode, legendData,
         layer.filter, this.translate);
     }
     return ({

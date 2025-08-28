@@ -25,7 +25,7 @@ import {
   OPACITY_SUFFIX, SCROLLABLE_ARLAS_ID, VisualisationSetConfig
 } from 'arlas-map';
 import {
-  Expression, ExpressionSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, StyleLayer,
+  Expression, ExpressionSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions
 } from 'maplibre-gl';
 import { ArlasMaplibreService } from './arlas-maplibre.service';
 import { ArlasMaplibreGL } from './map/ArlasMaplibreGL';
@@ -116,7 +116,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
 
   public adjustOpacityByRange(map: ArlasMaplibreGL, sourceIdPrefix: string, field: string,
     start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
-    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix) as ArlasLayerSpecification[];
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
     const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
 
     layers
@@ -329,7 +329,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         if (this.mapService.hasLayer(map, layer.id)) {
           let originalLayerIsVisible = false;
           const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
+          const isCollectionCompatible = (!collection || (collection && fullLayer.source.includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
             const originalLayer = this.mapService.getAllLayers(map).find(l => l.id === originalLayerId);
@@ -338,7 +338,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
             }
             const layerFilter: Array<any> = [];
             const externalEventLayer = this.layersMap.get(layer.id);
-            if (!!externalEventLayer && !!externalEventLayer.filter) {
+            if (externalEventLayer?.filter) {
               (externalEventLayer.filter as ExpressionSpecification).forEach(f => {
                 layerFilter.push(f);
               });

@@ -20,7 +20,8 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  ArlasDataLayer, CircleLegend, FillLegend, HeatmapLegend, LabelLegend, LayerMetadata, Legend, LegendData, LegendService, LineLegend, PaintValue
+  ArlasDataLayer, CircleLegend, FillLegend, HeatmapLegend, LabelLegend,
+  Legend, LegendData, LegendService, LineLegend, PaintValue
 } from 'arlas-map';
 import { CirclePaint, Expression, FillPaint, HeatmapPaint, LinePaint, StyleFunction, SymbolPaint } from 'mapbox-gl';
 
@@ -84,10 +85,9 @@ export class MapboxLegendService extends LegendService {
   public getFillLegend(paint: FillPaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): FillLegend {
     const p: FillPaint = paint;
     const colors = MapboxLegendService.buildColorLegend(p['fill-color'], visibileMode, legendData, layer.filter, this.translate);
-    const metadata = layer.metadata as LayerMetadata;
     let strokeColors: [Legend, string] = [undefined, ''];
-    if (!!layer.metadata && !!metadata.stroke) {
-      strokeColors = MapboxLegendService.buildColorLegend(metadata.stroke.color, visibileMode, legendData,
+    if (layer.metadata?.stroke) {
+      strokeColors = MapboxLegendService.buildColorLegend(layer.metadata.stroke.color, visibileMode, legendData,
         layer.filter, this.translate);
 
     }

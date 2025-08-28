@@ -25,7 +25,7 @@ import {
 } from 'arlas-map';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup,
-  RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, StyleLayer, SymbolLayerSpecification
+  RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 import { from } from 'rxjs';
 import { ArlasDraw } from './draw/ArlasDraw';
@@ -339,7 +339,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @returns the layer object.
    */
   public getLayer(map: ArlasMaplibreGL, layer: string): ArlasLayerSpecification {
-    return map.getMapProvider().getLayer(layer).serialize() as ArlasLayerSpecification;
+    return map.getMapProvider().getLayer(layer)?.serialize() as ArlasLayerSpecification;
   }
 
   public getAllLayers(map: ArlasMaplibreGL): ArlasLayerSpecification[] {
@@ -464,8 +464,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
 
   public getLayersStartingWithSource(map: ArlasMaplibreGL, sourceIdPattern: string): ArlasLayerSpecification[] {
     return map.getMapProvider().getStyle()
-      .layers.filter((l: ArlasLayerSpecification) => l.source
-        && l.source.startsWith(sourceIdPattern)) as ArlasLayerSpecification[];
+      .layers.filter((l: ArlasLayerSpecification) => l.source?.startsWith(sourceIdPattern)) as ArlasLayerSpecification[];
 
   }
 
