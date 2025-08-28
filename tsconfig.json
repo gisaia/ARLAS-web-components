@@ -4,12 +4,12 @@
     "importHelpers": true,
     "paths": {
       "arlas-web-components": [
-        "dist/arlas-web-components",
         "projects/arlas-components/src/public-api.ts",
+        "dist/arlas-web-components",
       ],
       "arlas-map": [
-        "dist/arlas-map",
         "projects/arlas-map/src/public-api.ts",
+        "dist/arlas-map",
       ],
       "arlas-mapbox": [
         "projects/arlas-mapbox/src/public-api.ts",

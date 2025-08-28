@@ -111,28 +111,39 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     const centerOffsetPoint = this.getMapProvider().project(this.getMapProvider().getCenter()).add(offsetPoint);
     const centerOffSetLatLng = this.getMapProvider().unproject(centerOffsetPoint);
 
-    const southWest = this.getSouthWestBounds();
-    const northEast = this.getNorthEastBounds();
+    const southWest = this.getSouthWestBounds() as LngLat;
+    const northEast = this.getNorthEastBounds() as LngLat;
     const bottomLeft = this.getMapProvider().project(southWest);
     const topRght = this.getMapProvider().project(northEast);
     const height = bottomLeft.y;
     const width = topRght.x;
 
-    const bottomLeftOffset = bottomLeft.add(new maplibregl.Point(this._offset.west, this._offset.south));
-    const topRghtOffset = topRght.add(new maplibregl.Point(this._offset.east, this._offset.north));
+    let bottomLeftCorner: LngLat;
+    let topRightCorner: LngLat;
 
-    const bottomLeftOffsetLatLng = this.getMapProvider().unproject(bottomLeftOffset);
-    const topRghtOffsetLatLng = this.getMapProvider().unproject(topRghtOffset);
+    if (this.getMapProvider().getProjection()?.type === 'globe') {
+      bottomLeftCorner = southWest;
+      topRightCorner = northEast;
+    } else {
+      const bottomLeftOffset = bottomLeft.add(new maplibregl.Point(this._offset.west, this._offset.south));
+      const topRghtOffset = topRght.add(new maplibregl.Point(this._offset.east, this._offset.north));
 
-    const wrapWestOffset = bottomLeftOffsetLatLng.wrap().lng;
-    const wrapSouthOffset = bottomLeftOffsetLatLng.wrap().lat;
-    const wrapEastOffset = topRghtOffsetLatLng.wrap().lng;
-    const wrapNorthOffset = topRghtOffsetLatLng.wrap().lat;
+      bottomLeftCorner = this.getMapProvider().unproject(bottomLeftOffset);
+      topRightCorner = this.getMapProvider().unproject(topRghtOffset);
+    }
 
-    const rawWestOffset = bottomLeftOffsetLatLng.lng;
-    const rawSouthOffset = bottomLeftOffsetLatLng.lat;
-    const rawEastOffset = topRghtOffsetLatLng.lng;
-    const rawNorthOffset = topRghtOffsetLatLng.lat;
+    const wrapWestOffset = bottomLeftCorner.wrap().lng;
+    const wrapSouthOffset = bottomLeftCorner.wrap().lat;
+    const wrapEastOffset = topRightCorner.wrap().lng;
+    const wrapNorthOffset = topRightCorner.wrap().lat;
+    const extendWithOffset = [wrapNorthOffset, wrapWestOffset, wrapSouthOffset, wrapEastOffset];
+
+    const rawWestOffset = bottomLeftCorner.lng;
+    const rawSouthOffset = bottomLeftCorner.lat;
+    const rawEastOffset = topRightCorner.lng;
+    const rawNorthOffset = topRightCorner.lat;
+    const rawExtendWithOffset = [rawNorthOffset, rawWestOffset, rawSouthOffset, rawEastOffset];
+
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
@@ -149,8 +160,8 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
       zoomStart: this._zoomStart,
       center: this.getMapProvider().getCenter().toArray(),
       centerWithOffset: [centerOffSetLatLng.lng, centerOffSetLatLng.lat],
-      extendWithOffset: [wrapNorthOffset, wrapWestOffset, wrapSouthOffset, wrapEastOffset],
-      rawExtendWithOffset: [rawNorthOffset, rawWestOffset, rawSouthOffset, rawEastOffset],
+      extendWithOffset,
+      rawExtendWithOffset,
       extend: [this._north, this._west, this._south, this._east],
       extendForLoad: [],
       extendForTest: [],
