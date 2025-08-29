@@ -23,8 +23,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MapglDemoComponent } from './mapgl-demo.component';
 
 describe('MapglDemoComponent', () => {
-  let component: MapglDemoComponent;
-  let fixture: ComponentFixture<MapglDemoComponent>;
+  let component: MapglDemoComponent<unknown, unknown, unknown>;
+  let fixture: ComponentFixture<MapglDemoComponent<unknown, unknown, unknown>>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({

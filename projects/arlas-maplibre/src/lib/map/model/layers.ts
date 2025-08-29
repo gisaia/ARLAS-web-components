@@ -16,13 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-/*
- * Public API Surface of arlas-maplibre
- */
 
-export * from './lib/arlas-maplibre.service';
-export * from './lib/arlas-maplibre.module';
-export { MaplibreLegendService } from './lib/legend/legend.service';
-export { MaplibreBasemapService   } from './lib/basemaps/maplibre-basemap.service';
-export { ArlasMapService } from './lib/arlas-map.service';
-export { MaplibreSourceType } from './lib/map/model/sources';
+import {
+    FillLayerSpecification, LineLayerSpecification, SymbolLayerSpecification,
+    CircleLayerSpecification, HeatmapLayerSpecification, RasterLayerSpecification
+} from 'maplibre-gl';
+
+export type ArlasLayerSpecification = FillLayerSpecification | LineLayerSpecification | SymbolLayerSpecification
+  | CircleLayerSpecification | HeatmapLayerSpecification | RasterLayerSpecification;

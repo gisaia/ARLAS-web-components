@@ -18,8 +18,8 @@
  */
 
 
-import { Component, ViewChild } from '@angular/core';
-import { GeoJSONSource, GeoJSONSourceRaw, MapboxOptions } from 'mapbox-gl';
+import { Component, inject, ViewChild } from '@angular/core';
+import { LngLatBounds } from 'maplibre-gl';
 import { Subject } from 'rxjs';
 import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
 import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
@@ -29,8 +29,7 @@ import {
 } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
 import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
 import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
-import { ArlasAnyLayer } from '../../../projects/arlas-mapbox/src/lib/map/model/layers';
-import { MapboxSourceType } from '../../../projects/arlas-mapbox/src/lib/map/model/sources';
+import { ArlasMapFrameworkService, OnMoveResult, VectorStyle, VectorStyleEnum } from '../../../projects/arlas-map/src/public-api';
 import {
   basemapStyles,
   defaultBasemapStyle,
@@ -45,12 +44,13 @@ import {
   templateUrl: './mapgl-demo.component.html',
   styleUrls: ['./mapgl-demo.component.css']
 })
-export class MapglDemoComponent {
+export class MapglDemoComponent<L, S, M> {
+  private readonly mapFramework: ArlasMapFrameworkService<L, S, M> = inject(ArlasMapFrameworkService);
 
   // eslint-disable-next-line max-len
-  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;
+  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<L, S, M>;
   // eslint-disable-next-line max-len
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<ArlasAnyLayer, MapboxSourceType | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions>;;
+  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<L, S, M>;;
   @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
 
   public modeChoice = 'all';
@@ -70,6 +70,9 @@ export class MapglDemoComponent {
   public visualisationSets: Array<VisualisationSetConfig> = visualisationSets;
 
   public visibilityUpdater = new Subject<Map<string, boolean>>();
+
+  /** Whether to update the layers when moving the map */
+  public updateBbox = true;
 
   public drawData = {
     'type': 'FeatureCollection',
@@ -133,10 +136,114 @@ export class MapglDemoComponent {
     this.mapComponent.visibilityStatus = new Map();
     this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET + 'arlas_id:Number of products:1677155990578', true);
     this.mapComponent.visibilityStatus.set('Latest products' + ARLAS_VSET + 'arlas_id:Latest products:1677155839933', false);
+
+    this.addLayer('bounds', '#ff61ec');
+    this.addLayer('pwithin', '#3a3cc7');
+    this.addLayer('pwithinraw', '#adc73a', true);
+  }
+
+  public stopUpdate() {
+    this.updateBbox = !this.updateBbox;
   }
 
   public addGeoBox() {
     this.mapComponent.addGeoBox();
+  }
+
+  /**
+   * Update the layers representing the bounds, the pwithin and pwithinraw of the map.
+   * Useful to compare between Mercator and globe projection
+   */
+  public onMove(event: OnMoveResult) {
+    if (!this.updateBbox) {
+      return;
+    }
+
+    const bounds: LngLatBounds = this.mapComponent.map.getBounds() as any;
+
+    const f: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [bounds._ne.lng, bounds._ne.lat],
+                [bounds._ne.lng, bounds._sw.lat],
+                [bounds._sw.lng, bounds._sw.lat],
+                [bounds._sw.lng, bounds._ne.lat],
+                [bounds._ne.lng, bounds._ne.lat]
+              ]
+            ]
+          },
+          properties: {}
+        }
+      ]
+    };
+    const boundsSource = this.mapFramework.getSource('bounds', this.mapComponent.map);
+    this.mapFramework.setDataToGeojsonSource(boundsSource, f);
+
+    const pwithinSource = this.mapFramework.getSource('pwithin', this.mapComponent.map);
+    this.mapFramework.setDataToGeojsonSource(pwithinSource, this.boundsToFeatureCollection(event.extendWithOffset));
+
+    const pwithinrawSource = this.mapFramework.getSource('pwithinraw', this.mapComponent.map);
+    this.mapFramework.setDataToGeojsonSource(pwithinrawSource, this.boundsToFeatureCollection(event.rawExtendWithOffset));
+  }
+
+  private addLayer(name: string, color: string, dashes?: boolean) {
+    const style: VectorStyle = {
+      type: VectorStyleEnum.line,
+      style: {
+        'line-width': 12.5,
+        'line-color': color
+      }
+    };
+
+    if (dashes) {
+      style.style['line-dasharray'] = [
+        10,
+        5
+      ];
+    }
+
+    const geojsonBbox: GeoJSON.Feature<GeoJSON.Geometry> = {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: []
+      },
+      properties: {}
+    };
+
+    this.mapFramework.addGeojsonLayer(this.mapComponent.map, name, style, geojsonBbox);
+  }
+
+  private boundsToFeatureCollection(bounds: number[]) {
+    const f: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [
+              [
+                [bounds[1], bounds[0]],
+                [bounds[1], bounds[2]],
+                [bounds[3], bounds[2]],
+                [bounds[3], bounds[0]],
+                [bounds[1], bounds[0]]
+              ]
+            ]
+          },
+          properties: {}
+        }
+      ]
+    };
+
+    return f;
   }
 }
 

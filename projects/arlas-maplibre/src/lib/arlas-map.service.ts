@@ -20,25 +20,22 @@
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapGL,
   AbstractArlasMapService, ARLAS_ID, ArlasDataLayer, ArlasMapSource,
   ExternalEvent, FILLSTROKE_LAYER_PREFIX, LayerMetadata, MapLayers,
-  SCROLLABLE_ARLAS_ID, VisualisationSetConfig, OPACITY_SUFFIX
+  OPACITY_SUFFIX, SCROLLABLE_ARLAS_ID, VisualisationSetConfig
 } from 'arlas-map';
 import {
-  AddLayerObject, CanvasSourceSpecification, Expression, ExpressionSpecification,
-  GeoJSONSource, GeoJSONSourceSpecification, LayerSpecification, MapOptions,
-  RasterSourceSpecification, SourceSpecification, TypedStyleLayer
+  Expression, ExpressionSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions
 } from 'maplibre-gl';
 import { ArlasMaplibreService } from './arlas-maplibre.service';
 import { ArlasMaplibreGL } from './map/ArlasMaplibreGL';
+import { ArlasLayerSpecification } from './map/model/layers';
 import { MaplibreSourceType } from './map/model/sources';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | AddLayerObject,
-  MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions> {
+export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
 
   public layersMap: Map<string, ArlasDataLayer>;
 
@@ -123,7 +120,7 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
 
     layers
-      .filter(l => this.mapService.isLayerVisible(l as LayerSpecification))
+      .filter(l => this.mapService.isLayerVisible(l))
       .forEach(layer => {
         console.log(layer);
         map.setLayerOpacity(layer.id, layer.type, style);
@@ -179,8 +176,8 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
   };
 
   public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
-    const layer = this.mapService.getLayer(map, l) as TypedStyleLayer;
-    if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
+    const layer = this.mapService.getLayer(map, l);
+    if (layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
         if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
@@ -235,7 +232,7 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
     this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
     layers.forEach(layer => {
-      this.mapService.addLayer(map, layer as LayerSpecification);
+      this.mapService.addLayer(map, layer as ArlasLayerSpecification);
     });
     this.setLayersMap(mapLayers, layers);
     this.reorderLayers(visualisations, map);
@@ -308,16 +305,16 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
    */
   public addArlasDataLayer(map: ArlasMaplibreGL, layer: ArlasDataLayer, arlasDataLayers: Map<string, ArlasDataLayer>, before?: string) {
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
-    const scrollableLayer = arlasDataLayers.get(scrollableId) as LayerSpecification;
-    if (!!scrollableLayer) {
+    const scrollableLayer = arlasDataLayers.get(scrollableId) as ArlasLayerSpecification;
+    if (scrollableLayer) {
       this.mapService.addLayer(map, scrollableLayer, before);
     }
-    this.mapService.addLayer(map, layer as LayerSpecification, before);
+    this.mapService.addLayer(map, layer as ArlasLayerSpecification, before);
     /** add stroke layer if the layer is a fill */
     if (layer.type === 'fill') {
       const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = arlasDataLayers.get(strokeId) as LayerSpecification;
-      if (!!strokeLayer) {
+      const strokeLayer = arlasDataLayers.get(strokeId) as ArlasLayerSpecification;
+      if (strokeLayer) {
         this.mapService.addLayer(map, strokeLayer, before);
       }
     }
@@ -332,16 +329,16 @@ export class ArlasMapService extends AbstractArlasMapService<TypedStyleLayer | A
         if (this.mapService.hasLayer(map, layer.id)) {
           let originalLayerIsVisible = false;
           const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source as string).includes(collection)));
+          const isCollectionCompatible = (!collection || (collection && fullLayer.source.includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
             const originalLayer = this.mapService.getAllLayers(map).find(l => l.id === originalLayerId);
-            if (!!originalLayer) {
-              originalLayerIsVisible = this.mapService.isLayerVisible(originalLayer as LayerSpecification);
+            if (originalLayer) {
+              originalLayerIsVisible = this.mapService.isLayerVisible(originalLayer);
             }
             const layerFilter: Array<any> = [];
             const externalEventLayer = this.layersMap.get(layer.id);
-            if (!!externalEventLayer && !!externalEventLayer.filter) {
+            if (externalEventLayer?.filter) {
               (externalEventLayer.filter as ExpressionSpecification).forEach(f => {
                 layerFilter.push(f);
               });

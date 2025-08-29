@@ -18,13 +18,14 @@
  */
 
 import { Injectable } from '@angular/core';
-import { CircleLegend, FillLegend, HeatmapLegend, LabelLegend, Legend, LegendData, LineLegend, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { TranslateService } from '@ngx-translate/core';
-import { HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from '../map/model/filters';
-import tinycolor from 'tinycolor2';
 import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './legend.tools';
 import { Subject } from 'rxjs';
+import tinycolor from 'tinycolor2';
+import { HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from '../map/model/filters';
+import { ArlasDataLayer } from '../map/model/layers';
+import { CircleLegend, FillLegend, HeatmapLegend, LabelLegend, Legend, LegendData, LineLegend, PROPERTY_SELECTOR_SOURCE } from './legend.config';
+import { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './legend.tools';
 
 
 @Injectable({
@@ -35,25 +36,15 @@ export abstract class LegendService {
   protected highlightSource = new Subject<{layerId: string; properties: Array<{[name: string]: any;}>; }>();
   public highlight$ = this.highlightSource.asObservable();
 
-  public getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): CircleLegend {
-    return undefined;
-  }
+  public abstract getCircleLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): CircleLegend;
 
-  public getLineLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LineLegend {
-    return undefined;
-  }
+  public abstract getLineLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): LineLegend;
 
-  public getFillLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): FillLegend {
-    return undefined;
-  }
+  public abstract getFillLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): FillLegend;
 
-  public getHeatmapLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): HeatmapLegend {
-    return undefined;
-  }
+  public abstract getHeatmapLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): HeatmapLegend;
 
-  public getLabelLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: any): LabelLegend {
-    return undefined;
-  }
+  public abstract getLabelLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): LabelLegend;
 
   /** Based on the paint of a layer and its type, returns the field used for the color matching */
   public abstract getColorField(paint: any, layerType: string): string;

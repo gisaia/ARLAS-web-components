@@ -20,28 +20,22 @@
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapGL,
-  ARLAS_ID, ArlasMapFrameworkService,
-  ArlasMapOption,
-  ExternalEvent,
-  FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID,
-  VectorStyle
+  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
+  ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import {
-  AddLayerObject, CanvasSourceSpecification, GeoJSONSource,
-  GeoJSONSourceSpecification, LayerSpecification, MapOptions, Point, Popup,
-  RasterLayerSpecification, RasterSourceSpecification, ResourceType,
-  SourceSpecification, SymbolLayerSpecification, TypedStyleLayer
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup,
+  RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 import { from } from 'rxjs';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMaplibreConfig, ArlasMaplibreGL } from './map/ArlasMaplibreGL';
+import { ArlasLayerSpecification } from './map/model/layers';
 import { MaplibreSourceType } from './map/model/sources';
 
 /** Maplibre implementation of ArlasMapFrameworkService */
 @Injectable()
-export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLayer | AddLayerObject,
-  MaplibreSourceType | GeoJSONSource | RasterSourceSpecification | SourceSpecification | CanvasSourceSpecification, MapOptions> {
+export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
 
   public constructor() {
     super();
@@ -200,7 +194,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
    * @param layer Layer to add to the map
    * @param before Identifier of an already added layer. The given Layer (second param) is added under this 'before' layer.
    */
-  public addLayer(map: ArlasMaplibreGL, layer: AddLayerObject, before?: string) {
+  public addLayer(map: ArlasMaplibreGL, layer: ArlasLayerSpecification, before?: string) {
     if (!this.hasLayer(map, layer.id)) {
       map.getMapProvider().addLayer(layer, before);
     } else {
@@ -208,7 +202,9 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     }
   }
 
-  public addArlasDataLayer(map: ArlasMaplibreGL, layer: AddLayerObject, arlasDataLayers: Map<string, AddLayerObject>, before?: string) {
+  public addArlasDataLayer(map: ArlasMaplibreGL, layer: ArlasLayerSpecification,
+    arlasDataLayers: Map<string, ArlasLayerSpecification>, before?: string
+  ) {
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollableLayer = arlasDataLayers.get(scrollableId);
     if (scrollableLayer) {
@@ -342,12 +338,12 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
    * @param layer Layer identifier
    * @returns the layer object.
    */
-  public getLayer(map: ArlasMaplibreGL, layer: string): TypedStyleLayer {
-    return map.getMapProvider().getLayer(layer) as TypedStyleLayer;
+  public getLayer(map: ArlasMaplibreGL, layer: string): ArlasLayerSpecification {
+    return map.getMapProvider().getLayer(layer)?.serialize() as ArlasLayerSpecification;
   }
 
-  public getAllLayers(map: ArlasMaplibreGL): TypedStyleLayer[] {
-    return map.getMapProvider().getStyle().layers as TypedStyleLayer[];
+  public getAllLayers(map: ArlasMaplibreGL): ArlasLayerSpecification[] {
+    return map.getMapProvider().getStyle().layers as ArlasLayerSpecification[];
   }
 
   /**
@@ -462,14 +458,13 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
    * @param layersIdPattern Identifiers pattern.
    * @returns a list of layers respecting the given id pattern
    */
-  public getLayersFromPattern(map: ArlasMaplibreGL, layersIdPattern: string): AddLayerObject[] {
-    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern));
+  public getLayersFromPattern(map: ArlasMaplibreGL, layersIdPattern: string): ArlasLayerSpecification[] {
+    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)) as ArlasLayerSpecification[];
   }
 
-  public getLayersStartingWithSource(map: ArlasMaplibreGL, sourceIdPattern: string): TypedStyleLayer[] {
+  public getLayersStartingWithSource(map: ArlasMaplibreGL, sourceIdPattern: string): ArlasLayerSpecification[] {
     return map.getMapProvider().getStyle()
-      .layers.filter(l => !!(l as TypedStyleLayer).source
-        && ((l as TypedStyleLayer).source as string).startsWith(sourceIdPattern)) as TypedStyleLayer[];
+      .layers.filter((l: ArlasLayerSpecification) => l.source?.startsWith(sourceIdPattern)) as ArlasLayerSpecification[];
 
   }
 
@@ -542,7 +537,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
     const source: GeoJSONSourceSpecification = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, source, map);
-    const geojsonLayer: LayerSpecification = {
+    const geojsonLayer: ArlasLayerSpecification = {
       id: layerId,
       source: sourceId,
       type: style.type,
@@ -595,7 +590,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<TypedStyleLay
   };
 
 
-  public isLayerVisible(layer: LayerSpecification): boolean {
+  public isLayerVisible(layer: ArlasLayerSpecification): boolean {
     return layer.layout.visibility === 'visible';
   }
 
