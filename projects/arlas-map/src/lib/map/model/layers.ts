@@ -70,7 +70,10 @@ export interface LayerMetadata {
   isScrollableLayer?: boolean;
   hiddenProps?: MetadataHiddenProps;
   showLegend?: boolean;
+  cellShape?: CellShape;
 }
+
+export type CellShape = 'hexagonal' | 'square';
 export interface MetadataHiddenProps {
   geomType?: string;
 }
