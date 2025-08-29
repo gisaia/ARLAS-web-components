@@ -77,7 +77,7 @@ const routes: Routes = [
   { path: 'wmts-layer-manager', component: WmtsLayerManagerDemoComponent },
   { path: 'multi-collection', component: MetricsTableDemoComponent },
   { path: 'cog-visualisation', component: CogVisualisationComponent },
- { path: 'layer-legend', component: LayerLegendDemoComponent }
+  { path: 'layer-legend', component: LayerLegendDemoComponent }
 ];
 
 @NgModule({
