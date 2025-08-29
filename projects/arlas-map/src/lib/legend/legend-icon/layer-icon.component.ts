@@ -19,6 +19,7 @@
 
 import { Component, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
 import { select } from 'd3-selection';
+import { ArlasDataLayer, CellShape } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 
 @Component({
@@ -27,7 +28,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   styleUrls: ['./layer-icon.component.scss']
 })
 export class LayerIconComponent implements AfterViewInit, OnChanges {
-  @Input() public layer: any;
+  @Input() public layer: ArlasDataLayer;
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
@@ -78,7 +79,8 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
       }
       case 'fill': {
         if (source.startsWith('cluster')) {
-          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, this.layer.metadata?.aggType);
+          const fillShape = this.layer.metadata?.cellShape ?? this.layer?.metadata['cell-shape'];
+          drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, fillShape);
         } else if (source.startsWith('feature-metric')) {
           drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
         } else {
@@ -108,7 +110,7 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
  * @param strokeColorLegend Color legend, to give the drawn icons rectangles the same stroke color on the map
  * @param fillShape used to define a more precise shape for an icon
  */
-export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, fillShape?: string) {
+export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, fillShape?: CellShape) {
   const fillFourColors = getClusterFillColors(colorLegend);
   let strokeFourColors = fillFourColors;
   if (strokeColorLegend) {
@@ -116,7 +118,7 @@ export function drawClusterFillIcon(svgNode: SVGElement, colorLegend: Legend, st
   }
   const svg = select(svgNode);
   svg.selectAll('g').remove();
-  if(fillShape === 'h3') {
+  if(fillShape === 'hexagonal') {
      [
       drawHexagon(12, 4, 5),
       drawHexagon(5, 8, 4.5),
