@@ -69,7 +69,7 @@
     "@turf/transform-translate": "^6.5.0",
     "@types/mapbox-gl": "^1.6.3",
     "@types/tinycolor2": "^1.4.0",
-    "arlas-d3": "~12.1.0",
+    "arlas-d3": "~12.1.1",
     "core-js": "~3.26.1",
     "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
