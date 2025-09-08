@@ -1,5 +1,23 @@
 # Change Log
 
+## [v27.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.0) (2025-09-08)
+
+**New stuff:**
+
+- On hovering a feature on the map, display a cursor on the corresponding \*\*Color\*\* legend [\#960](https://github.com/gisaia/ARLAS-web-components/issues/960) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Hide the "+" button if no details are defined [\#504](https://github.com/gisaia/ARLAS-web-components/issues/504) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
+
+**Fixed bugs:**
+
+- Resizing an histogram does not trigger a `dataPlottedEvent` [\#1009](https://github.com/gisaia/ARLAS-web-components/issues/1009) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)]
+
+**Miscellaneous:**
+
+- New method to set an opacity style using a range filter [\#1004](https://github.com/gisaia/ARLAS-web-components/issues/1004) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Upgrade turf-extent dependency [\#984](https://github.com/gisaia/ARLAS-web-components/issues/984) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- add a new control that allows to switch between the 2D view and globe view [\#961](https://github.com/gisaia/ARLAS-web-components/issues/961) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+- Size up powerbas font [\#958](https://github.com/gisaia/ARLAS-web-components/issues/958) [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
 ## [v27.0.13](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.13) (2025-05-23)
 
 ## [v27.0.12](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.12) (2025-05-22)
