@@ -118,8 +118,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     layers
       .filter(l => this.mapService.isLayerVisible(l))
       .forEach(layer => {
-        console.log(layer);
         map.setLayerOpacity(layer.id, layer.type, style);
+        if (layer.type === 'circle') {
+          const circleStrokePrefix = layer.type + '-stroke';
+
+          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+        }
         const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
         const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
         if (strokeLayer) {
@@ -163,6 +167,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     layers.forEach(layer => {
       const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
       map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      const circleStrokePrefix = layer.type + '-stroke';
+      if (layer.type === 'circle') {
+        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
+          + OPACITY_SUFFIX] as Expression | number;
+        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
+      }
       const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
       const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
       if (strokeLayer) {
