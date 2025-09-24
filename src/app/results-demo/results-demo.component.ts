@@ -18,11 +18,15 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Column, ModeEnum, SortEnum } from 'arlas-web-components';
 import { Observable, from } from 'rxjs';
-import { Action, Column, FieldsConfiguration, ModeEnum, ResultListComponent,
-  ResultListOptions, SortEnum } from '../../../projects/arlas-components/src/public-api';
+import { ResultListComponent,
+   } from '../../../projects/arlas-components/src/lib/components/results/result-list/result-list.component';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
-import { ItemDataType } from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
+import {
+  Action, FieldsConfiguration,
+  ItemDataType, ResultListOptions
+} from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 
 
 @Component({

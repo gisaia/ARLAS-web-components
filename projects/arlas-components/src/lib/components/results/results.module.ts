@@ -41,6 +41,7 @@ import { ResultScrollDirective } from './result-directive/result-scroll.directiv
 import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultGridTileComponent } from './result-grid-tile/result-grid-tile.component';
 import { ResultItemComponent } from './result-item/result-item.component';
+import { ResizableColumnDirective, ResizableDirective } from './result-list/resizable-column.directive';
 import { ResultListComponent } from './result-list/result-list.component';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -71,7 +72,9 @@ import { ActionDisplayerPipe } from './result-actions/result-actions.pipe';
     TranslateModule,
     FormatNumberModule,
     ReplaceModule,
-    GetAttachmentUrlModule
+    GetAttachmentUrlModule,
+    ResizableColumnDirective,
+    ResizableDirective
   ],
   declarations: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
