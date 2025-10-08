@@ -359,7 +359,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           if (editCondition) {
             const candidates = features.filter(f => f.source.startsWith('mapbox-gl-draw'));
             // edit only on click on the border of the polygon
-            const candidatesProperties = candidates.filter(f => f.layer.id?.indexOf('stroke') >= 0)[0]?.properties;
+            const candidatesProperties = candidates.find(f => f.layer.id?.indexOf('stroke') >= 0)?.properties;
             if (candidatesProperties?.id) {
               if (candidatesProperties.user_meta === 'strip') {
                 this.draw.changeMode('direct_strip', {

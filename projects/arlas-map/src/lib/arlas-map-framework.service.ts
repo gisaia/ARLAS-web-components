@@ -40,8 +40,8 @@ import { VectorStyle } from './map/model/vector-style';
 })
 export abstract class ArlasMapFrameworkService<L, S, M> {
   /** Bus used to transmit errors */
-  private _errorBus$ = new Subject<string>();
-  public errorBus$ = this._errorBus$.asObservable();
+  private readonly _errorBus$ = new Subject<string>();
+  public readonly errorBus$ = this._errorBus$.asObservable();
 
   public abstract getInitTransformRequest(): Function;
   public abstract buildMapProviderOption(mapOption: ArlasMapOption): M;

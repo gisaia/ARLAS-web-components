@@ -112,7 +112,8 @@ export class MapImportDialogComponent {
 }
 
 export type AllowedImportGeometry = 'Polygon' | 'Point';
-const SIMPLE_GEOMETRY_OBJECT = ['Polygon', 'Point', 'LineString'];
+const SIMPLE_GEOMETRY_OBJECT = new Set(['Polygon', 'Point', 'LineString']);
+
 @Component({
   selector: 'arlas-map-import',
   templateUrl: './map-import.component.html',
@@ -160,7 +161,7 @@ export class MapImportComponent<L, S, M> {
   @Input() public allowedGeometryObjectType: Array<AllowedImportGeometry> = ['Polygon'];
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
-  private _currentAllowedGeom: string[];
+  private _currentAllowedGeom: Set<string>;
 
   private readonly mapService = inject(ArlasMapFrameworkService<L, S, M>);
 
@@ -186,23 +187,24 @@ export class MapImportComponent<L, S, M> {
   }
 
   private buildAllowedGeometryForImportType(importType: string) {
-    this._currentAllowedGeom = [];
+    this._currentAllowedGeom = new Set();
     this.allowedGeometryObjectType.forEach(allowed => {
-      this._currentAllowedGeom = this._currentAllowedGeom.concat(this.getAllowedGeom(allowed));
+      this._currentAllowedGeom = this._currentAllowedGeom.union(this.getAllowedGeom(allowed));
     });
     if (importType === this.KML) {
-      this._currentAllowedGeom.push('GeometryCollection', 'MultiGeometry');
+      this._currentAllowedGeom.add('GeometryCollection');
+      this._currentAllowedGeom.add('MultiGeometry');
     } else if (importType === this.WKT) {
-      this._currentAllowedGeom.push('GeometryCollection');
+      this._currentAllowedGeom.add('GeometryCollection');
     }
   }
 
-  private getAllowedGeom(allowed: AllowedImportGeometry): string[] {
+  private getAllowedGeom(allowed: AllowedImportGeometry): Set<string> {
     if (allowed === 'Polygon') {
-      return ['Polygon', 'MultiPolygon'];
+      return new Set(['Polygon', 'MultiPolygon']);
     }
     if (allowed === 'Point') {
-      return ['Point', 'MultiPoint'];
+      return new Set(['Point', 'MultiPoint']);
     }
   }
 
@@ -279,18 +281,18 @@ export class MapImportComponent<L, S, M> {
   public handleGeometryCollection(feature, centroids, importedGeojson) {
     // Create a new Polygon feature for each polygon in the MultiPolygon
     // All properties of the MultiPolygon are copied in each feature created
-    const simpleGeometry = this._currentAllowedGeom.filter(g => SIMPLE_GEOMETRY_OBJECT.includes(g));
-    feature.geometry.geometries.filter(geom => simpleGeometry.includes(geom.type)).forEach(geom => {
+    const simpleGeometry = this._currentAllowedGeom.intersection(SIMPLE_GEOMETRY_OBJECT);
+    feature.geometry.geometries.filter(geom => simpleGeometry.has(geom.type)).forEach(geom => {
       const newFeature = this.buildFeature(geom, feature);
       this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
     });
   }
 
   public handleFeatureCollection(feature, centroids, importedGeojson) {
-    feature.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
+    feature.features.filter(feature => this._currentAllowedGeom.has(feature.geometry.type))
       .forEach((feature) => {
-        const multiGeometry = this._currentAllowedGeom.filter(g => !SIMPLE_GEOMETRY_OBJECT.includes(g));
-        if (multiGeometry.includes(feature.geometry.type)) {
+        const multiGeometry = this._currentAllowedGeom.difference(SIMPLE_GEOMETRY_OBJECT);
+        if (multiGeometry.has(feature.geometry.type)) {
           this.handleMultiGeometry(feature, centroids, importedGeojson);
         } else {
           this.handleSimpleGeometry(feature, centroids, importedGeojson);
@@ -327,7 +329,7 @@ export class MapImportComponent<L, S, M> {
 
   private resolveFileFromGzip(result, resolve) {
     this.jszip.loadAsync(result).then(kmzContent => {
-      const kmlFile = Object.keys(kmzContent.files).filter(file => file.split('.').pop().toLowerCase() === this.KML)[0];
+      const kmlFile = Object.keys(kmzContent.files).find(file => file.split('.').pop().toLowerCase() === this.KML);
       this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
     });
   }
@@ -389,7 +391,7 @@ export class MapImportComponent<L, S, M> {
     const readJsonFile = this.readJsonFile();
     const parseJson = readJsonFile.then((fileContent: string) => new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
       const feature = JSON.parse(fileContent);
-      if (valid(feature) && (this._currentAllowedGeom.includes(feature.geometry) || feature.type === 'FeatureCollection')) {
+      if (valid(feature) && (this._currentAllowedGeom.has(feature.geometry) || feature.type === 'FeatureCollection')) {
         const centroides = new Array<any>();
         const importedGeojson = {
           type: 'FeatureCollection',
@@ -493,7 +495,8 @@ export class MapImportComponent<L, S, M> {
         type: 'FeatureCollection',
         features: []
       };
-      if (geojsonWKT && valid(geojsonWKT) && this._currentAllowedGeom.includes(geojsonWKT.type)) {
+
+      if (geojsonWKT && valid(geojsonWKT) && this._currentAllowedGeom.has(geojsonWKT.type)) {
         const feature = {
           type: 'Feature',
           geometry: geojsonWKT,
@@ -610,7 +613,7 @@ export class MapImportComponent<L, S, M> {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
   private computeGeojson(geojson: any, reject: (reason?: any) => void,
@@ -621,7 +624,7 @@ export class MapImportComponent<L, S, M> {
         type: 'FeatureCollection',
         features: []
       };
-      geojson.features.filter(feature => this._currentAllowedGeom.includes(feature.geometry.type))
+      geojson.features.filter(feature => this._currentAllowedGeom.has(feature.geometry.type))
         .forEach((feature) => {
           this.handleGeom(feature, centroides, importedGeojson, reject);
         });

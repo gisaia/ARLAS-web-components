@@ -172,7 +172,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
           memo.push(element.idValue);
           return memo;
         }, []) : [];
-      const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
+      const numericalIds = ids.filter(id => !Number.isNaN(+id)).map(id => +id);
       const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
       this.filterLayers(mapLayers, map, (elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
     }
@@ -182,7 +182,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
     featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
     if (featureToHightLight?.elementidentifier) {
       const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
-      if (!isNaN(+featureToHightLight.elementidentifier.idValue)) {
+      if (!Number.isNaN(+featureToHightLight.elementidentifier.idValue)) {
         ids.push(+featureToHightLight.elementidentifier.idValue);
       }
       const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
@@ -194,7 +194,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public selectFeaturesByCollection(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
     features: Array<ElementIdentifier>, collection: string) {
     const ids: Array<number | string> = features.map(f => f.idValue);
-    const numericalIds = ids.filter(id => !isNaN(+id)).map(id => +id);
+    const numericalIds = ids.filter(id => !Number.isNaN(+id)).map(id => +id);
     const visibilityFilter = ids.length > 0 ? ['in', ['get', features[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
     this.filterLayers(mapLayers, map, (features.length > 0), visibilityFilter, ExternalEvent.select, collection);
   }
