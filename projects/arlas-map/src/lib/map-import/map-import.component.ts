@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, ElementRef, Inject, Input, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, Inject, Input, Output, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import * as toGeoJSON from '@tmcw/togeojson';
@@ -161,9 +161,11 @@ export class MapImportComponent<L, S, M> {
   @Output() public imported = new Subject<any>();
   @Output() public error = new Subject<any>();
   private _currentAllowedGeom: string[];
+
+  private readonly mapService = inject(ArlasMapFrameworkService<L, S, M>);
+
   public constructor(
-    public dialog: MatDialog,
-    public mapService: ArlasMapFrameworkService<L, S, M>
+    public dialog: MatDialog
   ) { }
 
   public promiseTimeout(ms, promise) {

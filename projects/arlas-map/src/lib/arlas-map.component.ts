@@ -18,7 +18,7 @@
  */
 
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, Input, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, FeatureCollection } from '@turf/helpers';
@@ -258,11 +258,12 @@ export class ArlasMapComponent<L, S, M> {
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
+  private readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
+
   public constructor(
     private readonly drawService: MapboxAoiDrawService,
     private readonly basemapService: BasemapService<L, S, M>,
     private readonly translate: TranslateService,
-    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
     protected mapService: AbstractArlasMapService<L, S, M>,
     private readonly legendService: LegendService
   ) {

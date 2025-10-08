@@ -56,7 +56,6 @@ import { MapglDemoComponent } from '../mapgl-demo/mapgl-demo.component';
             provide: AbstractArlasMapService,
             useClass: ArlasMapService
         },
-        ArlasMaplibreService,
         {
             provide: BasemapService,
             useClass: MaplibreBasemapService

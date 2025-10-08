@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import { ArlasBasemaps } from './basemaps.model';
-import { BasemapStyle } from './basemap.config';
-import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
+import { inject, Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
+import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
+import { BasemapStyle } from './basemap.config';
+import { ArlasBasemaps } from './basemaps.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,7 +45,8 @@ export abstract class BasemapService<L, S, M> {
   protected protomapBasemapAddedSource = new Subject<boolean>();
   public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
 
-  protected constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>) { }
+  protected readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
+  protected readonly http = inject(HttpClient);
 
   public setBasemaps(basemaps: ArlasBasemaps) {
     this.basemaps = basemaps;

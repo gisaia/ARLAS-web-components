@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import { ArlasMapFrameworkService } from './arlas-map-framework.service';
+import { inject, Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
+import { ElementIdentifier } from 'arlas-web-components';
+import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
+import { ArlasDataLayer, ExternalEvent, MapLayers } from './map/model/layers';
 import { ArlasMapSource } from './map/model/sources';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
-import { ArlasDataLayer, ExternalEvent, MapLayers } from './map/model/layers';
-import { ElementIdentifier } from 'arlas-web-components';
 
 /**
  * This service propose a set of method to execute the ArlasMapComponent logic.
@@ -55,7 +55,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
       status: new Map()
     };
 
-  public constructor(public mapFrameworkService: ArlasMapFrameworkService<L, S, M>) { }
+  protected readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
 
   /**
    * @description Declares the arlas data sources provided in configuration.

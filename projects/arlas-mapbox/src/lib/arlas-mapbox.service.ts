@@ -20,38 +20,23 @@
 import { Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapGL,
-  ARLAS_ID,
-  ArlasMapFrameworkService,
-  ArlasMapOption,
-  FILLSTROKE_LAYER_PREFIX,
-  SCROLLABLE_ARLAS_ID,
-  VectorStyle
+  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
+  FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import {
-  AnyLayer,
-  AnySourceData,
-  GeoJSONSource,
-  GeoJSONSourceRaw,
-  MapboxOptions,
-  Point,
-  Popup,
-  RasterLayer,
-  RasterSource,
-  SymbolLayer
+  AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceRaw,
+  MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
 } from 'mapbox-gl';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';
 import { MapboxSourceType } from './map/model/sources';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType
   | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions> {
-
-  public constructor() {
-    super();
-  }
 
   /**
    * Returns the canvas element of the map.
@@ -204,6 +189,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   public addLayer(map: ArlasMapboxGL, layer: AnyLayer, before?: string) {
     if (!this.hasLayer(map, layer.id)) {
       map.getMapProvider().addLayer(layer, before);
+
+      if (!this.hasLayer(map, layer.id)) {
+        this.emitError(`Failed to add the layer ${layer.id}`);
+      }
     } else {
       console.warn(`The layer ${layer.id} is already added to the map`);
     }

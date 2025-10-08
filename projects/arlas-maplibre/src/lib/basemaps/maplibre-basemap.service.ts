@@ -17,15 +17,13 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
 import maplibre, { AddLayerObject, GeoJSONSource, MapOptions, RequestParameters } from 'maplibre-gl';
 import * as pmtiles from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
-import { ArlasMaplibreService } from '../arlas-maplibre.service';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
 import { ArlasLayerSpecification } from '../map/model/layers';
 import { MaplibreSourceType } from '../map/model/sources';
@@ -35,12 +33,7 @@ import { MapLibreBasemapStyle } from './basemap.config';
   providedIn: 'root'
 })
 export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
-
-  public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMaplibreService,
-    private mapService: ArlasMapService
-  ) {
-    super(http, mapFrameworkService);
-  }
+  private readonly mapService = inject(ArlasMapService);
 
   public addProtomapBasemap(map: ArlasMaplibreGL) {
     const selectedBasemap = this.basemaps.getSelected();

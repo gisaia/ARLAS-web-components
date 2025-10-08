@@ -34,17 +34,14 @@ import { ArlasLayerSpecification } from './map/model/layers';
 import { MaplibreSourceType } from './map/model/sources';
 
 /** Maplibre implementation of ArlasMapFrameworkService */
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
-
-  public constructor() {
-    super();
-  }
-
   /**
-     * Returns the canvas element of the map
-     * @param map Map instance.
-     */
+   * Returns the canvas element of the map
+   * @param map Map instance.
+   */
   public getCanvas(map: ArlasMaplibreGL): HTMLCanvasElement {
     return map.getMapProvider().getCanvas();
   }
@@ -197,6 +194,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   public addLayer(map: ArlasMaplibreGL, layer: ArlasLayerSpecification, before?: string) {
     if (!this.hasLayer(map, layer.id)) {
       map.getMapProvider().addLayer(layer, before);
+
+      if (!this.hasLayer(map, layer.id)) {
+        this.emitError(`Failed to add the layer ${layer.id}`);
+      }
     } else {
       console.warn(`The layer ${layer.id} is already added to the map`);
     }

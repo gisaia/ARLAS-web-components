@@ -17,14 +17,12 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
 import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
 import * as pmtiles from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
-import { ArlasMapboxService } from '../arlas-mapbox.service';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { ArlasAnyLayer } from '../map/model/layers';
 import { MapboxSourceType } from '../map/model/sources';
@@ -33,12 +31,7 @@ import { MapboxBasemapStyle } from './basemap.config';
 
 @Injectable()
 export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions> {
-
-  public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapboxService,
-    private readonly mapService: ArlasMapService
-  ) {
-    super(http, mapFrameworkService);
-  }
+  private readonly mapService = inject(ArlasMapService);
 
   public addProtomapBasemap(map: ArlasMapboxGL) {
     const selectedBasemap = this.basemaps.getSelected();

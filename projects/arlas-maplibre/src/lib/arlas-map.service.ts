@@ -17,17 +17,15 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapService, ARLAS_ID, ArlasDataLayer, ArlasMapSource,
-  ExternalEvent, FILLSTROKE_LAYER_PREFIX, LayerMetadata, MapLayers,
-  OPACITY_SUFFIX, SCROLLABLE_ARLAS_ID, VisualisationSetConfig
+  AbstractArlasMapService, ARLAS_ID, ArlasDataLayer, ArlasMapFrameworkService, ArlasMapSource, ExternalEvent,
+  FILLSTROKE_LAYER_PREFIX, LayerMetadata, MapLayers, OPACITY_SUFFIX, SCROLLABLE_ARLAS_ID, VisualisationSetConfig
 } from 'arlas-map';
 import {
   Expression, ExpressionSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions
 } from 'maplibre-gl';
-import { ArlasMaplibreService } from './arlas-maplibre.service';
 import { ArlasMaplibreGL } from './map/ArlasMaplibreGL';
 import { ArlasLayerSpecification } from './map/model/layers';
 import { MaplibreSourceType } from './map/model/sources';
@@ -39,11 +37,9 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
 
   public layersMap: Map<string, ArlasDataLayer>;
 
-
   public dataSources: GeoJSONSourceSpecification[] = [];
-  public constructor(public mapService: ArlasMaplibreService) {
-    super(mapService);
-  }
+
+  private readonly mapService = inject(ArlasMapFrameworkService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions>);
 
   /**
     * @description Declares the arlas data sources provided in configuration.

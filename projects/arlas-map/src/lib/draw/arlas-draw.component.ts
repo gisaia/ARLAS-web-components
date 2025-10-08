@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, signal, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output, signal, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
@@ -103,11 +103,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** Message shown to explain how to draw. */
   public drawTooltipMessage = signal<string>('');
 
+  private readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
+
   public constructor(
     private readonly drawService: MapboxAoiDrawService,
     private readonly _snackBar: MatSnackBar,
     private readonly translate: TranslateService,
-    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
     protected mapService: AbstractArlasMapService<L, S, M>
   ) {
     this.drawService.editAoi$.pipe(takeUntilDestroyed()).subscribe(ae => this.onAoiEdit.emit(ae));
