@@ -55,6 +55,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     });
   }
 
+  public setTransformRequest(map: ArlasMaplibreGL, transformRequest: Function): void {
+    map.getMapProvider().setTransformRequest(transformRequest as any);
+  }
+
   /**
     * Fits the map to its current bounds. To be used when a map container is resized.
     * @param map Map instance.

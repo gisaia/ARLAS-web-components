@@ -42,6 +42,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public constructor() { }
 
   public abstract getInitTransformRequest(): Function;
+  public abstract setTransformRequest(map: AbstractArlasMapGL, transformRequest: Function): void;
   public abstract buildMapProviderOption(mapOption: ArlasMapOption): M;
   public abstract createMap(config: MapConfig<M>): AbstractArlasMapGL;
 
