@@ -327,10 +327,14 @@ export class MapImportComponent<L, S, M> {
     });
   }
 
-  private resolveFileFromGzip(result, resolve) {
+  private resolveFileFromGzip(result, resolve, reject) {
     this.jszip.loadAsync(result).then(kmzContent => {
       const kmlFile = Object.keys(kmzContent.files).find(file => file.split('.').pop().toLowerCase() === this.KML);
-      this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
+      if (kmlFile) {
+        this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
+      } else {
+        reject(new Error(marker('kml file not found in the zip')));
+      }
     });
   }
 
@@ -340,7 +344,7 @@ export class MapImportComponent<L, S, M> {
     let readKmzFile = readKmlFile;
     if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
       readKmzFile = readKmlFile.then(result => new Promise<string>((resolve, reject) => {
-      this.resolveFileFromGzip(result, resolve);
+      this.resolveFileFromGzip(result, resolve, reject);
       }));
     }
 
