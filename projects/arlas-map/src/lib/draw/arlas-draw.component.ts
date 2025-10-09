@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, HostListener, Input, OnInit, Output, signal, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output, signal, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
@@ -103,11 +103,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** Message shown to explain how to draw. */
   public drawTooltipMessage = signal<string>('');
 
+  private readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
+
   public constructor(
     private readonly drawService: MapboxAoiDrawService,
     private readonly _snackBar: MatSnackBar,
     private readonly translate: TranslateService,
-    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>,
     protected mapService: AbstractArlasMapService<L, S, M>
   ) {
     this.drawService.editAoi$.pipe(takeUntilDestroyed()).subscribe(ae => this.onAoiEdit.emit(ae));
@@ -173,8 +174,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.draw.onDrawInvalidGeometry((e) => {
       if (this.savedEditFeature) {
         const featureCoords = this.savedEditFeature.coordinates[0].slice();
-        if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
-          featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
+        if (featureCoords[0][0] !== featureCoords.at(-1)[0] ||
+          featureCoords[0][1] !== featureCoords.at(-1)[1]) {
           featureCoords.push(featureCoords[0]);
         }
         const currentFeature = {
@@ -268,22 +269,20 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     const drawStyles = styles.default;
     const drawOptions = {
       ...this.drawOption,
-      ...{
-        styles: drawStyles,
-        modes: {
-          static: StaticMode,
-          limit_vertex: limitVertexDirectSelectMode,
-          draw_polygon: validGeomDrawPolygonMode,
-          draw_circle: circleMode,
-          draw_radius_circle: radiusCircleMode,
-          draw_strip: stripMode,
-          direct_strip: stripDirectSelectMode,
-          draw_rectangle: rectangleMode,
-          direct_select: directModeOverride,
-          simple_select: simpleSelectModeOverride
-        },
-        suppressAPIEvents: true
-      }
+      styles: drawStyles,
+      modes: {
+        static: StaticMode,
+        limit_vertex: limitVertexDirectSelectMode,
+        draw_polygon: validGeomDrawPolygonMode,
+        draw_circle: circleMode,
+        draw_radius_circle: radiusCircleMode,
+        draw_strip: stripMode,
+        direct_strip: stripDirectSelectMode,
+        draw_rectangle: rectangleMode,
+        direct_select: directModeOverride,
+        simple_select: simpleSelectModeOverride
+      },
+      suppressAPIEvents: true
     };
     this.draw = this.mapFrameworkService.createDraw(drawOptions, this.drawButtonEnabled, this.map);
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
@@ -356,9 +355,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
             features.filter(f => f.source.startsWith('mapbox-gl-draw')).length > 0;
           if (editCondition) {
-            const candidates = features.filter(f => f.source.startsWith('mapbox-gl-draw'));
             // edit only on click on the border of the polygon
-            const candidatesProperties = candidates.filter(f => f.layer.id?.indexOf('stroke') >= 0)[0]?.properties;
+            const candidatesProperties = features.find(f => f.source.startsWith('mapbox-gl-draw')
+                                                            && f.layer.id?.indexOf('stroke') >= 0)?.properties;
             if (candidatesProperties?.id) {
               if (candidatesProperties.user_meta === 'strip') {
                 this.draw.changeMode('direct_strip', {

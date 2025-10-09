@@ -38,11 +38,9 @@ export class AppComponent implements OnInit {
     '/list',
     '/wmts-layer-manager',
     '/multi-collection',
-    '/cog-visualisation'
+    '/cog-visualisation',
     '/layer-legend'
   ];
-
-
 
   public constructor(private readonly translate: TranslateService, private readonly router: Router) {
     this.translate.setDefaultLang('fr');

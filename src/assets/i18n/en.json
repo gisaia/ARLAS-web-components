@@ -72,7 +72,7 @@
 	"METRIC_COLUMN_min": "minimal",
 	"METRIC_COLUMN_max": "maximal",
 	"METRIC_COLUMN_cardinality": "cardinality of",
-  "legend": "{{metric}} of {{field}} ({{normalised}})",
-  "legend without field": "{{metric}} ({{normalised}})"
+  	"legend": "{{metric}} of {{field}} ({{normalised}})",
+  	"legend without field": "{{metric}} ({{normalised}})"
 }
 

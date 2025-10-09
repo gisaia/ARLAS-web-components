@@ -18,28 +18,30 @@
  */
 
 import { Injectable } from '@angular/core';
-import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
-import { AbstractDraw } from './draw/AbstractDraw';
-import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
 import { FeatureCollection } from '@turf/helpers';
-import { VectorStyle } from './map/model/vector-style';
-import { ArlasPoint } from './map/model/geometry';
+import { Subject } from 'rxjs';
+import { AbstractDraw } from './draw/AbstractDraw';
+import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
 import { MapLayerMouseEvent } from './map/model/events';
+import { ArlasPoint } from './map/model/geometry';
+import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
+import { VectorStyle } from './map/model/vector-style';
 
 /**
  * This service exposes a list of map interaction methods that are abstract.
  * Theses methods will be implemented by the chosen cartographical framework to use.
+ *
+ * L: a layer class/interface.
+ * S: a source class/interface.
+ * M: a Map configuration class/interface.
  */
 @Injectable({
   providedIn: 'root'
 })
-/** L: a layer class/interface.
- *  S: a source class/interface.
- *  M: a Map configuration class/interface.
- */
 export abstract class ArlasMapFrameworkService<L, S, M> {
-
-  public constructor() { }
+  /** Bus used to transmit errors */
+  private readonly _errorBus$ = new Subject<string>();
+  public readonly errorBus$ = this._errorBus$.asObservable();
 
   public abstract getInitTransformRequest(): Function;
   public abstract buildMapProviderOption(mapOption: ArlasMapOption): M;
@@ -143,4 +145,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): S;
   public abstract createRasterSource(url: string, bounds: number[], maxZoom: number, tileSize: number): S;
 
+  public emitError(message: string) {
+    this._errorBus$.next(message);
+  }
 }

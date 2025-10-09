@@ -29,10 +29,10 @@
     "e2e": "ng e2e",
     "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
     "i18n:init-components": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/template.json --key-as-default-value --replace --format json",
-    "i18n:init-map": "ngx-translate-extract --input ./projects/arlas-map/src/lib --output ./projects/arlas-map/assets/i18n/template.json --key-as-default-value --replace --format json",
+    "i18n:init-map": "ngx-translate-extract --input ./projects/arlas-map/src/lib ./projects/arlas-maplibre/src/lib ./projects/arlas-mapbox/src/lib --output ./projects/arlas-map/assets/i18n/template.json --key-as-default-value --replace --format json",
     "i18n:init": "npm run i18n:init-map && npm run i18n:init-components",
     "i18n:extract-components": "ngx-translate-extract --input ./projects/arlas-components/src/lib --output ./projects/arlas-components/assets/i18n/{en,fr,es}.json --format json",
-    "i18n:extract-map": "ngx-translate-extract --input ./projects/arlas-map/src/lib --output ./projects/arlas-map/assets/i18n/{en,fr,es}.json --format json",
+    "i18n:extract-map": "ngx-translate-extract --input ./projects/arlas-map/src/lib ./projects/arlas-maplibre/src/lib ./projects/arlas-mapbox/src/lib --output ./projects/arlas-map/assets/i18n/{en,fr,es}.json --format json",
     "i18n:extract": "npm run i18n:extract-map && npm run i18n:extract-components",
     "postinstall": "patch-package",
     "license-check": "license-check-and-add check -f license-check-and-add.json"

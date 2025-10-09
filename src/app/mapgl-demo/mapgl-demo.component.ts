@@ -21,22 +21,18 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { LngLatBounds } from 'maplibre-gl';
 import { Subject } from 'rxjs';
+import { ArlasMapFrameworkService } from '../../../projects/arlas-map/src/lib/arlas-map-framework.service';
 import { ArlasMapComponent } from '../../../projects/arlas-map/src/lib/arlas-map.component';
 import { MapImportComponent } from '../../../projects/arlas-map/src/lib/map-import/map-import.component';
 import {
-  GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService,
-  OperationSelectModel
+  GeometrySelectModel, GeoQueryOperator, MapSettingsComponent, MapSettingsService, OperationSelectModel
 } from '../../../projects/arlas-map/src/lib/map-settings/map-settings.component';
 import { ARLAS_VSET } from '../../../projects/arlas-map/src/lib/map/model/layers';
+import { OnMoveResult } from '../../../projects/arlas-map/src/lib/map/model/map';
+import { VectorStyle, VectorStyleEnum } from '../../../projects/arlas-map/src/lib/map/model/vector-style';
 import { VisualisationSetConfig } from '../../../projects/arlas-map/src/lib/map/model/visualisationsets';
-import { ArlasMapFrameworkService, OnMoveResult, VectorStyle, VectorStyleEnum } from '../../../projects/arlas-map/src/public-api';
 import {
-  basemapStyles,
-  defaultBasemapStyle,
-  drawOptions,
-  geojsondata,
-  mapDataSources, mapLayers,
-  mapSources, visualisationSets
+  basemapStyles, defaultBasemapStyle, drawOptions, geojsondata, mapDataSources, mapLayers, mapSources, visualisationSets
 } from '../../tools/map.constants';
 
 @Component({
@@ -45,7 +41,7 @@ import {
   styleUrls: ['./mapgl-demo.component.css']
 })
 export class MapglDemoComponent<L, S, M> {
-  private readonly mapFramework: ArlasMapFrameworkService<L, S, M> = inject(ArlasMapFrameworkService);
+  private readonly mapFramework = inject(ArlasMapFrameworkService<L, S, M>);
 
   // eslint-disable-next-line max-len
   @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<L, S, M>;
@@ -79,7 +75,10 @@ export class MapglDemoComponent<L, S, M> {
     'features': []
   } as any;
 
-  public constructor() { }
+  private readonly mapFrameworkService = inject(ArlasMapFrameworkService);
+  public constructor() {
+    this.mapFrameworkService.errorBus$.subscribe(e => console.log(e));
+  }
 
   public polygonChange(event) {
     console.log(event);

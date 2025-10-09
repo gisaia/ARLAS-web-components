@@ -17,14 +17,12 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
 import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
 import * as pmtiles from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
-import { ArlasMapboxService } from '../arlas-mapbox.service';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
 import { ArlasAnyLayer } from '../map/model/layers';
 import { MapboxSourceType } from '../map/model/sources';
@@ -33,12 +31,7 @@ import { MapboxBasemapStyle } from './basemap.config';
 
 @Injectable()
 export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions> {
-
-  public constructor(protected http: HttpClient, protected mapFrameworkService: ArlasMapboxService,
-    private readonly mapService: ArlasMapService
-  ) {
-    super(http, mapFrameworkService);
-  }
+  private readonly mapService = inject(ArlasMapService);
 
   public addProtomapBasemap(map: ArlasMapboxGL) {
     const selectedBasemap = this.basemaps.getSelected();
@@ -128,7 +121,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
     layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
       layersToSave.push(l);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] as MapboxSourceType });
+        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
       }
     });
     const sourcesToSaveSet = new Set<string>();

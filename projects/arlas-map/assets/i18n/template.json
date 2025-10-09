@@ -79,5 +79,6 @@
 	"Enter coordinates in decimal or sexagesimal degrees": "Enter coordinates in decimal or sexagesimal degrees",
 	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate",
 	"Both corners have the same latitudes, modify one of them.": "Both corners have the same latitudes, modify one of them.",
-	"Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")": "Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")"
+	"Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")": "Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")",
+	"Failed to add the layer": "Failed to add the layer"
 }

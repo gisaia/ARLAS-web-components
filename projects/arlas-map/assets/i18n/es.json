@@ -80,6 +80,7 @@
 	"Decimal: 1.1 or Sexagesimal 1°6'3\" coordinate": "Coordenada en decimal: 1,1 o sexagesimal: 1°6'3\".",
 	"Both corners have the same latitudes, modify one of them.": "Las dos esquinas tienen la misma latitud, así que cambia una de ellas.",
 	"Enter a coordinate in decimal (1.1) or sexagesimal (1° 6' 3\")": "Introduzca una coordenada en decimal (1,1) o sexagesimal (1° 6' 3\").",
+	"Failed to add the layer": "No se pudo añadir la capa {{layer}}",
 	"avg": "Media",
 	"sum": "Suma",
 	"min": "Mínimo",

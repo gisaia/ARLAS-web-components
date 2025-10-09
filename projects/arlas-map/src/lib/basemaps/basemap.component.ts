@@ -17,16 +17,14 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { takeUntil } from 'rxjs';
 import { Subject } from 'rxjs/internal/Subject';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
 import { ArlasMapSource } from '../map/model/sources';
-import { ArlasBasemaps } from './basemaps.model';
-import { BasemapService } from './basemap.service';
 import { BasemapStyle } from './basemap.config';
-import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
-import { AbstractArlasMapService } from '../arlas-map.service';
-import { takeUntil } from 'rxjs';
+import { BasemapService } from './basemap.service';
+import { ArlasBasemaps } from './basemaps.model';
 
 @Component({
   selector: 'arlas-basemap',
@@ -50,13 +48,10 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
   public showList = false;
   public basemaps: ArlasBasemaps;
 
-  public constructor(protected basemapService: BasemapService<L, S, M>,
-    protected mapService: AbstractArlasMapService<L, S, M>,
-    protected mapFrameworkService: ArlasMapFrameworkService<L, S, M>) {
-
-      this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());
-
-     }
+  private readonly basemapService = inject(BasemapService<L, S, M>);
+  public constructor() {
+    this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());
+  }
 
   public ngOnInit(): void {
     this.initBasemaps();

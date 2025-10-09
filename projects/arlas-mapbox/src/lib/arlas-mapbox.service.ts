@@ -17,41 +17,28 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapGL,
-  ARLAS_ID,
-  ArlasMapFrameworkService,
-  ArlasMapOption,
-  FILLSTROKE_LAYER_PREFIX,
-  SCROLLABLE_ARLAS_ID,
-  VectorStyle
+  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
+  FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import {
-  AnyLayer,
-  AnySourceData,
-  GeoJSONSource,
-  GeoJSONSourceRaw,
-  MapboxOptions,
-  Point,
-  Popup,
-  RasterLayer,
-  RasterSource,
-  SymbolLayer
+  AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceRaw,
+  MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
 } from 'mapbox-gl';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';
 import { MapboxSourceType } from './map/model/sources';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType
   | GeoJSONSource | GeoJSONSourceRaw, MapboxOptions> {
-
-  public constructor() {
-    super();
-  }
+  private readonly translate = inject(TranslateService);
 
   /**
    * Returns the canvas element of the map.
@@ -187,10 +174,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param map Map
    */
   public setSource(sourceId: string, source: AnySourceData, map: ArlasMapboxGL) {
-    if (!this.hasSource(map, sourceId)) {
-      map.getMapProvider().addSource(sourceId, source);
-    } else {
+    if (this.hasSource(map, sourceId)) {
       console.warn(`The source ${sourceId} is already added to the map`);
+    } else {
+      map.getMapProvider().addSource(sourceId, source);
     }
   };
 
@@ -202,10 +189,14 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param before Identifier of an already added layer. The given Layer (second param) is added under this 'before' layer.
    */
   public addLayer(map: ArlasMapboxGL, layer: AnyLayer, before?: string) {
-    if (!this.hasLayer(map, layer.id)) {
-      map.getMapProvider().addLayer(layer, before);
-    } else {
+    if (this.hasLayer(map, layer.id)) {
       console.warn(`The layer ${layer.id} is already added to the map`);
+    } else {
+      map.getMapProvider().addLayer(layer, before);
+
+      if (!this.hasLayer(map, layer.id)) {
+        this.emitError(this.translate.instant('Failed to add the layer', { layer: layer.id }));
+      }
     }
   }
 
@@ -357,7 +348,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @returns true if any layer's id includes the given id pattern.
    */
   public hasLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): boolean {
-    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)).length > 0;
+    return map.getMapProvider().getStyle().layers.some(l => l.id.includes(layersIdPattern));
   }
 
   /**
