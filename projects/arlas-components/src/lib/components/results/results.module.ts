@@ -27,6 +27,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -34,7 +35,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { NgxLoadingModule } from 'ngx-loading-reloaded';
+import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
+import { GetAttachmentUrlModule } from '../../pipes/get-attachment-url/get-attachment-url.module';
+import { ReplaceModule } from '../../pipes/replace/replace.module';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
+import { ProtectImageDirective } from '../../tools/protect-image.directive';
+import { ResultActionsComponent } from './result-actions/result-actions.component';
+import { ActionDisplayerPipe } from './result-actions/result-actions.pipe';
 import { ResultDetailedGridComponent } from './result-detailed-grid/result-detailed-grid.component';
 import { ResultDetailedItemComponent } from './result-detailed-item/result-detailed-item.component';
 import { ResultScrollDirective } from './result-directive/result-scroll.directive';
@@ -42,12 +49,6 @@ import { ResultFilterComponent } from './result-filter/result-filter.component';
 import { ResultGridTileComponent } from './result-grid-tile/result-grid-tile.component';
 import { ResultItemComponent } from './result-item/result-item.component';
 import { ResultListComponent } from './result-list/result-list.component';
-import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ReplaceModule } from '../../pipes/replace/replace.module';
-import { GetAttachmentUrlModule } from '../../pipes/get-attachment-url/get-attachment-url.module';
-import { ResultActionsComponent } from './result-actions/result-actions.component';
-import { ActionDisplayerPipe } from './result-actions/result-actions.pipe';
 
 @NgModule({
   imports: [
@@ -71,8 +72,9 @@ import { ActionDisplayerPipe } from './result-actions/result-actions.pipe';
     TranslateModule,
     FormatNumberModule,
     ReplaceModule,
-    GetAttachmentUrlModule
-  ],
+    GetAttachmentUrlModule,
+    ProtectImageDirective
+],
   declarations: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
     ResultFilterComponent, ResultScrollDirective, ResultActionsComponent, ActionDisplayerPipe],

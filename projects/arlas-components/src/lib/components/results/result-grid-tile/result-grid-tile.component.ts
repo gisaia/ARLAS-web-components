@@ -32,7 +32,7 @@ import { marker } from '@colsen1991/ngx-translate-extract-marker';
   templateUrl: './result-grid-tile.component.html',
   styleUrls: ['./result-grid-tile.component.scss']
 })
-export class ResultGridTileComponent extends ItemComponent implements OnInit {
+export class ResultGridTileComponent extends ItemComponent {
   /**
    * @constant
    */
@@ -143,8 +143,6 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public showCellTooltip() {
     this.cellTooltip.show();
   }
-
-  public ngOnInit() { }
 
   // Update the list of the selected items
   public setSelectedItem() {

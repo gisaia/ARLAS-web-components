@@ -19,10 +19,14 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, from } from 'rxjs';
-import { Action, Column, FieldsConfiguration, ModeEnum, ResultListComponent,
-  ResultListOptions, SortEnum } from '../../../projects/arlas-components/src/public-api';
+import { Column } from '../../../projects/arlas-components/src/lib/components/results/model/column';
+import { ResultListComponent } from '../../../projects/arlas-components/src/lib/components/results/result-list/result-list.component';
+import { ModeEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/modeEnum';
+import { SortEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/sortEnum';
+import {
+  Action, FieldsConfiguration, ItemDataType, ResultListOptions
+} from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
-import { ItemDataType } from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 
 
 @Component({
@@ -42,7 +46,7 @@ export class ResultsDemoComponent implements OnInit {
     public globalActionsList = new Array<Action>();
     public count = 0;
     public modeEnum = ModeEnum;
-    public options: ResultListOptions = new ResultListOptions();
+    public options = new ResultListOptions();
     public activeSort: Column;
 
     public constructor() { }
@@ -94,6 +98,7 @@ export class ResultsDemoComponent implements OnInit {
         map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
         map.set('cloud', (i + 1) + '.0');
         map.set('imageEnabled', 'true');
+        map.set('thumbnailEnabled', 'true');
         if (i % 2 === 0) {
           map.set('source', 'Perusat');
           map.set('urlImage', 'https://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
