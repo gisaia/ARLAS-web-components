@@ -175,10 +175,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @param map Map
    */
   public setSource(sourceId: string, source: SourceSpecification | CanvasSourceSpecification, map: ArlasMaplibreGL) {
-    if (!this.hasSource(map, sourceId)) {
-      map.getMapProvider().addSource(sourceId, source);
-    } else {
+    if (this.hasSource(map, sourceId)) {
       console.warn(`The source ${sourceId} is already added to the map`);
+    } else {
+      map.getMapProvider().addSource(sourceId, source);
     }
   };
 
@@ -195,14 +195,14 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @param before Identifier of an already added layer. The given Layer (second param) is added under this 'before' layer.
    */
   public addLayer(map: ArlasMaplibreGL, layer: ArlasLayerSpecification, before?: string) {
-    if (!this.hasLayer(map, layer.id)) {
+    if (this.hasLayer(map, layer.id)) {
+      console.warn(`The layer ${layer.id} is already added to the map`);
+    } else {
       map.getMapProvider().addLayer(layer, before);
 
       if (!this.hasLayer(map, layer.id)) {
         this.emitError(this.translate.instant('Failed to add the layer', { layer: layer.id }));
       }
-    } else {
-      console.warn(`The layer ${layer.id} is already added to the map`);
     }
   }
 
@@ -452,7 +452,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @returns
    */
   public hasLayersFromPattern(map: ArlasMaplibreGL, layersIdPattern: string) {
-    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)).length > 0;
+    return map.getMapProvider().getStyle().layers.some(l => l.id.includes(layersIdPattern));
   }
 
   /**

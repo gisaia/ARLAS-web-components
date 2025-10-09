@@ -72,11 +72,11 @@ export class MapImportDialogComponent {
     this.fitResult = data.defaultFitResult ?? false;
     this.allowedImportType = this.data.allowedImportType.filter(t => [this.SHP, this.KML, this.WKT, this.GEOJSON].includes(t));
 
-    if (this.allowedImportType.indexOf(this.SHP) > -1) {
+    if (this.allowedImportType.includes(this.SHP)) {
       this.importType = this.SHP;
-    } else if (this.allowedImportType.indexOf(this.KML) > -1) {
+    } else if (this.allowedImportType.includes(this.KML)) {
       this.importType = this.KML;
-    } else if (this.allowedImportType.indexOf(this.WKT) > -1) {
+    } else if (this.allowedImportType.includes(this.WKT)) {
       this.importType = this.WKT;
     } else {
       this.importType = this.GEOJSON;
@@ -352,10 +352,7 @@ export class MapImportComponent<L, S, M> {
       this.computeGeojson(geojson, reject, resolve);
     }));
 
-    return Promise.all<{ geojson: any; centroides: any; }>([geojsonParserPromise])
-      .then(([importedResult]) => {
-        this.setImportedData(importedResult);
-      });
+    return geojsonParserPromise.then((importedResult) => this.setImportedData(importedResult));
   }
 
 
@@ -414,10 +411,7 @@ export class MapImportComponent<L, S, M> {
       }
     }));
 
-    return Promise.all<{ geojson: any; centroides: any; }>([parseJson])
-      .then(([importedResult]) => {
-        this.setImportedData(importedResult);
-      });
+    return parseJson.then((importedResult) => this.setImportedData(importedResult));
   }
 
   /** *************/
@@ -443,11 +437,11 @@ export class MapImportComponent<L, S, M> {
 
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
         reject(new Error(this.FILE_TOO_LARGE));
-      } else if (this.currentFile.name.split('.').pop().toLowerCase() !== 'zip') {
-          reject(new Error(marker('Only `zip` file is allowed')));
-        } else {
-          reader.readAsArrayBuffer(this.currentFile);
-        }
+      } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'zip') {
+        reader.readAsArrayBuffer(this.currentFile);
+      } else {
+        reject(new Error(marker('Only `zip` file is allowed')));
+      }
     });
   }
 
@@ -509,9 +503,7 @@ export class MapImportComponent<L, S, M> {
       }
     });
 
-    return Promise.all([wktParserPromise]).then(([importedResult]) => {
-      this.setImportedData(importedResult);
-    });
+    return wktParserPromise.then((importedResult) => this.setImportedData(importedResult));
   }
 
   /** *************/

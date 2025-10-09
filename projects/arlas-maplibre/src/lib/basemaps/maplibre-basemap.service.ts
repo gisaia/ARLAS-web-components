@@ -92,7 +92,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
         tap(sf => {
           Object.keys(sf.sources).forEach(k => {
             const attribution = sf.sources[k]['attribution'];
-            if (!!attribution) {
+            if (attribution) {
               sf.sources[k]['attribution'] = attribution + this.POWERED_BY_ARLAS;
             } else {
               sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
@@ -129,7 +129,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
     layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
       layersToSave.push(l as AddLayerObject);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] as MaplibreSourceType });
+        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
       }
     });
     const sourcesToSaveSet = new Set<string>();

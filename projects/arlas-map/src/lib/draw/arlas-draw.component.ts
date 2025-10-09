@@ -174,8 +174,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.draw.onDrawInvalidGeometry((e) => {
       if (this.savedEditFeature) {
         const featureCoords = this.savedEditFeature.coordinates[0].slice();
-        if (featureCoords[0][0] !== featureCoords[featureCoords.length - 1][0] ||
-          featureCoords[0][1] !== featureCoords[featureCoords.length - 1][1]) {
+        if (featureCoords[0][0] !== featureCoords.at(-1)[0] ||
+          featureCoords[0][1] !== featureCoords.at(-1)[1]) {
           featureCoords.push(featureCoords[0]);
         }
         const currentFeature = {
@@ -269,22 +269,20 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     const drawStyles = styles.default;
     const drawOptions = {
       ...this.drawOption,
-      ...{
-        styles: drawStyles,
-        modes: {
-          static: StaticMode,
-          limit_vertex: limitVertexDirectSelectMode,
-          draw_polygon: validGeomDrawPolygonMode,
-          draw_circle: circleMode,
-          draw_radius_circle: radiusCircleMode,
-          draw_strip: stripMode,
-          direct_strip: stripDirectSelectMode,
-          draw_rectangle: rectangleMode,
-          direct_select: directModeOverride,
-          simple_select: simpleSelectModeOverride
-        },
-        suppressAPIEvents: true
-      }
+      styles: drawStyles,
+      modes: {
+        static: StaticMode,
+        limit_vertex: limitVertexDirectSelectMode,
+        draw_polygon: validGeomDrawPolygonMode,
+        draw_circle: circleMode,
+        draw_radius_circle: radiusCircleMode,
+        draw_strip: stripMode,
+        direct_strip: stripDirectSelectMode,
+        draw_rectangle: rectangleMode,
+        direct_select: directModeOverride,
+        simple_select: simpleSelectModeOverride
+      },
+      suppressAPIEvents: true
     };
     this.draw = this.mapFrameworkService.createDraw(drawOptions, this.drawButtonEnabled, this.map);
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
@@ -357,9 +355,9 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
             features.filter(f => f.source.startsWith('mapbox-gl-draw')).length > 0;
           if (editCondition) {
-            const candidates = features.filter(f => f.source.startsWith('mapbox-gl-draw'));
             // edit only on click on the border of the polygon
-            const candidatesProperties = candidates.find(f => f.layer.id?.indexOf('stroke') >= 0)?.properties;
+            const candidatesProperties = features.find(f => f.source.startsWith('mapbox-gl-draw')
+                                                            && f.layer.id?.indexOf('stroke') >= 0)?.properties;
             if (candidatesProperties?.id) {
               if (candidatesProperties.user_meta === 'strip') {
                 this.draw.changeMode('direct_strip', {

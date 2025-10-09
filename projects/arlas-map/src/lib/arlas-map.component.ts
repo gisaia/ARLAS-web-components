@@ -439,7 +439,7 @@ export class ArlasMapComponent<L, S, M> {
       }
     };
     this.map = this.mapFrameworkService.createMap(config);
-    fromEvent(window, 'beforeunload').subscribe(() => {
+    fromEvent(globalThis, 'beforeunload').subscribe(() => {
       this.onMapClosed.next(this.map.getMapExtend());
     });
 

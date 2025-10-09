@@ -121,7 +121,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
     layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
       layersToSave.push(l);
       if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] as MapboxSourceType });
+        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
       }
     });
     const sourcesToSaveSet = new Set<string>();

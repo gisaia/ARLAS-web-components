@@ -135,7 +135,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   private _addExternalEventLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL) {
     if (mapLayers.externalEventLayers) {
       mapLayers.layers
-        .filter(layer => mapLayers.externalEventLayers.map(e => e.id).indexOf(layer.id) >= 0)
+        .filter(layer => mapLayers.externalEventLayers.map(e => e.id).includes(layer.id))
         .forEach(l => {
           this.mapFrameworkService.addLayer(map, l as L);
         });
@@ -234,17 +234,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public updateVisibility(visibilityStatus: Map<string, boolean>, visualisationSetsConfig: VisualisationSetConfig[], map: AbstractArlasMapGL) {
     visibilityStatus.forEach((visibilityStatus, l) => {
       let layerInVisualisations = false;
-      if (!visibilityStatus) {
-        visualisationSetsConfig.forEach(v => {
-          const ls = new Set(v.layers);
-          if (!layerInVisualisations) {
-            layerInVisualisations = ls.has(l);
-          }
-        });
-        if (layerInVisualisations) {
-          this.mapFrameworkService.setLayerVisibility(l, false, map);
-        }
-      } else {
+      if (visibilityStatus) {
         let oneVisualisationEnabled = false;
         visualisationSetsConfig.forEach(v => {
           const ls = new Set(v.layers);
@@ -257,6 +247,16 @@ export abstract class AbstractArlasMapService<L, S, M> {
           }
         });
         if (!oneVisualisationEnabled && layerInVisualisations) {
+          this.mapFrameworkService.setLayerVisibility(l, false, map);
+        }
+      } else {
+        visualisationSetsConfig.forEach(v => {
+          const ls = new Set(v.layers);
+          if (!layerInVisualisations) {
+            layerInVisualisations = ls.has(l);
+          }
+        });
+        if (layerInVisualisations) {
           this.mapFrameworkService.setLayerVisibility(l, false, map);
         }
       }
