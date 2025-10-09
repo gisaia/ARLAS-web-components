@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
@@ -38,6 +39,8 @@ import { MaplibreSourceType } from './map/model/sources';
   providedIn: 'root'
 })
 export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
+  private readonly translate = inject(TranslateService);
+
   /**
    * Returns the canvas element of the map
    * @param map Map instance.
@@ -196,7 +199,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
       map.getMapProvider().addLayer(layer, before);
 
       if (!this.hasLayer(map, layer.id)) {
-        this.emitError(`Failed to add the layer ${layer.id}`);
+        this.emitError(this.translate.instant('Failed to add the layer', { layer: layer.id }));
       }
     } else {
       console.warn(`The layer ${layer.id} is already added to the map`);

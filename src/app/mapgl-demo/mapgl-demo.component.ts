@@ -75,7 +75,10 @@ export class MapglDemoComponent<L, S, M> {
     'features': []
   } as any;
 
-  public constructor() { }
+  private readonly mapFrameworkService = inject(ArlasMapFrameworkService);
+  public constructor() {
+    this.mapFrameworkService.errorBus$.subscribe(e => console.log(e));
+  }
 
   public polygonChange(event) {
     console.log(event);
