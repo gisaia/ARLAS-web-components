@@ -43,41 +43,6 @@
   @if (descriptionPosition === Position.bottom) {
     <ng-container *ngTemplateOutlet="legend"></ng-container>
   }
-  @if (chartType === ChartType.swimlane) {
-    <div>
-      @if (histogram?.histogramParams.swimlaneXTooltip.isShown) {
-        @if (histogram?.histogramParams.swimlaneXTooltip.isRightSide) {
-          <div class="histogram__tooltip"
-              [style.right.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
-            <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
-          </div>
-        } @else {
-          <div class="histogram__tooltip"
-            [style.left.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
-            <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
-          </div>
-        }
-      }
-
-      @for (tooltip of histogram?.histogramParams.swimlaneTooltipsMap | keyvalue; track tooltip) {
-        @if (tooltip.value.isShown && tooltip.value.yContent) {
-          @if (tooltip.value.isRightSide) {
-            <div class="histogram__tooltip"
-              [style.right.px]="tooltip.value.xPosition"  [style.top.px]="tooltip.value.yPosition">
-              <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
-              <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
-            </div>
-          } @else {
-            <div class="histogram__tooltip"
-              [style.left.px]="tooltip.value.xPosition" [style.top.px]="tooltip.value.yPosition">
-              <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
-              <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
-            </div>
-          }
-        }
-      }
-    </div>
-  }
 
   @for (interval of histogram?.histogramParams.intervalSelectedMap | keyvalue; track interval.key) {
     <button mat-icon-button class="histogram__remove material-symbols-outlined" (click)="removeSelectInterval(interval.key)"
