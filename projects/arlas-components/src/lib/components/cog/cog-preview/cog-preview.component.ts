@@ -17,16 +17,16 @@
  * under the License.
  */
 
-import { NgOptimizedImage } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
   selector: 'arlas-cog-preview',
   standalone: true,
   imports: [
-    NgOptimizedImage,
-    TranslateModule
+    TranslateModule,
+    ProtectImageDirective
   ],
   templateUrl: './cog-preview.component.html',
   styleUrl: './cog-preview.component.scss'

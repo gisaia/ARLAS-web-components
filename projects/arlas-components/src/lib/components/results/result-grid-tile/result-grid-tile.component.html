@@ -8,8 +8,8 @@
         [class.contain_thumbnail]="thumbnailFit === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit === ThumbnailFitEnum.height"
         [class.width_thumbnail]="thumbnailFit === ThumbnailFitEnum.width">
       <div *ngIf="options?.showActionsOnhover" class="actions" (mouseover)="hideCellTooltip($event)">
-        <arlas-result-actions 
-          [activatedActionsPerItem]="activatedActionsPerItem" 
+        <arlas-result-actions
+          [activatedActionsPerItem]="activatedActionsPerItem"
           [detailedDataRetriever]="detailedDataRetriever"
           [item]="gridTile"
           [stopPropagation]="true"

@@ -87,4 +87,4 @@ export { ColorGeneratorModule, ColorGeneratorModuleConfig } from './lib/services
 export { ArlasColorService } from './lib/services/color.generator.service';
 export { ResultlistNotifierService } from './lib/services/resultlist.notifier.service';
 export { FilterOperator } from './lib/tools/models/term-filters';
-
+export { ProtectImageDirective } from './lib/tools/protect-image.directive';

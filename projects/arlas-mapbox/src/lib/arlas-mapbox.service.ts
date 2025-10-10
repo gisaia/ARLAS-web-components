@@ -54,6 +54,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     });
   }
 
+  public setTransformRequest(map: ArlasMapboxGL, transformRequest: Function): void {
+    (map.getMapProvider() as any)._requestManager._transformRequestFn = transformRequest;
+  }
+
   public buildMapProviderOption(mapOption: ArlasMapOption): MapboxOptions{
     return  {
       container: mapOption.container,

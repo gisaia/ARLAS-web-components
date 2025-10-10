@@ -17,22 +17,22 @@
  * under the License.
  */
 
-import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, Input, Output, ViewChild } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 @Component({
   selector: 'arlas-result-grid-tile',
   templateUrl: './result-grid-tile.component.html',
   styleUrls: ['./result-grid-tile.component.scss']
 })
-export class ResultGridTileComponent extends ItemComponent implements OnInit {
+export class ResultGridTileComponent extends ItemComponent {
   /**
    * @constant
    */
@@ -143,8 +143,6 @@ export class ResultGridTileComponent extends ItemComponent implements OnInit {
   public showCellTooltip() {
     this.cellTooltip.show();
   }
-
-  public ngOnInit() { }
 
   // Update the list of the selected items
   public setSelectedItem() {
