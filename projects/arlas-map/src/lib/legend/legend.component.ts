@@ -21,7 +21,7 @@ import {
   AfterViewInit, Component, computed, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild, WritableSignal
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { HistogramData } from 'arlas-d3';
 import { ArlasColorService } from 'arlas-web-components';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';

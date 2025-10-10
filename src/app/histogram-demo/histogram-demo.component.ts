@@ -18,8 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { DataType, ChartType, SelectedOutputValues, SelectedInputValues, SwimlaneMode } from 'arlas-d3';
-import { SwimlaneData, SwimlaneStats } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { ChartType, DataType, SelectedInputValues, SelectedOutputValues, SwimlaneData, SwimlaneMode, SwimlaneStats } from 'arlas-d3';
 
 
 @Component({
@@ -29,7 +28,7 @@ import { SwimlaneData, SwimlaneStats } from 'arlas-d3/histograms/utils/Histogram
 })
 export class HistogramDemoComponent implements OnInit {
   public curvedTimelineData: Array<{key: Date | number; value: number; }>;
-  public oneDimensionHistogramData: Array<Array<{key: Date | number; value: number; }>>;
+  public oneDimensionHistogramData: Array<Array<{ key: Date | number; value: number; }>>;
   public defaultHistogramData: Array<{key: Date | number; value: number; }>;
   public swimlaneHistogramData: SwimlaneData;
   public dataType = DataType;

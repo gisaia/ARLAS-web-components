@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { HistogramData } from 'arlas-d3';
 
 export function getMax(data: Array<HistogramData>): number {
     return Math.max(...data.map(hd => +hd.value));

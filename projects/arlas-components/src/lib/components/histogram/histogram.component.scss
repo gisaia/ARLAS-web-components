@@ -164,39 +164,6 @@
   cursor: pointer;
 }
 
-.histogram__tooltip-xcontent-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  border-bottom: 0.4px solid #b7b7b7;
-  padding-bottom: 5px;
-  color: #222;
-}
-
-.histogram__tooltip-ycontent-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding-top: 5px;
-  color: #555;
-}
-.histogram__tooltip-content {
-  display: block;
-}
-
-.histogram__tooltip-xcontent {
-  font-size: 1.1em;
-}
-.histogram__tooltip-xlabel {
-  font-size: 1.1em;
-  font-weight: bold;
-  padding-right: 5px;
-}
-.histogram__tooltip-ylabel {
-  font-weight: bold;
-  padding-right: 5px;
-}
-
 .histogram__ticks-axis text {
   display: none;
 }
@@ -437,39 +404,6 @@
   stroke: #b7b7b7 !important;
   stroke-width: 0 !important;
   height: 0 !important;
-}
-
-.swimlane-label-unselected /* @doc Sets the unselected labels style of the swimlane*/
-{
-  fill: gray;
-}
-
-.swimlane-label-selected /* @doc Sets the selected labels style of the swimlane*/
-{
-  fill: #FF4081;
-}
-
-.swimlane-label-neutral /* @doc Sets all labels style of the swimlane when none of them are selected*/
-{
-  fill: black;
-}
-
-.swimlane-label-container-hovered /* @doc Sets the hovered label container style of the swimlane*/
-{
-  fill: #efefef;
-}
-
-.swimlane-label-container-neutral /* @doc Sets all labels containers style of the swimlane when none of them are selected*/
-{
-
-}
-.swimlane-label-container-selected /* @doc Sets the selected labels containers style of the swimlane*/
-{
-
-}
-.swimlane-label-container-unselected /* @doc Sets the unselected labels containers style of the swimlane*/
-{
-
 }
 
 .selection {

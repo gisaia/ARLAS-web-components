@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { HistogramData } from 'arlas-d3';
 
 export interface LegendData {
   minValue?: string;

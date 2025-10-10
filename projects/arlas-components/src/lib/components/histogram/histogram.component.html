@@ -55,28 +55,6 @@
       </div>
     </div>
   </div>
-  <div *ngIf="chartType === ChartType.swimlane">
-    <div class="histogram__tooltip" *ngIf="histogram?.histogramParams.swimlaneXTooltip.isShown && !histogram?.histogramParams.swimlaneXTooltip.isRightSide"
-      [style.left.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
-      <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
-    </div>
-    <div class="histogram__tooltip" *ngIf="histogram?.histogramParams.swimlaneXTooltip.isShown && histogram?.histogramParams.swimlaneXTooltip.isRightSide"
-      [style.right.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
-      <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
-    </div>
-    <div *ngFor="let tooltip of histogram?.histogramParams.swimlaneTooltipsMap | keyvalue">
-      <div class="histogram__tooltip" *ngIf="tooltip.value.isShown && !tooltip.value.isRightSide && tooltip.value.yContent"
-        [style.left.px]="tooltip.value.xPosition" [style.top.px]="tooltip.value.yPosition">
-        <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
-        <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
-      </div>
-      <div class="histogram__tooltip" *ngIf="tooltip.value.isShown && tooltip.value.isRightSide && tooltip.value.yContent"
-        [style.right.px]="tooltip.value.xPosition"  [style.top.px]="tooltip.value.yPosition">
-        <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
-        <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
-      </div>
-    </div>
-  </div>
 
   <div *ngFor="let id of histogram?.histogramParams.selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="histogram?.histogramParams.topOffsetRemoveInterval"
     [style.left.px]="histogram?.histogramParams.intervalSelectedMap.get(id)?.x_position" matTooltip="{{'Remove this selection' | translate}}" matTooltipPosition="above">

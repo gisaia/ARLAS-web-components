@@ -19,7 +19,7 @@
 
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { HistogramData } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
 import { HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from '../map/model/filters';

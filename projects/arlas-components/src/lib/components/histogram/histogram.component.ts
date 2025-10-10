@@ -23,14 +23,10 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import {
   AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
-  ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position,
-  SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles,
-  SwimlaneMode,
-  XBucket
+  ChartOneDimension, ChartType, DataType, HistogramData, HistogramParams, HistogramTooltip,
+  HistogramUtils, Position, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneBars,
+  SwimlaneCircles, SwimlaneData, SwimlaneMode, SwimlaneOptions, SwimlaneRepresentation, XBucket
 } from 'arlas-d3';
-import {
-  HistogramData, HistogramTooltip, SwimlaneData, SwimlaneOptions, SwimlaneRepresentation
-} from 'arlas-d3/histograms/utils/HistogramUtils';
 import { Subject, fromEvent } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { ArlasColorService } from '../../services/color.generator.service';
