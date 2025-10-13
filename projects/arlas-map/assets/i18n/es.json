@@ -43,7 +43,7 @@
 	"Too many features": "El archivo contiene demasiados elementos.",
 	"Timeout": "Tiempo de espera superado",
 	"Only `kml` or `zip` file is allowed": "Sólo se admiten archivos `kml` o `zip`",
-	"kml file not found in the zip": "`kml` archivo no encontrado en el zip",
+	"kml file not found in the zip": "No se encontró el archivo `.kml` dentro del ZIP",
 	"Only `json` or `geojson` file is allowed": "Sólo se admiten archivos `json` o `geojson`",
 	"File is empty": "El archivo está vacío",
 	"Only `zip` file is allowed": "Sólo se aceptan archivos `zip`",
