@@ -42,6 +42,7 @@
 
     <div [class.powerbar-list-scrollable]="scrollable">
       <div *ngFor="let powerbar of powerBarsList">
+        @if( powerbar.term !== ''){
         <arlas-powerbar
           [unit]="unit"
           [powerbar]="powerbar"
@@ -53,6 +54,7 @@
           (onCheckEvent)="clickOnPowerbar(powerbar)"
           (onClickEvent)="clickOnPowerbar(powerbar)"
         ></arlas-powerbar>
+        }
       </div>
     </div>
   </div>
