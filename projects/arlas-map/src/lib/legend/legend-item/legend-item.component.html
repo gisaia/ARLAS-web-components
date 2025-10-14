@@ -27,7 +27,7 @@
       <div class="legend--interpolated__cursor" [style.left]="cursor.position + '%'" [class.legend--interpolated__cursor--main]="$first"></div>
       @if (cursor.value) {
         <div class="legend--interpolated__cursor__value" [style.left]="cursor.position + '%'">
-          {{ +cursor.value | shortenNumber }}
+          {{ cursor.value | shortenNumber }}
         </div>
       }
     }
