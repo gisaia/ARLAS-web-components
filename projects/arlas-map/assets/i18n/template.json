@@ -43,6 +43,7 @@
 	"Too many features": "Too many features",
 	"Timeout": "Timeout",
 	"Only `kml` or `zip` file is allowed": "Only `kml` or `zip` file is allowed",
+	"kml file not found in the zip": "kml file not found in the zip",
 	"Only `json` or `geojson` file is allowed": "Only `json` or `geojson` file is allowed",
 	"File is empty": "File is empty",
 	"Only `zip` file is allowed": "Only `zip` file is allowed",

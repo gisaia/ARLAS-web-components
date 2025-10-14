@@ -188,9 +188,10 @@ export class MapImportComponent<L, S, M> {
 
   private buildAllowedGeometryForImportType(importType: string) {
     this._currentAllowedGeom = new Set();
-    this.allowedGeometryObjectType.forEach(allowed => {
+    for (const allowed of this.allowedGeometryObjectType) {
       this._currentAllowedGeom = this._currentAllowedGeom.union(this.getAllowedGeom(allowed));
-    });
+    }
+
     if (importType === this.KML) {
       this._currentAllowedGeom.add('GeometryCollection');
       this._currentAllowedGeom.add('MultiGeometry');
@@ -272,32 +273,32 @@ export class MapImportComponent<L, S, M> {
     // Create a new Polygon feature for each polygon in the MultiPolygon
     // All properties of the MultiPolygon are copied in each feature created
     const geomType = (feature.geometry.type === 'MultiPolygon') ? 'Polygon' : 'Point';
-    feature.geometry.coordinates.forEach(geom => {
+    for (const geom of feature.geometry.coordinates) {
       const newFeature = this.buildFeature(geom, feature, geomType, true);
       this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
-    });
+    }
   }
 
   public handleGeometryCollection(feature, centroids, importedGeojson) {
     // Create a new Polygon feature for each polygon in the MultiPolygon
     // All properties of the MultiPolygon are copied in each feature created
     const simpleGeometry = this._currentAllowedGeom.intersection(SIMPLE_GEOMETRY_OBJECT);
-    feature.geometry.geometries.filter(geom => simpleGeometry.has(geom.type)).forEach(geom => {
+    for (const geom of feature.geometry.geometries.filter(geom => simpleGeometry.has(geom.type))) {
       const newFeature = this.buildFeature(geom, feature);
       this.handleSimpleGeometry(newFeature, centroids, importedGeojson);
-    });
+    }
   }
 
   public handleFeatureCollection(feature, centroids, importedGeojson) {
-    feature.features.filter(feature => this._currentAllowedGeom.has(feature.geometry.type))
-      .forEach((feature) => {
-        const multiGeometry = this._currentAllowedGeom.difference(SIMPLE_GEOMETRY_OBJECT);
-        if (multiGeometry.has(feature.geometry.type)) {
-          this.handleMultiGeometry(feature, centroids, importedGeojson);
-        } else {
-          this.handleSimpleGeometry(feature, centroids, importedGeojson);
-        }
-      });
+    const features = feature.features.filter(f => this._currentAllowedGeom.has(f.geometry.type));
+    for (const f of features) {
+      const multiGeometry = this._currentAllowedGeom.difference(SIMPLE_GEOMETRY_OBJECT);
+      if (multiGeometry.has(f.geometry.type)) {
+        this.handleMultiGeometry(f, centroids, importedGeojson);
+      } else {
+        this.handleSimpleGeometry(f, centroids, importedGeojson);
+      }
+    }
   }
 
   /** *************/
@@ -327,10 +328,14 @@ export class MapImportComponent<L, S, M> {
     });
   }
 
-  private resolveFileFromGzip(result, resolve) {
+  private resolveFileFromGzip(result, resolve, reject) {
     this.jszip.loadAsync(result).then(kmzContent => {
       const kmlFile = Object.keys(kmzContent.files).find(file => file.split('.').pop().toLowerCase() === this.KML);
-      this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
+      if (kmlFile) {
+        this.jszip.file(kmlFile).async('text').then((data) => resolve(data));
+      } else {
+        reject(new Error(marker('kml file not found in the zip')));
+      }
     });
   }
 
@@ -340,7 +345,7 @@ export class MapImportComponent<L, S, M> {
     let readKmzFile = readKmlFile;
     if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
       readKmzFile = readKmlFile.then(result => new Promise<string>((resolve, reject) => {
-      this.resolveFileFromGzip(result, resolve);
+      this.resolveFileFromGzip(result, resolve, reject);
       }));
     }
 
@@ -538,7 +543,9 @@ export class MapImportComponent<L, S, M> {
         this.mapComponent.fitToPaddedBounds(this.mapComponent.map.geometryToBounds(importedResult.geojson));
       }
       if (this.mapComponent.drawData.features.length > 0) {
-        this.mapComponent.drawData.features.forEach(df => importedResult.geojson.features.push(df));
+        for (const df of this.mapComponent.drawData.features) {
+          importedResult.geojson.features.push(df);
+        }
       }
       this.mapComponent.drawComponent.draw.changeMode('static');
       this.imported.next(importedResult.geojson.features);
@@ -601,7 +608,7 @@ export class MapImportComponent<L, S, M> {
     }
 
     const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
+    const dm = Math.max(0, decimals);
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
 
@@ -616,10 +623,11 @@ export class MapImportComponent<L, S, M> {
         type: 'FeatureCollection',
         features: []
       };
-      geojson.features.filter(feature => this._currentAllowedGeom.has(feature.geometry.type))
-        .forEach((feature) => {
-          this.handleGeom(feature, centroides, importedGeojson, reject);
-        });
+      const allowedFeatures = geojson.features.filter(feature => this._currentAllowedGeom.has(feature.geometry.type));
+      for (const feature of allowedFeatures) {
+        this.handleGeom(feature, centroides, importedGeojson, reject);
+      }
+
       resolve({ geojson: importedGeojson, centroides: centroides });
     } else {
       reject(new Error('Geometry is not valid'));
