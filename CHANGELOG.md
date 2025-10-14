@@ -217,10 +217,6 @@
 
 ## [v26.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v26.0.0) (2024-08-30)
 
-**Miscellaneous:**
-
-- Add a title to the technical details in a resultlist [\#836](https://github.com/gisaia/ARLAS-web-components/issues/836) [[RESULTLIST](https://github.com/gisaia/ARLAS-web-components/labels/RESULTLIST)]
-
 ## [v25.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.2) (2024-07-12)
 
 ## [v25.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v25.1.1) (2024-07-09)
