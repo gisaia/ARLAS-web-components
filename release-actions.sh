@@ -4,11 +4,11 @@ set -e
 usage(){
 	echo "Usage: ./release.sh -version='1.0.0' -ref_branch=develop --stage=beta|rc|stable"
 	echo " -version     arlas-web-components version release,level of evolution"
-  echo " -s|--stage    Stage of the release : beta | rc | stable. If --stage is 'rc' or 'beta', there is no merge of develop into master (if -ref_branch=develop)"
-  echo " -i|--stage_iteration=n, the released version will be : [x].[y].[z]-beta.[n] OR  [x].[y].[z]-rc.[n] according to the given --stage"
+    echo " -s|--stage    Stage of the release : beta | rc | stable. If --stage is 'rc' or 'beta', there is no merge of develop into master (if -ref_branch=develop)"
+    echo " -i|--stage_iteration=n, the released version will be : [x].[y].[z]-beta.[n] OR  [x].[y].[z]-rc.[n] according to the given --stage"
 	echo " -ref_branch | --reference_branch  from which branch to start the release."
-  echo "    Add -ref_branch=develop for a new official release"
-  echo "    Add -ref_branch=x.x.x for a maintenance release"
+    echo "    Add -ref_branch=develop for a new official release"
+    echo "    Add -ref_branch=x.x.x for a maintenance release"
 	exit 1
 }
 
@@ -21,6 +21,17 @@ send_chat_message(){
         echo $DATA
         curl -X POST --header "Content-Type:application/json" $GOOGLE_CHAT_RELEASE_CHANEL -d "${DATA}"
     fi
+}
+
+uninstallDependencies(){
+    echo "=> Uninstall arlas-web-components library in arlas-map"
+    npm uninstall arlas-web-components --workspace=projects/arlas-map
+
+    echo "=> Uninstall arlas-map library in arlas-maplibre"
+    npm uninstall arlas-map --workspace=projects/arlas-maplibre
+
+    echo "=> Uninstall arlas-map library in arlas-mapbox"
+    npm uninstall arlas-map --workspace=projects/arlas-mapbox
 }
 
 
@@ -48,11 +59,12 @@ releaseProd(){
     npm --no-git-tag-version --prefix projects/arlas-maplibre version ${VERSION}
     npm --no-git-tag-version --prefix projects/arlas-mapbox version ${VERSION}
     echo "=> Installing"
+    uninstallDependencies
     npm install
 
     echo "=> Update arlas-web-components library in arlas-map"
     npm install --save-exact arlas-web-components@${VERSION} --workspace=projects/arlas-map
-    
+
     echo "=> Update arlas-map library in arlas-maplibre"
     npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-maplibre
 
@@ -60,7 +72,7 @@ releaseProd(){
     npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-mapbox
 
     echo "=> Build the ARLAS-web-components library"
-   
+
     npm run lint
     npm run build-components
     npm run build-map
@@ -168,14 +180,7 @@ releaseProd(){
     npm --no-git-tag-version version ""$newDevVersion"-dev0"
 
     # remove released dependencies and keep based on npm workspaces for dev.
-    echo "=> Uninstall arlas-web-components  library in arlas-map"
-    npm uninstall arlas-web-components --workspace=projects/arlas-map
-    
-    echo "=> Uninstall arlas-map library in arlas-maplibre"
-    npm uninstall arlas-map --workspace=projects/arlas-maplibre
-
-    echo "=> Uninstall arlas-map library in arlas-mapbox"
-    npm uninstall arlas-map --workspace=projects/arlas-mapbox
+    uninstallDependencies
 
     git add .
     commit_message="update package.json to"-"$newDevVersion"
