@@ -16,6 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
+import { AbstractArlasMapGL } from './AbstractArlasMapGL';
+import { ARLAS_ID, EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX } from './model/layers';
+
 export function latLngToWKT(features): string {
   let wktType = 'POLYGON[###]';
   if (features.length > 1) {
@@ -39,4 +43,8 @@ export function latLngToWKT(features): string {
     wkt = wktType.replace('[###]', polygons);
   }
   return wkt;
+}
+
+export function getAdditionalFillLayers(id: string){
+  return [id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX), id.replace(ARLAS_ID, EXTRUSION_LAYER_PREFIX)];
 }

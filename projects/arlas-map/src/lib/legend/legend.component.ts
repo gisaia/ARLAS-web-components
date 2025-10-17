@@ -27,7 +27,10 @@ import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
 import { Subject, takeUntil } from 'rxjs';
-import { ARLAS_ID, ArlasDataLayer, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX } from '../map/model/layers';
+import {
+  ARLAS_ID, ArlasDataLayer,
+  EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
+} from '../map/model/layers';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { LegendService } from './legend.service';
 import { getMax, MAX_LINE_WIDTH } from './legend.tools';
@@ -161,7 +164,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         /** check legend visibility for external layers that are not set by config nor map contributors */
         if (this.layer && !this.layer.id.startsWith(ARLAS_ID) &&
           !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
-          && !this.layer.id.startsWith(SELECT_LAYER_PREFIX)) {
+          && !this.layer.id.startsWith(SELECT_LAYER_PREFIX) &&  !this.layer.id.startsWith(EXTRUSION_LAYER_PREFIX)) {
           this.visibleMode = this.enabled;
           if (!!this.layer.metadata && this.layer.metadata.showLegend === false) {
             this.visibleMode = false;

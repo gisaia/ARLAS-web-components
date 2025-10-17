@@ -20,12 +20,15 @@
 import { inject, Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapService, ARLAS_ID,
+  AbstractArlasMapService,
+  ARLAS_ID,
   ArlasDataLayer,
   ArlasMapFrameworkService,
   ArlasMapSource,
-  ExternalEvent, FILLSTROKE_LAYER_PREFIX,
-  LayerMetadata, MapLayers,
+  ExternalEvent,
+  getAdditionalFillLayers,
+  LayerMetadata,
+  MapLayers,
   OPACITY_SUFFIX,
   SCROLLABLE_ARLAS_ID,
   VisualisationSetConfig
@@ -46,11 +49,11 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   private readonly mapService = inject(ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions>);
 
   /**
-    * @description Declares the arlas data sources provided in configuration.
-    * @param dataSourcesIds Identifiers of arlas data sources.
-    * @param data A feature collection.
-    * @param map Map instance.
-    */
+   * @description Declares the arlas data sources provided in configuration.
+   * @param dataSourcesIds Identifiers of arlas data sources.
+   * @param data A feature collection.
+   * @param map Map instance.
+   */
   public declareArlasDataSources(dataSourcesIds: Set<string>, data: FeatureCollection<GeoJSON.Geometry>, map: ArlasMapboxGL) {
     if (dataSourcesIds) {
       dataSourcesIds.forEach(sourceId => {
@@ -115,21 +118,20 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public adjustOpacityByRange(map: ArlasMapboxGL, sourceIdPrefix: string, field: string,
-    start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
+                              start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
     const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
     layers
       .filter(l => this.mapService.isLayerVisible(l))
       .forEach(layer => {
-        const circleStrokePrefix = layer.type + '-stroke';
-        map.setLayerOpacity(layer.id, layer.type, style);
-        if (layer.type === 'circle') {
-          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
-        }
-        const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-        if (strokeLayer) {
-          map.setLayerOpacity(strokeLayerId, strokeLayer.type, style);
+        map.setLayerOpacity(layer.id, layer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+        const layersIds = getAdditionalFillLayers(layer.id);
+        for (let i = 0; i < layersIds.length; i++) {
+          const id = layersIds[i];
+          const additionalLayer = this.mapService.getLayer(map, id);
+          if (additionalLayer) {
+            map.setLayerOpacity(id, additionalLayer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+          }
         }
       });
   }
@@ -169,16 +171,13 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     layers.forEach(layer => {
       const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
       map.setLayerOpacity(layer.id, layer.type, layerOpacity);
-      if (layer.type === 'circle') {
-        const circleStrokePrefix = layer.type + '-stroke';
-        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
-          + OPACITY_SUFFIX] as Expression | number;
-        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
-      }
-      const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-      if (strokeLayer) {
-        map.setLayerOpacity(strokeLayerId, strokeLayer.type, layerOpacity);
+      const layersIds = getAdditionalFillLayers(layer.id);
+      for (let i = 0; i < layersIds.length; i++) {
+        const id = layersIds[i];
+        const additionalLayer = this.mapService.getLayer(map, id);
+        if (additionalLayer) {
+          map.setLayerOpacity(id, additionalLayer.type, layerOpacity);
+        }
       }
     });
   };
@@ -186,32 +185,31 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l);
     if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
+      const layersIds = getAdditionalFillLayers(layer.id);
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
         if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
           map.setFilter(l, this.getVisibleIdsFilter(l, ids));
-          const strokeLayerId = l.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-          const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-          if (strokeLayer) {
-            map.setFilter(strokeLayerId, this.getVisibleIdsFilter(strokeLayerId, ids));
+          for (let i = 0; i < layersIds.length; i++) {
+            const id = layersIds[i];
+            const additionalLayer = this.mapService.getLayer(map, id);
+            if (additionalLayer) {
+              map.setFilter(id, this.getVisibleIdsFilter(additionalLayer, ids));
+            }
           }
         }
       } else {
         map.setFilter(l, this.layersMap.get(l).filter);
-        const strokeLayerId = l.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-        if (strokeLayer) {
-          map.setFilter(strokeLayerId,
-            this.layersMap.get(strokeLayerId).filter);
+        for (let i = 0; i < layersIds.length; i++) {
+          const id = layersIds[i];
+          const additionalLayer = this.mapService.getLayer(map, id);
+          if (additionalLayer) {
+            map.setFilter(id, this.layersMap.get(additionalLayer).filter);
+          }
         }
       }
     }
   }
-
-
-
-
-
 
 
   public getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
@@ -236,7 +234,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<ArlasDataLayer>,
-    sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL): void {
+                          sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         map.getMapProvider().addSource(s.id, s.source);
@@ -277,21 +275,24 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     if (this.mapService.hasLayer(map, layerId)) {
       this.mapService.moveLayer(map, layerId, beforeId);
       if (layer.type === 'fill') {
-        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        const strokeLayer = arlasDataLayers.get(strokeId);
-        if (!!strokeLayer && this.mapService.hasLayer(map, strokeId)) {
-          this.mapService.moveLayer(map, strokeId, beforeId);
-        }
-        if (!!strokeLayer && !!strokeLayer.id) {
-          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-          const selectLayer = arlasDataLayers.get(selectId);
-          if (!!selectLayer && this.mapService.hasLayer(map, selectId)) {
-            this.mapService.moveLayer(map, selectId, beforeId);
+        const layersIds = getAdditionalFillLayers(layer.id);
+        for (let i = 0; i < layersIds.length; i++) {
+          const id = layersIds[i];
+          const additionalLayer = arlasDataLayers.get(id);
+          if (!!additionalLayer && this.mapService.hasLayer(map, id)) {
+            this.mapService.moveLayer(map, id, beforeId);
           }
-          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-          const hoverLayer = arlasDataLayers.get(hoverId);
-          if (!!hoverLayer && this.mapService.hasLayer(map, hoverId)) {
-            this.mapService.moveLayer(map, hoverId, beforeId);
+          if (!!additionalLayer && !!additionalLayer.id) {
+            const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + additionalLayer.id;
+            const selectLayer = arlasDataLayers.get(selectId);
+            if (!!selectLayer && this.mapService.hasLayer(map, selectId)) {
+              this.mapService.moveLayer(map, selectId, beforeId);
+            }
+            const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + additionalLayer.id;
+            const hoverLayer = arlasDataLayers.get(hoverId);
+            if (!!hoverLayer && this.mapService.hasLayer(map, hoverId)) {
+              this.mapService.moveLayer(map, hoverId, beforeId);
+            }
           }
         }
       }
@@ -326,17 +327,20 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     this.mapService.addLayer(map, layer as ArlasAnyLayer, before);
     /** add stroke layer if the layer is a fill */
     if (layer.type === 'fill') {
-      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = arlasDataLayers.get(strokeId) as ArlasAnyLayer;
-      if (strokeLayer) {
-        this.mapService.addLayer(map, strokeLayer, before);
+      const layersIds = getAdditionalFillLayers(layer.id);
+      for (let i = 0; i < layersIds.length; i++) {
+        const id = layersIds[i];
+        const additionalLayer = arlasDataLayers.get(id) as ArlasAnyLayer;
+        if (additionalLayer) {
+          this.mapService.addLayer(map, additionalLayer, before);
+        }
       }
     }
   }
 
   public filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL,
-    visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-    collection?: string): void {
+                      visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
+                      collection?: string): void {
     if (mapLayers?.externalEventLayers) {
       mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.mapService.hasLayer(map, layer.id)) {
