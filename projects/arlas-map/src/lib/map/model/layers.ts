@@ -58,6 +58,12 @@ export interface FillStroke {
   color?: PaintValue;
 }
 
+export interface FillExtrusion {
+  height?: ExpressionValue;
+  opacity?: number;
+  color?: PaintValue;
+}
+
 /** Metadata of a layer containing info about
  * - the collection
  * - whether it has an interaction with the resultlist (scrollable)
@@ -67,6 +73,7 @@ export interface LayerMetadata {
   collection?: string;
   collectionDisplayName?: string;
   stroke?: FillStroke;
+  extrusion?: FillExtrusion;
   isScrollableLayer?: boolean;
   hiddenProps?: MetadataHiddenProps;
   showLegend?: boolean;
@@ -78,7 +85,8 @@ export interface MetadataHiddenProps {
   geomType?: string;
 }
 
-export type PaintValue = Array<string | Array<string> | number> | PaintColor | string | number;
+export type PaintValue = ExpressionValue | PaintColor;
+export type ExpressionValue = Array<string | Array<string> | number> | string | number;
 export interface ArlasPaint { [key: string]: PaintValue; }
 export interface PaintColor {
   property: string;
@@ -91,6 +99,7 @@ export const HOVER_LAYER_PREFIX = 'arlas-hover-';
 export const SELECT_LAYER_PREFIX = 'arlas-select-';
 export const FILLSTROKE_LAYER_PREFIX = 'arlas-fill_stroke-';
 export const SCROLLABLE_ARLAS_ID = 'scrollable_arlas_id:';
+export const EXTRUSION_LAYER_PREFIX = 'arlas-extrusion-';
 export const ARLAS_ID = 'arlas_id:';
 export const ARLAS_VSET = ':arlas_vset:';
 

@@ -21,12 +21,26 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
+  AbstractArlasMapGL,
+  ARLAS_ID,
+  ArlasMapFrameworkService,
+  ArlasMapOption,
+  getAdditionalFillLayers,
+  SCROLLABLE_ARLAS_ID,
+  VectorStyle
 } from 'arlas-map';
+
 import {
-  AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceRaw,
-  MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
+  AnyLayer,
+  AnySourceData,
+  GeoJSONSource,
+  GeoJSONSourceRaw,
+  MapboxOptions,
+  Point,
+  Popup,
+  RasterLayer,
+  RasterSource,
+  SymbolLayer
 } from 'mapbox-gl';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
@@ -262,9 +276,12 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
       map.getMapProvider().setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
       const layer = this.getLayer(map, layerId);
       if (layer.type === 'fill') {
-        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        if (this.hasLayer(map, strokeId)) {
-          map.getMapProvider().setLayoutProperty(strokeId, 'visibility', isVisible ? 'visible' : 'none');
+        const layersIds = getAdditionalFillLayers(layer.id);
+        for (let i = 0; i < layersIds.length; i++) {
+          const id = layersIds[i];
+          if (this.hasLayer(map, id)) {
+            map.getMapProvider().setLayoutProperty(id, 'visibility', isVisible ? 'visible' : 'none');
+          }
         }
       }
       const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
