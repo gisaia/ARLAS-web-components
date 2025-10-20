@@ -34,7 +34,6 @@ uninstall_dependencies(){
 
     echo "=> Uninstall arlas-map library in arlas-mapbox"
     npm uninstall arlas-map --workspace=projects/arlas-mapbox
-    return O
 }
 
 
