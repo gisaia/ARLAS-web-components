@@ -1,5 +1,21 @@
 # Change Log
 
+## [v27.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.1) (2025-10-20)
+
+**Fixed bugs:**
+
+- Map legend value displayed on hover can be NaN [\#1019](https://github.com/gisaia/ARLAS-web-components/issues/1019)
+- resolveFileFromGzip should test if `kmlFile` var exists [\#1015](https://github.com/gisaia/ARLAS-web-components/issues/1015)
+- Adjusting a circle layer's opacity should be applied to the circle stroke too [\#1012](https://github.com/gisaia/ARLAS-web-components/issues/1012) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
+**Miscellaneous:**
+
+- uninstall local dependencies before launching the release script [\#1002](https://github.com/gisaia/ARLAS-web-components/issues/1002)
+
+## [v27.0.15](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.15) (2025-10-14)
+
+## [v27.0.14](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.14) (2025-10-14)
+
 ## [v27.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.0) (2025-09-08)
 
 **New stuff:**
