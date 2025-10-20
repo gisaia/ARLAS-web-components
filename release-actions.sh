@@ -2,78 +2,93 @@
 set -e
 
 usage(){
-	echo "Usage: ./release.sh -version='1.0.0' -ref_branch=develop --stage=beta|rc|stable"
+	echo "Usage: ./release.sh -version='1.0.0' -ref_branch=develop -s=beta|rc|stable"
 	echo " -version     arlas-web-components version release,level of evolution"
-  echo " -s|--stage    Stage of the release : beta | rc | stable. If --stage is 'rc' or 'beta', there is no merge of develop into master (if -ref_branch=develop)"
-  echo " -i|--stage_iteration=n, the released version will be : [x].[y].[z]-beta.[n] OR  [x].[y].[z]-rc.[n] according to the given --stage"
-	echo " -ref_branch | --reference_branch  from which branch to start the release."
-  echo "    Add -ref_branch=develop for a new official release"
-  echo "    Add -ref_branch=x.x.x for a maintenance release"
+    echo " -s           Stage of the release : beta | rc | stable. If --stage is 'rc' or 'beta', there is no merge of develop into master (if -ref_branch=develop)"
+    echo " -i           The released version will be : [x].[y].[z]-beta.[n] OR  [x].[y].[z]-rc.[n] according to the given -s"
+	echo " -ref_branch  From which branch to start the release."
+    echo "    Add -ref_branch=develop for a new official release"
+    echo "    Add -ref_branch=x.x.x for a maintenance release"
 	exit 1
+    return 0
 }
 
 send_chat_message(){
     MESSAGE=$1
-    if [ -z "$GOOGLE_CHAT_RELEASE_CHANEL" ] ; then
+    if [[ -z "$GOOGLE_CHAT_RELEASE_CHANEL" ]] ; then
         echo "Environement variable GOOGLE_CHAT_RELEASE_CHANEL is not definied ... skipping message publishing"
     else
         DATA='{"text":"'${MESSAGE}'"}'
         echo $DATA
         curl -X POST --header "Content-Type:application/json" $GOOGLE_CHAT_RELEASE_CHANEL -d "${DATA}"
     fi
+    return 0
+}
+
+uninstall_dependencies(){
+    echo "=> Uninstall arlas-web-components library in arlas-map"
+    npm uninstall arlas-web-components --workspace=projects/arlas-map
+
+    echo "=> Uninstall arlas-map library in arlas-maplibre"
+    npm uninstall arlas-map --workspace=projects/arlas-maplibre
+
+    echo "=> Uninstall arlas-map library in arlas-mapbox"
+    npm uninstall arlas-map --workspace=projects/arlas-mapbox
+    return O
 }
 
 
-# ARGUMENTS $1 = VERSION  $2 = ref_branch $3 stage $4 stage iteration (for beta & rc)
-releaseProd(){
+# ARGUMENTS $1 = version  $2 = ref_branch $3 stage $4 stage iteration (for beta & rc)
+release_prod(){
 
-    local VERSION=$1
-    local BRANCH=$2
-    local STAGE_LOCAL=$3
-    local STAGE_ITERATION_LOCAL=$4
+    local version=$1
+    local branch=$2
+    local stage=$3
+    local stage_iteration=$4
 
-    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+    if [[ "${stage}" == "rc" ]] || [[ "${stage}" == "beta" ]];
         then
-        local VERSION="${VERSION}-${STAGE_LOCAL}.${STAGE_ITERATION_LOCAL}"
+        local version="${version}-${stage}.${stage_iteration}"
     fi
 
-    echo "=> Get "$BRANCH" branch of ARLAS-web-components project"
+    echo "=> Get "$branch" branch of ARLAS-web-components project"
     git fetch
-    git checkout "$BRANCH"
-    git pull origin "$BRANCH"
-    echo "=> Test to lint and build the project on "$BRANCH" branch"
-    npm --no-git-tag-version version ${VERSION}
-    npm --no-git-tag-version --prefix projects/arlas-components version ${VERSION}
-    npm --no-git-tag-version --prefix projects/arlas-map version ${VERSION}
-    npm --no-git-tag-version --prefix projects/arlas-maplibre version ${VERSION}
-    npm --no-git-tag-version --prefix projects/arlas-mapbox version ${VERSION}
+    git checkout "$branch"
+    git pull origin "$branch"
+    echo "=> Test to lint and build the project on "$branch" branch"
+    npm --no-git-tag-version version ${version}
+    npm --no-git-tag-version --prefix projects/arlas-components version ${version}
+    npm --no-git-tag-version --prefix projects/arlas-map version ${version}
+    npm --no-git-tag-version --prefix projects/arlas-maplibre version ${version}
+    npm --no-git-tag-version --prefix projects/arlas-mapbox version ${version}
     echo "=> Installing"
+    uninstall_dependencies
     npm install
 
     echo "=> Update arlas-web-components library in arlas-map"
-    npm install --save-exact arlas-web-components@${VERSION} --workspace=projects/arlas-map
-    
+    npm install --save-exact arlas-web-components@${version} --workspace=projects/arlas-map
+
     echo "=> Update arlas-map library in arlas-maplibre"
-    npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-maplibre
+    npm install --save-exact arlas-map@${version} --workspace=projects/arlas-maplibre
 
     echo "=> Update arlas-map library in arlas-mapbox"
-    npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-mapbox
+    npm install --save-exact arlas-map@${version} --workspace=projects/arlas-mapbox
 
     echo "=> Build the ARLAS-web-components library"
-   
+
     npm run lint
     npm run build-components
     npm run build-map
     npm run build-maplibre
     npm run build-mapbox
 
-    echo "=> Tag version $VERSION"
+    echo "=> Tag version $version"
     git add .
     git config --local user.email "github-actions[bot]@users.noreply.github.com"
     git config --local user.name "github-actions[bot]"
-    commit_message_release="Release prod version $VERSION"
-    git tag -a v"$VERSION" -m "$commit_message_release"
-    git push origin v"$VERSION"
+    commit_message_release="Release prod version $version"
+    git tag -a v"$version" -m "$commit_message_release"
+    git push origin v"$version"
 
     echo "=> Generate CHANGELOG"
     docker run --rm -v "$(pwd)":/usr/local/src/your-app gisaia/github-changelog-generator:latest github_changelog_generator \
@@ -86,14 +101,14 @@ releaseProd(){
       --since-tag v4.0.0
 
     echo "  -- Remove tag to add generated CHANGELOG"
-    git tag -d v"$VERSION"
-    git push origin :v"$VERSION"
+    git tag -d v"$version"
+    git push origin :v"$version"
 
     echo "  -- Commit release version"
     git commit -a -m "$commit_message_release" --allow-empty
-    git tag v"$VERSION"
-    git push origin v"$VERSION"
-    git push origin "$BRANCH"
+    git tag v"$version"
+    git push origin v"$version"
+    git push origin "$branch"
 
     cp README-NPM.md dist/arlas-web-components/README.md
     cp LICENSE.txt dist/arlas-web-components/LICENSE
@@ -103,10 +118,10 @@ releaseProd(){
     cd dist/arlas-web-components/
 
     echo "=> Publish arlas-web-components to npm"
-    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+    if [[ "${stage}" == "rc" ]] || [[ "${stage}" == "beta" ]];
         then
-        echo "  -- tagged as ${STAGE_LOCAL}"
-        npm publish --tag=${STAGE_LOCAL}
+        echo "  -- tagged as ${stage}"
+        npm publish --tag=${stage}
     else
         npm publish
     fi
@@ -115,10 +130,10 @@ releaseProd(){
     cd dist/arlas-map/
 
     echo "=> Publish arlas-map to npm"
-    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+    if [[ "${stage}" == "rc" ]] || [[ "${stage}" == "beta" ]];
         then
-        echo "  -- tagged as ${STAGE_LOCAL}"
-        npm publish --tag=${STAGE_LOCAL}
+        echo "  -- tagged as ${stage}"
+        npm publish --tag=${stage}
     else
         npm publish
     fi
@@ -127,10 +142,10 @@ releaseProd(){
     cd dist/arlas-maplibre/
 
     echo "=> Publish arlas-maplibre to npm"
-    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+    if [[ "${stage}" == "rc" ]] || [[ "${stage}" == "beta" ]];
         then
-        echo "  -- tagged as ${STAGE_LOCAL}"
-        npm publish --tag=${STAGE_LOCAL}
+        echo "  -- tagged as ${stage}"
+        npm publish --tag=${stage}
     else
         npm publish
     fi
@@ -139,16 +154,16 @@ releaseProd(){
     cd dist/arlas-mapbox/
 
     echo "=> Publish arlas-mapbox to npm"
-    if [ "${STAGE_LOCAL}" == "rc" ] || [ "${STAGE_LOCAL}" == "beta" ];
+    if [[ "${stage}" == "rc" ]] || [[ "${stage}" == "beta" ]];
         then
-        echo "  -- tagged as ${STAGE_LOCAL}"
-        npm publish --tag=${STAGE_LOCAL}
+        echo "  -- tagged as ${stage}"
+        npm publish --tag=${stage}
     else
         npm publish
     fi
     cd ../..
     rm -rf dist
-    if [ "$BRANCH" == "develop" ] && [ "$STAGE_LOCAL" == "stable" ];
+    if [[ "$branch" == "develop" ]] && [[ "$stage" == "stable" ]];
         then
         echo "=> Merge develop into master"
         git checkout master
@@ -160,7 +175,7 @@ releaseProd(){
         git pull origin develop
         git rebase origin/master
     fi
-    IFS='.' read -ra TAB <<< "$VERSION"
+    IFS='.' read -ra TAB <<< "$version"
     major=${TAB[0]}
     minor=${TAB[1]}
     newminor=$(( $minor + 1 ))
@@ -168,33 +183,20 @@ releaseProd(){
     npm --no-git-tag-version version ""$newDevVersion"-dev0"
 
     # remove released dependencies and keep based on npm workspaces for dev.
-    echo "=> Uninstall arlas-web-components  library in arlas-map"
-    npm uninstall arlas-web-components --workspace=projects/arlas-map
-    
-    echo "=> Uninstall arlas-map library in arlas-maplibre"
-    npm uninstall arlas-map --workspace=projects/arlas-maplibre
-
-    echo "=> Uninstall arlas-map library in arlas-mapbox"
-    npm uninstall arlas-map --workspace=projects/arlas-mapbox
+    uninstall_dependencies
 
     git add .
     commit_message="update package.json to"-"$newDevVersion"
     git commit -m "$commit_message" --allow-empty
-    git push origin "$BRANCH"
+    git push origin "$branch"
     echo "Well done :)"
-    if [ "$STAGE_LOCAL" == "stable" ] || [ "$STAGE_LOCAL" == "rc" ];
+    if [[ "$stage" == "stable" ]] || [[ "$stage" == "rc" ]];
         then
-        send_chat_message "Release of arlas-web-components, version ${VERSION}"
+        send_chat_message "Release of arlas-web-components, version ${version}"
     fi
-
+    return 0
 }
 
-# ARGUMENTS $1 = VERSION  $2 = patch/minor/major $3 = PROJECT $4 ref_branch $5 is beta $6 stage_iteration
-# ARGUMENTS $1 = VERSION  $2 = ref_branch $3 stage $4 stage iteration (for beta & rc)
-release(){
-    releaseProd $1 $2 $3 $4
-}
-STAGE="stable"
 for i in "$@"
 do
 case $i in
@@ -220,57 +222,58 @@ case $i in
 esac
 done
 
-if [ -z ${REF_BRANCH+x} ];
+ERROR_DELIMITOR="###########"
+
+if [[ -z ${REF_BRANCH+x} ]];
     then
         echo ""
-        echo "###########"
-        echo "-ref_branch is missing."
+        echo $ERROR_DELIMITOR
+        echo "Reference branch is missing."
         echo "  Add -ref_branch=develop for a new official release"
         echo "  Add -ref_branch=x.x.x for a maintenance release"
-        echo "###########"
+        echo $ERROR_DELIMITOR
         echo ""
         usage;
 fi
 
-if [ -z ${STAGE+x} ];
+if [[ -z ${STAGE+x} ]];
     then
         echo ""
-        echo "###########"
-        echo "-s=*|--stage* is missing."
-        echo "  Add --stage=beta|rc|stable to define the release stage"
-        echo "###########"
+        echo $ERROR_DELIMITOR
+        echo "Stage is missing."
+        echo "  Add -s=beta|rc|stable to define the release stage"
+        echo $ERROR_DELIMITOR
         echo ""
         usage;
 fi
 
-if [ "${STAGE}" != "beta" ] && [ "${STAGE}" != "rc" ] && [ "${STAGE}" != "stable" ];
+if [[ "${STAGE}" != "beta" ]] && [[ "${STAGE}" != "rc" ]] && [[ "${STAGE}" != "stable" ]];
     then
         echo ""
-        echo "###########"
+        echo $ERROR_DELIMITOR
         echo "Stage ${STAGE} is invalid."
         echo "  Add --stage=beta|rc|stable to define the release stage"
-        echo "###########"
+        echo $ERROR_DELIMITOR
         echo ""
         usage;
 fi
 
-if [ "${STAGE}" == "beta" ] || [ "${STAGE}" == "rc" ];
+echo $STAGE
+echo $STAGE_ITERATION
+if [[ "${STAGE}" == "beta" || "${STAGE}" == "rc" ]] && [[ -z ${STAGE_ITERATION+x} ]];
     then
-        if [ -z ${STAGE_ITERATION+x} ];
-            then
-                echo ""
-                echo "###########"
-                echo "You chose to release this version as ${STAGE}."
-                echo "--stage_iteration is missing."
-                echo "  Add -i=n|--stage_iteration=n, the released version will be : [x].[y].[z]-${STAGE}.[n]"
-                echo "###########"
-                echo ""
-                usage;
-        fi
+        echo ""
+        echo $ERROR_DELIMITOR
+        echo "You chose to release this version as ${STAGE}."
+        echo "Stage iteration is missing."
+        echo "  Add -i=n, the released version will be : [x].[y].[z]-${STAGE}.[n]"
+        echo $ERROR_DELIMITOR
+        echo ""
+        usage;
 fi
 
-if [ ! -z ${RELEASE_VERSION+x} ];
+if [[ ! -z ${RELEASE_VERSION+x} ]];
     then
         echo "Release ARLAS-web-components version                    : ${RELEASE_VERSION}";
-        release ${RELEASE_VERSION} ${REF_BRANCH} ${STAGE} ${STAGE_ITERATION}
+        release_prod ${RELEASE_VERSION} ${REF_BRANCH} ${STAGE} ${STAGE_ITERATION}
 fi
