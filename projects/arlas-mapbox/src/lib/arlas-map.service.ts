@@ -117,14 +117,19 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   public adjustOpacityByRange(map: ArlasMapboxGL, sourceIdPrefix: string, field: string,
     start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
     layers
       .filter(l => this.mapService.isLayerVisible(l))
       .forEach(layer => {
-        map.setLayerOpacity(layer.id, layer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+        const circleStrokePrefix = layer.type + '-stroke';
+        map.setLayerOpacity(layer.id, layer.type, style);
+        if (layer.type === 'circle') {
+          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+        }
         const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
         const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
         if (strokeLayer) {
-          map.setLayerOpacity(strokeLayerId, strokeLayer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+          map.setLayerOpacity(strokeLayerId, strokeLayer.type, style);
         }
       });
   }
@@ -164,6 +169,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     layers.forEach(layer => {
       const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
       map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      if (layer.type === 'circle') {
+        const circleStrokePrefix = layer.type + '-stroke';
+        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
+          + OPACITY_SUFFIX] as Expression | number;
+        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
+      }
       const strokeLayerId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
       const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
       if (strokeLayer) {
