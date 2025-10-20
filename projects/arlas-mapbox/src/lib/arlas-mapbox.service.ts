@@ -498,7 +498,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   }
 
   public getLayersStartingWithSource(map: ArlasMapboxGL, sourceId: string): ArlasAnyLayer[] {
-    return map.getMapProvider().getStyle().layers.filter(l => ((l as ArlasAnyLayer).source as string).startsWith(sourceId)) as ArlasAnyLayer[];
+    return map.getMapProvider().getStyle().layers.filter(l => ((l as ArlasAnyLayer).source as string)?.startsWith(sourceId)) as ArlasAnyLayer[];
   }
 
   public getAllLayers(map: ArlasMapboxGL): ArlasAnyLayer[] {
