@@ -1,3 +1,9 @@
+@if (displayExportButton()) {
+  <button mat-icon-button class="donut__export" [matTooltip]="'Export' | translate" (click)="exportEvent.emit()">
+    <mat-icon>get_app</mat-icon>
+  </button>
+}
+
 <div id="{{id}}" class="donut__container" [ngClass]="customizedCssClass">
   <svg id="svgix"></svg>
 </div>

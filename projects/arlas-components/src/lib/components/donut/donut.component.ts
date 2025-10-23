@@ -18,24 +18,22 @@
  */
 
 import {
-  Component, OnChanges, Input, Output, SimpleChanges, ViewContainerRef, ElementRef, ViewEncapsulation,
-  OnDestroy
+  Component, DestroyRef, ElementRef, Input, OnChanges, Output, SimpleChanges, inject, input, output
 } from '@angular/core';
-import { Subject, fromEvent } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { AbstractDonut, OneSelectionDonut, MultiSelectionDonut, DonutParams, TreeNode, SimpleNode, ARLASDonutTooltip } from 'arlas-d3';
-import * as donutJsonSchema from './donut.schema.json';
-import { ArlasColorService } from '../../services/color.generator.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
+import { ARLASDonutTooltip, AbstractDonut, DonutParams, MultiSelectionDonut, OneSelectionDonut, SimpleNode, TreeNode } from 'arlas-d3';
+import { Subject, debounceTime, fromEvent } from 'rxjs';
+import { ArlasColorService } from '../../services/color.generator.service';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
+import * as donutJsonSchema from './donut.schema.json';
 
 @Component({
   selector: 'arlas-donut',
   templateUrl: './donut.component.html',
-  styleUrls: ['./donut.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./donut.component.scss']
 })
-export class DonutComponent implements OnChanges, OnDestroy {
+export class DonutComponent implements OnChanges {
   /**
    * @Input : Angular
    * @description Data tree to plot in the donut.
@@ -105,6 +103,12 @@ export class DonutComponent implements OnChanges, OnDestroy {
   @Input() public unit = '';
 
   /**
+   * @Input : Angular
+   * @description Whether to display the export button
+   */
+  public displayExportButton = input<boolean>(false);
+
+  /**
    * @Output : Angular
    * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
@@ -123,32 +127,34 @@ export class DonutComponent implements OnChanges, OnDestroy {
    */
   @Output() public hoveredNodeTooltipEvent: Subject<ARLASDonutTooltip> = new Subject<ARLASDonutTooltip>();
 
+  /**
+   * @Output : Angular
+   * @description Emits when the export button is clicked
+   */
+  public exportEvent = output<void>();
+
   public donut: AbstractDonut;
 
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly destroyRef = inject(DestroyRef);
 
   public constructor(
-    private el: ElementRef,
-    private colorService: ArlasColorService,
-    private translate: TranslateService
+    private readonly el: ElementRef<HTMLElement>,
+    private readonly colorService: ArlasColorService,
+    private readonly translate: TranslateService
   ) {
-    fromEvent(window, 'resize')
-      .pipe(debounceTime(500), takeUntil(this._onDestroy$))
+    fromEvent(globalThis, 'resize')
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((event: Event) => {
-        this.donut.resize(this.el.nativeElement.childNodes[0]);
+        this.donut.resize(this.donut.donutParams.donutContainer);
       });
+
     this.colorService.changekeysToColors$
-      .pipe(takeUntil(this._onDestroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.donut.donutParams.keysToColors = this.colorService.colorGenerator.keysToColors;
         this.donut.donutParams.donutNodeColorizer = this.colorService;
-        this.donut.resize(this.el.nativeElement.childNodes[0]);
+        this.donut.resize(this.donut.donutParams.donutContainer);
       });
-  }
-
-  public ngOnDestroy() {
-    this._onDestroy$.next(true);
-    this._onDestroy$.complete();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -193,8 +199,8 @@ export class DonutComponent implements OnChanges, OnDestroy {
     this.donut.donutParams.opacity = this.opacity;
     this.donut.donutParams.selectedArcsList = this.selectedArcsList;
     this.donut.donutParams.selectedNodesEvent = this.selectedNodesEvent;
-    this.donut.donutParams.donutContainer = this.el.nativeElement.childNodes[0];
-    this.donut.donutParams.svgElement = this.el.nativeElement.childNodes[0].childNodes[0];
+    this.donut.donutParams.donutContainer = this.el.nativeElement.getElementsByClassName('donut__container').item(0) as HTMLElement;
+    this.donut.donutParams.svgElement = this.donut.donutParams.donutContainer.querySelector('svg');
     this.donut.donutParams.keysToColors = this.keysToColors;
     this.donut.donutParams.colorsSaturationWeight = this.colorsSaturationWeight;
     this.donut.donutParams.donutNodeColorizer = this.colorService;
