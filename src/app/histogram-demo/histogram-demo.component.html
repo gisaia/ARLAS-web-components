@@ -1,7 +1,17 @@
 <div class="graphs">
   <p class="graph__title">Default histogram</p>
   <div class="graphs_timeline">
-    <arlas-histogram [id]="'a'" [chartXLabel]="'Date '" [handlesRadius]="3.5" [selectionType]="'slider'"  [dataUnit]="'aa'" [xAxisPosition]="1" [chartType]="chartType.bars" [customizedCssClass]="'histogram__area'"  [data]="defaultHistogramData" [chartTitle]="'Test of title dqfs '" [multiselectable]="true"></arlas-histogram>
+    <arlas-histogram [id]="'a'" [chartXLabel]="'Date'"
+                     [handlesRadius]="3.5"
+                     [selectionType]="'slider'"
+                     [dataUnit]="'aa'"
+                     [xAxisPosition]="1"
+                     [chartType]="chartType.bars"
+                     [customizedCssClass]="'histogram__area'"
+                     [data]="defaultHistogramData"
+                     [chartTitle]="'Test of title dqfs '"
+                     [multiselectable]="true"
+                     [displayExportButton]="true"></arlas-histogram>
   </div>
 </div>
 
@@ -18,7 +28,8 @@
                      [data]="oneDimensionHistogramData"
                      [paletteColors]="'#41d2b0'"
                      [customizedCssClass]="'histogram__area'"
-                     [chartHeight]="10"></arlas-histogram>
+                     [chartHeight]="10"
+                     [displayExportButton]="true"></arlas-histogram>
   </div>
 </div>
 
@@ -43,7 +54,7 @@
                      [customizedCssClass]="'histogram__area'"
                      [dataType]="dataType.time"
                      [swimlaneHeight]=50
-                     ></arlas-histogram>
+                     [displayExportButton]="true"></arlas-histogram>
   </div>
 </div>
 
