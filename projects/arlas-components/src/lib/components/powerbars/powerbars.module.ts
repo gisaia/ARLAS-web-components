@@ -19,18 +19,18 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
-import { PowerbarsComponent } from './powerbars.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { PowerbarModule } from './powerbar/powerbar.module';
+import { PowerbarsComponent } from './powerbars.component';
 
 @NgModule({
   imports: [

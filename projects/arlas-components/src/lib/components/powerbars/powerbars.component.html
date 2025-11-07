@@ -1,15 +1,21 @@
 <div [style.width.px]="!!chartWidth ? chartWidth : 'unset'">
   <div class="tools">
-    <div *ngIf="!displayFilterField" class="powerbars--title">{{powerbarTitle | translate}}</div>
-    <div class="powerbars--search" *ngIf="displayFilterField">
-      <form (keydown.enter)="$event.preventDefault()">
-        <mat-form-field class="powerbars--search-field">
-          <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle | translate}}" matInput
-            class="powerbars--search-input" (keyup)="onKeyUp(searchText.value)" name="search">
-        </mat-form-field>
-      </form>
-    </div>
-    <ng-container *ngIf="filterOperator">
+    @if (displayFilterField) {
+      <div class="powerbars__search" [class.powerbars__search--short]="displayExportButton()">
+        <form (keydown.enter)="$event.preventDefault()">
+          <mat-form-field class="powerbars--search-field">
+            <input #searchText type="text" autocomplete="off" placeholder="{{powerbarTitle | translate}}" matInput
+              class="powerbars--search-input" (keyup)="onKeyUp(searchText.value)" name="search">
+          </mat-form-field>
+        </form>
+      </div>
+    } @else {
+      <div class="powerbars__title" [class.powerbars__title--short]="displayExportButton()">
+        {{ powerbarTitle | translate }}
+      </div>
+    }
+
+    @if (filterOperator) {
       <div *ngIf="filterOperator?.display" class="include_exclude">
         <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div> <!-- //NOSONAR -->
         <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div> <!-- //NOSONAR -->
@@ -17,7 +23,13 @@
       <div *ngIf="!filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
         <div class="operation exclude">{{'exclude' | translate}}</div>
       </div>
-    </ng-container>
+    }
+
+    @if (displayExportButton()) {
+      <button mat-icon-button class="powerbars__export" [matTooltip]="'Export' | translate" (click)="exportEvent.emit()">
+        <mat-icon>get_app</mat-icon>
+      </button>
+    }
   </div>
 
   <div class="powerbars--container" [class.powerbars--container__scrollable]="scrollable" [ngClass]="customizedCssClass">

@@ -17,11 +17,32 @@
  * under the License.
  */
 
-.histogram{
-    background: rgba(0,0,255,0);
-    width: 100%;
-    height: 100%;
-    position: relative;
+.histogram__export {
+  position: absolute !important;
+  right: -24px;
+  top: 0;
+
+  width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  color: dimgrey;
+
+  ::ng-deep .mat-mdc-button-touch-target {
+    height: 24px;
+    width: 24px;
+  }
+}
+
+.histogram {
+  background: rgba(0,0,255,0);
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  // Leave space for the download button
+  &--short {
+    width: calc(100% - 24px - 5px);
+  }
 }
 
 .histogram text {

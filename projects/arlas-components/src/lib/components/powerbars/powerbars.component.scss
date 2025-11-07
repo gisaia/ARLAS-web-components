@@ -18,7 +18,16 @@
  */
 
 .tools {
-  .powerbars--search {
+  position: relative;
+
+  .powerbars__title, .powerbars__search {
+    // If the download button is display, reduce the width to leave space for the download button
+    &--short {
+      width: calc(100% - 24px - 5px);
+    }
+  }
+
+  .powerbars__search {
     .mat-mdc-form-field {
       width: 100%;
 
@@ -63,6 +72,22 @@
     .exclude {
       color: #555;
       cursor: unset ;
+    }
+  }
+
+  .powerbars__export {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 1;
+
+    --mdc-icon-button-state-layer-size: 24px;
+    padding: 0;
+    color: dimgrey;
+
+    ::ng-deep .mat-mdc-button-touch-target {
+      height: 24px;
+      width: 24px;
     }
   }
 }

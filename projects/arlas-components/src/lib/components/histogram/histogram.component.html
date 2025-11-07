@@ -1,4 +1,10 @@
-<div id="{{id}}" class="histogram" [ngClass]="customizedCssClass">
+<div id="{{id}}" class="histogram" [ngClass]="customizedCssClass" [class.histogram--short]="displayExportButton()">
+  @if (displayExportButton()) {
+    <button mat-icon-button class="histogram__export" [matTooltip]="'Export' | translate" (click)="exportEvent.emit()">
+      <mat-icon>get_app</mat-icon>
+    </button>
+  }
+
   <div *ngIf="descriptionPosition === Position.top" class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
     [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
     <div class="histogram__description--display">

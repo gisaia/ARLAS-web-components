@@ -18,21 +18,21 @@
  */
 
 import {
-  AfterViewChecked, Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation
+  AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, input,
+  Input, OnChanges, output, Output, SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import {
   AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
-  ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position,
-  SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles,
-  SwimlaneMode,
-  XBucket
+  ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position, SelectedInputValues,
+  SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles, SwimlaneMode, XBucket
 } from 'arlas-d3';
 import {
   HistogramData, HistogramTooltip, SwimlaneData, SwimlaneOptions, SwimlaneRepresentation
 } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { Subject, fromEvent } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { fromEvent, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as histogramJsonSchema from './histogram.schema.json';
@@ -44,14 +44,13 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
  * Swimlanes can be represented as bars or circles.
  * For both modes, data can be multi-selected using a selection brush.
  */
-
 @Component({
   selector: 'arlas-histogram',
   templateUrl: './histogram.component.html',
   styleUrls: ['./histogram.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, OnDestroy {
+export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 
   @ViewChild('left', { read: ElementRef, static: false }) public lt: ElementRef;
   @ViewChild('right', { read: ElementRef, static: false }) public rt: ElementRef;
@@ -325,6 +324,13 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
  * @description Wether use UTC to display date on the app
  */
   @Input() public useUtc = true;
+
+  /**
+   * @Input : Angular
+   * @description Whether to display the export button
+   */
+  public displayExportButton = input<boolean>(false);
+
   /**
    * @Output : Angular
    * @description Emits the list of selected powerbars terms
@@ -351,24 +357,36 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
    */
   @Output() public tooltipEvent: Subject<HistogramTooltip> = new Subject<HistogramTooltip>();
 
+  /**
+   * @Output : Angular
+   * @description Emits when the export button is clicked
+   */
+  public exportEvent = output<void>();
+
   public histogram: AbstractHistogram;
   public chart: AbstractChart;
   public ChartType = ChartType;
   public Position = Position;
 
-  private _onDestroy$ = new Subject<boolean>();
+  private readonly destroyRef = inject(DestroyRef);
 
-  public constructor(private colorService: ArlasColorService, private el: ElementRef, private translate: TranslateService) {
-    fromEvent(window, 'resize')
-      .pipe(debounceTime(500), takeUntil(this._onDestroy$))
+  public constructor(
+    private readonly colorService: ArlasColorService,
+    private readonly el: ElementRef<HTMLElement>,
+    private readonly translate: TranslateService
+  ) {
+    fromEvent(globalThis, 'resize')
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((event: Event) => {
         this.resizeHistogram();
       });
   }
 
-  public ngOnDestroy() {
-    this._onDestroy$.next(true);
-    this._onDestroy$.complete();
+  /**
+   * Once the histogram is done loading, resize it to account for any changes applied via styling
+   */
+  public ngAfterViewInit(): void {
+    this.resizeHistogram();
   }
 
   public static getHistogramJsonSchema(): Object {
@@ -451,9 +469,6 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
     }
   }
 
-  public ngOnInit() {
-  }
-
   public ngAfterViewChecked() {
     if (this.chartType === ChartType.swimlane) {
       (<AbstractSwimlane>this.histogram).truncateLabels();
@@ -475,7 +490,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
    */
   public resizeHistogram(): void {
     if (this.histogram) {
-      this.histogram.resize(this.el.nativeElement.childNodes[0]);
+      this.histogram.resize(this.histogram.histogramParams.histogramContainer);
       this.dataPlottedEvent.next('RESIZE');
     }
   }
@@ -560,8 +575,8 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
       this.swimlaneRepresentation : SwimlaneRepresentation.global;
     this.histogram.histogramParams.uid = HistogramUtils.generateUID();
     this.histogram.histogramParams.id = this.id;
-    this.histogram.histogramParams.histogramContainer = this.el.nativeElement.childNodes[0];
-    this.histogram.histogramParams.svgNode = this.el.nativeElement.childNodes[0].querySelector('svg');
+    this.histogram.histogramParams.histogramContainer = this.el.nativeElement.getElementsByClassName('histogram').item(0) as HTMLElement;
+    this.histogram.histogramParams.svgNode = this.histogram.histogramParams.histogramContainer.querySelector('svg');
     this.histogram.histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
     this.histogram.histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
     this.histogram.histogramParams.showStripes = this.showStripes;
@@ -571,7 +586,7 @@ export class HistogramComponent implements OnInit, OnChanges, AfterViewChecked, 
     this.histogram.histogramParams.colorGenerator = this.colorService;
     this.histogram.histogramParams.mainChartId = this.mainChartId;
     this.histogram.histogramParams.tooltipEvent
-      .pipe(takeUntil(this._onDestroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(t => {
         t.title = this.chartTitle;
         t.xLabel = this.chartXLabel;

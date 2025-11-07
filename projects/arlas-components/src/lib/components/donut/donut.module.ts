@@ -19,14 +19,22 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 import { DonutComponent } from './donut.component';
 
 @NgModule({
   declarations: [DonutComponent],
   exports: [DonutComponent],
   imports: [
-    CommonModule
-  ]
+    CommonModule,
+    MatTooltip,
+    TranslateModule,
+    MatIconModule,
+    MatButtonModule
+]
 })
 export class DonutModule {
 }

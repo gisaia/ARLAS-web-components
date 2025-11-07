@@ -17,28 +17,33 @@
  * under the License.
  */
 
-import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  AfterViewInit, Component, DestroyRef, EventEmitter, inject, input, Input, OnChanges, OnInit, output, Output, SimpleChanges
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SimpleNode, TreeNode } from 'arlas-d3';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
 import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { FilterOperator } from '../../tools/models/term-filters';
-import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import { PowerBar } from './model/powerbar';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
+
+export const SELECTED_BAR = 'selected-bar';
+export const UNSELECTED_BAR = 'unselected-bar';
+export const NEUTRAL_STATE = 'neutral-state';
+export const SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
 
 /**
  * Powerbars component transforms a [term, occurence_count] map to a descreasingly sorted list of multiselectable bars.
  * A bar progression represents the term's occurence count.
  */
-
 @Component({
   selector: 'arlas-powerbars',
   templateUrl: './powerbars.component.html',
   styleUrls: ['./powerbars.component.scss']
 })
-
 export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   /**
    * @Input : Angular
@@ -151,6 +156,11 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @Input() public selectWithCheckbox = false;
 
+  /**
+   * @Input : Angular
+   * @description Whether to display the export button
+   */
+  public displayExportButton = input<boolean>(false);
 
   /**
    * @Output : Angular
@@ -182,34 +192,21 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    */
   @Output() public outPowerBarEvent = new Subject<PowerBar>();
 
+  /**
+   * @Output : Angular
+   * @description Emits when the export button is clicked
+   */
+  public exportEvent = output<void>();
+
   public powerBarsList: Array<PowerBar>;
   public selectedPowerbarsSet = new Set<PowerBar>();
   public selectedPowerbarsTerms = new Set<string>();
 
-  /**
-   * @constant
-   */
-  public SELECTED_BAR = 'selected-bar';
-  /**
-   * @constant
-   */
-  public UNSELECTED_BAR = 'unselected-bar';
-  /**
-   * @constant
-   */
-  public NEUTRAL_STATE = 'neutral-state';
-  /**
-   * @constant
-   */
-  public SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
-
-  public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
-
-  private readonly _onDestroy$ = new Subject<boolean>();
+  private readonly destroyRef = inject(DestroyRef);
 
   public constructor(private readonly colorService: ArlasColorService) {
     this.colorService.changekeysToColors$
-      .pipe(takeUntil(this._onDestroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.powerBarsList.forEach(p => {
           if (this.useColorService) {
@@ -228,7 +225,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   public ngOnInit() {
     if (this.missingLeafEvent) {
       this.missingLeafEvent
-        .pipe(takeUntil(this._onDestroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(data => {
           if (this.selectedPaths !== undefined && this.selectedPaths !== null) {
             this.setSelectedPowerbars(this.selectedPaths);
@@ -239,7 +236,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
               const missingLeafToUpdate = {...missingLeaf};
               missingLeafToUpdate.count = value;
               missingLeafToUpdate.isSelected = true;
-              missingLeafToUpdate.classSuffix = this.SELECTED_BAR;
+              missingLeafToUpdate.classSuffix = SELECTED_BAR;
               if (this.useColorService) {
                 const rgbaColor = tinycolor(this.colorService.getColor(missingLeafToUpdate.term, this.keysToColors,
                   this.colorsSaturationWeight)).toRgb();
@@ -290,11 +287,6 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  public ngOnDestroy() {
-    this._onDestroy$.next(true);
-    this._onDestroy$.complete();
-  }
-
   /**
    * @description Select or deselect a PowerBar and emits the terms list of selected bars
    */
@@ -308,14 +300,14 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       if (this.selectedPowerbarsTerms.size === 0) {
         this.clearSelection();
       } else {
-        powerBar.classSuffix = this.UNSELECTED_BAR;
+        powerBar.classSuffix = UNSELECTED_BAR;
       }
     } else {
       if (this.selectedPaths) {
         Object.assign(selectedPaths, this.selectedPaths);
       }
       powerBar.isSelected = true;
-      powerBar.classSuffix = this.SELECTED_BAR;
+      powerBar.classSuffix = SELECTED_BAR;
       this.selectedPowerbarsTerms.add(powerBar.term);
       this.addSelectedPowerbarToList(powerBar, this.selectedPowerbarsSet);
       this.unselectAllButNotSelectedBars();
@@ -340,7 +332,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
         this.getPowerbar(currentPath[0].fieldValue, 'root');
       if (powerBar !== null) {
         powerBar.isSelected = true;
-        powerBar.classSuffix = this.SELECTED_BAR;
+        powerBar.classSuffix = SELECTED_BAR;
         if (this.useColorService) {
           const rgbaColor = tinycolor(this.colorService.getColor(powerBar.term, this.keysToColors,
             this.colorsSaturationWeight)).toRgb();
@@ -352,7 +344,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
         powerBar.path = currentPath;
         powerBar.progression = 0;
         powerBar.isSelected = true;
-        powerBar.classSuffix = this.SELECTED_NO_MOUNTED_BAR;
+        powerBar.classSuffix = SELECTED_NO_MOUNTED_BAR;
       }
       selectedPowerbarsTerms.add(powerBar.term);
       this.addSelectedPowerbarToList(powerBar, selectedPowerbarsList);
@@ -383,7 +375,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   private clearSelection(): void {
     this.powerBarsList.forEach(powerBar => {
-      powerBar.classSuffix = this.NEUTRAL_STATE;
+      powerBar.classSuffix = NEUTRAL_STATE;
       powerBar.isSelected = false;
     });
   }
@@ -484,7 +476,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     } else {
       this.powerBarsList.forEach(powerBar => {
         if (!this.selectedPowerbarsTerms.has(powerBar.term)) {
-          powerBar.classSuffix = this.UNSELECTED_BAR;
+          powerBar.classSuffix = UNSELECTED_BAR;
           powerBar.isSelected = false;
         }
       });

@@ -17,20 +17,24 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HistogramComponent } from './histogram.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { HistogramKeyPipe } from './histogram-key.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 import { GetCollectionUnitModule } from '../../pipes/get-collection-unit/get-collection-unit.module';
+import { HistogramKeyPipe } from './histogram-key.pipe';
+import { HistogramComponent } from './histogram.component';
 
 @NgModule({
   imports: [
     CommonModule,
     TranslateModule,
     MatTooltipModule,
-    GetCollectionUnitModule
+    GetCollectionUnitModule,
+    MatIconModule,
+    MatButtonModule
   ],
   declarations: [HistogramComponent, HistogramKeyPipe],
   exports: [HistogramComponent]
