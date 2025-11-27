@@ -37,17 +37,11 @@
 
     &__title {
       width: 100%;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
       padding-bottom: 5px;
     }
 
     &__description {
       font-size: 14px;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
     }
   }
 }
