@@ -40,9 +40,10 @@ export const SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
  * A bar progression represents the term's occurence count.
  */
 @Component({
-  selector: 'arlas-powerbars',
-  templateUrl: './powerbars.component.html',
-  styleUrls: ['./powerbars.component.scss']
+    selector: 'arlas-powerbars',
+    templateUrl: './powerbars.component.html',
+    styleUrls: ['./powerbars.component.scss'],
+    standalone: false
 })
 export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   /**

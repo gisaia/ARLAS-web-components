@@ -39,9 +39,10 @@ const shp = shp_.default;
 
 
 @Component({
-  templateUrl: './map-import-dialog.component.html',
-  selector: 'arlas-map-import-dialog',
-  styleUrls: ['./map-import-dialog.component.scss']
+    templateUrl: './map-import-dialog.component.html',
+    selector: 'arlas-map-import-dialog',
+    styleUrls: ['./map-import-dialog.component.scss'],
+    standalone: false
 })
 export class MapImportDialogComponent {
   public displayError = false;
@@ -115,9 +116,10 @@ export type AllowedImportGeometry = 'Polygon' | 'Point';
 const SIMPLE_GEOMETRY_OBJECT = new Set(['Polygon', 'Point', 'LineString']);
 
 @Component({
-  selector: 'arlas-map-import',
-  templateUrl: './map-import.component.html',
-  styleUrls: ['./map-import.component.scss']
+    selector: 'arlas-map-import',
+    templateUrl: './map-import.component.html',
+    styleUrls: ['./map-import.component.scss'],
+    standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

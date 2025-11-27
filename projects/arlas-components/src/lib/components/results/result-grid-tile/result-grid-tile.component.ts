@@ -28,9 +28,10 @@ import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
 
 @Component({
-  selector: 'arlas-result-grid-tile',
-  templateUrl: './result-grid-tile.component.html',
-  styleUrls: ['./result-grid-tile.component.scss']
+    selector: 'arlas-result-grid-tile',
+    templateUrl: './result-grid-tile.component.html',
+    styleUrls: ['./result-grid-tile.component.scss'],
+    standalone: false
 })
 export class ResultGridTileComponent extends ItemComponent {
   /**

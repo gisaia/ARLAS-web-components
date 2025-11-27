@@ -19,7 +19,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 @Pipe({
-  name: 'getFieldDisplayName'
+    name: 'getFieldDisplayName',
+    standalone: false
 })
 export class GetFieldDisplayNamePipe implements PipeTransform {
 

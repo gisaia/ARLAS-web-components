@@ -47,10 +47,11 @@ import { stripMode } from './modes/strip/strip.mode';
 import * as styles from './themes/default-theme';
 
 @Component({
-  selector: 'arlas-draw',
-  templateUrl: './arlas-draw.component.html',
-  styleUrls: ['./arlas-draw.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'arlas-draw',
+    templateUrl: './arlas-draw.component.html',
+    styleUrls: ['./arlas-draw.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

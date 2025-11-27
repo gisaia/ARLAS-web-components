@@ -21,9 +21,10 @@ import { Component, OnInit } from '@angular/core';
 import { TreeNode } from 'arlas-d3';
 
 @Component({
-  selector: 'arlas-powerbars-demo',
-  templateUrl: './powerbars-demo.component.html',
-  styleUrls: ['./powerbars-demo.component.css']
+    selector: 'arlas-powerbars-demo',
+    templateUrl: './powerbars-demo.component.html',
+    styleUrls: ['./powerbars-demo.component.css'],
+    standalone: false
 })
 export class PowerbarsDemoComponent implements OnInit {
 

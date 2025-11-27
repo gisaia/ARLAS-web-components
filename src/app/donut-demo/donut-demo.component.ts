@@ -20,9 +20,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'arlas-donut-demo',
-  templateUrl: './donut-demo.component.html',
-  styleUrls: ['./donut-demo.component.css']
+    selector: 'arlas-donut-demo',
+    templateUrl: './donut-demo.component.html',
+    styleUrls: ['./donut-demo.component.css'],
+    standalone: false
 })
 export class DonutDemoComponent implements OnInit {
 

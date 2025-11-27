@@ -45,10 +45,11 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
  * For both modes, data can be multi-selected using a selection brush.
  */
 @Component({
-  selector: 'arlas-histogram',
-  templateUrl: './histogram.component.html',
-  styleUrls: ['./histogram.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'arlas-histogram',
+    templateUrl: './histogram.component.html',
+    styleUrls: ['./histogram.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 

@@ -20,7 +20,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { HistogramUtils } from 'arlas-d3';
 
 @Pipe({
-  name: 'histogramKey'
+    name: 'histogramKey',
+    standalone: false
 })
 export class HistogramKeyPipe implements PipeTransform {
 

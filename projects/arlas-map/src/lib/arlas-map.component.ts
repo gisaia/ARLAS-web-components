@@ -54,10 +54,11 @@ import { ArlasMapSource } from './map/model/sources';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
 
 @Component({
-  selector: 'arlas-map',
-  templateUrl: './arlas-map.component.html',
-  styleUrls: ['./arlas-map.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'arlas-map',
+    templateUrl: './arlas-map.component.html',
+    styleUrls: ['./arlas-map.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

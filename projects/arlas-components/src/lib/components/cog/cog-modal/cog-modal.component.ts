@@ -35,18 +35,17 @@ export interface CogVisualisationData {
 
 
 @Component({
-  selector: 'arlas-cog-modal',
-  standalone: true,
-  imports: [
-    MatDialogContent,
-    CogPreviewComponent,
-    MatDialogClose,
-    TranslateModule,
-    MatProgressSpinnerModule,
-    MatButtonModule
-  ],
-  templateUrl: './cog-modal.component.html',
-  styleUrl: './cog-modal.component.scss'
+    selector: 'arlas-cog-modal',
+    imports: [
+        MatDialogContent,
+        CogPreviewComponent,
+        MatDialogClose,
+        TranslateModule,
+        MatProgressSpinnerModule,
+        MatButtonModule
+    ],
+    templateUrl: './cog-modal.component.html',
+    styleUrl: './cog-modal.component.scss'
 })
 export class CogModalComponent {
   public data: { visualisations: CogVisualisationData[]; loading: boolean; } = inject(MAT_DIALOG_DATA);

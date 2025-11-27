@@ -26,9 +26,10 @@ import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 @Component({
-  selector: '[arlas-result-detailed-item]',
-  templateUrl: './result-detailed-item.component.html',
-  styleUrls: ['./result-detailed-item.component.scss']
+    selector: '[arlas-result-detailed-item]',
+    templateUrl: './result-detailed-item.component.html',
+    styleUrls: ['./result-detailed-item.component.scss'],
+    standalone: false
 })
 export class ResultDetailedItemComponent implements OnInit {
   /**

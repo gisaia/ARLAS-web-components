@@ -24,9 +24,10 @@ import { Subject } from 'rxjs';
 // TODO: add data to properly test component
 
 @Component({
-  selector: 'arlas-calendar-timeline-demo',
-  templateUrl: './calendar-timeline-demo.component.html',
-  styleUrls: ['./calendar-timeline-demo.component.css']
+    selector: 'arlas-calendar-timeline-demo',
+    templateUrl: './calendar-timeline-demo.component.html',
+    styleUrls: ['./calendar-timeline-demo.component.css'],
+    standalone: false
 })
 export class CalendarTimelineDemoComponent {
   public granularity: Subject<Granularity> = new Subject();

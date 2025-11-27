@@ -72,9 +72,10 @@ export interface MapSettingsService {
 }
 
 @Component({
-  selector: 'arlas-map-settings-dialog',
-  templateUrl: './map-settings-dialog.component.html',
-  styleUrls: ['./map-settings-dialog.component.scss']
+    selector: 'arlas-map-settings-dialog',
+    templateUrl: './map-settings-dialog.component.html',
+    styleUrls: ['./map-settings-dialog.component.scss'],
+    standalone: false
 })
 export class MapSettingsDialogComponent {
   /**
@@ -155,9 +156,10 @@ export class MapSettingsDialogComponent {
 }
 
 @Component({
-  selector: 'arlas-map-settings',
-  templateUrl: './map-settings.component.html',
-  styleUrls: ['./map-settings.component.scss']
+    selector: 'arlas-map-settings',
+    templateUrl: './map-settings.component.html',
+    styleUrls: ['./map-settings.component.scss'],
+    standalone: false
 })
 export class MapSettingsComponent {
 

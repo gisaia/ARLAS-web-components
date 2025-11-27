@@ -36,9 +36,10 @@ import {
 } from '../../tools/map.constants';
 
 @Component({
-  selector: 'arlas-mapgl-demo',
-  templateUrl: './mapgl-demo.component.html',
-  styleUrls: ['./mapgl-demo.component.css']
+    selector: 'arlas-mapgl-demo',
+    templateUrl: './mapgl-demo.component.html',
+    styleUrls: ['./mapgl-demo.component.css'],
+    standalone: false
 })
 export class MapglDemoComponent<L, S, M> {
   private readonly mapFramework = inject(ArlasMapFrameworkService<L, S, M>);

@@ -48,9 +48,10 @@ export interface LayerParam {
 
 
 @Component({
-  templateUrl: './wmts-layer-manager-dialog.component.html',
-  selector: 'arlas-wmts-layer-manager-dialog',
-  styleUrls: ['./wmts-layer-manager-dialog.component.css']
+    templateUrl: './wmts-layer-manager-dialog.component.html',
+    selector: 'arlas-wmts-layer-manager-dialog',
+    styleUrls: ['./wmts-layer-manager-dialog.component.css'],
+    standalone: false
 })
 export class WmtsLayerManagertDialogComponent implements OnInit {
   public layer: string;
@@ -126,9 +127,10 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
 }
 
 @Component({
-  selector: 'arlas-wmts-layer-manager',
-  templateUrl: './wmts-layer-manager.component.html',
-  styleUrls: ['./wmts-layer-manager.component.css']
+    selector: 'arlas-wmts-layer-manager',
+    templateUrl: './wmts-layer-manager.component.html',
+    styleUrls: ['./wmts-layer-manager.component.css'],
+    standalone: false
 })
 export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>;

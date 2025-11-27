@@ -27,9 +27,10 @@ import { BasemapService } from './basemap.service';
 import { ArlasBasemaps } from './basemaps.model';
 
 @Component({
-  selector: 'arlas-basemap',
-  templateUrl: './basemap.component.html',
-  styleUrls: ['./basemap.component.scss']
+    selector: 'arlas-basemap',
+    templateUrl: './basemap.component.html',
+    styleUrls: ['./basemap.component.scss'],
+    standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

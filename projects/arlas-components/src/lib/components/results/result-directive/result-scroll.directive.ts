@@ -24,7 +24,8 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { ItemDataType } from '../utils/results.utils';
 
 @Directive({
-  selector: '[arlasResultScroll]',
+    selector: '[arlasResultScroll]',
+    standalone: false
 })
 
 export class ResultScrollDirective implements OnChanges {

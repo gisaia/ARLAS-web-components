@@ -29,9 +29,10 @@ import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as donutJsonSchema from './donut.schema.json';
 
 @Component({
-  selector: 'arlas-donut',
-  templateUrl: './donut.component.html',
-  styleUrls: ['./donut.component.scss']
+    selector: 'arlas-donut',
+    templateUrl: './donut.component.html',
+    styleUrls: ['./donut.component.scss'],
+    standalone: false
 })
 export class DonutComponent implements OnChanges {
   /**

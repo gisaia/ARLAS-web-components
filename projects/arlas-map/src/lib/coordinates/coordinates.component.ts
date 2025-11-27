@@ -23,9 +23,10 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 @Component({
-  selector: 'arlas-coordinates',
-  templateUrl: './coordinates.component.html',
-  styleUrls: ['./coordinates.component.scss']
+    selector: 'arlas-coordinates',
+    templateUrl: './coordinates.component.html',
+    styleUrls: ['./coordinates.component.scss'],
+    standalone: false
 })
 export class CoordinatesComponent implements OnInit {
   @Input() public currentLat: string;

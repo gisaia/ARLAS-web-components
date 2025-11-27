@@ -23,9 +23,10 @@ import * as metricJsonSchema from './metric.schema.json';
 
 
 @Component({
-  selector: 'arlas-metric',
-  templateUrl: './metric.component.html',
-  styleUrls: ['./metric.component.scss']
+    selector: 'arlas-metric',
+    templateUrl: './metric.component.html',
+    styleUrls: ['./metric.component.scss'],
+    standalone: false
 })
 /**
  * This component will contain a phrase composed of 3 parts

@@ -20,9 +20,10 @@
 import { Component } from '@angular/core';
 import { MetricsTable } from '../../../projects/arlas-components/src/lib/components/metrics-table/model/metrics-table';
 @Component({
-  selector: 'arlas-multi-bar-demo',
-  templateUrl: './metrics-table-demo.component.html',
-  styleUrls: ['./metrics-table-demo.component.css'],
+    selector: 'arlas-multi-bar-demo',
+    templateUrl: './metrics-table-demo.component.html',
+    styleUrls: ['./metrics-table-demo.component.css'],
+    standalone: false
 })
 export class MetricsTableDemoComponent {
   public multiBarTableSameTitle: MetricsTable = {

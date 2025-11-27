@@ -30,9 +30,10 @@ import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 
 @Component({
-  selector: 'arlas-result-detailed-grid',
-  templateUrl: './result-detailed-grid.component.html',
-  styleUrls: ['./result-detailed-grid.component.scss']
+    selector: 'arlas-result-detailed-grid',
+    templateUrl: './result-detailed-grid.component.html',
+    styleUrls: ['./result-detailed-grid.component.scss'],
+    standalone: false
 })
 export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   /**

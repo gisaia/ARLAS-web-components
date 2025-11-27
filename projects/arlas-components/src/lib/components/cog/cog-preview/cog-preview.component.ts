@@ -22,14 +22,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
-  selector: 'arlas-cog-preview',
-  standalone: true,
-  imports: [
-    TranslateModule,
-    ProtectImageDirective
-  ],
-  templateUrl: './cog-preview.component.html',
-  styleUrl: './cog-preview.component.scss'
+    selector: 'arlas-cog-preview',
+    imports: [
+        TranslateModule,
+        ProtectImageDirective
+    ],
+    templateUrl: './cog-preview.component.html',
+    styleUrl: './cog-preview.component.scss'
 })
 export class CogPreviewComponent {
   public title = input<string>();

@@ -21,9 +21,10 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { WmtsLayerManagerComponent } from '../../../projects/arlas-components/src/public-api';
 
 @Component({
-  selector: 'arlas-wmts-layer-manager-demo',
-  templateUrl: './wmts-layer-manager-demo.component.html',
-  styleUrls: ['./wmts-layer-manager-demo.component.css']
+    selector: 'arlas-wmts-layer-manager-demo',
+    templateUrl: './wmts-layer-manager-demo.component.html',
+    styleUrls: ['./wmts-layer-manager-demo.component.css'],
+    standalone: false
 })
 export class WmtsLayerManagerDemoComponent implements OnInit {
     @ViewChild('wmtsLayerManager', { static: false }) public wmtsLayerMangerComponent: WmtsLayerManagerComponent;

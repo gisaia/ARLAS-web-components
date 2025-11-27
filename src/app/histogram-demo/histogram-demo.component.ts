@@ -23,9 +23,10 @@ import { SwimlaneData, SwimlaneStats } from 'arlas-d3/histograms/utils/Histogram
 
 
 @Component({
-  selector: 'arlas-histogram-demo',
-  templateUrl: './histogram-demo.component.html',
-  styleUrls: ['./histogram-demo.component.css']
+    selector: 'arlas-histogram-demo',
+    templateUrl: './histogram-demo.component.html',
+    styleUrls: ['./histogram-demo.component.css'],
+    standalone: false
 })
 export class HistogramDemoComponent implements OnInit {
   public curvedTimelineData: Array<{key: Date | number; value: number; }>;

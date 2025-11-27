@@ -22,7 +22,8 @@ import { getLayerName } from '../map/model/layers';
 
 
 @Pipe({
-  name: 'layerIdToName'
+    name: 'layerIdToName',
+    standalone: false
 })
 export class LayerIdToName implements PipeTransform {
 

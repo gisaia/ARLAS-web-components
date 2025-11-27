@@ -23,15 +23,14 @@ import { ShortenNumberModule } from '../../../pipes/shorten-number/shorten-numbe
 import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
-  selector: 'arlas-cog-legend',
-  standalone: true,
-  imports: [
-    ShortenNumberModule,
-    TranslateModule,
-    ProtectImageDirective
-  ],
-  templateUrl: './cog-legend.component.html',
-  styleUrl: './cog-legend.component.scss'
+    selector: 'arlas-cog-legend',
+    imports: [
+        ShortenNumberModule,
+        TranslateModule,
+        ProtectImageDirective
+    ],
+    templateUrl: './cog-legend.component.html',
+    styleUrl: './cog-legend.component.scss'
 })
 export class CogLegendComponent {
   /** Url for the colormap */

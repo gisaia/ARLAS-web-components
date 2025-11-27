@@ -48,10 +48,11 @@ import { ResultlistNotifierService } from '../../../services/resultlist.notifier
  * For both list and grid modes, each item has detailed data that can be displayed in a togglable space.
  */
 @Component({
-  selector: 'arlas-result-list',
-  templateUrl: './result-list.component.html',
-  styleUrls: ['./result-list.component.scss'],
-  encapsulation: ViewEncapsulation.None
+    selector: 'arlas-result-list',
+    templateUrl: './result-list.component.html',
+    styleUrls: ['./result-list.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    standalone: false
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 

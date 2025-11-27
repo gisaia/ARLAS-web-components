@@ -25,9 +25,10 @@ import { MapboxAoiDrawService } from '../draw/draw.service';
 import { Corner } from '../draw/draw.models';
 
 @Component({
-  selector: 'arlas-bbox-generator',
-  templateUrl: './bbox-generator.component.html',
-  styleUrls: ['./bbox-generator.component.scss']
+    selector: 'arlas-bbox-generator',
+    templateUrl: './bbox-generator.component.html',
+    styleUrls: ['./bbox-generator.component.scss'],
+    standalone: false
 })
 export class BboxGeneratorComponent implements OnInit, AfterViewInit, OnDestroy {
   /**
