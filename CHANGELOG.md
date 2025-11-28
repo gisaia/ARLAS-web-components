@@ -1,5 +1,11 @@
 # Change Log
 
+## [v27.1.2](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.2) (2025-11-28)
+
+**New stuff:**
+
+- Move histogram and powerbars download button to web components [\#855](https://github.com/gisaia/ARLAS-web-components/issues/855) [[HISTOGRAM](https://github.com/gisaia/ARLAS-web-components/labels/HISTOGRAM)] [[POWERBARS](https://github.com/gisaia/ARLAS-web-components/labels/POWERBARS)]
+
 ## [v27.1.1](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.1) (2025-10-20)
 
 **Fixed bugs:**
