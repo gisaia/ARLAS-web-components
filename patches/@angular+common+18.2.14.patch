@@ -1,0 +1,52 @@
+diff --git a/node_modules/@angular/common/esm2022/http/src/xsrf.mjs b/node_modules/@angular/common/esm2022/http/src/xsrf.mjs
+index b824953..7fa3859 100755
+--- a/node_modules/@angular/common/esm2022/http/src/xsrf.mjs
++++ b/node_modules/@angular/common/esm2022/http/src/xsrf.mjs
+@@ -68,6 +68,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.14", ngImpo
+                     type: Inject,
+                     args: [XSRF_COOKIE_NAME]
+                 }] }] });
++
++/**
++ * Regex to match absolute URLs, including protocol-relative URLs.
++ */
++const ABSOLUTE_URL_REGEX = /^(?:https?:)?\/\//i;
+ export function xsrfInterceptorFn(req, next) {
+     const lcUrl = req.url.toLowerCase();
+     // Skip both non-mutating requests and absolute URLs.
+@@ -77,8 +82,7 @@ export function xsrfInterceptorFn(req, next) {
+     if (!inject(XSRF_ENABLED) ||
+         req.method === 'GET' ||
+         req.method === 'HEAD' ||
+-        lcUrl.startsWith('http://') ||
+-        lcUrl.startsWith('https://')) {
++        ABSOLUTE_URL_REGEX.test(req.url)) {
+         return next(req);
+     }
+     const token = inject(HttpXsrfTokenExtractor).getToken();
+diff --git a/node_modules/@angular/common/fesm2022/http.mjs b/node_modules/@angular/common/fesm2022/http.mjs
+index e63739d..b057bcb 100755
+--- a/node_modules/@angular/common/fesm2022/http.mjs
++++ b/node_modules/@angular/common/fesm2022/http.mjs
+@@ -2401,6 +2401,11 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "18.2.14", ngImpo
+                     type: Inject,
+                     args: [XSRF_COOKIE_NAME]
+                 }] }] });
++/**
++ * Regex to match absolute URLs, including protocol-relative URLs.
++ */
++const ABSOLUTE_URL_REGEX = /^(?:https?:)?\/\//i;
++
+ function xsrfInterceptorFn(req, next) {
+     const lcUrl = req.url.toLowerCase();
+     // Skip both non-mutating requests and absolute URLs.
+@@ -2410,8 +2415,7 @@ function xsrfInterceptorFn(req, next) {
+     if (!inject(XSRF_ENABLED) ||
+         req.method === 'GET' ||
+         req.method === 'HEAD' ||
+-        lcUrl.startsWith('http://') ||
+-        lcUrl.startsWith('https://')) {
++        ABSOLUTE_URL_REGEX.test(req.url)) {
+         return next(req);
+     }
+     const token = inject(HttpXsrfTokenExtractor).getToken();
