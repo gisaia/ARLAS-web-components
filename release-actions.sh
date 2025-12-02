@@ -23,6 +23,17 @@ send_chat_message(){
     fi
 }
 
+uninstall_dependencies(){
+    echo "=> Uninstall arlas-web-components  library in arlas-map"
+    npm uninstall arlas-web-components --workspace=projects/arlas-map
+
+    echo "=> Uninstall arlas-map library in arlas-maplibre"
+    npm uninstall arlas-map --workspace=projects/arlas-maplibre
+
+    echo "=> Uninstall arlas-map library in arlas-mapbox"
+    npm uninstall arlas-map --workspace=projects/arlas-mapbox
+}
+
 
 # ARGUMENTS $1 = VERSION  $2 = ref_branch $3 stage $4 stage iteration (for beta & rc)
 releaseProd(){
@@ -48,11 +59,12 @@ releaseProd(){
     npm --no-git-tag-version --prefix projects/arlas-maplibre version ${VERSION}
     npm --no-git-tag-version --prefix projects/arlas-mapbox version ${VERSION}
     echo "=> Installing"
+    uninstall_dependencies
     npm install
 
     echo "=> Update arlas-web-components library in arlas-map"
     npm install --save-exact arlas-web-components@${VERSION} --workspace=projects/arlas-map
-    
+
     echo "=> Update arlas-map library in arlas-maplibre"
     npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-maplibre
 
@@ -60,7 +72,7 @@ releaseProd(){
     npm install --save-exact arlas-map@${VERSION} --workspace=projects/arlas-mapbox
 
     echo "=> Build the ARLAS-web-components library"
-   
+
     npm run lint
     npm run build-components
     npm run build-map
@@ -167,15 +179,7 @@ releaseProd(){
     newDevVersion=${major}.${newminor}.0
     npm --no-git-tag-version version ""$newDevVersion"-dev0"
 
-    # remove released dependencies and keep based on npm workspaces for dev.
-    echo "=> Uninstall arlas-web-components  library in arlas-map"
-    npm uninstall arlas-web-components --workspace=projects/arlas-map
-    
-    echo "=> Uninstall arlas-map library in arlas-maplibre"
-    npm uninstall arlas-map --workspace=projects/arlas-maplibre
-
-    echo "=> Uninstall arlas-map library in arlas-mapbox"
-    npm uninstall arlas-map --workspace=projects/arlas-mapbox
+    uninstall_dependencies
 
     git add .
     commit_message="update package.json to"-"$newDevVersion"
