@@ -21,7 +21,7 @@ import { inject, Injectable } from '@angular/core';
 import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
 import maplibre, { AddLayerObject, GeoJSONSource, MapOptions, RequestParameters } from 'maplibre-gl';
-import * as pmtiles from 'pmtiles';
+import { Protocol } from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
 import { ArlasMaplibreGL } from '../map/ArlasMaplibreGL';
@@ -59,7 +59,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
   }
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
-    const protocol = new pmtiles.Protocol();
+    const protocol = new Protocol();
     maplibre.addProtocol('pmtiles', (requestParameters: RequestParameters, abortController: AbortController) =>
       new Promise((res, rej) => {
         protocol.tile(requestParameters, (error?: Error | null, data?: any | null, cacheControl?: string | null, expires?: string | null) => {
