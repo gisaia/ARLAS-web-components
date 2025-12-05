@@ -1,6 +1,11 @@
 {
   "name": "arlas-maplibre",
   "version": "27.1.2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gisaia/ARLAS-web-components.git"
+  },
+  "author": "gisaia",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
     "@angular/cdk": "^18.2.14",
