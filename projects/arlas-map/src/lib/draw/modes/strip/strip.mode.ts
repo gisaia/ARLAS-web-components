@@ -203,9 +203,9 @@ stripMode.onStop = function (state) {
 
     // check to see if we've deleted this feature
     if (this.getFeature(state.line.id) === undefined) {
-        // if the strip polygone exist, remove it
+        // if the strip polygone exists, remove it
         if(this.getFeature(state.strip?.id)){
-            this.deleteFeature([state.strip?.id], { silent: true });
+            this.deleteFeature([state.strip.id], { silent: true });
         }
         return;
     }
