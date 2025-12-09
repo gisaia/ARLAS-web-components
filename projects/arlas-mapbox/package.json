@@ -1,6 +1,6 @@
 {
   "name": "arlas-mapbox",
-  "version": "27.0.16",
+  "version": "27.0.17",
   "repository": {
     "type": "git",
     "url": "https://github.com/gisaia/ARLAS-web-components.git"
@@ -21,6 +21,7 @@
     "@ngx-translate/http-loader": "^8.0.0"
   },
   "dependencies": {
+    "arlas-map": "27.0.17",
     "mapbox-gl": "^1.6.1",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0"
