@@ -5,6 +5,9 @@
     "type": "git",
     "url": "https://github.com/gisaia/ARLAS-web-components.git"
   },
+  "publishConfig": {
+    "tag": "27.0.x"
+  },
   "author": "gisaia",
   "peerDependencies": {
     "@angular/animations": "^18.2.13",
