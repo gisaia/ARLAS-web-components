@@ -203,6 +203,10 @@ stripMode.onStop = function (state) {
 
     // check to see if we've deleted this feature
     if (this.getFeature(state.line.id) === undefined) {
+        // if the strip polygone exist, remove it
+        if(this.getFeature(state.strip?.id)){
+            this.deleteFeature([state.strip?.id], { silent: true });
+        }
         return;
     }
 
@@ -215,7 +219,7 @@ stripMode.onStop = function (state) {
             features: [state.strip.toGeoJSON()],
         });
     } else {
-        this.deleteFeature([state.line.id], { silent: true });
+        this.deleteFeature([state.line.id, state.strip?.id], { silent: true });
         this.changeMode('simple_select', {}, { silent: true });
     }
     this.fireOnStop();
