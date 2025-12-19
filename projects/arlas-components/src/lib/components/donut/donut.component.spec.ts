@@ -18,7 +18,7 @@
  */
 
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { DonutComponent } from './donut.component';
@@ -31,7 +31,7 @@ describe('DonutComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ DonutComponent ],
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         ColorGeneratorModule.forRoot({
           loader: {
             provide: ColorGeneratorLoader,

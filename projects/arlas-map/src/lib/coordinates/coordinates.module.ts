@@ -37,9 +37,10 @@ import { CoordinatesErrorPipe } from './coordinates.pipe';
     ReactiveFormsModule,
     MatTooltipModule,
     MatInputModule,
-    TranslateModule
+    TranslateModule,
+    CoordinatesErrorPipe
   ],
-  declarations: [CoordinatesComponent, CoordinatesErrorPipe],
+  declarations: [CoordinatesComponent],
   exports: [CoordinatesComponent]
 })
 export class CoordinatesModule {

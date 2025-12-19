@@ -24,7 +24,8 @@ import { PowerBar } from '../model/powerbar';
 @Component({
     selector: 'arlas-powerbar',
     templateUrl: './powerbar.component.html',
-    styleUrls: ['./powerbar.component.scss']
+    styleUrls: ['./powerbar.component.scss'],
+    standalone: false
 })
 export class PowerbarComponent {
 

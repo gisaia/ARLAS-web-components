@@ -20,7 +20,8 @@
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'getValue'
+    name: 'getValue',
+    standalone: true
 })
 @Injectable()
 export class GetValuePipe implements PipeTransform {

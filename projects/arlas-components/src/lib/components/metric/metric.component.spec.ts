@@ -19,7 +19,7 @@
 
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 import { MetricComponent } from './metric.component';
 
@@ -29,10 +29,11 @@ describe('MetricComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MetricComponent, FormatNumberPipe ],
+      declarations: [ MetricComponent ],
       imports: [
         MatDialogModule,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+        FormatNumberPipe,
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ]
     })
       .compileComponents();

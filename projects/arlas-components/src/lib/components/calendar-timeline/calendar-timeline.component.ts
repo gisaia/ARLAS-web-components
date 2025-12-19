@@ -29,7 +29,8 @@ export enum TranslationDirection {
 @Component({
   selector: 'arlas-calendar-timeline',
   templateUrl: './calendar-timeline.component.html',
-  styleUrls: ['./calendar-timeline.component.scss']
+  styleUrls: ['./calendar-timeline.component.scss'],
+  standalone: false
 })
 /**
  * todo : documentation of the component

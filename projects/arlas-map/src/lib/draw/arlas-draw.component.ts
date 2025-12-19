@@ -50,7 +50,8 @@ import * as styles from './themes/default-theme';
   selector: 'arlas-draw',
   templateUrl: './arlas-draw.component.html',
   styleUrls: ['./arlas-draw.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

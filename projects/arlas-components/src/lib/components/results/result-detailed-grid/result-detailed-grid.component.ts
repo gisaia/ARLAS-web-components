@@ -32,7 +32,8 @@ import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 @Component({
   selector: 'arlas-result-detailed-grid',
   templateUrl: './result-detailed-grid.component.html',
-  styleUrls: ['./result-detailed-grid.component.scss']
+  styleUrls: ['./result-detailed-grid.component.scss'],
+  standalone: false
 })
 export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   /**

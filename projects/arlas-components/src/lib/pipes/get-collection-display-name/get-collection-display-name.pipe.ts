@@ -19,7 +19,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 @Pipe({
-  name: 'getCollectionDisplayName'
+  name: 'getCollectionDisplayName',
+  standalone: true
 })
 export class GetCollectionDisplayNamePipe implements PipeTransform {
 

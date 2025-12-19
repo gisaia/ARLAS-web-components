@@ -48,7 +48,8 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
   selector: 'arlas-histogram',
   templateUrl: './histogram.component.html',
   styleUrls: ['./histogram.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 

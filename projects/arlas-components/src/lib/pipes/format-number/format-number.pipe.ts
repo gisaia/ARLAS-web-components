@@ -22,7 +22,8 @@ import { formatNumber } from '../../components/componentsUtils';
 import { TranslateService } from '@ngx-translate/core';
 
 @Pipe({
-  name: 'formatNumber'
+  name: 'formatNumber',
+  standalone: true
 })
 @Injectable()
 export class FormatNumberPipe implements PipeTransform {

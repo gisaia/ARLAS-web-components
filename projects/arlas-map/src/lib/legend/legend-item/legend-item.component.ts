@@ -29,7 +29,8 @@ import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'arlas-legend-item',
   templateUrl: './legend-item.component.html',
-  styleUrls: ['./legend-item.component.scss']
+  styleUrls: ['./legend-item.component.scss'],
+  standalone: false
 })
 export class LegendItemComponent {
   @Input() public legend: Legend;

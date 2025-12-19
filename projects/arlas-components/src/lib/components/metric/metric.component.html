@@ -4,7 +4,7 @@
   </div>
   <div class="arlas-metric__value">
     <span class="arlas-metric__value--approximmate" *ngIf="approximateValue"> ~ </span>
-    {{this.displayedValue | formatNumber:NUMBER_FORMAT_CHAR}}
+    {{displayedValue | formatNumber:NUMBER_FORMAT_CHAR}}
   </div>
   <div class="arlas-metric__description">
     {{afterValue | translate}}

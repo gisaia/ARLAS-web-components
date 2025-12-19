@@ -25,7 +25,6 @@ import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
 import { TranslateService } from '@ngx-translate/core';
-import { ngxLoadingAnimationTypes } from 'ngx-loading-reloaded';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ArlasColorService } from '../../../services/color.generator.service';
@@ -51,7 +50,8 @@ import { ResultlistNotifierService } from '../../../services/resultlist.notifier
   selector: 'arlas-result-list',
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 
@@ -123,10 +123,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public TAIL_HEIGHT = 30;
 
 
-  public loadAnimationConfig = {
-    animationType: ngxLoadingAnimationTypes.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
-    backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
-  };
+  // public loadAnimationConfig = {
+  //   animationType: ngxLoadingAnimationTypes.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
+  //   backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
+  // };
 
   public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0 };
 

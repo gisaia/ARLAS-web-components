@@ -73,7 +73,7 @@ export function displayFeatures(state, geojson, display) {
 
 export function updateCoordinates(state, e) {
   if (state.direction === 'forward') {
-    state.currentVertexPosition += 1; // eslint-disable-line
+    state.currentVertexPosition += 1;
     state.line.updateCoordinate(
       state.currentVertexPosition,
       e.lngLat.lng,

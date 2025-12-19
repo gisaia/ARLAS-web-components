@@ -31,7 +31,8 @@ import * as donutJsonSchema from './donut.schema.json';
 @Component({
   selector: 'arlas-donut',
   templateUrl: './donut.component.html',
-  styleUrls: ['./donut.component.scss']
+  styleUrls: ['./donut.component.scss'],
+  standalone: false
 })
 export class DonutComponent implements OnChanges {
   /**

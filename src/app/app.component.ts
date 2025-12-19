@@ -24,7 +24,8 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'arlas-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  standalone: false
 })
 export class AppComponent implements OnInit {
   public activeLinkIndex = 0;
@@ -43,7 +44,7 @@ export class AppComponent implements OnInit {
   ];
 
   public constructor(private readonly translate: TranslateService, private readonly router: Router) {
-    this.translate.setDefaultLang('fr');
+    this.translate.setFallbackLang('fr');
   }
 
   public selectedTab(e) {

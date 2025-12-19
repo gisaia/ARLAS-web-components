@@ -22,7 +22,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 @Pipe({
-  name: 'coordinatesFormError'
+  name: 'coordinatesFormError',
+  standalone: true
 })
 export class CoordinatesErrorPipe implements PipeTransform {
 

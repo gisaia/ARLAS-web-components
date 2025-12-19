@@ -19,15 +19,15 @@
 
 import { Component, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ShortenNumberModule } from '../../../pipes/shorten-number/shorten-number.module';
 import { ProtectImageDirective } from '../../../tools/protect-image.directive';
+import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
 
 @Component({
   selector: 'arlas-cog-legend',
   standalone: true,
   imports: [
-    ShortenNumberModule,
     TranslateModule,
+    ShortenNumberPipe,
     ProtectImageDirective
   ],
   templateUrl: './cog-legend.component.html',

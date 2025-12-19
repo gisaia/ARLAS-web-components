@@ -23,7 +23,8 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'arlas-layer-legend-demo',
   templateUrl: './layer-legend-demo.component.html',
-  styleUrl: './layer-legend-demo.component.scss'
+  styleUrl: './layer-legend-demo.component.scss',
+  standalone: false
 })
 export class LayerLegendDemoComponent {
 protected layersLeg = new Map([

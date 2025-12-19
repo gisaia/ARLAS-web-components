@@ -34,10 +34,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { NgxLoadingModule } from 'ngx-loading-reloaded';
-import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
-import { GetAttachmentUrlModule } from '../../pipes/get-attachment-url/get-attachment-url.module';
-import { ReplaceModule } from '../../pipes/replace/replace.module';
+
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
+import { GetAttachmentUrlPipe } from '../../pipes/get-attachment-url/get-attachment-url.pipe';
+import { ReplacePipe } from '../../pipes/replace/replace.pipe';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ProtectImageDirective } from '../../tools/protect-image.directive';
 import { ResultActionsComponent } from './result-actions/result-actions.component';
@@ -68,19 +68,20 @@ import { ResultListComponent } from './result-list/result-list.component';
     MatProgressSpinnerModule,
     FormsModule,
     LazyLoadImageModule,
-    NgxLoadingModule,
     TranslateModule,
-    FormatNumberModule,
-    ReplaceModule,
-    GetAttachmentUrlModule,
-    ProtectImageDirective
+    FormatNumberPipe,
+    ReplacePipe,
+    GetAttachmentUrlPipe,
+    ProtectImageDirective,
+    ResultScrollDirective,
+    ActionDisplayerPipe
 ],
   declarations: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
-    ResultFilterComponent, ResultScrollDirective, ResultActionsComponent, ActionDisplayerPipe],
+    ResultFilterComponent, ResultActionsComponent],
   exports: [ResultListComponent, ResultGridTileComponent,
     ResultItemComponent, ResultDetailedItemComponent, ResultDetailedGridComponent,
-    ResultFilterComponent, ResultScrollDirective, ResultActionsComponent, ActionDisplayerPipe],
+    ResultFilterComponent, ResultActionsComponent, ],
 
 })
 export class ResultsModule { }

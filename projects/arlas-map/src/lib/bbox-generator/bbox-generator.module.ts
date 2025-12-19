@@ -39,10 +39,11 @@ import { BboxFormErrorPipe } from './bbox-form-error.pipe';
     MatButtonModule,
     MatInputModule,
     ReactiveFormsModule,
-    TranslateModule
+    TranslateModule,
+    BboxFormErrorPipe
   ],
-  declarations: [BboxGeneratorComponent, BboxFormErrorPipe],
-  exports: [BboxGeneratorComponent, BboxFormErrorPipe]
+  declarations: [BboxGeneratorComponent ],
+  exports: [BboxGeneratorComponent]
 })
 export class BboxGeneratorModule {
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
