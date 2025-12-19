@@ -29,8 +29,8 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
+import { GetCollectionDisplayNamePipe } from 'arlas-web-components';
 import { MapSettingsComponent, MapSettingsDialogComponent } from './map-settings.component';
-import { GetCollectionDisplayModule } from 'arlas-web-components';
 
 
 @NgModule({
@@ -47,7 +47,7 @@ import { GetCollectionDisplayModule } from 'arlas-web-components';
         MatRadioModule,
         ReactiveFormsModule,
         TranslateModule,
-        GetCollectionDisplayModule
+        GetCollectionDisplayNamePipe
     ],
   declarations: [MapSettingsComponent, MapSettingsDialogComponent],
   exports: [MapSettingsComponent]

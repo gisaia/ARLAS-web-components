@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CommonModule, NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
+import { NgClass, NgForOf, NgIf, UpperCasePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PowerbarModule } from '../../powerbars/powerbar/powerbar.module';
@@ -28,9 +28,7 @@ import { MetricsTableRowComponent } from './metrics-table-row.component';
         MatCheckboxModule,
         NgClass,
         PowerbarModule,
-        UpperCasePipe,
-        NgIf,
-        NgForOf
+        UpperCasePipe
     ],
     declarations: [MetricsTableRowComponent],
     exports: [MetricsTableRowComponent]

@@ -19,9 +19,11 @@
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { ShortenNumberModule } from 'arlas-web-components';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+
+import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
 import { CogLegendComponent } from './cog-legend.component';
+
 
 describe('CogLegendComponent', () => {
   let component: CogLegendComponent;
@@ -31,8 +33,8 @@ describe('CogLegendComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         CogLegendComponent,
-        ShortenNumberModule,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+        ShortenNumberPipe,
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ],
       providers: [provideHttpClient(withInterceptorsFromDi())]
     })

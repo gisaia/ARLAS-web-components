@@ -17,7 +17,7 @@
  * under the License.
  */
 
-@import "../../../../assets/styles/sizes.scss";
+@use "../../../../assets/styles/sizes";
 
 .legend {
     display: flex;
@@ -26,7 +26,7 @@
 
     &__title {
         text-align: center;
-        font-size: $sm-font-size;
+        font-size: sizes.$sm-font-size;
         color: #666;
 
         text-overflow: ellipsis;
@@ -90,7 +90,7 @@
             }
 
             &__key {
-                font-size: $sm-font-size;
+                font-size: sizes.$sm-font-size;
                 margin-left: 5px;
                 flex: 1;
                 white-space: nowrap;
@@ -153,7 +153,7 @@
             padding-top: 2.5px;
 
             &__value {
-                font-size: $sm-font-size;
+                font-size: sizes.$sm-font-size;
                 color: #666;
             }
         }

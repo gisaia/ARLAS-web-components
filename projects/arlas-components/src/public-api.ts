@@ -22,7 +22,6 @@
  */
 export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TimelineData, TreeNode } from 'arlas-d3';
 export { CalendarTimelineComponent, TranslationDirection } from './lib/components/calendar-timeline/calendar-timeline.component';
-export { CalendarTimelineModule } from './lib/components/calendar-timeline/calendar-timeline.module';
 export { CogLegendComponent } from './lib/components/cog/cog-legend/cog-legend.component';
 export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
@@ -67,19 +66,12 @@ export {
   Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent
 } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { WmtsLayerManagerModule } from './lib/components/wmts-layer-manager/wmts-layer-manager.module';
-export { FormatNumberModule } from './lib/pipes/format-number/format-number.module';
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
 export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
-export { GetCollectionDisplayModule } from './lib/pipes/get-collection-display-name/get-collection-display.module';
-export { GetCollectionUnitModule } from './lib/pipes/get-collection-unit/get-collection-unit.module';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';
-export { GetColorModule } from './lib/pipes/get-color/get-color.module';
 export { GetColorPipe } from './lib/pipes/get-color/get-color.pipe';
 export { GetFieldDisplayNamePipe } from './lib/pipes/get-field-display-name/get-field-display-name.pipe';
-export { GetFieldDisplayModule } from './lib/pipes/get-field-display-name/get-field-display.module';
-export { GetValueModule } from './lib/pipes/get-value/get-value.module';
 export { GetValuePipe } from './lib/pipes/get-value/get-value.pipe';
-export { ShortenNumberModule } from './lib/pipes/shorten-number/shorten-number.module';
 export { ShortenNumberPipe } from './lib/pipes/shorten-number/shorten-number.pipe';
 export { CollectionModule, CollectionModuleConfig } from './lib/services/collection.module';
 export { AwcCollectionService, BaseCollectionService, CollectionService } from './lib/services/collection.service';

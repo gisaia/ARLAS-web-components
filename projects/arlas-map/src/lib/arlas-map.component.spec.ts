@@ -4,7 +4,7 @@ import { ArlasMapComponent } from './arlas-map.component';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { BasemapService } from './basemaps/basemap.service';
 import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { from } from 'rxjs';
 
 describe('ArlasMapComponent', () => {
@@ -20,7 +20,7 @@ describe('ArlasMapComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
       ],
       declarations: [ ArlasMapComponent ],
       providers: [

@@ -22,7 +22,8 @@ import { DEFAULT_SHORTENING_PRECISION, numberToShortValue } from '../../componen
 
 
 @Pipe({
-  name: 'shortenNumber'
+  name: 'shortenNumber',
+  standalone: true
 })
 @Injectable()
 export class ShortenNumberPipe implements PipeTransform {

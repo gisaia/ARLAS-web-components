@@ -32,7 +32,8 @@ import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 @Component({
   selector: 'arlas-results-demo',
   templateUrl: './results-demo.component.html',
-  styleUrls: ['./results-demo.component.css']
+  styleUrls: ['./results-demo.component.css'],
+  standalone: false
 })
 export class ResultsDemoComponent implements OnInit {
 

@@ -57,7 +57,8 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
   selector: 'arlas-map',
   templateUrl: './arlas-map.component.html',
   styleUrls: ['./arlas-map.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

@@ -41,7 +41,8 @@ import { MetricsTable, MetricsTableHeader, MetricsTableRow } from './model/metri
 @Component({
   selector: 'arlas-metrics-table',
   templateUrl: './metrics-table.component.html',
-  styleUrls: ['./metrics-table.component.scss']
+  styleUrls: ['./metrics-table.component.scss'],
+  standalone: false
 })
 export class MetricsTableComponent implements OnInit, OnChanges {
   /**

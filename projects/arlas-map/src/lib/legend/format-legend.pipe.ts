@@ -49,7 +49,8 @@ export interface LegendParamsResult {
 export type  ParamsResultType = 'full' | 'metricField' | 'metricNormalised' | 'noMetric' | 'original';
 
 @Pipe({
-  name: 'formatLegend'
+  name: 'formatLegend',
+  standalone: true
 })
 export class FormatLegendPipe implements PipeTransform {
 

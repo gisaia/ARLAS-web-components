@@ -20,7 +20,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 
 @Pipe({
-  name: 'getCollectionUnit'
+  name: 'getCollectionUnit',
+  standalone: true
 })
 export class GetCollectionUnitPipe implements PipeTransform {
 

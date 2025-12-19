@@ -21,7 +21,8 @@ import { Injectable, Pipe, PipeTransform } from '@angular/core';
 import { ArlasColorService } from '../../services/color.generator.service';
 
 @Pipe({
-    name: 'getColor'
+    name: 'getColor',
+    standalone: true
 })
 @Injectable()
 export class GetColorPipe implements PipeTransform {

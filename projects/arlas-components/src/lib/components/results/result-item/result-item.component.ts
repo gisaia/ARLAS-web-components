@@ -33,7 +33,8 @@ import { marker } from '@colsen1991/ngx-translate-extract-marker';
 @Component({
   selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
-  styleUrls: ['./result-item.component.css']
+  styleUrls: ['./result-item.component.css'],
+  standalone: false
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 

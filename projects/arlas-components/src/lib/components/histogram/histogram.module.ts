@@ -23,20 +23,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { GetCollectionUnitModule } from '../../pipes/get-collection-unit/get-collection-unit.module';
-import { HistogramKeyPipe } from './histogram-key.pipe';
 import { HistogramComponent } from './histogram.component';
+import { GetCollectionUnitPipe } from '../../pipes/get-collection-unit/get-collection-unit.pipe';
 
 @NgModule({
   imports: [
     CommonModule,
     TranslateModule,
     MatTooltipModule,
-    GetCollectionUnitModule,
+    GetCollectionUnitPipe,
     MatIconModule,
     MatButtonModule
   ],
-  declarations: [HistogramComponent, HistogramKeyPipe],
+  declarations: [HistogramComponent ],
   exports: [HistogramComponent]
 })
-export class HistogramModule {}
+export class HistogramModule { }

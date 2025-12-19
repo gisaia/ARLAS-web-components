@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { CogModalComponent } from './cog-modal.component';
 
 describe('CogModalComponent', () => {
@@ -10,7 +10,7 @@ describe('CogModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CogModalComponent,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ],
       providers: [ {provide: MAT_DIALOG_DATA, useValue: {}}]
     })

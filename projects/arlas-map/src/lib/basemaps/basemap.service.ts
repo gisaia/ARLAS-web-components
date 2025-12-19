@@ -83,7 +83,6 @@ export abstract class BasemapService<L, S, M> {
     (<any>clonedStyleFile).sources = {
       protomaps_attribution: {
         'type': 'vector',
-        // eslint-disable-next-line max-len
         'attribution': '<a href="https://protomaps.com/" target="_blank">Protomaps</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap</a>' + this.POWERED_BY_ARLAS
       }
     };

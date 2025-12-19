@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MetricsTableComponent } from './metrics-table.component';
 import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.component';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,7 +20,7 @@ describe('MultiCollectionBarsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         FormatLongTitlePipe,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatTooltipModule,
         MatInputModule,
         ColorGeneratorModule.forRoot({

@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@import "../../../assets/styles/sizes.scss";
+@use "../../../assets/styles/sizes";
 
 .layer_name {
-  font-size: $default-font-size;
+  font-size: sizes.$default-font-size;
 }
 
 .layer_wrapper {

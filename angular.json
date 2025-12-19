@@ -108,7 +108,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.json",
+            "eslintConfig": "eslint.config.mjs",
             "lintFilePatterns": [
               "src/**/*.spec.ts",
               "src/**/*.d.ts",
@@ -165,7 +165,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.json",
+            "eslintConfig": "eslint.config.mjs",
             "lintFilePatterns": [
               "projects/arlas-components/**/*.spec.ts",
               "projects/arlas-components/**/*.d.ts",
@@ -207,7 +207,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.json",
+            "eslintConfig": "eslint.config.mjs",
             "lintFilePatterns": [
               "projects/arlas-mapbox/**/*.spec.ts",
               "projects/arlas-mapbox/**/*.d.ts",
@@ -249,7 +249,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.json",
+            "eslintConfig": "eslint.config.mjs",
             "lintFilePatterns": [
               "projects/arlas-maplibre/**/*.spec.ts",
               "projects/arlas-maplibre/**/*.d.ts",
@@ -291,7 +291,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "eslintConfig": ".eslintrc.json",
+            "eslintConfig": "eslint.config.mjs",
             "lintFilePatterns": [
               "projects/arlas-map/**/*.spec.ts",
               "projects/arlas-map/**/*.d.ts",

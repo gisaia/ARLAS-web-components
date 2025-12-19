@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,15 +29,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ArlasMapModule, MapSettingsModule } from 'arlas-map';
 import { ArlasMapboxModule } from 'arlas-mapbox';
 import { ArlasMaplibreModule } from 'arlas-maplibre';
 import {
   AwcCollectionService,
   BaseCollectionService,
-  CalendarTimelineModule,
+  CalendarTimelineComponent,
   CollectionModule,
   DonutModule,
   HistogramModule,
@@ -52,6 +52,7 @@ import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar
 import { CogVisualisationComponent } from './cog-visualisation/cog-visualisation.component';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
+import { LayerLegendDemoComponent } from "./layer-legend/layer-legend-demo.component";
 import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
 import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
 import { MaplibreDemoModule } from './mapgl-libre-demo/maplibre-demo.module';
@@ -59,12 +60,6 @@ import { MetricsTableDemoComponent } from './metrics-table-demo/metrics-table-de
 import { PowerbarsDemoComponent } from './powerbars-demo/powerbars-demo.component';
 import { ResultsDemoComponent } from './results-demo/results-demo.component';
 import { WmtsLayerManagerDemoComponent } from './wmts-layer-manager-demo/wmts-layer-manager-demo.component';
-import { LayerLegendDemoComponent } from "./layer-legend/layer-legend-demo.component";
-
-
-export function httpLoaderFactory(http: HttpClient): TranslateHttpLoader {
-  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 const routes: Routes = [
   { path: '', component: MapglDemoComponent },
@@ -94,7 +89,6 @@ const routes: Routes = [
   ],
   imports: [
     BrowserAnimationsModule,
-    CalendarTimelineModule,
     FormsModule,
     MapSettingsModule,
     MatButtonModule,
@@ -116,13 +110,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpLoaderFactory,
-        deps: [HttpClient]
-      }
-    }),
+    CalendarTimelineComponent,
     CollectionModule.forRoot({
       loader: {
         provide: BaseCollectionService,
@@ -130,7 +118,12 @@ const routes: Routes = [
       }
     }),
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi())],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, provideHttpClient(withInterceptorsFromDi()),
+    provideTranslateService({
+      loader: provideTranslateHttpLoader({ prefix: './assets/i18n/', suffix: '.json' })
+    })
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

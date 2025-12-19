@@ -25,6 +25,7 @@ import { ItemDataType } from '../utils/results.utils';
 
 @Directive({
   selector: '[arlasResultScroll]',
+  standalone: true
 })
 
 export class ResultScrollDirective implements OnChanges {

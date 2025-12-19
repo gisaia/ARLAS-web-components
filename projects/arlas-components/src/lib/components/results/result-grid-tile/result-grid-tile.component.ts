@@ -30,7 +30,8 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
 @Component({
   selector: 'arlas-result-grid-tile',
   templateUrl: './result-grid-tile.component.html',
-  styleUrls: ['./result-grid-tile.component.scss']
+  styleUrls: ['./result-grid-tile.component.scss'],
+  standalone: false
 })
 export class ResultGridTileComponent extends ItemComponent {
   /**
