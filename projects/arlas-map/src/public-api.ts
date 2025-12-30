@@ -93,3 +93,6 @@ export { TerrainConfiguration } from './lib/map/model/terrain';
 export { VectorStyle, VectorStyleEnum } from './lib/map/model/vector-style';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
 export { latLngToWKT, getAdditionalFillLayers } from './lib/map/tools';
+
+/** useful interface **/
+export * from './lib/map/model/layers';
