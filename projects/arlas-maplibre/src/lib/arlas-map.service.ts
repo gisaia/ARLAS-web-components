@@ -133,6 +133,11 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
       .filter(l => this.mapService.isLayerVisible(l))
       .forEach(layer => {
         map.setLayerOpacity(layer.id, layer.type, style);
+        if (layer.type === 'circle') {
+          const circleStrokePrefix = layer.type + '-stroke';
+
+          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+        }
         const layersIds = getAdditionalFillLayers(layer.id);
         for (let i = 0; i < layersIds.length; i++) {
           const id = layersIds[i];
@@ -179,6 +184,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     layers.forEach(layer => {
       const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
       map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      if (layer.type === 'circle') {
+        const circleStrokePrefix = layer.type + '-stroke';
+        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
+          + OPACITY_SUFFIX] as Expression | number;
+        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
+      }
       const layersIds = getAdditionalFillLayers(layer.id);
       for (let i = 0; i < layersIds.length; i++) {
         const id = layersIds[i];

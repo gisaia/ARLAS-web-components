@@ -118,19 +118,23 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public adjustOpacityByRange(map: ArlasMapboxGL, sourceIdPrefix: string, field: string,
-                              start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
+    start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
     const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
     layers
       .filter(l => this.mapService.isLayerVisible(l))
       .forEach(layer => {
-        map.setLayerOpacity(layer.id, layer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+        map.setLayerOpacity(layer.id, layer.type, style);
+        if (layer.type === 'circle') {
+          const circleStrokePrefix = layer.type + '-stroke';
+          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+        }
         const layersIds = getAdditionalFillLayers(layer.id);
         for (let i = 0; i < layersIds.length; i++) {
           const id = layersIds[i];
           const additionalLayer = this.mapService.getLayer(map, id);
           if (additionalLayer) {
-            map.setLayerOpacity(id, additionalLayer.type, this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity));
+            map.setLayerOpacity(id, additionalLayer.type, style);
           }
         }
       });
@@ -171,6 +175,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     layers.forEach(layer => {
       const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
       map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      if (layer.type === 'circle') {
+        const circleStrokePrefix = layer.type + '-stroke';
+        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
+          + OPACITY_SUFFIX] as Expression | number;
+        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
+      }
       const layersIds = getAdditionalFillLayers(layer.id);
       for (let i = 0; i < layersIds.length; i++) {
         const id = layersIds[i];
@@ -234,7 +244,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<ArlasDataLayer>,
-                          sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL): void {
+    sources: Array<ArlasMapSource<MapboxSourceType>>, mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL): void {
     sources.forEach((s) => {
       if (typeof (s.source) !== 'string') {
         map.getMapProvider().addSource(s.id, s.source);
@@ -339,8 +349,8 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL,
-                      visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
-                      collection?: string): void {
+    visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
+    collection?: string): void {
     if (mapLayers?.externalEventLayers) {
       mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.mapService.hasLayer(map, layer.id)) {

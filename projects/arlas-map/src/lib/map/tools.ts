@@ -16,8 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
-import { AbstractArlasMapGL } from './AbstractArlasMapGL';
 import { ARLAS_ID, EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX } from './model/layers';
 
 export function latLngToWKT(features): string {
