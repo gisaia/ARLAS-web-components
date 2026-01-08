@@ -400,7 +400,7 @@ export class ArlasMapComponent<L, S, M> {
         'GlobeControl.Enable': this.translate.instant(ENABLE_GLOBE),
         'GlobeControl.Disable': this.translate.instant(DISABLE_GLOBE)
       },
-      pitchWithRotate: false,
+      pitchWithRotate: true,
       transformRequest: this.transformRequest,
       attributionControl: false,
     };
@@ -427,11 +427,12 @@ export class ArlasMapComponent<L, S, M> {
           enable: this.displayScale
         },
         navigationControl: {
-          enable: true
-        },
-        pitchToggle: {
           enable: true,
-          config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
+          config: {
+            showCompass: true,
+            showZoom: true,
+            visualizePitch: true
+          }
         },
         globe: {
           enable: this.enableGlobe === true

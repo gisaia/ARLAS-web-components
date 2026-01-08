@@ -21,11 +21,11 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
+  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, ExternalEvent,
+  FILLSTROKE_LAYER_PREFIX, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, TERRAIN_SOURCE, VectorStyle
 } from 'arlas-map';
 import {
-  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup,
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup, RasterDEMSourceSpecification,
   RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 import { from } from 'rxjs';
@@ -186,6 +186,29 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     }
   };
 
+  /**
+   * @override Maplibre implementation.
+   * Adds hillshading and terrain for the specified source
+   * @param sourceId Source and layer identifier
+   * @param source Source instance
+   * @param map Map
+   * @param exaggeration How exaggerated the terrain will be
+   */
+  public setTerrain(source: RasterDEMSourceSpecification, map: ArlasMaplibreGL, exaggeration=1) {
+    this.setSource(HILLSHADE_SOURCE, source, map);
+    // Another source has to defined for better performances
+    this.setSource(TERRAIN_SOURCE, source, map);
+
+    this.addLayer(map, {
+      id: HILLSHADE_SOURCE,
+      type: 'hillshade',
+      source: HILLSHADE_SOURCE
+    });
+
+    map.getMapProvider().setTerrain({ source: TERRAIN_SOURCE, exaggeration });
+
+    return [HILLSHADE_SOURCE, TERRAIN_SOURCE];
+  }
 
   public getAllSources(map: ArlasMaplibreGL) {
     return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;

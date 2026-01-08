@@ -114,7 +114,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract setLayerVisibility(layer: L | string, isVisible: boolean, map: AbstractArlasMapGL);
   public abstract isLayerVisible(layer: L | string): boolean;
   public abstract getLayer(map: AbstractArlasMapGL, layerId: string): L;
-
+  public abstract setTerrain(source: S, map: AbstractArlasMapGL, exaggeration?: number): string[];
 
   public abstract queryFeatures(mouseEvent: MapLayerMouseEvent, map: AbstractArlasMapGL, layersIdPattern: string, options?: any);
   public abstract hasSource(map: AbstractArlasMapGL, source: L | AbstractArlasMapGL | string);

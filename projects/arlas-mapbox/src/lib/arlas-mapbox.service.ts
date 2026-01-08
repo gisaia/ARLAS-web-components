@@ -22,11 +22,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
+  FILLSTROKE_LAYER_PREFIX, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import {
   AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceRaw,
-  MapboxOptions, Point, Popup, RasterLayer, RasterSource, SymbolLayer
+  MapboxOptions, Point, Popup, RasterDemSource, RasterLayer, RasterSource, SymbolLayer
 } from 'mapbox-gl';
 import { ArlasDraw } from './draw/ArlasDraw';
 import { ArlasMapboxConfig, ArlasMapboxGL } from './map/ArlasMapboxGL';
@@ -183,7 +183,27 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     } else {
       map.getMapProvider().addSource(sourceId, source);
     }
-  };
+  }
+
+  /**
+   * @override Maplibre implementation.
+   * Adds hillshading for the specified source. Terrain is not available in the current mapbox version
+   * @param sourceId Source and layer identifier
+   * @param source Source instance
+   * @param map Map
+   * @param exaggeration How exaggerated the terrain will be
+   */
+  public setTerrain(source: RasterDemSource, map: ArlasMapboxGL, exaggeration=1) {
+    this.setSource(HILLSHADE_SOURCE, source, map);
+
+    this.addLayer(map, {
+      id: HILLSHADE_SOURCE,
+      type: 'hillshade',
+      source: HILLSHADE_SOURCE
+    });
+
+    return [HILLSHADE_SOURCE];
+  }
 
   /**
    * @override Mapbox implementation.

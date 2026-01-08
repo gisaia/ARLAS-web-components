@@ -17,16 +17,7 @@
  * under the License.
  */
 
-import { ControlButton, PitchToggle } from 'arlas-map';
-
-
-export class MaplibrePitchToggle extends PitchToggle {
-  protected _buildClasses(){
-    this.btnClasses = ['maplibregl-ctrl-icon', 'maplibregl-ctrl-pitch'];
-    this.containerClasses = ['maplibregl-ctrl', 'maplibregl-ctrl-group', 'maplibregl-ctrl-group-pitch'];
-  }
-}
-
+import { ControlButton } from 'arlas-map';
 
 export class MaplibreControlButton extends ControlButton {
 
