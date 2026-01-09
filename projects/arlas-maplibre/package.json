@@ -1,6 +1,6 @@
 {
   "name": "arlas-maplibre",
-  "version": "28.0.0-beta.2",
+  "version": "28.0.0-beta.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/gisaia/ARLAS-web-components.git"
@@ -21,6 +21,7 @@
     "@ngx-translate/http-loader": "^17.0.0"
   },
   "dependencies": {
+    "arlas-map": "28.0.0-beta.3",
     "maplibre-gl": "^5.2.0",
     "rxjs": "^7.4.0",
     "tslib": "^2.3.0"
