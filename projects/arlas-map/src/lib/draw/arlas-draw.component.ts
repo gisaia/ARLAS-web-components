@@ -25,7 +25,8 @@ import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
 import { TranslateService } from '@ngx-translate/core';
 import centroid from '@turf/centroid';
 import cleanCoords from '@turf/clean-coords';
-import { Feature, FeatureCollection, Geometry, Polygon, polygon } from '@turf/helpers';
+import { polygon } from '@turf/helpers';
+import { Feature, FeatureCollection, LineString, MultiLineString, MultiPolygon, Polygon } from 'geojson';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 import { AbstractArlasMapService } from '../arlas-map.service';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
@@ -245,7 +246,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
             this.draw.changeMode('limit_vertex', {
               featureId: selectedIds[0],
               maxVertexByPolygon: this.drawPolygonVerticesLimit,
-              selectedCoordPaths: (selectedFeatures[0] as Feature<Geometry>).geometry.coordinates
+              selectedCoordPaths: (selectedFeatures[0] as Feature<LineString | MultiLineString | Polygon | MultiPolygon>).geometry.coordinates
             });
             this.drawService.isInSimpleDrawMode = false;
           } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {

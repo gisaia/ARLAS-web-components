@@ -18,18 +18,11 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { FeatureCollection } from '@turf/helpers';
 import {
-  AbstractArlasMapService, ARLAS_ID,
-  ArlasDataLayer,
-  ArlasMapFrameworkService,
-  ArlasMapSource,
-  ExternalEvent, FILLSTROKE_LAYER_PREFIX,
-  LayerMetadata, MapLayers,
-  OPACITY_SUFFIX,
-  SCROLLABLE_ARLAS_ID,
-  VisualisationSetConfig
+  AbstractArlasMapService, ARLAS_ID, ArlasDataLayer, ArlasMapFrameworkService, ArlasMapSource, ExternalEvent,
+  FILLSTROKE_LAYER_PREFIX, LayerMetadata, MapLayers, OPACITY_SUFFIX, SCROLLABLE_ARLAS_ID, VisualisationSetConfig
 } from 'arlas-map';
+import { FeatureCollection } from 'geojson';
 import { Expression, GeoJSONSource, MapboxOptions } from 'mapbox-gl';
 import { ArlasMapboxGL } from './map/ArlasMapboxGL';
 import { ArlasAnyLayer } from './map/model/layers';

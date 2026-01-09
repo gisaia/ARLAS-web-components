@@ -79,21 +79,22 @@
     visibility: visible;
   }
 
-  --mdc-switch-track-width: 24px;
-  --mdc-switch-track-height: 5px;
-  --mdc-switch-handle-width: 12px;
-  --mdc-switch-state-layer-size: 0;
-  --mat-switch-selected-handle-horizontal-margin: 0 1px;
+  --mat-slide-toggle-track-width: 24px;
+  --mat-slide-toggle-touch-target-size: 24px;
+  --mat-slide-toggle-track-height: 5px;
+  --mat-slide-toggle-handle-width: 12px;
+  --mat-slide-toggle-state-layer-size: 0;
+  --mat-slide-toggle-selected-handle-horizontal-margin: 0 1px;
 
   .mdc-switch__handle {
-    --mat-switch-unselected-handle-size: 12px;
-    --mat-switch-selected-handle-size: 12px;
-    --mat-switch-pressed-handle-size: 12px;
+    --mat-slide-toggle-unselected-handle-size: 12px;
+    --mat-slide-toggle-selected-handle-size: 12px;
+    --mat-slide-toggle-pressed-handle-size: 12px;
 
-    --mdc-switch-unselected-handle-color: lightgrey;
-    --mdc-switch-unselected-focus-handle-color: lightgrey;
-    --mdc-switch-unselected-hover-handle-color: lightgrey;
-    --mdc-switch-unselected-pressed-handle-color: lightgrey;
+    --mat-slide-toggle-unselected-handle-color: lightgrey;
+    --mat-slide-toggle-unselected-focus-handle-color: lightgrey;
+    --mat-slide-toggle-unselected-hover-handle-color: lightgrey;
+    --mat-slide-toggle-unselected-pressed-handle-color: lightgrey;
   }
 
   &-text {

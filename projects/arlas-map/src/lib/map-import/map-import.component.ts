@@ -22,8 +22,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
-import { FeatureCollection, polygon } from '@turf/helpers';
-import { Feature } from 'geojson';
+import { polygon } from '@turf/helpers';
+import { Feature, FeatureCollection } from 'geojson';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { valid } from 'geojson-validation';
 import JSZip from 'jszip';

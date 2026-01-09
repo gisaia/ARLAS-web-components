@@ -18,8 +18,8 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
+import { Feature, FeatureCollection, Geometry } from 'geojson';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
-import { Feature, FeatureCollection, Geometry } from '@turf/helpers';
 
 export type DrawEvents = 'draw.create' | 'draw.delete' | 'draw.combine' | 'draw.uncombine' |
   'draw.update' | 'draw.selectionchange' | 'draw.modechange' | 'draw.render' | 'draw.actionable' |

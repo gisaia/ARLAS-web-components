@@ -19,11 +19,11 @@
 
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
   ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
+import { FeatureCollection } from 'geojson';
 import {
   AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup,
   RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification

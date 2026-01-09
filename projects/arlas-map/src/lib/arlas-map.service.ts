@@ -18,8 +18,8 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { FeatureCollection } from '@turf/helpers';
 import { ElementIdentifier } from 'arlas-web-components';
+import { FeatureCollection } from 'geojson';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
 import { ArlasDataLayer, ExternalEvent, MapLayers } from './map/model/layers';

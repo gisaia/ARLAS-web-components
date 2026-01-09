@@ -54,7 +54,7 @@
         justify-content: left;
         align-items: center;
 
-        --mdc-filled-text-field-container-color: transparent;
+        --mat-filled-text-field-container-color: transparent;
         --mat-form-field-focus-state-layer-opacity: 0;
       }
     }
@@ -65,7 +65,7 @@
   --mat-dialog-actions-alignment: end;
 
   &--apply {
-    --mdc-text-button-label-text-color: #ff4081;
+    --mat-text-button-label-text-color: #ff4081;
     font-weight: bolder;
     outline: none;
   }
