@@ -21,10 +21,11 @@ import { inject, Injectable } from '@angular/core';
 import { FeatureCollection } from '@turf/helpers';
 import { ElementIdentifier } from 'arlas-web-components';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
-import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
+import { AbstractArlasMapGL, OPACITY_SUFFIX } from './map/AbstractArlasMapGL';
 import { ArlasDataLayer, ExternalEvent, MapLayers } from './map/model/layers';
 import { ArlasMapSource } from './map/model/sources';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
+import { getAdditionalFillLayers } from './map/tools';
 
 /**
  * This service propose a set of method to execute the ArlasMapComponent logic.
@@ -67,9 +68,37 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   public abstract declareLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL): void;
 
-  public abstract declareBasemapSources(basemapSources: Array<ArlasMapSource<any>>, map: AbstractArlasMapGL): void;
+  /**
+   * Declare a basemapsource
+   * @param basemapSources
+   * @param map
+   */
+  public declareBasemapSources(basemapSources: Array<ArlasMapSource<any>>, map: AbstractArlasMapGL){
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
+    if (basemapSources) {
+    basemapSources.forEach(mapSource => {
+      mapSourcesMap.set(mapSource.id, mapSource);
+    });
+    mapSourcesMap.forEach((mapSource, id) => {
+      if (typeof (mapSource.source) !== 'string') {
+        this.mapFrameworkService.setSource(id, mapSource.source, map);
+      }
+    });
+    }
+  }
 
-  public abstract setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>);
+  public setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>){
+    if (mapLayers) {
+      const mapLayersCopy = mapLayers;
+      if (layers) {
+        mapLayersCopy.layers = mapLayersCopy.layers.concat(layers);
+      }
+      const layersMap = new Map();
+      mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
+      this.layersMap = layersMap;
+    }
+  }
 
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
@@ -276,7 +305,63 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
 
-  public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>);
+  /**
+   * Move an external layer
+   * @param map
+   * @param arlasDataLayers
+   * @param additionalLayer
+   * @param beforeId
+   * @protected
+   */
+  protected moveExternalLayer(map: AbstractArlasMapGL, arlasDataLayers: Map<string, ArlasDataLayer>,
+                              additionalLayer: ArlasDataLayer, beforeId?: string){
+    const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + additionalLayer.id;
+    this.moveLayerIfExist(map, arlasDataLayers, selectId,beforeId);
+    const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + additionalLayer.id;
+    this.moveLayerIfExist(map, arlasDataLayers, hoverId, beforeId);
+  }
+
+  /**
+   * Move layer if exist
+   * @param map
+   * @param arlasDataLayers
+   * @param selectId
+   * @param beforeId
+   * @protected
+   */
+  protected moveLayerIfExist(map: AbstractArlasMapGL, arlasDataLayers: Map<string, ArlasDataLayer>,
+                             selectId: string, beforeId?: string){
+    const selectLayer = arlasDataLayers.get(selectId);
+    if (!!selectLayer && this.mapFrameworkService.hasLayer(map, selectId)) {
+      this.mapFrameworkService.moveLayer(map, selectId, beforeId);
+    }
+  }
+
+  /**
+   * Get visible layer that match an id
+   * @param layer
+   * @param ids
+   */
+  public getVisibleIdsFilter(layer: any, ids: Array<string | number>) {
+    const lFilter = this.layersMap.get(layer).filter as Array<unknown>;
+    const filters = [];
+    if (lFilter) {
+      lFilter.forEach(f => {
+        filters.push(f);
+      });
+    }
+    if (filters.length === 0) {
+      filters.push('all');
+    }
+    filters.push([
+      'match',
+      ['get', 'id'],
+      Array.from(new Set(ids)),
+      true,
+      false
+    ]);
+    return filters;
+  };
 
   /**
    * Applies an opacity style to map layers based on a specified range of field values.
@@ -293,8 +378,52 @@ export abstract class AbstractArlasMapService<L, S, M> {
    * @param {number} insideOpacity - The opacity value to apply to features with field values within the specified range.
    * @param {number} outsideOpacity - The opacity value to apply to features with field values outside the specified range.
    */
-  public abstract adjustOpacityByRange(map: AbstractArlasMapGL, sourceIdPrefix: string, field: string,
-    start: number, end: number, insideOpacity: number, outsideOpacity: number): void;
+  public adjustOpacityByRange(map: AbstractArlasMapGL, sourceIdPrefix: string, field: string,
+    start: number, end: number, insideOpacity: number, outsideOpacity: number) {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
+
+    layers
+      .filter(l => this.mapFrameworkService.isLayerVisible(l))
+      .forEach(layer => {
+        map.setLayerOpacity(layer.id, layer.type, style);
+        if (layer.type === 'circle') {
+          const circleStrokePrefix = layer.type + '-stroke';
+
+          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+        }
+        const layersIds = getAdditionalFillLayers(layer.id);
+        for (const id of layersIds) {
+          const additionalLayer = this.mapFrameworkService.getLayer(map, id);
+          if(additionalLayer){
+            map.setLayerOpacity(id, additionalLayer.type, style);
+          }
+        }
+      });
+  };
+
+  /**
+   * Generates a style expression that applies different style values based on a specified range.
+   *
+   * @param {string} field - The name of the field to evaluate for the range condition.
+   * @param {number} start - The start value of the range. Features with field values greater than or equal to this value are considered.
+   * @param {number} end - The end value of the range. Features with field values less than or equal to this value are considered.
+   * @param {number} inValue - The style value to apply if the field value is within the specified range.
+   * @param {number} outValue - The style value to apply if the field value is outside the specified range.
+   *
+   * @returns {Type} A style expression that applies `inValue` or `outValue` based on the range condition.
+   */
+  protected getRangeStyle<T>(field: string, start: number, end: number, inValue: number, outValue: number): T {
+    return [
+      'case',
+      ['all',
+        ['>=', ['get', field], start],
+        ['<=', ['get', field], end]
+      ],
+      inValue, // the style value if field is between 'start' and 'end'
+      outValue // the style value otherwise
+    ] as T;
+  }
 
   /**
    * Resets the initial configured opacity style of the map layers whose source IDs start with the given sourceIdPrefix.
@@ -302,5 +431,24 @@ export abstract class AbstractArlasMapService<L, S, M> {
    * @param {AbstractArlasMapGL} map - The map instance on which the opacity style will be applied.
    * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
    */
-  public abstract resetOpacity(map: AbstractArlasMapGL, sourceIdPrefix: string): void;
+  public resetOpacity<T>(map: AbstractArlasMapGL, sourceIdPrefix: string) {
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    layers.forEach(layer => {
+      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as T | number;
+      map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      if (layer.type === 'circle') {
+        const circleStrokePrefix = layer.type + '-stroke';
+        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
+        + OPACITY_SUFFIX] as T | number;
+        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
+      }
+      const layersIds = getAdditionalFillLayers(layer.id);
+      for (const id of layersIds) {
+        const layer = this.mapFrameworkService.getLayer(map, id);
+        if (layer) {
+          map.setLayerOpacity(id, layer.type, layerOpacity);
+        }
+      }
+    });
+  };
 }

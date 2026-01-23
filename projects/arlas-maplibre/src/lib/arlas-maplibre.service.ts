@@ -395,12 +395,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
       const layer = this.getLayer(map, layerId);
       if (layer.type === 'fill') {
         const layersIds = getAdditionalFillLayers(layer.id);
-        for (let i = 0; i < layersIds.length; i++) {
-          const id = layersIds[i];
-          if (this.hasLayer(map, id)) {
-            map.getMapProvider().setLayoutProperty(id, 'visibility', isVisible ? 'visible' : 'none');
-          }
-        }
+        super.toggleLayersVisibility(map, layersIds, isVisible);
       }
       const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
       if (this.hasLayer(map, scrollableId)) {

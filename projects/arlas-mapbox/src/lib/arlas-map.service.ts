@@ -29,7 +29,6 @@ import {
   getAdditionalFillLayers,
   LayerMetadata,
   MapLayers,
-  OPACITY_SUFFIX,
   SCROLLABLE_ARLAS_ID,
   VisualisationSetConfig
 } from 'arlas-map';
@@ -87,30 +86,11 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
    * @param map Map instance.
    */
   public declareBasemapSources(basemapSources: Array<ArlasMapSource<MapboxSourceType>>, map: ArlasMapboxGL) {
-    // Add sources defined as input in mapSources;
-    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
-    if (basemapSources) {
-      basemapSources.forEach(mapSource => {
-        mapSourcesMap.set(mapSource.id, mapSource);
-      });
-      mapSourcesMap.forEach((mapSource, id) => {
-        if (typeof (mapSource.source) !== 'string') {
-          this.mapFrameworkService.setSource(id, mapSource.source, map);
-        }
-      });
-    }
+    super.declareBasemapSources(basemapSources, map);
   }
 
   public setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>) {
-    if (mapLayers) {
-      const mapLayersCopy = mapLayers;
-      if (layers) {
-        mapLayersCopy.layers = mapLayersCopy.layers.concat(layers);
-      }
-      const layersMap = new Map();
-      mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
-      this.layersMap = layersMap;
-    }
+    super.setLayersMap(mapLayers, layers);
   }
 
   public initMapLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL) {
@@ -119,49 +99,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
 
   public adjustOpacityByRange(map: ArlasMapboxGL, sourceIdPrefix: string, field: string,
     start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
-    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
-    const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
-    layers
-      .filter(l => this.mapService.isLayerVisible(l))
-      .forEach(layer => {
-        map.setLayerOpacity(layer.id, layer.type, style);
-        if (layer.type === 'circle') {
-          const circleStrokePrefix = layer.type + '-stroke';
-          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
-        }
-        const layersIds = getAdditionalFillLayers(layer.id);
-        for (let i = 0; i < layersIds.length; i++) {
-          const id = layersIds[i];
-          const additionalLayer = this.mapService.getLayer(map, id);
-          if (additionalLayer) {
-            map.setLayerOpacity(id, additionalLayer.type, style);
-          }
-        }
-      });
-  }
-
-  /**
-   * Generates a Mapbox GL style expression that applies different style values based on a specified range.
-   *
-   * @param {string} field - The name of the field to evaluate for the range condition.
-   * @param {number} start - The start value of the range. Features with field values greater than or equal to this value are considered.
-   * @param {number} end - The end value of the range. Features with field values less than or equal to this value are considered.
-   * @param {number} inValue - The style value to apply if the field value is within the specified range.
-   * @param {number} outValue - The style value to apply if the field value is outside the specified range.
-   *
-   * @returns {Expression} A Mapbox GL style expression that applies `inValue` or `outValue` based on the range condition.
-   */
-  private getRangeStyle(field: string, start: number, end: number, inValue: number, outValue: number): Expression {
-    const rangeStyle = [
-      'case',
-      ['all',
-        ['>=', ['get', field], start],
-        ['<=', ['get', field], end]
-      ],
-      inValue, // the style value if field is between 'start' and 'end'
-      outValue // the style value otherwise
-    ] as Expression;
-    return rangeStyle;
+    super.adjustOpacityByRange(map, sourceIdPrefix, field, start, end, insideOpacity, outsideOpacity);
   }
 
   /**
@@ -171,25 +109,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
    * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
    */
   public resetOpacity(map: ArlasMapboxGL, sourceIdPrefix: string): void {
-    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
-    layers.forEach(layer => {
-      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
-      map.setLayerOpacity(layer.id, layer.type, layerOpacity);
-      if (layer.type === 'circle') {
-        const circleStrokePrefix = layer.type + '-stroke';
-        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
-          + OPACITY_SUFFIX] as Expression | number;
-        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
-      }
-      const layersIds = getAdditionalFillLayers(layer.id);
-      for (let i = 0; i < layersIds.length; i++) {
-        const id = layersIds[i];
-        const additionalLayer = this.mapService.getLayer(map, id);
-        if (additionalLayer) {
-          map.setLayerOpacity(id, additionalLayer.type, layerOpacity);
-        }
-      }
-    });
+    super.resetOpacity(map, sourceIdPrefix);
   };
 
   public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
@@ -200,8 +120,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
         // Tests value in camel and kebab case due to an unknown issue on other projects
         if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
           map.setFilter(l, this.getVisibleIdsFilter(l, ids));
-          for (let i = 0; i < layersIds.length; i++) {
-            const id = layersIds[i];
+          for (const id of layersIds) {
             const additionalLayer = this.mapService.getLayer(map, id);
             if (additionalLayer) {
               map.setFilter(id, this.getVisibleIdsFilter(additionalLayer, ids));
@@ -210,8 +129,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
         }
       } else {
         map.setFilter(l, this.layersMap.get(l).filter);
-        for (let i = 0; i < layersIds.length; i++) {
-          const id = layersIds[i];
+        for (const id of layersIds) {
           const additionalLayer = this.mapService.getLayer(map, id);
           if (additionalLayer) {
             map.setFilter(id, this.layersMap.get(additionalLayer).filter);
@@ -222,25 +140,8 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
 
-  public getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
-    const lFilter = this.layersMap.get(layer).filter as Expression;
-    const filters = [];
-    if (lFilter) {
-      lFilter.forEach(f => {
-        filters.push(f);
-      });
-    }
-    if (filters.length === 0) {
-      filters.push('all');
-    }
-    filters.push([
-      'match',
-      ['get', 'id'],
-      Array.from(new Set(ids)),
-      true,
-      false
-    ]);
-    return filters;
+  public override getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
+    return super.getVisibleIdsFilter(layer, ids);
   }
 
   public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<ArlasDataLayer>,
@@ -286,37 +187,18 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
       this.mapService.moveLayer(map, layerId, beforeId);
       if (layer.type === 'fill') {
         const layersIds = getAdditionalFillLayers(layer.id);
-        for (let i = 0; i < layersIds.length; i++) {
-          const id = layersIds[i];
+        for (const id of layersIds) {
           const additionalLayer = arlasDataLayers.get(id);
           if (!!additionalLayer && this.mapService.hasLayer(map, id)) {
             this.mapService.moveLayer(map, id, beforeId);
           }
           if (!!additionalLayer && !!additionalLayer.id) {
-            const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + additionalLayer.id;
-            const selectLayer = arlasDataLayers.get(selectId);
-            if (!!selectLayer && this.mapService.hasLayer(map, selectId)) {
-              this.mapService.moveLayer(map, selectId, beforeId);
-            }
-            const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + additionalLayer.id;
-            const hoverLayer = arlasDataLayers.get(hoverId);
-            if (!!hoverLayer && this.mapService.hasLayer(map, hoverId)) {
-              this.mapService.moveLayer(map, hoverId, beforeId);
-            }
+            this.moveExternalLayer(map,arlasDataLayers, additionalLayer, beforeId);
           }
         }
       }
     }
-    const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + layer.id;
-    const selectLayer = arlasDataLayers.get(selectId);
-    if (!!selectLayer && this.mapService.hasLayer(map, selectId)) {
-      this.mapService.moveLayer(map, selectId, beforeId);
-    }
-    const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + layer.id;
-    const hoverLayer = arlasDataLayers.get(hoverId);
-    if (!!hoverLayer && this.mapService.hasLayer(map, hoverId)) {
-      this.mapService.moveLayer(map, hoverId, beforeId);
-    }
+    this.moveExternalLayer(map,arlasDataLayers, layer, beforeId);
   }
 
 
@@ -338,8 +220,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     /** add stroke layer if the layer is a fill */
     if (layer.type === 'fill') {
       const layersIds = getAdditionalFillLayers(layer.id);
-      for (let i = 0; i < layersIds.length; i++) {
-        const id = layersIds[i];
+      for (const id of layersIds) {
         const additionalLayer = arlasDataLayers.get(id) as ArlasAnyLayer;
         if (additionalLayer) {
           this.mapService.addLayer(map, additionalLayer, before);

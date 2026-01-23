@@ -24,6 +24,7 @@ import { AbstractDraw } from './draw/AbstractDraw';
 import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
 import { MapLayerMouseEvent } from './map/model/events';
 import { ArlasPoint } from './map/model/geometry';
+import { ArlasDataLayer } from './map/model/layers';
 import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
 import { VectorStyle } from './map/model/vector-style';
 
@@ -148,5 +149,13 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
 
   public emitError(message: string) {
     this._errorBus$.next(message);
+  }
+
+  public toggleLayersVisibility(map: AbstractArlasMapGL,  ids: string[],  isVisible: boolean){
+    for (const id of ids) {
+      if (this.hasLayer(map, id)) {
+        map.getMapProvider().setLayoutProperty(id, 'visibility', isVisible ? 'visible' : 'none');
+      }
+    }
   }
 }
