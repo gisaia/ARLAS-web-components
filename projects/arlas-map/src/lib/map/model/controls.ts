@@ -17,8 +17,6 @@
  * under the License.
  */
 
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-
 
 /** All the map controls configuration
  * These interfaces are generic.

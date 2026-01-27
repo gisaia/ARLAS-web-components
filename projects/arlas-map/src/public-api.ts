@@ -89,6 +89,7 @@ export {
 } from './lib/map/model/layers';
 export { ArlasLngLat, ArlasLngLatBounds, OnMoveResult } from './lib/map/model/map';
 export { ArlasMapSource } from './lib/map/model/sources';
+export { TerrainConfiguration } from './lib/map/model/terrain';
 export { VectorStyle, VectorStyleEnum } from './lib/map/model/vector-style';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
 export { latLngToWKT } from './lib/map/tools';
