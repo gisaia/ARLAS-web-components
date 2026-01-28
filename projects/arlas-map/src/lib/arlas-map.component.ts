@@ -719,10 +719,8 @@ export class ArlasMapComponent<L, S, M> {
    * @description Displays/Removes the terrain from the map
    */
   public toggleTerrain() {
-    this.hasTerrain.set(!this.hasTerrain());
-
     if (this.terrain().enable) {
-      if (this.hasTerrain()) {
+      if (!this.hasTerrain()) {
         this.terrainSources = this.mapFrameworkService.setTerrain(
           this.terrain().source, this.map, this.terrain().exaggeration);
       } else {
@@ -731,6 +729,8 @@ export class ArlasMapComponent<L, S, M> {
           this.mapFrameworkService.removeSource(this.map, source);
         }
       }
+
+      this.hasTerrain.set(!this.hasTerrain());
     }
   }
 }
