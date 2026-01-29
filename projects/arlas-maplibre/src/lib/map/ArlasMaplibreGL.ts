@@ -18,26 +18,14 @@
  */
 
 import {
-  AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds,
-  ControlButton, DrawControlsOption, MapConfig, MapExtent, OnMoveResult,
-  OPACITY_SUFFIX
+  AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds, ControlButton,
+  DrawControlsOption, MapConfig, MapExtent, OnMoveResult, OPACITY_SUFFIX
 } from 'arlas-map';
 import maplibregl, {
-  ControlPosition,
-  Expression,
-  FitBoundsOptions,
-  IControl,
-  LngLat,
-  LngLatBounds,
-  MapGeoJSONFeature,
-  Map as MaplibreMap,
-  MapOptions,
-  Point,
-  PointLike,
-  QueryRenderedFeaturesOptions,
-  StyleSetterOptions,
+  ControlPosition, Expression, FitBoundsOptions, IControl, LngLat, LngLatBounds, MapGeoJSONFeature,
+  Map as MaplibreMap, MapOptions, Point, PointLike, QueryRenderedFeaturesOptions, StyleSetterOptions,
 } from 'maplibre-gl';
-import { MaplibreControlButton, MaplibrePitchToggle } from './model/controls';
+import { MaplibreControlButton } from './model/controls';
 
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -219,12 +207,6 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
         const opt = this._controls?.scale?.config ?? defaultOpt;
         const scale = new maplibregl.ScaleControl(opt);
         this.addControl(scale, this._controls.scale?.position ?? 'bottom-right');
-      }
-
-      if (this._controls?.pitchToggle?.enable) {
-        const conf = this._controls.pitchToggle.config;
-        this.addControl(new MaplibrePitchToggle(conf.bearing, conf.pitch, conf.minpitchzoom),
-          this._controls.pitchToggle?.position ?? 'top-right');
       }
 
       if (this._controls?.navigationControl?.enable) {

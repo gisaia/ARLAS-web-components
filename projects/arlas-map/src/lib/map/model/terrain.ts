@@ -17,12 +17,14 @@
  * under the License.
  */
 
-import { ControlButton } from 'arlas-map';
-
-export class MaplibreControlButton extends ControlButton {
-
-  protected  _buildClasses(){
-    this.btnClasses = ['maplibregl-ctrl-icon', 'map__controls__icons', 'map__controls__icons--' + this.name];
-    this.containerClasses = ['maplibregl-ctrl', 'maplibregl-ctrl-group', 'maplibregl-ctrl-group-' + this.name];
-  }
+/**
+ * Arlas Map terrain configuration
+ */
+export interface TerrainConfiguration<S> {
+    /** Whether to display terrain */
+    enable: boolean;
+    /** The source specification */
+    source?: S;
+    /** Exaggeration factor for the elevation */
+    exaggeration?: number;
 }

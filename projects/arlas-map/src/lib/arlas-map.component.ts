@@ -18,7 +18,7 @@
  */
 
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, inject, Input, Output, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, inject, input, Input, Output, signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, FeatureCollection } from '@turf/helpers';
@@ -51,6 +51,7 @@ import { MapExtent } from './map/model/extent';
 import { ARLAS_VSET, ArlasDataLayer, getLayerName, MapLayers } from './map/model/layers';
 import { ArlasLngLatBounds, OnMoveResult } from './map/model/map';
 import { ArlasMapSource } from './map/model/sources';
+import { TerrainConfiguration } from './map/model/terrain';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
 
 @Component({
@@ -212,6 +213,14 @@ export class ArlasMapComponent<L, S, M> {
   /** --- LEGEND HIGHLIGHTS */
   /** @description Whether to highlight the keywords or color of hovered features */
   @Input() public highlightLegend = true;
+
+  /** --- Terrain */
+  /** @description Configuration for the display of the terrain */
+  public terrain = input<TerrainConfiguration<S>>({ enable: false });
+  /** @description Whether the map currently has a terrain */
+  public readonly hasTerrain = signal(false);
+  /** @description Sources added to the map for the terrain */
+  private terrainSources = new Array<string>();
 
   /** ANGULAR OUTPUTS */
 
@@ -400,7 +409,7 @@ export class ArlasMapComponent<L, S, M> {
         'GlobeControl.Enable': this.translate.instant(ENABLE_GLOBE),
         'GlobeControl.Disable': this.translate.instant(DISABLE_GLOBE)
       },
-      pitchWithRotate: false,
+      pitchWithRotate: true,
       transformRequest: this.transformRequest,
       attributionControl: false,
     };
@@ -427,11 +436,12 @@ export class ArlasMapComponent<L, S, M> {
           enable: this.displayScale
         },
         navigationControl: {
-          enable: true
-        },
-        pitchToggle: {
           enable: true,
-          config: { bearing: -20, pitch: 70, minpitchzoom: 11 }
+          config: {
+            showCompass: true,
+            showZoom: true,
+            visualizePitch: true
+          }
         },
         globe: {
           enable: this.enableGlobe === true
@@ -703,5 +713,24 @@ export class ArlasMapComponent<L, S, M> {
    */
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
     return this.drawComponent.getSelectedPolygon(mode);
+  }
+
+  /**
+   * @description Displays/Removes the terrain from the map
+   */
+  public toggleTerrain() {
+    if (this.terrain().enable) {
+      if (!this.hasTerrain()) {
+        this.terrainSources = this.mapFrameworkService.setTerrain(
+          this.terrain().source, this.map, this.terrain().exaggeration);
+      } else {
+        for (const source of this.terrainSources) {
+          this.mapFrameworkService.removeLayer(this.map, source);
+          this.mapFrameworkService.removeSource(this.map, source);
+        }
+      }
+
+      this.hasTerrain.set(!this.hasTerrain());
+    }
   }
 }
