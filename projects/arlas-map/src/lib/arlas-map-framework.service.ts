@@ -151,6 +151,12 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
     this._errorBus$.next(message);
   }
 
+  /**
+   * Toggle layer visibility
+   * @param map
+   * @param ids
+   * @param isVisible
+   */
   public toggleLayersVisibility(map: AbstractArlasMapGL,  ids: string[],  isVisible: boolean){
     for (const id of ids) {
       if (this.hasLayer(map, id)) {
