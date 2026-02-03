@@ -28,11 +28,17 @@ import {
   ExternalEvent,
   getAdditionalFillLayers,
   LayerMetadata,
-  MapLayers,
+  MapLayers, OPACITY_SUFFIX,
   SCROLLABLE_ARLAS_ID,
   VisualisationSetConfig
 } from 'arlas-map';
-import { ExpressionSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions } from 'maplibre-gl';
+import {
+  Expression,
+  ExpressionSpecification,
+  GeoJSONSource,
+  GeoJSONSourceSpecification,
+  MapOptions
+} from 'maplibre-gl';
 import { ArlasMaplibreGL } from './map/ArlasMaplibreGL';
 import { ArlasLayerSpecification } from './map/model/layers';
 import { MaplibreSourceType } from './map/model/sources';
@@ -87,11 +93,30 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
    * @param map Map instance.
    */
   public declareBasemapSources(basemapSources: Array<ArlasMapSource<MaplibreSourceType>>, map: ArlasMaplibreGL) {
-    super.declareBasemapSources(basemapSources, map);
+    // Add sources defined as input in mapSources;
+    const mapSourcesMap = new Map<string, ArlasMapSource<any>>();
+    if (basemapSources) {
+      basemapSources.forEach(mapSource => {
+        mapSourcesMap.set(mapSource.id, mapSource);
+      });
+      mapSourcesMap.forEach((mapSource, id) => {
+        if (typeof (mapSource.source) !== 'string') {
+          this.mapFrameworkService.setSource(id, mapSource.source, map);
+        }
+      });
+    }
   }
 
   public setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>) {
-    super.setLayersMap(mapLayers, layers);
+    if (mapLayers) {
+      const mapLayersCopy = mapLayers;
+      if (layers) {
+        mapLayersCopy.layers = mapLayersCopy.layers.concat(layers);
+      }
+      const layersMap = new Map();
+      mapLayersCopy.layers.forEach(layer => layersMap.set(layer.id, layer));
+      this.layersMap = layersMap;
+    }
   }
 
   public initMapLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMaplibreGL) {
@@ -100,7 +125,51 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
 
   public adjustOpacityByRange(map: ArlasMaplibreGL, sourceIdPrefix: string, field: string,
     start: number, end: number, insideOpacity: number, outsideOpacity: number): void {
-    super.adjustOpacityByRange(map, sourceIdPrefix, field, start, end, insideOpacity, outsideOpacity);
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    const style = this.getRangeStyle(field, start, end, insideOpacity, outsideOpacity);
+
+    layers
+      .filter(l => this.mapService.isLayerVisible(l))
+      .forEach(layer => {
+        map.setLayerOpacity(layer.id, layer.type, style);
+        if (layer.type === 'circle') {
+          const circleStrokePrefix = layer.type + '-stroke';
+
+          map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+        }
+        const layersIds = getAdditionalFillLayers(layer.id);
+        for (let i = 0; i < layersIds.length; i++) {
+          const id = layersIds[i];
+          const additionalLayer = this.mapService.getLayer(map, id);
+          if(additionalLayer){
+            map.setLayerOpacity(id, additionalLayer.type, style);
+          }
+        }
+      });
+  }
+
+  /**
+   * Generates a Maplibre GL style expression that applies different style values based on a specified range.
+   *
+   * @param {string} field - The name of the field to evaluate for the range condition.
+   * @param {number} start - The start value of the range. Features with field values greater than or equal to this value are considered.
+   * @param {number} end - The end value of the range. Features with field values less than or equal to this value are considered.
+   * @param {number} inValue - The style value to apply if the field value is within the specified range.
+   * @param {number} outValue - The style value to apply if the field value is outside the specified range.
+   *
+   * @returns {Expression} A Maplibre GL style expression that applies `inValue` or `outValue` based on the range condition.
+   */
+  private getRangeStyle(field: string, start: number, end: number, inValue: number, outValue: number): Expression {
+    const rangeStyle = [
+      'case',
+      ['all',
+        ['>=', ['get', field], start],
+        ['<=', ['get', field], end]
+      ],
+      inValue, // the style value if field is between 'start' and 'end'
+      outValue // the style value otherwise
+    ] as any;
+    return rangeStyle;
   }
 
   /**
@@ -110,7 +179,25 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
    * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
    */
   public resetOpacity(map: ArlasMaplibreGL, sourceIdPrefix: string): void {
-    super.resetOpacity(map, sourceIdPrefix);
+    const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+    layers.forEach(layer => {
+      const layerOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(layer.type) + OPACITY_SUFFIX] as Expression | number;
+      map.setLayerOpacity(layer.id, layer.type, layerOpacity);
+      if (layer.type === 'circle') {
+        const circleStrokePrefix = layer.type + '-stroke';
+        const circleStrokeOpacity = this.layersMap?.get(layer.id)?.paint[map.layerTypeToPaintKeyword(circleStrokePrefix)
+        + OPACITY_SUFFIX] as Expression | number;
+        map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
+      }
+      const layersIds = getAdditionalFillLayers(layer.id);
+      for (let i = 0; i < layersIds.length; i++) {
+        const id = layersIds[i];
+        const layer = this.mapService.getLayer(map, id);
+        if (layer) {
+          map.setLayerOpacity(id, layer.type, layerOpacity);
+        }
+      }
+    });
   };
 
   public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
@@ -139,7 +226,24 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
   }
 
   public getVisibleIdsFilter(layer: any, ids: Array<string | number>): ExpressionSpecification[] {
-    return super.getVisibleIdsFilter(layer, ids);
+    const lFilter = this.layersMap.get(layer).filter as ExpressionSpecification;
+    const filters = [];
+    if (lFilter) {
+      lFilter.forEach(f => {
+        filters.push(f);
+      });
+    }
+    if (filters.length === 0) {
+      filters.push('all');
+    }
+    filters.push([
+      'match',
+      ['get', 'id'],
+      Array.from(new Set(ids)),
+      true,
+      false
+    ]);
+    return filters;
   }
 
   public addVisualisation(visualisation: VisualisationSetConfig, visualisations: VisualisationSetConfig[], layers: Array<ArlasDataLayer>,
