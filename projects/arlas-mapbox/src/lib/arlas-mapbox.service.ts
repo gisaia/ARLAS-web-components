@@ -22,7 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { FeatureCollection } from '@turf/helpers';
 import {
   AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  FILLSTROKE_LAYER_PREFIX, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, VectorStyle
+  FILLSTROKE_LAYER_PREFIX,getAdditionalFillLayers, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import {
   AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceRaw,
@@ -282,10 +282,8 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
       map.getMapProvider().setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
       const layer = this.getLayer(map, layerId);
       if (layer.type === 'fill') {
-        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        if (this.hasLayer(map, strokeId)) {
-          map.getMapProvider().setLayoutProperty(strokeId, 'visibility', isVisible ? 'visible' : 'none');
-        }
+        const layersIds = getAdditionalFillLayers(layer.id);
+        super.toggleLayersVisibility(map, layersIds, isVisible);
       }
       const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
       if (!layer.id.startsWith(SCROLLABLE_ARLAS_ID) && this.hasLayer(map, scrollableId)) {
