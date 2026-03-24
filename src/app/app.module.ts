@@ -37,7 +37,7 @@ import { ArlasMaplibreModule } from 'arlas-maplibre';
 import {
   AwcCollectionService,
   BaseCollectionService,
-  CalendarTimelineComponent,
+  CalendarTimelineModule,
   CollectionModule,
   DonutModule,
   HistogramModule,
@@ -52,7 +52,7 @@ import { CalendarTimelineDemoComponent } from './calendar-timeline-demo/calendar
 import { CogVisualisationComponent } from './cog-visualisation/cog-visualisation.component';
 import { DonutDemoComponent } from './donut-demo/donut-demo.component';
 import { HistogramDemoComponent } from './histogram-demo/histogram-demo.component';
-import { LayerLegendDemoComponent } from "./layer-legend/layer-legend-demo.component";
+import { LayerLegendDemoComponent } from './layer-legend/layer-legend-demo.component';
 import { MapboxDemoModule } from './mapgl-demo/mapbox-demo.module';
 import { MapglDemoComponent } from './mapgl-demo/mapgl-demo.component';
 import { MaplibreDemoModule } from './mapgl-libre-demo/maplibre-demo.module';
@@ -110,7 +110,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     PowerbarsModule,
     WmtsLayerManagerModule,
-    CalendarTimelineComponent,
+    CalendarTimelineModule,
     CollectionModule.forRoot({
       loader: {
         provide: BaseCollectionService,

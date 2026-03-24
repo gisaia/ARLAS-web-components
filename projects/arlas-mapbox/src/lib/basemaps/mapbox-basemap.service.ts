@@ -20,7 +20,7 @@
 import { inject, Injectable } from '@angular/core';
 import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
 import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
-import * as pmtiles from 'pmtiles';
+import { Protocol } from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
@@ -59,7 +59,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
   }
 
   public declareProtomapProtocol(map: ArlasMapboxGL) {
-    const protocol = new pmtiles.Protocol();
+    const protocol = new Protocol();
     if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
       /** addSourceType is private readonly */
       (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));

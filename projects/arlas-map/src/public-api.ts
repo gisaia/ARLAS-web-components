@@ -71,22 +71,24 @@ export {
 } from './lib/map-settings/map-settings.component';
 export { MapSettingsModule } from './lib/map-settings/map-settings.module';
 export {
-  AbstractArlasMapGL, ArlasMapOffset, ArlasMapOption, CROSS_LAYER_PREFIX, GEOJSON_SOURCE_TYPE,
-  LAYER_SWITCHER_TOOLTIP, MapConfig, OPACITY_SUFFIX, RESET_BEARING, ZOOM_IN, ZOOM_OUT
+  AbstractArlasMapGL, ArlasMapOffset, ArlasMapOption, CROSS_LAYER_PREFIX,
+  GEOJSON_SOURCE_TYPE, HILLSHADE_SOURCE, LAYER_SWITCHER_TOOLTIP, MapConfig,
+  OPACITY_SUFFIX, RESET_BEARING, TERRAIN_SOURCE, ZOOM_IN, ZOOM_OUT
 } from './lib/map/AbstractArlasMapGL';
 export {
-  ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl,
-  DrawControlsOption, IconConfig, PitchToggle, PitchToggleConfigControls
+  ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl, DrawControlsOption, IconConfig
 } from './lib/map/model/controls';
 export { MapLayerMouseEvent, MapMouseEvent } from './lib/map/model/events';
 export { MapExtent } from './lib/map/model/extent';
 export { GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from './lib/map/model/filters';
+export * from './lib/map/model/layers';
 export {
   ARLAS_ID, ARLAS_VSET, ArlasDataLayer, ArlasPaint, ExternalEvent, ExternalEventLayer, FillStroke, FILLSTROKE_LAYER_PREFIX, getLayerName,
   HOVER_LAYER_PREFIX, LayerEvents, LayerMetadata, MapLayers, MetadataHiddenProps, PaintColor, PaintValue, SCROLLABLE_ARLAS_ID, SELECT_LAYER_PREFIX
 } from './lib/map/model/layers';
 export { ArlasLngLat, ArlasLngLatBounds, OnMoveResult } from './lib/map/model/map';
 export { ArlasMapSource } from './lib/map/model/sources';
+export { TerrainConfiguration } from './lib/map/model/terrain';
 export { VectorStyle, VectorStyleEnum } from './lib/map/model/vector-style';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
-export { latLngToWKT } from './lib/map/tools';
+export { getAdditionalFillLayers, latLngToWKT } from './lib/map/tools';

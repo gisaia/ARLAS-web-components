@@ -78,6 +78,10 @@ export const LAYER_SWITCHER_TOOLTIP = marker('Manage layers');
 export const OPACITY_SUFFIX = '-opacity';
 export const ENABLE_GLOBE = marker('Enable globe');
 export const DISABLE_GLOBE = marker('Disable globe');
+
+export const HILLSHADE_SOURCE = 'arlas-hillshade';
+export const TERRAIN_SOURCE = 'arlas-terrain';
+
 /**
  * The aim of this class is to handle all core interaction we have
  * with a map provider.

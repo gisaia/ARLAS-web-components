@@ -20,12 +20,12 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  ExternalEvent, FILLSTROKE_LAYER_PREFIX, SCROLLABLE_ARLAS_ID, VectorStyle
+  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, ExternalEvent,
+  FILLSTROKE_LAYER_PREFIX,getAdditionalFillLayers, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, TERRAIN_SOURCE, VectorStyle
 } from 'arlas-map';
 import { FeatureCollection } from 'geojson';
 import {
-  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup,
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup, RasterDEMSourceSpecification,
   RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 import { from } from 'rxjs';
@@ -186,6 +186,29 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     }
   };
 
+  /**
+   * @override Maplibre implementation.
+   * Adds hillshading and terrain for the specified source
+   * @param sourceId Source and layer identifier
+   * @param source Source instance
+   * @param map Map
+   * @param exaggeration How exaggerated the terrain will be
+   */
+  public setTerrain(source: RasterDEMSourceSpecification, map: ArlasMaplibreGL, exaggeration=1) {
+    this.setSource(HILLSHADE_SOURCE, source, map);
+    // Another source has to defined for better performances
+    this.setSource(TERRAIN_SOURCE, source, map);
+
+    this.addLayer(map, {
+      id: HILLSHADE_SOURCE,
+      type: 'hillshade',
+      source: HILLSHADE_SOURCE
+    });
+
+    map.getMapProvider().setTerrain({ source: TERRAIN_SOURCE, exaggeration });
+
+    return [HILLSHADE_SOURCE, TERRAIN_SOURCE];
+  }
 
   public getAllSources(map: ArlasMaplibreGL) {
     return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;
@@ -221,10 +244,13 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     this.addLayer(map, layer, before);
     /** add stroke layer if the layer is a fill */
     if (layer.type === 'fill') {
-      const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-      const strokeLayer = arlasDataLayers.get(strokeId);
-      if (strokeLayer) {
-        this.addLayer(map, strokeLayer, before);
+      const layersIds = getAdditionalFillLayers(layer.id);
+      for (let i = 0; i < layersIds.length; i++) {
+        const id = layersIds[i];
+        const layer = arlasDataLayers.get(id);
+        if (layer) {
+          this.addLayer(map, layer, before);
+        }
       }
     }
   }
@@ -264,21 +290,24 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     if (this.hasLayer(map, layerId)) {
       this.moveLayer(map, layerId);
       if (layer.type === 'fill') {
-        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        const strokeLayer = arlasDataLayers.get(strokeId);
-        if (!!strokeLayer && this.hasLayer(map, strokeId)) {
-          this.moveLayer(map, strokeId);
-        }
-        if (!!strokeLayer && !!strokeLayer.id) {
-          const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + strokeLayer.id;
-          const selectLayer = arlasDataLayers.get(selectId);
-          if (!!selectLayer && this.hasLayer(map, selectId)) {
-            this.moveLayer(map, selectId);
+        const layersIds = getAdditionalFillLayers(layer.id);
+        for (let i = 0; i < layersIds.length; i++) {
+          const id = layersIds[i];
+          const dataLayer = arlasDataLayers.get(id);
+          if (!!dataLayer && this.hasLayer(map, id)) {
+            this.moveLayer(map, id);
           }
-          const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + strokeLayer.id;
-          const hoverLayer = arlasDataLayers.get(hoverId);
-          if (!!hoverLayer && this.hasLayer(map, hoverId)) {
-            this.moveLayer(map, hoverId);
+          if (!!dataLayer && !!dataLayer.id) {
+            const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + dataLayer.id;
+            const selectLayer = arlasDataLayers.get(selectId);
+            if (!!selectLayer && this.hasLayer(map, selectId)) {
+              this.moveLayer(map, selectId);
+            }
+            const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + dataLayer.id;
+            const hoverLayer = arlasDataLayers.get(hoverId);
+            if (!!hoverLayer && this.hasLayer(map, hoverId)) {
+              this.moveLayer(map, hoverId);
+            }
           }
         }
       }
@@ -365,10 +394,8 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
       map.getMapProvider().setLayoutProperty(layerId, 'visibility', isVisible ? 'visible' : 'none');
       const layer = this.getLayer(map, layerId);
       if (layer.type === 'fill') {
-        const strokeId = layer.id.replace(ARLAS_ID, FILLSTROKE_LAYER_PREFIX);
-        if (this.hasLayer(map, strokeId)) {
-          map.getMapProvider().setLayoutProperty(strokeId, 'visibility', isVisible ? 'visible' : 'none');
-        }
+        const layersIds = getAdditionalFillLayers(layer.id);
+        super.toggleLayersVisibility(map, layersIds, isVisible);
       }
       const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
       if (this.hasLayer(map, scrollableId)) {

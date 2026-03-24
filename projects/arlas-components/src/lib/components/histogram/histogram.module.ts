@@ -24,7 +24,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { GetCollectionUnitPipe } from '../../pipes/get-collection-unit/get-collection-unit.pipe';
-import { HistogramKeyPipe } from './histogram-key.pipe';
 import { HistogramComponent } from './histogram.component';
 
 @NgModule({
@@ -34,8 +33,7 @@ import { HistogramComponent } from './histogram.component';
     MatTooltipModule,
     GetCollectionUnitPipe,
     MatIconModule,
-    MatButtonModule,
-    HistogramKeyPipe
+    MatButtonModule
   ],
   declarations: [HistogramComponent ],
   exports: [HistogramComponent]

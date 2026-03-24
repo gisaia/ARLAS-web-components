@@ -10,24 +10,24 @@
   @for (v of data.visualisations; track v;) {
     @if (v.match === 'none') {
       <div class="visualisation__item visualisation__item--unmatched" [class.visualisation__item--selected]="v.selected">
-        <arlas-cog-preview
-          [title]="v.visualisation.name"
+        <arlas-cog-preview [title]="v.visualisation.name"
           [description]="v.visualisation.description"
-          [preview]="v.preview ?? DEFAULT_IMAGE"
-        ></arlas-cog-preview>
-        <div class="visualisation__item__error">
-          {{ 'Cannot be applied to the currently visualised elements' | translate }}
-        </div>
+          [preview]="v.preview ?? DEFAULT_IMAGE"></arlas-cog-preview>
+
+        @if (!data.loading) {
+          <div class="visualisation__item__error">
+            {{ 'Cannot be applied to the currently visualised elements' | translate }}
+          </div>
+        }
       </div>
     } @else {
       <div [mat-dialog-close]="v.visualisation" class="visualisation__item visualisation__item--matched"
           [class.visualisation__item--selected]="v.selected">
-        <arlas-cog-preview
-          [title]="v.visualisation.name"
+        <arlas-cog-preview [title]="v.visualisation.name"
           [description]="v.visualisation.description"
-          [preview]="v.preview ?? DEFAULT_IMAGE"
-        ></arlas-cog-preview>
-        @if (v.match === 'partial') {
+          [preview]="v.preview ?? DEFAULT_IMAGE"></arlas-cog-preview>
+
+        @if (v.match === 'partial' && !data.loading) {
           <div class="visualisation__item__warning">
             {{ 'Cannot be applied to all of the currently visualised elements' | translate }}
           </div>

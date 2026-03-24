@@ -50,7 +50,7 @@ export abstract class LegendService {
   public abstract getColorField(paint: any, layerType: string): string;
 
   public highlightFeatures(layerId: string, features: Array<GeoJSON.Feature<GeoJSON.Geometry>>) {
-    this.highlightSource.next({layerId, properties: features.map(f => f.properties)});
+    this.highlightSource.next({layerId: layerId, properties: features.map(f => f.properties)});
   }
 
   public static setProvidedColorLegend(colorLegend: Legend, field: string,

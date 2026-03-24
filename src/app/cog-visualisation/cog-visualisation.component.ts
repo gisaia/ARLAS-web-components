@@ -34,11 +34,16 @@ import { CogLegendComponent, CogModalComponent, CogPreviewComponent } from 'arla
 })
 export class CogVisualisationComponent {
   public readonly dialog = inject(MatDialog);
+
+  public longDescription = `
+    The normalized difference vegetation index (NDVI) is a widely used metric for quantifying the health and density of vegetation using sensor data. It is calculated from spectrometric data at two specific bands: red and near-infrared. The spectrometric data is usually sourced from remote sensors, such as satellites.
+    The metric is popular in industry because of its accuracy. It has a high correlation with the true state of vegetation on the ground. The index is easy to interpret: NDVI will be a value between -1 and 1. An area with nothing growing in it will have an NDVI of zero. NDVI will increase in proportion to vegetation growth. An area with dense, healthy vegetation will have an NDVI of one. NDVI values less than 0 suggest a lack of dry land. An ocean will yield an NDVI of -1`;
+
   public openDialog() {
     const data = {
       visualisations: [
         {
-          visualisation: {name: 'NDVI', description: 'NDVI description'},
+          visualisation: {name: 'NDVI', description: this.longDescription},
           match: 'all',
           preview: './assets/logo-gisaia.png',
           selected: true

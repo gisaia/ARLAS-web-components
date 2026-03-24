@@ -55,7 +55,6 @@
 	"Enable globe": "Activar globo",
 	"Disable globe": "Desactivar globo",
 	"other_color": "Otro",
-	"Toggle Pitch": "Activar/Quitar inclinación del mapa",
 	"legend without metric": "{{field}} ({{normalized}})",
 	"legend": "{{metric}} de los {{field}} ({{normalized}})",
 	"legend without normalized": "{{metric}} de los {{field}}",

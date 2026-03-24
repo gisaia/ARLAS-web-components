@@ -17,25 +17,15 @@
  * under the License.
  */
 
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import {
-  AbstractArlasMapGL,
-  MapConfig,
-  OnMoveResult,
-  MapLayers, ControlButton, ControlPosition, DrawControlsOption,
-  MapExtent, ArlasLngLatBounds, ArlasLngLat, OPACITY_SUFFIX
+  AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds, ControlButton, ControlPosition,
+  DrawControlsOption, MapConfig, MapExtent, MapLayers, OnMoveResult, OPACITY_SUFFIX
 } from 'arlas-map';
 import mapboxgl, {
-  AnyLayer,
-  Control,
-  Expression,
-  IControl,
-  LngLat,
-  LngLatBounds,
-  MapboxOptions,
-  Point
+  AnyLayer, Control, Expression, IControl, LngLat, LngLatBounds, MapboxOptions, Point
 } from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { MapBoxControlButton, MapBoxPitchToggle } from './model/controls';
+import { MapBoxControlButton } from './model/controls';
 import { ArlasAnyLayer } from './model/layers';
 
 export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
@@ -119,11 +109,6 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
         const opt = this._controls?.scale?.config ?? defaultOpt;
         const scale = new mapboxgl.ScaleControl(opt);
         this.addControl(scale, this._controls.scale?.position ?? 'bottom-right');
-      }
-
-      if (this._controls?.pitchToggle?.enable) {
-        const conf = this._controls.pitchToggle.config;
-        this.addControl(new MapBoxPitchToggle(conf.bearing, conf.pitch, conf.minpitchzoom), this._controls.pitchToggle?.position ?? 'top-right');
       }
 
       if (this._controls?.navigationControl?.enable) {

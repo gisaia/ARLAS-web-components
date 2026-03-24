@@ -279,6 +279,38 @@ export abstract class AbstractArlasMapService<L, S, M> {
   public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>);
 
   /**
+   * Move an external layer
+   * @param map
+   * @param arlasDataLayers
+   * @param additionalLayer
+   * @param beforeId
+   * @protected
+   */
+  protected moveExternalLayer(map: AbstractArlasMapGL, arlasDataLayers: Map<string, ArlasDataLayer>,
+                              additionalLayer: ArlasDataLayer, beforeId?: string){
+    const selectId = 'arlas-' + ExternalEvent.select.toString() + '-' + additionalLayer.id;
+    this.moveLayerIfExist(map, arlasDataLayers, selectId,beforeId);
+    const hoverId = 'arlas-' + ExternalEvent.hover.toString() + '-' + additionalLayer.id;
+    this.moveLayerIfExist(map, arlasDataLayers, hoverId, beforeId);
+  }
+
+  /**
+   * Move layer if exist
+   * @param map
+   * @param arlasDataLayers
+   * @param selectId
+   * @param beforeId
+   * @protected
+   */
+  protected moveLayerIfExist(map: AbstractArlasMapGL, arlasDataLayers: Map<string, ArlasDataLayer>,
+                             selectId: string, beforeId?: string){
+    const selectLayer = arlasDataLayers.get(selectId);
+    if (!!selectLayer && this.mapFrameworkService.hasLayer(map, selectId)) {
+      this.mapFrameworkService.moveLayer(map, selectId, beforeId);
+    }
+  }
+
+  /**
    * Applies an opacity style to map layers based on a specified range of field values.
    * This method iterates over all layers whose source IDs start with the given sourceIdPrefix
    * and adjusts the opacity of features within those layers. Features with field values

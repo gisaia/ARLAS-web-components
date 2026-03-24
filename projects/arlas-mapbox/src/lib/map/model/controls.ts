@@ -17,15 +17,7 @@
  * under the License.
  */
 
-import { ControlButton, PitchToggle } from 'arlas-map';
-
-export class MapBoxPitchToggle extends PitchToggle {
-
-  protected _buildClasses() {
-    this.btnClasses = ['mapboxgl-ctrl-icon', 'mapboxgl-ctrl-pitch'];
-    this.containerClasses = ['mapboxgl-ctrl', 'mapboxgl-ctrl-group', 'mapboxgl-ctrl-group-pitch'];
-  }
-}
+import { ControlButton } from 'arlas-map';
 
 export class MapBoxControlButton extends ControlButton {
   protected _buildClasses() {
