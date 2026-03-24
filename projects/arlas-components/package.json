@@ -22,16 +22,16 @@
     "@types/tinycolor2": "^1.4.0",
     "core-js": "~3.26.1",
     "moment": "^2.24.0",
-    "stream": "0.0.2",
     "rxjs": "^7.4.0",
+    "stream": "0.0.2",
+    "tslib": "^2.3.0",
     "zone.js": "^0.15.0"
   },
   "dependencies": {
     "arlas-d3": "12.3.0-beta.1",
     "iv-viewer": "^2.2.1",
     "ng-lazyload-image": "^9.1.3",
-    "numeral": "^2.0.6",
-    "tslib": "^2.3.0"
+    "numeral": "^2.0.6"
   },
   "exports": {
     "./assets/i18n/en.json": {

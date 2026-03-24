@@ -19,6 +19,8 @@
     "@angular/router": "^20.3.15",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
+    "rxjs": "^7.4.0",
+    "tslib": "^2.3.0",
     "zone.js": "^0.15.0"
   },
   "dependencies": {
@@ -30,7 +32,7 @@
     "@turf/center": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "@turf/circle": "^6.5.0",
-    "@turf/clean-coords": "^7.0.0",
+    "@turf/clean-coords": "^6.5.0",
     "@turf/helpers": "^6.5.0",
     "@turf/length": "^6.5.0",
     "@turf/midpoint": "^6.5.0",
@@ -43,9 +45,7 @@
     "jsts": "2.1.0",
     "jszip": "^3.2.1",
     "pmtiles": "4.3.0",
-    "rxjs": "^7.4.0",
     "shpjs": "^4.0.4",
-    "tslib": "^2.3.0",
     "wellknown": "0.5.0"
   },
   "exports": {
