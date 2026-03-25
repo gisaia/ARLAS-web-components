@@ -19,15 +19,18 @@
 
 import {
   AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
-  IterableDiffers, SimpleChanges, ViewEncapsulation
+  IterableDiffers,
+  OnChanges, OnInit, Output,
+  SimpleChanges, ViewEncapsulation
 } from '@angular/core';
-import { OnChanges, OnInit, Output } from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { MatSelectChange } from '@angular/material/select';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslateService } from '@ngx-translate/core';
 import { fromEvent, Observable, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 import { Column } from '../model/column';
 import { Item } from '../model/item';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
@@ -36,10 +39,11 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
-  PageQuery, ResultListOptions, matchAndReplace } from '../utils/results.utils';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
+import {
+  Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
+  matchAndReplace,
+  PageQuery, ResultListOptions
+} from '../utils/results.utils';
 
 /**
  * ResultList component allows to structure data in a filterable and sortable table.
@@ -370,15 +374,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   /**
    * @Output : Angular
-   * @description Emits one item identifier that is hovered..
+   * @description Emits one item identifier that is hovered.
    */
-  @Output() public consultedItemEvent: Subject<ElementIdentifier> = new Subject<ElementIdentifier>();
-
-  /**
-   * @Output : Angular
-   * @description Emits the item that is clicked on.
-   */
-  @Output() public clickOnItemEvent = new Subject<ElementIdentifier>();
+  @Output() public consultedItemEvent = new Subject<ElementIdentifier>();
 
   /**
    * @Output : Angular
@@ -826,18 +824,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public onLeaveItem(item: Item): void {
     this.setConsultedItem('leave-' + item.identifier);
-  }
-
-  /**
-   * @description Called when item is clicked. It is instant compared to other events
-   * @param item Item clicked on
-   */
-  public onClickItem(item: Item): void {
-    const elementidentifier: ElementIdentifier = {
-      idFieldName: this.fieldsConfiguration.idFieldName,
-      idValue: item.identifier
-    };
-    this.clickOnItemEvent.next(elementidentifier);
   }
 
   /**

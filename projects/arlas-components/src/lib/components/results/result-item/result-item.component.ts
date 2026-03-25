@@ -18,22 +18,22 @@
  */
 
 import { Component, Input, OnInit, Output } from '@angular/core';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
-import { TranslateService } from '@ngx-translate/core';
-import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
 
 
 @Component({
   selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
-  styleUrls: ['./result-item.component.css'],
+  styleUrls: ['./result-item.component.scss'],
   standalone: false
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
@@ -57,7 +57,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * @Input
    * @description An object representing an Item .
    */
-  @Input() public rowItem: Item;
+  @Input({ required: true }) public rowItem: Item;
   /**
   * @Input
   * @description Name of the id field.
