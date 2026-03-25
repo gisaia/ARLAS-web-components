@@ -34,7 +34,7 @@ import { DrawControlsOption } from '../map/model/controls';
 import { MapMouseEvent } from '../map/model/events';
 import { latLngToWKT } from '../map/tools';
 import { AbstractDraw, DrawModes } from './AbstractDraw';
-import { AoiDimensions, BboxDrawCommand } from './draw.models';
+import { AoiEdition, BboxDrawCommand } from './draw.models';
 import { MapboxAoiDrawService } from './draw.service';
 import { limitVertexDirectSelectMode } from './modes/LimitVertexDirectSelectMode';
 import { validGeomDrawPolygonMode } from './modes/ValidGeomDrawPolygonMode';
@@ -84,7 +84,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
 
   /** @description Emits the the dimensions of the polygon/bbox that is being drawn. */
-  @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
+  @Output() public onAoiEdit: EventEmitter<AoiEdition> = new EventEmitter();
 
 
   /** Number of drawn vertices (incremented in draw mode). Reset to 0 when the drawing is finished. */

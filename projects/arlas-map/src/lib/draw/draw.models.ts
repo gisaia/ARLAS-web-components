@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export interface AoiDimensions {
+export interface AoiEdition {
   area: number;
   areaMessage?: string;
   show: boolean;

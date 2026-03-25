@@ -41,7 +41,7 @@ export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { CoordinatesComponent } from './lib/coordinates/coordinates.component';
 export { CoordinatesErrorPipe } from './lib/coordinates/coordinates.pipe';
 export { AbstractDraw } from './lib/draw/AbstractDraw';
-export { AoiDimensions, AoiDimensions as AoiEdition, Corner } from './lib/draw/draw.models';
+export { AoiEdition, Corner } from './lib/draw/draw.models';
 export { MapboxAoiDrawService } from './lib/draw/draw.service';
 export { circleMode } from './lib/draw/modes/circles/circle.mode';
 export { radiusCircleMode } from './lib/draw/modes/circles/radius.circle.mode';
@@ -92,3 +92,4 @@ export { TerrainConfiguration } from './lib/map/model/terrain';
 export { VectorStyle, VectorStyleEnum } from './lib/map/model/vector-style';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
 export { getAdditionalFillLayers, latLngToWKT } from './lib/map/tools';
+

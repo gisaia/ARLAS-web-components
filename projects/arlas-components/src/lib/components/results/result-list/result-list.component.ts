@@ -126,12 +126,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public TAIL_HEIGHT = 30;
 
-
-  // public loadAnimationConfig = {
-  //   animationType: ngxLoadingAnimationTypes.threeBounce, backdropBackgroundColour: 'rgba(100,100,100,0.5)',
-  //   backdropBorderRadius: '0', primaryColour: '#ffffff', secondaryColour: '#ffffff', tertiaryColour: '#ffffff'
-  // };
-
   public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0 };
 
   /**
