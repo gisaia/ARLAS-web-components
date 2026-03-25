@@ -41,7 +41,7 @@ export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { CoordinatesComponent } from './lib/coordinates/coordinates.component';
 export { CoordinatesErrorPipe } from './lib/coordinates/coordinates.pipe';
 export { AbstractDraw } from './lib/draw/AbstractDraw';
-export { AoiDimensions as AoiEdition, Corner } from './lib/draw/draw.models';
+export { AoiEdition, Corner } from './lib/draw/draw.models';
 export { MapboxAoiDrawService } from './lib/draw/draw.service';
 export { circleMode } from './lib/draw/modes/circles/circle.mode';
 export { radiusCircleMode } from './lib/draw/modes/circles/radius.circle.mode';
@@ -64,9 +64,7 @@ export {
 } from './lib/legend/legend.config';
 export { LegendService } from './lib/legend/legend.service';
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools';
-export {
-  AllowedImportGeometry, MapImportComponent, MapImportDialogComponent
-} from './lib/map-import/map-import.component';
+export { AllowedImportGeometry, MapImportComponent, MapImportDialogComponent } from './lib/map-import/map-import.component';
 export { MapImportModule } from './lib/map-import/map-import.module';
 export {
   GeometrySelectModel, GeoQuery, GeoQueryOperator, MapSettingsComponent, MapSettingsDialogComponent, MapSettingsService, OperationSelectModel
@@ -83,6 +81,7 @@ export {
 export { MapLayerMouseEvent, MapMouseEvent } from './lib/map/model/events';
 export { MapExtent } from './lib/map/model/extent';
 export { GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from './lib/map/model/filters';
+export * from './lib/map/model/layers';
 export {
   ARLAS_ID, ARLAS_VSET, ArlasDataLayer, ArlasPaint, ExternalEvent, ExternalEventLayer, FillStroke, FILLSTROKE_LAYER_PREFIX, getLayerName,
   HOVER_LAYER_PREFIX, LayerEvents, LayerMetadata, MapLayers, MetadataHiddenProps, PaintColor, PaintValue, SCROLLABLE_ARLAS_ID, SELECT_LAYER_PREFIX
@@ -92,7 +91,5 @@ export { ArlasMapSource } from './lib/map/model/sources';
 export { TerrainConfiguration } from './lib/map/model/terrain';
 export { VectorStyle, VectorStyleEnum } from './lib/map/model/vector-style';
 export { VisualisationSetConfig } from './lib/map/model/visualisationsets';
-export { latLngToWKT, getAdditionalFillLayers } from './lib/map/tools';
+export { getAdditionalFillLayers, latLngToWKT } from './lib/map/tools';
 
-/** useful interface **/
-export * from './lib/map/model/layers';

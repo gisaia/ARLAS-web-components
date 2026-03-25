@@ -18,14 +18,26 @@
  * under the License.
  */
 
+import { Detail, MatchInfo } from 'projects/arlas-components/src/lib/components/results/utils/detailed-data-retriever';
 import { Observable, from, of } from 'rxjs';
 import { ActionFilter, AdditionalInfo, Attachment } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 import { Action, DetailedDataRetriever, Item } from '../../../../projects/arlas-components/src/public-api';
-import { Detail, MatchInfo } from 'projects/arlas-components/src/lib/components/results/utils/detailed-data-retriever';
 
 
 export class DetailedDataRetrieverImp implements DetailedDataRetriever {
-  public detailsConfig: Detail[];
+  public detailsConfig: Detail[] = [
+    {
+      name: 'Test',
+      order: 0,
+      fields: [
+        {
+          path: 'country',
+          label: 'Country',
+          process: ''
+        }
+      ]
+    }
+  ];
 
   public getValues(identifier: string, fields: string[]): Observable<string[]> {
     return of([]);

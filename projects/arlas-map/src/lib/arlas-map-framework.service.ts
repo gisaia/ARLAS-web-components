@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FeatureCollection } from '@turf/helpers';
+import { FeatureCollection } from 'geojson';
 import { Subject } from 'rxjs';
 import { AbstractDraw } from './draw/AbstractDraw';
 import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';

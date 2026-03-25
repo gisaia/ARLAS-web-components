@@ -22,8 +22,8 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
-import { FeatureCollection, polygon } from '@turf/helpers';
-import { Feature } from 'geojson';
+import { polygon } from '@turf/helpers';
+import { Feature, FeatureCollection } from 'geojson';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { valid } from 'geojson-validation';
 import JSZip from 'jszip';
@@ -41,7 +41,8 @@ const shp = shp_.default;
 @Component({
   templateUrl: './map-import-dialog.component.html',
   selector: 'arlas-map-import-dialog',
-  styleUrls: ['./map-import-dialog.component.scss']
+  styleUrls: ['./map-import-dialog.component.scss'],
+  standalone: false
 })
 export class MapImportDialogComponent {
   public displayError = false;
@@ -117,7 +118,8 @@ const SIMPLE_GEOMETRY_OBJECT = new Set(['Polygon', 'Point', 'LineString']);
 @Component({
   selector: 'arlas-map-import',
   templateUrl: './map-import.component.html',
-  styleUrls: ['./map-import.component.scss']
+  styleUrls: ['./map-import.component.scss'],
+  standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

@@ -23,7 +23,6 @@ import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
   selector: 'arlas-cog-preview',
-  standalone: true,
   imports: [
     TranslateModule,
     ProtectImageDirective

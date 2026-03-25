@@ -18,7 +18,7 @@
  */
 
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ResultDetailedItemComponent } from './result-detailed-item.component';
 
 describe('ResultDetailedItemComponent', () => {
@@ -29,7 +29,7 @@ describe('ResultDetailedItemComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ResultDetailedItemComponent ],
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } })
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ]
     })
       .compileComponents();

@@ -21,8 +21,8 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, EventEmitter, inject, input, Input, Output, signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
-import { Feature, FeatureCollection } from '@turf/helpers';
 import { ElementIdentifier } from 'arlas-web-components';
+import { Feature, FeatureCollection } from 'geojson';
 import { finalize, fromEvent, Subject, takeUntil } from 'rxjs';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import * as mapJsonSchema from './arlas-map.schema.json';
@@ -31,19 +31,19 @@ import { BasemapStyle } from './basemaps/basemap.config';
 import { BasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps.model';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
-import { AoiDimensions } from './draw/draw.models';
+import { AoiEdition } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
 import { LegendData } from './legend/legend.config';
 import { LegendService } from './legend/legend.service';
 import {
-  AbstractArlasMapGL,
-  ArlasMapOffset, ArlasMapOption,
-  CROSS_LAYER_PREFIX,
-  DISABLE_GLOBE,
-  ENABLE_GLOBE,
-  MapConfig,
-  RESET_BEARING,
-  ZOOM_IN, ZOOM_OUT
+    AbstractArlasMapGL,
+    ArlasMapOffset, ArlasMapOption,
+    CROSS_LAYER_PREFIX,
+    DISABLE_GLOBE,
+    ENABLE_GLOBE,
+    MapConfig,
+    RESET_BEARING,
+    ZOOM_IN, ZOOM_OUT
 } from './map/AbstractArlasMapGL';
 import { ControlPosition, IconConfig } from './map/model/controls';
 import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
@@ -58,7 +58,8 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
   selector: 'arlas-map',
   templateUrl: './arlas-map.component.html',
   styleUrls: ['./arlas-map.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.
@@ -248,7 +249,7 @@ export class ArlasMapComponent<L, S, M> {
   @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
 
   /** @description Emits the the dimensions of the polygon/bbox that is being drawn. */
-  @Output() public onAoiEdit: EventEmitter<AoiDimensions> = new EventEmitter();
+  @Output() public onAoiEdit: EventEmitter<AoiEdition> = new EventEmitter();
 
   /** @description Emits an event when the basemap has been changed by the user. */
   @Output() public onBasemapChanged: Subject<boolean> = new Subject();

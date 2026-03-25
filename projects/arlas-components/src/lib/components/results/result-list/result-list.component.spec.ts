@@ -25,7 +25,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
@@ -38,12 +38,12 @@ describe('ResultListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ResultListComponent, ResultScrollDirective],
+      declarations: [ResultListComponent],
       providers: [
         ArlasColorService
       ],
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatMenuModule,
         MatGridListModule,
         MatRadioModule,

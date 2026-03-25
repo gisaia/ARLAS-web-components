@@ -12,7 +12,7 @@
     <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
     <mat-radio-button class="polygon-radio" value="id">By id</mat-radio-button>
   </mat-radio-group>
-  <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="this.modeChoice === 'id'">
+  <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="modeChoice === 'id'">
 </div>
 <div class="mapgl-options">
   <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">

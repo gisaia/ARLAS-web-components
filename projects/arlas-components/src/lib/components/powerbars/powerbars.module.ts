@@ -27,10 +27,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
-import { FormatNumberModule } from '../../pipes/format-number/format-number.module';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { PowerbarModule } from './powerbar/powerbar.module';
 import { PowerbarsComponent } from './powerbars.component';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 
 @NgModule({
   imports: [
@@ -45,7 +45,7 @@ import { PowerbarsComponent } from './powerbars.component';
     ColorGeneratorModule.forRoot(),
     TranslateModule,
     PowerbarModule,
-    FormatNumberModule
+    FormatNumberPipe
   ],
   declarations: [PowerbarsComponent],
   exports: [PowerbarsComponent]

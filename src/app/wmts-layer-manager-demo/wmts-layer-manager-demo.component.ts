@@ -23,7 +23,8 @@ import { WmtsLayerManagerComponent } from '../../../projects/arlas-components/sr
 @Component({
   selector: 'arlas-wmts-layer-manager-demo',
   templateUrl: './wmts-layer-manager-demo.component.html',
-  styleUrls: ['./wmts-layer-manager-demo.component.css']
+  styleUrls: ['./wmts-layer-manager-demo.component.css'],
+  standalone: false
 })
 export class WmtsLayerManagerDemoComponent implements OnInit {
     @ViewChild('wmtsLayerManager', { static: false }) public wmtsLayerMangerComponent: WmtsLayerManagerComponent;

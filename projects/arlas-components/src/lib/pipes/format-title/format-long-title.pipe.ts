@@ -20,7 +20,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  standalone: true,
   name: 'formatLongTitle'
 })
 export class FormatLongTitlePipe implements PipeTransform {

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, ElementRef, ViewChild, AfterViewInit, Output, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
 import { debounceTime, fromEvent, Subject, takeUntil } from 'rxjs';
 
@@ -29,7 +29,8 @@ export enum TranslationDirection {
 @Component({
   selector: 'arlas-calendar-timeline',
   templateUrl: './calendar-timeline.component.html',
-  styleUrls: ['./calendar-timeline.component.scss']
+  styleUrls: ['./calendar-timeline.component.scss'],
+  standalone: false
 })
 /**
  * todo : documentation of the component

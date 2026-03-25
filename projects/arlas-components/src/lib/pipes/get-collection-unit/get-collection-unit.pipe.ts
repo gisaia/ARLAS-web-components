@@ -24,7 +24,7 @@ import { CollectionService } from '../../services/collection.service';
 })
 export class GetCollectionUnitPipe implements PipeTransform {
 
-  public constructor(private arlasCollectionService: CollectionService) {
+  public constructor(private readonly arlasCollectionService: CollectionService) {
   }
   public transform(value: string): unknown {
     if(!value) {

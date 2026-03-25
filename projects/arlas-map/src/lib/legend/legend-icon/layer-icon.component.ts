@@ -25,7 +25,8 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 @Component({
   selector: 'arlas-layer-icon',
   templateUrl: './layer-icon.component.html',
-  styleUrls: ['./layer-icon.component.scss']
+  styleUrls: ['./layer-icon.component.scss'],
+  standalone: false
 })
 export class LayerIconComponent implements AfterViewInit, OnChanges {
   @Input() public layer: ArlasDataLayer;

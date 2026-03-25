@@ -19,9 +19,8 @@
 
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogClose, MatDialogContent } from '@angular/material/dialog';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { TranslateModule } from '@ngx-translate/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslatePipe } from '@ngx-translate/core';
 import { CogPreviewComponent } from '../cog-preview/cog-preview.component';
 import { VisualisationInterface } from '../model';
 
@@ -36,13 +35,9 @@ export interface CogVisualisationData {
 
 @Component({
   selector: 'arlas-cog-modal',
-  standalone: true,
   imports: [
-    MatDialogContent,
     CogPreviewComponent,
-    MatDialogClose,
-    TranslateModule,
-    MatProgressSpinnerModule,
+    TranslatePipe,
     MatButtonModule
   ],
   templateUrl: './cog-modal.component.html',

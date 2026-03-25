@@ -26,8 +26,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PowerbarModule } from '../powerbars/powerbar/powerbar.module';
 import { FormatLongTitlePipe } from '../../pipes/format-title/format-long-title.pipe';
 import { MetricsTableRowModule } from './multi-bars-row/metrics-table-row.module';
-import { GetCollectionDisplayModule } from '../../pipes/get-collection-display-name/get-collection-display.module';
-import { GetFieldDisplayModule } from '../../pipes/get-field-display-name/get-field-display.module';
+import { GetCollectionDisplayNamePipe } from '../../pipes/get-collection-display-name/get-collection-display-name.pipe';
+import { GetFieldDisplayNamePipe } from '../../pipes/get-field-display-name/get-field-display-name.pipe';
 @NgModule({
     imports: [
         PowerbarModule,
@@ -42,8 +42,8 @@ import { GetFieldDisplayModule } from '../../pipes/get-field-display-name/get-fi
         FormatLongTitlePipe,
         AsyncPipe,
         KeyValuePipe,
-        GetCollectionDisplayModule,
-        GetFieldDisplayModule
+        GetCollectionDisplayNamePipe,
+        GetFieldDisplayNamePipe
     ],
     declarations: [MetricsTableComponent],
     exports: [MetricsTableComponent]

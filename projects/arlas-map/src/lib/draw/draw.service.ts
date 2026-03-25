@@ -21,11 +21,12 @@ import { Injectable } from '@angular/core';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import area from '@turf/area';
 import bbox from '@turf/bbox';
-import { Feature, FeatureCollection, lineString } from '@turf/helpers';
+import { lineString } from '@turf/helpers';
 import length from '@turf/length';
+import { Feature, FeatureCollection } from 'geojson';
 import { Subject } from 'rxjs';
 import { AbstractDraw } from './AbstractDraw';
-import { AoiDimensions, BboxDrawCommand, Corner } from './draw.models';
+import { AoiEdition, BboxDrawCommand, Corner } from './draw.models';
 
 @Injectable()
 export class MapboxAoiDrawService {
@@ -34,7 +35,7 @@ export class MapboxAoiDrawService {
   private registeringMode: boolean;
   private ids: Set<string> = new Set();
 
-  private editAoiSource = new Subject<AoiDimensions>();
+  private editAoiSource = new Subject<AoiEdition>();
   public editAoi$ = this.editAoiSource.asObservable();
 
   private drawBboxSource = new Subject<BboxDrawCommand>();

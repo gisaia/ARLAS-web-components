@@ -29,9 +29,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  ArlasColorService, FormatNumberModule,
-  GetCollectionDisplayModule, GetColorModule, GetValueModule,
-  ShortenNumberModule
+  ArlasColorService, FormatNumberPipe,
+  GetCollectionDisplayNamePipe, GetColorPipe, GetValuePipe,
+  ShortenNumberPipe
 } from 'arlas-web-components';
 import { ArlasMapComponent } from './arlas-map.component';
 import { GetCollectionPipe } from './arlas-map.pipe';
@@ -56,10 +56,7 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     LayerIconComponent,
     LegendComponent,
     LegendItemComponent,
-    ArlasDrawComponent,
-    LayerIdToName,
-    GetCollectionPipe,
-    FormatLegendPipe
+    ArlasDrawComponent
   ],
   imports: [
     MatSnackBarModule,
@@ -69,18 +66,21 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     MatSlideToggleModule,
     MatTooltipModule,
     MatFormFieldModule,
-    GetCollectionDisplayModule,
-    GetColorModule,
     DragDropModule,
-    GetValueModule,
-    FormatNumberModule,
+    GetValuePipe,
+    FormatNumberPipe,
     CommonModule,
     CoordinatesModule,
     MapSettingsModule,
     MapImportModule,
     BasemapModule,
     MarkerModule,
-    ShortenNumberModule
+    ShortenNumberPipe,
+    GetCollectionPipe,
+    FormatLegendPipe,
+    LayerIdToName,
+    GetCollectionDisplayNamePipe,
+    GetColorPipe
   ],
   providers: [
     MapboxAoiDrawService,
@@ -90,12 +90,9 @@ import { MapSettingsModule } from './map-settings/map-settings.module';
     LayerIconComponent,
     LegendComponent,
     LegendItemComponent,
-    LayerIdToName,
     ArlasMapComponent,
     MapImportComponent,
-    MapSettingsComponent,
-    GetCollectionPipe,
-    FormatLegendPipe
+    MapSettingsComponent
   ]
 })
 export class ArlasMapModule { }

@@ -39,7 +39,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
       const styleFile = selectedBasemap.styleFile as mapboxgl.Style;
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       if (pmtilesSource) {
-        // eslint-disable-next-line max-len
+
         this.addPMtilesToSource(map, pmtilesSource);
         this.addProtomapLayerToMap(map, styleFile);
       }

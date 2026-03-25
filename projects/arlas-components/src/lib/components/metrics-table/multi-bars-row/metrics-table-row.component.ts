@@ -25,7 +25,8 @@ import { MetricsTableRow } from '../model/metrics-table';
 @Component({
   selector: 'arlas-multi-bars-row',
   templateUrl: './metrics-table-row.component.html',
-  styleUrls: ['./metrics-table-row.component.scss']
+  styleUrls: ['./metrics-table-row.component.scss'],
+  standalone: false
 })
 export class MetricsTableRowComponent {
   @Input() public displayCheckBox: boolean;

@@ -23,7 +23,8 @@ import { TreeNode } from 'arlas-d3';
 @Component({
   selector: 'arlas-powerbars-demo',
   templateUrl: './powerbars-demo.component.html',
-  styleUrls: ['./powerbars-demo.component.css']
+  styleUrls: ['./powerbars-demo.component.css'],
+  standalone: false
 })
 export class PowerbarsDemoComponent implements OnInit {
 

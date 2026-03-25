@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { AdditionalInfo, Action, ActionFilter, ItemDataType } from '../utils/results.utils';
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
+import { Action, ActionFilter, AdditionalInfo, ItemDataType } from '../utils/results.utils';
 
 export interface FieldDetail {
   path: string;

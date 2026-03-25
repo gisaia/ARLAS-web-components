@@ -19,7 +19,7 @@
 
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
@@ -33,7 +33,7 @@ describe('HistogramComponent', () => {
     TestBed.configureTestingModule({
       declarations: [HistogramComponent],
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatTooltipModule,
         ColorGeneratorModule.forRoot({
           loader: {

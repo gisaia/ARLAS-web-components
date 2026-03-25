@@ -42,7 +42,8 @@ export const SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
 @Component({
   selector: 'arlas-powerbars',
   templateUrl: './powerbars.component.html',
-  styleUrls: ['./powerbars.component.scss']
+  styleUrls: ['./powerbars.component.scss'],
+  standalone: false
 })
 export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   /**

@@ -22,12 +22,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateFakeLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { PowerbarsComponent } from './powerbars.component';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 
 describe('PowerbarsComponent', () => {
   let component: PowerbarsComponent;
@@ -35,13 +35,14 @@ describe('PowerbarsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ PowerbarsComponent, FormatNumberPipe ],
+      declarations: [ PowerbarsComponent ],
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateFakeLoader } }),
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatCardModule,
         MatIconModule,
         MatTooltipModule,
         MatInputModule,
+        FormatNumberPipe,
         ColorGeneratorModule.forRoot({
           loader: {
             provide: ColorGeneratorLoader,

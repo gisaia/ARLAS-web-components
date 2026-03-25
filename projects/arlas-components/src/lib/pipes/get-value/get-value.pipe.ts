@@ -17,14 +17,13 @@
  * under the License.
  */
 
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'getValue'
+  name: 'getValue'
 })
-@Injectable()
 export class GetValuePipe implements PipeTransform {
   public transform<K, V>(value: K, map?: Map<K, V>): V {
-    return !!map ? map.get(value) : undefined;
+    return map ? map.get(value) : undefined;
   }
 }

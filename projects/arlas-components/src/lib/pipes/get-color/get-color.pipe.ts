@@ -17,16 +17,15 @@
  * under the License.
  */
 
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { ArlasColorService } from '../../services/color.generator.service';
 
 @Pipe({
     name: 'getColor'
 })
-@Injectable()
 export class GetColorPipe implements PipeTransform {
   public constructor(
-    private colorService: ArlasColorService
+    private readonly colorService: ArlasColorService
   ) {}
 
   public transform(key: string): string {

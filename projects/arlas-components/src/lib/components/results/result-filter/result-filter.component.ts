@@ -26,7 +26,8 @@ import { ItemDataType } from '../utils/results.utils';
 @Component({
   selector: '[arlas-result-filter]',
   templateUrl: './result-filter.component.html',
-  styleUrls: ['./result-filter.component.css']
+  styleUrls: ['./result-filter.component.css'],
+  standalone: false
 })
 export class ResultFilterComponent implements OnInit, OnChanges {
 

@@ -42,7 +42,8 @@ import { Action, ActionHandler } from '../utils/results.utils';
 @Component({
   selector: 'arlas-result-actions',
   templateUrl: './result-actions.component.html',
-  styleUrls: ['./result-actions.component.scss']
+  styleUrls: ['./result-actions.component.scss'],
+  standalone: false
 })
 export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   /** The item which actions are managed by this component. */

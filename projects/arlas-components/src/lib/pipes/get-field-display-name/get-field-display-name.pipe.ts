@@ -18,12 +18,13 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
+
 @Pipe({
   name: 'getFieldDisplayName'
 })
 export class GetFieldDisplayNamePipe implements PipeTransform {
 
-  public constructor(private collectionService: CollectionService) {
+  public constructor(private readonly collectionService: CollectionService) {
   }
 
   public transform(value: string): string {
