@@ -4,11 +4,11 @@
   [style.min-width.px]="column.width">
   <div class="checkbox">
     @if (rowItem.isindeterminated) {
-      <button mat-icon-button color="primary" (click)="determinateItem()" class="checkbox__button">
+      <button mat-icon-button (click)="determinateItem()" class="checkbox__button">
         <mat-icon class="resultitem__icon_check">indeterminate_check_box</mat-icon>
       </button>
     } @else {
-      <button mat-icon-button color="primary" (click)="setSelectedItem()" class="checkbox__button">
+      <button mat-icon-button (click)="setSelectedItem()" class="checkbox__button">
         <mat-icon class="resultitem__icon_check">{{ rowItem.isChecked ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
       </button>
     }
