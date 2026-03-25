@@ -23,8 +23,7 @@ import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { BboxFormGroup } from './bbox-generator.utils';
 
 @Pipe({
-  name: 'bboxFormError',
-  standalone: true
+  name: 'bboxFormError'
 })
 export class BboxFormErrorPipe implements PipeTransform {
 

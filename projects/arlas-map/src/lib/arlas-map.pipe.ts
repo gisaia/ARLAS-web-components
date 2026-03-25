@@ -20,8 +20,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'getCollection',
-  standalone: true
+  name: 'getCollection'
 })
 export class GetCollectionPipe implements PipeTransform {
   public transform(value: string, layersMap?: Map<string, any>): string {

@@ -17,18 +17,13 @@
  * under the License.
  */
 
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { DEFAULT_SHORTENING_PRECISION, numberToShortValue } from '../../components/componentsUtils';
 
-
 @Pipe({
-  name: 'shortenNumber',
-  standalone: true
+  name: 'shortenNumber'
 })
-@Injectable()
 export class ShortenNumberPipe implements PipeTransform {
-
-  public constructor() {}
 
   public transform(number: number | string, precision: number = DEFAULT_SHORTENING_PRECISION) {
     if (number !== null && number !== undefined) {

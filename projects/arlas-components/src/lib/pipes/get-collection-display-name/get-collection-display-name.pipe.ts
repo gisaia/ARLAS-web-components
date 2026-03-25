@@ -18,16 +18,16 @@
  */
 import { Pipe, PipeTransform } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
+
 @Pipe({
-  name: 'getCollectionDisplayName',
-  standalone: true
+  name: 'getCollectionDisplayName'
 })
 export class GetCollectionDisplayNamePipe implements PipeTransform {
 
-  public constructor(private collectionService: CollectionService) {
+  public constructor(private readonly collectionService: CollectionService) {
   }
 
-  public transform(value: string, ...args: unknown[]): string {
+  public transform(value: string): string {
     if(!value) {
       return  '';
     }

@@ -19,12 +19,11 @@
 
 import { Component, input } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
+import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
   selector: 'arlas-cog-legend',
-  standalone: true,
   imports: [
     TranslateModule,
     ShortenNumberPipe,

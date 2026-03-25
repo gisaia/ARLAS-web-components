@@ -17,18 +17,16 @@
  * under the License.
  */
 
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
-import { formatNumber } from '../../components/componentsUtils';
+import { Pipe, PipeTransform } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { formatNumber } from '../../components/componentsUtils';
 
 @Pipe({
-  name: 'formatNumber',
-  standalone: true
+  name: 'formatNumber'
 })
-@Injectable()
 export class FormatNumberPipe implements PipeTransform {
 
-  public constructor(private translate: TranslateService) {}
+  public constructor(private readonly translate: TranslateService) {}
   public transform(x, formatChar: string = ' '): any {
     return formatNumber(x, this.translate.instant(formatChar));
   }

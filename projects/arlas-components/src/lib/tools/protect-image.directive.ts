@@ -26,8 +26,7 @@ import { PROTECTED_IMAGE_HEADER } from '../components/results/utils/results.util
  * Directive to fetch an image while adding authorisation headers
  */
 @Directive({
-  selector: 'img[arlasProtectImage]',
-  standalone: true
+  selector: 'img[arlasProtectImage]'
 })
 export class ProtectImageDirective {
   private readonly http = inject(HttpClient);

@@ -20,8 +20,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'getAttachmentUrl',
-  standalone: true
+  name: 'getAttachmentUrl'
 })
 export class GetAttachmentUrlPipe implements PipeTransform {
 

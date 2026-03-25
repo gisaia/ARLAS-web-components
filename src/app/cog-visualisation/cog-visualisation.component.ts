@@ -23,7 +23,6 @@ import { CogLegendComponent, CogModalComponent, CogPreviewComponent } from 'arla
 
 @Component({
   selector: 'arlas-cog-visualisation',
-  standalone: true,
   imports: [
     CogPreviewComponent,
     MatButton,

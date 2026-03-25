@@ -20,12 +20,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { CollectionService } from '../../services/collection.service';
 
 @Pipe({
-  name: 'getCollectionUnit',
-  standalone: true
+  name: 'getCollectionUnit'
 })
 export class GetCollectionUnitPipe implements PipeTransform {
 
-  public constructor(private arlasCollectionService: CollectionService) {
+  public constructor(private readonly arlasCollectionService: CollectionService) {
   }
   public transform(value: string): unknown {
     if(!value) {

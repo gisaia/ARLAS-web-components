@@ -35,7 +35,6 @@ export interface CogVisualisationData {
 
 @Component({
   selector: 'arlas-cog-modal',
-  standalone: true,
   imports: [
     CogPreviewComponent,
     TranslatePipe,

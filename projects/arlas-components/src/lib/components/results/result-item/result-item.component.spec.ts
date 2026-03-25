@@ -20,10 +20,11 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
+import { Item } from '../model/item';
 import { ResultItemComponent } from './result-item.component';
 
 describe('ResultItemComponent', () => {
@@ -54,6 +55,7 @@ describe('ResultItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultItemComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('rowItem', new Item([], new Map()));
     fixture.detectChanges();
   });
 

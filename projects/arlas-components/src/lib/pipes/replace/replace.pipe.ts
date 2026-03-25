@@ -17,17 +17,15 @@
  * under the License.
  */
 
-import { Injectable, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'replace',
-  standalone: true
+  name: 'replace'
 })
-@Injectable()
 export class ReplacePipe implements PipeTransform {
 
   public transform(value: string, searchValue: string, replaceValue: string): string {
-    if (!!value) {
+    if (value) {
       return value.replace(searchValue, replaceValue);
     }
     return value;

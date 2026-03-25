@@ -20,7 +20,6 @@
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "rxjs": "^7.4.0",
-    "tslib": "^2.3.0",
     "zone.js": "^0.15.0"
   },
   "dependencies": {
@@ -46,6 +45,7 @@
     "jszip": "^3.2.1",
     "pmtiles": "4.3.0",
     "shpjs": "^4.0.4",
+    "tslib": "^2.3.0",
     "wellknown": "0.5.0"
   },
   "exports": {

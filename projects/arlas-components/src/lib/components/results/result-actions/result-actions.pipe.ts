@@ -21,8 +21,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Action, ActionHandler } from '../utils/results.utils';
 
 @Pipe({
-  name: 'actionDisplayer',
-  standalone: true
+  name: 'actionDisplayer'
 })
 export class ActionDisplayerPipe implements PipeTransform {
 
