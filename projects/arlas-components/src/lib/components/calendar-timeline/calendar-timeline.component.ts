@@ -20,6 +20,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
 import { debounceTime, fromEvent, Subject, takeUntil } from 'rxjs';
+import { MatIcon } from '@angular/material/icon';
 
 export enum TranslationDirection {
   past = 'past',
@@ -27,10 +28,10 @@ export enum TranslationDirection {
 }
 
 @Component({
-  selector: 'arlas-calendar-timeline',
-  templateUrl: './calendar-timeline.component.html',
-  styleUrls: ['./calendar-timeline.component.scss'],
-  standalone: false
+    selector: 'arlas-calendar-timeline',
+    templateUrl: './calendar-timeline.component.html',
+    styleUrls: ['./calendar-timeline.component.scss'],
+    imports: [MatIcon]
 })
 /**
  * todo : documentation of the component

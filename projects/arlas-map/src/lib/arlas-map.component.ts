@@ -17,33 +17,37 @@
  * under the License.
  */
 
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, inject, input, Input, Output, signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  AfterViewInit, Component, EventEmitter, inject, input, Input,
+  Output, signal, SimpleChanges, ViewChild, ViewEncapsulation
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslateService } from '@ngx-translate/core';
-import { ElementIdentifier } from 'arlas-web-components';
+import { MatIcon } from '@angular/material/icon';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ElementIdentifier, GetValuePipe } from 'arlas-web-components';
 import { Feature, FeatureCollection } from 'geojson';
 import { finalize, fromEvent, Subject, takeUntil } from 'rxjs';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
+import { GetCollectionPipe } from './arlas-map.pipe';
 import * as mapJsonSchema from './arlas-map.schema.json';
 import { AbstractArlasMapService } from './arlas-map.service';
+import { BasemapComponent } from './basemaps/basemap.component';
 import { BasemapStyle } from './basemaps/basemap.config';
 import { BasemapService } from './basemaps/basemap.service';
 import { ArlasBasemaps } from './basemaps/basemaps.model';
+import { CoordinatesComponent } from './coordinates/coordinates.component';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { AoiEdition } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
+import { LegendComponent } from './legend/legend.component';
 import { LegendData } from './legend/legend.config';
 import { LegendService } from './legend/legend.service';
 import {
-    AbstractArlasMapGL,
-    ArlasMapOffset, ArlasMapOption,
-    CROSS_LAYER_PREFIX,
-    DISABLE_GLOBE,
-    ENABLE_GLOBE,
-    MapConfig,
-    RESET_BEARING,
-    ZOOM_IN, ZOOM_OUT
+  AbstractArlasMapGL, ArlasMapOffset, ArlasMapOption, CROSS_LAYER_PREFIX,
+  DISABLE_GLOBE, ENABLE_GLOBE, MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT
 } from './map/AbstractArlasMapGL';
 import { ControlPosition, IconConfig } from './map/model/controls';
 import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
@@ -59,13 +63,15 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
   templateUrl: './arlas-map.component.html',
   styleUrls: ['./arlas-map.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: false
+  imports: [
+    MatTooltip, MatIcon, CdkDropList, CdkDrag, CdkDragHandle, MatSlideToggle, LegendComponent,
+    CoordinatesComponent, BasemapComponent, ArlasDrawComponent, TranslatePipe, GetValuePipe, GetCollectionPipe]
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.
  *  M: a Map configuration class/interface.
  */
-export class ArlasMapComponent<L, S, M> {
+export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** Map instance. */
   public map: AbstractArlasMapGL;
@@ -277,8 +283,9 @@ export class ArlasMapComponent<L, S, M> {
     protected mapService: AbstractArlasMapService<L, S, M>,
     private readonly legendService: LegendService
   ) {
-      this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
+    this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
       .subscribe(() => this.reorderLayers());
+    console.log('hello');
   }
 
   public ngAfterViewInit() {
@@ -286,12 +293,8 @@ export class ArlasMapComponent<L, S, M> {
     if (!this.initCenter) {
       this.initCenter = [0, 0];
     }
-    if (this.initZoom === undefined || this.initZoom === null) {
-      this.initZoom = 3;
-    }
-    if (this.maxZoom === undefined || this.maxZoom === null) {
-      this.maxZoom = 23;
-    }
+    this.initZoom ??= 3;
+    this.maxZoom ??= 23;
     this.minZoom = this.minZoom ?? 0;
 
     /** BASEMAPS */

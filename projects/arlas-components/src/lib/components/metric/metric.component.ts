@@ -17,7 +17,10 @@
  * under the License.
  */
 
+import { NgClass } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 import { NUMBER_FORMAT_CHAR, numberToShortValue } from '../componentsUtils';
 import * as metricJsonSchema from './metric.schema.json';
 
@@ -26,7 +29,7 @@ import * as metricJsonSchema from './metric.schema.json';
   selector: 'arlas-metric',
   templateUrl: './metric.component.html',
   styleUrls: ['./metric.component.scss'],
-  standalone: false
+  imports: [NgClass, FormatNumberPipe, TranslatePipe]
 })
 /**
  * This component will contain a phrase composed of 3 parts
@@ -37,7 +40,6 @@ import * as metricJsonSchema from './metric.schema.json';
  *
  */
 export class MetricComponent implements OnInit, OnChanges {
-
 
   @Input() public beforeValue = '';
   @Input() public value: number;

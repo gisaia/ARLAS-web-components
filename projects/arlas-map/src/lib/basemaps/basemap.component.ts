@@ -18,6 +18,8 @@
  */
 
 import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { TranslatePipe } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs';
 import { Subject } from 'rxjs/internal/Subject';
 import { AbstractArlasMapGL } from '../map/AbstractArlasMapGL';
@@ -27,10 +29,10 @@ import { BasemapService } from './basemap.service';
 import { ArlasBasemaps } from './basemaps.model';
 
 @Component({
-  selector: 'arlas-basemap',
-  templateUrl: './basemap.component.html',
-  styleUrls: ['./basemap.component.scss'],
-  standalone: false
+    selector: 'arlas-basemap',
+    templateUrl: './basemap.component.html',
+    styleUrls: ['./basemap.component.scss'],
+    imports: [MatIcon, TranslatePipe]
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.

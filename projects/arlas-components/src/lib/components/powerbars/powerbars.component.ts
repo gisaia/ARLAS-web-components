@@ -17,10 +17,17 @@
  * under the License.
  */
 
+import { NgClass } from '@angular/common';
 import {
   AfterViewInit, Component, DestroyRef, EventEmitter, inject, input, Input, OnChanges, OnInit, output, Output, SimpleChanges
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatFormField } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SimpleNode, TreeNode } from 'arlas-d3';
 import { Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
@@ -28,6 +35,7 @@ import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { FilterOperator } from '../../tools/models/term-filters';
 import { PowerBar } from './model/powerbar';
+import { PowerbarComponent } from './powerbar/powerbar.component';
 import * as powerbarsJsonSchema from './powerbars.schema.json';
 
 export const SELECTED_BAR = 'selected-bar';
@@ -43,7 +51,7 @@ export const SELECTED_NO_MOUNTED_BAR = 'selected-no-mounted-bar';
   selector: 'arlas-powerbars',
   templateUrl: './powerbars.component.html',
   styleUrls: ['./powerbars.component.scss'],
-  standalone: false
+  imports: [MatFormField, MatInput, MatIconButton, MatTooltip, MatIcon, NgClass, PowerbarComponent, TranslatePipe]
 })
 export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   /**

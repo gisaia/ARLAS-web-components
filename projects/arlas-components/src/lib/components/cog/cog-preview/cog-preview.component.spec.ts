@@ -1,6 +1,8 @@
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CogPreviewComponent } from './cog-preview.component';
 
 describe('CogPreviewComponent', () => {
@@ -13,7 +15,14 @@ describe('CogPreviewComponent', () => {
         CogPreviewComponent,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ],
-      providers: [provideHttpClient(withInterceptorsFromDi())]
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: {
+            get: vi.fn(() => of())
+          }
+        }
+      ]
     })
     .compileComponents();
 

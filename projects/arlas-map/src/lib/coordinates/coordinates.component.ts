@@ -17,16 +17,25 @@
  * under the License.
  */
 
+import { DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Coordinate, PointFormGroup } from '../bbox-generator/coordinates.tools';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatError, MatFormField, MatLabel } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Coordinate, PointFormGroup } from '../bbox-generator/coordinates.tools';
+import { CoordinatesErrorPipe } from './coordinates.pipe';
 
 @Component({
   selector: 'arlas-coordinates',
   templateUrl: './coordinates.component.html',
   styleUrls: ['./coordinates.component.scss'],
-  standalone: false
+  imports: [
+    MatTooltip, FormsModule, ReactiveFormsModule, MatFormField, MatLabel,
+    MatInput, MatError, MatIcon, DecimalPipe, TranslatePipe, CoordinatesErrorPipe]
 })
 export class CoordinatesComponent implements OnInit {
   @Input() public currentLat: string;

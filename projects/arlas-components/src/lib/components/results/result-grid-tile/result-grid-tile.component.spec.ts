@@ -17,29 +17,35 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateNoOpLoader,
+} from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ResultGridTileComponent } from './result-grid-tile.component';
 
 describe('ResultGridTileComponent', () => {
   let component: ResultGridTileComponent;
   let fixture: ComponentFixture<ResultGridTileComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ResultGridTileComponent ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
+        }),
         MatTooltipModule,
         MatIconModule,
-        LazyLoadImageModule
-      ]
-    })
-      .compileComponents();
-  }));
+        LazyLoadImageModule,
+        ResultGridTileComponent,
+      ],
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultGridTileComponent);

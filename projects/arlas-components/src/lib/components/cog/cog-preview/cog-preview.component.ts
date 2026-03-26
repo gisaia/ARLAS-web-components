@@ -33,5 +33,5 @@ import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 export class CogPreviewComponent {
   public title = input<string>();
   public description = input<string>();
-  public preview = input<string>('./assets/no-view.png');
+  public preview = input<string>('assets/no-view.png');
 }

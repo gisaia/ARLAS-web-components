@@ -18,17 +18,26 @@
  */
 
 import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { BboxFormGroup } from './bbox-generator.utils';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogClose, MatDialogRef } from '@angular/material/dialog';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { MapboxAoiDrawService } from '../draw/draw.service';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Corner } from '../draw/draw.models';
+import { MapboxAoiDrawService } from '../draw/draw.service';
+import { BboxFormErrorPipe } from './bbox-form-error.pipe';
+import { BboxFormGroup } from './bbox-generator.utils';
 
 @Component({
   selector: 'arlas-bbox-generator',
   templateUrl: './bbox-generator.component.html',
   styleUrls: ['./bbox-generator.component.scss'],
-  standalone: false
+  imports: [
+    MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput,
+    MatError, MatButton, MatDialogClose, TranslatePipe, BboxFormErrorPipe]
 })
 export class BboxGeneratorComponent implements OnInit, AfterViewInit, OnDestroy {
   /**

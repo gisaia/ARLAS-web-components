@@ -17,13 +17,21 @@
  * under the License.
  */
 
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { KeyValuePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { MatCard } from '@angular/material/card';
+import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
+import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatInput } from '@angular/material/input';
+import { MatList, MatListItem, MatListSubheaderCssMatStyler } from '@angular/material/list';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatFormField, MatOption, MatSelect, MatSuffix } from '@angular/material/select';
+import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
-import { Observable, Subject } from 'rxjs';
-import { retry, timeout } from 'rxjs/operators';
+import { Observable, retry, Subject, timeout } from 'rxjs';
 
 export interface GetTilesInfo {
   url: string;
@@ -51,7 +59,10 @@ export interface LayerParam {
   templateUrl: './wmts-layer-manager-dialog.component.html',
   selector: 'arlas-wmts-layer-manager-dialog',
   styleUrls: ['./wmts-layer-manager-dialog.component.css'],
-  standalone: false
+  imports: [
+    MatDialogTitle, CdkScrollable, MatDialogContent, MatCard, MatList, MatListSubheaderCssMatStyler, MatListItem,
+    FormsModule, ReactiveFormsModule, MatFormField, MatSelect, MatOption, MatInput, MatDatepickerInput, MatDatepickerToggle,
+    MatSuffix, MatDatepicker, MatProgressSpinner, MatDialogActions, MatDialogClose, KeyValuePipe, TranslatePipe]
 })
 export class WmtsLayerManagertDialogComponent implements OnInit {
   public layer: string;
@@ -127,10 +138,9 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
 }
 
 @Component({
-  selector: 'arlas-wmts-layer-manager',
-  templateUrl: './wmts-layer-manager.component.html',
-  styleUrls: ['./wmts-layer-manager.component.css'],
-  standalone: false
+    selector: 'arlas-wmts-layer-manager',
+    templateUrl: './wmts-layer-manager.component.html',
+    styleUrls: ['./wmts-layer-manager.component.css']
 })
 export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>;

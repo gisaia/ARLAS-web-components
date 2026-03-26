@@ -18,16 +18,18 @@
  */
 
 import { Component } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import { Granularity } from 'arlas-d3';
+import { CalendarTimelineComponent } from 'arlas-web-components';
 import { Subject } from 'rxjs';
 
 // TODO: add data to properly test component
 
 @Component({
-  selector: 'arlas-calendar-timeline-demo',
-  templateUrl: './calendar-timeline-demo.component.html',
-  styleUrls: ['./calendar-timeline-demo.component.css'],
-  standalone: false
+    selector: 'arlas-calendar-timeline-demo',
+    templateUrl: './calendar-timeline-demo.component.html',
+    styleUrls: ['./calendar-timeline-demo.component.css'],
+    imports: [MatButton, CalendarTimelineComponent]
 })
 export class CalendarTimelineDemoComponent {
   public granularity: Subject<Granularity> = new Subject();

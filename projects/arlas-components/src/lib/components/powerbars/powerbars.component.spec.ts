@@ -17,25 +17,25 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { PowerbarsComponent } from './powerbars.component';
-import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 
 describe('PowerbarsComponent', () => {
   let component: PowerbarsComponent;
   let fixture: ComponentFixture<PowerbarsComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ PowerbarsComponent ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatCardModule,
@@ -44,18 +44,18 @@ describe('PowerbarsComponent', () => {
         MatInputModule,
         FormatNumberPipe,
         ColorGeneratorModule.forRoot({
-          loader: {
-            provide: ColorGeneratorLoader,
-            useClass: AwcColorGeneratorLoader
-          }
-        })
+            loader: {
+                provide: ColorGeneratorLoader,
+                useClass: AwcColorGeneratorLoader
+            }
+        }),
+        PowerbarsComponent
       ],
       providers: [
         ArlasColorService
-      ]
-    })
+      ]})
       .compileComponents();
-  }));
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(PowerbarsComponent);

@@ -18,7 +18,8 @@
  */
 
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatFormField, MatOption, MatSelect, MatSelectChange } from '@angular/material/select';
 import { Subject } from 'rxjs';
 import { Column } from '../model/column';
 import { ItemDataType } from '../utils/results.utils';
@@ -27,7 +28,7 @@ import { ItemDataType } from '../utils/results.utils';
   selector: '[arlas-result-filter]',
   templateUrl: './result-filter.component.html',
   styleUrls: ['./result-filter.component.css'],
-  standalone: false
+  imports: [MatFormField, MatSelect, MatOption, FormsModule]
 })
 export class ResultFilterComponent implements OnInit, OnChanges {
 

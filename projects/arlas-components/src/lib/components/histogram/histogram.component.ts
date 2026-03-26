@@ -17,12 +17,16 @@
  * under the License.
  */
 
+import { KeyValuePipe, NgClass } from '@angular/common';
 import {
   AfterViewChecked, AfterViewInit, Component, DestroyRef, ElementRef, inject, input,
   Input, OnChanges, output, Output, SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslateService } from '@ngx-translate/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
   ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position, SelectedInputValues,
@@ -33,6 +37,7 @@ import {
 } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { GetCollectionUnitPipe } from '../../pipes/get-collection-unit/get-collection-unit.pipe';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as histogramJsonSchema from './histogram.schema.json';
@@ -45,11 +50,11 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
  * For both modes, data can be multi-selected using a selection brush.
  */
 @Component({
-  selector: 'arlas-histogram',
-  templateUrl: './histogram.component.html',
-  styleUrls: ['./histogram.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  standalone: false
+    selector: 'arlas-histogram',
+    templateUrl: './histogram.component.html',
+    styleUrls: ['./histogram.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    imports: [NgClass, MatIconButton, MatTooltip, MatIcon, KeyValuePipe, TranslatePipe, GetCollectionUnitPipe]
 })
 export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 

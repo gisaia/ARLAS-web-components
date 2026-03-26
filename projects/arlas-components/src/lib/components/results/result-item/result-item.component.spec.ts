@@ -17,13 +17,21 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateNoOpLoader,
+} from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
 import { ArlasColorService } from '../../../services/color.generator.service';
-import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
+import {
+  AwcColorGeneratorLoader,
+  ColorGeneratorLoader,
+} from '../../componentsUtils';
 import { Item } from '../model/item';
 import { ResultItemComponent } from './result-item.component';
 
@@ -31,26 +39,25 @@ describe('ResultItemComponent', () => {
   let component: ResultItemComponent;
   let fixture: ComponentFixture<ResultItemComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ResultItemComponent ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
+        }),
         MatIconModule,
         MatTooltipModule,
         ColorGeneratorModule.forRoot({
           loader: {
             provide: ColorGeneratorLoader,
-            useClass: AwcColorGeneratorLoader
-          }
-        })
+            useClass: AwcColorGeneratorLoader,
+          },
+        }),
+        ResultItemComponent,
       ],
-      providers: [
-        ArlasColorService
-      ]
-    })
-      .compileComponents();
-  }));
+      providers: [ArlasColorService],
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultItemComponent);

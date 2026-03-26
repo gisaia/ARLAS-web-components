@@ -17,10 +17,11 @@
  * under the License.
  */
 
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
-
+import { of } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
 import { CogLegendComponent } from './cog-legend.component';
 
@@ -36,13 +37,20 @@ describe('CogLegendComponent', () => {
         ShortenNumberPipe,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ],
-      providers: [provideHttpClient(withInterceptorsFromDi())]
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: {
+            get: vi.fn(() => of())
+          }
+        }
+      ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(CogLegendComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('colormapUrl', 'viridis.png');
+    fixture.componentRef.setInput('colormapUrl', 'assets/no-view.png');
     fixture.detectChanges();
   });
 

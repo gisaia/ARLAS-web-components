@@ -19,12 +19,13 @@
 
 
 import { Component } from '@angular/core';
+import { LayerIconComponent } from 'arlas-map';
 
 @Component({
-  selector: 'arlas-layer-legend-demo',
-  templateUrl: './layer-legend-demo.component.html',
-  styleUrl: './layer-legend-demo.component.scss',
-  standalone: false
+    selector: 'arlas-layer-legend-demo',
+    templateUrl: './layer-legend-demo.component.html',
+    styleUrl: './layer-legend-demo.component.scss',
+    imports: [LayerIconComponent]
 })
 export class LayerLegendDemoComponent {
 protected layersLeg = new Map([

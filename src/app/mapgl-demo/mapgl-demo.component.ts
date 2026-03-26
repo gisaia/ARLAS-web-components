@@ -19,6 +19,10 @@
 
 
 import { Component, inject, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { LngLatBounds } from 'maplibre-gl';
 import { Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from '../../../projects/arlas-map/src/lib/arlas-map-framework.service';
@@ -36,10 +40,12 @@ import {
 } from '../../tools/map.constants';
 
 @Component({
-  selector: 'arlas-mapgl-demo',
-  templateUrl: './mapgl-demo.component.html',
-  styleUrls: ['./mapgl-demo.component.css'],
-  standalone: false
+    selector: 'arlas-mapgl-demo',
+    templateUrl: './mapgl-demo.component.html',
+    styleUrls: ['./mapgl-demo.component.css'],
+    imports: [
+      MatButton, MatRadioGroup, FormsModule, MatRadioButton, MatIconButton,
+      MatIcon, MapImportComponent, MapSettingsComponent, ArlasMapComponent]
 })
 export class MapglDemoComponent<L, S, M> {
   private readonly mapFramework = inject(ArlasMapFrameworkService<L, S, M>);

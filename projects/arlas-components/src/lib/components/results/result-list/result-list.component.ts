@@ -17,22 +17,34 @@
  * under the License.
  */
 
+import { AsyncPipe } from '@angular/common';
 import {
   AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
-  IterableDiffers,
-  OnChanges, OnInit, Output,
-  SimpleChanges, ViewEncapsulation
+  IterableDiffers, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
-import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatSelectChange } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatOption, MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslateService } from '@ngx-translate/core';
-import { fromEvent, Observable, Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { TranslatePipe } from '@ngx-translate/core';
+import { debounceTime, fromEvent, Observable, Subject } from 'rxjs';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 import { Column } from '../model/column';
 import { Item } from '../model/item';
+import { ResultDetailedGridComponent } from '../result-detailed-grid/result-detailed-grid.component';
+import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
+import { ResultFilterComponent } from '../result-filter/result-filter.component';
+import { ResultGridTileComponent } from '../result-grid-tile/result-grid-tile.component';
+import { ResultItemComponent } from '../result-item/result-item.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
@@ -41,8 +53,7 @@ import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import {
   Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
-  matchAndReplace,
-  PageQuery, ResultListOptions
+  matchAndReplace, PageQuery, ResultListOptions
 } from '../utils/results.utils';
 
 /**
@@ -55,7 +66,11 @@ import {
   templateUrl: './result-list.component.html',
   styleUrls: ['./result-list.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: false
+  imports: [
+    ResultFilterComponent, MatTooltip, MatCheckbox, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem,
+    MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup,
+    MatButtonToggle, ResultDetailedGridComponent, MatProgressSpinner, ResultScrollDirective, MatGridList,
+    ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe]
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 
@@ -468,8 +483,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public PageEnum = PageEnum;
   public SortEnum = SortEnum;
 
-  private iterableRowsDiffer;
-  private iterableColumnsDiffer;
+  private readonly iterableRowsDiffer;
+  private readonly iterableColumnsDiffer;
 
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
@@ -481,14 +496,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public displayListGrid = 'inline';
   public isShiftDown = false;
 
-  private debouncer = new Subject<ElementIdentifier>();
-  private scrollDebouncer = new Subject<any>();
-  private emitVisibleItemsDebouncer = new Subject<any>();
+  private readonly debouncer = new Subject<ElementIdentifier>();
+  private readonly scrollDebouncer = new Subject<any>();
+  private readonly emitVisibleItemsDebouncer = new Subject<any>();
 
 
-  public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers, private el: ElementRef,
-    private colorService: ArlasColorService, public translate: TranslateService, private notifier: ResultlistNotifierService,
-    private cdr: ChangeDetectorRef) {
+  public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
+    private readonly el: ElementRef,
+    private readonly colorService: ArlasColorService,
+    private readonly notifier: ResultlistNotifierService,
+    private readonly cdr: ChangeDetectorRef
+  ) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     // Resize the table height on window resize
@@ -1057,6 +1075,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       const nativeElement = this.el.nativeElement;
       if (nativeElement.childNodes && nativeElement.childNodes.length > 0 && nativeElement.childNodes[0]) {
         this.tableWidth = this.el.nativeElement.childNodes[0].offsetWidth;
+        this.cdr.detectChanges();
       }
     }
   }

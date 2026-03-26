@@ -8,8 +8,8 @@ describe('MultiBarDemoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MetricsTableDemoComponent ]
-    })
+    imports: [MetricsTableDemoComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(MetricsTableDemoComponent);

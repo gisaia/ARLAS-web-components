@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, ViewChild, ElementRef, Input, AfterViewInit, SimpleChanges, OnChanges } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { select } from 'd3-selection';
 import { ArlasDataLayer, CellShape } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
@@ -25,8 +25,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 @Component({
   selector: 'arlas-layer-icon',
   templateUrl: './layer-icon.component.html',
-  styleUrls: ['./layer-icon.component.scss'],
-  standalone: false
+  styleUrls: ['./layer-icon.component.scss']
 })
 export class LayerIconComponent implements AfterViewInit, OnChanges {
   @Input() public layer: ArlasDataLayer;
@@ -56,7 +55,7 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
 
   private drawIcons(): void {
     const type = this.layer.type;
-    const source: string = this.layer.source as string;
+    const source = this.layer.source;
     switch (type) {
       case 'circle':
       case 'circle-heatmap': {

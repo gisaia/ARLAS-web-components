@@ -17,12 +17,17 @@
  * under the License.
  */
 
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { KeyValuePipe } from '@angular/common';
 import { Component, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ArlasColorService, GetCollectionDisplayNamePipe } from 'arlas-web-components';
 import { Subject, takeUntil } from 'rxjs';
-import { ArlasColorService } from 'arlas-web-components';
 
 export interface GeometrySelectModel {
   path: string;
@@ -75,7 +80,9 @@ export interface MapSettingsService {
   selector: 'arlas-map-settings-dialog',
   templateUrl: './map-settings-dialog.component.html',
   styleUrls: ['./map-settings-dialog.component.scss'],
-  standalone: false
+  imports: [
+    MatDialogTitle, CdkScrollable, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel,
+    MatSelect, MatOption, MatDialogActions, MatButton, KeyValuePipe, TranslatePipe, GetCollectionDisplayNamePipe]
 })
 export class MapSettingsDialogComponent {
   /**
@@ -156,10 +163,9 @@ export class MapSettingsDialogComponent {
 }
 
 @Component({
-  selector: 'arlas-map-settings',
-  templateUrl: './map-settings.component.html',
-  styleUrls: ['./map-settings.component.scss'],
-  standalone: false
+    selector: 'arlas-map-settings',
+    templateUrl: './map-settings.component.html',
+    styleUrls: ['./map-settings.component.scss']
 })
 export class MapSettingsComponent {
 

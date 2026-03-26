@@ -17,25 +17,25 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { MapglDemoComponent } from './mapgl-demo.component';
 
 describe('MapglDemoComponent', () => {
   let component: MapglDemoComponent<unknown, unknown, unknown>;
   let fixture: ComponentFixture<MapglDemoComponent<unknown, unknown, unknown>>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MapglDemoComponent ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         MatInputModule,
-        FormsModule
+        FormsModule,
+        MapglDemoComponent
       ]
-    })
-      .compileComponents();
-  }));
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MapglDemoComponent);

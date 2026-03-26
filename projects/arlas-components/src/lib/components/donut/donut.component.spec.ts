@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
 import { DonutComponent } from './donut.component';
@@ -27,9 +28,8 @@ describe('DonutComponent', () => {
   let component: DonutComponent;
   let fixture: ComponentFixture<DonutComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DonutComponent ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         ColorGeneratorModule.forRoot({
@@ -37,11 +37,11 @@ describe('DonutComponent', () => {
             provide: ColorGeneratorLoader,
             useClass: AwcColorGeneratorLoader
           }
-        })
+        }),
+        DonutComponent
       ]
-    })
-      .compileComponents();
-  }));
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(DonutComponent);

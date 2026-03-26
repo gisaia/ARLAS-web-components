@@ -17,21 +17,28 @@
  * under the License.
  */
 
-import { Component, Input, OnInit, Output } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { LowerCasePipe } from '@angular/common';
+import { Component, Input, Output } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
+import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
+import { GetAttachmentUrlPipe } from '../../../pipes/get-attachment-url/get-attachment-url.pipe';
+import { ReplacePipe } from '../../../pipes/replace/replace.pipe';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
-import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
+import { ResultActionsComponent } from '../result-actions/result-actions.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
 
 @Component({
   selector: '[arlas-result-detailed-item]',
   templateUrl: './result-detailed-item.component.html',
   styleUrls: ['./result-detailed-item.component.scss'],
-  standalone: false
+  imports: [ResultActionsComponent, MatTooltip, MatIcon, LowerCasePipe, TranslatePipe, FormatNumberPipe, ReplacePipe, GetAttachmentUrlPipe]
 })
-export class ResultDetailedItemComponent implements OnInit {
+export class ResultDetailedItemComponent {
   /**
    * @Input
    * @description Number of columns in the parent table so that this component occupies the entire line.
@@ -50,7 +57,7 @@ export class ResultDetailedItemComponent implements OnInit {
    * @Input
    * @description An object representing an Item and that contains the detailed data.
    */
-  @Input() public rowItem: Item;
+  @Input({ required: true }) public rowItem: Item;
 
   /**
    * @Input
@@ -70,7 +77,7 @@ export class ResultDetailedItemComponent implements OnInit {
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  @Input({ required: true }) public detailedDataRetriever: DetailedDataRetriever;
   /**
    * @Input : Angular
    * @description List of active actions per item.
@@ -79,10 +86,7 @@ export class ResultDetailedItemComponent implements OnInit {
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-
-  public constructor(public translate: TranslateService) { }
-
-  public ngOnInit() {}
+  public constructor(private readonly translate: TranslateService) { }
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {

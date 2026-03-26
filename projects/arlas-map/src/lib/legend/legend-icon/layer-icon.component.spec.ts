@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { LayerIconComponent } from './layer-icon.component';
 
 describe('LayerIconComponent', () => {
@@ -6,10 +7,9 @@ describe('LayerIconComponent', () => {
   let fixture: ComponentFixture<LayerIconComponent>;
 
   beforeEach(async () => {
-    TestBed.configureTestingModule({
-      declarations: [LayerIconComponent]
-    })
-      .compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [LayerIconComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

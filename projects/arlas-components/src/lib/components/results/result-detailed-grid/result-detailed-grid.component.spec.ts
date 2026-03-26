@@ -18,21 +18,20 @@
  */
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ResultDetailedGridComponent } from './result-detailed-grid.component';
 
 describe('ResultDetailedGridComponent', () => {
   let component: ResultDetailedGridComponent;
   let fixture: ComponentFixture<ResultDetailedGridComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-    declarations: [ResultDetailedGridComponent],
-    imports: [],
-    providers: [provideHttpClient(withInterceptorsFromDi())]
-})
-      .compileComponents();
-  }));
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ResultDetailedGridComponent],
+      providers: [provideHttpClient(withInterceptorsFromDi())]
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultDetailedGridComponent);

@@ -17,23 +17,20 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ResultFilterComponent } from './result-filter.component';
 
 describe('ResultFilterComponent', () => {
   let component: ResultFilterComponent;
   let fixture: ComponentFixture<ResultFilterComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ResultFilterComponent ],
-      imports: [
-        FormsModule
-      ]
-    })
-      .compileComponents();
-  }));
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FormsModule, ResultFilterComponent],
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultFilterComponent);

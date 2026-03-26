@@ -234,5 +234,8 @@ $img-proportion: 85%;
     align-items: center;
     justify-content: center;
     color: var(--mat-checkbox-selected-icon-color);
+
+    position: absolute;
+    z-index: 1;
   }
 }

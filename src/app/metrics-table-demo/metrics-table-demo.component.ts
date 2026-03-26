@@ -18,12 +18,13 @@
  */
 
 import { Component } from '@angular/core';
+import { MetricsTableComponent } from 'arlas-web-components';
 import { MetricsTable } from '../../../projects/arlas-components/src/lib/components/metrics-table/model/metrics-table';
 @Component({
-  selector: 'arlas-multi-bar-demo',
-  templateUrl: './metrics-table-demo.component.html',
-  styleUrls: ['./metrics-table-demo.component.css'],
-  standalone: false
+    selector: 'arlas-multi-bar-demo',
+    templateUrl: './metrics-table-demo.component.html',
+    styleUrls: ['./metrics-table-demo.component.css'],
+    imports: [MetricsTableComponent]
 })
 export class MetricsTableDemoComponent {
   public multiBarTableSameTitle: MetricsTable = {

@@ -18,7 +18,7 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { MetricsTableRowComponent } from './metrics-table-row.component';
 
 describe('MultiBarsRowComponent', () => {
@@ -27,8 +27,8 @@ describe('MultiBarsRowComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MetricsTableRowComponent ]
-    })
+    imports: [MetricsTableRowComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(MetricsTableRowComponent);
