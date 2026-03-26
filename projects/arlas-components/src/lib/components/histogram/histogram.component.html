@@ -5,23 +5,32 @@
     </button>
   }
 
-  <div *ngIf="descriptionPosition === Position.top" class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
-    [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
-    <div class="histogram__description--display">
-      <div class="histogram__description__startvalue">
-        <span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
-      </div>
-      <div class="histogram__description__title">
-        <span *ngIf="histogram?.histogramParams.showTitle">{{histogram?.histogramParams.chartTitle}}</span>
-      </div>
-      <div class="histogram__description__endvalue">
-        <span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
+  <!-- TODO: create component or template for histogram description -->
+  @if (descriptionPosition === Position.top) {
+    <div class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
+      [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
+      <div class="histogram__description--display">
+        <div class="histogram__description__startvalue">
+          @if (histogram?.histogramParams.dataLength > 1) {
+            <span class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
+          }
+        </div>
+        <div class="histogram__description__title">
+          @if (histogram?.histogramParams.showTitle) {
+            <span>{{histogram?.histogramParams.chartTitle}}</span>
+          }
+        </div>
+        <div class="histogram__description__endvalue">
+          @if (histogram?.histogramParams.dataLength > 1) {
+            <span class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
   <div [style.display]="histogram?.histogramParams.displaySvg" style="position:relative">
     <svg id="svgix" class="histogram__chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight"></svg>
-    <div *ngIf="chart?.brush?.isBrushing">
+    @if (chart?.brush?.isBrushing) {
       <div #left [style.visibility]="histogram?.brushCornerTooltips.horizontalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__horizontal--left"
         [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition">
         {{histogram?.brushCornerTooltips.leftCornerTooltip.content}}
@@ -30,7 +39,6 @@
         [style.right.px]="histogram?.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.rightCornerTooltip.yPosition">
         {{histogram?.brushCornerTooltips.rightCornerTooltip.content}}
       </div>
-
       <div #leftvertical [style.visibility]="histogram?.brushCornerTooltips.verticalCssVisibility" class="histogram__brush-tooltip histogram__brush-tooltip__vertical--left__rotation histogram__brush-tooltip__vertical--left"
         [style.left.px]="histogram?.brushCornerTooltips.leftCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.leftCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.leftCornerTooltip.width">
         {{histogram?.brushCornerTooltips.leftCornerTooltip.content}}
@@ -39,67 +47,98 @@
         [style.left.px]="histogram?.brushCornerTooltips.rightCornerTooltip.xPosition"   [style.top.px]="histogram?.brushCornerTooltips.rightCornerTooltip.yPosition" [style.width.px]="histogram?.brushCornerTooltips.rightCornerTooltip.width">
         {{histogram?.brushCornerTooltips.rightCornerTooltip.content}}
       </div>
-    </div>
+    }
   </div>
-  <div *ngIf="histogram?.histogramParams.dataLength === 1" class="histogram__no-chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight">
-    <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{data[0].key | histogramKey : histogram?.histogramParams }} {{xUnit | translate}}</span>
-    <div *ngFor="let d of data">
-      <span class="histogram__no-chart__value">{{histogram?.histogramParams.chartTitle | translate}} {{d.value}}  {{ ((yUnit && yUnit.length > 0) ? yUnit : d.chartId | getCollectionUnit) | translate }}</span>
+  @if (histogram?.histogramParams.dataLength === 1) {
+    <div class="histogram__no-chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight">
+      <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{data[0].key | histogramKey : histogram?.histogramParams }} {{xUnit | translate}}</span>
+      @for (d of data; track d) {
+        <div>
+          <span class="histogram__no-chart__value">{{histogram?.histogramParams.chartTitle | translate}} {{d.value}}  {{ ((yUnit && yUnit.length > 0) ? yUnit : d.chartId | getCollectionUnit) | translate }}</span>
+        </div>
+      }
     </div>
-  </div>
-  <div *ngIf="descriptionPosition === Position.bottom" class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
-    [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
-    <div class="histogram__description--display">
-      <div class="histogram__description__startvalue">
-        <span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
-      </div>
-      <div class="histogram__description__title">
-        <span *ngIf="histogram?.histogramParams.showTitle">{{histogram?.histogramParams.chartTitle}}</span>
-      </div>
-      <div class="histogram__description__endvalue">
-        <span *ngIf="histogram?.histogramParams.dataLength > 1" class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
-      </div>
-    </div>
-  </div>
-  <div *ngIf="chartType === ChartType.swimlane">
-    <div class="histogram__tooltip" *ngIf="histogram?.histogramParams.swimlaneXTooltip.isShown && !histogram?.histogramParams.swimlaneXTooltip.isRightSide"
-      [style.left.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
-      <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
-    </div>
-    <div class="histogram__tooltip" *ngIf="histogram?.histogramParams.swimlaneXTooltip.isShown && histogram?.histogramParams.swimlaneXTooltip.isRightSide"
-      [style.right.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
-      <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
-    </div>
-    <div *ngFor="let tooltip of histogram?.histogramParams.swimlaneTooltipsMap | keyvalue">
-      <div class="histogram__tooltip" *ngIf="tooltip.value.isShown && !tooltip.value.isRightSide && tooltip.value.yContent"
-        [style.left.px]="tooltip.value.xPosition" [style.top.px]="tooltip.value.yPosition">
-        <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
-        <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
-      </div>
-      <div class="histogram__tooltip" *ngIf="tooltip.value.isShown && tooltip.value.isRightSide && tooltip.value.yContent"
-        [style.right.px]="tooltip.value.xPosition"  [style.top.px]="tooltip.value.yPosition">
-        <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
-        <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
+  }
+  @if (descriptionPosition === Position.bottom) {
+    <div class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
+      [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
+      <div class="histogram__description--display">
+        <div class="histogram__description__startvalue">
+          @if (histogram?.histogramParams.dataLength > 1) {
+            <span class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
+          }
+        </div>
+        <div class="histogram__description__title">
+          @if (histogram?.histogramParams.showTitle) {
+            <span>{{histogram?.histogramParams.chartTitle}}</span>
+          }
+        </div>
+        <div class="histogram__description__endvalue">
+          @if (histogram?.histogramParams.dataLength > 1) {
+            <span class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
+          }
+        </div>
       </div>
     </div>
-  </div>
+  }
+  @if (chartType === ChartType.swimlane) {
+    <div>
+      @if (histogram?.histogramParams.swimlaneXTooltip.isShown) {
+        @if (histogram?.histogramParams.swimlaneXTooltip.isRightSide) {
+          <div class="histogram__tooltip"
+              [style.right.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
+            <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
+          </div>
+        } @else {
+          <div class="histogram__tooltip"
+            [style.left.px]="histogram?.histogramParams.swimlaneXTooltip.xPosition"   [style.bottom.px]="30">
+            <span class="histogram__swimlane--tooltip-xcontent">{{histogram?.histogramParams.swimlaneXTooltip.xContent}}</span>
+          </div>
+        }
+      }
 
-  <div *ngFor="let id of histogram?.histogramParams.selectionListIntervalId" class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="histogram?.histogramParams.topOffsetRemoveInterval"
-    [style.left.px]="histogram?.histogramParams.intervalSelectedMap.get(id)?.x_position" matTooltip="{{'Remove this selection' | translate}}" matTooltipPosition="above">
-    <svg fill="#fff" height="24" viewBox="0 0 24 24"
-      width="24" xmlns="http://www.w3.org/2000/svg" transform="rotate(45)">
-      <path  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
-      <path fill="#555" d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-    </svg>
-  </div>
-  <div *ngIf="chartType === ChartType.swimlane">
+      @for (tooltip of histogram?.histogramParams.swimlaneTooltipsMap | keyvalue; track tooltip) {
+        @if (tooltip.value.isShown && tooltip.value.yContent) {
+          @if (tooltip.value.isRightSide) {
+            <div class="histogram__tooltip"
+              [style.right.px]="tooltip.value.xPosition"  [style.top.px]="tooltip.value.yPosition">
+              <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
+              <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
+            </div>
+          } @else {
+            <div class="histogram__tooltip"
+              [style.left.px]="tooltip.value.xPosition" [style.top.px]="tooltip.value.yPosition">
+              <span class="histogram__swimlane--tooltip-content">{{tooltip.value.yContent}}</span>
+              <span class="histogram__swimlane--tooltip-additional_info">{{tooltip.value.yAdditonalInfo}}</span>
+            </div>
+          }
+        }
+      }
+    </div>
+  }
+
+  @for (id of histogram?.histogramParams.selectionListIntervalId; track id) {
+    <div class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="histogram?.histogramParams.topOffsetRemoveInterval"
+      [style.left.px]="histogram?.histogramParams.intervalSelectedMap.get(id)?.x_position" matTooltip="{{'Remove this selection' | translate}}" matTooltipPosition="above">
+      <svg fill="#fff" height="24" viewBox="0 0 24 24"
+        width="24" xmlns="http://www.w3.org/2000/svg" transform="rotate(45)">
+        <path  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
+        <path fill="#555" d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+      </svg>
+    </div>
+  }
+  @if (chartType === ChartType.swimlane) {
     <div>
       <div class="swimlane_legend">
-        <div [style.width.px]="histogram?.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_color" *ngFor="let b of histogram?.histogramParams.legend" [style.background-color]="b.color"></div>
+        @for (b of histogram?.histogramParams.legend; track b) {
+          <div [style.width.px]="histogram?.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_color" [style.background-color]="b.color"></div>
+        }
       </div>
       <div class="swimlane_legend">
-        <div [style.width.px]="histogram?.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_value" *ngFor="let b of histogram?.histogramParams.legend; index as i" >{{b.key}}</div>
+        @for (b of histogram?.histogramParams.legend; track b; let i = $index) {
+          <div [style.width.px]="histogram?.histogramParams.chartWidth * 0.3 / 10" class="swimlane_legend_value" >{{b.key}}</div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>

@@ -38,16 +38,16 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.3.15",
-    "@angular/cdk": "^20.2.14",
-    "@angular/common": "^20.3.15",
-    "@angular/compiler": "^20.3.15",
-    "@angular/core": "^20.3.15",
-    "@angular/forms": "^20.3.15",
-    "@angular/material": "^20.2.14",
-    "@angular/platform-browser": "^20.3.15",
-    "@angular/platform-browser-dynamic": "^20.3.15",
-    "@angular/router": "^20.3.15",
+    "@angular/animations": "^21.2.6",
+    "@angular/cdk": "^21.2.4",
+    "@angular/common": "^21.2.6",
+    "@angular/compiler": "^21.2.6",
+    "@angular/core": "^21.2.6",
+    "@angular/forms": "^21.2.6",
+    "@angular/material": "^21.2.4",
+    "@angular/platform-browser": "^21.2.6",
+    "@angular/platform-browser-dynamic": "^21.2.6",
+    "@angular/router": "^21.2.6",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
     "@types/mapbox-gl": "^1.6.3",
@@ -60,14 +60,14 @@
     "zone.js": "^0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.13",
-    "@angular-eslint/builder": "~20.7.0",
-    "@angular-eslint/eslint-plugin": "~20.7.0",
-    "@angular-eslint/eslint-plugin-template": "~20.7.0",
-    "@angular-eslint/schematics": "~20.7.0",
-    "@angular-eslint/template-parser": "~20.7.0",
-    "@angular/cli": "^20.3.13",
-    "@angular/compiler-cli": "^20.3.15",
+    "@angular-devkit/build-angular": "^21.2.4",
+    "@angular-eslint/builder": "^21.3.1",
+    "@angular-eslint/eslint-plugin": "^21.3.1",
+    "@angular-eslint/eslint-plugin-template": "^21.3.1",
+    "@angular-eslint/schematics": "^21.3.1",
+    "@angular-eslint/template-parser": "^21.3.1",
+    "@angular/cli": "^21.2.4",
+    "@angular/compiler-cli": "^21.2.6",
     "@colsen1991/ngx-translate-extract-marker": "^3.0.1",
     "@types/jasmine": "~3.10.0",
     "@stylistic/eslint-plugin": "^5.6.1",
@@ -85,15 +85,13 @@
     "karma-jasmine-html-reporter": "~1.7.0",
     "license-check-and-add": "^4.0.5",
     "minimist": "~1.2.7",
-    "ng-packagr": "^20.3.2",
+    "ng-packagr": "^21.2.1",
     "ts-node": "~10.4.0",
     "node": "^24.10.1",
-    "typescript": "~5.8.0",
+    "typescript": "~5.9.3",
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "overrides": {
-    "license-check-and-add": {
-      "globby": "^11.0.0"
-    }
+    "picomatch": "4.0.4"
   }
 }

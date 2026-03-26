@@ -1,35 +1,47 @@
 <td class="checkboxcell" [colSpan]="1">
 </td>
 <td [class.grid-container]="containerType === 'grid'" [colSpan]="detailColspan - 1">
-  <div class="details-title" *ngIf="rowItem?.detailsTitleEnabled">{{rowItem?.detailsTitle}}</div>
+  @if (rowItem?.detailsTitleEnabled) {
+    <div class="details-title">{{rowItem?.detailsTitle}}</div>
+  }
   <div class="resultdetaileditem">
-    <ng-container *ngFor="let group of rowItem?.itemDetailedData">
-      <div class="resultdetaileditem--group" *ngIf="showEmptyGroup || group.details.length > 0">
-        <span class="resultdetaileditem--group-title {{group.group | replace:' ':'-' | lowercase}}-item-detail">
-          {{group.group | translate}}
-        </span>
-        <span *ngFor="let detail of group.details" class="resultdetaileditem--item {{detail.key}}-item-detail">
-          <span class="resultdetaileditem--item--key">{{detail.key | translate}}</span>
-          <span class="resultdetaileditem--item--value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
-        </span>
-      </div>
-    </ng-container>
+    @for (group of rowItem?.itemDetailedData; track group) {
+      @if (showEmptyGroup || group.details.length > 0) {
+        <div class="resultdetaileditem--group">
+          <span class="resultdetaileditem--group-title {{group.group | replace:' ':'-' | lowercase}}-item-detail">
+            {{group.group | translate}}
+          </span>
+          @for (detail of group.details; track detail) {
+            <span class="resultdetaileditem--item {{detail.key}}-item-detail">
+              <span class="resultdetaileditem--item--key">{{detail.key | translate}}</span>
+              <span class="resultdetaileditem--item--value">{{detail.value | formatNumber:NUMBER_FORMAT_CHAR}}</span>
+            </span>
+          }
+        </div>
+      }
+    }
     <arlas-result-actions
-          [activatedActionsPerItem]="activatedActionsPerItem"
-          [detailedDataRetriever]="detailedDataRetriever"
-          [item]="rowItem"
-          [mode]="'text'"
-          (actionOnItemEvent)="triggerActionOnItem($event)" ></arlas-result-actions>
-    <span class="result-attachments" *ngIf="rowItem?.attachments && rowItem?.attachments.length > 0">
-      <div class="result-attachments--title">{{'Attachments' | translate}}</div>
-      <span class="result-attachments--item" *ngFor="let att of rowItem?.attachments; index as i">
-        <a class="result-attachments--item--link" href="{{att.url | getAttachmentUrl}}"
-          matTooltip="{{getAttachmentDescription(att)}}" [matTooltipPosition]="'after'" target="_blank">
-          <mat-icon *ngIf="att.icon" class="result-attachments--item--link--icon">{{att.icon}}</mat-icon>
-          <span class="result-attachments--item--link--label"> {{getAttachmentLabel(att, i + 1)}}</span>
-        </a>
+      [activatedActionsPerItem]="activatedActionsPerItem"
+      [detailedDataRetriever]="detailedDataRetriever"
+      [item]="rowItem"
+      [mode]="'text'"
+    (actionOnItemEvent)="triggerActionOnItem($event)" ></arlas-result-actions>
+    @if (rowItem?.attachments && rowItem?.attachments.length > 0) {
+      <span class="result-attachments">
+        <div class="result-attachments--title">{{'Attachments' | translate}}</div>
+        @for (att of rowItem?.attachments; track att; let i = $index) {
+          <span class="result-attachments--item">
+            <a class="result-attachments--item--link" href="{{att.url | getAttachmentUrl}}"
+              matTooltip="{{getAttachmentDescription(att)}}" [matTooltipPosition]="'after'" target="_blank">
+              @if (att.icon) {
+                <mat-icon class="result-attachments--item--link--icon">{{att.icon}}</mat-icon>
+              }
+              <span class="result-attachments--item--link--label"> {{getAttachmentLabel(att, i + 1)}}</span>
+            </a>
+          </span>
+        }
       </span>
-    </span>
+    }
   </div>
 
 </td>

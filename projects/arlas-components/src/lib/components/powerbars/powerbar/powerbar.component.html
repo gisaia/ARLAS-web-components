@@ -1,27 +1,31 @@
-<ng-container *ngIf="!!powerbar">
-    <ng-container *ngIf="!powerbar.isSelected || (powerbar.isSelected && !hideSelected)">
-        <div class="container" (click)="onSelect()"> <!-- //NOSONAR -->
-            <section *ngIf="selectWithCheckbox" class="checkbox checkbox-{{powerbar.classSuffix}}">
-                <mat-checkbox [checked]="powerbar.isSelected" (change)="onCheck()" (click)="$event.stopPropagation()"></mat-checkbox> <!-- //NOSONAR -->
-            </section>
-            <section style="width: 100%;">
-                <div class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}" (mouseover)="emitOver(powerbar)" (mouseout)="emitOut(powerbar)" > <!-- //NOSONAR -->
-                    <div class="powerbars__powerbar--top-group">
-                        <div [class.powerbars__powerbar--selected]="powerbar.isSelected" class="powerbars__powerbar--term powerbars__powerbar--term-{{powerbar.classSuffix}} powerbars__powerbar--term--{{powerbar.term}}">
-                            {{powerbar.term | translate}}
-                        </div>
-
-                        <div [class.powerbars__powerbar--selected]="powerbar.isSelected" class="powerbars__powerbar--count powerbars__powerbar--term-{{powerbar.classSuffix}} powerbars__powerbar--term--{{powerbar.term}}">
-                            {{powerbar.count | shortenNumber:numberShorteningPrecision}}
-                        </div>
-                    </div>
-
-                    <div *ngIf="!useColorService && !useColorFromData" class="powerbars__powerbar--progression-default-colour"
-                        [style.width.%]="powerbar.progression"></div>
-                    <div *ngIf="useColorService || useColorFromData" [style.background-color]="powerbar.color"
-                        [style.border-color]="powerbar.color" [style.width.%]="powerbar.progression" class="powerbars__powerbar--progression"></div>
-                </div>
-            </section>
+@if (!!powerbar) {
+  @if (!powerbar.isSelected || (powerbar.isSelected && !hideSelected)) {
+    <div class="container" (click)="onSelect()"> <!-- //NOSONAR -->
+      @if (selectWithCheckbox) {
+        <section class="checkbox checkbox-{{powerbar.classSuffix}}">
+          <mat-checkbox [checked]="powerbar.isSelected" (change)="onCheck()" (click)="$event.stopPropagation()"></mat-checkbox> <!-- //NOSONAR -->
+        </section>
+      }
+      <section style="width: 100%;">
+        <div class="powerbars__powerbar powerbars__powerbar--{{powerbar.classSuffix}}" (mouseover)="emitOver(powerbar)" (mouseout)="emitOut(powerbar)" > <!-- //NOSONAR -->
+          <div class="powerbars__powerbar--top-group">
+            <div [class.powerbars__powerbar--selected]="powerbar.isSelected" class="powerbars__powerbar--term powerbars__powerbar--term-{{powerbar.classSuffix}} powerbars__powerbar--term--{{powerbar.term}}">
+              {{powerbar.term | translate}}
+            </div>
+            <div [class.powerbars__powerbar--selected]="powerbar.isSelected" class="powerbars__powerbar--count powerbars__powerbar--term-{{powerbar.classSuffix}} powerbars__powerbar--term--{{powerbar.term}}">
+              {{powerbar.count | shortenNumber:numberShorteningPrecision}}
+            </div>
+          </div>
+          @if (!useColorService && !useColorFromData) {
+            <div class="powerbars__powerbar--progression-default-colour"
+            [style.width.%]="powerbar.progression"></div>
+          }
+          @if (useColorService || useColorFromData) {
+            <div [style.background-color]="powerbar.color"
+            [style.border-color]="powerbar.color" [style.width.%]="powerbar.progression" class="powerbars__powerbar--progression"></div>
+          }
         </div>
-    </ng-container>
-</ng-container>
+      </section>
+    </div>
+  }
+}

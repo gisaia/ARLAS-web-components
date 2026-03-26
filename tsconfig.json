@@ -5,11 +5,11 @@
     "paths": {
       "arlas-web-components": [
         "dist/arlas-web-components",
-        "projects/arlas-components/src/public-api.ts",
+        "projects/arlas-components/src/public-api.ts"
       ],
       "arlas-map": [
         "dist/arlas-map",
-        "projects/arlas-map/src/public-api.ts",
+        "projects/arlas-map/src/public-api.ts"
       ],
       "arlas-mapbox": [
         "projects/arlas-mapbox/src/public-api.ts",
@@ -25,7 +25,7 @@
     "rootDir": "./",
     "sourceMap": true,
     "declaration": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "stripInternal": true,

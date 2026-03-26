@@ -42,7 +42,7 @@ describe('CogLegendComponent', () => {
 
     fixture = TestBed.createComponent(CogLegendComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('colormapUrl', 'test.png');
+    fixture.componentRef.setInput('colormapUrl', 'viridis.png');
     fixture.detectChanges();
   });
 

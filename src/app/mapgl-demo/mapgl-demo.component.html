@@ -1,19 +1,23 @@
-<div class="polygon-tools" *ngIf="drawEnabled">
-  <button mat-raised-button (click)="stopUpdate()">{{ updateBbox ? 'Freeze layers' : 'Unfreeze layers' }}</button>
-  <button mat-raised-button (click)="switchToDrawMode('draw_strip',{halfSwath:7,maxLength:100})">STRIP</button>
-  <button mat-raised-button (click)="switchToDrawMode('draw_rectangle')">BBOX</button>
-  <button mat-raised-button (click)="switchToDrawMode('draw_radius_circle',{isFixedRadius:true,initialRadiusInKm:1000})">CIRCLE</button>
-  <button mat-raised-button (click)="switchToDrawMode()">DRAW</button>
-  <button mat-raised-button (click)="delete()">DELETE</button>
-  <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
-  <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
-  <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group">
-    <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
-    <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
-    <mat-radio-button class="polygon-radio" value="id">By id</mat-radio-button>
-  </mat-radio-group>
-  <input type="number" class="polygon-input" [(ngModel)]="idToSelect" *ngIf="modeChoice === 'id'">
-</div>
+@if (drawEnabled) {
+  <div class="polygon-tools">
+    <button mat-raised-button (click)="stopUpdate()">{{ updateBbox ? 'Freeze layers' : 'Unfreeze layers' }}</button>
+    <button mat-raised-button (click)="switchToDrawMode('draw_strip',{halfSwath:7,maxLength:100})">STRIP</button>
+    <button mat-raised-button (click)="switchToDrawMode('draw_rectangle')">BBOX</button>
+    <button mat-raised-button (click)="switchToDrawMode('draw_radius_circle',{isFixedRadius:true,initialRadiusInKm:1000})">CIRCLE</button>
+    <button mat-raised-button (click)="switchToDrawMode()">DRAW</button>
+    <button mat-raised-button (click)="delete()">DELETE</button>
+    <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
+    <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
+    <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group">
+      <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
+      <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
+      <mat-radio-button class="polygon-radio" value="id">By id</mat-radio-button>
+    </mat-radio-group>
+    @if (modeChoice === 'id') {
+      <input type="number" class="polygon-input" [(ngModel)]="idToSelect">
+    }
+  </div>
+}
 <div class="mapgl-options">
   <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
     <mat-icon aria-label="Import polygon on your map">get_app</mat-icon>
