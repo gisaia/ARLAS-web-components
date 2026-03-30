@@ -1,5 +1,11 @@
 # Change Log
 
+## [v27.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.4) (2026-03-27)
+
+**Miscellaneous:**
+
+- Migrate to Angular 20 [\#1028](https://github.com/gisaia/ARLAS-web-components/issues/1028)
+
 ## [v27.0.18](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.18) (2025-12-09)
 
 ## [v27.0.17](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.17) (2025-12-09)
