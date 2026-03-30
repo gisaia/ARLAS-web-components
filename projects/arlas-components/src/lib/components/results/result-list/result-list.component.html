@@ -14,8 +14,8 @@
               </td>
             } @else  {
               <td arlas-result-filter class="resultlist__filter__{{column.columnName}}"
-                matTooltip="{{FILTER_ON | translate}} {{column.columnName  | translate}}" [style.width.px]="column.width"
-                [column]="column" [dropdownValues]="dropDownMapValues?.get(column.fieldName)|async" [filtersMap]="filtersMap"
+                [matTooltip]="(FILTER_ON | translate) + (column.columnName | translate)" [style.width.px]="column.width"
+                [column]="column" [dropdownValues]="dropDownMapValues?.get(column.fieldName) | async" [filtersMap]="filtersMap"
                 (columnChanged)="columnChanged($event)" (setFiltersEvent)="setFilters($event)">
               </td>
             }

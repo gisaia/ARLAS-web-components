@@ -106,17 +106,12 @@ $img-proportion: 85%;
 }
 
 .resultgrid__icon_check
-
 /* @doc Sets the checkbox icon style.*/
   {
-  position: absolute;
-  top: 5px;
-  left: 5px;
   font-size: 15px;
   width: 15px;
   height: 15px;
   color: white;
-  cursor: pointer;
   z-index: 5;
   user-select: none;
 }
@@ -236,6 +231,8 @@ $img-proportion: 85%;
     color: var(--mat-checkbox-selected-icon-color);
 
     position: absolute;
+    top: 5px;
+    left: 5px;
     z-index: 1;
   }
 }
