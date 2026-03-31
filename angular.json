@@ -121,7 +121,7 @@
               "tsConfig": "projects/arlas-components/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/arlas-components/tsconfig.lib.json",
+              "tsConfig": "projects/arlas-components/tsconfig.lib.json"
             }
           }
         },
