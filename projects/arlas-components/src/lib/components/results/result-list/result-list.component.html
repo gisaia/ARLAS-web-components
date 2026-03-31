@@ -77,10 +77,10 @@
               }
             </mat-select>
             @if (sortedColumn?.fieldName) {
-              <mat-button mat-icon-button class="resultlist__tools--sort-direction" (click)="setDirection($event)"
+              <button mat-icon-button class="resultlist__tools--sort-direction" (click)="setDirection($event)"
                 (keydown)="setDirection($event)" [matTooltip]="'Change sort direction' | translate">
                 <mat-icon [class.reversed]="sortedColumn.sortDirection === SortEnum.asc">trending_flat</mat-icon>
-              </mat-button>
+              </button>
             }
           </div>
           @if (hasGridMode) {

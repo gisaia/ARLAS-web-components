@@ -19,7 +19,7 @@
 
 
 import { Component } from '@angular/core';
-import { LayerIconComponent } from 'arlas-map';
+import { ArlasDataLayer, LayerIconComponent, Legend, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
 
 @Component({
     selector: 'arlas-layer-legend-demo',
@@ -28,7 +28,7 @@ import { LayerIconComponent } from 'arlas-map';
     imports: [LayerIconComponent]
 })
 export class LayerLegendDemoComponent {
-protected layersLeg = new Map([
+protected layersLeg = new Map<string, { layer: ArlasDataLayer, colorLegend: Legend, strokeColorLegend: Legend}>([
   [
     "arlas_id:Tracks:1724158164373#Cluster",
     {
@@ -150,7 +150,6 @@ protected layersLeg = new Map([
         "metadata": {
           "collection": "courses",
           "collectionDisplayName": "courses",
-          "aggType": "h3",
           "hiddenProps": {
             "geomType": "circle-heatmap"
           }
@@ -158,7 +157,7 @@ protected layersLeg = new Map([
       },
       "colorLegend": {
         "visible": true,
-        "type": "Interpolated",
+        "type": PROPERTY_SELECTOR_SOURCE.interpolated,
         "title": "count_:normalized",
         "interpolatedValues": [
           "#cee897",
@@ -179,7 +178,7 @@ protected layersLeg = new Map([
       },
       "strokeColorLegend": {
         "visible": true,
-        "type": "Interpolated",
+        "type": PROPERTY_SELECTOR_SOURCE.interpolated,
         "title": "count_:normalized",
         "interpolatedValues": [
           "#cee897",
@@ -229,16 +228,15 @@ protected layersLeg = new Map([
         "metadata": {
           "collection": "courses",
           "collectionDisplayName": "courses",
-          "isScrollableLayer": false,
-          "aggType": null
+          "isScrollableLayer": false
         }
       },
       "colorLegend": {
         "visible": true,
-        "type": "Fix",
+        "type": PROPERTY_SELECTOR_SOURCE.fix,
         "fixValue": "#ff0000"
       },
-
+      strokeColorLegend: {}
     }
   ],
   [
@@ -261,7 +259,6 @@ protected layersLeg = new Map([
         "metadata": {
           "collection": "courses",
           "collectionDisplayName": "courses",
-          "aggType": "h3",
           "stroke": {
             "color": "#fff",
             "width": 0,
@@ -271,12 +268,12 @@ protected layersLeg = new Map([
       },
       "colorLegend": {
         "visible": true,
-        "type": "Fix",
+        "type": PROPERTY_SELECTOR_SOURCE.fix,
         "fixValue": "#abcdef"
       },
       "strokeColorLegend": {
         "visible": true,
-        "type": "Fix",
+        "type": PROPERTY_SELECTOR_SOURCE.fix,
         "fixValue": "#fff"
       },
 

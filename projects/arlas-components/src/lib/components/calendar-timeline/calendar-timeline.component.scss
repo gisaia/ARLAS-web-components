@@ -29,11 +29,13 @@
         .move_button {
             width: 15px;
             background-color: #b7b7b7;
+
             display: flex;
             flex-direction: column;
             align-items: center;
-            cursor: pointer;
             justify-content: center;
+
+            --mat-icon-button-container-shape: 0;
 
             .past {
                 border-top-left-radius: 2px;

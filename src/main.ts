@@ -26,7 +26,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AbstractArlasMapService, ArlasMapFrameworkService, BasemapService, LegendService } from 'arlas-map';
 import { ArlasMaplibreService, ArlasMapService, MaplibreBasemapService, MaplibreLegendService } from 'arlas-maplibre';
-import { AwcCollectionService, AwcColorGeneratorLoader, BaseCollectionService, CollectionModule, ColorGeneratorLoader } from 'arlas-web-components';
+import { AwcCollectionService, AwcColorGeneratorLoader, BaseCollectionService, CollectionModule, ColorGeneratorLoader, ColorGeneratorModule } from 'arlas-web-components';
 import { AppComponent } from './app/app.component';
 import { CalendarTimelineDemoComponent } from './app/calendar-timeline-demo/calendar-timeline-demo.component';
 import { CogVisualisationComponent } from './app/cog-visualisation/cog-visualisation.component';
@@ -92,6 +92,7 @@ bootstrapApplication(AppComponent, {
         {
             provide: LegendService,
             useClass: MaplibreLegendService
-        }
+        },
+        importProvidersFrom(ColorGeneratorModule.forRoot())
     ]
 });

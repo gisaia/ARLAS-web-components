@@ -21,7 +21,6 @@ import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { Granularity } from 'arlas-d3';
 import { CalendarTimelineComponent } from 'arlas-web-components';
-import { Subject } from 'rxjs';
 
 // TODO: add data to properly test component
 
@@ -32,17 +31,17 @@ import { Subject } from 'rxjs';
     imports: [MatButton, CalendarTimelineComponent]
 })
 export class CalendarTimelineDemoComponent {
-  public granularity: Subject<Granularity> = new Subject();
+  public granularity = Granularity.year;
 
   public constructor() { }
 
   public day() {
-    this.granularity.next(Granularity.day);
+    this.granularity = Granularity.day;
   }
 
 
   public month() {
-    this.granularity.next(Granularity.month);
+    this.granularity = Granularity.month;
   }
 
 }

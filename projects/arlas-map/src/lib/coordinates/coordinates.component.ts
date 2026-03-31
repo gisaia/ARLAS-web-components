@@ -20,6 +20,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatError, MatFormField, MatLabel } from '@angular/material/select';
@@ -34,7 +35,7 @@ import { CoordinatesErrorPipe } from './coordinates.pipe';
   templateUrl: './coordinates.component.html',
   styleUrls: ['./coordinates.component.scss'],
   imports: [
-    MatTooltip, FormsModule, ReactiveFormsModule, MatFormField, MatLabel,
+    MatTooltip, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatButtonModule,
     MatInput, MatError, MatIcon, DecimalPipe, TranslatePipe, CoordinatesErrorPipe]
 })
 export class CoordinatesComponent implements OnInit {

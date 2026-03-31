@@ -3,7 +3,7 @@
   <div class="graphs_timeline">
     <arlas-histogram [id]="'a'" [chartXLabel]="'Date'"
                      [handlesRadius]="3.5"
-                     [selectionType]="'slider'"
+                     [selectionType]="SelectionType.slider"
                      [dataUnit]="'aa'"
                      [xAxisPosition]="1"
                      [chartType]="chartType.bars"
@@ -230,7 +230,7 @@
 
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [id]="'n'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="'timeline'" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'n'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="1" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dataUnit]="'m²'" [isSmoothedCurve]=false></arlas-histogram>
   </div>
 </div>

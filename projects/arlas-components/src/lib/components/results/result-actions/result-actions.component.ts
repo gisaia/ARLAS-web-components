@@ -18,7 +18,7 @@
  */
 
 import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -48,7 +48,7 @@ import { ActionDisplayerPipe } from './result-actions.pipe';
     selector: 'arlas-result-actions',
     templateUrl: './result-actions.component.html',
     styleUrls: ['./result-actions.component.scss'],
-    imports: [MatTooltip, MatIcon, MatButton, TranslatePipe, ActionDisplayerPipe]
+    imports: [MatTooltip, MatIcon, MatButtonModule, TranslatePipe, ActionDisplayerPipe]
 })
 export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   /** The item which actions are managed by this component. */

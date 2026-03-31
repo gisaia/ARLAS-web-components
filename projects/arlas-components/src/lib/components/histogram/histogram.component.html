@@ -49,7 +49,8 @@
       </div>
     }
   </div>
-  @if (histogram?.histogramParams.dataLength === 1) {
+
+  @if (histogram?.histogramParams.dataLength === 1 && data instanceof Array) {
     <div class="histogram__no-chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight">
       <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{data[0].key | histogramKey : histogram?.histogramParams }} {{xUnit | translate}}</span>
       @for (d of data; track d) {

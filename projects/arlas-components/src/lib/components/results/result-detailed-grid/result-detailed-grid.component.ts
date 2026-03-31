@@ -20,7 +20,7 @@
 import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectorRef, Component,
-  ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -109,6 +109,12 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   * DetailedDataRetriever interface.
   */
   @Input() public detailedDataRetriever: DetailedDataRetriever;
+
+  /**
+   * @Input
+   * @description Default img
+   */
+  public noViewImg = input<string>('assets/no-view.png');
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.

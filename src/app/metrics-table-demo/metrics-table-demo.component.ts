@@ -239,28 +239,33 @@ export class MetricsTableDemoComponent {
     ]
   };
 
-  public multiBarTDiffTittletesT = {
+  public multiBarTDiffTittletesT: MetricsTable = {
     'data': [
       {
         'data': [
           {
-            'maxValue': 111392232433.07695,
+            'maxTableValue': 111392232433.07695,
             'value': 80970456.34897614,
             'metric': 'sum',
             'column': 'demo_ais_flow',
-            'field': 'course.distance.gps.travelled_m'
+            'field': 'course.distance.gps.travelled_m',
+            maxColumnValue: 0
           },
           {
-            'maxValue': 265079,
+            'maxTableValue': 265079,
             'value': 318,
             'metric': 'count',
-            'column': 'demo_ais_flow'
+            'column': 'demo_ais_flow',
+            maxColumnValue: 0,
+            field: ''
           },
           {
-            'maxValue': 5329,
+            'maxTableValue': 5329,
             'value': 10,
             'metric': 'count',
-            'column': 'demo_ais_course'
+            'column': 'demo_ais_course',
+            maxColumnValue: 0,
+            field: ''
           }
         ],
         'term': 'Norway'
@@ -268,23 +273,28 @@ export class MetricsTableDemoComponent {
       {
         'data': [
           {
-            'maxValue': 111392232433.07695,
+            'maxTableValue': 111392232433.07695,
             'value': 1147598646.3789253,
             'metric': 'sum',
             'column': 'demo_ais_flow',
-            'field': 'course.distance.gps.travelled_m'
+            'field': 'course.distance.gps.travelled_m',
+            maxColumnValue: 0
           },
           {
-            'maxValue': 265079,
+            'maxTableValue': 265079,
             'value': 1797,
             'metric': 'count',
-            'column': 'demo_ais_flow'
+            'column': 'demo_ais_flow',
+            maxColumnValue: 0,
+            field: ''
           },
           {
-            'maxValue': 5329,
+            'maxTableValue': 5329,
             'value': 14,
             'metric': 'count',
-            'column': 'demo_ais_course'
+            'column': 'demo_ais_course',
+            maxColumnValue: 0,
+            field: ''
           }
         ],
         'term': 'Poland'
@@ -292,23 +302,28 @@ export class MetricsTableDemoComponent {
       {
         'data': [
           {
-            'maxValue': 111392232433.07695,
+            'maxTableValue': 111392232433.07695,
             'value': 10926580355.695827,
             'metric': 'sum',
             'column': 'demo_ais_flow',
-            'field': 'course.distance.gps.travelled_m'
+            'field': 'course.distance.gps.travelled_m',
+            maxColumnValue: 0
           },
           {
-            'maxValue': 265079,
+            'maxTableValue': 265079,
             'value': 56955,
             'metric': 'count',
-            'column': 'demo_ais_flow'
+            'column': 'demo_ais_flow',
+            maxColumnValue: 0,
+            field: ''
           },
           {
-            'maxValue': 5329,
+            'maxTableValue': 5329,
             'value': 2239,
             'metric': 'count',
-            'column': 'demo_ais_course'
+            'column': 'demo_ais_course',
+            maxColumnValue: 0,
+            field: ''
           }
         ],
         'term': 'Sweden'
@@ -316,23 +331,28 @@ export class MetricsTableDemoComponent {
       {
         'data': [
           {
-            'maxValue': 111392232433.07695,
+            'maxTableValue': 111392232433.07695,
             'value': 19779345592.82676,
             'metric': 'sum',
             'column': 'demo_ais_flow',
-            'field': 'course.distance.gps.travelled_m'
+            'field': 'course.distance.gps.travelled_m',
+            maxColumnValue: 0
           },
           {
-            'maxValue': 265079,
+            'maxTableValue': 265079,
             'value': 69655,
             'metric': 'count',
-            'column': 'demo_ais_flow'
+            'column': 'demo_ais_flow',
+            maxColumnValue: 0,
+            field: ''
           },
           {
-            'maxValue': 5329,
+            'maxTableValue': 5329,
             'value': 2269,
             'metric': 'count',
-            'column': 'demo_ais_course'
+            'column': 'demo_ais_course',
+            maxColumnValue: 0,
+            field: ''
           }
         ],
         'term': 'Germany'
@@ -340,23 +360,28 @@ export class MetricsTableDemoComponent {
       {
         'data': [
           {
-            'maxValue': 111392232433.07695,
+            'maxTableValue': 111392232433.07695,
             'value': 26525471402.52526,
             'metric': 'sum',
             'column': 'demo_ais_flow',
-            'field': 'course.distance.gps.travelled_m'
+            'field': 'course.distance.gps.travelled_m',
+            maxColumnValue: 0
           },
           {
-            'maxValue': 265079,
+            'maxTableValue': 265079,
             'value': 150356,
             'metric': 'count',
-            'column': 'demo_ais_flow'
+            'column': 'demo_ais_flow',
+            maxColumnValue: 0,
+            field: ''
           },
           {
-            'maxValue': 5329,
+            'maxTableValue': 5329,
             'value': 5329,
             'metric': 'count',
-            'column': 'demo_ais_course'
+            'column': 'demo_ais_course',
+            maxColumnValue: 0,
+            field: ''
           }
         ],
         'term': 'Denmark'
@@ -364,23 +389,28 @@ export class MetricsTableDemoComponent {
       {
         'data': [
           {
-            'maxValue': 111392232433.07695,
+            'maxTableValue': 111392232433.07695,
             'value': 111392232433.07695,
             'metric': 'sum',
             'column': 'demo_ais_flow',
-            'field': 'course.distance.gps.travelled_m'
+            'field': 'course.distance.gps.travelled_m',
+            maxColumnValue: 0
           },
           {
-            'maxValue': 265079,
+            'maxTableValue': 265079,
             'value': 265079,
             'metric': 'count',
-            'column': 'demo_ais_flow'
+            'column': 'demo_ais_flow',
+            maxColumnValue: 0,
+            field: ''
           },
           {
-            'maxValue': 5329,
+            'maxTableValue': 5329,
             'value': 4276,
             'metric': 'count',
-            'column': 'demo_ais_course'
+            'column': 'demo_ais_course',
+            maxColumnValue: 0,
+            field: ''
           }
         ],
         'term': 'Unknown'
@@ -390,15 +420,23 @@ export class MetricsTableDemoComponent {
       {
         'title': 'demo_ais_flow_demo_ais_flow',
         'subTitle': 'course.distance.gps.travelled_m',
-        'metric': 'sum'
+        'metric': 'sum',
+        rowfield: 'item.properties.cloudCover',
+        color: '#bbb'
       },
       {
         'title': 'demo_ais_flow_demo_ais_flow',
-        'metric': 'count'
+        'subTitle': 'course.distance.gps.travelled_m',
+        'metric': 'count',
+        rowfield: 'item.properties.cloudCover',
+        color: '#bbb'
       },
       {
         'title': 'demo_ais_course',
-        'metric': 'count'
+        'subTitle': 'course.distance.gps.travelled_m',
+        'metric': 'count',
+        rowfield: 'item.properties.cloudCover',
+        color: '#bbb'
       }
     ]
   };

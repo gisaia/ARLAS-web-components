@@ -18,8 +18,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ChartType, DataType, SelectedInputValues, SelectedOutputValues, SwimlaneMode } from 'arlas-d3';
-import { SwimlaneData, SwimlaneStats } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { ChartType, DataType, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneMode } from 'arlas-d3';
+import { HistogramData, SwimlaneData, SwimlaneStats } from 'arlas-d3/histograms/utils/HistogramUtils';
 import { HistogramComponent } from 'arlas-web-components';
 
 
@@ -31,7 +31,7 @@ import { HistogramComponent } from 'arlas-web-components';
 })
 export class HistogramDemoComponent implements OnInit {
   public curvedTimelineData: Array<{key: Date | number; value: number; }>;
-  public oneDimensionHistogramData: Array<Array<{key: Date | number; value: number; }>>;
+  public oneDimensionHistogramData: HistogramData[];
   public defaultHistogramData: Array<{key: Date | number; value: number; }>;
   public swimlaneHistogramData: SwimlaneData;
   public dataType = DataType;
@@ -43,14 +43,13 @@ export class HistogramDemoComponent implements OnInit {
   public selectValuesSwimlane: SelectedInputValues;
   public areaSelection: SelectedInputValues;
   public intervalListSelection: SelectedOutputValues[] = [];
-
-  public constructor() { }
+  public SelectionType = SelectionType;
 
   public ngOnInit() {
     this.showData();
   }
 
-  public setSelectedTimeValues(selectedValues: Array<{ startvalue: Date; endvalue: Date; }>) {
+  public setSelectedTimeValues(selectedValues: SelectedOutputValues[]) {
     this.selectedTimeValues.startvalue = selectedValues[0].startvalue;
     this.selectedTimeValues.endvalue = selectedValues[0].endvalue;
     if (selectedValues.length === 1) {
@@ -61,7 +60,7 @@ export class HistogramDemoComponent implements OnInit {
     }
   }
 
-  public setSelectedNumericValues(selectedValues: Array<{ startvalue: Date; endvalue: Date; }>) {
+  public setSelectedNumericValues(selectedValues: SelectedOutputValues[]) {
     this.selectedNumericValues.startvalue = selectedValues[0].startvalue;
     this.selectedNumericValues.endvalue = selectedValues[0].endvalue;
 
@@ -200,8 +199,6 @@ export class HistogramDemoComponent implements OnInit {
     d.value = +d.value / 1450;
     return d;
   }
-
-
 
 
 

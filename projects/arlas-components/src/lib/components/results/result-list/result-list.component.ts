@@ -23,6 +23,7 @@ import {
   IterableDiffers, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
@@ -68,7 +69,7 @@ import {
   encapsulation: ViewEncapsulation.None,
   imports: [
     ResultFilterComponent, MatTooltip, MatCheckbox, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem,
-    MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup,
+    MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup, MatButtonModule,
     MatButtonToggle, ResultDetailedGridComponent, MatProgressSpinner, ResultScrollDirective, MatGridList,
     ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe]
 })
@@ -521,13 +522,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.emitVisibleItemsDebouncer.pipe(debounceTime(1000)).subscribe(event => this.visibleItems.next(event));
   }
 
-  @HostListener('document:keydown.shift', ['$event'])
-  public shiftDown(_) {
+  @HostListener('document:keydown.shift')
+  public shiftDown() {
     this.isShiftDown = true;
   }
 
-  @HostListener('document:keyup.shift', ['$event'])
-  public shiftUp(event: KeyboardEvent) {
+  @HostListener('document:keyup.shift')
+  public shiftUp() {
     this.isShiftDown = false;
   }
 
@@ -767,7 +768,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
   }
 
-  public setDirection(event: PointerEvent) {
+  public setDirection(event: Event) {
     event.stopPropagation();
     if (this.sortedColumn.sortDirection === SortEnum.asc) {
       this.sortedColumn.sortDirection = SortEnum.desc;

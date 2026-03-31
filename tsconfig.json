@@ -55,5 +55,6 @@
   "angularCompilerOptions": {
     "strictMetadataEmit": true,
     "skipTemplateCodegen": true,
+    "strictTemplates": true
   }
 }

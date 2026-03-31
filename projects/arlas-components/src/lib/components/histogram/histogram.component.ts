@@ -40,6 +40,7 @@ import { debounceTime } from 'rxjs/operators';
 import { GetCollectionUnitPipe } from '../../pipes/get-collection-unit/get-collection-unit.pipe';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
+import { HistogramKeyPipe } from './histogram-key.pipe';
 import * as histogramJsonSchema from './histogram.schema.json';
 import * as swimlaneJsonSchema from './swimlane.schema.json';
 
@@ -54,7 +55,7 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
     templateUrl: './histogram.component.html',
     styleUrls: ['./histogram.component.scss'],
     encapsulation: ViewEncapsulation.None,
-    imports: [NgClass, MatIconButton, MatTooltip, MatIcon, KeyValuePipe, TranslatePipe, GetCollectionUnitPipe]
+    imports: [NgClass, MatIconButton, MatTooltip, MatIcon, KeyValuePipe, TranslatePipe, GetCollectionUnitPipe, HistogramKeyPipe]
 })
 export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 
@@ -373,6 +374,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
   public chart: AbstractChart;
   public ChartType = ChartType;
   public Position = Position;
+  public Array = Array;
 
   private readonly destroyRef = inject(DestroyRef);
 

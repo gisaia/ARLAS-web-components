@@ -1,21 +1,23 @@
 <div id="{{id}}" #calendar_timeline class="calendar-timeline">
   <div class="container">
     @if (!climatological) {
-      <div class="move_button past" [class.hide_left_button]="hideLeftButton" (click)="translatePast()">
+      <button mat-icon-button class="move_button past" [class.hide_left_button]="hideLeftButton"
+          [style.height.px]="height" (click)="translatePast()">
         <mat-icon class="chevron">chevron_left</mat-icon>
-      </div>
+      </button>
     }
     <div class="svg_container"
       [class.svg_container_buttons_hidden]="hideLeftButton && hideRightButton"
       [class.svg_container_one_button_hidden]="(hideLeftButton && !hideRightButton) || (!hideLeftButton && hideRightButton)"
 
       #timeline_container>
-      <svg id="calendar-svg" [style.width.px]="width" [style.height.px]="height" ></svg>
+      <svg id="calendar-svg" [style.width.px]="width" [style.height.px]="height"></svg>
     </div>
     @if (!climatological) {
-      <div class="move_button future" [class.hide_right_button]="hideRightButton" (click)="translateFuture()">
+      <button mat-icon-button class="move_button future" [class.hide_right_button]="hideRightButton"
+          [style.height.px]="height" (click)="translateFuture()">
         <mat-icon class="chevron">chevron_right</mat-icon>
-      </div>
+      </button>
     }
   </div>
 

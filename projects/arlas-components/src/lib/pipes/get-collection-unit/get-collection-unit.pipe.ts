@@ -26,7 +26,7 @@ export class GetCollectionUnitPipe implements PipeTransform {
 
   public constructor(private readonly arlasCollectionService: CollectionService) {
   }
-  public transform(value: string): unknown {
+  public transform(value: string): string {
     if(!value) {
       return  '';
     }

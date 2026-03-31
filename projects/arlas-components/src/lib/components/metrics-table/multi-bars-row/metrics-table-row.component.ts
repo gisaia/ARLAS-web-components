@@ -20,6 +20,7 @@
 import { NgClass, UpperCasePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatTooltip } from '@angular/material/tooltip';
 import { PowerBar } from '../../powerbars/model/powerbar';
 import { PowerbarComponent } from '../../powerbars/powerbar/powerbar.component';
 import { MetricsTableRow } from '../model/metrics-table';
@@ -29,7 +30,7 @@ import { MetricsTableRow } from '../model/metrics-table';
   selector: 'arlas-multi-bars-row',
   templateUrl: './metrics-table-row.component.html',
   styleUrls: ['./metrics-table-row.component.scss'],
-  imports: [NgClass, MatCheckbox, PowerbarComponent, UpperCasePipe]
+  imports: [NgClass, MatCheckbox, PowerbarComponent, UpperCasePipe, MatTooltip]
 })
 export class MetricsTableRowComponent {
   @Input() public displayCheckBox: boolean;

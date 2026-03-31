@@ -18,9 +18,9 @@
  */
 
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { KeyValuePipe } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, Output } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule, UntypedFormControl, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
@@ -82,7 +82,8 @@ export interface MapSettingsService {
   styleUrls: ['./map-settings-dialog.component.scss'],
   imports: [
     MatDialogTitle, CdkScrollable, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel,
-    MatSelect, MatOption, MatDialogActions, MatButton, KeyValuePipe, TranslatePipe, GetCollectionDisplayNamePipe]
+    MatSelect, MatOption, MatDialogActions, MatButton, TranslatePipe, GetCollectionDisplayNamePipe, NgTemplateOutlet
+]
 })
 export class MapSettingsDialogComponent {
   /**
@@ -96,7 +97,12 @@ export class MapSettingsDialogComponent {
   /** Constants */
   public GEO_QUERIES_DESCRIPTION = marker('Draw a bbox or a polygon that');
 
-  public geoQueriesFormGroups = new Array<UntypedFormGroup>();
+  public geoQueriesFormGroups = new Array<FormGroup<{
+    a_operation: SelectFormControl;
+    b_geometryPath: SelectFormControl;
+    c_collection: UntypedFormControl;
+    d_displayCollectionName: UntypedFormControl;
+  }>>();
   public collectionsColors = new Array<string>();
   public selectionsSnapshot = new Map<string, string>();
 
@@ -137,7 +143,7 @@ export class MapSettingsDialogComponent {
       c_collection: new UntypedFormControl(collectionName),
       d_displayCollectionName: new UntypedFormControl(displayCollectionName),
     };
-    const geoQueryForm = new UntypedFormGroup(geoQueryControls);
+    const geoQueryForm = new FormGroup(geoQueryControls);
     /** snapshot defaultselections */
     this.emittedGeoQueries.clear();
     this.selectionsSnapshot.clear();

@@ -9,7 +9,7 @@
             <img class="image_view" #image_detail src="{{imgSrc}}" (error)="destroyViewer()">
           }
           @if ((!gridTile.imageEnabled || !imgSrc) && !isLoading) {
-            <img src="{{noViewImg}}">
+            <img src="{{noViewImg()}}">
           }
           @if (isLoading) {
             <mat-progress-spinner [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>

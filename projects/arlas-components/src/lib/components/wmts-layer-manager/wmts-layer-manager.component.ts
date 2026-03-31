@@ -22,6 +22,7 @@ import { KeyValuePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCard } from '@angular/material/card';
 import { MatDatepicker, MatDatepickerInput, MatDatepickerToggle } from '@angular/material/datepicker';
 import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
@@ -58,11 +59,11 @@ export interface LayerParam {
 @Component({
   templateUrl: './wmts-layer-manager-dialog.component.html',
   selector: 'arlas-wmts-layer-manager-dialog',
-  styleUrls: ['./wmts-layer-manager-dialog.component.css'],
+  styleUrls: ['./wmts-layer-manager-dialog.component.scss'],
   imports: [
     MatDialogTitle, CdkScrollable, MatDialogContent, MatCard, MatList, MatListSubheaderCssMatStyler, MatListItem,
     FormsModule, ReactiveFormsModule, MatFormField, MatSelect, MatOption, MatInput, MatDatepickerInput, MatDatepickerToggle,
-    MatSuffix, MatDatepicker, MatProgressSpinner, MatDialogActions, MatDialogClose, KeyValuePipe, TranslatePipe]
+    MatSuffix, MatDatepicker, MatProgressSpinner, MatDialogActions, MatDialogClose, KeyValuePipe, TranslatePipe, MatButtonModule]
 })
 export class WmtsLayerManagertDialogComponent implements OnInit {
   public layer: string;
@@ -140,7 +141,7 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
 @Component({
     selector: 'arlas-wmts-layer-manager',
     templateUrl: './wmts-layer-manager.component.html',
-    styleUrls: ['./wmts-layer-manager.component.css']
+    styleUrls: ['./wmts-layer-manager.component.scss']
 })
 export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   public dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>;
