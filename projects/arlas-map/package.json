@@ -25,6 +25,7 @@
   "dependencies": {
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@mapbox/mapbox-gl-draw-static-mode": "^1.0.1",
+    "@placemarkio/check-geojson": "^0.1.14",
     "@tmcw/togeojson": "~5.5.0",
     "@turf/area": "^6.5.0",
     "@turf/bbox": "^6.5.0",
@@ -41,7 +42,6 @@
     "@turf/transform-translate": "^6.5.0",
     "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
-    "jsts": "2.1.0",
     "jszip": "^3.2.1",
     "pmtiles": "4.3.0",
     "shpjs": "^4.0.4",

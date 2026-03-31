@@ -35,14 +35,13 @@ import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { valid } from 'geojson-validation';
 import JSZip from 'jszip';
 import { Subject } from 'rxjs';
-import * as shp_ from 'shpjs/dist/shp';
+import shp from 'shpjs';
 import { parse } from 'wellknown';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 import { ArlasMapComponent } from '../arlas-map.component';
 
 
 const gpsi = gpsi_.default;
-const shp = shp_.default;
 
 
 @Component({

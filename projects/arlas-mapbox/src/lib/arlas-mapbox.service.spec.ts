@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ArlasMapboxService } from './arlas-mapbox.service';
 
 describe('ArlasMapboxService', () => {

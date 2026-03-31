@@ -18,10 +18,9 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import * as jsts from 'jsts/dist/jsts.min';
+import { getIssues } from '@placemarkio/check-geojson';
 
 export const limitVertexDirectSelectMode = MapboxDraw.modes.direct_select;
-const reader = new jsts.io.GeoJSONReader();
 
 limitVertexDirectSelectMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
@@ -42,7 +41,7 @@ limitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) 
     push(geojson);
     MapboxDraw.lib.createSupplementaryPoints(geojson, {
       map: this.map,
-      midpoints: geojson.geometry.coordinates[0].length >= state.maxVertexByPolygon + 1 ? false : true,
+      midpoints: geojson.geometry.coordinates[0].length < state.maxVertexByPolygon + 1,
       selectedPaths: state.selectedCoordPaths
     }).forEach(push);
   } else {
@@ -68,11 +67,10 @@ limitVertexDirectSelectMode.onTouchEnd = limitVertexDirectSelectMode.onMouseUp =
         'coordinates': [featureCoords]
       }
     };
-    const g = reader.read(currentFeature);
-    if (!g.geometry.isValid()) {
-      this.fireInvalidGeom(currentFeature);
-    } else {
+    if (getIssues(JSON.stringify(currentFeature)).length === 0) {
       this.fireUpdate();
+    } else {
+      this.fireInvalidGeom(currentFeature);
     }
   }
   this.stopDragging(state);

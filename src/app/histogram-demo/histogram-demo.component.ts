@@ -18,8 +18,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ChartType, DataType, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneMode } from 'arlas-d3';
-import { HistogramData, SwimlaneData, SwimlaneStats } from 'arlas-d3/histograms/utils/HistogramUtils';
+import {
+  ChartType, DataType, HistogramData, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneData, SwimlaneMode, SwimlaneStats
+} from 'arlas-d3';
 import { HistogramComponent } from 'arlas-web-components';
 
 

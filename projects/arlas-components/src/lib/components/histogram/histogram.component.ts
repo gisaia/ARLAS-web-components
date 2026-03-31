@@ -28,13 +28,10 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
-  AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve,
-  ChartOneDimension, ChartType, DataType, HistogramParams, HistogramUtils, Position, SelectedInputValues,
-  SelectedOutputValues, SelectionType, SwimlaneBars, SwimlaneCircles, SwimlaneMode, XBucket
+  AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve, ChartOneDimension, ChartType,
+  DataType, HistogramData, HistogramParams, HistogramTooltip, HistogramUtils, Position, SelectedInputValues, SelectedOutputValues,
+  SelectionType, SwimlaneBars, SwimlaneCircles, SwimlaneData, SwimlaneMode, SwimlaneOptions, SwimlaneRepresentation, XBucket
 } from 'arlas-d3';
-import {
-  HistogramData, HistogramTooltip, SwimlaneData, SwimlaneOptions, SwimlaneRepresentation
-} from 'arlas-d3/histograms/utils/HistogramUtils';
 import { fromEvent, Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { GetCollectionUnitPipe } from '../../pipes/get-collection-unit/get-collection-unit.pipe';

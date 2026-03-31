@@ -18,10 +18,9 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import * as jsts from 'jsts/dist/jsts.min';
+import { getIssues } from '@placemarkio/check-geojson';
 
 export const validGeomDrawPolygonMode = MapboxDraw.modes.draw_polygon;
-const reader = new jsts.io.GeoJSONReader();
 
 validGeomDrawPolygonMode.fireInvalidGeom = function (feature) {
   this.map.fire('draw.invalidGeometry', {
@@ -80,14 +79,13 @@ validGeomDrawPolygonMode.onStop = function (state) {
         'coordinates': [featureCoords]
       }
     };
-    const g = reader.read(currentFeature);
-    if (!g.geometry.isValid()) {
-      this.fireInvalidGeom(state.polygon);
-      this.deleteFeature([state.polygon.id], { silent: true });
-    } else {
+    if (getIssues(JSON.stringify(currentFeature)).length === 0) {
       this.map.fire(MapboxDraw.constants.events.CREATE, {
         features: [state.polygon.toGeoJSON()]
       });
+    } else {
+      this.fireInvalidGeom(state.polygon);
+      this.deleteFeature([state.polygon.id], { silent: true });
     }
   } else {
     this.deleteFeature([state.polygon.id], { silent: true });

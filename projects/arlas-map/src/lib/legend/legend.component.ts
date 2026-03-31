@@ -25,7 +25,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
+import { HistogramData } from 'arlas-d3';
 import { ArlasColorService, GetCollectionDisplayNamePipe, GetColorPipe } from 'arlas-web-components';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
