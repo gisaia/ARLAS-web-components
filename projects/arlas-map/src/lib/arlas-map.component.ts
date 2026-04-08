@@ -285,7 +285,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   ) {
     this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
       .subscribe(() => this.reorderLayers());
-    console.log('hello');
   }
 
   public ngAfterViewInit() {

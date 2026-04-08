@@ -2,8 +2,6 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "module": "commonjs",
-    "baseUrl": "",
     "types": [
       "mapbox-gl",
       "geojson",

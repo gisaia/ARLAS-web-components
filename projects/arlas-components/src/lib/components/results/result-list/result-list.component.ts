@@ -58,6 +58,15 @@ import {
 } from '../utils/results.utils';
 
 /**
+ * Structure summarizing the sort on a column
+ */
+export interface SortedColumn {
+  fieldName: string;
+  columnName: string;
+  sortDirection: SortEnum;
+}
+
+/**
  * ResultList component allows to structure data in a filterable and sortable table.
  * Items can be represented as rows or grids and are multi-selectable.
  * For both list and grid modes, each item has detailed data that can be displayed in a togglable space.
@@ -286,7 +295,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description The column that is currently sorted on
    */
-  @Input() public currentSortedColumn: Column;
+  @Input() public currentSortedColumn: SortedColumn;
 
   /**
    * @Input : Angular
@@ -511,7 +520,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
     // Resize the table height on window resize
-    fromEvent(window, 'resize')
+    fromEvent(globalThis, 'resize')
       .pipe(debounceTime(500))
       .subscribe((event: Event) => {
         this.setTableHeight();
@@ -622,14 +631,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     }
     if (changes['fetchState'] !== undefined) {
-      if (this.fetchState && this.fetchState.endListUp) {
+      if (this.fetchState?.endListUp) {
         this.isPreviousPageRequested = false;
       }
-      if (this.fetchState && this.fetchState.endListDown) {
+      if (this.fetchState?.endListDown) {
         this.isNextPageRequested = false;
       }
     }
-    if (changes['currentSortedColumn'] !== undefined && changes['currentSortedColumn'].currentValue) {
+    if (changes['currentSortedColumn']?.currentValue) {
       this.sortedColumn = {
         columnName: changes['currentSortedColumn'].currentValue.columnName,
         fieldName: changes['currentSortedColumn'].currentValue.fieldName,
@@ -654,7 +663,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         if (this.isNextPageRequested) {
           this.items.splice(0, 1);
         } else if (this.isPreviousPageRequested) {
-          this.items.splice(this.items.length - 1, 1);
+          this.items.splice(- 1, 1);
         }
       });
       /**
@@ -906,7 +915,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     });
     if (selectedItemsList.length > 0) {
       const firstItem = selectedItemsList[0];
-      const lastItem = selectedItemsList[selectedItemsList.length - 1];
+      const lastItem = selectedItemsList.at(-1);
       let inBetween = false;
       this.items.forEach(item => {
         if (item === firstItem) {

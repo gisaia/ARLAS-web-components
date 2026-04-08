@@ -44,7 +44,7 @@ export { ResultScrollDirective } from './lib/components/results/result-directive
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
-export { ResultListComponent } from './lib/components/results/result-list/result-list.component';
+export { ResultListComponent, SortedColumn } from './lib/components/results/result-list/result-list.component';
 export { DetailedDataRetriever, MatchInfo } from './lib/components/results/utils/detailed-data-retriever';
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { ModeEnum } from './lib/components/results/utils/enumerations/modeEnum';
@@ -72,3 +72,4 @@ export { ArlasColorService } from './lib/services/color.generator.service';
 export { ResultlistNotifierService } from './lib/services/resultlist.notifier.service';
 export { FilterOperator } from './lib/tools/models/term-filters';
 export { ProtectImageDirective } from './lib/tools/protect-image.directive';
+

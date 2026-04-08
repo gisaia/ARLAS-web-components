@@ -87,6 +87,6 @@
     "webpack-bundle-analyzer": "^4.6.1"
   },
   "overrides": {
-    "picomatch": "4.0.4"
+    "vite": "^7.3.2"
   }
 }
