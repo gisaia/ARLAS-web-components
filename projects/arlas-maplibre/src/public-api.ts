@@ -20,9 +20,12 @@
  * Public API Surface of arlas-maplibre
  */
 
-export * from './lib/arlas-maplibre.service';
-export * from './lib/arlas-maplibre.module';
-export { MaplibreLegendService } from './lib/legend/legend.service';
-export { MaplibreBasemapService   } from './lib/basemaps/maplibre-basemap.service';
 export { ArlasMapService } from './lib/arlas-map.service';
+export * from './lib/arlas-maplibre.module';
+export * from './lib/arlas-maplibre.service';
+export { MaplibreBasemapService } from './lib/basemaps/maplibre-basemap.service';
+export { MaplibreLegendService } from './lib/legend/legend.service';
+export { ArlasMaplibreGL } from './lib/map/ArlasMaplibreGL';
+export { ArlasLayerSpecification } from './lib/map/model/layers';
 export { MaplibreSourceType } from './lib/map/model/sources';
+

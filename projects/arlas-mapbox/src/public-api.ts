@@ -21,8 +21,12 @@
  * Public API Surface of arlas-mapbox
  */
 
-export { MapboxLegendService } from './lib/legend/legend.service';
-export * from './lib/arlas-mapbox.service';
-export * from './lib/arlas-mapbox.module';
-export { MapboxBasemapService } from './lib/basemaps/mapbox-basemap.service';
 export { ArlasMapService } from './lib/arlas-map.service';
+export * from './lib/arlas-mapbox.module';
+export * from './lib/arlas-mapbox.service';
+export { MapboxBasemapService } from './lib/basemaps/mapbox-basemap.service';
+export { MapboxLegendService } from './lib/legend/legend.service';
+export { ArlasMapboxGL } from './lib/map/ArlasMapboxGL';
+export { ArlasAnyLayer } from './lib/map/model/layers';
+export { MapboxSourceType } from './lib/map/model/sources';
+
