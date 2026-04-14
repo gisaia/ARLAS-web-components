@@ -21,7 +21,7 @@ import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  FILLSTROKE_LAYER_PREFIX,getAdditionalFillLayers, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, VectorStyle
+  getAdditionalFillLayers, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import { FeatureCollection } from 'geojson';
 import {
@@ -72,6 +72,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
       pitchWithRotate: mapOption.pitchWithRotate,
       transformRequest: mapOption.transformRequest,
       attributionControl: mapOption.attributionControl,
+      maxPitch: mapOption.maxPitch
     } as MapboxOptions;
   }
 
@@ -252,12 +253,15 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * Removes the given layer from the map. If the source of this layer is still on the map, it is also removed.
    * @param map Map instance.
    * @param layer layer to remove.
+   * @param removeSource Whether to remove the layer's source
    */
-  public removeLayer(map: ArlasMapboxGL, layer: string): void {
+  public removeLayer(map: ArlasMapboxGL, layer: string, removeSource = true): void {
     if (this.hasLayer(map, layer)) {
       const sourceId = this.getLayer(map, layer)?.source as string;
       map.getMapProvider().removeLayer(layer);
-      this.removeSource(map, sourceId);
+      if (removeSource) {
+        this.removeSource(map, sourceId);
+      }
     }
   };
 

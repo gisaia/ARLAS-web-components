@@ -19,7 +19,7 @@
 
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
-  AfterViewInit, Component, EventEmitter, inject, input, Input,
+  AfterViewInit, Component, DestroyRef, EventEmitter, inject, input, Input,
   Output, signal, SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -29,7 +29,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ElementIdentifier, GetValuePipe } from 'arlas-web-components';
 import { Feature, FeatureCollection } from 'geojson';
-import { finalize, fromEvent, Subject, takeUntil } from 'rxjs';
+import { filter, finalize, fromEvent, Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import { GetCollectionPipe } from './arlas-map.pipe';
 import * as mapJsonSchema from './arlas-map.schema.json';
@@ -88,8 +88,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
-  private readonly _onDestroy$ = new Subject<boolean>();
-
 
   @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
 
@@ -137,6 +135,8 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   @Input() public minZoom = 0;
   /** @description Coordinates of the map's center when it's first loaded. */
   @Input() public initCenter: [number, number] = [2.1972656250000004, 45.706179285330855];
+  /** @description Maximum pitch of the map */
+  @Input() public maxPitch = 60;
 
   /** --- BOUNDS TO FIT STRATEGY */
 
@@ -275,6 +275,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   protected ICONS_BASE_PATH = 'assets/icons/';
 
   private readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
+  private readonly destroyRef = inject(DestroyRef);
 
   public constructor(
     private readonly drawService: MapboxAoiDrawService,
@@ -307,8 +308,22 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     });
     this.basemapService.setBasemaps(new ArlasBasemaps(this.defaultBasemapStyle, this.basemapStyles));
     this.basemapService.fetchSources$()
-      .pipe(finalize(() => this.declareMap()))
+      .pipe(finalize(() => this.declareMap()), takeUntilDestroyed(this.destroyRef))
       .subscribe();
+
+    // For protomap basemaps, terrain has to be redeclared after basemap switch
+    this.basemapService.basemapChanged$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter(b => b.type === 'protomap')
+      )
+      .subscribe(() => {
+        if (this.hasTerrain() && this.map) {
+          // Toggle it once to remove the terrain, and another time to add it back
+          this.toggleTerrain();
+          this.toggleTerrain();
+        }
+      });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -415,6 +430,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
       pitchWithRotate: true,
       transformRequest: this.transformRequest,
       attributionControl: false,
+      maxPitch: this.maxPitch
     };
     const mapProviderOptions = this.mapFrameworkService.buildMapProviderOption(arlasMapOption);
     const config: MapConfig<M> = {
@@ -480,7 +496,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     }));
 
     if (this.redrawSource) {
-      this.redrawSource.pipe(takeUntil(this._onDestroy$)).subscribe(sd => {
+      this.redrawSource.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(sd => {
         this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map), {
           'type': 'FeatureCollection',
           'features': sd.data
@@ -652,8 +668,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     if (this.map) {
       this.map.unsubscribeEvents();
     }
-    this._onDestroy$.next(true);
-    this._onDestroy$.complete();
   }
 
   /** @description Enables bbox drawing mode.*/
