@@ -24,7 +24,6 @@ import { AbstractDraw } from './draw/AbstractDraw';
 import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
 import { MapLayerMouseEvent } from './map/model/events';
 import { ArlasPoint } from './map/model/geometry';
-import { ArlasDataLayer } from './map/model/layers';
 import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
 import { VectorStyle } from './map/model/vector-style';
 
@@ -109,7 +108,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract moveLayer(map: AbstractArlasMapGL, layer: L | string, beforeId?: string);
   public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: L | string, fn: (e) => void);
-  public abstract removeLayer(map: AbstractArlasMapGL, layer: L | string);
+  public abstract removeLayer(map: AbstractArlasMapGL, layer: L | string, removeSource?: boolean);
   public abstract removeLayers(map: AbstractArlasMapGL, layers: L[] | string[]);
   public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
   public abstract setLayerVisibility(layer: L | string, isVisible: boolean, map: AbstractArlasMapGL);

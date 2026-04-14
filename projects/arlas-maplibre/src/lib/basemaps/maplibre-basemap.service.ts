@@ -52,7 +52,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as maplibre.StyleSpecification).layers.forEach(l => {
-        this.mapFrameworkService.removeLayer(map, l.id);
+        this.mapFrameworkService.removeLayer(map, l.id, false);
       });
       this.mapFrameworkService.removeSource(map, 'arlas_protomaps_source');
     }
@@ -155,7 +155,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
           this.addProtomapBasemap(map);
           this.notifyProtomapAddition();
         }
-        this.basemapChangedSource.next();
+        this.basemapChangedSource.next(newBasemap);
       }, 0);
     });
   }
