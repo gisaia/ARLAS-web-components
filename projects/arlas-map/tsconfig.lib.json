@@ -3,7 +3,6 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
-    "target": "es2020",
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
@@ -12,11 +11,6 @@
       "dom",
       "ESNext"
     ]
-  },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "enableResourceInlining": true
   },
   "exclude": [
     "**/*.spec.ts"

@@ -48,7 +48,7 @@ import { MaplibreSourceType } from './map/model/sources';
 })
 export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecification, MaplibreSourceType | GeoJSONSource, MapOptions> {
 
-  public layersMap: Map<string, ArlasDataLayer>;
+  declare public layersMap: Map<string, ArlasDataLayer>;
 
   public dataSources: GeoJSONSourceSpecification[] = [];
 

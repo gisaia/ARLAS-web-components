@@ -3,21 +3,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
-    "target": "es2020",
     "declaration": true,
     "declarationMap": true,
     "inlineSources": true,
     "types": [],
-    "lib": [
-      "ESNext",
-      "DOM",
-      "DOM.Iterable"
-    ]
-  },
-  "angularCompilerOptions": {
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "enableResourceInlining": true
+    "useDefineForClassFields": false
   },
   "exclude": [
     "**/*.spec.ts"

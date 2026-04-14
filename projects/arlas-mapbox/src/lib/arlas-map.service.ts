@@ -33,7 +33,7 @@ import { MapboxSourceType } from './map/model/sources';
   providedIn: 'root'
 })
 export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions> {
-  public layersMap: Map<string, ArlasDataLayer>;
+  declare public layersMap: Map<string, ArlasDataLayer>;
   public dataSources: GeoJSONSource[] = [];
 
   private readonly mapService = inject(ArlasMapFrameworkService<ArlasAnyLayer, MapboxSourceType | GeoJSONSource, MapboxOptions>);
