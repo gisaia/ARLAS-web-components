@@ -36,7 +36,8 @@
       "ESNext",
       "DOM",
       "DOM.Iterable"
-    ]
+    ],
+    "useDefineForClassFields": false
   },
   "exclude": [
     "node_modules",

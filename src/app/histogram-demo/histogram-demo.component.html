@@ -5,7 +5,7 @@
                      [handlesRadius]="3.5"
                      [selectionType]="SelectionType.slider"
                      [dataUnit]="'aa'"
-                     [xAxisPosition]="1"
+                     [xAxisPosition]="Position.bottom"
                      [chartType]="chartType.bars"
                      [customizedCssClass]="'histogram__area'"
                      [data]="defaultHistogramData"
@@ -68,9 +68,9 @@
                  (valuesListChangedEvent)="setSelectedNumericValues($event)"
                  [data]="defaultHistogramData"
                  [intervalSelection]="selectValues"
-                 [xAxisPosition]="0"
+                 [xAxisPosition]="Position.top"
                  [customizedCssClass]="'histogram__area'"
-                 [descriptionPosition]="0"></arlas-histogram>
+                 [descriptionPosition]="Position.top"></arlas-histogram>
 </div>
 
 <div class="graphs">
@@ -164,9 +164,9 @@
                    (valuesListChangedEvent)="setSelectedNumericValues($event)"
                    [data]="curvedTimelineData"
                    [intervalSelection]="selectValues"
-                   [xAxisPosition]="0"
+                   [xAxisPosition]="Position.top"
                    [customizedCssClass]="'histogram__area'"
-                   [descriptionPosition]="0"></arlas-histogram>
+                   [descriptionPosition]="Position.top"></arlas-histogram>
 </div>
 <div class="graphs">
   <p class="graph__title">Area histograms - Time scale</p>
@@ -230,7 +230,7 @@
 
   </div>
   <div class="graphs_timeline">
-    <arlas-histogram [id]="'n'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="1" [chartTitle]="'Chart title'"
+    <arlas-histogram [id]="'n'" [customizedCssClass]="'histogram__area'" [xTicks]="9"  [yTicks]="2" [xLabels]="9"  [yLabels]="2" [dataType]="dataType.time" [chartTitle]="'Chart title'"
              [data]="curvedTimelineData" [dataUnit]="'m²'" [isSmoothedCurve]=false></arlas-histogram>
   </div>
 </div>
@@ -256,9 +256,9 @@
                      (valuesListChangedEvent)="setSelectedNumericValues($event)"
                      [data]="defaultHistogramData"
                      [intervalSelection]="selectValues"
-                     [xAxisPosition]="0"
+                     [xAxisPosition]="Position.top"
                      [customizedCssClass]="'histogram__area'"
-                     [descriptionPosition]="0"></arlas-histogram>
+                     [descriptionPosition]="Position.top"></arlas-histogram>
   </div>
 
 

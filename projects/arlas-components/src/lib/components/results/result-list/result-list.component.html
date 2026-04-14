@@ -107,19 +107,18 @@
           @for (column of columns; track column) {
             @if (column.isIdField) {
               <th [style.max-width.px]="column.width" [style.min-width.px]="column.width"
-                class="resultlist__header--columns">
+                  scope="col" class="resultlist__header--columns">
                 <span class="resultlist__header--columns--hidden"></span>
               </th>
             } @else if (column.isToggleField) {
               <th class="resultlist__header--columns" [style.max-width.px]="column.width"
-                [style.min-width.px]="column.width">
+                  scope="col" [style.min-width.px]="column.width">
                 <span class="resultlist__header--columns--hidden">
                 </span>
               </th>
             } @else {
-              <th [style.max-width.px]="column.width"
-                [style.min-width.px]="column.width" class="resultlist__header--columns"
-                [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')">
+              <th [style.max-width.px]="column.width" [style.min-width.px]="column.width" class="resultlist__header--columns"
+                  scope="col" [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')">
                 <span>
                   {{column.columnName | translate}}{{column.dataType ? ' (' + column.dataType + ')': ''}}
                 </span>

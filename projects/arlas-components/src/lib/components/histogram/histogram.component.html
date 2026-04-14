@@ -5,28 +5,8 @@
     </button>
   }
 
-  <!-- TODO: create component or template for histogram description -->
   @if (descriptionPosition === Position.top) {
-    <div class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
-      [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
-      <div class="histogram__description--display">
-        <div class="histogram__description__startvalue">
-          @if (histogram?.histogramParams.dataLength > 1) {
-            <span class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
-          }
-        </div>
-        <div class="histogram__description__title">
-          @if (histogram?.histogramParams.showTitle) {
-            <span>{{histogram?.histogramParams.chartTitle}}</span>
-          }
-        </div>
-        <div class="histogram__description__endvalue">
-          @if (histogram?.histogramParams.dataLength > 1) {
-            <span class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
-          }
-        </div>
-      </div>
-    </div>
+    <ng-container *ngTemplateOutlet="legend"></ng-container>
   }
   <div [style.display]="histogram?.histogramParams.displaySvg" style="position:relative">
     <svg id="svgix" class="histogram__chart" [style.width.px]="histogram?.histogramParams.chartWidth" [style.height.px]="histogram?.histogramParams.chartHeight"></svg>
@@ -61,26 +41,7 @@
     </div>
   }
   @if (descriptionPosition === Position.bottom) {
-    <div class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
-      [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
-      <div class="histogram__description--display">
-        <div class="histogram__description__startvalue">
-          @if (histogram?.histogramParams.dataLength > 1) {
-            <span class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
-          }
-        </div>
-        <div class="histogram__description__title">
-          @if (histogram?.histogramParams.showTitle) {
-            <span>{{histogram?.histogramParams.chartTitle}}</span>
-          }
-        </div>
-        <div class="histogram__description__endvalue">
-          @if (histogram?.histogramParams.dataLength > 1) {
-            <span class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
-          }
-        </div>
-      </div>
-    </div>
+    <ng-container *ngTemplateOutlet="legend"></ng-container>
   }
   @if (chartType === ChartType.swimlane) {
     <div>
@@ -118,15 +79,16 @@
     </div>
   }
 
-  @for (id of histogram?.histogramParams.selectionListIntervalId; track id) {
-    <div class="histogram__remove" (click)="removeSelectInterval(id)" [style.top.px]="histogram?.histogramParams.topOffsetRemoveInterval"
-      [style.left.px]="histogram?.histogramParams.intervalSelectedMap.get(id)?.x_position" matTooltip="{{'Remove this selection' | translate}}" matTooltipPosition="above">
+  @for (interval of histogram?.histogramParams.intervalSelectedMap | keyvalue; track interval.key) {
+    <button mat-icon-button class="histogram__remove material-symbols-outlined" (click)="removeSelectInterval(interval.key)"
+        [style.top.px]="histogram?.histogramParams.topOffsetRemoveInterval"
+        [style.left.px]="interval.value.x_position" [matTooltip]="'Remove this selection' | translate" matTooltipPosition="above">
       <svg fill="#fff" height="24" viewBox="0 0 24 24"
         width="24" xmlns="http://www.w3.org/2000/svg" transform="rotate(45)">
         <path  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
         <path fill="#555" d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
       </svg>
-    </div>
+    </button>
   }
   @if (chartType === ChartType.swimlane) {
     <div>
@@ -143,3 +105,26 @@
     </div>
   }
 </div>
+
+<ng-template #legend>
+  <div class="histogram__description" [style.width.px]="histogram?.histogramParams.chartWidth-histogram?.histogramParams.margin.left-histogram?.histogramParams.margin.right"
+      [style.margin-left.px]="histogram?.histogramParams.margin.left" [style.margin-right.px]="histogram?.histogramParams.margin.right">
+    <div class="histogram__description--display">
+      <div class="histogram__description__startvalue">
+        @if (histogram?.histogramParams.dataLength > 1) {
+          <span class="histogram__description__startvalue--background">{{histogram?.histogramParams.startValue}}</span>
+        }
+      </div>
+      <div class="histogram__description__title">
+        @if (histogram?.histogramParams.showTitle) {
+          <span>{{histogram?.histogramParams.chartTitle}}</span>
+        }
+      </div>
+      <div class="histogram__description__endvalue">
+        @if (histogram?.histogramParams.dataLength > 1) {
+          <span class="histogram__description__endvalue--background">{{histogram?.histogramParams.endValue}}</span>
+        }
+      </div>
+    </div>
+  </div>
+</ng-template>

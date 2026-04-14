@@ -25,21 +25,21 @@
 
       @if (column.useColorService && useColorService && cellBackgroundStyle) {
         @if (cellBackgroundStyle === CellBackgroundStyleEnum.filled) {
-          <label class="resultitem__cell--label resultitem__cell--label__filled"
+          <div class="resultitem__cell--label resultitem__cell--label__filled"
               [style.background-color]="!!colors[itemFieldValue] ? colors[itemFieldValue]['color'] : 'transparent'"
               [style.color]="!!colors[itemFieldValue] ? colors[itemFieldValue]['textColor'] : 'black'">
             {{ itemFieldValue | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
-          </label>
+          </div>
         } @else if (cellBackgroundStyle === CellBackgroundStyleEnum.outlined) {
-          <label class="resultitem__cell--label resultitem__cell--label__outlined"
+          <div class="resultitem__cell--label resultitem__cell--label__outlined"
               [style.border-color]="!!colors[itemFieldValue] ? colors[itemFieldValue]['color'] : 'black'">
             {{itemFieldValue | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
-          </label>
+          </div>
         }
       } @else {
-        <label class="resultitem__cell--label resultitem__cell--label__{{column.fieldName}}  resultitem__cell--label__{{itemFieldValue}}">
+        <div class="resultitem__cell--label resultitem__cell--label__{{column.fieldName}}  resultitem__cell--label__{{itemFieldValue}}">
           {{itemFieldValue | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
-        </label>
+        </div>
       }
     </td>
   }

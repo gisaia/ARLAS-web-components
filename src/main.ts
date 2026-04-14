@@ -61,12 +61,15 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
     providers: [
-        importProvidersFrom(CollectionModule.forRoot({
-            loader: {
-                provide: BaseCollectionService,
-                useClass: AwcCollectionService
-            }
-        })),
+        importProvidersFrom(
+            CollectionModule.forRoot({
+                loader: {
+                    provide: BaseCollectionService,
+                    useClass: AwcCollectionService
+                }
+            }),
+            ColorGeneratorModule.forRoot()
+        ),
         { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
         provideHttpClient(withInterceptorsFromDi()),
         provideTranslateService({
@@ -92,7 +95,6 @@ bootstrapApplication(AppComponent, {
         {
             provide: LegendService,
             useClass: MaplibreLegendService
-        },
-        importProvidersFrom(ColorGeneratorModule.forRoot())
+        }
     ]
 });

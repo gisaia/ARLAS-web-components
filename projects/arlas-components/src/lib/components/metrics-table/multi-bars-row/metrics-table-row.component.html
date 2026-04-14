@@ -3,11 +3,11 @@
   'multi-bar-row--unselected': !metricsTableRow?.selected,
   'multi-bar-row--selected': metricsTableRow?.selected,
   'multi-bar-row--pending': !metricsTableRow?.selected && pendingMode
-  }" (click)="selectRow()" class="multi-bar-row">
+  }" (click)="selectRow()" (keydown)="selectRow()" class="multi-bar-row">
     <th class="terms-head" scope="row" class="multi-bar-row__header">
       <div class="header">
         @if (displayCheckBox) {
-          <section (click)="$event.stopPropagation()">
+          <section (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
             <mat-checkbox [checked]="metricsTableRow?.selected" (change)="onCheck()"></mat-checkbox>
           </section>
         }
@@ -17,7 +17,7 @@
       </div>
     </th>
     @for (powerBar of powerBars; track powerBar) {
-      <td  class="column-head" class="multi-bar-row__data">
+      <td class="column-head" class="multi-bar-row__data">
         <div>
           @if (powerBar.count !== null && powerBar.count !== undefined) {
             <arlas-powerbar [useColorFromData]="useColorFromData"

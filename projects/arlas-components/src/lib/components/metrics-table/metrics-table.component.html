@@ -20,7 +20,7 @@
         <th class="terms-head"></th>
         @if (titleAreDifferent) {
           @for (header of metricsTable?.header; track header; let i = $index) {
-            <th class="multi-bar__header-indicator">
+            <th scope="col" class="multi-bar__header-indicator">
               <div>
                 <div class="container">
                   @if (headerDisplayMode === 'chip' || headerDisplayMode === 'full') {
@@ -45,7 +45,7 @@
           }
         } @else {
           @for (header of uniqueTitles; track header) {
-            <th class="multi-bar__header-indicator" [style.width.px]="header.span * 70" [attr.colspan]="header.span">
+            <th scope="col" class="multi-bar__header-indicator" [style.width.px]="header.span * 70" [attr.colspan]="header.span">
               <div class="container">
                 @if (headerDisplayMode === 'chip' || headerDisplayMode === 'full') {
                   <div class="header-indicator"
@@ -70,9 +70,9 @@
       </tr>
       <!-- Sub Title area -->
       <tr>
-        <th class="terms-head"></th>
+        <th scope="col" class="terms-head"></th>
         @for (header of metricsTable?.header; track header; let i = $index) {
-          <th class="column-head multi-bar__header">
+          <th scope="col" class="column-head multi-bar__header">
             @if (header.metric === 'count') {
               <div [matTooltip]="'COUNT_COLUMN_TITLE' | translate"
                 class="multi-bar__header-item multi-bar__header-item-title">

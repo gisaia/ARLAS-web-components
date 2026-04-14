@@ -19,7 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import {
-  ChartType, DataType, HistogramData, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneData, SwimlaneMode, SwimlaneStats
+  ChartType, DataType, HistogramData, Position, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneData, SwimlaneMode, SwimlaneStats
 } from 'arlas-d3';
 import { HistogramComponent } from 'arlas-web-components';
 
@@ -45,6 +45,7 @@ export class HistogramDemoComponent implements OnInit {
   public areaSelection: SelectedInputValues;
   public intervalListSelection: SelectedOutputValues[] = [];
   public SelectionType = SelectionType;
+  public Position = Position;
 
   public ngOnInit() {
     this.showData();
