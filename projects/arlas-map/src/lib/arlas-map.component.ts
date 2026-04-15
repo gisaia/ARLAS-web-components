@@ -18,12 +18,12 @@
  */
 
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, EventEmitter, inject, input, Input, Output, signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, input, Input, Output, signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, FeatureCollection } from '@turf/helpers';
 import { ElementIdentifier } from 'arlas-web-components';
-import { finalize, fromEvent, Subject, takeUntil } from 'rxjs';
+import { filter, finalize, fromEvent, Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import * as mapJsonSchema from './arlas-map.schema.json';
 import { AbstractArlasMapService } from './arlas-map.service';
@@ -81,8 +81,6 @@ export class ArlasMapComponent<L, S, M> {
 
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
-  private readonly _onDestroy$ = new Subject<boolean>();
-
 
   @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
 
@@ -130,6 +128,8 @@ export class ArlasMapComponent<L, S, M> {
   @Input() public minZoom = 0;
   /** @description Coordinates of the map's center when it's first loaded. */
   @Input() public initCenter: [number, number] = [2.1972656250000004, 45.706179285330855];
+  /** @description Maximum pitch of the map */
+  @Input() public maxPitch = 60;
 
   /** --- BOUNDS TO FIT STRATEGY */
 
@@ -268,6 +268,7 @@ export class ArlasMapComponent<L, S, M> {
   protected ICONS_BASE_PATH = 'assets/icons/';
 
   private readonly mapFrameworkService = inject(ArlasMapFrameworkService<L, S, M>);
+  private readonly destroyRef = inject(DestroyRef);
 
   public constructor(
     private readonly drawService: MapboxAoiDrawService,
@@ -304,8 +305,21 @@ export class ArlasMapComponent<L, S, M> {
     });
     this.basemapService.setBasemaps(new ArlasBasemaps(this.defaultBasemapStyle, this.basemapStyles));
     this.basemapService.fetchSources$()
-      .pipe(finalize(() => this.declareMap()))
+      .pipe(finalize(() => this.declareMap()), takeUntilDestroyed(this.destroyRef))
       .subscribe();
+
+    // For protomap basemaps, terrain has to be redeclared after basemap switch
+    this.basemapService.basemapChanged$
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        filter(b => b.type === 'protomap')
+      )
+      .subscribe(() => {
+        if (this.hasTerrain() && this.map) {
+          this.toggleTerrain();
+          this.toggleTerrain();
+        }
+      });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -412,6 +426,7 @@ export class ArlasMapComponent<L, S, M> {
       pitchWithRotate: true,
       transformRequest: this.transformRequest,
       attributionControl: false,
+      maxPitch: this.maxPitch
     };
     const mapProviderOptions = this.mapFrameworkService.buildMapProviderOption(arlasMapOption);
     const config: MapConfig<M> = {
@@ -477,7 +492,7 @@ export class ArlasMapComponent<L, S, M> {
     }));
 
     if (this.redrawSource) {
-      this.redrawSource.pipe(takeUntil(this._onDestroy$)).subscribe(sd => {
+      this.redrawSource.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(sd => {
         this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map), {
           'type': 'FeatureCollection',
           'features': sd.data
@@ -649,8 +664,6 @@ export class ArlasMapComponent<L, S, M> {
     if (this.map) {
       this.map.unsubscribeEvents();
     }
-    this._onDestroy$.next(true);
-    this._onDestroy$.complete();
   }
 
   /** @description Enables bbox drawing mode.*/

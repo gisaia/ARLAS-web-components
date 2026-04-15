@@ -52,7 +52,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
     const selectedBasemap = this.basemaps.getSelected();
     if (selectedBasemap.type === 'protomap') {
       (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
-        this.mapFrameworkService.removeLayer(map, l.id);
+        this.mapFrameworkService.removeLayer(map, l.id, false);
       });
       this.mapFrameworkService.removeSource(map, 'arlas_protomaps_source');
     }
@@ -147,7 +147,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
           this.addProtomapBasemap(map);
           this.notifyProtomapAddition();
         }
-        this.basemapChangedSource.next();
+        this.basemapChangedSource.next(newBasemap);
       }, 0);
     });
   }

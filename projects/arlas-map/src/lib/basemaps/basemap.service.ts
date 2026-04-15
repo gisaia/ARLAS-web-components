@@ -38,7 +38,7 @@ export abstract class BasemapService<L, S, M> {
   protected LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
 
 
-  protected basemapChangedSource: Subject<void> = new Subject();
+  protected basemapChangedSource = new Subject<BasemapStyle>();
   public basemapChanged$ = this.basemapChangedSource.asObservable();
   public basemaps: ArlasBasemaps;
 

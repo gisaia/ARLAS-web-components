@@ -17,13 +17,13 @@
  * under the License.
  */
 
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import bbox from '@turf/bbox';
 import { fromEvent, map, Observable, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { ControlPosition, ControlsOption, DrawControlsOption } from './model/controls';
 import { MapExtent } from './model/extent';
 import { ArlasLngLat, ArlasLngLatBounds, OnMoveResult } from './model/map';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import bbox from '@turf/bbox';
 
 
 /** Conf */
@@ -59,6 +59,7 @@ export interface ArlasMapOption {
   pitchWithRotate: boolean;
   transformRequest: unknown;
   attributionControl: boolean;
+  maxPitch: number;
 }
 
 export interface ArlasMapOffset {

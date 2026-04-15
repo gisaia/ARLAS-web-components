@@ -219,7 +219,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
 
 
   public override getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
-    const lFilter = this.layersMap.get(layer).filter as Expression;
+    const lFilter = this.layersMap.get(layer)?.filter as Expression;
     const filters = [];
     if (lFilter) {
       lFilter.forEach(f => {
