@@ -107,7 +107,7 @@ export class MapImportDialogComponent {
   }
 
   public onCancel() {
-    this.dialogRef.close();
+    this.dialogRef.close({ cancel: true });
   }
 }
 
@@ -319,12 +319,12 @@ export class MapImportComponent<L, S, M> {
       if (this.maxFileSize && this.currentFile.size > this.maxFileSize) {
         reject(new Error(this.FILE_TOO_LARGE));
       } else if (this.currentFile.name.split('.').pop().toLowerCase() === this.KML) {
-          reader.readAsText(this.currentFile);
-        } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
-          reader.readAsArrayBuffer(this.currentFile);
-        } else {
-          reject(new Error(marker('Only `kml` or `zip` file is allowed')));
-        }
+        reader.readAsText(this.currentFile);
+      } else if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
+        reader.readAsArrayBuffer(this.currentFile);
+      } else {
+        reject(new Error(marker('Only `kml` or `zip` file is allowed')));
+      }
     });
   }
 
@@ -345,7 +345,7 @@ export class MapImportComponent<L, S, M> {
     let readKmzFile = readKmlFile;
     if (this.currentFile.name.split('.').pop().toLowerCase() === 'kmz') {
       readKmzFile = readKmlFile.then(result => new Promise<string>((resolve, reject) => {
-      this.resolveFileFromGzip(result, resolve, reject);
+        this.resolveFileFromGzip(result, resolve, reject);
       }));
     }
 
@@ -453,7 +453,7 @@ export class MapImportComponent<L, S, M> {
   private areFilesInvalid(zipResult): boolean {
     const testArray = Object.keys(zipResult.files).map(fileName => fileName.split('.').pop().toLowerCase());
     return (testArray.filter(elem => elem === this.SHP || elem === 'shx' || elem === 'dbf').length < 3) &&
-    (testArray.filter(elem => elem === 'json').length !== 1);
+      (testArray.filter(elem => elem === 'json').length !== 1);
   }
 
   public processAllShape() {
