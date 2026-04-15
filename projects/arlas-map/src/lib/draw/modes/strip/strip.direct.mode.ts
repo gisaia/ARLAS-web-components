@@ -22,9 +22,8 @@ import center from '@turf/center';
 import distance from '@turf/distance';
 import { point } from '@turf/helpers';
 import midpoint from '@turf/midpoint';
-import rhumbDestination from '@turf/rhumb-destination';
-
 import rhumbBearing from '@turf/rhumb-bearing';
+import rhumbDestination from '@turf/rhumb-destination';
 import transformRotate from '@turf/transform-rotate';
 import { buildStrip, computeStripProperties } from './strip.mode';
 

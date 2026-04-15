@@ -30,13 +30,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
 import { polygon } from '@turf/helpers';
+import { wktToGeoJSON } from 'betterknown';
 import { Feature, FeatureCollection } from 'geojson';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { valid } from 'geojson-validation';
 import JSZip from 'jszip';
 import { Subject } from 'rxjs';
 import shp from 'shpjs';
-import { parse } from 'wellknown';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 import { ArlasMapComponent } from '../arlas-map.component';
 
@@ -496,7 +496,7 @@ export class MapImportComponent<L, S, M> {
   /** *************/
   public processWKT(wkt: string) {
     const wktParserPromise = new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
-      const geojsonWKT = parse(wkt);
+      const geojsonWKT = wktToGeoJSON(wkt);
 
       const centroides = new Array<any>();
       const importedGeojson = {

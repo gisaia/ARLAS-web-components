@@ -61,12 +61,14 @@ limitVertexDirectSelectMode.onTouchEnd = limitVertexDirectSelectMode.onMouseUp =
       featureCoords.push(featureCoords[0]);
     }
     const currentFeature = {
-      'type': 'Feature',
-      'geometry': {
-        'type': 'Polygon',
-        'coordinates': [featureCoords]
-      }
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [featureCoords]
+      },
+      properties: {}
     };
+
     if (getIssues(JSON.stringify(currentFeature)).length === 0) {
       this.fireUpdate();
     } else {
