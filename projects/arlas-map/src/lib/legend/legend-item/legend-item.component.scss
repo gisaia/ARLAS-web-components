@@ -43,6 +43,7 @@
         max-height: 300px;
         overflow-y: auto;
         gap: 0 var(--arlas-legend-item-gap);
+        width: 100%;
 
         &__item {
             --arlas-legend-item-highlight-size: 2px;

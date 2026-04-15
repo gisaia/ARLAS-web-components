@@ -106,17 +106,12 @@ $img-proportion: 85%;
 }
 
 .resultgrid__icon_check
-
 /* @doc Sets the checkbox icon style.*/
   {
-  position: absolute;
-  top: 5px;
-  left: 5px;
   font-size: 15px;
   width: 15px;
   height: 15px;
   color: white;
-  cursor: pointer;
   z-index: 5;
   user-select: none;
 }
@@ -222,5 +217,22 @@ $img-proportion: 85%;
     width: 72px !important;
     pointer-events: auto;
     cursor: default;
+  }
+}
+
+.checkbox {
+  &__button {
+    padding: 0;
+    --mat-icon-button-touch-target-size: 15px;
+    --mat-icon-button-state-layer-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mat-checkbox-selected-icon-color);
+
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    z-index: 1;
   }
 }

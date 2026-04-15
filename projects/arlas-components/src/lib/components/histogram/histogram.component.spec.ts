@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ColorGeneratorModule } from '../../services/color.generator.module';
 import { ArlasColorService } from '../../services/color.generator.service';
 import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../componentsUtils';
@@ -29,9 +30,8 @@ describe('HistogramComponent', () => {
   let component: HistogramComponent;
   let fixture: ComponentFixture<HistogramComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [HistogramComponent],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatTooltipModule,
@@ -40,14 +40,14 @@ describe('HistogramComponent', () => {
             provide: ColorGeneratorLoader,
             useClass: AwcColorGeneratorLoader
           }
-        })
+        }),
+        HistogramComponent
       ],
       providers: [
         ArlasColorService
       ]
-    })
-      .compileComponents();
-  }));
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HistogramComponent);

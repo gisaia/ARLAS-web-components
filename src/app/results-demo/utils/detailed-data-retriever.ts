@@ -18,10 +18,10 @@
  * under the License.
  */
 
-import { Detail, MatchInfo } from 'projects/arlas-components/src/lib/components/results/utils/detailed-data-retriever';
+import { Action, AdditionalInfo, Attachment, DetailedDataRetriever, Item, MatchInfo } from 'arlas-web-components';
 import { Observable, from, of } from 'rxjs';
-import { ActionFilter, AdditionalInfo, Attachment } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
-import { Action, DetailedDataRetriever, Item } from '../../../../projects/arlas-components/src/public-api';
+import { Detail } from '../../../../projects/arlas-components/src/lib/components/results/utils/detailed-data-retriever';
+import { ActionFilter } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 
 
 export class DetailedDataRetrieverImp implements DetailedDataRetriever {

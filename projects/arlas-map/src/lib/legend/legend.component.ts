@@ -20,9 +20,13 @@
 import {
   AfterViewInit, Component, computed, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild, WritableSignal
 } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
-import { HistogramData } from 'arlas-d3/histograms/utils/HistogramUtils';
-import { ArlasColorService } from 'arlas-web-components';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { HistogramData } from 'arlas-d3';
+import { ArlasColorService, GetCollectionDisplayNamePipe, GetColorPipe } from 'arlas-web-components';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
@@ -31,16 +35,21 @@ import {
   ARLAS_ID, ArlasDataLayer,
   EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
 } from '../map/model/layers';
+import { LayerIdToName } from './layer-name.pipe';
+import { LayerIconComponent } from './legend-icon/layer-icon.component';
+import { LegendItemComponent } from './legend-item/legend-item.component';
 import { Legend, LegendData, PROPERTY_SELECTOR_SOURCE } from './legend.config';
 import { LegendService } from './legend.service';
 import { getMax, MAX_LINE_WIDTH } from './legend.tools';
 
 
 @Component({
-  selector: 'arlas-legend',
-  templateUrl: './legend.component.html',
-  styleUrls: ['./legend.component.scss'],
-  standalone: false
+    selector: 'arlas-legend',
+    templateUrl: './legend.component.html',
+    styleUrls: ['./legend.component.scss'],
+    imports: [
+      MatTooltip, LayerIconComponent, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, LegendItemComponent,
+      TranslatePipe, MarkerModule, LayerIdToName, GetCollectionDisplayNamePipe, GetColorPipe]
 })
 export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   /**

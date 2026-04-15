@@ -28,17 +28,19 @@ import { Subject } from 'rxjs';
 import { AbstractDraw } from './AbstractDraw';
 import { AoiEdition, BboxDrawCommand, Corner } from './draw.models';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class MapboxAoiDrawService {
   private mapDraw: AbstractDraw;
   private editionId: string;
   private registeringMode: boolean;
   private ids: Set<string> = new Set();
 
-  private editAoiSource = new Subject<AoiEdition>();
+  private readonly editAoiSource = new Subject<AoiEdition>();
   public editAoi$ = this.editAoiSource.asObservable();
 
-  private drawBboxSource = new Subject<BboxDrawCommand>();
+  private readonly drawBboxSource = new Subject<BboxDrawCommand>();
   public drawBbox$ = this.drawBboxSource.asObservable();
 
   /** Set to true when the user is drawing a bbox. */
@@ -255,7 +257,7 @@ export class MapboxAoiDrawService {
 
   /** Gets the given feature from MapboxDraw object. */
   private getFeature(featureId: string, mapDraw: AbstractDraw): Feature {
-    return mapDraw.get(featureId) as Feature;
+    return mapDraw.get(featureId);
   }
 
   /** Checks if the given feature has enough coordinates to represent an area (polygon) */

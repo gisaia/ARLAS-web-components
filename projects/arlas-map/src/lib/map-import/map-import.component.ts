@@ -17,32 +17,40 @@
  * under the License.
  */
 
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import { Component, ElementRef, inject, Inject, Input, Output, ViewChild } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
 import * as toGeoJSON from '@tmcw/togeojson';
 import centroid from '@turf/centroid';
 import { polygon } from '@turf/helpers';
+import { wktToGeoJSON } from 'betterknown';
 import { Feature, FeatureCollection } from 'geojson';
 import * as gpsi_ from 'geojson-polygon-self-intersections';
 import { valid } from 'geojson-validation';
 import JSZip from 'jszip';
 import { Subject } from 'rxjs';
-import * as shp_ from 'shpjs/dist/shp';
-import { parse } from 'wellknown';
+import shp from 'shpjs';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 import { ArlasMapComponent } from '../arlas-map.component';
 
 
 const gpsi = gpsi_.default;
-const shp = shp_.default;
 
 
 @Component({
   templateUrl: './map-import-dialog.component.html',
   selector: 'arlas-map-import-dialog',
   styleUrls: ['./map-import-dialog.component.scss'],
-  standalone: false
+  imports: [
+    MatDialogTitle, CdkScrollable, MatDialogContent, MatRadioGroup, FormsModule, MatRadioButton,
+    MatCheckbox, MatDialogActions, MatButton, MatProgressSpinner, TranslatePipe]
 })
 export class MapImportDialogComponent {
   public displayError = false;
@@ -116,10 +124,9 @@ export type AllowedImportGeometry = 'Polygon' | 'Point';
 const SIMPLE_GEOMETRY_OBJECT = new Set(['Polygon', 'Point', 'LineString']);
 
 @Component({
-  selector: 'arlas-map-import',
-  templateUrl: './map-import.component.html',
-  styleUrls: ['./map-import.component.scss'],
-  standalone: false
+    selector: 'arlas-map-import',
+    templateUrl: './map-import.component.html',
+    styleUrls: ['./map-import.component.scss']
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.
@@ -489,7 +496,7 @@ export class MapImportComponent<L, S, M> {
   /** *************/
   public processWKT(wkt: string) {
     const wktParserPromise = new Promise<{ geojson: any; centroides: any; }>((resolve, reject) => {
-      const geojsonWKT = parse(wkt);
+      const geojsonWKT = wktToGeoJSON(wkt);
 
       const centroides = new Array<any>();
       const importedGeojson = {

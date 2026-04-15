@@ -24,7 +24,6 @@ import { AbstractDraw } from './draw/AbstractDraw';
 import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
 import { MapLayerMouseEvent } from './map/model/events';
 import { ArlasPoint } from './map/model/geometry';
-import { ArlasDataLayer } from './map/model/layers';
 import { ArlasLngLat, ArlasLngLatBounds } from './map/model/map';
 import { VectorStyle } from './map/model/vector-style';
 

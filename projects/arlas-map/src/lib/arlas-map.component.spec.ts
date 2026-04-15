@@ -1,44 +1,54 @@
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-
-import { ArlasMapComponent } from './arlas-map.component';
-import { MapboxAoiDrawService } from './draw/draw.service';
-import { BasemapService } from './basemaps/basemap.service';
-import { HttpClient, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+    HttpClient,
+    provideHttpClient,
+    withInterceptorsFromDi,
+} from '@angular/common/http';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+    TranslateLoader,
+    TranslateModule,
+    TranslateNoOpLoader,
+} from '@ngx-translate/core';
 import { from } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ArlasMapComponent } from './arlas-map.component';
+import { BasemapService } from './basemaps/basemap.service';
+import { MapboxAoiDrawService } from './draw/draw.service';
 
 describe('ArlasMapComponent', () => {
   let component: ArlasMapComponent<any, any, any>;
   let fixture: ComponentFixture<ArlasMapComponent<any, any, any>>;
 
-  beforeEach(waitForAsync(() => {
+  beforeEach(async () => {
+    const mockBasemapService = {
+      fetchSources$: vi.fn().mockName('BasemapService.fetchSources$'),
+      setBasemaps: vi.fn().mockName('BasemapService.setBasemaps'),
+      protomapBasemapAdded$: from(''),
+    };
+    mockBasemapService.fetchSources$.mockReturnValue(from(''));
 
-    const mockBasemapService = jasmine.createSpyObj('BasemapService', ['fetchSources$', 'setBasemaps'], {
-      protomapBasemapAdded$: from('')
-    });
-    mockBasemapService.fetchSources$.and.returnValue(from(''));
-
-    TestBed.configureTestingModule({
+    await TestBed.configureTestingModule({
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
+        }),
+        ArlasMapComponent,
       ],
-      declarations: [ ArlasMapComponent ],
       providers: [
         MapboxAoiDrawService,
         {
           provide: BasemapService,
-          useValue: mockBasemapService
+          useValue: mockBasemapService,
         },
         HttpClient,
-        provideHttpClient(withInterceptorsFromDi())
-      ]
-    })
-    .compileComponents();
+        provideHttpClient(withInterceptorsFromDi()),
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ArlasMapComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();

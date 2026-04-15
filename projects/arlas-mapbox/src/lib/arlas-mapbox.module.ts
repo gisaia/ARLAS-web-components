@@ -23,11 +23,6 @@ import { MapboxBasemapService } from './basemaps/mapbox-basemap.service';
 import { MapboxLegendService } from './legend/legend.service';
 
 @NgModule({
-  declarations: [
-  ],
-  imports: [
-
-  ],
   providers: [
     ArlasMapboxService,
     MapboxBasemapService,

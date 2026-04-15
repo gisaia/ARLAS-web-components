@@ -17,12 +17,17 @@
  * under the License.
  */
 
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { NgTemplateOutlet } from '@angular/common';
 import { Component, Output } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormGroup, FormsModule, ReactiveFormsModule, UntypedFormControl, Validators } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ArlasColorService, GetCollectionDisplayNamePipe } from 'arlas-web-components';
 import { Subject, takeUntil } from 'rxjs';
-import { ArlasColorService } from 'arlas-web-components';
 
 export interface GeometrySelectModel {
   path: string;
@@ -75,7 +80,10 @@ export interface MapSettingsService {
   selector: 'arlas-map-settings-dialog',
   templateUrl: './map-settings-dialog.component.html',
   styleUrls: ['./map-settings-dialog.component.scss'],
-  standalone: false
+  imports: [
+    MatDialogTitle, CdkScrollable, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel,
+    MatSelect, MatOption, MatDialogActions, MatButton, TranslatePipe, GetCollectionDisplayNamePipe, NgTemplateOutlet
+]
 })
 export class MapSettingsDialogComponent {
   /**
@@ -89,7 +97,12 @@ export class MapSettingsDialogComponent {
   /** Constants */
   public GEO_QUERIES_DESCRIPTION = marker('Draw a bbox or a polygon that');
 
-  public geoQueriesFormGroups = new Array<UntypedFormGroup>();
+  public geoQueriesFormGroups = new Array<FormGroup<{
+    a_operation: SelectFormControl;
+    b_geometryPath: SelectFormControl;
+    c_collection: UntypedFormControl;
+    d_displayCollectionName: UntypedFormControl;
+  }>>();
   public collectionsColors = new Array<string>();
   public selectionsSnapshot = new Map<string, string>();
 
@@ -130,7 +143,7 @@ export class MapSettingsDialogComponent {
       c_collection: new UntypedFormControl(collectionName),
       d_displayCollectionName: new UntypedFormControl(displayCollectionName),
     };
-    const geoQueryForm = new UntypedFormGroup(geoQueryControls);
+    const geoQueryForm = new FormGroup(geoQueryControls);
     /** snapshot defaultselections */
     this.emittedGeoQueries.clear();
     this.selectionsSnapshot.clear();
@@ -156,10 +169,9 @@ export class MapSettingsDialogComponent {
 }
 
 @Component({
-  selector: 'arlas-map-settings',
-  templateUrl: './map-settings.component.html',
-  styleUrls: ['./map-settings.component.scss'],
-  standalone: false
+    selector: 'arlas-map-settings',
+    templateUrl: './map-settings.component.html',
+    styleUrls: ['./map-settings.component.scss']
 })
 export class MapSettingsComponent {
 

@@ -1,50 +1,63 @@
-<div class="resultgrid" *ngIf=isDetailShowed>
-  <div class="resultgrid--container">
-    <div [hidden]="isDetailedDataShowed">
-      <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
-        <img class="image_view" #image_detail *ngIf="gridTile.imageEnabled" src="{{imgSrc}}" (error)="destroyViewer()">
-        <img *ngIf="(!gridTile.imageEnabled || !imgSrc) && !isLoading" src="{{noViewImg}}">
-        <mat-progress-spinner *ngIf="isLoading" [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>
-      </div>
+@let closeDetailsId = "close_details_gridmode_btn";
 
-      <button mat-icon-button class="viewer_actions-infos navigate-button previous" *ngIf="gridTile.urlImages && gridTile.urlImages.length > 1" matTooltip="{{'Previous image' | translate}}" (click)="onPrevious()">
-        <mat-icon>keyboard_arrow_left</mat-icon>
-      </button>
-      <div class="viewer_actions-infos description" *ngIf="gridTile.descriptions">{{ gridTile.descriptions[currentImageIndex] }}</div>
-      <button mat-icon-button class="viewer_actions-infos navigate-button next" *ngIf="gridTile.urlImages && gridTile.urlImages.length > 1" matTooltip="{{'Next image' | translate}}" (click)="onNext()">
-        <mat-icon>keyboard_arrow_right</mat-icon>
-      </button>
-
-      <div class="resultgrid__info-button">
-        <button [disabled]="!gridTile.imageEnabled || isLoading" id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}"
-          class="resultgrid__info-view-button" mat-mini-fab (click)="showOverlay()">
-          <mat-icon class="resultgrid__info_outline">fit_screen</mat-icon>
-        </button>
-        <button id="show_details_gridmode_btn" matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
-          <mat-icon class="resultgrid__info_outline">info_outline</mat-icon>
-        </button>
-        <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+@if (isDetailShowed) {
+  <div class="resultgrid">
+    <div class="resultgrid--container">
+      <div [hidden]="isDetailedDataShowed">
+        <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
+          @if (gridTile.imageEnabled) {
+            <img class="image_view" #image_detail src="{{imgSrc}}" (error)="destroyViewer()" alt="">
+          }
+          @if ((!gridTile.imageEnabled || !imgSrc) && !isLoading) {
+            <img src="{{noViewImg()}}" alt="No image available">
+          }
+          @if (isLoading) {
+            <mat-progress-spinner [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>
+          }
+        </div>
+        @if (gridTile.urlImages && gridTile.urlImages.length > 1) {
+          <button mat-icon-button class="viewer_actions-infos navigate-button previous" matTooltip="{{'Previous image' | translate}}" (click)="onPrevious()">
+            <mat-icon>keyboard_arrow_left</mat-icon>
+          </button>
+        }
+        @if (gridTile.descriptions) {
+          <div class="viewer_actions-infos description">{{ gridTile.descriptions[currentImageIndex] }}</div>
+        }
+        @if (gridTile.urlImages && gridTile.urlImages.length > 1) {
+          <button mat-icon-button class="viewer_actions-infos navigate-button next" matTooltip="{{'Next image' | translate}}" (click)="onNext()">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+          </button>
+        }
+        <div class="resultgrid__info-button">
+          <button [disabled]="!gridTile.imageEnabled || isLoading" id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}"
+            class="resultgrid__info-view-button" mat-mini-fab (click)="showOverlay()">
+            <mat-icon class="resultgrid__info_outline">fit_screen</mat-icon>
+          </button>
+          <button id="show_details_gridmode_btn" matTooltip="{{SHOW_DETAILS | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+            <mat-icon class="resultgrid__info_outline">info_outline</mat-icon>
+          </button>
+          <button [id]="closeDetailsId" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
             <mat-icon class="resultgrid__close">close</mat-icon>
-        </button>
+          </button>
+        </div>
       </div>
-    </div>
-
-    <div [hidden]="!isDetailedDataShowed">
-      <div class="resultgrid__info-button">
-        <button id="show_image_gridmode_btn" matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
-          <mat-icon class="resultgrid__image">image</mat-icon>
-        </button>
-        <button id="close_details_gridmode_btn" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
-          <mat-icon class="resultgrid__close">close</mat-icon>
-        </button>
-      </div>
-      <div arlas-result-detailed-item class="resultgrid--detailed-item"
-        [rowItem]="gridTile" [containerType]="'grid'" [idFieldName]="idFieldName"
-        [detailedDataRetriever]="detailedDataRetriever"
-        [activatedActionsPerItem]="activatedActionsPerItem"
-        [style.width.px]="detailWidth" [style.height.px]="detailHeight"
-        [showEmptyGroup]= "showEmptyGroup" (actionOnItemEvent)="triggerActionOnItem($event)">
+      <div [hidden]="!isDetailedDataShowed">
+        <div class="resultgrid__info-button">
+          <button id="show_image_gridmode_btn" matTooltip="{{SHOW_IMAGE | translate}}" class="resultgrid__info-show-button" mat-mini-fab color="primary" (click)="showHideDetailedData()">
+            <mat-icon class="resultgrid__image">image</mat-icon>
+          </button>
+          <button [id]="closeDetailsId" matTooltip="{{CLOSE_DETAILS | translate}}" class="resultgrid__info-close-button" mat-mini-fab color="primary" (click)="closeDetailedData()">
+            <mat-icon class="resultgrid__close">close</mat-icon>
+          </button>
+        </div>
+        <div arlas-result-detailed-item class="resultgrid--detailed-item"
+          [rowItem]="gridTile" [containerType]="'grid'" [idFieldName]="idFieldName"
+          [detailedDataRetriever]="detailedDataRetriever"
+          [activatedActionsPerItem]="activatedActionsPerItem"
+          [style.width.px]="detailWidth" [style.height.px]="detailHeight"
+          [showEmptyGroup]= "showEmptyGroup" (actionOnItemEvent)="triggerActionOnItem($event)">
+        </div>
       </div>
     </div>
   </div>
-</div>
+}

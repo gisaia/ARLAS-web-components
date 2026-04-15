@@ -10,7 +10,6 @@
     "**/*.spec.ts",
     "**/*.html",
     "**/*.woff2",
-    "src/test.ts",
     "**/.DS_Store",
     "**/.gitkeep",
     "patches/*",

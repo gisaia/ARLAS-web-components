@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { beforeEach, describe, expect, it } from 'vitest';
 import { CalendarTimelineDemoComponent } from './calendar-timeline-demo.component';
 
 describe('CalendarTimelineDemoComponent', () => {
@@ -8,8 +8,8 @@ describe('CalendarTimelineDemoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CalendarTimelineDemoComponent ]
-    })
+    imports: [CalendarTimelineDemoComponent]
+})
     .compileComponents();
   });
 

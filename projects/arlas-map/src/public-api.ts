@@ -21,12 +21,8 @@
  * Public API Surface of arlas-map
  */
 
-export * from './lib/arlas-map-framework.service';
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
-export * from './lib/arlas-map.component';
 export { ArlasMapComponent } from './lib/arlas-map.component';
-export * from './lib/arlas-map.module';
-export { ArlasMapModule } from './lib/arlas-map.module';
 export { GetCollectionPipe } from './lib/arlas-map.pipe';
 export { AbstractArlasMapService } from './lib/arlas-map.service';
 export { BasemapComponent } from './lib/basemaps/basemap.component';
@@ -35,7 +31,6 @@ export { BasemapService } from './lib/basemaps/basemap.service';
 export { ArlasBasemaps } from './lib/basemaps/basemaps.model';
 export { BboxFormErrorPipe } from './lib/bbox-generator/bbox-form-error.pipe';
 export { BboxGeneratorComponent } from './lib/bbox-generator/bbox-generator.component';
-export { BboxGeneratorModule } from './lib/bbox-generator/bbox-generator.module';
 export { BboxFormGroup } from './lib/bbox-generator/bbox-generator.utils';
 export { Coordinate } from './lib/bbox-generator/coordinates.tools';
 export { CoordinatesComponent } from './lib/coordinates/coordinates.component';
@@ -65,11 +60,9 @@ export {
 export { LegendService } from './lib/legend/legend.service';
 export { getMax, MAX_CIRLE_RADIUS, MAX_LINE_WIDTH } from './lib/legend/legend.tools';
 export { AllowedImportGeometry, MapImportComponent, MapImportDialogComponent } from './lib/map-import/map-import.component';
-export { MapImportModule } from './lib/map-import/map-import.module';
 export {
   GeometrySelectModel, GeoQuery, GeoQueryOperator, MapSettingsComponent, MapSettingsDialogComponent, MapSettingsService, OperationSelectModel
 } from './lib/map-settings/map-settings.component';
-export { MapSettingsModule } from './lib/map-settings/map-settings.module';
 export {
   AbstractArlasMapGL, ArlasMapOffset, ArlasMapOption, CROSS_LAYER_PREFIX,
   GEOJSON_SOURCE_TYPE, HILLSHADE_SOURCE, LAYER_SWITCHER_TOOLTIP, MapConfig,

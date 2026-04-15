@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { describe, expect, it } from 'vitest';
 import { HistogramKeyPipe } from './histogram-key.pipe';
 
 describe('HistogramKeyPipe', () => {

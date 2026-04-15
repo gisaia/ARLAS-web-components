@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
@@ -25,25 +25,31 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import {
+  TranslateLoader,
+  TranslateModule,
+  TranslateNoOpLoader,
+} from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
 import { ArlasColorService } from '../../../services/color.generator.service';
-import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
-import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
+import {
+  AwcColorGeneratorLoader,
+  ColorGeneratorLoader,
+} from '../../componentsUtils';
 import { ResultListComponent } from './result-list.component';
 
 describe('ResultListComponent', () => {
   let component: ResultListComponent;
   let fixture: ComponentFixture<ResultListComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ResultListComponent],
-      providers: [
-        ArlasColorService
-      ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      providers: [ArlasColorService],
       imports: [
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
+        }),
         MatMenuModule,
         MatGridListModule,
         MatRadioModule,
@@ -54,13 +60,13 @@ describe('ResultListComponent', () => {
         ColorGeneratorModule.forRoot({
           loader: {
             provide: ColorGeneratorLoader,
-            useClass: AwcColorGeneratorLoader
-          }
-        })
-      ]
-    })
-      .compileComponents();
-  }));
+            useClass: AwcColorGeneratorLoader,
+          },
+        }),
+        ResultListComponent,
+      ],
+    }).compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultListComponent);

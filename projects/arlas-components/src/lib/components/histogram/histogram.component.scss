@@ -43,6 +43,15 @@
   &--short {
     width: calc(100% - 24px - 5px);
   }
+
+  &__remove {
+    position: absolute !important;
+    z-index: 20000 !important;
+    width: 24px !important;
+    height: 24px !important;
+    --mat-icon-button-touch-target-size: 24px;
+    padding: 0 !important;
+  }
 }
 
 .histogram text {
@@ -172,18 +181,6 @@
   transform: rotate(90deg) translateY(-100%);
   transform-origin: top left;}
 
-.histogram__remove /* @doc Sets the remove tooltip's style*/
-{
-  position: absolute;
-  text-align: left;
-  padding: 2px;
-  font: 12px sans-serif;
-  border: 0px;
-  border-radius: 2px;
-  color: #043b53;
-  z-index: 20000;
-  cursor: pointer;
-}
 
 .histogram__tooltip-xcontent-wrapper {
   display: flex;

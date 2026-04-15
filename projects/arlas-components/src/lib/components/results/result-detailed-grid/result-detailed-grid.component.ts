@@ -17,23 +17,29 @@
  * under the License.
  */
 
+import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectorRef, Component,
-  ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
+import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatTooltip } from '@angular/material/tooltip';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
-import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
-import { HttpClient } from '@angular/common/http';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
 
 @Component({
-  selector: 'arlas-result-detailed-grid',
-  templateUrl: './result-detailed-grid.component.html',
-  styleUrls: ['./result-detailed-grid.component.scss'],
-  standalone: false
+    selector: 'arlas-result-detailed-grid',
+    templateUrl: './result-detailed-grid.component.html',
+    styleUrls: ['./result-detailed-grid.component.scss'],
+    imports: [MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatMiniFabButton, ResultDetailedItemComponent, TranslatePipe]
 })
 export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   /**
@@ -103,6 +109,12 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   * DetailedDataRetriever interface.
   */
   @Input() public detailedDataRetriever: DetailedDataRetriever;
+
+  /**
+   * @Input
+   * @description Default img
+   */
+  public noViewImg = input<string>('assets/no-view.png');
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.

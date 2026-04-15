@@ -18,20 +18,22 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { Router, RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'arlas-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  standalone: false
+  imports: [
+    RouterOutlet, MatTab, MatTabGroup
+  ]
 })
 export class AppComponent implements OnInit {
   public activeLinkIndex = 0;
   public navLinks = [
     '/',
-    '/maplibre',
     '/donut',
     '/histogram',
     '/powerbars',

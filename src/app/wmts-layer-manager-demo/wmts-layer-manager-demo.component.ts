@@ -17,14 +17,18 @@
  * under the License.
  */
 
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { WmtsLayerManagerComponent } from '../../../projects/arlas-components/src/public-api';
 
 @Component({
-  selector: 'arlas-wmts-layer-manager-demo',
-  templateUrl: './wmts-layer-manager-demo.component.html',
-  styleUrls: ['./wmts-layer-manager-demo.component.css'],
-  standalone: false
+    selector: 'arlas-wmts-layer-manager-demo',
+    templateUrl: './wmts-layer-manager-demo.component.html',
+    styleUrls: ['./wmts-layer-manager-demo.component.css'],
+    imports: [MatFormField, MatLabel, MatSelect, MatOption, MatIconButton, MatIcon, AsyncPipe, JsonPipe, WmtsLayerManagerComponent]
 })
 export class WmtsLayerManagerDemoComponent implements OnInit {
     @ViewChild('wmtsLayerManager', { static: false }) public wmtsLayerMangerComponent: WmtsLayerManagerComponent;

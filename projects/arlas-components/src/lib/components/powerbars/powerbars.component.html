@@ -16,13 +16,16 @@
     }
 
     @if (filterOperator) {
-      <div *ngIf="filterOperator?.display" class="include_exclude">
-        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div> <!-- //NOSONAR -->
-        <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div> <!-- //NOSONAR -->
-      </div>
-      <div *ngIf="!filterOperator?.display && filterOperator?.value === 'Neq'" class="include_exclude">
-        <div class="operation exclude">{{'exclude' | translate}}</div>
-      </div>
+      @if (filterOperator.display) {
+        <div class="include_exclude">
+          <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div> <!-- //NOSONAR -->
+          <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div> <!-- //NOSONAR -->
+        </div>
+      } @else if (filterOperator.value === 'Neq') {
+        <div class="include_exclude">
+          <div class="operation exclude">{{'exclude' | translate}}</div>
+        </div>
+      }
     }
 
     @if (displayExportButton()) {
@@ -33,45 +36,49 @@
   </div>
 
   <div class="powerbars--container" [class.powerbars--container__scrollable]="scrollable" [ngClass]="customizedCssClass">
-    <ng-container *ngIf="groupSelections">
-      <div *ngIf="selectedPowerbarsSet.size !== 0" [class.powerbar-selected-scrollable]="scrollable"
-        [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
-        <div *ngFor="let selectedPowerbar of selectedPowerbarsSet">
+    @if (groupSelections) {
+      @if (selectedPowerbarsSet.size !== 0) {
+        <div [class.powerbar-selected-scrollable]="scrollable"
+          [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
+          @for (selectedPowerbar of selectedPowerbarsSet; track selectedPowerbar) {
+            <div>
+              <arlas-powerbar
+                [unit]="unit"
+                [powerbar]="selectedPowerbar"
+                [useColorFromData]="useColorFromData"
+                [useColorService]="useColorService"
+                [hideSelected]="false"
+                [selectWithCheckbox]="selectWithCheckbox"
+                [numberShorteningPrecision]="numberShorteningPrecision"
+                (onCheckEvent)="clickOnPowerbar(selectedPowerbar)"
+                (onClickEvent)="clickOnPowerbar(selectedPowerbar)"
+                (onOverEvent)="overOnPowerbar($event)"
+                (onOutEvent)="outOnPowerbar($event)"
+              ></arlas-powerbar>
+            </div>
+          }
+        </div>
+      }
+    }
+
+    <div [class.powerbar-list-scrollable]="scrollable">
+      @for (powerbar of powerBarsList; track powerbar) {
+        @if (powerbar.term !== '') {
           <arlas-powerbar
             [unit]="unit"
-            [powerbar]="selectedPowerbar"
+            [powerbar]="powerbar"
             [useColorFromData]="useColorFromData"
             [useColorService]="useColorService"
-            [hideSelected]="false"
-            [selectWithCheckbox]="selectWithCheckbox"
             [numberShorteningPrecision]="numberShorteningPrecision"
-            (onCheckEvent)="clickOnPowerbar(selectedPowerbar)"
-            (onClickEvent)="clickOnPowerbar(selectedPowerbar)"
+            [selectWithCheckbox]="selectWithCheckbox"
+            [hideSelected]="groupSelections"
+            (onCheckEvent)="clickOnPowerbar(powerbar)"
+            (onClickEvent)="clickOnPowerbar(powerbar)"
             (onOverEvent)="overOnPowerbar($event)"
             (onOutEvent)="outOnPowerbar($event)"
           ></arlas-powerbar>
-        </div>
-      </div>
-    </ng-container>
-
-    <div [class.powerbar-list-scrollable]="scrollable">
-      <div *ngFor="let powerbar of powerBarsList">
-        @if (powerbar.term !== '') {
-        <arlas-powerbar
-          [unit]="unit"
-          [powerbar]="powerbar"
-          [useColorFromData]="useColorFromData"
-          [useColorService]="useColorService"
-          [numberShorteningPrecision]="numberShorteningPrecision"
-          [selectWithCheckbox]="selectWithCheckbox"
-          [hideSelected]="groupSelections"
-          (onCheckEvent)="clickOnPowerbar(powerbar)"
-          (onClickEvent)="clickOnPowerbar(powerbar)"
-          (onOverEvent)="overOnPowerbar($event)"
-          (onOutEvent)="outOnPowerbar($event)"
-        ></arlas-powerbar>
         }
-      </div>
+      }
     </div>
   </div>
 </div>

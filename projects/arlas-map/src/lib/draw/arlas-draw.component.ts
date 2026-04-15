@@ -22,7 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import StaticMode from '@mapbox/mapbox-gl-draw-static-mode';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import centroid from '@turf/centroid';
 import cleanCoords from '@turf/clean-coords';
 import { polygon } from '@turf/helpers';
@@ -48,11 +48,11 @@ import { stripMode } from './modes/strip/strip.mode';
 import * as styles from './themes/default-theme';
 
 @Component({
-  selector: 'arlas-draw',
-  templateUrl: './arlas-draw.component.html',
-  styleUrls: ['./arlas-draw.component.scss'],
-  encapsulation: ViewEncapsulation.None,
-  standalone: false
+    selector: 'arlas-draw',
+    templateUrl: './arlas-draw.component.html',
+    styleUrls: ['./arlas-draw.component.scss'],
+    encapsulation: ViewEncapsulation.None,
+    imports: [TranslatePipe]
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.
@@ -62,7 +62,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   @Input() public map: AbstractArlasMapGL;
 
-  @Input() private emptyData: FeatureCollection<GeoJSON.Geometry> = {
+  @Input() public emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
     'features': []
   };

@@ -1,12 +1,14 @@
 <mat-sidenav-container class="example-container">
   <mat-sidenav align="end" #sidenav class="example-sidenav">
     <div class="table-wrapper">
-      <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
-        [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
-        [fieldsConfiguration]="fieldsConfiguration" [nbLinesBeforeFetch]="20"
-        [options]="options" [isGeoSortEnabled]="true" [tableWidth]="500"
-        [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
-        (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)" [currentSortedColumn]="activeSort"></arlas-result-list>
+      @if (isListOpen()) {
+        <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
+          [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
+          [fieldsConfiguration]="fieldsConfiguration" [nbLinesBeforeFetch]="20"
+          [options]="options" [isGeoSortEnabled]="true" [tableWidth]="500"
+          [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
+          (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)" [currentSortedColumn]="activeSort"></arlas-result-list>
+      }
     </div>
     <div class="example-actions">
       <button mat-stroked-button (click)="updateData()">New data</button>
@@ -16,7 +18,7 @@
 
 
   <div class="example-sidenav-content">
-    <button type="button" mat-button (click)="sidenav.open()">
+    <button type="button" mat-button (click)="sidenav.open(); isListOpen.set(true)">
       Open sidenav
     </button>
   </div>

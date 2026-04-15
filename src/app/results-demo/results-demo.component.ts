@@ -17,8 +17,10 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
+import { from, Observable } from 'rxjs';
 import { Column } from '../../../projects/arlas-components/src/lib/components/results/model/column';
 import { ResultListComponent } from '../../../projects/arlas-components/src/lib/components/results/result-list/result-list.component';
 import { ModeEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/modeEnum';
@@ -30,10 +32,10 @@ import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 
 
 @Component({
-  selector: 'arlas-results-demo',
-  templateUrl: './results-demo.component.html',
-  styleUrls: ['./results-demo.component.css'],
-  standalone: false
+    selector: 'arlas-results-demo',
+    templateUrl: './results-demo.component.html',
+    styleUrls: ['./results-demo.component.css'],
+    imports: [MatSidenavContainer, MatSidenav, MatButton, ResultListComponent]
 })
 export class ResultsDemoComponent implements OnInit {
 
@@ -50,7 +52,7 @@ export class ResultsDemoComponent implements OnInit {
     public options = new ResultListOptions();
     public activeSort: Column;
 
-    public constructor() { }
+    public isListOpen = signal(false);
 
     public ngOnInit() {
       this.options.showActionsOnhover = true;

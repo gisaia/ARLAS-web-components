@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
-import { TranslateNoOpLoader, TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
 import { MetricComponent } from './metric.component';
 
@@ -27,17 +28,17 @@ describe('MetricComponent', () => {
   let component: MetricComponent;
   let fixture: ComponentFixture<MetricComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      declarations: [ MetricComponent ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
       imports: [
         MatDialogModule,
         FormatNumberPipe,
-        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
+        TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
+        MetricComponent
       ]
-    })
-      .compileComponents();
-  }));
+  })
+    .compileComponents();
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MetricComponent);

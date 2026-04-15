@@ -18,12 +18,13 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { DonutComponent } from 'arlas-web-components';
 
 @Component({
-  selector: 'arlas-donut-demo',
-  templateUrl: './donut-demo.component.html',
-  styleUrls: ['./donut-demo.component.css'],
-  standalone: false
+    selector: 'arlas-donut-demo',
+    templateUrl: './donut-demo.component.html',
+    styleUrls: ['./donut-demo.component.css'],
+    imports: [DonutComponent]
 })
 export class DonutDemoComponent implements OnInit {
 

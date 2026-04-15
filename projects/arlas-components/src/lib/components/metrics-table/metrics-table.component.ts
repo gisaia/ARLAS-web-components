@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { KeyValue } from '@angular/common';
 import {
   ChangeDetectorRef,
   Component,
@@ -29,20 +30,24 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { KeyValue } from '@angular/common';
-import { PowerBar } from '../powerbars/model/powerbar';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
 import * as tinycolor from 'tinycolor2';
+import { GetCollectionDisplayNamePipe } from '../../pipes/get-collection-display-name/get-collection-display-name.pipe';
+import { GetFieldDisplayNamePipe } from '../../pipes/get-field-display-name/get-field-display-name.pipe';
 import { ArlasColorService } from '../../services/color.generator.service';
-import * as metricTableJsonSchema from './metrics-table.schema.json';
 import { FilterOperator } from '../../tools/models/term-filters';
+import { PowerBar } from '../powerbars/model/powerbar';
+import * as metricTableJsonSchema from './metrics-table.schema.json';
 import { MetricsTable, MetricsTableHeader, MetricsTableRow } from './model/metrics-table';
+import { MetricsTableRowComponent } from './multi-bars-row/metrics-table-row.component';
 
 
 @Component({
   selector: 'arlas-metrics-table',
   templateUrl: './metrics-table.component.html',
   styleUrls: ['./metrics-table.component.scss'],
-  standalone: false
+  imports: [MatTooltip, MetricsTableRowComponent, TranslatePipe, GetCollectionDisplayNamePipe, GetFieldDisplayNamePipe]
 })
 export class MetricsTableComponent implements OnInit, OnChanges {
   /**

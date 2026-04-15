@@ -32,7 +32,7 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public nbLinesBeforeFetch: number;
   @Input() public nbGridColumns: number;
   @Input() public resultMode: ModeEnum;
-  @Input() public fetchState: { endListUp: true; endListDown: false; };
+  @Input() public fetchState: { endListUp: boolean; endListDown: boolean; };
   @Input() public scrollOptions: { maintainScrollUpPosition: boolean; maintainScrollDownPosition: boolean; nbLines: number; };
 
   @Output() public nextDataEvent: Subject<Map<string, ItemDataType>> = new Subject();

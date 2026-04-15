@@ -17,22 +17,26 @@
  * under the License.
  */
 
-import { Component, DestroyRef, ElementRef, Input, signal, ViewChild } from '@angular/core';
+import { KeyValuePipe } from '@angular/common';
+import { Component, DestroyRef, ElementRef, Input, OnInit, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { FormatNumberPipe, ShortenNumberPipe } from 'arlas-web-components';
 import { filter } from 'rxjs';
 import { OTHER } from '../../map/model/filters';
 import { ArlasDataLayer } from '../../map/model/layers';
+import { FormatLegendPipe } from '../format-legend.pipe';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
 import { LegendService } from '../legend.service';
-import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'arlas-legend-item',
   templateUrl: './legend-item.component.html',
   styleUrls: ['./legend-item.component.scss'],
-  standalone: false
+  imports: [MatTooltip, TranslatePipe, FormatNumberPipe, KeyValuePipe, ShortenNumberPipe, FormatLegendPipe]
 })
-export class LegendItemComponent {
+export class LegendItemComponent implements OnInit {
   @Input() public legend: Legend;
   @Input() public title: string;
   @Input() public layer: ArlasDataLayer;

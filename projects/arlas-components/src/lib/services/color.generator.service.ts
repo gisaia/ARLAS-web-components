@@ -18,15 +18,15 @@
  */
 
 import { Injectable } from '@angular/core';
-import { ColorGeneratorLoader } from '../components/componentsUtils';
 import { Subject } from 'rxjs';
+import { ColorGeneratorLoader } from '../components/componentsUtils';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArlasColorService {
 
-  private changekeysToColors =  new Subject<void>();
+  private readonly changekeysToColors =  new Subject<void>();
   public changekeysToColors$ = this.changekeysToColors.asObservable();
   public constructor(public colorGenerator: ColorGeneratorLoader) {
     this.colorGenerator.changekeysToColors$.subscribe(() => this.changekeysToColors.next());

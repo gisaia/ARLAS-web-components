@@ -18,11 +18,16 @@
  */
 
 import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
 import { filter, Subject, take, takeUntil } from 'rxjs';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 import { Item } from '../model/item';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, ActionHandler } from '../utils/results.utils';
+import { ActionDisplayerPipe } from './result-actions.pipe';
 
 
 /**
@@ -40,10 +45,10 @@ import { Action, ActionHandler } from '../utils/results.utils';
  * - If one of the fields values is absent in the current item, the action will be hidden.
  */
 @Component({
-  selector: 'arlas-result-actions',
-  templateUrl: './result-actions.component.html',
-  styleUrls: ['./result-actions.component.scss'],
-  standalone: false
+    selector: 'arlas-result-actions',
+    templateUrl: './result-actions.component.html',
+    styleUrls: ['./result-actions.component.scss'],
+    imports: [MatTooltip, MatIcon, MatButtonModule, TranslatePipe, ActionDisplayerPipe]
 })
 export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   /** The item which actions are managed by this component. */
@@ -53,7 +58,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   /** Map <itemId, Set<actionIds>> : for each item, gives the list of activated actions. */
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
   /** This data retriever allows to fetch the actions of each items + check if an action should be hidden. */
-  @Input() public detailedDataRetriever: DetailedDataRetriever = null;
+  @Input({ required: true }) public detailedDataRetriever: DetailedDataRetriever;
   /** Whether to stop propagation at click/hover of the action. */
   @Input() public stopPropagation = false;
   /** Whether to display the actions as icon buttons or text buttons. */

@@ -18,6 +18,9 @@
  */
 
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { TranslatePipe } from '@ngx-translate/core';
+import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
 import { DEFAULT_SHORTENING_PRECISION, NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { PowerBar } from '../model/powerbar';
 
@@ -25,7 +28,7 @@ import { PowerBar } from '../model/powerbar';
     selector: 'arlas-powerbar',
     templateUrl: './powerbar.component.html',
     styleUrls: ['./powerbar.component.scss'],
-    standalone: false
+    imports: [MatCheckbox, TranslatePipe, ShortenNumberPipe]
 })
 export class PowerbarComponent {
 

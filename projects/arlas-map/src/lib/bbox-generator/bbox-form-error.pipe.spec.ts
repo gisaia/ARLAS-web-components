@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { BboxFormErrorPipe } from './bbox-form-error.pipe';
 
 describe('BboxFormErrorPipe', () => {

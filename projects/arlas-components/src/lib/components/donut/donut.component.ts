@@ -17,11 +17,15 @@
  * under the License.
  */
 
+import { NgClass } from '@angular/common';
 import {
   Component, DestroyRef, ElementRef, Input, OnChanges, Output, SimpleChanges, inject, input, output
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TranslateService } from '@ngx-translate/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ARLASDonutTooltip, AbstractDonut, DonutParams, MultiSelectionDonut, OneSelectionDonut, SimpleNode, TreeNode } from 'arlas-d3';
 import { Subject, debounceTime, fromEvent } from 'rxjs';
 import { ArlasColorService } from '../../services/color.generator.service';
@@ -29,10 +33,10 @@ import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as donutJsonSchema from './donut.schema.json';
 
 @Component({
-  selector: 'arlas-donut',
-  templateUrl: './donut.component.html',
-  styleUrls: ['./donut.component.scss'],
-  standalone: false
+    selector: 'arlas-donut',
+    templateUrl: './donut.component.html',
+    styleUrls: ['./donut.component.scss'],
+    imports: [MatIconButton, MatTooltip, MatIcon, NgClass, TranslatePipe]
 })
 export class DonutComponent implements OnChanges {
   /**
@@ -168,13 +172,11 @@ export class DonutComponent implements OnChanges {
       this.setDonutParameters();
     }
 
-    if (changes.donutData && this.donutData !== undefined && this.donutData !== null && this.donut !== undefined
-      && this.donut.donutParams !== undefined) {
+    if (changes.donutData && this.donutData !== undefined && this.donutData !== null && this.donut?.donutParams !== undefined) {
       this.donut.dataChange(this.donutData);
     }
 
-    if (changes.selectedArcsList && this.selectedArcsList !== undefined && this.selectedArcsList !== null && this.donut !== undefined
-      && this.donut.donutParams !== undefined && this.donut.donutParams.donutNodes !== undefined) {
+    if (changes.selectedArcsList && !!this.selectedArcsList && this.donut?.donutParams?.donutNodes !== undefined) {
       this.donut.onSelectionChange(this.selectedArcsList);
     }
   }
