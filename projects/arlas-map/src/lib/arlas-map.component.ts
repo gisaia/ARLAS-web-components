@@ -18,7 +18,10 @@
  */
 
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, DestroyRef, EventEmitter, inject, input, Input, Output, signal, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+  Component, DestroyRef, EventEmitter, inject, input, Input,
+  Output, signal, SimpleChanges, ViewChild, ViewEncapsulation
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TranslateService } from '@ngx-translate/core';
 import { Feature, FeatureCollection } from '@turf/helpers';
