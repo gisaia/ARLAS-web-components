@@ -315,14 +315,12 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     this.basemapService.basemapChanged$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        filter(b => b.type === 'protomap')
+        filter(b => b.type === 'protomap' && this.hasTerrain() && !!this.map)
       )
       .subscribe(() => {
-        if (this.hasTerrain() && this.map) {
-          // Toggle it once to remove the terrain, and another time to add it back
-          this.toggleTerrain();
-          this.toggleTerrain();
-        }
+        // Toggle it once to remove the terrain, and another time to add it back
+        this.toggleTerrain();
+        this.toggleTerrain();
       });
   }
 
