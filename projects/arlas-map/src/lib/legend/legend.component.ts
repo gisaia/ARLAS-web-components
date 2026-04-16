@@ -32,8 +32,7 @@ import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
 import { Subject, takeUntil } from 'rxjs';
 import {
-  ARLAS_ID, ArlasDataLayer,
-  EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
+  ARLAS_ID, ArlasDataLayer, EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
 } from '../map/model/layers';
 import { LayerIdToName } from './layer-name.pipe';
 import { LayerIconComponent } from './legend-icon/layer-icon.component';
