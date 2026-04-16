@@ -59,6 +59,7 @@ export interface ArlasMapOption {
   pitchWithRotate: boolean;
   transformRequest: unknown;
   attributionControl: boolean;
+  maxPitch: number;
 }
 
 export interface ArlasMapOffset {

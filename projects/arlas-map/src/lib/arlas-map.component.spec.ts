@@ -1,15 +1,11 @@
 import {
-    HttpClient,
-    provideHttpClient,
-    withInterceptorsFromDi,
+  HttpClient, provideHttpClient, withInterceptorsFromDi
 } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-    TranslateLoader,
-    TranslateModule,
-    TranslateNoOpLoader,
+  TranslateLoader, TranslateModule, TranslateNoOpLoader
 } from '@ngx-translate/core';
-import { from } from 'rxjs';
+import { from, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ArlasMapComponent } from './arlas-map.component';
 import { BasemapService } from './basemaps/basemap.service';
@@ -24,6 +20,7 @@ describe('ArlasMapComponent', () => {
       fetchSources$: vi.fn().mockName('BasemapService.fetchSources$'),
       setBasemaps: vi.fn().mockName('BasemapService.setBasemaps'),
       protomapBasemapAdded$: from(''),
+      basemapChanged$: of()
     };
     mockBasemapService.fetchSources$.mockReturnValue(from(''));
 

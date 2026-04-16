@@ -226,7 +226,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
   }
 
   public getVisibleIdsFilter(layer: any, ids: Array<string | number>): ExpressionSpecification[] {
-    const lFilter = this.layersMap.get(layer).filter as ExpressionSpecification;
+    const lFilter = this.layersMap.get(layer)?.filter as ExpressionSpecification;
     const filters = [];
     if (lFilter) {
       lFilter.forEach(f => {
