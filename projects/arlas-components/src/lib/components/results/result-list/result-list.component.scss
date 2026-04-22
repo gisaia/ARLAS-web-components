@@ -308,12 +308,15 @@ tr {
   }
 
   .resultlist__tools--sort-direction {
+    padding: 0;
+    --mat-icon-button-state-layer-size: 24px;
+    --mat-icon-button-touch-target-size: 24px;
+
     mat-icon {
       transform: rotate(90deg);
       font-size: 18px;
       height: 18px;
       width: 18px;
-      cursor: pointer;
     }
 
     .reversed {
