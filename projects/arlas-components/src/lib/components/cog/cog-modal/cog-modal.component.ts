@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -47,7 +47,14 @@ export interface CogVisualisationData {
   styleUrl: './cog-modal.component.scss'
 })
 export class CogModalComponent {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   public data: { visualisations: CogVisualisationData[]; loading: boolean; } = inject(MAT_DIALOG_DATA);
 
   protected readonly DEFAULT_IMAGE = './assets/no-view.png';
+
+  public update(visualisations: CogVisualisationData[], loading: boolean) {
+    this.data = { visualisations, loading };
+    this.cdr.detectChanges();
+  }
 }
