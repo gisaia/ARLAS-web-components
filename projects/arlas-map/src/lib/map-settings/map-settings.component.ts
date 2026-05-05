@@ -25,6 +25,7 @@ import { MatButton } from '@angular/material/button';
 import { MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ArlasColorService, GetCollectionDisplayNamePipe } from 'arlas-web-components';
 import { Subject, takeUntil } from 'rxjs';
@@ -82,7 +83,7 @@ export interface MapSettingsService {
   styleUrls: ['./map-settings-dialog.component.scss'],
   imports: [
     MatDialogTitle, CdkScrollable, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel,
-    MatSelect, MatOption, MatDialogActions, MatButton, TranslatePipe, GetCollectionDisplayNamePipe, NgTemplateOutlet
+    MatSelect, MatOption, MatDialogActions, MatButton, TranslatePipe, GetCollectionDisplayNamePipe, NgTemplateOutlet, MarkerModule
 ]
 })
 export class MapSettingsDialogComponent {
@@ -170,7 +171,7 @@ export class MapSettingsDialogComponent {
 
 @Component({
     selector: 'arlas-map-settings',
-    templateUrl: './map-settings.component.html',
+    template: '',
     styleUrls: ['./map-settings.component.scss']
 })
 export class MapSettingsComponent {
@@ -185,7 +186,7 @@ export class MapSettingsComponent {
 
   public dialogRef: MatDialogRef<MapSettingsDialogComponent>;
 
-  public constructor(public dialog: MatDialog) { }
+  public constructor(private readonly dialog: MatDialog) { }
 
   public openDialog(mapSettingsService: MapSettingsService) {
     this.dialogRef = this.dialog.open(MapSettingsDialogComponent, { data: null, panelClass: 'map-settings-dialog' });

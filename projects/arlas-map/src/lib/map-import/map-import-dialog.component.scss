@@ -17,7 +17,7 @@
  * under the License.
  */
 
- ::ng-deep.map-import-dialog {
+::ng-deep.map-import-dialog {
   --mat-dialog-subhead-size: 20px;
   --mat-dialog-subhead-tracking: 0;
   --mat-dialog-with-actions-content-padding: 0;
@@ -40,7 +40,7 @@
   display: flex;
   align-content: center;
   align-items: center;
-  height: 60px;
+  --mat-checkbox-touch-target-size: 40px;
 }
 
 .mapgl-import-error {
@@ -52,13 +52,26 @@
   padding-left: 10px;
   padding-top: 10px;
 
-  &:focus {
-    outline: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &__button {
+    width: fit-content;
+  }
+
+  &__file {
+    font-size: 14px;
+  }
+
+  &__input {
+    display: none;
   }
 }
 
-.mapgl-import-radio-button {
-  padding: 10px;
+.mapgl-import-radio-group {
+  display: flex;
+  gap: 10px;
 }
 
 .mapgl-import-text-area {
@@ -66,4 +79,15 @@
   width: 100%;
   height: 200px;
   resize: vertical;
+}
+
+.mapgl-import-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.mapgl-import-title {
+  &::before {
+    height: unset;
+  }
 }

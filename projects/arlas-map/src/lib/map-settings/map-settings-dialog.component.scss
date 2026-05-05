@@ -17,14 +17,6 @@
  * under the License.
  */
 
-::ng-deep .map-settings-dialog .mdc-dialog__surface {
-  padding: 0 15px;
-}
-
-.mapgl-settings__title {
-  margin: 0 0 20px 0 !important;
-}
-
 .mapgl-settings {
   position: relative;
   overflow: hidden;
@@ -62,8 +54,6 @@
 }
 
 .mapgl-settings__actions {
-  --mat-dialog-actions-alignment: end;
-
   &--apply {
     --mat-text-button-label-text-color: #ff4081;
     font-weight: bolder;

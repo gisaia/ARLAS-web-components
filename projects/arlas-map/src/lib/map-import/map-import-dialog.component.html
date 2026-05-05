@@ -11,7 +11,18 @@
   @if (importType === WKT) {
     <textarea class="mapgl-import-text-area" [(ngModel)]="wktContent" placeholder="{{'Paste your WKT' | translate}}" (change)="onTextChange()"></textarea>
   } @else {
-    <input type="file" class="mapgl-import-upload" #fileInput accept="{{allowedFileExtension}}" (change)="onFileChange($event.target.files)">
+    <div class="mapgl-import-upload">
+      <button mat-stroked-button class="mapgl-import-upload__button" (click)="fileInput.click()">{{ 'Choose file' | translate }}</button>
+      <span class="mapgl-import-upload__file">
+        @if (currentFile) {
+          {{ currentFile.name }}
+        } @else {
+          {{ 'No file chosen' | translate }}
+        }
+      </span>
+
+      <input type="file" class="mapgl-import-upload__input" #fileInput accept="{{allowedFileExtension}}" (change)="onFileChange($event.target.files)">
+    </div>
   }
 
   <div class="mapgl-import-zoom">
@@ -27,9 +38,10 @@
 }
 </div>
 
-<div mat-dialog-actions class="mapgl-import-actions">
-  <button mat-button (click)="onCancel()">{{ 'Cancel' | translate}}</button>
-  <button mat-button [disabled]="((importType === SHP || importType === KML || importType === GEOJSON) && !currentFile) || isRunning || (importType === WKT && wktContent === '')" (click)="import()">{{ 'Import' | translate}}</button>
+<div class="mapgl-import-actions" mat-dialog-actions>
+  <button mat-stroked-button (click)="onCancel()">{{ 'Cancel' | translate}}</button>
+  <button matButton="filled" color="primary" [disabled]="((importType === SHP || importType === KML || importType === GEOJSON) && !currentFile) || isRunning || (importType === WKT && wktContent === '')"
+    (click)="import()">{{ 'Import' | translate}}</button>
   @if (isRunning) {
     <mat-progress-spinner [color]="'accent'" [diameter]="40" [mode]="'indeterminate'"></mat-progress-spinner>
   }

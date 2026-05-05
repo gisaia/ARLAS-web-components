@@ -20,7 +20,7 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { Component, ElementRef, inject, Inject, Input, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -50,7 +50,8 @@ const gpsi = gpsi_.default;
   styleUrls: ['./map-import-dialog.component.scss'],
   imports: [
     MatDialogTitle, CdkScrollable, MatDialogContent, MatRadioGroup, FormsModule, MatRadioButton,
-    MatCheckbox, MatDialogActions, MatButton, MatProgressSpinner, TranslatePipe]
+    MatCheckbox, MatButtonModule, MatProgressSpinner, TranslatePipe, MatDialogActions
+  ]
 })
 export class MapImportDialogComponent {
   public displayError = false;
