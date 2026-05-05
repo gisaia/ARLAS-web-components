@@ -197,13 +197,20 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   public setTerrain(source: RasterDemSource, map: ArlasMapboxGL, exaggeration=1) {
     this.setSource(HILLSHADE_SOURCE, source, map);
 
+    const firstArlasLayer = map.getMapProvider().getStyle().layers.map(l => l.id)
+      .find(l => l.startsWith('arlas_id') || l.startsWith('arlas-') || l.startsWith('scrollable_arlas_id'));
+
     this.addLayer(map, {
       id: HILLSHADE_SOURCE,
       type: 'hillshade',
       source: HILLSHADE_SOURCE
-    });
+    }, firstArlasLayer);
 
     return [HILLSHADE_SOURCE];
+  }
+
+  public removeTerrain(map: ArlasMapboxGL) {
+    /** There is no terrain in mapbox, so do nothing */
   }
 
   /**
