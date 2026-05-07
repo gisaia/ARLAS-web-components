@@ -26,11 +26,11 @@
 </div>
 
 <div mat-dialog-actions class="mapgl-settings__actions">
-  <button mat-stroked-button class="mapgl-settings__actions--apply"
+  <button matButton="outlined" class="mapgl-settings__actions--apply"
     (click)="emitGeoFilter()">{{ 'Apply geo-queries' | translate }}</button>
   <button matButton="filled" color="primary" class="mapgl-settings__actions--apply"
     (click)="emitGeoFilter();onClose()">{{ 'Set geo-queries' | translate }}</button>
-  <button mat-stroked-button class="mapgl-settings__actions--cancel"
+  <button matButton="outlined" class="mapgl-settings__actions--cancel"
     (click)="onClose()">{{ 'Cancel' | translate}}</button>
 </div>
 

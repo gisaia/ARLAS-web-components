@@ -81,8 +81,8 @@
 </mat-dialog-content>
 
 <div mat-dialog-actions>
-  <button mat-stroked-button class="wmts-layer-manager-preview-button" [disabled]="style == undefined || layer == undefined"
+  <button matButton="outlined" class="wmts-layer-manager-preview-button" [disabled]="style == undefined || layer == undefined"
     (click)="clickOnPreview()">{{ 'Preview' | translate }}</button>
-  <button mat-stroked-button class="wmts-layer-manager-view-button" [disabled]="style == undefined || layer == undefined"
+  <button matButton="outlined" class="wmts-layer-manager-view-button" [disabled]="style == undefined || layer == undefined"
     [mat-dialog-close]="formGroup.value" cdkFocusInitial>{{ 'View' | translate }}</button>
 </div>

@@ -42,12 +42,12 @@
   @for (action of actions; track action) {
     @if (action?.show === true) {
       @if (action?.activated) {
-        <button mat-stroked-button (click)="triggerAction($event, action)"
+        <button matButton="outlined" (click)="triggerAction($event, action)"
           class="resultdetaileditem__actions text-action {{action.id}}-action {{action.cssClass}}-action" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
           {{action | actionDisplayer:'label' | translate}}
         </button>
       } @else {
-        <button mat-stroked-button class="text-action {{action.id}}-action {{action.cssClass}}-action"
+        <button matButton="outlined" class="text-action {{action.id}}-action {{action.cssClass}}-action"
           (click)="triggerAction($event, action)" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
           {{action | actionDisplayer:'label' | translate}}
         </button>

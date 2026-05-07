@@ -1,14 +1,14 @@
 @if (drawEnabled) {
   <div class="polygon-tools">
-    <button mat-raised-button (click)="stopUpdate()">{{ updateBbox ? 'Freeze layers' : 'Unfreeze layers' }}</button>
-    <button mat-raised-button (click)="switchToDrawMode('draw_strip',{halfSwath:7,maxLength:100})">STRIP</button>
-    <button mat-raised-button (click)="switchToDrawMode('draw_rectangle')">BBOX</button>
-    <button mat-raised-button (click)="switchToDrawMode('draw_radius_circle',{isFixedRadius:true,initialRadiusInKm:1000})">CIRCLE</button>
-    <button mat-raised-button (click)="switchToDrawMode()">DRAW</button>
-    <button mat-raised-button (click)="delete()">DELETE</button>
-    <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
-    <button mat-raised-button class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
-    <button mat-raised-button class="polygon-button" (click)="openBboxGenerator()">BBOX from form</button>
+    <button matButton="elevated" (click)="stopUpdate()">{{ updateBbox ? 'Freeze layers' : 'Unfreeze layers' }}</button>
+    <button matButton="elevated" (click)="switchToDrawMode('draw_strip',{halfSwath:7,maxLength:100})">STRIP</button>
+    <button matButton="elevated" (click)="switchToDrawMode('draw_rectangle')">BBOX</button>
+    <button matButton="elevated" (click)="switchToDrawMode('draw_radius_circle',{isFixedRadius:true,initialRadiusInKm:1000})">CIRCLE</button>
+    <button matButton="elevated" (click)="switchToDrawMode()">DRAW</button>
+    <button matButton="elevated" (click)="delete()">DELETE</button>
+    <button matButton="elevated" class="polygon-button" [disabled]="actionDisabled" (click)="getWKT()">WKT</button>
+    <button matButton="elevated" class="polygon-button" [disabled]="actionDisabled" (click)="getGeojson()">Geojson</button>
+    <button matButton="elevated" class="polygon-button" (click)="openBboxGenerator()">BBOX from form</button>
     <mat-radio-group [(ngModel)]="modeChoice" class="polygon-radio-group">
       <mat-radio-button class="polygon-radio" value="all">All</mat-radio-button>
       <mat-radio-button class="polygon-radio" value="selected">Selected</mat-radio-button>
