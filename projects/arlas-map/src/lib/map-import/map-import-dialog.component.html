@@ -12,7 +12,7 @@
     <textarea class="mapgl-import-text-area" [(ngModel)]="wktContent" placeholder="{{'Paste your WKT' | translate}}" (change)="onTextChange()"></textarea>
   } @else {
     <div class="mapgl-import-upload">
-      <button matButton="outlined" class="mapgl-import-upload__button" (click)="fileInput.click()">{{ 'Choose file' | translate }}</button>
+      <button matButton="outlined" color="primary" class="mapgl-import-upload__button" (click)="fileInput.click()">{{ 'Choose file' | translate }}</button>
       <span class="mapgl-import-upload__file">
         @if (currentFile) {
           {{ currentFile.name }}
