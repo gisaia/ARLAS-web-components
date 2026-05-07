@@ -38,23 +38,20 @@ body {
   box-sizing: border-box;
 }
 
-.constructors .powerbar__powerbar--progression--neutral-state, .constructors .powerbar__powerbar--progression--selected-bar {
-}
-
 .one_dimension .histogram__axis {
   stroke: white;
 }
 
 @font-face {
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Outlined';
   font-style: normal;
   font-weight: 400;
   font-display: auto;
-  src: local('Material Icons'), local('MaterialIcons-Regular'), url('../projects/arlas-components/assets/font/material-icons.woff2') format('woff2');
+  src: url('./assets/fonts/Material-Symbols-Outlined.woff2') format('woff2');
 }
 
 .material-icons {
-  font-family: 'Material Icons';
+  font-family: 'Material Symbols Outlined';
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
