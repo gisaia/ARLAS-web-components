@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -69,6 +69,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
 
   /** Destroy subscriptions. */
   private readonly _onDestroy$ = new Subject<boolean>();
+  private readonly cdr = inject(ChangeDetectorRef);
 
   public actions: Action[];
 
@@ -213,6 +214,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
         }
       });
       this.updateActions();
+      this.cdr.detectChanges();
     });
   }
 

@@ -200,15 +200,22 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     // Another source has to defined for better performances
     this.setSource(TERRAIN_SOURCE, source, map);
 
+    const firstArlasLayer = map.getMapProvider().getLayersOrder()
+      .find(l => l.startsWith('arlas_id') || l.startsWith('arlas-') || l.startsWith('scrollable_arlas_id'));
+
     this.addLayer(map, {
       id: HILLSHADE_SOURCE,
       type: 'hillshade',
       source: HILLSHADE_SOURCE
-    });
+    }, firstArlasLayer);
 
     map.getMapProvider().setTerrain({ source: TERRAIN_SOURCE, exaggeration });
 
     return [HILLSHADE_SOURCE, TERRAIN_SOURCE];
+  }
+
+  public removeTerrain(map: ArlasMaplibreGL) {
+    map.getMapProvider().setTerrain(null);
   }
 
   public getAllSources(map: ArlasMaplibreGL) {

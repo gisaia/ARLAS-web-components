@@ -739,6 +739,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
         this.terrainSources = this.mapFrameworkService.setTerrain(
           this.terrain().source, this.map, this.terrain().exaggeration);
       } else {
+        this.mapFrameworkService.removeTerrain(this.map);
         for (const source of this.terrainSources) {
           this.mapFrameworkService.removeLayer(this.map, source);
           this.mapFrameworkService.removeSource(this.map, source);

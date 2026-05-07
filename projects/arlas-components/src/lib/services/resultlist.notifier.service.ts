@@ -30,7 +30,7 @@ export class ResultlistNotifierService {
 
   private readonly refreshActionsSource = new Subject<string>();
   /** Emits an event every time the actions of the items are to be refreshed.
-   * Emits the id of the item taht triggered the event.  */
+   * Emits the id of the item that triggered the event.  */
   public refreshActions$ = this.refreshActionsSource.asObservable();
 
   public notifyItemHover(id: string) {
