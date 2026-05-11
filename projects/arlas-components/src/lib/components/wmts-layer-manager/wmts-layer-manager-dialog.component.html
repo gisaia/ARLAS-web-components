@@ -7,8 +7,8 @@
           <h3 mat-subheader>{{'Informations' | translate}}</h3>
           @for (item of metadata | keyvalue; track item) {
             <mat-list-item class="wmts-layer-manager-metadata-list">
-              <h4 mat-line class="wmts-layer-manager-metadata-title">{{item.key}}</h4>
-              <p mat-line class="wmts-layer-manager-metadata-value"> {{item?.value}} </p>
+              <div mat-line class="wmts-layer-manager-metadata-title">{{item.key}}</div>
+              <div mat-line class="wmts-layer-manager-metadata-value"> {{item?.value}} </div>
             </mat-list-item>
           }
         </mat-list>
@@ -81,8 +81,8 @@
 </mat-dialog-content>
 
 <div mat-dialog-actions>
-  <button mat-raised-button class="wmts-layer-manager-preview-button" [disabled]="style == undefined || layer == undefined"
+  <button matButton="outlined" class="wmts-layer-manager-preview-button" [disabled]="style === undefined || layer === undefined"
     (click)="clickOnPreview()">{{ 'Preview' | translate }}</button>
-  <button mat-raised-button class="wmts-layer-manager-view-button" [disabled]="style == undefined || layer == undefined"
+  <button matButton="outlined" class="wmts-layer-manager-view-button" [disabled]="style === undefined || layer === undefined"
     [mat-dialog-close]="formGroup.value" cdkFocusInitial>{{ 'View' | translate }}</button>
 </div>

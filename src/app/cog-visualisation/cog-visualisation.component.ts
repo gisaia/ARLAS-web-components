@@ -19,7 +19,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { CogLegendComponent, CogModalComponent, CogPreviewComponent } from 'arlas-web-components';
+import { CogLegendComponent, CogModalComponent, CogPreviewComponent, CogVisualisationData } from 'arlas-web-components';
 
 @Component({
   selector: 'arlas-cog-visualisation',
@@ -57,16 +57,17 @@ export class CogVisualisationComponent {
           match: 'none',
           preview: './assets/no-view.png'
         }
-      ],
+      ] as CogVisualisationData[],
       loading: true
     };
 
-    this.dialog.open(CogModalComponent, {
+    const dialogRef = this.dialog.open(CogModalComponent, {
       data : data,
       width: '600px',
-      maxHeight:'50vh'
+      maxHeight:'50vh',
+      autoFocus: false
     });
 
-    setTimeout(() => data.loading = false, 5000);
+    setTimeout(() => dialogRef.componentInstance.update(data.visualisations, false), 1000);
   }
 }

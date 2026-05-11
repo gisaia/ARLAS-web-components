@@ -31,7 +31,8 @@
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
               "node_modules/maplibre-gl/dist/maplibre-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
-              "node_modules/iv-viewer/dist/iv-viewer.css"
+              "node_modules/iv-viewer/dist/iv-viewer.css",
+              "projects/arlas-components/assets/styles.css"
             ],
             "browser": "src/main.ts"
           },

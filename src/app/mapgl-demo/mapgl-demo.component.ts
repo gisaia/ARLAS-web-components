@@ -21,8 +21,10 @@
 import { Component, inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
+import { BboxGeneratorComponent } from 'arlas-map';
 import { LngLatBounds } from 'maplibre-gl';
 import { Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from '../../../projects/arlas-map/src/lib/arlas-map-framework.service';
@@ -83,6 +85,8 @@ export class MapglDemoComponent<L, S, M> {
   } as any;
 
   private readonly mapFrameworkService = inject(ArlasMapFrameworkService);
+  private readonly dialog = inject(MatDialog);
+
   public constructor() {
     this.mapFrameworkService.errorBus$.subscribe(e => console.log(e));
   }
@@ -196,6 +200,10 @@ export class MapglDemoComponent<L, S, M> {
 
     const pwithinrawSource = this.mapFramework.getSource('pwithinraw', this.mapComponent.map);
     this.mapFramework.setDataToGeojsonSource(pwithinrawSource, this.boundsToFeatureCollection(event.rawExtendWithOffset));
+  }
+
+  public openBboxGenerator() {
+    this.dialog.open(BboxGeneratorComponent, { data: { initCorner: { lat: 0, lng: 0 }} });
   }
 
   private addLayer(name: string, color: string, dashes?: boolean) {
