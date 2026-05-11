@@ -201,16 +201,15 @@
         [hideSingleSelectionIndicator]="true">
         <mat-button-toggle matTooltip="{{WIDTH_FIT | translate}}" value="{{ThumbnailFitEnum.width}}"
           [checked]="thumbnailFit==ThumbnailFitEnum.width">
-          <mat-icon style="transform: rotate(-90deg)" class="fit-icon">expand</mat-icon>
+          <mat-icon style="transform: rotate(-90deg)" class="fit-icon">arrows_outward</mat-icon>
         </mat-button-toggle>
         <mat-button-toggle matTooltip="{{CONTAIN_FIT | translate}}" value="{{ThumbnailFitEnum.contain}}"
           [checked]="thumbnailFit==ThumbnailFitEnum.contain" class="contain-icon-wrapper">
-          <mat-icon class="contain-icon fit-icon">expand</mat-icon>
-          <mat-icon class="fit-icon">expand</mat-icon>
+          <mat-icon class="contain-icon fit-icon">open_with</mat-icon>
         </mat-button-toggle>
         <mat-button-toggle matTooltip="{{HEIGHT_FIT | translate}}" value="{{ThumbnailFitEnum.height}}"
           [checked]="thumbnailFit==ThumbnailFitEnum.height">
-          <mat-icon class="fit-icon">expand</mat-icon>
+          <mat-icon class="fit-icon">arrows_outward</mat-icon>
         </mat-button-toggle>
       </mat-button-toggle-group>
     </div>
