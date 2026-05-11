@@ -22,7 +22,7 @@
     "lint-maplibre": "ng lint arlas-maplibre",
     "lint": "npm run lint-components && npm run lint-map && npm run lint-mapbox && npm run lint-maplibre",
     "build-components": "ng build arlas-web-components --configuration production",
-    "build-map": "ng build arlas-map --configuration production",
+    "build-map": "ng build arlas-map --configuration production && cp -r patches dist/arlas-map",
     "build-mapbox": "ng build arlas-mapbox --configuration production",
     "build-maplibre": "ng build arlas-maplibre --configuration production",
     "e2e": "ng e2e",
@@ -85,8 +85,5 @@
     "typescript": "~5.9.3",
     "vitest": "^4.1.2",
     "webpack-bundle-analyzer": "^4.6.1"
-  },
-  "overrides": {
-    "vite": "^7.3.2"
   }
 }

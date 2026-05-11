@@ -219,7 +219,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
         if (!!strokeLayer) {
           map.setFilter(strokeLayerId,
-            this.layersMap.get(strokeLayerId).filter as ExpressionSpecification);
+            this.layersMap.get(strokeLayerId)?.filter as ExpressionSpecification);
         }
       }
     }

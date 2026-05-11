@@ -201,7 +201,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
         for (const id of layersIds) {
           const additionalLayer = this.mapService.getLayer(map, id);
           if (additionalLayer) {
-            map.setFilter(id, this.layersMap.get(additionalLayer).filter);
+            map.setFilter(id, this.layersMap.get(additionalLayer)?.filter);
           }
         }
       }
