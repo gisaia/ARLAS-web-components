@@ -51,7 +51,7 @@ body {
 }
 
 .material-icons {
-  font-family: 'Material Symbols Outlined';
+  font-family: 'Material Symbols Outlined', "Roboto", "Helvetica Neue", sans-serif;
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
