@@ -19,8 +19,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import {
-  ChangeDetectorRef, Component,
-  ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+    ChangeDetectorRef, Component,
+    ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -33,7 +33,7 @@ import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Action, ElementIdentifier, PROTECTED_IMAGE_HEADER } from '../utils/results.utils';
+import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
 
 @Component({
     selector: 'arlas-result-detailed-grid',
@@ -183,7 +183,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { headers: { [PROTECTED_IMAGE_HEADER]: 'true' }, responseType: 'blob' })
+      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
