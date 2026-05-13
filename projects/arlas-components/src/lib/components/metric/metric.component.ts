@@ -20,8 +20,9 @@
 import { NgClass } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { HistogramUtils } from 'arlas-d3';
 import { FormatNumberPipe } from '../../pipes/format-number/format-number.pipe';
-import { NUMBER_FORMAT_CHAR, numberToShortValue } from '../componentsUtils';
+import { NUMBER_FORMAT_CHAR } from '../componentsUtils';
 import * as metricJsonSchema from './metric.schema.json';
 
 
@@ -104,7 +105,7 @@ export class MetricComponent implements OnInit, OnChanges {
    */
   private setDisplayedValue(): void {
     if (this.shortValue) {
-      this.displayedValue = numberToShortValue(this.value, this.valuePrecision);
+      this.displayedValue = HistogramUtils.numberToShortValue(this.value, this.valuePrecision);
     } else {
       this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
     }
