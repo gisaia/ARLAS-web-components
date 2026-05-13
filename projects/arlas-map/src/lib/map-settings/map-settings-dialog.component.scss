@@ -54,12 +54,6 @@
 }
 
 .mapgl-settings__actions {
-  &--apply {
-    --mat-text-button-label-text-color: #ff4081;
-    font-weight: bolder;
-    outline: none;
-  }
-
   &--cancel {
     color: #000;
     margin: 2px;
