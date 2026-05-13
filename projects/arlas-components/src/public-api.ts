@@ -52,11 +52,11 @@ export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';
 export { SortEnum } from './lib/components/results/utils/enumerations/sortEnum';
 export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/thumbnailFitEnum';
 export {
-  Action, ActionHandler, AdditionalInfo, Attachment, DescribedUrl, ElementIdentifier, Field,
-  FieldsConfiguration, ItemDataType, matchAndReplace, PageQuery, PROTECTED_IMAGE_HEADER, ResultListOptions
+    Action, ActionHandler, AdditionalInfo, Attachment, DescribedUrl, ElementIdentifier, Field,
+    FieldsConfiguration, ItemDataType, PROTECTED_REQUEST_HEADER, PageQuery, ResultListOptions, matchAndReplace
 } from './lib/components/results/utils/results.utils';
 export {
-  Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent
+    Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent
 } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
 export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';

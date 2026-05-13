@@ -162,7 +162,7 @@ export interface AdditionalInfo {
 
 export type ItemDataType = string | number | Date | Array<string>;
 
-export const PROTECTED_IMAGE_HEADER = 'Protected-Image-Header';
+export const PROTECTED_REQUEST_HEADER = 'Protected-Request-Header';
 
 /**
  * @param data A dictionnary of data to retrieve information

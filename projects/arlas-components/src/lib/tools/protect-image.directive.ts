@@ -20,7 +20,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Directive, effect, ElementRef, inject, input, Renderer2 } from '@angular/core';
 import { map } from 'rxjs';
-import { PROTECTED_IMAGE_HEADER } from '../components/results/utils/results.utils';
+import { PROTECTED_REQUEST_HEADER } from '../components/results/utils/results.utils';
 
 /**
  * Directive to fetch an image while adding authorisation headers
@@ -40,7 +40,7 @@ export class ProtectImageDirective {
 
   public constructor() {
     effect(() => {
-      this.http.get(this.arlasProtectImage(), { headers: { [PROTECTED_IMAGE_HEADER]: 'true' }, responseType: 'blob' })
+      this.http.get(this.arlasProtectImage(), { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
         .pipe(map(blob => URL.createObjectURL(blob)))
         .subscribe(r => {
           this.renderer.setAttribute(this.imgElement, 'src', r);
