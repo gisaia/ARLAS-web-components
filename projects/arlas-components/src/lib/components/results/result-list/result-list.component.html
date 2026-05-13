@@ -134,7 +134,8 @@
               [activatedActionsPerItem]="activatedActionsPerItem" [detailHeight]="detailedGridHeight"
               [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen"
               (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
-              [useHttp]="fieldsConfiguration.useHttpQuicklooks" (closeDetail)="closeDetail($event)">
+              [useHttp]="fieldsConfiguration.useHttpQuicklooks" (closeDetail)="closeDetail($event)"
+              [detailedDataRetriever]="detailedDataRetriever">
             </arlas-result-detailed-grid>
           </td>
         </tr>
