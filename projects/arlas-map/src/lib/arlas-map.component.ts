@@ -75,8 +75,8 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** Map instance. */
   public map: AbstractArlasMapGL;
-  /** Whether the legend is visible (open) or not.*/
-  public legendOpen = true;
+  /** Whether the legend is visible (open) */
+  public legendOpen = false;
   /** Used to clear geojson sources. */
   public emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
