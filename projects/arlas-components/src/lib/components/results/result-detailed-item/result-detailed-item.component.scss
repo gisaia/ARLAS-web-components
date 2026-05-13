@@ -37,55 +37,47 @@
 
 .resultdetaileditem /* @doc Sets all texts style.*/ {
   font-family: Roboto, Helvetica Neue, sans-serif;
-  font-size: 0.7em;
   text-align: left;
   padding: 0 5px;
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
 
   &--group {
-    padding-bottom: 10px;
-
     &-title {
-      font-weight: bold;
-      font-size: 12px;
+      font-size: 16px;
       border-bottom: 1px solid #f0eeeecf;
       display: block;
     }
   }
 
   &--item {
-    display: block;
     color: black;
-    padding: 3px;
-    border-bottom: 1px solid #f0eeeecf;
+    padding: 2px;
+    border-bottom: 1px solid #f0eeee7e;
+    display: flex;
+    gap: 10px;
 
     &--key /* @doc Sets key style. (key: value part)*/ {
-      font-size: 11px;
-      font-weight: 500;
-      width: 120px;
-      display: inline-block;
-      white-space: pre-wrap;
+      font-size: 12px;
+      text-align: end;
+      color: gray;
+      flex: 2;
     }
 
     &--value /* @doc Sets value style (key: value part)*/ {
-      margin-right: 10px;
-      font-weight: 500;
-      font-size: 11px;
+      font-size: 12px;
       overflow-wrap: anywhere;
+      flex: 5;
     }
   }
 
-  .resultdetaileditem__actions /* @doc Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/ {
-    font-family: "Roboto", "Helvetica Neue", sans-serif;
-    font-size: 0.9em;
-    margin: 3px;
-    padding: 5px 10px;
-    height: 25px;
-    line-height: 0;
-    cursor: pointer;
-    color: black;
-    background-color: white;
-    border: 1.5px solid black;
-    border-radius: 2px;
+  &__actions /* @doc Sets actions chips style. Moreover, if you want to style a specific action chip, you can use '{{action.id}}-action' css class.*/ {
+    &--sticky {
+      position: sticky;
+      bottom: 0;
+      background-color: white;
+    }
   }
 }
 

@@ -18,7 +18,7 @@
  */
 
 import { LowerCasePipe } from '@angular/common';
-import { Component, Input, Output } from '@angular/core';
+import { Component, input, Input, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -83,6 +83,11 @@ export class ResultDetailedItemComponent {
    * @description List of active actions per item.
   */
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+
+  /**
+   * Whether to make the actions 'sticky' and to always show them in the details
+   */
+  public alwaysShowActions = input<boolean>(false);
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 

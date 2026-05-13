@@ -20,13 +20,15 @@
         </div>
       }
     }
-    <arlas-result-actions
+
+    <arlas-result-actions class="resultdetaileditem__actions" [class.resultdetaileditem__actions--sticky]="alwaysShowActions()"
       [activatedActionsPerItem]="activatedActionsPerItem"
       [detailedDataRetriever]="detailedDataRetriever"
       [item]="rowItem"
       [mode]="'text'"
-    (actionOnItemEvent)="triggerActionOnItem($event)" ></arlas-result-actions>
-    @if (rowItem?.attachments && rowItem?.attachments.length > 0) {
+      (actionOnItemEvent)="triggerActionOnItem($event)"></arlas-result-actions>
+
+    @if (rowItem?.attachments && rowItem.attachments.length > 0) {
       <span class="result-attachments">
         <div class="result-attachments--title">{{'Attachments' | translate}}</div>
         @for (att of rowItem?.attachments; track att; let i = $index) {
