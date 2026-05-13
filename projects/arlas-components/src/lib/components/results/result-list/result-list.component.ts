@@ -149,7 +149,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @constant
    */
-  public TAIL_HEIGHT = 30;
+  public TAIL_HEIGHT = 35;
 
   public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0 };
 
