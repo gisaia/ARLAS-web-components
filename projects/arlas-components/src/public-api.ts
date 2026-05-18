@@ -26,7 +26,7 @@ export { CogLegendComponent } from './lib/components/cog/cog-legend/cog-legend.c
 export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
 export { CogVisualisationConfig, DataGroup, VisualisationInterface } from './lib/components/cog/model';
-export { AwcColorGeneratorLoader, ColorGeneratorLoader, numberToShortValue } from './lib/components/componentsUtils';
+export { AwcColorGeneratorLoader, ColorGeneratorLoader } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { MetricComponent } from './lib/components/metric/metric.component';

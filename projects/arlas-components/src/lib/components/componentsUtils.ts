@@ -40,29 +40,6 @@ export function formatNumber(x, formatChar = ' '): string {
 }
 export const NUMBER_FORMAT_CHAR = 'NUMBER_FORMAT_CHAR';
 
-export function numberToShortValue(number: number, p?: number): string {
-  if (Math.abs(number) < 1000) {
-    if (Math.round(number) === number) {
-      return number.toFixed(0);
-    }
-    return number.toFixed(p);
-  }
-
-  // what tier? (determines SI symbol)
-  const suffixes = ['', 'k', 'M', 'b', 't'];
-  const suffixNum = Math.log10(Math.abs(number)) / 3 | 0;
-
-  if (suffixNum === 0) {
-    return number.toString();
-  }
-  // get suffix and determine scale
-  const suffix = suffixes[suffixNum];
-  const scale = Math.pow(10, suffixNum * 3);
-  // scale the number
-  const scaled = number / scale;
-  // format number and add suffix
-  return scaled.toFixed(p) + ' ' + suffix;
-}
 export const DEFAULT_SHORTENING_PRECISION = 2;
 
 export function getKeys(map): Array<string> {

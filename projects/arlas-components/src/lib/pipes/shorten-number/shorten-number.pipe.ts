@@ -18,7 +18,8 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { DEFAULT_SHORTENING_PRECISION, numberToShortValue } from '../../components/componentsUtils';
+import { HistogramUtils } from 'arlas-d3';
+import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
 
 @Pipe({
   name: 'shortenNumber'
@@ -30,7 +31,7 @@ export class ShortenNumberPipe implements PipeTransform {
       if (Number.isNaN(+number)) {
         return number;
       }
-      return numberToShortValue(+number, precision);
+      return HistogramUtils.numberToShortValue(+number, precision);
     }
     return undefined;
   }

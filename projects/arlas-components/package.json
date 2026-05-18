@@ -27,7 +27,7 @@
     "zone.js": "^0.15.0"
   },
   "dependencies": {
-    "arlas-d3": "28.0.0-rc.3",
+    "arlas-d3": "28.0.0-rc.4",
     "iv-viewer": "^2.2.1",
     "ng-lazyload-image": "^9.1.3",
     "numeral": "^2.0.6",
