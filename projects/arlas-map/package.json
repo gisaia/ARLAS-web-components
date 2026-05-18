@@ -1,6 +1,6 @@
 {
   "name": "arlas-map",
-  "version": "28.0.0-rc.4",
+  "version": "28.0.0-rc.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/gisaia/ARLAS-web-components.git"
@@ -40,6 +40,7 @@
     "@turf/rhumb-destination": "^7.3.0",
     "@turf/transform-rotate": "^7.3.0",
     "@turf/transform-translate": "^7.3.0",
+    "arlas-web-components": "28.0.0-rc.5",
     "betterknown": "^1.2.0",
     "geojson-polygon-self-intersections": "1.2.1",
     "geojson-validation": "0.2.1",
