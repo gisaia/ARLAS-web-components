@@ -34,11 +34,11 @@ export class Item {
   /**
    * @description List of urls pointing to the item's images.
    */
-  public urlImages: Array<string>;
+  public urlImages = new Array<string>();
   /**
    * @description List of descriptions of the images.
    */
-  public descriptions: Array<string>;
+  public descriptions = new Array<string>();
   /**
    * @description If image is enabled (to avoid 404 not found)
    */
@@ -62,11 +62,11 @@ export class Item {
   /**
    * @description The item's data is organized in this columns when represented in a table.
    */
-  public columns: Array<Column>;
+  public columns = new Array<Column>();
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
-  public itemData: Map<string, ItemDataType>;
+  public itemData = new Map<string, ItemDataType>();
 
   /**
    * @description More data organized in groups.
@@ -75,11 +75,11 @@ export class Item {
   /**
      * @description Links attached to the item.
      */
-  public attachments: Array<Attachment>;
+  public attachments = new Array<Attachment>();
   /**
    * @description List of actions that can be applied to this item.
    */
-  public actions: Array<Action>;
+  public actions = new Array<Action>();
   /**
    * @description Whether to display the detailed data.
    */

@@ -68,6 +68,8 @@
   z-index: 1000;
   background-color: white;
   opacity: 0.7;
+  display: flex;
+  justify-content: center;
 }
 
 .resultlist__top_loading /* @doc Sets the top-loading-div style*/

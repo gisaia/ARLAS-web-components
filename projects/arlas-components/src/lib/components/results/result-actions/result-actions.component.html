@@ -1,6 +1,6 @@
 <!-- This sections is for actions that we display as icon buttons -->
 @if (mode === 'icon') {
-  <div [style.max-width.px]="width" class="list_actions">
+  <div [style.max-width.px]="width" class="list_actions list_actions--icon">
     @for (action of actions; track action) {
       @if (action.show === true) {
         <!-- The action is activated, which means it will always be displayed.-->
@@ -39,19 +39,21 @@
   </div>
 } @else {
   <!-- This sections is for actions that we display as text buttons instead of icon buttons-->
-  @for (action of actions; track action) {
-    @if (action?.show === true) {
-      @if (action?.activated) {
-        <button matButton="outlined" (click)="triggerAction($event, action)"
-          class="resultdetaileditem__actions text-action {{action.id}}-action {{action.cssClass}}-action" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
-          {{action | actionDisplayer:'label' | translate}}
-        </button>
-      } @else {
-        <button matButton="outlined" class="text-action {{action.id}}-action {{action.cssClass}}-action"
-          (click)="triggerAction($event, action)" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
-          {{action | actionDisplayer:'label' | translate}}
-        </button>
+  <div class="list_actions list_actions--button">
+    @for (action of actions; track action) {
+      @if (action?.show === true) {
+        @if (action?.activated) {
+          <button matButton="outlined" (click)="triggerAction($event, action)"
+            class="resultdetaileditem__actions text-action {{action.id}}-action {{action.cssClass}}-action" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
+            {{action | actionDisplayer:'label' | translate}}
+          </button>
+        } @else {
+          <button matButton="outlined" class="text-action {{action.id}}-action {{action.cssClass}}-action"
+            (click)="triggerAction($event, action)" matTooltip="{{action | actionDisplayer:'tooltip' |translate}}">
+            {{action | actionDisplayer:'label' | translate}}
+          </button>
+        }
       }
     }
-  }
+  </div>
 }
