@@ -288,7 +288,8 @@
 
   &_value {
     white-space: nowrap;
-    transform: translate(-50%, 0);
+    display: flex;
+    justify-content: center;
   }
 }
 
