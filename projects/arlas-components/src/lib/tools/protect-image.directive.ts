@@ -19,7 +19,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Directive, effect, ElementRef, inject, input, Renderer2 } from '@angular/core';
-import { map } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { PROTECTED_REQUEST_HEADER } from '../components/results/utils/results.utils';
 
 /**
@@ -41,7 +41,10 @@ export class ProtectImageDirective {
   public constructor() {
     effect(() => {
       this.http.get(this.arlasProtectImage(), { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
-        .pipe(map(blob => URL.createObjectURL(blob)))
+        .pipe(
+          map(blob => URL.createObjectURL(blob)),
+          catchError(() => of('assets/no-view.png'))
+        )
         .subscribe(r => {
           this.renderer.setAttribute(this.imgElement, 'src', r);
         });

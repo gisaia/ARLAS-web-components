@@ -111,11 +111,14 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
     }
     this.actionOnItemEvent.next(action);
     /** activate */
-    if (ActionHandler.isReversible(action) && !action.activated) {
-      ActionHandler.activate(action);
-    } else if (ActionHandler.isReversible(action) && action.activated) {
-      ActionHandler.reverse(action);
+    if (ActionHandler.isReversible(action)) {
+      if (action.activated) {
+        ActionHandler.reverse(action);
+      } else {
+        ActionHandler.activate(action);
+      }
     }
+
     /** Retrigger the pipe ActionDisplayerPipe */
     this.actions = [...this.actions];
   }
@@ -193,7 +196,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
           take(1)).subscribe(v => {
             if (a.filters.length === v.matched.length) {
               a.matched = v.matched;
-              a.show = v.matched.filter(v => v).length > 0;
+              a.show = v.matched.some(v => !!v);
             } else {
               a.show = false;
             }
