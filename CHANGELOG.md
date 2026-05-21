@@ -1,12 +1,15 @@
 # Change Log
 
-## [v27.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.5) (2026-04-15)
-
-## [v27.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.4) (2026-03-27)
+## [v28.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v28.0.0) (2026-05-21)
 
 **Miscellaneous:**
 
+- Upgrade to latest versions of turf [\#1045](https://github.com/gisaia/ARLAS-web-components/issues/1045)
 - Migrate to Angular 20 [\#1028](https://github.com/gisaia/ARLAS-web-components/issues/1028)
+
+## [v27.1.5](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.5) (2026-04-15)
+
+## [v27.1.4](https://github.com/gisaia/ARLAS-web-components/tree/v27.1.4) (2026-03-27)
 
 ## [v27.0.18](https://github.com/gisaia/ARLAS-web-components/tree/v27.0.18) (2025-12-09)
 
