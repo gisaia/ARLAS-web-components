@@ -19,7 +19,7 @@
 
 .histogram__export {
   position: absolute !important;
-  right: -24px;
+  right: -14px;
   top: 0;
 
   width: 24px !important;
@@ -27,7 +27,8 @@
   padding: 0 !important;
   color: dimgrey;
 
-  ::ng-deep .mat-mdc-button-touch-target {
+  ::ng-deep .mat-mdc-button-touch-target,
+  .mat-mdc-button-touch-target {
     height: 24px;
     width: 24px;
   }
@@ -38,11 +39,6 @@
   width: 100%;
   height: 100%;
   position: relative;
-
-  // Leave space for the download button
-  &--short {
-    width: calc(100% - 24px - 5px);
-  }
 
   &__remove {
     position: absolute !important;
