@@ -1,10 +1,10 @@
-<div id="{{id}}" class="histogram" [ngClass]="customizedCssClass" [class.histogram--short]="displayExportButton()">
-  @if (displayExportButton()) {
-    <button mat-icon-button class="histogram__export" [matTooltip]="'Export' | translate" (click)="exportEvent.emit()">
-      <mat-icon>get_app</mat-icon>
-    </button>
-  }
+@if (displayExportButton()) {
+  <button mat-icon-button class="histogram__export" [matTooltip]="'Export' | translate" (click)="exportEvent.emit()">
+    <mat-icon>get_app</mat-icon>
+  </button>
+}
 
+<div id="{{id}}" class="histogram" [ngClass]="customizedCssClass">
   @if (descriptionPosition === Position.top) {
     <ng-container *ngTemplateOutlet="legend"></ng-container>
   }
