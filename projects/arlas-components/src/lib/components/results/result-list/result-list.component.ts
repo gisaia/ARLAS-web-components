@@ -20,7 +20,8 @@
 import { AsyncPipe } from '@angular/common';
 import {
   AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
-  IterableDiffers, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
+  IterableDiffers, OnChanges, OnInit, Output,
+  SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -52,6 +53,7 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
+import { ResizableColumnDirective, ResizableDirective } from '../utils/resizable-column.directive';
 import {
   Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   matchAndReplace, PageQuery, ResultListOptions
@@ -80,7 +82,8 @@ export interface SortedColumn {
     ResultFilterComponent, MatTooltip, MatCheckbox, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem,
     MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup, MatButtonModule,
     MatButtonToggle, ResultDetailedGridComponent, MatProgressSpinner, ResultScrollDirective, MatGridList,
-    ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe]
+    ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe,
+    ResizableColumnDirective, ResizableDirective]
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 

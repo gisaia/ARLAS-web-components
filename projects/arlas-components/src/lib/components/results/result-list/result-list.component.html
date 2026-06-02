@@ -1,4 +1,4 @@
-<table [style.width.px]="tableWidth" class="resultlist">
+<table [style.width.px]="tableWidth" class="resultlist" [arlasResizableColumn]="true" [columns]="columns">
   @if (displayThead) {
     <thead>
       @if (displayFilters) {
@@ -105,20 +105,15 @@
       @if (resultMode !== ModeEnum.grid) {
         <tr class="resultlist__header resultlist__thead__tr">
           @for (column of columns; track column) {
-            @if (column.isIdField) {
+            @if (column.isIdField || column.isToggleField) {
               <th [style.max-width.px]="column.width" [style.min-width.px]="column.width"
-                  scope="col" class="resultlist__header--columns">
+                  scope="col" class="resultlist__header--columns" [arlasResizable]="column.columnName" [allowResize]="false">
                 <span class="resultlist__header--columns--hidden"></span>
-              </th>
-            } @else if (column.isToggleField) {
-              <th class="resultlist__header--columns" [style.max-width.px]="column.width"
-                  scope="col" [style.min-width.px]="column.width">
-                <span class="resultlist__header--columns--hidden">
-                </span>
               </th>
             } @else {
               <th [style.max-width.px]="column.width" [style.min-width.px]="column.width" class="resultlist__header--columns"
-                  scope="col" [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')">
+                  scope="col" [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')"
+                  [arlasResizable]="column.columnName">
                 <span>
                   {{column.columnName | translate}}{{column.dataType ? ' (' + column.dataType + ')': ''}}
                 </span>
