@@ -178,22 +178,6 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  /**
-   * @deprecated TO REMOVE in v29
-   */
-  public highlightFeature(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
-    featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    if (featureToHightLight?.elementidentifier) {
-      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
-      if (!Number.isNaN(+featureToHightLight.elementidentifier.idValue)) {
-        ids.push(+featureToHightLight.elementidentifier.idValue);
-      }
-      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
-        ['literal', ids]];
-      this.filterLayers(mapLayers, map, !featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
-    }
-  }
-
   public selectFeaturesByCollection(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
     features: Array<ElementIdentifier>, collection: string) {
     const ids: Array<number | string> = features.map(f => f.idValue);

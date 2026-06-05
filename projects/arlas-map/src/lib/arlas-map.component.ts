@@ -162,9 +162,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   @Input() public transformRequest: unknown /** TransformRequestFunction or RequestTransformRequest */;
 
   /** --- MAP INTERACTION */
-
-  /** @description Feature to highlight. */
-  @Input() public featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; };
   /** @description List of features to select. */
   @Input() public featuresToSelect: Array<ElementIdentifier>;
 
@@ -332,11 +329,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
         });
-      }
-      if (changes['featureToHightLight'] !== undefined
-        && changes['featureToHightLight'].currentValue !== changes['featureToHightLight'].previousValue) {
-        const featureToHightLight = changes['featureToHightLight'].currentValue;
-        this.highlightFeature(featureToHightLight);
       }
       if (changes['featuresToSelect'] !== undefined
         && changes['featuresToSelect'].currentValue !== changes['featuresToSelect'].previousValue) {
@@ -642,10 +634,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   public moveToCoordinates(lngLat: [number, number]) {
     this.map.setCenter(lngLat);
   }
-  /** Highlights, in all data sources,the feature(s) having the given elementIdentifier */
-  private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.mapService.highlightFeature(this.mapLayers, this.map, featureToHightLight);
-  }
+
   /** Selects, in all data sources,the feature(s) having the given elementIdentifier */
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
     this.mapService.selectFeatures(this.mapLayers, this.map, elementToSelect);
