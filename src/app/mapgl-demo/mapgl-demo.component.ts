@@ -24,7 +24,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatRadioButton, MatRadioGroup } from '@angular/material/radio';
-import { BboxGeneratorComponent } from 'arlas-map';
+import { BboxGeneratorComponent, DrawTheme } from 'arlas-map';
 import { LngLatBounds } from 'maplibre-gl';
 import { Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from '../../../projects/arlas-map/src/lib/arlas-map-framework.service';
@@ -83,6 +83,15 @@ export class MapglDemoComponent<L, S, M> {
     'type': 'FeatureCollection',
     'features': []
   } as any;
+
+  public drawTheme: DrawTheme = {
+    active: {
+      color: '#ff0000'
+    },
+    inactive: {
+      color: '#00ff00'
+    }
+  }
 
   private readonly mapFrameworkService = inject(ArlasMapFrameworkService);
   private readonly dialog = inject(MatDialog);

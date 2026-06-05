@@ -21,8 +21,8 @@
                   <div cdkDragHandle class="map__visu-layer-drag">
                     <mat-icon>drag_indicator</mat-icon>
                   </div>
-                  <arlas-legend [collection]="l | getCollection: mapService.layersMap " [enabled]="visu.enabled"
-                    [layer]="l | getValue: mapService.layersMap " [zoom]="map?.zoom"
+                  <arlas-legend [collection]="l | getCollection:mapService.layersMap" [enabled]="visu.enabled"
+                    [layer]="l | getValue:mapService.layersMap" [zoom]="map?.zoom"
                     (visibilityStatus)="emitLegendVisibility(visu.name, l, $event)" [legendUpdater]="legendUpdater"
                     [visibilityUpdater]="visibilityUpdater" [highlightLegend]="highlightLegend"
                   (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-legend>
@@ -50,6 +50,7 @@
   <arlas-draw #drawComponent [map]="map" [emptyData]="emptyData" [drawData]="drawData"
     [drawButtonEnabled]="drawButtonEnabled" [drawOption]="drawOption"
     [drawPolygonVerticesLimit]="drawPolygonVerticesLimit" [preserveDrawingBuffer]="preserveDrawingBuffer"
+    [drawTheme]="drawTheme()"
     (onAoiChanged)="onAoiChanged.emit($event)"
     (onAoiEdit)="onAoiEdit.emit($event)"></arlas-draw>
 }

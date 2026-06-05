@@ -48,7 +48,7 @@ export { simpleSelectModeOverride } from './lib/draw/modes/simpleSelectOverride'
 export { stripDirectSelectMode } from './lib/draw/modes/strip/strip.direct.mode';
 export { stripMode } from './lib/draw/modes/strip/strip.mode';
 export { validGeomDrawPolygonMode } from './lib/draw/modes/ValidGeomDrawPolygonMode';
-export * as styles from './lib/draw/themes/default-theme';
+export { buildDrawStyle, DrawTheme } from './lib/draw/themes/default-theme';
 export { FormatLegendPipe } from './lib/legend/format-legend.pipe';
 export { LayerIdToName } from './lib/legend/layer-name.pipe';
 export { LayerIconComponent } from './lib/legend/legend-icon/layer-icon.component';

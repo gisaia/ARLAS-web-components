@@ -17,7 +17,10 @@
  * under the License.
  */
 
-import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output, signal, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import {
+  Component, EventEmitter, HostListener, inject, input, Input,
+  OnInit, Output, signal, SimpleChanges, ViewEncapsulation
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
@@ -45,7 +48,7 @@ import { rectangleMode } from './modes/rectangleMode';
 import { simpleSelectModeOverride } from './modes/simpleSelectOverride';
 import { stripDirectSelectMode } from './modes/strip/strip.direct.mode';
 import { stripMode } from './modes/strip/strip.mode';
-import * as styles from './themes/default-theme';
+import { buildDrawStyle, DrawTheme } from './themes/default-theme';
 
 @Component({
     selector: 'arlas-draw',
@@ -79,6 +82,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** @description Whether the drawing buffer is activated */
   /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
+  /** @description Theme for the drawn polygons */
+  public drawTheme = input<DrawTheme>({});
 
   /** @description Emits the geojson of an aoi added to the map. */
   @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
@@ -263,12 +268,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         }
       }
     });
-
   }
 
   public ngOnInit(): void {
     this.drawTooltipElement = document.getElementById('arlas-draw-tooltip');
-    const drawStyles = styles.default;
+    const drawStyles = buildDrawStyle(this.drawTheme());
     const drawOptions = {
       ...this.drawOption,
       styles: drawStyles,
