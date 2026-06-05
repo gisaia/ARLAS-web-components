@@ -138,8 +138,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
           map.setLayerOpacity(layer.id, circleStrokePrefix, style);
         }
         const layersIds = getAdditionalFillLayers(layer.id);
-        for (let i = 0; i < layersIds.length; i++) {
-          const id = layersIds[i];
+        for (const id of layersIds) {
           const additionalLayer = this.mapService.getLayer(map, id);
           if(additionalLayer){
             map.setLayerOpacity(id, additionalLayer.type, style);
@@ -147,6 +146,29 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         }
       });
   }
+
+  public adjustOpacityByValue(map: ArlasMaplibreGL, sourceIdPrefix: string, field: string,
+      values: string[], insideOpacity: number, outsideOpacity: number
+    ): void {
+      const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
+      const style = this.getValueStyle(field, values, insideOpacity, outsideOpacity);
+      layers
+        .filter(l => this.mapService.isLayerVisible(l))
+        .forEach(layer => {
+          map.setLayerOpacity(layer.id, layer.type, style);
+          if (layer.type === 'circle') {
+            const circleStrokePrefix = layer.type + '-stroke';
+            map.setLayerOpacity(layer.id, circleStrokePrefix, style);
+          }
+          const layersIds = getAdditionalFillLayers(layer.id);
+          for (const id of layersIds) {
+            const additionalLayer = this.mapService.getLayer(map, id);
+            if (additionalLayer) {
+              map.setLayerOpacity(id, additionalLayer.type, style);
+            }
+          }
+        });
+    }
 
   /**
    * Generates a Maplibre GL style expression that applies different style values based on a specified range.
@@ -173,6 +195,29 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
   }
 
   /**
+     * Generates a Mapbox GL style expression that applies different style values based on a specified list of values.
+     *
+     * @param {string} field - The name of the field to evaluate for the range condition.
+     * @param {string[]} values - The list of values. Features with field values included in the list are considered.
+     * @param {number} inValue - The style value to apply if the field value is within the specified range.
+     * @param {number} outValue - The style value to apply if the field value is outside the specified range.
+     *
+     * @returns {Expression} A Mapbox GL style expression that applies `inValue` or `outValue` based on the range condition.
+     */
+    private getValueStyle(field: string, values: string[], inValue: number, outValue: number): Expression {
+      const valueStyle = [
+        'case',
+        ['all',
+          ['in', ['get', field], ['literal', values]]
+        ],
+        inValue, // the style value if field is between 'start' and 'end'
+        outValue // the style value otherwise
+      ] as any;
+      console.log(valueStyle);
+      return valueStyle;
+    }
+
+  /**
    * Resets the initial configured opacity style of the map layers whose source IDs start with the given sourceIdPrefix.
    *
    * @param {AbstractArlasMapGL} map - The map instance.
@@ -190,8 +235,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         map.setLayerOpacity(layer.id, circleStrokePrefix, circleStrokeOpacity);
       }
       const layersIds = getAdditionalFillLayers(layer.id);
-      for (let i = 0; i < layersIds.length; i++) {
-        const id = layersIds[i];
+      for (const id of layersIds) {
         const layer = this.mapService.getLayer(map, id);
         if (layer) {
           map.setLayerOpacity(id, layer.type, layerOpacity);

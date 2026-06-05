@@ -526,7 +526,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         this.setTableHeight();
       });
     // Add debounce on hover item list
-    this.debouncer.pipe(debounceTime(500)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+    this.debouncer.pipe(debounceTime(200)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
     this.scrollDebouncer.pipe(debounceTime(1000)).subscribe(page => this.paginationEvent.next(page));
     this.emitVisibleItemsDebouncer.pipe(debounceTime(1000)).subscribe(event => this.visibleItems.next(event));
   }
