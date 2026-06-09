@@ -35,7 +35,7 @@ export class PowerBar {
   /**
    * @description Powerbar progression.
    */
-  public progression: number;
+  public progression?: number;
   /**
    * @description Whether the powerbar is selected.
    */
@@ -44,7 +44,7 @@ export class PowerBar {
   /**
    * @description Path from the powerbar to the parent nodes
    */
-  public path: Array<SimpleNode>;
+  public path?: Array<SimpleNode>;
   /**
    * @description class name to apply to the powerbar : `neutral-state`, `selected-bar` or `unselected-bar`.
    */
@@ -52,7 +52,7 @@ export class PowerBar {
   /**
    * @description color of the powerbar obtained from the powerbar term.
    */
-  public color: string;
+  public color?: string;
 
   public constructor(term: string, parentTerm: string, count: number) {
     this.term = term;

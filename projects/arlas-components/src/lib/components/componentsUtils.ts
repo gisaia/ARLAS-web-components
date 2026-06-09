@@ -21,7 +21,7 @@ import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
 
-export function formatNumber(x, formatChar = ' '): string {
+export function formatNumber(x: string | number, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
     formatChar = ' ';
   }
@@ -32,21 +32,21 @@ export function formatNumber(x, formatChar = ' '): string {
     const spacedNumber = Math.abs(trunc).toString().replace(/\B(?=(\d{3})+(?!\d))/g, formatChar);
     const spacedNumberString = trunc < 0 ? '-' + spacedNumber : spacedNumber;
     if (num < 0.09 && num > -0.09 && num !== 0) {
-      return Number.parseFloat(x).toExponential(3);
+      return Number.parseFloat(x + '').toExponential(3);
     }
     return decimal.length === 2 ? spacedNumberString + '.' + decimal[1] : spacedNumberString;
   }
-  return x;
+  return x + '';
 }
 export const NUMBER_FORMAT_CHAR = 'NUMBER_FORMAT_CHAR';
 
 export const DEFAULT_SHORTENING_PRECISION = 2;
 
-export function getKeys(map): Array<string> {
+export function getKeys(map: Map<string, unknown>): Array<string> {
   return Array.from(map.keys());
 }
 
-export function getValues(map): Array<any> {
+export function getValues<T>(map: Map<unknown, T>): Array<T> {
   return Array.from(map.values());
 }
 
@@ -61,13 +61,13 @@ export abstract class ColorGeneratorLoader {
    * @param colorsSaturationWeight Knowing that saturation scale is [0, 1], `colorsSaturationWeight` is a factor (between 0 and 1) that
    * tightens this scale to [(1-colorsSaturationWeight), 1]. Therefore all generated colors saturation will be within this scale.
    */
-  public abstract getColor(key: string, externalkeysToColors: Array<[string, string]>, externalColorsSaturationWeight: number): string;
-  public abstract getTextColor(color): string;
+  public abstract getColor(key: string, externalkeysToColors?: Array<[string, string]>, externalColorsSaturationWeight?: number): string;
+  public abstract getTextColor(color: string): string;
 }
 
 export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
   public changekeysToColors$: Observable<void> = new Subject<void>().asObservable();
-  public keysToColors: Array<[string, string]>;
+  public keysToColors: Array<[string, string]> = [];
   public colorsSaturationWeight = 0.5;
   /**
    * This method generates a determistic color from the given key, a list of [key, color] and a saturation weight.
@@ -107,7 +107,7 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
     return colorHex;
   }
 
-  public getTextColor(color): string {
+  public getTextColor(color: string): string {
     return '#000000';
   }
 
@@ -130,7 +130,7 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
 export class SelectFormControl extends UntypedFormControl {
 
   // used only for autocomplete: list of filtered options
-  public filteredOptions: Array<string>;
+  public filteredOptions: Array<string> = [];
   public syncOptions: Array<string> = [];
 
   public constructor(

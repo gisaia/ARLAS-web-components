@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Directive, ElementRef, HostListener, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Directive, ElementRef, HostListener, input, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
@@ -28,26 +28,36 @@ import { ItemDataType } from '../utils/results.utils';
 })
 
 export class ResultScrollDirective implements OnChanges {
-  @Input() public items: Array<Item>;
-  @Input() public nbLinesBeforeFetch: number;
-  @Input() public nbGridColumns: number;
-  @Input() public resultMode: ModeEnum;
-  @Input() public fetchState: { endListUp: boolean; endListDown: boolean; };
-  @Input() public scrollOptions: { maintainScrollUpPosition: boolean; maintainScrollDownPosition: boolean; nbLines: number; };
+  @Input() public items: Array<Item> = [];
+  public nbLinesBeforeFetch = input.required<number>();
+  public nbGridColumns = input.required<number>();
+  public resultMode = input.required<ModeEnum>();
+  @Input() public fetchState?: { endListUp: boolean; endListDown: boolean; };
+  @Input() public scrollOptions?: { maintainScrollUpPosition: boolean; maintainScrollDownPosition: boolean; nbLines: number; };
 
   @Output() public nextDataEvent: Subject<Map<string, ItemDataType>> = new Subject();
   @Output() public previousDataEvent: Subject<Map<string, ItemDataType>> = new Subject();
   @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
 
   private lastScrollTop = 0;
-  private previousFirstId: string = null;
-  private previousLastId: string = null;
-  private tbodyHeight;
+  private previousFirstId: string | null = null;
+  private previousLastId: string | null = null;
   private scrolledProgramatically = false;
-  private nbScrolledLines;
-  private top;
-  private height;
-  public constructor(private el: ElementRef) { }
+  private nbScrolledLines = 0;
+
+  public constructor(private readonly el: ElementRef) { }
+
+  private get tableBodyHeight() {
+    return this.el.nativeElement.offsetHeight;
+  }
+
+  private get scrollTop() {
+    return this.el.nativeElement.scrollTop;
+  }
+
+  private get scrollHeight() {
+    return this.el.nativeElement.scrollHeight;
+  }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['items']) {
@@ -62,7 +72,7 @@ export class ResultScrollDirective implements OnChanges {
       this.adjustScrollToMode();
     }
 
-    if (changes['scrollOptions']) {
+    if (changes['scrollOptions'] && this.scrollOptions) {
       if (this.scrollOptions.maintainScrollUpPosition === true && this.items) {
         /**
          * Maintains the scroll position after loading rows in the top of the list
@@ -74,7 +84,7 @@ export class ResultScrollDirective implements OnChanges {
          * Maintains the scroll position after loading rows in the bottom of the list
          */
         this.el.nativeElement.scrollTop = this.el.nativeElement.scrollHeight -
-        this.el.nativeElement.scrollHeight * this.scrollOptions.nbLines / this.items.length - this.tbodyHeight / 2;
+          this.el.nativeElement.scrollHeight * this.scrollOptions.nbLines / this.items.length - this.tableBodyHeight / 2;
       }
     }
   }
@@ -82,13 +92,13 @@ export class ResultScrollDirective implements OnChanges {
   /** This method allows to stay around the same items when switching the mode grid/list */
   public adjustScrollToMode() {
     if (this.items) {
-      if (this.resultMode === ModeEnum.grid) {
-        this.nbScrolledLines = Math.round(this.top / this.height * this.items.length);
-        if (this.nbScrolledLines % this.nbGridColumns !== 0) {
-          this.nbScrolledLines = Math.max(this.nbScrolledLines - this.nbScrolledLines % this.nbGridColumns, 0);
+      if (this.resultMode() === ModeEnum.grid) {
+        this.nbScrolledLines = Math.round(this.scrollTop / this.scrollHeight * this.items.length);
+        if (this.nbScrolledLines % this.nbGridColumns() !== 0) {
+          this.nbScrolledLines = Math.max(this.nbScrolledLines - this.nbScrolledLines % this.nbGridColumns(), 0);
         }
       } else {
-        this.nbScrolledLines = Math.round(this.top / this.height * this.items.length);
+        this.nbScrolledLines = Math.round(this.scrollTop / this.scrollHeight * this.items.length);
       }
       this.triggerScrollEvent();
     }
@@ -96,22 +106,16 @@ export class ResultScrollDirective implements OnChanges {
 
   // When scrolling, the position of the scroll bar is calculated
   // Loading the previous/next data is triggered when [nbEndScrollItems] items are left while scrolling up/down respectively
-  @HostListener('scroll', ['$event'])
-  public onScroll(event) {
-    this.tbodyHeight = this.el.nativeElement.offsetHeight;
-    const scrollTop = this.el.nativeElement.scrollTop;
-    const scrollHeight = this.el.nativeElement.scrollHeight;
-
-    const nLastLines = this.nbLinesBeforeFetch / ((this.nbGridColumns - 1) * this.resultMode + 1);
-    const dataLength = this.items.length / ((this.nbGridColumns - 1) * this.resultMode + 1);
-    const downPositionTrigger = scrollHeight * (1 - nLastLines / dataLength - this.tbodyHeight / scrollHeight);
-    const upPositionTrigger = scrollHeight * nLastLines / dataLength;
+  @HostListener('scroll')
+  public onScroll() {
+    const nLastLines = this.nbLinesBeforeFetch() / ((this.nbGridColumns() - 1) * this.resultMode() + 1);
+    const dataLength = this.items.length / ((this.nbGridColumns() - 1) * this.resultMode() + 1);
+    const downPositionTrigger = this.scrollHeight * (1 - nLastLines / dataLength - this.tableBodyHeight / this.scrollHeight);
+    const upPositionTrigger = this.scrollHeight * nLastLines / dataLength;
     if (this.scrolledProgramatically) {
-      this.el.nativeElement.scrollTop = scrollHeight * this.nbScrolledLines / this.items.length;
+      this.el.nativeElement.scrollTop = this.scrollHeight * this.nbScrolledLines / this.items.length;
       this.scrolledProgramatically = false;
     }
-    this.top = scrollTop;
-    this.height = scrollHeight;
     if (this.previousFirstId) {
       if (this.previousFirstId !== this.items[0].identifier || (this.fetchState && this.fetchState.endListDown)) {
         this.previousFirstId = null;
@@ -122,7 +126,7 @@ export class ResultScrollDirective implements OnChanges {
         this.previousLastId = null;
       }
     }
-    if (scrollTop >= downPositionTrigger && this.isScrollingDown(scrollTop)) {
+    if (this.scrollTop >= downPositionTrigger && this.isScrollingDown(this.scrollTop)) {
       /** The following condition answers the question : when should I stop emitting `nextDataEvent` even if i reach the end of the scroll?
        * The answer is: when `nextDataEvent` is emitted and there is no new items loaded.
        * In other words if `downPositionTrigger` is reached and the last identifier we remember
@@ -136,7 +140,7 @@ export class ResultScrollDirective implements OnChanges {
         this.nextDataEvent.next(this.items[this.items.length - 1].itemData);
       }
     }
-    if (scrollTop <= upPositionTrigger && this.isScrollingUp(scrollTop)) {
+    if (this.scrollTop <= upPositionTrigger && this.isScrollingUp(this.scrollTop)) {
       /** Same logic as the condition above but on the top of the list this time. */
       if (this.items.length > 0 && this.items[0].identifier !== this.previousFirstId && this.fetchState && !this.fetchState.endListUp) {
         this.previousFirstId = this.items[0].identifier;
@@ -148,7 +152,11 @@ export class ResultScrollDirective implements OnChanges {
     this.visibleItems.next(this.items.filter(i => this.isElementInViewport(document.getElementById(i.identifier))));
   }
 
-  private isElementInViewport(el) {
+  private isElementInViewport(el: HTMLElement | null) {
+    if (!el) {
+      return false;
+    }
+
     const rect = el.getBoundingClientRect();
     return (
       rect.top >= 0 &&
@@ -158,12 +166,12 @@ export class ResultScrollDirective implements OnChanges {
     );
   }
 
-  private isScrollingDown(scrollTop) {
+  private isScrollingDown(scrollTop: number) {
     if (scrollTop > this.lastScrollTop) {
       return true;
     }
   }
-  private isScrollingUp(scrollTop) {
+  private isScrollingUp(scrollTop: number) {
     if (scrollTop < this.lastScrollTop) {
       return true;
     }

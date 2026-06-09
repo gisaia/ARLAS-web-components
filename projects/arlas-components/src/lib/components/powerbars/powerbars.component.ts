@@ -58,7 +58,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * @Input : Angular
    * @description Data formated as a tree to be plotted as powerbars
    */
-  @Input() public inputData: TreeNode;
+  public inputData = input.required<TreeNode>();
 
   /**
    * @Input : Angular
@@ -82,7 +82,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * @Input : Angular
    * @description Css class name to use to customize a specific powerbar's style.
    */
-  @Input() public customizedCssClass: string;
+  @Input() public customizedCssClass = '';
   /**
    * @Input : Angular
    * @description List of selected paths in `inputData` from which the powerbars to select
@@ -100,7 +100,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<[string, string]>;
+  @Input() public keysToColors: Array<[string, string]> = [];
 
   /**
    * @Input : Angular
@@ -108,7 +108,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale.
    */
-  @Input() public colorsSaturationWeight: number;
+  @Input() public colorsSaturationWeight?: number;
 
   /**
    * @Input : Angular
@@ -144,7 +144,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     display: true
   };
 
-  @Input() public missingLeafEvent: Subject<any[]>;
+  @Input() public missingLeafEvent?: Subject<any[]>;
 
   /**
    * @Input : Angular
@@ -207,7 +207,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    */
   public exportEvent = output<void>();
 
-  public powerBarsList: Array<PowerBar>;
+  public powerBarsList = new Array<PowerBar>();
   public selectedPowerbarsSet = new Set<PowerBar>();
   public selectedPowerbarsTerms = new Set<string>();
 
@@ -281,14 +281,9 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.inputData) {
-      if (this.inputData !== undefined && this.inputData !== null) {
-        this.populatePowerbars();
-        this.populateSelectedPowerbars();
-        this.calculateAllPowerBarsProgression();
-      } else {
-        this.inputData = { id: 'root', fieldName: 'root', fieldValue: 'root', isOther: false, children: [] };
-        this.powerBarsList = [];
-      }
+      this.populatePowerbars();
+      this.populateSelectedPowerbars();
+      this.calculateAllPowerBarsProgression();
     }
 
     if (changes.selectedPaths && this.selectedPaths !== undefined && this.selectedPaths !== null) {
@@ -339,7 +334,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       const currentPath = path.length <= this.level ? path : path.slice(path.length - this.level);
       let powerBar = currentPath.length > 1 ? this.getPowerbar(currentPath[0].fieldValue, currentPath[1].fieldValue) :
         this.getPowerbar(currentPath[0].fieldValue, 'root');
-      if (powerBar !== null) {
+      if (powerBar) {
         powerBar.isSelected = true;
         powerBar.classSuffix = SELECTED_BAR;
         if (this.useColorService) {
@@ -396,10 +391,14 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
   }
 
   private populatePowerbars(): void {
-    this.powerBarsList = this.fetchPowerbarsList(this.level, this.inputData);
+    this.powerBarsList = this.fetchPowerbarsList(this.level, this.inputData());
   }
 
-  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?: Array<PowerBar>, recursivityCount?: number, path?: any) {
+  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?: Array<PowerBar>, recursivityCount?: number, path?: SimpleNode[]) {
+    if (!data.children) {
+      return [];
+    }
+
     if (recursivityCount === undefined) {
       recursivityCount = 0;
     }
@@ -411,19 +410,19 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
       path = new Array();
     }
     if (recursivityCount < level - 1) {
-      data.children.forEach(child => {
-        const currentPath = [];
+      for (const child of data.children) {
+        const currentPath = new Array<SimpleNode>();
         Object.assign(currentPath, path);
         currentPath.push({ fieldName: child.fieldName, fieldValue: child.fieldValue });
         this.fetchPowerbarsList(level, child, powerBarsList, ++recursivityCount, currentPath);
-      });
+      }
     } else {
-      data.children.forEach(child => {
-        const currentPath = [];
+      for (const child of data.children) {
+        const currentPath = new Array<SimpleNode>();
         Object.assign(currentPath, path);
         currentPath.push({ fieldName: child.fieldName, fieldValue: child.fieldValue });
         if (!child.isOther) {
-          const powerBar = new PowerBar(child.fieldValue, data.fieldValue, child.metricValue);
+          const powerBar = new PowerBar(child.fieldValue, data.fieldValue, child.metricValue as number);
           currentPath.reverse();
           powerBar.path = currentPath;
           if (this.useColorService) {
@@ -431,14 +430,14 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
               this.colorsSaturationWeight)).toRgb();
             powerBar.color = this.getPowerbarColor(rgbaColor);
           }
-          if (this.useColorFromData) {
+          if (this.useColorFromData && child.color) {
             powerBar.color = child.color.toString().startsWith('#') ? child.color.toString() : '#'.concat(child.color.toString());
           }
           powerBarsList.push(powerBar);
         }
-      });
-      return powerBarsList;
+      }
     }
+    return powerBarsList;
   }
 
   private populateSelectedPowerbars() {
@@ -492,7 +491,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     }
   }
 
-  // Sort the selected PowerBars decreasingly. And recalculate the progression of the bars in this array.
+  /** Sort the selected PowerBars decreasingly. And recalculate the progression of the bars in this array. */
   private sortSelectedPowerBars(selectedPowerbarsList: Set<PowerBar>): Set<PowerBar> {
     const selectedPowerbarsArray = Array.from(selectedPowerbarsList);
     const sortedSelectedPowerbarsList = new Set<PowerBar>();
@@ -502,29 +501,25 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     return sortedSelectedPowerbarsList;
   }
 
-  // removes the powerbar that has the same term in selectedPowerbarsList but not the same instance
+  /** Removes the powerbar that has the same term in selectedPowerbarsList but not the same instance */
   private removePowerbarFromSelectedOnes(powerBar: PowerBar, selectedPowerbarsList: Set<PowerBar>) {
-    let powerbarToRemove;
-    selectedPowerbarsList.forEach(selectedPowerbar => {
+    for (const selectedPowerbar of selectedPowerbarsList) {
       if (selectedPowerbar.term === powerBar.term) {
-        powerbarToRemove = selectedPowerbar;
+        selectedPowerbarsList.delete(selectedPowerbar);
+        break;
       }
-    });
-    selectedPowerbarsList.delete(powerbarToRemove);
+    }
   }
 
   /**
    * @description Gets the powerbar by its term and the term of it's parent node
-   *
    */
-  private getPowerbar(powerbarTerm: string, powerbarParentTerm: string): PowerBar {
-    let foundPowerbar = null;
-    this.powerBarsList.forEach(powerbar => {
+  private getPowerbar(powerbarTerm: string, powerbarParentTerm: string) {
+    for (const powerbar of this.powerBarsList) {
       if (powerbar.term === powerbarTerm && powerbar.parentTerm === powerbarParentTerm) {
-        foundPowerbar = powerbar;
+        return powerbar;
       }
-    });
-    return foundPowerbar;
+    }
   }
 
   private getPowerbarColor(rgbaColor: tinycolor.ColorFormats.RGBA): string{

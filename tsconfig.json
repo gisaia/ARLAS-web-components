@@ -37,7 +37,8 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "strict": true
   },
   "exclude": [
     "node_modules",

@@ -1,18 +1,12 @@
-@for (column of rowItem.columns; track $index) {
+@for (column of rowItem().columns; track $index) {
   <!-- If the column corresponds to an id field, then we put the checkbox that enables to check the item-->
   @if (column.isIdField) {
     <td class="resultitem__cell" [style.max-width.px]="column.width"
       [style.min-width.px]="column.width">
       <div class="checkbox">
-        @if (rowItem.isindeterminated) {
-          <button mat-icon-button (click)="determinateItem()" class="checkbox__button">
-            <mat-icon class="resultitem__icon_check">indeterminate_check_box</mat-icon>
-          </button>
-        } @else {
-          <button mat-icon-button (click)="setSelectedItem()" class="checkbox__button">
-            <mat-icon class="resultitem__icon_check">{{ rowItem.isChecked ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
-          </button>
-        }
+        <button mat-icon-button (click)="setSelectedItem()" class="checkbox__button">
+          <mat-icon class="resultitem__icon_check">{{ rowItem().isChecked ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+        </button>
       </div>
     </td>
   }
@@ -21,7 +15,7 @@
   @if (!column.isIdField && !column.isToggleField) {
     <td class="resultitem__cell resultitem__cell__{{column.fieldName}}"
         [style.max-width.px]="column.width" [style.min-width.px]="column.width">
-      @let itemFieldValue = rowItem?.itemData.get(column.fieldName) + '';
+      @let itemFieldValue = rowItem().itemData.get(column.fieldName) + '';
 
       @if (column.useColorService && useColorService && cellBackgroundStyle) {
         @if (cellBackgroundStyle === CellBackgroundStyleEnum.filled) {
@@ -50,18 +44,18 @@
       [style.min-width.px]="column.width">
       @if (options.showActionsOnhover) {
         <div class="actions">
-          <arlas-result-actions [item]="rowItem" [activatedActionsPerItem]="activatedActionsPerItem"
-            [detailedDataRetriever]="detailedDataRetriever" [width]="tableWidth * 80 / 100"
+          <arlas-result-actions [item]="rowItem()" [activatedActionsPerItem]="activatedActionsPerItem"
+            [detailedDataRetriever]="detailedDataRetriever()" [width]="tableWidth() * 80 / 100"
           (actionOnItemEvent)="triggerActionOnItem($event)"></arlas-result-actions>
         </div>
       }
-      @if (detailedDataRetriever.detailsConfig?.length > 0) {
-        @let toggleId = (rowItem.isDetailToggled ? 'close' : 'open') + '-detail-' + rowItem.identifier;
-        @let toggleTooltip = rowItem.isDetailToggled ? HIDE_DETAILS : SHOW_DETAILS;
+      @if (detailedDataRetriever().detailsConfig.length > 0) {
+        @let toggleId = (rowItem().isDetailToggled ? 'close' : 'open') + '-detail-' + rowItem().identifier;
+        @let toggleTooltip = rowItem().isDetailToggled ? HIDE_DETAILS : SHOW_DETAILS;
         <button mat-icon-button [id]="toggleId" [matTooltip]="toggleTooltip | translate"
           class="resultitem__cell__toggle__button" (click)="toggle()">
           <mat-icon class="resultitem__cell__toggle--icon">
-          {{ rowItem.isDetailToggled ? options.hideDetailIconName : options.showDetailIconName}}</mat-icon>
+          {{ rowItem().isDetailToggled ? options.hideDetailIconName : options.showDetailIconName}}</mat-icon>
         </button>
       }
     </td>

@@ -29,7 +29,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   AbstractChart, AbstractHistogram, AbstractSwimlane, ChartArea, ChartBars, ChartCurve, ChartOneDimension, ChartType,
-  DataType, HistogramData, HistogramParams, HistogramTooltip, HistogramUtils, Position, SelectedInputValues, SelectedOutputValues,
+  DataType, HistogramData, HistogramParams, HistogramTooltip, Position, SelectedInputValues, SelectedOutputValues,
   SelectionType, SwimlaneBars, SwimlaneCircles, SwimlaneData, SwimlaneMode, SwimlaneOptions, SwimlaneRepresentation, XBucket
 } from 'arlas-d3';
 import { debounceTime, fromEvent, Subject } from 'rxjs';
@@ -56,20 +56,20 @@ import * as swimlaneJsonSchema from './swimlane.schema.json';
 })
 export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewChecked {
 
-  @ViewChild('left', { read: ElementRef, static: false }) public lt: ElementRef;
-  @ViewChild('right', { read: ElementRef, static: false }) public rt: ElementRef;
+  @ViewChild('left', { read: ElementRef, static: false }) private readonly lt?: ElementRef;
+  @ViewChild('right', { read: ElementRef, static: false }) private readonly rt?: ElementRef;
 
   /**
    * @Input : Angular
    * @description Data to plot in the chart.
    */
-  @Input() public data: Array<HistogramData> | SwimlaneData;
+  public data = input.required<HistogramData[] | SwimlaneData>();
   /**
    * @Input : Angular
    * @description HistogramData is a bucket of a given chart Id. Many charts ids can be represented in histogram. This
    * input sets the main chart id. So that the main one can be represented differently from the others
    */
-  @Input() public mainChartId: string;
+  public mainChartId = input.required<string>();
   /**
    * @Input
    * @description To be set to `time` when x axis represents dates and to `numeric` otherwise.
@@ -93,7 +93,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @description The date format of the start/end values.
    *  Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
    */
-  @Input() public valuesDateFormat: string = null;
+  @Input() public valuesDateFormat = '';
   /**
    * @Input : Angular
    * @description Whether the chart is selectable.
@@ -108,12 +108,12 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @Input : Angular
    * @description A single interval that selects data.
    */
-  @Input() public intervalSelection: SelectedInputValues;
+  @Input() public intervalSelection?: SelectedInputValues;
   /**
    * @Input : Angular
    * @description A list of intervals that select data.
    */
-  @Input() public intervalListSelection: SelectedInputValues[];
+  @Input() public intervalListSelection: SelectedInputValues[] = [];
   /**
    * @Input : Angular
    * @description Top position of the remove-selection-button.
@@ -166,12 +166,12 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
    */
-  @Input() public chartWidth: number = null;
+  @Input() public chartWidth?: number;
   /**
    * @Input : Angular
    * @description Chart's height. If not specified, the chart takes the component's container height.
    */
-  @Input() public chartHeight: number = null;
+  @Input() public chartHeight?: number;
   /**
    * @Input : Angular
    * @description Css class name to use to customize a specific `arlas-histogram` component.
@@ -252,7 +252,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @description The date format of ticks.
    * Please refer to this [list of specifiers](https://github.com/d3/d3-time-format/blob/master/README.md#locale_format).
    */
-  @Input() public ticksDateFormat: string = null;
+  @Input() public ticksDateFormat = '%d %b %Y  %H:%M';
   /**
    * @Input : Angular
    * @description Whether the curve of an `area` chart is smoothed.
@@ -268,7 +268,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @Input : Angular
    * @description Either a hex string color or a color name (in English) or a saturation interval.
    */
-  @Input() public paletteColors: [number, number] | string = null;
+  @Input() public paletteColors?: [number, number] | string;
   /**
   * @Input : Angular
   * @description Allows to include only selections that contain data in the histogram/swimlane
@@ -300,12 +300,12 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @Input : Angular
    * @description Graphical options to configure for the swimlane.
   */
-  @Input() public swimlaneOptions: SwimlaneOptions;
+  @Input() public swimlaneOptions: SwimlaneOptions = {};
   /**
    * @Input : Angular
    * @description The width of swimlane labels space.
    */
-  @Input() public swimLaneLabelsWidth = null;
+  @Input() public swimLaneLabelsWidth?: number;
   /**
    * @Input : Angular
    * @description The radius of swimlane bars borders.
@@ -315,9 +315,9 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @Input : Angular
    * @description The height of a single lane. If not specified, a lane height is the chartHeight devided by the number of lanes.
    */
-  @Input() public swimlaneHeight: number = null;
+  @Input() public swimlaneHeight?: number;
 
-  @Input() public id: string;
+  public id = input.required<string>();
   /**
    * @Input : Angular
    * @description Term's list of powerbars to select
@@ -349,17 +349,17 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @Output : Angular
    * @description Emits the hovered bucket key (key as in HistogramData).
    */
-  @Output() public hoveredBucketEvent: Subject<XBucket> = new Subject<XBucket>();
+  @Output() public hoveredBucketEvent = new Subject<XBucket | undefined>();
   /**
    * @Output : Angular
    * @description Emits an event informing that the chart finished plotting.
    */
-  @Output() public dataPlottedEvent: Subject<string> = new Subject<string>();
+  @Output() public dataPlottedEvent = new Subject<string>();
   /**
    * @Output : Angular
    * @description Emits the hovered bucket information that can be exploited to display a tooltip
    */
-  @Output() public tooltipEvent: Subject<HistogramTooltip> = new Subject<HistogramTooltip>();
+  @Output() public tooltipEvent = new Subject<HistogramTooltip>();
 
   /**
    * @Output : Angular
@@ -367,8 +367,9 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    */
   public exportEvent = output<void>();
 
-  public histogram: AbstractHistogram;
-  public chart: AbstractChart;
+  public histogram?: AbstractHistogram;
+  public chart?: AbstractChart | AbstractSwimlane;
+
   public ChartType = ChartType;
   public Position = Position;
   public Array = Array;
@@ -405,57 +406,57 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (this.histogram === undefined) {
+      const histogramParams = this.getHistogramParameters();
       switch (this.chartType) {
-      case ChartType.area: {
-        this.histogram = new ChartArea();
-        this.chart = this.histogram as ChartArea;
-        break;
-      }
-      case ChartType.curve: {
-        this.histogram = new ChartCurve();
-        this.chart = this.histogram as ChartCurve;
-        break;
-      }
-      case ChartType.bars: {
-        this.histogram = new ChartBars();
-        this.chart = this.histogram as ChartBars;
-        break;
-      }
-      case ChartType.oneDimension: {
-        this.histogram = new ChartOneDimension();
-        this.chart = this.histogram as ChartOneDimension;
-        break;
-      }
-      case ChartType.swimlane: {
-        if (this.swimlaneMode === SwimlaneMode.circles) {
-          this.histogram = new SwimlaneCircles();
-        } else {
-          this.histogram = new SwimlaneBars();
+        case ChartType.area: {
+          this.histogram = new ChartArea(histogramParams);
+          this.chart = this.histogram as ChartArea;
+          break;
         }
-        break;
+        case ChartType.curve: {
+          this.histogram = new ChartCurve(histogramParams);
+          this.chart = this.histogram as ChartCurve;
+          break;
+        }
+        case ChartType.bars: {
+          this.histogram = new ChartBars(histogramParams);
+          this.chart = this.histogram as ChartBars;
+          break;
+        }
+        case ChartType.oneDimension: {
+          this.histogram = new ChartOneDimension(histogramParams);
+          this.chart = this.histogram as ChartOneDimension;
+          break;
+        }
+        case ChartType.swimlane: {
+          if (this.swimlaneMode === SwimlaneMode.circles) {
+            this.histogram = new SwimlaneCircles(histogramParams);
+          } else {
+            this.histogram = new SwimlaneBars(histogramParams);
+          }
+          break;
+        }
+        default: {
+          this.histogram = new ChartArea(histogramParams);
+          break;
+        }
       }
-      default: {
-        this.histogram = new ChartArea();
-        break;
-      }
-      }
-      this.setHistogramParameters();
     }
 
-    if (changes.data && this.data !== undefined && this.histogram !== undefined) {
-      if (Array.isArray(this.data)) {
-        this.histogram.histogramParams.histogramData = this.data;
+    if (changes.data && !!this.data() && this.histogram !== undefined) {
+      const data = this.data();
+      if (Array.isArray(data)) {
+        this.histogram.histogramParams.histogramData = data;
       } else {
-        this.histogram.histogramParams.swimlaneData = this.data;
+        this.histogram.histogramParams.swimlaneData = data;
       }
       this.histogram.histogramParams.hasDataChanged = true;
-      this.plotHistogram(this.data);
+      this.plotHistogram(this.data());
       this.histogram.histogramParams.hasDataChanged = false;
       this.dataPlottedEvent.next('DATA_PLOTTED');
     }
 
     if (changes.intervalSelection && this.intervalSelection !== undefined && this.histogram !== undefined && this.isHistogramSelectable) {
-      this.histogram.histogramParams.intervalSelection = this.intervalSelection;
       if (this.histogram.histogramParams.dataLength > 0) {
         (<AbstractChart>this.histogram).setSelectedInterval(this.intervalSelection);
       }
@@ -479,22 +480,26 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
       (<AbstractSwimlane>this.histogram).truncateLabels();
     }
     if (this.rt !== undefined && this.lt !== undefined) {
-      this.histogram.setHTMLElementsOfBrushCornerTooltips(this.rt.nativeElement, this.lt.nativeElement);
+      this.histogram?.setHTMLElementsOfBrushCornerTooltips(this.rt.nativeElement, this.lt.nativeElement);
     }
   }
 
   /**
    * @description Plots the histogram
    */
-  public plotHistogram(inputData: Array<HistogramData> | SwimlaneData): void {
-    this.histogram.plot(inputData);
+  public plotHistogram(inputData: HistogramData[] | SwimlaneData): void {
+    if (Array.isArray(inputData)) {
+      (this.chart as AbstractChart).plot(inputData);
+    } else {
+      (this.chart as AbstractSwimlane).plot(inputData);
+    }
   }
 
   /**
    * @description Resizes the histogram on windows resize event
    */
   public resizeHistogram(): void {
-    if (this.histogram) {
+    if (this.histogram && this.histogram.histogramParams.histogramContainer) {
       this.histogram.resize(this.histogram.histogramParams.histogramContainer);
       this.dataPlottedEvent.next('RESIZE');
     }
@@ -507,7 +512,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
     (<AbstractChart>this.histogram).removeSelectInterval(id);
   }
 
-  private setHistogramParameters() {
+  private getHistogramParameters() {
     if (!this.chartXLabel) {
       this.chartXLabel = '';
     }
@@ -528,69 +533,74 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
     if (!this.selectionType) {
       this.selectionType = SelectionType.slider;
     }
-    this.histogram.histogramParams = new HistogramParams();
-    this.histogram.histogramParams.useUtc = this.useUtc;
-    this.histogram.histogramParams.selectionType = this.selectionType;
-    this.histogram.histogramParams.handlesRadius = this.handlesRadius;
-    if (this.histogram.histogramParams.useUtc === undefined) {
-      this.histogram.histogramParams.useUtc = true;
+    const histogramParams = new HistogramParams(this.id(), this.mainChartId());
+    histogramParams.useUtc = this.useUtc;
+    histogramParams.selectionType = this.selectionType;
+    histogramParams.handlesRadius = this.handlesRadius;
+    if (histogramParams.useUtc === undefined) {
+      histogramParams.useUtc = true;
     }
-    this.histogram.histogramParams.barWeight = this.barWeight;
-    this.histogram.histogramParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
-    this.histogram.histogramParams.handlesHeightWeight = this.brushHandlesHeightWeight;
-    this.histogram.histogramParams.chartHeight = this.chartHeight;
-    this.histogram.histogramParams.chartTitle = this.chartTitle;
-    this.histogram.histogramParams.chartType = this.chartType;
-    this.histogram.histogramParams.chartWidth = this.chartWidth;
-    if (Array.isArray(this.data)) {
-      this.histogram.histogramParams.histogramData = this.data;
+    histogramParams.barWeight = this.barWeight;
+    histogramParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
+    histogramParams.handlesHeightWeight = this.brushHandlesHeightWeight;
+    if (this.chartHeight) {
+      histogramParams.chartHeight = this.chartHeight;
+    }
+    histogramParams.chartTitle = this.chartTitle;
+    histogramParams.chartType = this.chartType;
+    if (this.chartWidth) {
+      histogramParams.chartWidth = this.chartWidth;
+    }
+
+    const data = this.data();
+    if (Array.isArray(data)) {
+      histogramParams.histogramData = data;
     } else {
-      this.histogram.histogramParams.swimlaneData = this.data;
+      histogramParams.swimlaneData = data;
     }
-    this.histogram.histogramParams.dataType = this.dataType;
-    this.histogram.histogramParams.dataUnit = this.dataUnit;
-    this.histogram.histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
-    this.histogram.histogramParams.intervalListSelection = this.intervalListSelection;
-    this.histogram.histogramParams.intervalSelection = this.intervalSelection;
-    this.histogram.histogramParams.isHistogramSelectable = this.isHistogramSelectable;
-    this.histogram.histogramParams.isSmoothedCurve = this.isSmoothedCurve;
-    this.histogram.histogramParams.multiselectable = this.multiselectable;
-    this.histogram.histogramParams.paletteColors = this.paletteColors;
-    this.histogram.histogramParams.showHorizontalLines = this.showHorizontalLines;
-    this.histogram.histogramParams.showXLabels = this.showXLabels;
-    this.histogram.histogramParams.showXTicks = this.showXTicks;
-    this.histogram.histogramParams.showYLabels = this.showYLabels;
-    this.histogram.histogramParams.showYTicks = this.showYTicks;
-    this.histogram.histogramParams.ticksDateFormat = this.ticksDateFormat;
-    this.histogram.histogramParams.topOffsetRemoveInterval = this.topOffsetRemoveInterval;
-    this.histogram.histogramParams.valuesDateFormat = this.valuesDateFormat;
-    this.histogram.histogramParams.valuesListChangedEvent = this.valuesListChangedEvent;
-    this.histogram.histogramParams.xAxisPosition = this.xAxisPosition;
-    this.histogram.histogramParams.xLabels = this.xLabels;
-    this.histogram.histogramParams.xTicks = this.xTicks;
-    this.histogram.histogramParams.yLabels = this.yLabels;
-    this.histogram.histogramParams.yTicks = this.yTicks;
-    this.histogram.histogramParams.shortYLabels = this.shortYLabels;
-    this.histogram.histogramParams.swimLaneLabelsWidth = this.swimLaneLabelsWidth;
-    this.histogram.histogramParams.swimlaneHeight = this.swimlaneHeight;
-    this.histogram.histogramParams.swimlaneBorderRadius = this.swimlaneBorderRadius;
-    this.histogram.histogramParams.swimlaneMode = this.swimlaneMode;
-    this.histogram.histogramParams.swimlaneOptions = this.swimlaneOptions;
-    this.histogram.histogramParams.swimlaneRepresentation = this.swimlaneRepresentation !== undefined ?
+    histogramParams.dataType = this.dataType;
+    histogramParams.dataUnit = this.dataUnit;
+    histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
+    histogramParams.intervalListSelection = this.intervalListSelection;
+    histogramParams.isHistogramSelectable = this.isHistogramSelectable;
+    histogramParams.isSmoothedCurve = this.isSmoothedCurve;
+    histogramParams.multiselectable = this.multiselectable;
+    histogramParams.paletteColors = this.paletteColors;
+    histogramParams.showHorizontalLines = this.showHorizontalLines;
+    histogramParams.showXLabels = this.showXLabels;
+    histogramParams.showXTicks = this.showXTicks;
+    histogramParams.showYLabels = this.showYLabels;
+    histogramParams.showYTicks = this.showYTicks;
+    histogramParams.ticksDateFormat = this.ticksDateFormat;
+    histogramParams.valuesDateFormat = this.valuesDateFormat;
+    histogramParams.valuesListChangedEvent = this.valuesListChangedEvent;
+    histogramParams.xAxisPosition = this.xAxisPosition;
+    histogramParams.xLabels = this.xLabels;
+    histogramParams.xTicks = this.xTicks;
+    histogramParams.yLabels = this.yLabels;
+    histogramParams.yTicks = this.yTicks;
+    histogramParams.shortYLabels = this.shortYLabels;
+    if (this.swimLaneLabelsWidth) {
+      histogramParams.swimLaneLabelsWidth = this.swimLaneLabelsWidth;
+    }
+    if (this.swimlaneHeight) {
+      histogramParams.swimlaneHeight = this.swimlaneHeight;
+    }
+    histogramParams.swimlaneBorderRadius = this.swimlaneBorderRadius;
+    histogramParams.swimlaneMode = this.swimlaneMode;
+    histogramParams.swimlaneOptions = this.swimlaneOptions;
+    histogramParams.swimlaneRepresentation = this.swimlaneRepresentation !== undefined ?
       this.swimlaneRepresentation : SwimlaneRepresentation.global;
-    this.histogram.histogramParams.uid = HistogramUtils.generateUID();
-    this.histogram.histogramParams.id = this.id;
-    this.histogram.histogramParams.histogramContainer = this.el.nativeElement.getElementsByClassName('histogram').item(0) as HTMLElement;
-    this.histogram.histogramParams.svgNode = this.histogram.histogramParams.histogramContainer.querySelector('svg');
-    this.histogram.histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
-    this.histogram.histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
-    this.histogram.histogramParams.showStripes = this.showStripes;
-    this.histogram.histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
-    this.histogram.histogramParams.selectedSwimlanes = this.selectedSwimlanes;
-    this.histogram.histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
-    this.histogram.histogramParams.colorGenerator = this.colorService;
-    this.histogram.histogramParams.mainChartId = this.mainChartId;
-    this.histogram.histogramParams.tooltipEvent
+    histogramParams.histogramContainer = this.el.nativeElement.getElementsByClassName('histogram').item(0) as HTMLElement;
+    histogramParams.svgNode = histogramParams.histogramContainer.querySelector('svg');
+    histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
+    histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
+    histogramParams.showStripes = this.showStripes;
+    histogramParams.moveDataByHalfInterval = this.applyOffsetOnAreaChart;
+    histogramParams.selectedSwimlanes = this.selectedSwimlanes;
+    histogramParams.selectedSwimlanesEvent = this.selectedSwimlanesEvent;
+    histogramParams.colorGenerator = this.colorService;
+    histogramParams.tooltipEvent
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(t => {
         t.title = this.chartTitle;
@@ -600,5 +610,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
         t.yUnit = this.yUnit;
         this.tooltipEvent.next(t);
       });
+
+    return histogramParams;
   }
 }

@@ -1,14 +1,14 @@
 <div class="tools">
-  @if (filterOperator?.display) {
+  @if (filterOperator.display) {
     <div class="include_exclude">
-      <div class="operation" [class.selected_operation]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">
+      <div class="operation" [class.selected_operation]="filterOperator.value === 'Eq'" (click)="setOperator('Eq')">
         {{'include' | translate}}</div>
-      <div class="operation" [class.selected_operation]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">
+      <div class="operation" [class.selected_operation]="filterOperator.value === 'Neq'" (click)="setOperator('Neq')">
         {{'exclude' | translate}}</div>
     </div>
-  } @else if (filterOperator?.value === 'Neq') {
+  } @else if (filterOperator.value === 'Neq') {
     <div class="include_exclude">
-      <div class="operation" [class.exclude]="filterOperator?.value === 'Neq'">{{'exclude' | translate}}</div>
+      <div class="operation" [class.exclude]="filterOperator.value === 'Neq'">{{'exclude' | translate}}</div>
     </div>
   }
 </div>
@@ -19,7 +19,7 @@
       <tr>
         <th class="terms-head"></th>
         @if (titleAreDifferent) {
-          @for (header of metricsTable?.header; track header; let i = $index) {
+          @for (header of metricsTable().header; track header; let i = $index) {
             <th scope="col" class="multi-bar__header-indicator">
               <div>
                 <div class="container">
@@ -71,7 +71,7 @@
       <!-- Sub Title area -->
       <tr>
         <th scope="col" class="terms-head"></th>
-        @for (header of metricsTable?.header; track header; let i = $index) {
+        @for (header of metricsTable().header; track header; let i = $index) {
           <th scope="col" class="column-head multi-bar__header">
             @if (header.metric === 'count') {
               <div [matTooltip]="'COUNT_COLUMN_TITLE' | translate"
@@ -91,18 +91,18 @@
         }
       </tr>
     </thead>
-    @for (item of metricsTable?.data; track trackByFn(index, item); let index = $index) {
+    @for (item of metricsTable().data; track trackByFn(index, item); let index = $index) {
       @if (item?.selected) {
         <arlas-multi-bars-row [metricsTableRow]="item" [useColorFromData]="false"
-          [hideSelection]="false" [useColorService]="useColorService" [powerBars]="powerBarsMap.get(item.term)"
+          [hideSelection]="false" [useColorService]="useColorService" [powerBars]="powerBarsMap.get(item.term) ?? []"
           [displayCheckBox]="selectWithCheckbox" (rowSelected)="addTermToSelectedList($event)">
         </arlas-multi-bars-row>
       }
     }
-    @for (row of metricsTable?.data; track trackByFn(index, row); let index = $index) {
+    @for (row of metricsTable().data; track trackByFn(index, row); let index = $index) {
       <arlas-multi-bars-row
-        [metricsTableRow]="row" [selected]="row.selected" [hideSelection]="true" [useColorFromData]="false"
-        [useColorService]="useColorService" [powerBars]="powerBarsMap.get(row.term)"
+        [metricsTableRow]="row" [selected]="!!row.selected" [hideSelection]="true" [useColorFromData]="false"
+        [useColorService]="useColorService" [powerBars]="powerBarsMap.get(row.term) ?? []"
         [displayCheckBox]="selectWithCheckbox" [pendingMode]="pendingMode" (rowSelected)="addTermToSelectedList($event)">
       </arlas-multi-bars-row>
     }

@@ -1,11 +1,11 @@
 <td class="checkboxcell" [colSpan]="1">
 </td>
-<td [class.grid-container]="containerType === 'grid'" [colSpan]="detailColspan - 1">
-  @if (rowItem?.detailsTitleEnabled) {
-    <div class="details-title">{{rowItem?.detailsTitle}}</div>
+<td [class.grid-container]="containerType() === 'grid'" [colSpan]="detailColspan() - 1">
+  @if (rowItem().detailsTitleEnabled) {
+    <div class="details-title">{{rowItem().detailsTitle}}</div>
   }
   <div class="resultdetaileditem">
-    @for (group of rowItem?.itemDetailedData; track group) {
+    @for (group of rowItem().itemDetailedData; track group) {
       @if (showEmptyGroup || group.details.length > 0) {
         <div class="resultdetaileditem--group">
           <span class="resultdetaileditem--group-title {{group.group | replace:' ':'-' | lowercase}}-item-detail">
@@ -23,15 +23,15 @@
 
     <arlas-result-actions class="resultdetaileditem__actions" [class.resultdetaileditem__actions--sticky]="alwaysShowActions()"
       [activatedActionsPerItem]="activatedActionsPerItem"
-      [detailedDataRetriever]="detailedDataRetriever"
-      [item]="rowItem"
+      [detailedDataRetriever]="detailedDataRetriever()"
+      [item]="rowItem()"
       [mode]="'text'"
       (actionOnItemEvent)="triggerActionOnItem($event)"></arlas-result-actions>
 
-    @if (rowItem?.attachments && rowItem.attachments.length > 0) {
+    @if (rowItem().attachments && rowItem().attachments.length > 0) {
       <span class="result-attachments">
         <div class="result-attachments--title">{{'Attachments' | translate}}</div>
-        @for (att of rowItem?.attachments; track att; let i = $index) {
+        @for (att of rowItem().attachments; track att; let i = $index) {
           <span class="result-attachments--item">
             <a class="result-attachments--item--link" href="{{att.url | getAttachmentUrl}}"
               matTooltip="{{getAttachmentDescription(att)}}" [matTooltipPosition]="'after'" target="_blank">

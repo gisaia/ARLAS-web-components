@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChangeDetectorRef, Component, inject, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, input, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -52,13 +52,13 @@ import { ActionDisplayerPipe } from './result-actions.pipe';
 })
 export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   /** The item which actions are managed by this component. */
-  @Input() public item: Item;
+  public item = input.required<Item>();
   /** Width of the component. */
-  @Input() public width: number;
+  @Input() public width?: number;
   /** Map <itemId, Set<actionIds>> : for each item, gives the list of activated actions. */
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
   /** This data retriever allows to fetch the actions of each items + check if an action should be hidden. */
-  @Input({ required: true }) public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
   /** Whether to stop propagation at click/hover of the action. */
   @Input() public stopPropagation = false;
   /** Whether to display the actions as icon buttons or text buttons. */
@@ -71,18 +71,18 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   private readonly _onDestroy$ = new Subject<boolean>();
   private readonly cdr = inject(ChangeDetectorRef);
 
-  public actions: Action[];
+  public actions: Action[] = [];
 
   public constructor(private readonly notifier: ResultlistNotifierService) {
     /** When an Item is hovered: */
-    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter(id => id === this.item.identifier)).subscribe({
+    this.notifier.itemHovered$.pipe(takeUntil(this._onDestroy$)).pipe(filter(id => id === this.item().identifier)).subscribe({
       next: id => {
         this.onItemHovered();
       }
     });
 
     /** When actions need to be refreshed */
-    this.notifier.refreshActions$.pipe(takeUntil(this._onDestroy$), filter(v => !v || v !== this.item.identifier)).subscribe({
+    this.notifier.refreshActions$.pipe(takeUntil(this._onDestroy$), filter(v => !v || v !== this.item().identifier)).subscribe({
       next: () => {
         this.onRefreshActions();
       }
@@ -90,7 +90,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.setItemActions(this.item);
+    this.setItemActions(this.item());
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -131,7 +131,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
    */
   private updateActions() {
     if (this.activatedActionsPerItem) {
-      const actionIds = this.activatedActionsPerItem.get(this.item.identifier);
+      const actionIds = this.activatedActionsPerItem.get(this.item().identifier);
       if (!!actionIds && !!this.actions) {
         this.actions.filter(a => ActionHandler.isReversible(a)).forEach(a => {
           if (actionIds.has(a.id)) {
@@ -155,7 +155,7 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
   private setItemActions(item: Item): void {
     if (item && (!item.actions || (item.actions && item.actions.length === 0))) {
       item.actions = new Array<Action>();
-      this.detailedDataRetriever.getActions(item).pipe(take(1)).subscribe(actions => {
+      this.detailedDataRetriever().getActions(item).pipe(take(1)).subscribe(actions => {
         actions.forEach(action => {
           item.actions.push({
             id: action.id,
@@ -189,12 +189,12 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
      * - If one of the fields values is absent in the current item, the action will be hidden. */
     this.actions.filter(a => ActionHandler.isReversible(a) && a.show === undefined).forEach(a => {
       if (a.fields) {
-        this.detailedDataRetriever.getValues(this.item.identifier, a.fields).pipe(
+        this.detailedDataRetriever().getValues(this.item().identifier, a.fields).pipe(
           take(1)).subscribe(values => a.show = values.filter(v => !v).length === 0);
       } else if (a.filters) {
-        this.detailedDataRetriever.getMatch(this.item.identifier, a.filters).pipe(
+        this.detailedDataRetriever().getMatch(this.item().identifier, a.filters).pipe(
           take(1)).subscribe(v => {
-            if (a.filters.length === v.matched.length) {
+            if (a.filters && a.filters.length === v.matched.length) {
               a.matched = v.matched;
               a.show = v.matched.some(v => !!v);
             } else {
@@ -209,9 +209,9 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
    * Resets the filters and visibility of the actions
    */
   private onRefreshActions() {
-    this.detailedDataRetriever.getActions(this.item).pipe(take(1)).subscribe(actions => {
+    this.detailedDataRetriever().getActions(this.item()).pipe(take(1)).subscribe(actions => {
       actions.forEach(a => {
-        const action = this.item.actions.find(v => v.id === a.id);
+        const action = this.item().actions.find(v => v.id === a.id);
         if (action) {
           ActionHandler.reset(action, a.filters);
         }

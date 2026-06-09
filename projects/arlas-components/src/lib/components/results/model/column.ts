@@ -35,7 +35,7 @@ export class Column {
   /**
    * @description Width of the column.
    */
-  public width: number;
+  public width = 50;
   /**
    * @description Sort direction to apply to th column : ascending, descending or none
    */

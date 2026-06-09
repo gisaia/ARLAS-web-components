@@ -18,7 +18,7 @@
  */
 
 import { NgClass, UpperCasePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatTooltip } from '@angular/material/tooltip';
 import { PowerBar } from '../../powerbars/model/powerbar';
@@ -33,34 +33,26 @@ import { MetricsTableRow } from '../model/metrics-table';
   imports: [NgClass, MatCheckbox, PowerbarComponent, UpperCasePipe, MatTooltip]
 })
 export class MetricsTableRowComponent {
-  @Input() public displayCheckBox: boolean;
-  @Input() public hideSelection: boolean;
-  @Input() public metricsTableRow: MetricsTableRow;
+  @Input() public displayCheckBox = false;
+  @Input() public hideSelection = false;
+  public metricsTableRow = input.required<MetricsTableRow>();
   @Input() public useColorService = false;
   @Input() public useColorFromData = false;
-  @Input() public colors: string[];
-  @Input() public selected: boolean; // trigger change detection
+  @Input() public colors: string[] = [];
+  @Input() public selected = false; // trigger change detection
   @Input() public pendingMode = false;
   @Input() public powerBars: PowerBar[] = [];
   @Output() public rowSelected = new EventEmitter();
 
-
-  public constructor() { }
-
   public selectRow() {
     this.updateRowState();
   }
-
 
   public onCheck() {
     this.updateRowState();
   }
 
   public updateRowState(){
-    this.metricsTableRow.selected = !this.metricsTableRow.selected;
-    this.rowSelected.emit(this.metricsTableRow.term);
+    this.rowSelected.emit(this.metricsTableRow().term);
   }
-
-  /** TODO : the selection state should be saved an propagated to the parent component.
-   */
 }

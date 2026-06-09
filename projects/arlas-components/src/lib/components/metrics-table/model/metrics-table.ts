@@ -26,7 +26,7 @@ export interface MetricsTableHeader {
     title: string;
     subTitle: string;
     metric: string;
-    span?: number;
+    span: number;
     rowfield: string;
     color: string;
 }

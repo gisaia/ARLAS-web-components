@@ -19,7 +19,8 @@
 
 import { AsyncPipe } from '@angular/common';
 import {
-  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
+  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, input, Input,
+  IterableDiffer,
   IterableDiffers, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -157,7 +158,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description An input to customize the resultlist
    */
-  @Input() public options: ResultListOptions;
+  @Input() public options = new ResultListOptions();
 
   @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
@@ -174,28 +175,27 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     columnName: string;
     dataType: string;
     useColorService?: boolean;
-  }>;
+  }> = [];
 
   /**
    * @Input : Angular
    * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid.
    * @note In order to apply `selectInBetween` method properly, this list must be ascendingly sorted on the item identifier.
    */
-  @Input() public rowItemList: Array<Map<string, ItemDataType>>;
+  @Input() public rowItemList: Array<Map<string, ItemDataType>> = [];
 
   /**
    * @Input : Angular
-   * @description A configuration object that sets id field, title field and urls
-   * to images && thumbnails
+   * @description A configuration object that sets id field, title field and urls to images && thumbnails
    */
-  @Input() public fieldsConfiguration: FieldsConfiguration;
+  public fieldsConfiguration = input.required<FieldsConfiguration>();
 
   /**
    * @Input : Angular
    * @description The table width. If not specified, the tableWidth value is
    * equal to container width.
    */
-  @Input() public tableWidth: number = null;
+  @Input() public tableWidth!: number;
 
   /**
    * @Input : Angular
@@ -203,7 +203,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * When scrolling up or down, once there is `nLastLines` items left at the top or bottom of the list, previous/next data is loaded.
    * @deprecated nLastLines is deprecated and used only if `nbLinesBeforeFetch` is not set
   */
-  @Input() public nLastLines: number;
+  @Input() public nLastLines?: number;
 
   /**
    * @Input : Angular
@@ -236,13 +236,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input() public detailedDataRetriever: DetailedDataRetriever = null;
-
-  /**
-   * @Input : Angular
-   * @description List of items ids that are in a indeterminated status.
-   */
-  @Input() public indeterminatedItems: Set<string> = new Set<string>();
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
 
   /**
    * @Input : Angular
@@ -266,13 +260,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description Mode of representation : `list` or `grid`.
    */
-  @Input() public defautMode: ModeEnum;
+  @Input() public defautMode = ModeEnum.grid;
 
   /**
  * @Input : Angular
  * @description Whether the body table is hidden or not.
  */
-  @Input() public isBodyHidden: boolean;
+  @Input() public isBodyHidden = false;
   /**
    * @Input : Angular
    * @description Whether filters on list are displayed.
@@ -295,21 +289,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description The column that is currently sorted on
    */
-  @Input() public currentSortedColumn: SortedColumn;
+  @Input() public currentSortedColumn: SortedColumn | null = null;
 
   /**
    * @Input : Angular
    * @description A fieldName-fieldValue map of fields to filter.
    */
 
-  @Input() public filtersMap: Map<string, ItemDataType>;
+  @Input() public filtersMap = new Map<string, ItemDataType>();
 
   /**
    * @Input : Angular
    * @description A  map of fieldName- Observable of array value for dropdown filter
    */
 
-  @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
+  @Input() public dropDownMapValues = new Map<string, Observable<string[]>>();
   /**
    * @Input : Angular
    * @description A  boolean to show or hide thead of table
@@ -320,7 +314,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<[string, string]>;
+  @Input() public keysToColors = new Array<[string, string]>();
 
   /**
    * @Input : Angular
@@ -345,7 +339,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description A  item to show detail
    */
-  @Input() public selectedGridItem: Item;
+  @Input() public selectedGridItem?: Item;
   /**
    * @Input
    * @description Whether display group with no detail.
@@ -389,7 +383,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the list of items identifiers whose checkboxes are selected.
    */
-  @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
+  @Output() public selectedItemsEvent = new Subject<Array<string>>();
 
   /**
    * @Output : Angular
@@ -479,27 +473,27 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
-  public columns: Array<Column>;
-  public items: Array<Item> = new Array<Item>();
+  public columns = new Array<Column>();
+  public items = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
 
   // Heights of table elements
-  public tbodyHeight: number = null;
-  public theadHeight: number = null;
+  public tbodyHeight?: number;
+  public theadHeight?: number;
 
   public ModeEnum = ModeEnum;
   public ThumbnailFitEnum = ThumbnailFitEnum;
   public PageEnum = PageEnum;
   public SortEnum = SortEnum;
 
-  private readonly iterableRowsDiffer;
+  private readonly iterableRowsDiffer: IterableDiffer<Map<string, ItemDataType>>;
   private readonly iterableColumnsDiffer;
 
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
   public hasGridMode = false;
-  public resultMode: ModeEnum;
+  public resultMode = ModeEnum.grid;
   public allItemsChecked = false;
 
   public borderStyle = 'solid';
@@ -517,8 +511,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     private readonly notifier: ResultlistNotifierService,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
-    this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
+    this.iterableRowsDiffer = iterableRowsDiffer.find([]).create();
+    this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create();
     // Resize the table height on window resize
     fromEvent(globalThis, 'resize')
       .pipe(debounceTime(500))
@@ -545,10 +539,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.resultMode = (this.defautMode && (this.defautMode.toString() === 'grid' ||
       this.defautMode.toString() === ModeEnum.grid.toString())) ? ModeEnum.grid : ModeEnum.list;
     this.options = Object.assign(new ResultListOptions(), this.options);
-    if (!!this.fieldsConfiguration) {
-      if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
-        this.hasGridMode = true;
-      }
+    if (this.fieldsConfiguration().urlThumbnailTemplate !== undefined) {
+      this.hasGridMode = true;
     }
   }
 
@@ -559,7 +551,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public emitThumbnailsFitStatus(fitChange: MatButtonToggleChange): void {
-    this.thumbnailFit = ThumbnailFitEnum[fitChange.value as string];
+    this.thumbnailFit = fitChange.value;
     this.thumbnailFitEvent.next(this.thumbnailFit);
   }
 
@@ -583,7 +575,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
       // If the selected item is not in the current list of items, close the detail
       const selectedItemInData = !!this.selectedGridItem && this.rowItemList
-        .map(item => <string>item.get(this.fieldsConfiguration.idFieldName))
+        .map(item => <string>item.get(this.fieldsConfiguration().idFieldName))
         .includes(this.selectedGridItem.identifier);
       if (!(!!changes['rowItemList'].currentValue && selectedItemInData)) {
         this.closeDetail(true);
@@ -594,16 +586,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     if (changes['isDetailledGridOpen'] !== undefined) {
       this.isDetailledGridOpen = changes['isDetailledGridOpen'].currentValue;
     }
-    if (changes['indeterminatedItems'] !== undefined) {
-      this.items.forEach(item => {
-        item.isindeterminated = false;
-        this.indeterminatedItems.forEach(id => {
-          if (item.identifier === id && !this.selectedItems.has(id)) {
-            item.isindeterminated = true;
-          }
-        });
-      });
-    }
+
     if (changes['selectedItems'] !== undefined) {
       this.items.forEach(item => {
         item.isChecked = false;
@@ -742,10 +725,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets and emits the identifiers list of selected items
    */
-  public setSelectedItems(selectedItems: Set<string>, stopPropagation?: boolean) {
+  public setSelectedItems(selectedItems: Set<string>, item?: Item, stopPropagation?: boolean) {
     // remove all text selection on current document
     // SB : Sometime blinking append, need to be deepened
-    document.getSelection().removeAllRanges();
+    document.getSelection()?.removeAllRanges();
+
+    if (item) {
+      item.isChecked = !item.isChecked;
+    }
 
     this.selectedItems = selectedItems;
     if (selectedItems.size < this.items.length) {
@@ -814,7 +801,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     });
     // Reset column filter when geo sort request
-    this.sortedColumn = null;
+    this.sortedColumn = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
     this.currentSortedColumn = null;
 
     this.geoSortEvent.next(this.GEO_DISTANCE);
@@ -825,7 +812,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public setConsultedItem(identifier: string) {
     const elementidentifier: ElementIdentifier = {
-      idFieldName: this.fieldsConfiguration.idFieldName,
+      idFieldName: this.fieldsConfiguration().idFieldName,
       idValue: identifier
     };
     this.debouncer.next(elementidentifier);
@@ -851,8 +838,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets the border style of rows
    */
-  public setBorderStyle(borderStyle): void {
+  public setBorderStyle(borderStyle: string, item: Item): void {
     this.borderStyle = borderStyle;
+    item.isDetailToggled = !item.isDetailToggled;
   }
 
   /**
@@ -895,7 +883,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.selectedItems = new Set<string>();
     this.items.forEach(item => {
       item.isChecked = this.allItemsChecked;
-      item.isindeterminated = false;
       if (this.allItemsChecked) {
         this.selectedItems.add(item.identifier);
       }
@@ -926,11 +913,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         }
         if (inBetween) {
           item.isChecked = true;
-          item.isindeterminated = false;
           this.selectedItems.add(item.identifier);
         }
       });
-      this.setSelectedItems(this.selectedItems, true);
+      this.setSelectedItems(this.selectedItems, undefined, true);
     }
   }
 
@@ -948,7 +934,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.setSelectedItems(new Set());
     this.items.forEach(item => {
       item.isChecked = false;
-      item.isindeterminated = false;
     });
   }
 
@@ -959,21 +944,25 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   // Build the table's columns
   private setColumns() {
+    if (!this.tableWidth) {
+      return;
+    }
+
     this.columns = new Array<Column>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
     // id column is the first one and has a pre fixed width
     // It is the column where checkboxes are put
-    const idColumn = new Column('', this.fieldsConfiguration.idFieldName, '');
+    const idColumn = new Column('', this.fieldsConfiguration().idFieldName, '');
     idColumn.isIdField = true;
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
-    this.fieldsList.forEach(field => {
+    for (const field of this.fieldsList) {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
       column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
       column.useColorService = field.useColorService ? field.useColorService : false;
       this.columns.push(column);
-    });
+    }
     // add a column for toggle icon
     const toggleColumn = new Column('', 'toggle', '');
     toggleColumn.isToggleField = true;
@@ -982,24 +971,29 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
-    const item = new Item(this.columns, itemData);
-    item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
-    if (this.fieldsConfiguration.titleFieldNames) {
-      item.title = this.fieldsConfiguration.titleFieldNames
+    const item = new Item(this.columns, itemData, <string>itemData.get(this.fieldsConfiguration().idFieldName), this.items.length);
+
+    const titleFieldNames = this.fieldsConfiguration().titleFieldNames;
+    if (titleFieldNames) {
+      item.title = titleFieldNames
         .map(field => <string>itemData.get(field.fieldPath + '_title'))
         .join(' ');
       if (item.title) {
         item.title = item.title.trim();
       }
     }
-    if (this.useColorService && this.fieldsConfiguration.iconColorFieldName) {
-      const colorFieldValue = <string>itemData.get(this.fieldsConfiguration.iconColorFieldName + '_title');
+
+    const iconColorFieldName = this.fieldsConfiguration().iconColorFieldName;
+    if (this.useColorService && iconColorFieldName) {
+      const colorFieldValue = <string>itemData.get(iconColorFieldName + '_title');
       if (colorFieldValue) {
         item.color = this.colorService.getColor(colorFieldValue, this.keysToColors, this.colorsSaturationWeight);
       }
     }
-    if (this.fieldsConfiguration.tooltipFieldNames) {
-      item.tooltip = this.fieldsConfiguration.tooltipFieldNames
+
+    const tooltipFieldNames = this.fieldsConfiguration().tooltipFieldNames;
+    if (tooltipFieldNames) {
+      item.tooltip = tooltipFieldNames
         .map(field => <string>itemData.get(field.fieldPath + '_tooltip'))
         .join(' ');
       if (item.tooltip) {
@@ -1007,11 +1001,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     }
 
-    if (this.fieldsConfiguration.icon) {
-      item.icon = this.fieldsConfiguration.icon;
-    }
-    if (this.fieldsConfiguration.iconCssClass) {
-      item.iconCssClass = <string>itemData.get(this.fieldsConfiguration.iconCssClass);
+    const iconCssClass = this.fieldsConfiguration().iconCssClass;
+    if (iconCssClass) {
+      item.iconCssClass = <string>itemData.get(iconCssClass);
       if (item.iconCssClass) {
         item.iconCssClass = item.iconCssClass.trim();
       }
@@ -1021,21 +1013,23 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     item.detailsTitleEnabled = itemData.get('detailsTitleEnabled') === 'true';
 
     /** Retro-compatibility code */
-    if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
+    const urlImageTemplate = this.fieldsConfiguration().urlImageTemplate;
+    if (item.imageEnabled && urlImageTemplate) {
       item.urlImages = new Array<string>();
-      item.urlImages.push(matchAndReplace(itemData, this.fieldsConfiguration.urlImageTemplate));
+      item.urlImages.push(matchAndReplace(itemData, urlImageTemplate));
     }
     /** End of retro-compatibility code */
 
-    if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplates && this.fieldsConfiguration.urlImageTemplates.length > 0) {
+    const urlImageTemplates = this.fieldsConfiguration().urlImageTemplates;
+    if (item.imageEnabled && urlImageTemplates && urlImageTemplates.length > 0) {
       item.urlImages = new Array<string>();
       item.descriptions = new Array<string>();
-      this.fieldsConfiguration.urlImageTemplates.forEach(descUrl => {
+      urlImageTemplates.forEach(descUrl => {
         let condition = !descUrl.filter;
         if (descUrl.filter) {
           const data = itemData.get(descUrl.filter.field);
           if (Array.isArray(data)) {
-            condition = data.some(v => descUrl.filter.values.includes(v));
+            condition = data.some(v => descUrl.filter?.values.includes(v));
           } else if (data) {
             condition = descUrl.filter.values.includes(data.toString());
           } else {
@@ -1048,15 +1042,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         }
       });
     }
-    if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
-      item.urlThumbnail = matchAndReplace(itemData, this.fieldsConfiguration.urlThumbnailTemplate);
+
+    const urlThumbnailTemplate = this.fieldsConfiguration().urlThumbnailTemplate;
+    if (item.thumbnailEnabled && urlThumbnailTemplate) {
+      item.urlThumbnail = matchAndReplace(itemData, urlThumbnailTemplate);
     }
 
-    if (item.detailsTitleEnabled && this.fieldsConfiguration.detailsTitleTemplate) {
-      item.detailsTitle = matchAndReplace(itemData, this.fieldsConfiguration.detailsTitleTemplate);
+    const detailsTitleTemplate = this.fieldsConfiguration().detailsTitleTemplate;
+    if (item.detailsTitleEnabled && detailsTitleTemplate) {
+      item.detailsTitle = matchAndReplace(itemData, detailsTitleTemplate);
     }
 
-    item.position = this.items.length + 1;
     item.ishighLight = undefined;
     // When new data is loaded, check the one that were already checked +
     // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
@@ -1066,11 +1062,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     } else {
       if (this.selectedItems.has(item.identifier)) {
         item.isChecked = true;
-      }
-      if (this.indeterminatedItems.has(item.identifier)) {
-        item.isindeterminated = true;
-      } else {
-        item.isindeterminated = false;
       }
     }
     if (addOnTop) {

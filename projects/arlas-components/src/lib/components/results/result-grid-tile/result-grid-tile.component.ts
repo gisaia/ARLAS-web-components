@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, Output, ViewChild } from '@angular/core';
+import { Component, input, Input, Output, ViewChild } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -44,14 +44,13 @@ export class ResultGridTileComponent extends ItemComponent {
    */
   public SHOW_IMAGE = marker('Click to show details');
 
-  @ViewChild('cellTooltip', { static: true })
-  public cellTooltip: MatTooltip;
+  @ViewChild('cellTooltip', { static: true }) public cellTooltip?: MatTooltip;
 
   /**
    * @Input
    * @description An object representing an Item .
    */
-  @Input() public gridTile: Item;
+  public gridTile = input.required<Item>();
 
   /**
    * @Input
@@ -66,73 +65,63 @@ export class ResultGridTileComponent extends ItemComponent {
    * @description List of all selected items in the result-list.component.
    * This component sets directly this list.
    */
-  @Input() public selectedItems: Set<string>;
+  @Input() public selectedItems = new Set<string>();
   /**
    * @Input
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
 
   /**
    * @Input : Angular
    * @description An input to customize the resultlist behaviour
    */
-  @Input() public options: ResultListOptions;
+  @Input() public options = new ResultListOptions();
 
   /**
   * @Input
   * @description Name of the id field.
   */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
 
   /**
    * @Input : Angular
    * @description Map <itemId, Set<actionIds>> : for each item, gives the list of activated actions.
   */
-  @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+  @Input() public activatedActionsPerItem = new Map<string, Set<string>>();
   /**
   * @Input
   * @description Display or not big full info icon on the grid.
   */
   @Input() public  displayInfoIcon = false;
 
-
-
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
-
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
 
   /**
    * @Output
    * @description Emits the list of selected items in result-list.component.
    */
-  @Output() public selectedItemsEvent: Subject<Set<string>> = new Subject<Set<string>>();
+  @Output() public selectedItemsEvent = new Subject<Set<string>>();
 
   /**
    * @Output
    * @description Emits the selected/unselected item.
    * @deprecated
    */
-  @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
+  @Output() public selectedItemPositionEvent = new Subject<Item>();
 
   /**
    * @Output
    * @description Emits the the item that it has been clicked on it.
    */
-  @Output() public clickedOnItemEvent: Subject<Item> = new Subject<Item>();
-
-
+  @Output() public clickedOnItemEvent = new Subject<Item>();
 
   public ThumbnailFitEnum = ThumbnailFitEnum;
-
-  public constructor() {
-    super();
-  }
 
   /**
    * Hides the cell's tooltip when the mouse is over the attachements buttons
@@ -140,42 +129,33 @@ export class ResultGridTileComponent extends ItemComponent {
    */
   public hideCellTooltip(event: Event) {
     event.stopPropagation();
-    this.cellTooltip.hide();
+    this.cellTooltip?.hide();
   }
 
   /**
    * Shows the cell's tooltip when the mouse is over the tile
    */
   public showCellTooltip() {
-    this.cellTooltip.show();
+    this.cellTooltip?.show();
   }
 
   // Update the list of the selected items
   public setSelectedItem() {
-    super.setSelectedItem(this.gridTile.isChecked, this.gridTile.identifier, this.selectedItems);
-    this.gridTile.isChecked = !this.gridTile.isChecked;
+    super.setSelectedItem(this.gridTile().isChecked, this.gridTile().identifier, this.selectedItems);
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in list mode
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public determinateItem() {
-    this.gridTile.isChecked = true;
-    this.gridTile.isindeterminated = false;
-    this.selectedItems.add(this.gridTile.identifier);
-    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
-    this.selectedItemsEvent.next(this.selectedItems);
-  }
-
   public setClickedOnItem() {
-    this.retrieveAdditionalInfo(this.detailedDataRetriever, this.gridTile);
-    this.clickedOnItemEvent.next(this.gridTile);
+    this.retrieveAdditionalInfo(this.detailedDataRetriever(), this.gridTile());
+    this.clickedOnItemEvent.next(this.gridTile());
   }
 
   public triggerActionOnItem(action: Action) {
     this.actionOnItemEvent.next(
       {
         action: action,
-        elementidentifier: { idFieldName: this.idFieldName, idValue: this.gridTile.identifier }
+        elementidentifier: { idFieldName: this.idFieldName(), idValue: this.gridTile().identifier }
       }
     );
   }

@@ -19,8 +19,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import {
-    ChangeDetectorRef, Component,
-    ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ChangeDetectorRef, Component,
+  ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -64,27 +64,27 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    * @Input
    * @description An object representing an Item and that contains the detailed data.
    */
-  @Input() public gridTile: Item;
+  public gridTile = input.required<Item>();
   /**
    * @Input
    * @description Width of the detailed grid.
    */
-  @Input() public detailWidth: number;
+  public detailWidth = input.required<number>();
   /**
    * @Input
    * @description Height of the detailed grid.
    */
-  @Input() public detailHeight: number;
+  public detailHeight = input.required<number>();
   /**
    * @Input
    * @description Name of the id field.
    */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
   /**
    * @Input
    * @description Whether the detail is visible.
    */
-  @Input() public isDetailShowed: boolean;
+  @Input() public isDetailShowed = false;
   /**
    * @Input
    * @description Whether display group with no detail.
@@ -108,7 +108,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   * @description A detailed-data-retriever object that implements
   * DetailedDataRetriever interface.
   */
-  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
 
   /**
    * @Input
@@ -120,15 +120,14 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    * @description Emits the event of applying the specified action on the specified item.
    */
 
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
   /**
  * @Output
  * @description Emits the event of closing details.
  */
   @Output() public closeDetail: Subject<boolean> = new Subject();
 
-  @ViewChild('image_detail', { static: false }) public imageViewer: ElementRef;
+  @ViewChild('image_detail', { static: false }) public imageViewer?: ElementRef;
 
 
   public isDetailedDataShowed = false;
@@ -136,7 +135,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   /**
    * @description The image source to display. Either is an url or the content of the image.
    */
-  public imgSrc: string | ArrayBuffer;
+  public imgSrc: string | undefined;
 
   /**
    * @description Whether the request for the image is being processed
@@ -153,11 +152,11 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    */
   public isFullScreen = false;
 
-  private viewer;
+  private viewer?: ImageViewer;
 
   public constructor(
-    private changeDetectorRef: ChangeDetectorRef,
-    private http: HttpClient
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly http: HttpClient
   ) { }
 
   public ngOnDestroy(): void {
@@ -166,9 +165,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      if (this.viewer) {
-        this.viewer = this.viewer.destroy();
-      }
+      this.resetViewer();
       this.isFullScreen = false;
       this.currentImageIndex = 0;
       this.getImage();
@@ -177,21 +174,21 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   private getImage() {
     this.imgSrc = undefined;
-    if (!this.gridTile || (this.gridTile && (!this.gridTile.urlImages || this.gridTile.urlImages.length === 0))) {
+    if (!this.gridTile().urlImages || this.gridTile().urlImages.length === 0) {
       return;
     }
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
+      this.http.get(this.gridTile().urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
-              this.imgSrc = reader.result;
-              this.gridTile.imageEnabled = true;
+              this.imgSrc = reader.result?.toString();
+              this.gridTile().imageEnabled = true;
               this.isLoading = false;
-              this.resetViewer();
+              this.updateViewer();
             }, false);
             if (image) {
               reader.readAsDataURL(image);
@@ -202,19 +199,19 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
           }
         });
     } else {
-      this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
-      this.gridTile.imageEnabled = true;
-      this.resetViewer();
+      this.imgSrc = this.gridTile().urlImages[this.currentImageIndex];
+      this.gridTile().imageEnabled = true;
+      this.updateViewer();
     }
   }
 
-  private resetViewer() {
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
+  private updateViewer() {
+    this.resetViewer();
     setTimeout(() => {
       if (this.isFullScreen) {
-        this.fullScreenViewer.show(this.imgSrc);
+        if (this.imgSrc) {
+          this.fullScreenViewer.show(this.imgSrc);
+        }
       } else {
         if (!!this.imageViewer && !this.viewer) {
           this.viewer = new ImageViewer(this.imageViewer.nativeElement);
@@ -224,9 +221,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   }
 
   public destroyViewer(isComponentDestroy?: boolean): void {
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
+    this.updateViewer();
     if (isComponentDestroy && this.fullScreenViewer) {
       this.fullScreenViewer.destroy();
     }
@@ -240,7 +235,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
-    this.resetViewer();
+    this.updateViewer();
   }
 
   public closeDetailedData() {
@@ -255,48 +250,55 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   public showOverlay() {
     this.isFullScreen = true;
-    this.resetViewer();
+    this.updateViewer();
 
-    let viewerContainer: HTMLElement | undefined;
+    let viewerContainer: HTMLElement | null;
     const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
 
     const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
-    if (!!actionsInfos && !!actionsInfos[0]) {
+    if (fullScreenContainer && actionsInfos && actionsInfos[0]) {
       viewerContainer = actionsInfos[0].parentElement;
       const elements = actionsInfos.length;
       for (let i = 0; i < elements; i++) {
         // The element is removed from the list once retrieved
-        fullScreenContainer.appendChild(actionsInfos.item(0));
+        fullScreenContainer.appendChild(actionsInfos.item(0) as Element);
       }
     }
 
-    document.querySelector('.iv-fullscreen-close').addEventListener('click', () => {
+    document.querySelector('.iv-fullscreen-close')?.addEventListener('click', () => {
       this.isFullScreen = false;
-      if (viewerContainer) {
+      if (viewerContainer && fullScreenContainer) {
         const actionsInfosFullScreen = fullScreenContainer.getElementsByClassName('viewer_actions-infos');
         const elements = actionsInfosFullScreen.length;
         for (let i = 0; i < elements; i++) {
           // The element is removed from the list once retrieved
-          viewerContainer.appendChild(actionsInfosFullScreen.item(0));
+          viewerContainer.appendChild(actionsInfosFullScreen.item(0) as Element);
         }
       }
-      this.resetViewer();
+      this.updateViewer();
     });
   }
 
   public onPrevious() {
     this.currentImageIndex -= 1;
     if (this.currentImageIndex < 0) {
-      this.currentImageIndex = this.gridTile.urlImages.length - 1;
+      this.currentImageIndex = this.gridTile().urlImages.length - 1;
     }
     this.getImage();
   }
 
   public onNext() {
     this.currentImageIndex += 1;
-    if (this.currentImageIndex >= this.gridTile.urlImages.length) {
+    if (this.currentImageIndex >= this.gridTile().urlImages.length) {
       this.currentImageIndex = 0;
     }
     this.getImage();
+  }
+
+  private resetViewer() {
+    if (this.viewer) {
+      this.viewer.destroy();
+      this.viewer = undefined;
+    }
   }
 }

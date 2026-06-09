@@ -17,17 +17,11 @@
  * under the License.
  */
 
-import { Observable } from 'rxjs';
 import { Item } from '../model/item';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Action, AdditionalInfo, Attachment } from '../utils/results.utils';
+import { Action, Attachment } from '../utils/results.utils';
 
 export class ItemComponent {
-
-  /**
-   * @description Emits the retrieved detailed data.
-   */
-  protected retrievedDataEvent: Observable<AdditionalInfo>;
 
   public setSelectedItem(isChecked: Boolean, identifier: string, selectedItems: Set<string>) {
     isChecked = !isChecked;
@@ -44,40 +38,40 @@ export class ItemComponent {
 
   public retrieveAdditionalInfo(detailedDataRetriever: DetailedDataRetriever, item: Item) {
     if (detailedDataRetriever !== null && item.itemDetailedData.length === 0) {
-      this.retrievedDataEvent = detailedDataRetriever.getData(((String)(item.identifier)));
-      this.retrievedDataEvent.subscribe(additionalInfo => {
-        item.actions = new Array<Action>();
-        additionalInfo.actions.forEach(action => {
-          item.actions.push({
-            id: action.id,
-            label: action.label,
-            actionBus: action.actionBus,
-            cssClass: action.cssClass,
-            tooltip: action.tooltip,
-            reverseAction: action.reverseAction,
-            icon: action.icon,
-            fields: action.fields,
-            show: action.show
-          });
-        });
-        additionalInfo.details.forEach((v, k) => {
-          const details: Array<{ key: string; value: string; }> = new Array<{ key: string; value: string; }>();
-          v.forEach((value, key) => details.push({ key: key, value: value }));
-          item.itemDetailedData.push({ group: k, details: details });
-        });
-        if (additionalInfo.attachments) {
-          item.attachments = new Array<Attachment>();
-          additionalInfo.attachments.forEach(attachment => {
-            item.attachments.push({
-              label: attachment.label,
-              url: attachment.url,
-              type: attachment.type,
-              description: attachment.description,
-              icon: attachment.icon
+      detailedDataRetriever.getData((item.identifier))
+        .subscribe(additionalInfo => {
+          item.actions = new Array<Action>();
+          additionalInfo.actions?.forEach(action => {
+            item.actions.push({
+              id: action.id,
+              label: action.label,
+              actionBus: action.actionBus,
+              cssClass: action.cssClass,
+              tooltip: action.tooltip,
+              reverseAction: action.reverseAction,
+              icon: action.icon,
+              fields: action.fields,
+              show: action.show
             });
           });
-        }
-      });
+          additionalInfo.details?.forEach((v, k) => {
+            const details: Array<{ key: string; value: string; }> = new Array<{ key: string; value: string; }>();
+            v.forEach((value, key) => details.push({ key: key, value: value }));
+            item.itemDetailedData.push({ group: k, details: details });
+          });
+          if (additionalInfo.attachments) {
+            item.attachments = new Array<Attachment>();
+            additionalInfo.attachments.forEach(attachment => {
+              item.attachments.push({
+                label: attachment.label,
+                url: attachment.url,
+                type: attachment.type,
+                description: attachment.description,
+                icon: attachment.icon
+              });
+            });
+          }
+        });
     }
   }
 }

@@ -15,7 +15,7 @@
             } @else  {
               <td arlas-result-filter class="resultlist__filter__{{column.columnName}}"
                 [matTooltip]="(FILTER_ON | translate) + (column.columnName | translate)" [style.width.px]="column.width"
-                [column]="column" [dropdownValues]="dropDownMapValues?.get(column.fieldName) | async" [filtersMap]="filtersMap"
+                [column]="column" [dropdownValues]="(dropDownMapValues.get(column.fieldName) | async) ?? []" [filtersMap]="filtersMap"
                 (columnChanged)="columnChanged($event)" (setFiltersEvent)="setFilters($event)">
               </td>
             }
@@ -61,7 +61,7 @@
               [compareWith]="byFieldName" (selectionChange)="setSortedColumn($event)" [ngModel]="sortedColumn"
               [placeholder]="'Sort on' | translate">
               <mat-select-trigger>
-                @if (sortedColumn?.fieldName) {
+                @if (sortedColumn.fieldName) {
                   <span>
                     {{sortedColumn.columnName | translate}}
                   </span>
@@ -76,7 +76,7 @@
                 }
               }
             </mat-select>
-            @if (sortedColumn?.fieldName) {
+            @if (sortedColumn.fieldName) {
               <button mat-icon-button class="resultlist__tools--sort-direction" (click)="setDirection($event)"
                 (keydown)="setDirection($event)" [matTooltip]="'Change sort direction' | translate">
                 <mat-icon [class.reversed]="sortedColumn.sortDirection === SortEnum.asc">trending_flat</mat-icon>
@@ -127,15 +127,15 @@
           }
         </tr>
       }
-      @if (selectedGridItem !== null && resultMode === ModeEnum.grid && isDetailledGridOpen) {
+      @if (selectedGridItem && resultMode === ModeEnum.grid && isDetailledGridOpen) {
         <tr class="resultlist__grid-detail resultlist__thead__tr">
-          <td class="resultlist__grid-detail--td" [colSpan]="columns?.length">
+          <td class="resultlist__grid-detail--td" [colSpan]="columns.length">
             <arlas-result-detailed-grid [gridTile]="selectedGridItem" [detailWidth]="tableWidth"
               [activatedActionsPerItem]="activatedActionsPerItem" [detailHeight]="detailedGridHeight"
-              [idFieldName]="fieldsConfiguration.idFieldName" [isDetailShowed]="isDetailledGridOpen"
+              [idFieldName]="fieldsConfiguration().idFieldName" [isDetailShowed]="isDetailledGridOpen"
               (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
-              [useHttp]="fieldsConfiguration.useHttpQuicklooks" (closeDetail)="closeDetail($event)"
-              [detailedDataRetriever]="detailedDataRetriever">
+              [useHttp]="!!fieldsConfiguration().useHttpQuicklooks" (closeDetail)="closeDetail($event)"
+              [detailedDataRetriever]="detailedDataRetriever()">
             </arlas-result-detailed-grid>
           </td>
         </tr>
@@ -151,7 +151,7 @@
     <tbody class="resultlist__tbody" arlasResultScroll [style.overflow-anchor]="'none'"
       [style.height.px]="tbodyHeight" [scrollOptions]="scrollOptions" [items]="items" [style.position]="'relative'"
       [nbGridColumns]="nbGridColumns"
-      [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch:nLastLines" [fetchState]="fetchState"
+      [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch : (nLastLines ?? 5)" [fetchState]="fetchState"
       [resultMode]="resultMode" (visibleItems)="emitVisibleItems($event)"
       (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)">
       <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
@@ -161,19 +161,20 @@
             <tr arlas-result-item [activatedActionsPerItem]="activatedActionsPerItem" [id]="id"
               class="resultlist__body--item-hover-{{rowItem.ishighLight}}" [options]="options"
               (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
-              [idFieldName]="fieldsConfiguration.idFieldName" [tableWidth]="tableWidth" [rowItem]="rowItem"
+              [idFieldName]="fieldsConfiguration().idFieldName" [tableWidth]="tableWidth" [rowItem]="rowItem"
               [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle" [keysToColors]="keysToColors"
-              [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever"
-              [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
-              (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle"
+              [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever()"
+              [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event, rowItem)"
+              (borderStyleEvent)="setBorderStyle($event, rowItem)" [style.border-bottom-style]="borderStyle"
               (actionOnItemEvent)="triggerActionOnItem($event)">
             </tr>
             @if (rowItem.isDetailToggled) {
               <tr arlas-result-detailed-item class="resultlist__body--detailed-item"
                 (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
-                [detailedDataRetriever]="detailedDataRetriever" [activatedActionsPerItem]="activatedActionsPerItem"
-                [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
-                [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
+                [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
+                [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
+                [idFieldName]="fieldsConfiguration().idFieldName" [containerType]="'list'"
+                (actionOnItemEvent)="triggerActionOnItem($event)">
               </tr>
             }
           } @else {
@@ -184,8 +185,8 @@
                     [displayInfoIcon]="rowItem.identifier === selectedGridItem?.identifier && isDetailledGridOpen"
                     [thumbnailFit]="thumbnailFit" [id]="id" class="resultlist__grid-tile"
                     [options]="options" [gridTile]="rowItem" [selectedItems]="selectedItems"
-                    [detailedDataRetriever]="detailedDataRetriever" (selectedItemsEvent)="setSelectedItems($event)"
-                    (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration.idFieldName"
+                    [detailedDataRetriever]="detailedDataRetriever()" (selectedItemsEvent)="setSelectedItems($event, rowItem)"
+                    (clickedOnItemEvent)="setSelectedGridItem($event)" [idFieldName]="fieldsConfiguration().idFieldName"
                     (actionOnItemEvent)="triggerActionOnItem($event)">
                   </arlas-result-grid-tile>
                 </mat-grid-tile>
@@ -200,15 +201,15 @@
     <div class="resultlist-thumbnails-fit">
       <mat-button-toggle-group [name]="'thumbnailFitGroup'" (change)="emitThumbnailsFitStatus($event)" class="fit-group"
         [hideSingleSelectionIndicator]="true">
-        <mat-button-toggle matTooltip="{{WIDTH_FIT | translate}}" value="{{ThumbnailFitEnum.width}}"
+        <mat-button-toggle matTooltip="{{WIDTH_FIT | translate}}" [value]="ThumbnailFitEnum.width"
           [checked]="thumbnailFit==ThumbnailFitEnum.width">
           <mat-icon style="transform: rotate(-90deg)" class="fit-icon">arrows_outward</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle matTooltip="{{CONTAIN_FIT | translate}}" value="{{ThumbnailFitEnum.contain}}"
+        <mat-button-toggle matTooltip="{{CONTAIN_FIT | translate}}" [value]="ThumbnailFitEnum.contain"
           [checked]="thumbnailFit==ThumbnailFitEnum.contain" class="contain-icon-wrapper">
           <mat-icon class="contain-icon fit-icon">open_with</mat-icon>
         </mat-button-toggle>
-        <mat-button-toggle matTooltip="{{HEIGHT_FIT | translate}}" value="{{ThumbnailFitEnum.height}}"
+        <mat-button-toggle matTooltip="{{HEIGHT_FIT | translate}}" (value)="ThumbnailFitEnum.height"
           [checked]="thumbnailFit==ThumbnailFitEnum.height">
           <mat-icon class="fit-icon">arrows_outward</mat-icon>
         </mat-button-toggle>

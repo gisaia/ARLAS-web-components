@@ -4,32 +4,32 @@
   <div class="resultgrid">
     <div class="resultgrid--container">
       <div [hidden]="isDetailedDataShowed">
-        <div class="resultgrid__img" [style.height.px]="detailHeight" [style.width.px]="detailWidth">
-          @if (gridTile.imageEnabled) {
+        <div class="resultgrid__img" [style.height.px]="detailHeight()" [style.width.px]="detailWidth()">
+          @if (gridTile().imageEnabled) {
             <img class="image_view" #image_detail src="{{imgSrc}}" (error)="destroyViewer()" alt="">
           }
-          @if ((!gridTile.imageEnabled || !imgSrc) && !isLoading) {
+          @if ((!gridTile().imageEnabled || !imgSrc) && !isLoading) {
             <img src="{{noViewImg()}}" alt="No image available">
           }
           @if (isLoading) {
-            <mat-progress-spinner [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight / 2 : detailWidth / 2" [mode]="'indeterminate'"></mat-progress-spinner>
+            <mat-progress-spinner [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight() / 2 : detailWidth() / 2" [mode]="'indeterminate'"></mat-progress-spinner>
           }
         </div>
-        @if (gridTile.urlImages && gridTile.urlImages.length > 1) {
+        @if (gridTile().urlImages && gridTile().urlImages.length > 1) {
           <button mat-icon-button class="viewer_actions-infos navigate-button previous" matTooltip="{{'Previous image' | translate}}" (click)="onPrevious()">
             <mat-icon>keyboard_arrow_left</mat-icon>
           </button>
         }
-        @if (gridTile.descriptions) {
-          <div class="viewer_actions-infos description">{{ gridTile.descriptions[currentImageIndex] }}</div>
+        @if (gridTile().descriptions) {
+          <div class="viewer_actions-infos description">{{ gridTile().descriptions[currentImageIndex] }}</div>
         }
-        @if (gridTile.urlImages && gridTile.urlImages.length > 1) {
+        @if (gridTile().urlImages && gridTile().urlImages.length > 1) {
           <button mat-icon-button class="viewer_actions-infos navigate-button next" matTooltip="{{'Next image' | translate}}" (click)="onNext()">
             <mat-icon>keyboard_arrow_right</mat-icon>
           </button>
         }
         <div class="resultgrid__info-button">
-          <button [disabled]="!gridTile.imageEnabled || isLoading" id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}"
+          <button [disabled]="!gridTile().imageEnabled || isLoading" id="view_image_gridmode_btn" matTooltip="{{VIEW_IMAGE | translate}}"
             class="resultgrid__info-view-button" mat-mini-fab (click)="showOverlay()">
             <mat-icon class="resultgrid__info_outline">fit_screen</mat-icon>
           </button>
@@ -51,12 +51,12 @@
           </button>
         </div>
         <div arlas-result-detailed-item class="resultgrid--detailed-item"
-          [rowItem]="gridTile" [containerType]="'grid'" [idFieldName]="idFieldName"
-          [detailedDataRetriever]="detailedDataRetriever"
+          [rowItem]="gridTile()" [containerType]="'grid'" [idFieldName]="idFieldName()"
+          [detailedDataRetriever]="detailedDataRetriever()"
           [activatedActionsPerItem]="activatedActionsPerItem"
-          [style.width.px]="detailWidth" [style.height.px]="detailHeight"
+          [style.width.px]="detailWidth()" [style.height.px]="detailHeight()"
           [showEmptyGroup]= "showEmptyGroup" (actionOnItemEvent)="triggerActionOnItem($event)"
-          [alwaysShowActions]="true">
+          [alwaysShowActions]="true" [detailColspan]="1">
         </div>
       </div>
     </div>

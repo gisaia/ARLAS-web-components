@@ -23,7 +23,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'getValue'
 })
 export class GetValuePipe implements PipeTransform {
-  public transform<K, V>(value: K, map?: Map<K, V>): V {
+  public transform<K, V>(value: K, map?: Map<K, V>): V | undefined {
     return map ? map.get(value) : undefined;
   }
 }
