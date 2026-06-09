@@ -17,21 +17,17 @@
  * under the License.
  */
 
-import { Component, input } from '@angular/core';
-import { TranslatePipe } from '@ngx-translate/core';
-import { ProtectImageDirective } from '../../../tools/protect-image.directive';
+import { of } from 'rxjs';
+import { vi } from 'vitest';
+import { Item } from '../components/results/model/item';
+import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
 
-@Component({
-  selector: 'arlas-cog-preview',
-  imports: [
-    TranslatePipe,
-    ProtectImageDirective
-  ],
-  templateUrl: './cog-preview.component.html',
-  styleUrl: './cog-preview.component.scss'
-})
-export class CogPreviewComponent {
-  public title = input<string>();
-  public description = input<string>();
-  public preview = input<string>('assets/no-view.png');
-}
+export const mockRowItem = new Item([], new Map(), '', 0);
+
+export const mockDetailedDataRetriever = {
+    detailsConfig: [],
+    getActions: vi.fn(() => of([])),
+    getData: vi.fn(),
+    getMatch: vi.fn(),
+    getValues: vi.fn()
+} as DetailedDataRetriever;

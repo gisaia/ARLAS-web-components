@@ -46,6 +46,8 @@ describe('DonutComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(DonutComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('id', 'test');
+    fixture.componentRef.setInput('donutData', { id: '', isOther: false, size: 3, fieldName: '', fieldValue: '' });
     fixture.detectChanges();
   });
 

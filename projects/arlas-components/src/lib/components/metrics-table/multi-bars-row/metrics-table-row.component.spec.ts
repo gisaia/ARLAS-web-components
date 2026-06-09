@@ -28,11 +28,12 @@ describe('MultiBarsRowComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
     imports: [MetricsTableRowComponent]
-})
+  })
     .compileComponents();
 
     fixture = TestBed.createComponent(MetricsTableRowComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('metricsTableRow', { term: 'Test', data: [] });
     fixture.detectChanges();
   });
 

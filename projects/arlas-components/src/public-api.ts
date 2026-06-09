@@ -20,7 +20,6 @@
 /*
  * Public API Surface of arlas-web-components
  */
-export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TimelineData, TreeNode } from 'arlas-d3';
 export { CalendarTimelineComponent, TranslationDirection } from './lib/components/calendar-timeline/calendar-timeline.component';
 export { CogLegendComponent } from './lib/components/cog/cog-legend/cog-legend.component';
 export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
@@ -53,7 +52,7 @@ export { SortEnum } from './lib/components/results/utils/enumerations/sortEnum';
 export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/thumbnailFitEnum';
 export {
     Action, ActionHandler, AdditionalInfo, Attachment, DescribedUrl, ElementIdentifier, Field,
-    FieldsConfiguration, ItemDataType, PROTECTED_REQUEST_HEADER, PageQuery, ResultListOptions, matchAndReplace
+    FieldsConfiguration, ItemDataType, matchAndReplace, PageQuery, PROTECTED_REQUEST_HEADER, ResultListOptions
 } from './lib/components/results/utils/results.utils';
 export {
     Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent

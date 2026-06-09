@@ -18,14 +18,14 @@
  */
 
 import { Component, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
 import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
   selector: 'arlas-cog-legend',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     ShortenNumberPipe,
     ProtectImageDirective
   ],

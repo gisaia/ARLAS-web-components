@@ -50,7 +50,7 @@ export class ResultDetailedItemComponent {
    */
   public idFieldName = input.required<string>();
 
-  public containerType = input.required<string>();
+  public containerType = input.required<'list' | 'grid'>();
 
   /**
    * @Input

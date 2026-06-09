@@ -33,9 +33,10 @@
     }
   </div>
 
-  @if (histogram?.histogramParams?.dataLength === 1 && Array.isArray(data)) {
+  @let params = histogram?.histogramParams;
+  @if (params && params.dataLength === 1 && Array.isArray(data)) {
     <div class="histogram__no-chart" [style.width.px]="chartWidth" [style.height.px]="histogram?.histogramParams?.chartHeight">
-      <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{data[0].key | histogramKey : histogram?.histogramParams }} {{xUnit | translate}}</span>
+      <span class="histogram__no-chart__key">{{chartXLabel | translate}} {{data[0].key | histogramKey : params }} {{xUnit | translate}}</span>
       @for (d of data; track d) {
         <div>
           <span class="histogram__no-chart__value">{{histogram?.histogramParams?.chartTitle | translate}} {{d.value}}  {{ ((yUnit && yUnit.length > 0) ? yUnit : d.chartId | getCollectionUnit) | translate }}</span>
