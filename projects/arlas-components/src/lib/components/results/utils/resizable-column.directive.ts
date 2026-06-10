@@ -43,13 +43,13 @@ const TABLE_ANCHOR_CSS_PRETTY_NAME = 'arlas-resizable-anchor';
  * Directive to declare a table with resizable columns
  */
 @Directive({
-  selector: '[arlasResizableColumn]'
+  selector: '[arlasResizableTable]'
 })
-export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnInit {
+export class ResizableTableDirective implements AfterViewInit, OnDestroy, OnInit {
   /**
    * Whether the columns of the table can be resized
    */
-  public arlasResizableColumn = input(true);
+  public arlasResizableTable = input(true);
 
   /**
    * Source of truth that helps to keep the column ordered
@@ -59,7 +59,7 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
   /**
    * Column that needs to be resized and has the directive ResizableDirective
    */
-  protected currentResizableDirective?: ResizableDirective;
+  protected currentResizableDirective?: ResizableColumnDirective;
 
   /**
    * Mouse X position when the drag starts
@@ -72,7 +72,7 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
   private cursor?: HTMLElement;
 
   /** Child directive reference */
-  private readonly childDirectiveRef = contentChildren(forwardRef(() => ResizableDirective), {descendants: true});
+  private readonly childDirectiveRef = contentChildren(forwardRef(() => ResizableColumnDirective), {descendants: true});
 
   /**
    * Store child event ref to be unsubscribed on destroy
@@ -83,7 +83,7 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
   public columnResized = output<ResizableColumnMoveEvent>();
 
   /** Subject through which each child can declare themselves */
-  public readonly childrenOnInit$ = new Subject<ResizableDirective>();
+  public readonly childrenOnInit$ = new Subject<ResizableColumnDirective>();
 
   /** Destroy reference */
   private readonly destroyRef = inject(DestroyRef);
@@ -108,13 +108,13 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
       .subscribe((event: Event) => {
         for (const d of this.childDirectiveRef()) {
           const width = this.getElementWidth(d.getNativeEl());
-          this.storeWidth(width, d.arlasResizable());
+          this.storeWidth(width, d.arlasResizableColumn());
         }
       });
   }
 
   public ngAfterViewInit() {
-    if (this.arlasResizableColumn()) {
+    if (this.arlasResizableTable()) {
       this.createCursor();
     }
   }
@@ -155,7 +155,7 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
 
         // If the column after cannot be resized, then this one can only be resized using the handle before it
         if (!child.allowResize() && index > 0) {
-          (this.childDirectiveRef()[index - 1] as ResizableDirective).removeAnchor();
+          (this.childDirectiveRef()[index - 1] as ResizableColumnDirective).removeAnchor();
         }
         index++;
     });
@@ -163,10 +163,10 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
 
   /**
    * Bind all necessary event to track column resize
-   * @param {ResizableDirective} childDirective
+   * @param childDirective
    * @private
    */
-  private bindColumnResizeEvents(childDirective: ResizableDirective) {
+  private bindColumnResizeEvents(childDirective: ResizableColumnDirective) {
     this.eventRef.push(
       childDirective.resizing.subscribe(event => this.moveCursor(event.event)),
       childDirective.resizeStarted.subscribe(event => this.onResizeStarted(event, childDirective)),
@@ -217,7 +217,7 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
    * @param event
    * @param childDirective
    */
-  private onResizeStarted(event: ResizableColumnMoveEvent, childDirective: ResizableDirective) {
+  private onResizeStarted(event: ResizableColumnMoveEvent, childDirective: ResizableColumnDirective) {
     this.currentResizableDirective = childDirective;
 
     if (this.cdkDropList){
@@ -277,7 +277,7 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
   }
 
   /**
-   * Get current width from a start position
+   * Get current width of the column while dragging the anchor to change its width
    * @param event Mouse position after dragging started
    * @param el Element to measure
    */
@@ -295,14 +295,14 @@ export class ResizableColumnDirective implements AfterViewInit, OnDestroy, OnIni
       const event = resizeEvent.event;
       const newWidth = this.getCurrentWidth(event, this.currentResizableDirective.getNativeEl());
 
-      const resizedColumnIdx = this.columns().findIndex(c => c.columnName === this.currentResizableDirective.arlasResizable());
+      const resizedColumnIdx = this.columns().findIndex(c => c.columnName === this.currentResizableDirective.arlasResizableColumn());
       // If the next column is resizeable
       const nextColumn = this.columns()[resizedColumnIdx + 1];
       if (resizedColumnIdx >= 0 && nextColumn.isResizable) {
         const dx = newWidth - this.columns()[resizedColumnIdx].width;
 
         if (newWidth) {
-          this.storeWidth(newWidth, this.currentResizableDirective.arlasResizable());
+          this.storeWidth(newWidth, this.currentResizableDirective.arlasResizableColumn());
           // Resize next column by -dx
           this.storeWidth(nextColumn.width - dx, nextColumn.columnName);
         }
@@ -329,13 +329,13 @@ export interface ResizableColumnMoveEvent {
  * Directive to declare the column to resize
  */
 @Directive({
-  selector: '[arlasResizable]'
+  selector: '[arlasResizableColumn]'
 })
-export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
+export class ResizableColumnDirective implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Column id
    */
-  public arlasResizable = input.required<string>();
+  public arlasResizableColumn = input.required<string>();
 
   /**
    * Whether to allow the resize of the column.
@@ -365,7 +365,7 @@ export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
   /**
    * Resizable column directive. Mandatory to work.
    */
-  private readonly parent = inject(ResizableColumnDirective);
+  private readonly parent = inject(ResizableTableDirective);
   /**
    * Angular utility to manipulate dom
    */
@@ -421,7 +421,7 @@ export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
     this.mouseMoveRef = this.renderer.listen('document', 'mousemove', (e: MouseEvent) => {
       e.stopPropagation();
       if (this.isResizing && this.allowResize()) {
-        this.resizing.emit({el: this.headerCellEl.nativeElement, event: e, columnName: this.arlasResizable()});
+        this.resizing.emit({el: this.headerCellEl.nativeElement, event: e, columnName: this.arlasResizableColumn()});
       }
     });
   }
@@ -433,7 +433,7 @@ export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
     this.mouseUpRef = this.renderer.listen('document', 'mouseup', (e) => {
       e.stopPropagation();
       if (this.isResizing && this.allowResize()) {
-        this.resizeEnded.emit({el: this.headerCellEl.nativeElement, event: e, columnName: this.arlasResizable()});
+        this.resizeEnded.emit({el: this.headerCellEl.nativeElement, event: e, columnName: this.arlasResizableColumn()});
         this.isResizing = false;
         this.mouseUpRef?.();
         this.mouseMoveRef?.();
@@ -449,7 +449,7 @@ export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
       e.stopPropagation();
       if (!this.isResizing && this.allowResize()) {
         this.isResizing = true;
-        this.resizeStarted.emit({el: this.getNativeEl(), event: e, columnName: this.arlasResizable()});
+        this.resizeStarted.emit({el: this.getNativeEl(), event: e, columnName: this.arlasResizableColumn()});
         this.mouseMove();
         this.mouseUp();
       }
@@ -457,7 +457,7 @@ export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
   }
 
   /**
-   * Create an anchor to show where user can start to resize column
+   * Create an anchor to show where the user can start to resize column
    */
   private addAnchor() {
     const el = this.getNativeEl();
@@ -466,6 +466,9 @@ export class ResizableDirective implements OnInit, AfterViewInit, OnDestroy {
     this.renderer.appendChild(el, this.anchor);
   }
 
+  /**
+   * Remove the anchor if the column can't be resized
+   */
   public removeAnchor() {
     this.renderer.removeClass(this.anchor, TABLE_ANCHOR_CSS_PRETTY_NAME);
   }

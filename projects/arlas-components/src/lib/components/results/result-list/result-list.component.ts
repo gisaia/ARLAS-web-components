@@ -53,7 +53,7 @@ import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { ResizableColumnDirective, ResizableDirective } from '../utils/resizable-column.directive';
+import { ResizableColumnDirective, ResizableTableDirective } from '../utils/resizable-column.directive';
 import {
   Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   matchAndReplace, PageQuery, ResultListOptions
@@ -83,7 +83,7 @@ export interface SortedColumn {
     MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup, MatButtonModule,
     MatButtonToggle, ResultDetailedGridComponent, MatProgressSpinner, ResultScrollDirective, MatGridList,
     ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe,
-    ResizableColumnDirective, ResizableDirective]
+    ResizableColumnDirective, ResizableTableDirective]
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 

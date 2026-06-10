@@ -1,4 +1,4 @@
-<table [style.width.px]="tableWidth" class="resultlist" [arlasResizableColumn]="true" [columns]="columns">
+<table [style.width.px]="tableWidth" class="resultlist" [arlasResizableTable]="true" [columns]="columns">
   @if (displayThead) {
     <thead>
       @if (displayFilters) {
@@ -107,13 +107,13 @@
           @for (column of columns; track column) {
             @if (column.isIdField || column.isToggleField) {
               <th [style.max-width.px]="column.width" [style.min-width.px]="column.width"
-                  scope="col" class="resultlist__header--columns" [arlasResizable]="column.columnName" [allowResize]="false">
+                  scope="col" class="resultlist__header--columns" [arlasResizableColumn]="column.columnName" [allowResize]="false">
                 <span class="resultlist__header--columns--hidden"></span>
               </th>
             } @else {
               <th [style.max-width.px]="column.width" [style.min-width.px]="column.width" class="resultlist__header--columns"
                   scope="col" [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')"
-                  [arlasResizable]="column.columnName">
+                  [arlasResizableColumn]="column.columnName">
                 <span>
                   {{column.columnName | translate}}{{column.dataType ? ' (' + column.dataType + ')': ''}}
                 </span>
