@@ -195,14 +195,14 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
   }
 
   /**
-     * Generates a Mapbox GL style expression that applies different style values based on a specified list of values.
+     * Generates a Maplibre GL style expression that applies different style values based on a specified list of values.
      *
      * @param {string} field - The name of the field to evaluate for the range condition.
      * @param {string[]} values - The list of values. Features with field values included in the list are considered.
      * @param {number} inValue - The style value to apply if the field value is within the specified range.
      * @param {number} outValue - The style value to apply if the field value is outside the specified range.
      *
-     * @returns {Expression} A Mapbox GL style expression that applies `inValue` or `outValue` based on the range condition.
+     * @returns {Expression} A Maplibre GL style expression that applies `inValue` or `outValue` based on the range condition.
      */
     private getValueStyle(field: string, values: string[], inValue: number, outValue: number): Expression {
       const valueStyle = [
@@ -213,7 +213,6 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         inValue, // the style value if field is between 'start' and 'end'
         outValue // the style value otherwise
       ] as any;
-      console.log(valueStyle);
       return valueStyle;
     }
 
@@ -316,7 +315,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
    * @override Maplibre implementation.
    * @description Moves the given layer to the top in map instance OR optionnaly before a layer.
    * This method handles any specific treatment when adding ARLAS data.
-   * For instance, in mapbox implementation, moving a fill layer needs to move systematically the stroke layer.
+   * For instance, in maplibre implementation, moving a fill layer needs to move systematically the stroke layer.
    * @param map Map instance.
    * @param layer A layer. It could be a layer identifier OR a layer object (it will depend on the framwork implementation).
    * @param arlasDataLayers Map of ARLAS data layers and their ids (the ids being the key of the map).
