@@ -89,6 +89,9 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
 
+  /** Stores the currently hovered features indexed by layer ID. */
+  public hoveredFeaturesByLayer = new Map<string, any>();
+
   @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
 
 
@@ -182,7 +185,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /**  @description Options object for draw tools : https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#options */
   @Input() public drawOption: any = {};
   /** @description Features drawn at component start */
-  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
+  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
@@ -358,21 +361,21 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    */
   public zoomOnClick(mouseEvent: MapMouseEvent) {
     const zoom = this.map.getZoom();
-      let newZoom: number;
-      if (zoom >= 0 && zoom < 3) {
-        newZoom = 4;
-      } else if (zoom >= 3 && zoom < 5) {
-        newZoom = 5;
-      } else if (zoom >= 5 && zoom < 7) {
-        newZoom = 7;
-      } else if (zoom >= 7 && zoom < 10) {
-        newZoom = 10;
-      } else if (zoom >= 10 && zoom < 11) {
-        newZoom = 11;
-      } else {
-        newZoom = 12;
-      }
-      this.mapFrameworkService.flyTo(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng, newZoom, this.map);
+    let newZoom: number;
+    if (zoom >= 0 && zoom < 3) {
+      newZoom = 4;
+    } else if (zoom >= 3 && zoom < 5) {
+      newZoom = 5;
+    } else if (zoom >= 5 && zoom < 7) {
+      newZoom = 7;
+    } else if (zoom >= 7 && zoom < 10) {
+      newZoom = 10;
+    } else if (zoom >= 10 && zoom < 11) {
+      newZoom = 11;
+    } else {
+      newZoom = 12;
+    }
+    this.mapFrameworkService.flyTo(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng, newZoom, this.map);
   }
 
   /**
@@ -511,14 +514,17 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     this.mapLayers.events.zoomOnClick.forEach(layerId => {
       this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) => this.zoomOnClick(e));
     });
+
+    this.hoveredFeaturesByLayer = new Map();
     this.mapLayers.events.onHover.forEach(layerId => {
-      /** Emits the hovered feature on mousemove. */
       this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
-        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+        this.hoveredFeaturesByLayer.set(layerId, e.features ?? []);
+        this.emitAggregatedHover(e.lngLat);
       });
-      /** Emits an empty object on mouse leaving a feature. */
+
       this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
-        this.onFeatureHover.next({});
+        this.hoveredFeaturesByLayer.delete(layerId);
+        this.emitAggregatedHover({});
       });
     });
     /** Emits the clicked on feature. */
@@ -560,6 +566,25 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
           this.legendService.highlightFeatures(layer.id, []);
         }
       });
+    });
+  }
+
+  /**
+   * Aggregates hovered features from all layers and emits a single event.
+   * Emits an empty object if no features are currently hovered.
+   *
+   * @param lngLat - The current cursor position. Optional since mouseleave does not always provide it.
+   */
+  private emitAggregatedHover(lngLat: any) {
+    const allFeatures = [...this.hoveredFeaturesByLayer.values()].flat();
+    if (allFeatures.length === 0) {
+      this.onFeatureHover.next({});
+      return;
+    }
+
+    this.onFeatureHover.next({
+      features: allFeatures,
+      point: lngLat ? [lngLat.lng, lngLat.lat] : undefined,
     });
   }
 
