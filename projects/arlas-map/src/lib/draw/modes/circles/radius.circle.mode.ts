@@ -25,13 +25,11 @@ import { displayFeatures, updateCoordinates } from '../utils';
 
 export const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
-
 radiusCircleMode.fireOnStop = function () {
-    this.map.fire('draw.onStop', 'draw end');
+    (this.map as any).fire('draw.onStop', 'draw end');
 };
 
-
-function getDisplayMeasurements(feature) {
+function getDisplayMeasurements(feature: GeoJSON.Feature) {
     // should log both metric and standard display strings for the current drawn feature
 
     // metric calculation
@@ -72,7 +70,7 @@ function getDisplayMeasurements(feature) {
 }
 
 const doubleClickZoom = {
-    enable: (ctx) => {
+    enable: (ctx: any) => {
         setTimeout(() => {
             // First check we've got a map and some context.
             if (
@@ -137,6 +135,7 @@ radiusCircleMode.onMouseMove = function (state, e) {
     const radiusInKm = length(geojson, { units: 'kilometers' });
     const options =  {steps: state.steps, units: state.units};
     const circleFeature = circle(center, radiusInKm, options);
+    circleFeature.properties ??= {};
     circleFeature.properties.parent = state.line.id;
     (circleFeature.properties as any).meta = 'radius';
     state.circle.setCoordinates(circleFeature.geometry.coordinates);

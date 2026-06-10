@@ -21,6 +21,9 @@
       ],
       "arlas-d3": [
         "./node_modules/arlas-d3"
+      ],
+      "*": [
+        "./projects/arlas-map/src/lib/types/*"
       ]
     },
     "outDir": "./dist/out-tsc",

@@ -42,16 +42,17 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
   private readonly _onDestroy$ = new Subject<boolean>();
 
-  @Input() public map: AbstractArlasMapGL;
-  @Input() public mapSources: Array<ArlasMapSource<any>>;
+  @Input() public map?: AbstractArlasMapGL;
+  @Input() public mapSources = new Array<ArlasMapSource<any>>();
 
   @Output() public basemapChanged = new EventEmitter<void>();
   @Output() public blur = new Subject<void>();
 
   public showList = false;
-  public basemaps: ArlasBasemaps;
+  public basemaps?: ArlasBasemaps;
 
   private readonly basemapService = inject(BasemapService<L, S, M>);
+
   public constructor() {
     this.basemapService.basemapChanged$.pipe(takeUntil(this._onDestroy$)).subscribe(() => this.basemapChanged.emit());
   }
@@ -82,8 +83,8 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
    * @param newBasemap: Basemap selected by the user
    */
   public onChangeBasemap(newBasemap: BasemapStyle) {
-    const selectedBasemap = this.basemaps.getSelected();
-    if (selectedBasemap.type === 'protomap') {
+    const selectedBasemap = this.basemaps?.getSelected();
+    if (selectedBasemap && selectedBasemap.type === 'protomap' && this.map) {
       this.basemapService.removeProtomapBasemap(this.map);
     }
     this.setBaseMapStyle(newBasemap);
@@ -91,7 +92,7 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
   public setBaseMapStyle(newBasemap: BasemapStyle) {
     if (this.map) {
-      this.basemapService.setBasemap(this.basemaps.getSelected().styleFile as any, newBasemap, this.map, this.mapSources);
+      this.basemapService.setBasemap(this.basemaps?.getSelected().styleFile as any, newBasemap, this.map, this.mapSources);
     }
   }
 

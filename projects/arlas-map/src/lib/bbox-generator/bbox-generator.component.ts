@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AfterViewInit, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogClose, MatDialogRef } from '@angular/material/dialog';
@@ -39,7 +39,7 @@ import { BboxFormGroup } from './bbox-generator.utils';
     MatIcon, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput,
     MatError, MatButton, MatDialogClose, TranslatePipe, BboxFormErrorPipe]
 })
-export class BboxGeneratorComponent implements OnInit, AfterViewInit, OnDestroy {
+export class BboxGeneratorComponent implements AfterViewInit, OnDestroy {
   /**
    * @constant
    */
@@ -49,24 +49,23 @@ export class BboxGeneratorComponent implements OnInit, AfterViewInit, OnDestroy 
    * @constant
    */
   public placeHolder = marker('Decimal: 1.1 or Sexagesimal 1°6\'3" coordinate');
+
+  private readonly data = inject<{ initCorner: Corner; }>(MAT_DIALOG_DATA);
+
   public constructor(
-    private drawService: MapboxAoiDrawService,
-    private cdr: ChangeDetectorRef,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      initCorner: Corner;
-    },
-    public dialogRef: MatDialogRef<BboxGeneratorComponent>,) {
+    private readonly drawService: MapboxAoiDrawService,
+    private readonly cdr: ChangeDetectorRef,
+    private readonly dialogRef: MatDialogRef<BboxGeneratorComponent>
+  ) {
+      if (!!this.data && !this.data.initCorner) {
+        this.data.initCorner = {
+          lat: 0,
+          lng: 0
+        };
+      }
+      this.bboxForm = new BboxFormGroup(this.data.initCorner);
   }
 
-  public ngOnInit(): void {
-    if (!!this.data && !this.data.initCorner) {
-      this.data.initCorner = {
-        lat: 0,
-        lng: 0
-      };
-    }
-    this.bboxForm = new BboxFormGroup(this.data.initCorner);
-  }
   public ngAfterViewInit(): void {
     this.cdr.detectChanges();
   }

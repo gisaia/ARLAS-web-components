@@ -18,15 +18,15 @@
  */
 
 import { FormGroup } from '@angular/forms';
-import { Coordinate, PointFormGroup } from './coordinates.tools';
-import { Corner } from '../draw/draw.models';
 import { Subscription } from 'rxjs';
+import { Corner } from '../draw/draw.models';
+import { Coordinate, PointFormGroup } from './coordinates.tools';
 
 
 export class BboxFormGroup extends FormGroup {
 
-  private firstCornerLatitude: string;
-  private secondCornerLatitude: string;
+  private firstCornerLatitude?: string;
+  private secondCornerLatitude?: string;
   public firstCorner: PointFormGroup;
   public secondCorner: PointFormGroup;
   public latitudeErrors = false;
@@ -46,7 +46,7 @@ export class BboxFormGroup extends FormGroup {
     const latSub = this.firstCorner.latitude.valueChanges.subscribe(v => {
       this.firstCornerLatitude = v;
       this.secondCornerLatitude = this.secondCorner.latitude.value;
-      if (this.secondCornerLatitude !== undefined) {
+      if (this.firstCornerLatitude !== undefined && this.secondCornerLatitude !== undefined) {
         if (Coordinate.parse(this.firstCornerLatitude) === Coordinate.parse(this.secondCornerLatitude)) {
           this.latitudeErrors = true;
         } else {
@@ -59,7 +59,7 @@ export class BboxFormGroup extends FormGroup {
     const lonSub = this.secondCorner.latitude.valueChanges.subscribe(v => {
       this.secondCornerLatitude = v;
       this.firstCornerLatitude = this.firstCorner.latitude.value;
-      if (this.firstCornerLatitude !== undefined) {
+      if (this.firstCornerLatitude !== undefined && this.secondCornerLatitude !== undefined) {
         if (Coordinate.parse(this.firstCornerLatitude) === Coordinate.parse(this.secondCornerLatitude)) {
           this.latitudeErrors = true;
         } else {

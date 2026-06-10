@@ -30,7 +30,7 @@ circleMode.onSetup = function (opts) {
         properties: {
             isFixedRadius: opts.isFixedRadius !== undefined ? opts.isFixedRadius : false,
             isCircle: true,
-            center: opts.center !== undefined ? opts.center : []
+            center: opts.center ?? []
         },
         geometry: {
             type: MapboxDraw.constants.geojsonTypes.POLYGON,
@@ -46,7 +46,7 @@ circleMode.onSetup = function (opts) {
     this.activateUIButton(MapboxDraw.constants.types.POLYGON);
     this.setActionableState({
         trash: true
-    });
+    } as any);
 
     return {
         initialRadiusInKm: opts.initialRadiusInKm || DEFAULT_RADIUS_IN_KM,
