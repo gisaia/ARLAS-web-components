@@ -90,7 +90,7 @@ function buildLinePaint(color: string, dash: number[]) {
 }
 
 /**
- * Builds the style for the Mapbox draw layers
+ * Builds the style for the Mapbox/Maplibre draw layers
  * @param theme Theme summarizing the drawing styles
  */
 export function buildDrawStyle(theme: DrawTheme) {
