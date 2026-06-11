@@ -210,7 +210,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         ['all',
           ['in', ['get', field], ['literal', values]]
         ],
-        inValue, // the style value if field is between 'start' and 'end'
+        inValue, // the style value if field is in the list of values
         outValue // the style value otherwise
       ] as any;
       return valueStyle;
