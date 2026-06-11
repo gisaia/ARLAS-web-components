@@ -17,8 +17,7 @@
  * under the License.
  */
 
-import { ArlasPaint, PaintValue } from '../model/layers';
-
+import { ArlasPaint } from '../model/layers';
 
 /** This file describes how to style a vector layer */
 

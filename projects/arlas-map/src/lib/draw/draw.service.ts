@@ -23,7 +23,7 @@ import area from '@turf/area';
 import bbox from '@turf/bbox';
 import { lineString } from '@turf/helpers';
 import length from '@turf/length';
-import { Feature, FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection, Polygon } from 'geojson';
 import { Subject } from 'rxjs';
 import { AbstractDraw } from './AbstractDraw';
 import { AoiEdition, BboxDrawCommand, Corner } from './draw.models';
@@ -32,9 +32,9 @@ import { AoiEdition, BboxDrawCommand, Corner } from './draw.models';
   providedIn: 'root'
 })
 export class MapboxAoiDrawService {
-  private mapDraw: AbstractDraw;
-  private editionId: string;
-  private registeringMode: boolean;
+  private mapDraw!: AbstractDraw;
+  private editionId?: string;
+  private registeringMode = false;
   private ids: Set<string> = new Set();
 
   private readonly editAoiSource = new Subject<AoiEdition>();
@@ -56,8 +56,6 @@ export class MapboxAoiDrawService {
   /** Set to true when the drawn geometry is selected. */
   public isDrawSelected = false;
   public isReady = false;
-
-  public constructor() { }
 
   public isDrawing() {
     return this.isDrawingBbox || this.isDrawingCircle || this.isDrawingPolygon || this.isDrawingStrip;
@@ -106,7 +104,7 @@ export class MapboxAoiDrawService {
 
   /** Deletes all the features from Mapboxdraw object that have not been saved */
   public deleteUnregisteredFeatures() {
-    this.mapDraw.delete(this.getUnregistredFeatures().map(f => f.id.toString()));
+    this.mapDraw.delete(this.getUnregistredFeatures().map(f => f.id?.toString() as string));
   }
 
   /** Returns the area of the given feature */
@@ -150,7 +148,7 @@ export class MapboxAoiDrawService {
    * */
   private onDelete() {
     this.mapDraw.on('draw.delete', (e) => {
-      e.features.forEach(f => this.unregister(f.id));
+      e.features.forEach((f: Feature) => this.unregister(f.id));
       this.endDimensionsEmission();
     });
   }
@@ -158,7 +156,9 @@ export class MapboxAoiDrawService {
 
   private onStop() {
     this.mapDraw.on('draw.onStop', (e) => {
-      this.register(this.editionId);
+      if (this.editionId) {
+        this.register(this.editionId);
+      }
       this.endDimensionsEmission();
     });
   }
@@ -180,7 +180,9 @@ export class MapboxAoiDrawService {
         }
         if (this.editionId) {
           const feature = this.getFeature(this.editionId, this.mapDraw);
-          this.emitDimensions(feature);
+          if (feature) {
+            this.emitDimensions(feature);
+          }
         }
       }
     });
@@ -230,7 +232,7 @@ export class MapboxAoiDrawService {
    * this method detects this feature on 'draw.render' event.
   */
   private getUnregistredFeatures(): Feature[] {
-    return (this.mapDraw.getAllFeatures() as Feature[]).filter(f => !this.ids.has(f.id.toString()));
+    return this.mapDraw.getAllFeatures().filter(f => f.id && !this.ids.has(f.id.toString()));
   }
 
   /** registers the identifiers of each drawn polygon in this service. */
@@ -239,29 +241,35 @@ export class MapboxAoiDrawService {
       this.ids.clear();
       const fc = this.mapDraw.getAll();
       if (!!fc && !!fc.features) {
-        this.ids = new Set(fc.features.map(f => f.id.toString()));
+        this.ids = new Set(fc.features.map(f => f.id?.toString() as string));
       }
       this.registeringMode = false;
     }
   }
 
   /** Unregisters the given feature id in this service. */
-  private unregister(id: string) {
-    this.ids.delete(id);
+  private unregister(id?: string | number) {
+    if (id !== undefined) {
+      this.ids.delete(id.toString());
+    }
   }
 
   /** Registers the given feature id in this service. */
-  private register(id: string) {
-    this.ids.add(id);
+  private register(id: string | number) {
+    this.ids.add(id.toString());
   }
 
   /** Gets the given feature from MapboxDraw object. */
-  private getFeature(featureId: string, mapDraw: AbstractDraw): Feature {
+  private getFeature(featureId: string, mapDraw: AbstractDraw) {
     return mapDraw.get(featureId);
   }
 
   /** Checks if the given feature has enough coordinates to represent an area (polygon) */
-  private isArea(feature) {
+  private isArea(feature: Feature) {
+    if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'Point') {
+      return false;
+    }
+
     const isGeometryDefined = !!feature && !!feature.geometry;
     const areCoordinatesDefined = isGeometryDefined && !!feature.geometry.coordinates;
     if (areCoordinatesDefined) {
@@ -273,7 +281,11 @@ export class MapboxAoiDrawService {
   }
 
   /** Checks if the given feature has enough coordinates to represent a line */
-  private isLine(feature) {
+  private isLine(feature: Feature) {
+    if (feature.geometry.type === 'GeometryCollection' || feature.geometry.type === 'Point') {
+      return false;
+    }
+
     const isGeometryDefined = !!feature && !!feature.geometry;
     const areCoordinatesDefined = isGeometryDefined && !!feature.geometry.coordinates;
     if (areCoordinatesDefined) {
@@ -288,21 +300,24 @@ export class MapboxAoiDrawService {
    * Chck if its a valid circle
    * @param feature
    */
-  public isValidCircle(feature): boolean {
-    const coordinates = feature.geometry.coordinates;
-    return this.isCircle(feature) && coordinates && coordinates[0] !== null && coordinates[0][0] !== null && feature.properties.center;
+  public isValidCircle(feature: Feature): boolean {
+    return this.isValidPolygon(feature) && feature.properties?.center;
   }
 
-  public isValidPolygon(feature): boolean {
+  public isValidPolygon(feature: Feature): boolean {
+    if (feature.geometry.type !== 'Polygon') {
+      return false;
+    }
+
     const coordinates = feature.geometry.coordinates;
-    return this.isPolygon(feature) && coordinates && coordinates[0] !== null && coordinates[0][0] !== null;
+    return this.isPolygon(feature) && coordinates?.[0]?.[0] !== null;
   }
 
-  public isPolygon(feature): boolean {
+  public isPolygon(feature: Feature): feature is Feature<Polygon> {
     return feature.geometry.type === 'Polygon' && !this.isCircle(feature);
   }
 
-  public isCircle(feature): boolean {
+  public isCircle(feature: Feature): boolean {
     return feature.properties?.isCircle;
   }
 }

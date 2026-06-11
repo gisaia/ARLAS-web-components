@@ -39,7 +39,7 @@ export class ArlasLngLat {
   public lng: number;
   public lat: number;
 
-  public constructor(lng, lat) {
+  public constructor(lng: number, lat: number) {
     this.lng = lng;
     this.lat = lat;
   }

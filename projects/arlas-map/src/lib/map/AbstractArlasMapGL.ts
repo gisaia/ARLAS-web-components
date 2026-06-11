@@ -108,30 +108,31 @@ export abstract class AbstractArlasMapGL {
   protected _controls: ControlsOption;
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
-  public currentLat: string;
-  public currentLng: string;
+  public currentLat = '0';
+  public currentLng = '0';
   public readonly POLYGON_LABEL_SOURCE = 'polygon_label';
 
-  protected _north: number;
-  protected _east: number;
-  protected _west: number;
-  protected _south: number;
-  public zoom: number;
-  protected _zoomStart: number;
+  protected _north = 0;
+  protected _east = 0;
+  protected _west = 0;
+  protected _south = 0;
 
-  protected _dragStartX: number;
-  protected _dragStartY: number;
+  public zoom = 0;
+  protected _zoomStart = 0;
 
-  protected _dragEndX: number;
-  protected _dragEndY: number;
+  protected _dragStartX = 0;
+  protected _dragStartY = 0;
 
-  protected _xMoveRatio: number;
-  protected _yMoveRatio: number;
+  protected _dragEndX = 0;
+  protected _dragEndY = 0;
 
-  protected _moveEnd$: Observable<any>;
-  protected _zoomStart$: Observable<any>;
-  protected _dragStart$: Observable<any>;
-  protected _dragEnd$: Observable<any>;
+  protected _xMoveRatio = 0;
+  protected _yMoveRatio = 0;
+
+  protected _moveEnd$ = new Observable<any>();
+  protected _zoomStart$ = new Observable<any>();
+  protected _dragStart$ = new Observable<any>();
+  protected _dragEnd$ = new Observable<any>();
 
   protected _eventSubscription: Subscription[] = [];
 
@@ -144,7 +145,7 @@ export abstract class AbstractArlasMapGL {
     this._margePanForTest = config.margePanForTest;
     this._displayCurrentCoordinates = config.displayCurrentCoordinates ?? false;
     this._wrapLatLng = config.wrapLatLng ?? true;
-    this._controls = config.controls;
+    this._controls = config.controls ?? {};
     this._fitBoundsPadding = config.fitBoundsPadding ?? 10;
     this._maxWidthScale = config.maxWidthScale;
     this._unitScale = config.unitScale;
@@ -308,21 +309,22 @@ export abstract class AbstractArlasMapGL {
     return this.getMapProvider().getPitch();
   }
 
-  protected abstract _initMapProvider(BaseMapGlConfig): void;
+  protected abstract _initMapProvider(mapGLConfig: MapConfig<any>): void;
   protected abstract _initControls(): void;
   protected abstract _getMoveEnd(visualisationsSets: {
     visualisations: Map<string, Set<string>>;
     status: Map<string, boolean>;
   }): OnMoveResult;
 
+  // TODO: not sure here
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
-    event: string; fn: (e?) => void;
-  });
+    event: string; fn: (e?: Event) => void;
+  }): void;
   public abstract calcOffsetPoint(): any;
   public abstract disableDragPan(): void;
   public abstract enableDragPan(): void;
   public abstract fitBounds(bounds: ArlasLngLatBounds | number[], options?: unknown, unknown?: unknown): this;
-  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]);
+  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]): VideoEncoderBitrateMode;
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
   public abstract getEastBounds(): number;

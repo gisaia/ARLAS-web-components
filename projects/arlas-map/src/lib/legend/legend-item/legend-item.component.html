@@ -1,22 +1,22 @@
-@if (legend && legend.type && legend.visible !== false && layer) {
+@if (legend().type && legend().visible !== false) {
   <div class="legend">
-    @if ((legend.title | formatLegend); as l) {
+    @if ((legend().title | formatLegend); as l) {
       <div class="legend__title">
-        {{ title | translate}} {{ l.translateKey | translate: {metric: l.metric | translate, field: l.field | translate, normalized: l.normalized | translate: {normalizedKey: l.normalizedKey | translate} } }}
+        {{ title() | translate}} {{ l.translateKey | translate: {metric: l.metric | translate, field: l.field | translate, normalized: l.normalized | translate: {normalizedKey: l.normalizedKey | translate} } }}
       </div>
     }
-    @if (legend.type === PROPERTY_SELECTOR_SOURCE.manual
-      || legend.type === PROPERTY_SELECTOR_SOURCE.generated
-      || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
+    @if (legend().type === PROPERTY_SELECTOR_SOURCE.manual
+      || legend().type === PROPERTY_SELECTOR_SOURCE.generated
+      || legend().type === PROPERTY_SELECTOR_SOURCE.provided) {
       <div class="legend--manual">
-        @for (manualColor of legend.manualValues | keyvalue; track manualColor) {
+        @for (manualColor of legend().manualValues | keyvalue; track manualColor) {
           <div class="legend--manual__item"
             [class.legend--manual__item--highlighted]="manualColor.value.highlight"
             [class.legend--manual__item--lessened]="!manualColor.value.highlight && hasHighlightedKeywords()">
             <div class="legend--manual__item__color" [style.backgroundColor]="manualColor.value.color"
-              [class.circle-tip]="layer.type === 'circle'"
-              [class.line-tip]="layer.type === 'line'"
-              [class.fill-tip]="layer.type === 'fill'">
+              [class.circle-tip]="layer().type === 'circle'"
+              [class.line-tip]="layer().type === 'line'"
+              [class.fill-tip]="layer().type === 'fill'">
             </div>
             <div class="legend--manual__item__key" [matTooltip]="manualColor.key | translate" [matTooltipPosition]="'left'">
               {{manualColor.key | translate}}
@@ -24,7 +24,7 @@
           </div>
         }
       </div>
-    } @else if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+    } @else if (legend().type === PROPERTY_SELECTOR_SOURCE.interpolated) {
       <div class="legend--interpolated">
         @for (cursor of cursors; track cursor.value) {
           <div class="legend--interpolated__cursor" [style.left]="cursor.position + '%'" [class.legend--interpolated__cursor--main]="$first"></div>
@@ -43,10 +43,10 @@
         }
         <div class="legend--interpolated__range">
           <div class="legend--interpolated__range__value">
-            {{legend?.minValue | formatNumber:'NUMBER_FORMAT_CHAR' | translate}}
+            {{ legend().minValue | formatNumber:('NUMBER_FORMAT_CHAR' | translate) }}
           </div>
           <div class="legend--interpolated__range__value">
-            {{legend?.maxValue | formatNumber:'NUMBER_FORMAT_CHAR' | translate}}
+            {{ legend().maxValue | formatNumber:('NUMBER_FORMAT_CHAR' | translate) }}
           </div>
         </div>
       </div>

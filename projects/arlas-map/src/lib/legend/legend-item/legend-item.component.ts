@@ -18,7 +18,7 @@
  */
 
 import { KeyValuePipe } from '@angular/common';
-import { Component, DestroyRef, ElementRef, Input, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, input, Input, OnInit, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -37,18 +37,18 @@ import { LegendService } from '../legend.service';
   imports: [MatTooltip, TranslatePipe, FormatNumberPipe, KeyValuePipe, ShortenNumberPipe, FormatLegendPipe]
 })
 export class LegendItemComponent implements OnInit {
-  @Input() public legend: Legend;
-  @Input() public title: string;
-  @Input() public layer: ArlasDataLayer;
-  @Input() public colorPalette: string;
+  public legend = input.required<Legend>();
+  public title = input.required<string>();
+  public layer = input.required<ArlasDataLayer>();
+  @Input() public colorPalette?: string;
   /** Whether to display highlights of the legend on hover of the map features */
   @Input() public highlightLegend = true;
-  @ViewChild('interpolated_svg', { read: ElementRef, static: false }) public interpolatedElement: ElementRef;
+  @ViewChild('interpolated_svg', { read: ElementRef, static: false }) public interpolatedElement?: ElementRef;
 
   protected PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
   /** List of cursors to display around the interpolated legend */
-  public cursors = new Array<{position: number; value: string;}>();
+  public cursors = new Array<{position: number; value: string | undefined;}>();
 
   public hasHighlightedKeywords = signal(false);
 
@@ -60,13 +60,13 @@ export class LegendItemComponent implements OnInit {
 
   public ngOnInit() {
     this.legendService.highlight$
-      .pipe(filter(v => this.highlightLegend && v.layerId === this.layer.id), takeUntilDestroyed(this.destroyRef))
+      .pipe(filter(v => this.highlightLegend && v.layerId === this.layer().id), takeUntilDestroyed(this.destroyRef))
       .subscribe(highlight => {
-        if (this.legend.manualValues) {
+        if (this.legend().manualValues) {
           this.highlightKeywords(highlight);
         }
 
-        if (this.legend.interpolatedValues) {
+        if (this.legend().interpolatedValues) {
           this.displayCursors(highlight);
         }
       });
@@ -77,7 +77,7 @@ export class LegendItemComponent implements OnInit {
    * @param highlight The features'values to highlight
    */
   private highlightKeywords(highlight: {layerId: string; properties: Array<{[name: string]: any;}>; }) {
-    const colorField = this.legendService.getColorField(this.layer.paint, this.layer.type);
+    const colorField = this.legendService.getColorField(this.layer().paint, this.layer().type);
     if (!colorField) {
       return;
     }
@@ -87,14 +87,14 @@ export class LegendItemComponent implements OnInit {
     // Get all the unique values from the properties
     const valuesToHighlight = new Set(highlight.properties.map(p => {
       const value = p[colorField];
-      if (!this.legend.manualValues.has(value)) {
+      if (!this.legend().manualValues?.has(value)) {
         return this.translate.instant(OTHER);
       }
       return value;
     }));
 
     // Based on what is received, change the highlight
-    this.legend.manualValues.forEach((v, k) => {
+    this.legend().manualValues?.forEach((v, k) => {
       v.highlight = valuesToHighlight.has(k);
     });
   }
@@ -105,23 +105,25 @@ export class LegendItemComponent implements OnInit {
    * @param highlight The features'values to highlight
    */
   private displayCursors(highlight: {layerId: string; properties: Array<{[name: string]: any;}>; }) {
-    if (!this.legend.title) {
+    if (!this.legend().title) {
       return;
     }
 
-    const colorField = this.legend.title;
+    const colorField = this.legend().title;
 
-    if (this.legend.title.endsWith('normalized')) {
+    if (colorField?.endsWith('normalized')) {
       const valueField = colorField.split(':')[0] + ':_arlas__short_format';
 
       this.cursors = highlight.properties
         .map(p => ({ position: Math.min(100, 100 * p[colorField]), value: p[valueField]}));
-    } else {
-      const min = +this.legend.minValue;
-      const max = +this.legend.maxValue;
+    } else if (colorField) {
+      const min = this.legend().minValue;
+      const max = this.legend().maxValue;
 
-      this.cursors = highlight.properties
-        .map(p => ({ position: Math.min(100, 100 * (p[colorField] - min) / (max - min)), value: p[colorField] }));
+      if (min !== undefined && max !== undefined) {
+        this.cursors = highlight.properties
+          .map(p => ({ position: Math.min(100, 100 * (p[colorField] - +min) / (+max - +min)), value: p[colorField] }));
+      }
     }
 
     // Keep the value only for the topmost feature (first in array)

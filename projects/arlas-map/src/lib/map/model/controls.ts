@@ -33,7 +33,7 @@ export interface ConfigControls {
   enable: boolean;
   position?: ControlPosition;
   config?: any;
-  overrideEvent?: { event: any; fn: (e) => void; };
+  overrideEvent?: { event: any; fn: (e: Event) => void; };
 }
 
 export interface NavigationConfigControls extends ConfigControls {
@@ -61,18 +61,19 @@ export interface DrawControlsOption {
   removeAois: DrawConfigControl;
 }
 
-export class ControlButton {
-  public map: any;
-  public btn: HTMLButtonElement;
-  public container: HTMLDivElement;
-  public icon;
+export class ControlButton<ArlasMap> {
+  public map: ArlasMap | undefined;
+  public btn?: HTMLButtonElement;
+  public container?: HTMLDivElement;
+  public icon?: string;
   public name;
-  private tooltip;
+  private readonly tooltip: string;
   public btnClasses: string[] = [];
   public containerClasses: string[] = [];
+
   public constructor(name: string, tooltip?: string) {
     this.name = name;
-    this.tooltip = tooltip;
+    this.tooltip = tooltip ?? '';
     this._buildClasses();
   }
 
@@ -80,7 +81,8 @@ export class ControlButton {
     this.btnClasses = [];
     this.containerClasses = [];
   }
-  public onAdd(map) {
+
+  public onAdd(map: ArlasMap) {
     this.map = map;
     this.btn = document.createElement('button');
     this.btn.className = this.btnClasses.join(' ');
@@ -93,7 +95,9 @@ export class ControlButton {
     return this.container;
   }
   public onRemove() {
-    this.container.parentNode.removeChild(this.container);
+    if (this.container) {
+      this.container.remove();
+    }
     this.map = undefined;
   }
 }

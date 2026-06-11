@@ -86,6 +86,7 @@ stripDirectSelectMode.fireOnStop = function () {
 };
 
 stripDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
+    geojson.properties ??= {};
     if (state.featureId === geojson.properties.id) {
         geojson.properties.active = MapboxDraw.constants.activeStates.ACTIVE;
         push(geojson);
@@ -93,7 +94,7 @@ stripDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
             map: this.map,
             midpoints: false,
             selectedPaths: state.selectedCoordPaths
-        } as any);
+        });
         const actionsPoints = this.createActionPoints(state, geojson, suppPoints);
         actionsPoints.forEach(push);
     } else {
@@ -118,6 +119,8 @@ stripDirectSelectMode.onStop = function () {
 stripDirectSelectMode.pathsToCoordinates = MapboxDraw.modes.direct_select.pathsToCoordinates;
 
 stripDirectSelectMode.createActionPointHelper = function (actionWidgets, featureId, v1, v2, rotCenter, radiusScale, type) {
+    // TODO: check typing here
+    console.log(v1);
     const cR0 = midpoint(v1, v2).geometry.coordinates;
     const heading = rhumbBearing(rotCenter, cR0);
     const distance0 = distance(rotCenter, cR0);
@@ -132,7 +135,8 @@ stripDirectSelectMode.createActionPointHelper = function (actionWidgets, feature
             parent: featureId,
             lng: cR1[0],
             lat: cR1[1],
-            coord_path: v1.properties.coord_path,
+            // TODO: check typing here
+            coord_path: (v1 as any).properties.coord_path,
             coord_path_coords: cR0,
             heading: heading,
         },
@@ -153,16 +157,16 @@ stripDirectSelectMode.createActionPoints = function (state, geojson, suppPoints)
     }
     const corners = suppPoints.slice(0);
     corners[corners.length] = corners[0];
-    let v1: Coord = null;
+    let v1: GeoJSON.Feature<GeoJSON.Point> | null = null;
     const rotCenter = this.computeCenter(state, geojson);
     corners.forEach((v2) => {
-        if (v1?.properties.coord_path === '0.2') {
+        if (v1?.properties?.coord_path === '0.2') {
             this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'resize');
         }
-        if (v1?.properties.coord_path === '0.0') {
+        if (v1?.properties?.coord_path === '0.0') {
             this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'origin');
         }
-        if (v1?.properties.coord_path === '0.3') {
+        if (v1?.properties?.coord_path === '0.3') {
             this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'rotation');
         }
         v1 = v2;
@@ -204,10 +208,10 @@ stripDirectSelectMode.onActivatePoint = function (state, e) {
     this.computeAxes(state, state.feature.toGeoJSON());
     this.startDragging(state, e);
     const about = e.featureTarget.properties;
-    state.selectedCoordPaths = [about.coord_path];
-    if (e.featureTarget.properties.actionType === 'rotation') {
+    state.selectedCoordPaths = [about?.coord_path];
+    if (e.featureTarget.properties?.actionType === 'rotation') {
         state.stripDirectMode = stripDirectMode.Rotate;
-    } else if (e.featureTarget.properties.actionType === 'resize') {
+    } else if (e.featureTarget.properties?.actionType === 'resize') {
         state.stripDirectMode = stripDirectMode.Resize;
     }
 };
@@ -220,19 +224,14 @@ stripDirectSelectMode.onFeature = function (state, e) {
 stripDirectSelectMode.coordinateIndex = function (coordPaths) {
     if (coordPaths.length >= 1) {
         const parts = coordPaths[0].split('.');
-        return parseInt(parts[parts.length - 1], 10);
+        return Number.parseInt(parts[parts.length - 1], 10);
     } else {
         return 0;
     }
 };
 
-stripDirectSelectMode.computeCenter = function (state, polygon) {
-    const center0 = center(polygon);
-    return center0;
-};
-
 stripDirectSelectMode.computeAxes = function (state, polygon) {
-    const center = this.computeCenter(state, polygon);
+    const centroid = center(polygon);
     const corners = polygon.geometry.coordinates[0].slice(0);
     const n = corners.length - 1;
     const iHalf = Math.floor(n / 2);
@@ -246,8 +245,8 @@ stripDirectSelectMode.computeAxes = function (state, polygon) {
         const c0 = corners[i0];
         const c1 = corners[i1];
         const rotPoint = midpoint(point(c0), point(c1));
-        rotateCenters[i1] = center.geometry.coordinates;
-        headings[i1] = rhumbBearing(center, rotPoint);
+        rotateCenters[i1] = centroid.geometry.coordinates;
+        headings[i1] = rhumbBearing(centroid, rotPoint);
     }
     state.rotation = {
         feature0: polygon,  // initial feature state
@@ -318,9 +317,9 @@ stripDirectSelectMode.dragResizePoint = function (state, e, delta) {
     }
     if (!state.start || state.selectedResizePaths !== state.selectedCoordPaths[0]) {
         if (state.selectedCoordPaths[0] === '0.0') {
-            start = state.actionWidgets.find(a => a.properties.coord_path === '0.2').properties.coord_path_coords;
+            start = state.actionWidgets.find((a: GeoJSON.Feature) => a.properties?.coord_path === '0.2').properties.coord_path_coords;
         } else {
-            start = state.actionWidgets.find(a => a.properties.coord_path === '0.0').properties.coord_path_coords;
+            start = state.actionWidgets.find((a: GeoJSON.Feature) => a.properties?.coord_path === '0.0').properties.coord_path_coords;
         }
         state.start = start;
     }
@@ -333,8 +332,6 @@ stripDirectSelectMode.dragResizePoint = function (state, e, delta) {
     }
 };
 
-
-
 stripDirectSelectMode.dragFeature = function (state, e, delta) {
     MapboxDraw.lib.moveFeatures(this.getSelected(), delta);
     state.dragMoveLocation = e.lngLat;
@@ -346,7 +343,7 @@ stripDirectSelectMode.dragFeature = function (state, e, delta) {
 stripDirectSelectMode.fireUpdate = function () {
     this.map.fire(MapboxDraw.constants.events.UPDATE, {
         action: MapboxDraw.constants.updateActions.CHANGE_COORDINATES,
-        features: this.getSelected().map(f => f.toGeoJSON())
+        features: this.getSelected().map((f: any) => f.toGeoJSON())
     });
 };
 

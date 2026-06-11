@@ -18,7 +18,9 @@
  */
 
 import {
-  AfterViewInit, Component, computed, Input, OnChanges, OnInit, Output, signal, SimpleChanges, ViewChild, WritableSignal
+  AfterViewInit, Component, computed, input, Input, OnChanges,
+  OnDestroy,
+  OnInit, Output, signal, SimpleChanges, ViewChild, WritableSignal
 } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -50,27 +52,27 @@ import { getMax, MAX_LINE_WIDTH } from './legend.tools';
       MatTooltip, LayerIconComponent, MatIcon, MatMenuTrigger, MatMenu, MatMenuItem, LegendItemComponent,
       TranslatePipe, MarkerModule, LayerIdToName, GetCollectionDisplayNamePipe, GetColorPipe]
 })
-export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
+export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   /**
    * @Input : Angular
    * @description Layer object
    */
-  @Input() public layer: ArlasDataLayer;
+  public layer = input.required<ArlasDataLayer>();
   /**
    * @Input : Angular
    * @description Collection of the layer
    */
-  @Input() public collection: string;
+  public collection = input.required<string | undefined>();
   /**
    * @Input : Angular
    * @description Current zoom level of the map
    */
-  @Input() public zoom: number;
+  public zoom = input.required<number>();
   /**
    * @Input : Angular
    * @description Whether the layer is enabled.
    */
-  @Input() public enabled: boolean;
+  public enabled = input.required<boolean>();
   /**
    * @Input : Angular
    * @description Subject of [collection, [field, legendData]] map. The map subscribes to it to keep
@@ -104,7 +106,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
   @ViewChild('width_legend', { static: false }) public lineWidthLegend: any;
   @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: any;
 
-  public lineDasharray: Array<number>;
+  public lineDasharray = new Array<number>();
 
   public colorLegend: WritableSignal<Legend> = signal({});
   public hasColorLegend = computed(() => this.colorLegend().type !== undefined && this.colorLegend().type !== 'Fix');
@@ -143,11 +145,10 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
     this.legendUpdater
       .pipe(takeUntil(this._onDestroy$))
       .subscribe(legendDataPerCollection => {
+        const collection = this.collection();
 
-        this.legendData = legendDataPerCollection.get(this.collection);
-        if (this.layer) {
-          this.drawLegends(this.visibleMode);
-        }
+        this.legendData = collection ? legendDataPerCollection.get(collection) ?? new Map() : new Map();
+        this.drawLegends(this.visibleMode);
       });
     this.visibilityUpdater
       .pipe(takeUntil(this._onDestroy$))
@@ -155,13 +156,15 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         /** check legend visibility according to Data source status (mapcontirbutor) */
         if (this.layer) {
           /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
-          this.visibleMode = visibilityUpdater.get(this.layer.id) !== undefined ? visibilityUpdater.get(this.layer.id) : this.visibleMode;
+          this.visibleMode = visibilityUpdater.get(this.layer().id) !== undefined ? !!visibilityUpdater.get(this.layer().id) : this.visibleMode;
         } else {
           this.visibleMode = false;
         }
         /** check legend visibility according to VisibilityRules */
-        if (this.visibleMode && this.layer && !!this.layer.minzoom && !!this.layer.maxzoom) {
-          this.visibleMode = (this.zoom <= this.layer.maxzoom && this.zoom >= this.layer.minzoom);
+        const minzoom = this.layer().minzoom;
+        const maxzoom = this.layer().maxzoom;
+        if (this.visibleMode && minzoom !== undefined && maxzoom !== undefined) {
+          this.visibleMode = (this.zoom() <= maxzoom && this.zoom() >= minzoom);
         }
         /** check legend visibility according to legend enabled or not */
         if (!this.enabled) {
@@ -171,32 +174,26 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
           this.detail = this.visibleMode;
         }
         /** check legend visibility for external layers that are not set by config nor map contributors */
-        if (this.layer && !this.layer.id.startsWith(ARLAS_ID) &&
-          !this.layer.id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer.id.startsWith(HOVER_LAYER_PREFIX)
-          && !this.layer.id.startsWith(SELECT_LAYER_PREFIX) &&  !this.layer.id.startsWith(EXTRUSION_LAYER_PREFIX)) {
-          this.visibleMode = this.enabled;
-          if (!!this.layer.metadata && this.layer.metadata.showLegend === false) {
+        if (!this.layer().id.startsWith(ARLAS_ID) &&
+          !this.layer().id.startsWith(FILLSTROKE_LAYER_PREFIX) && !this.layer().id.startsWith(HOVER_LAYER_PREFIX)
+          && !this.layer().id.startsWith(SELECT_LAYER_PREFIX) &&  !this.layer().id.startsWith(EXTRUSION_LAYER_PREFIX)) {
+          this.visibleMode = this.enabled();
+          if (this.layer().metadata?.showLegend === false) {
             this.visibleMode = false;
           }
         }
-        if (this.layer) {
-          this.drawLegends(this.visibleMode);
-        }
+        this.drawLegends(this.visibleMode);
         this.visibilityStatus.next(this.visibleMode);
       });
   }
 
   public ngAfterViewInit() {
-    if (this.layer) {
-      this.drawLegends(this.visibleMode);
-    }
+    this.drawLegends(this.visibleMode);
   }
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['layer'] !== undefined) {
-      if (this.layer) {
-        this.drawLegends(this.visibleMode);
-      }
+      this.drawLegends(this.visibleMode);
     }
   }
 
@@ -224,42 +221,42 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
    * - circle radius evolution
    */
   private drawLegends(visibileMode: boolean): void {
-    const type = this.layer.type;
-    const paint = this.layer.paint;
+    const type = this.layer().type;
+    const paint = this.layer().paint;
     switch (type) {
       case 'circle': {
-        const circleLegend = this.legendService.getCircleLegend(paint, visibileMode, this.legendData, this.layer);
+        const circleLegend = this.legendService.getCircleLegend(paint, visibileMode, this.legendData, this.layer());
         this.colorLegend.set(circleLegend.color);
 
         // For circle-heatmap layer the stroke can't be configured, so hide it
-        if (this.layer.metadata?.hiddenProps?.geomType !== 'circle-heatmap') {
+        if (this.layer().metadata?.hiddenProps?.geomType !== 'circle-heatmap') {
           this.strokeColorLegend.set(circleLegend.strokeColor);
         }
         this.colorPalette = circleLegend.colorPalette;
         this.strokeColorPalette = circleLegend.strokeColorPalette;
         this.radiusLegend.set(circleLegend.radius);
         if (this.circleRadiusLegend?.interpolatedElement) {
-          const circleRadiusEvolution = circleLegend.radius.histogram;
+          const circleRadiusEvolution = circleLegend.radius.histogram ?? [];
           drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, circleRadiusEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(circleRadiusEvolution)) * 2);
         }
         break;
       }
       case 'line': {
-        const lineLegend = this.legendService.getLineLegend(paint, visibileMode, this.legendData, this.layer);
+        const lineLegend = this.legendService.getLineLegend(paint, visibileMode, this.legendData, this.layer());
         this.lineDasharray = lineLegend.dashes;
         this.colorLegend.set(lineLegend.color);
         this.colorPalette = lineLegend.colorPalette;
         this.widthLegend.set(lineLegend.width);
         if (this.lineWidthLegend?.interpolatedElement) {
-          const lineWidthEvolution = lineLegend.width.histogram;
+          const lineWidthEvolution = lineLegend.width.histogram ?? [];
           drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);
         }
         break;
       }
       case 'fill': {
-        const fillLegend = this.legendService.getFillLegend(paint, visibileMode, this.legendData, this.layer);
+        const fillLegend = this.legendService.getFillLegend(paint, visibileMode, this.legendData, this.layer());
         this.colorLegend.set(fillLegend.color);
         this.colorPalette = fillLegend.colorPalette;
         this.strokeColorLegend.set(fillLegend?.strokeColor);
@@ -267,25 +264,25 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
         break;
       }
       case 'heatmap': {
-        const heatmapLegend = this.legendService.getHeatmapLegend(paint, visibileMode, this.legendData, this.layer);
+        const heatmapLegend = this.legendService.getHeatmapLegend(paint, visibileMode, this.legendData, this.layer());
 
         this.colorLegend.set(heatmapLegend.color);
         this.colorPalette = heatmapLegend.colorPalette;
         this.radiusLegend.set(heatmapLegend.radius);
         if (this.circleRadiusLegend?.interpolatedElement) {
-          const heatmapRadiusEvolution = heatmapLegend.radius.histogram;
+          const heatmapRadiusEvolution = heatmapLegend.radius.histogram ?? [];
           drawCircleSupportLine(this.circleRadiusLegend.interpolatedElement.nativeElement, heatmapRadiusEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, Math.min(this.MAX_CIRLE_RADIUS, getMax(heatmapRadiusEvolution)) * 2);
         }
         break;
       }
       case 'symbol': {
-        const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer);
+        const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer());
         this.colorLegend.set(symbolLegend.color);
         this.colorPalette = symbolLegend.colorPalette;
         this.widthLegend.set(symbolLegend.size);
         if (!!this.lineWidthLegend && !!this.lineWidthLegend.interpolatedElement) {
-          const lineWidthEvolution = symbolLegend.size.histogram;
+          const lineWidthEvolution = symbolLegend.size.histogram ?? [];
           drawLineWidth(this.lineWidthLegend.interpolatedElement.nativeElement, lineWidthEvolution, this.colorLegend(),
             this.LEGEND_WIDTH, MAX_LINE_WIDTH);
         }
@@ -295,12 +292,8 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges {
     if (!this.colorLegend().fixValue) {
       this.colorLegend().fixValue = visibileMode ? '#444' : '#d3d3d3';
     }
-    const layer = { ...this.layer };
-    this.layer = null;
-    this.layer = { ...layer };
+    // TODO: check that it is updated
   }
-
-
 }
 
 /**
@@ -355,7 +348,7 @@ export function getMiddleColor(colorLegend: Legend): string {
     const iv = colorLegend.manualValues;
     if (iv) {
       if (iv.size === 1) {
-        color = iv.keys().next().value;
+        color = iv.keys().next().value ?? '';
       } else if (iv.size >= 2) {
         const values = Array.from(iv.values());
         color = values[Math.trunc(values.length / 2)].color as string;
@@ -374,7 +367,7 @@ export function getMiddleColor(colorLegend: Legend): string {
  */
 export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>,
   cLegend: Legend, legendWidth: number, legendHeight: number) {
-  const circleDiameters = [];
+  const circleDiameters = new Array<{ key: number | Date; value: number; }>();
   circlesRadiuses.forEach(cr => circleDiameters.push({ key: cr.key, value: cr.value * 2 }));
   const maxHeight = getMax(circleDiameters);
   const firstRadius = circlesRadiuses[0].value;

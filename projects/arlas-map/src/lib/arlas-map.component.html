@@ -1,5 +1,5 @@
 <div id="{{id}}" class="map__container">
-  @if (visualisationSetsConfig?.length > 0) {
+  @if (visualisationSetsConfig.length > 0) {
     <div class="map__visu-list">
       <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
         <mat-icon (click)="legendOpen=!legendOpen" (keyDown)="legendOpen=!legendOpen">layers</mat-icon>
@@ -16,17 +16,19 @@
             </div>
             <div class="map__visu-content" cdkDropList (cdkDropListDropped)="dropLayer($event, visu.name)">
               @for (l of visu.layers; track l) {
-                <div cdkDrag class="map__visu-layer"
-                  [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) | getValue:visibilityStatus) !== true">
-                  <div cdkDragHandle class="map__visu-layer-drag">
-                    <mat-icon>drag_indicator</mat-icon>
+                @if (l | getValue: mapService.layersMap; as layer) {
+                  <div cdkDrag class="map__visu-layer"
+                    [class.cdk-visually-hidden]="((visu.name + ':arlas_vset:' + l) | getValue:visibilityStatus) !== true">
+                    <div cdkDragHandle class="map__visu-layer-drag">
+                      <mat-icon>drag_indicator</mat-icon>
+                    </div>
+                    <arlas-legend [collection]="layer.metadata?.collection" [enabled]="!!visu.enabled"
+                      [layer]="layer" [zoom]="map.zoom"
+                      (visibilityStatus)="emitLegendVisibility(visu.name, l, $event)" [legendUpdater]="legendUpdater"
+                      [visibilityUpdater]="visibilityUpdater" [highlightLegend]="highlightLegend"
+                      (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-legend>
                   </div>
-                  <arlas-legend [collection]="l | getCollection: mapService.layersMap " [enabled]="visu.enabled"
-                    [layer]="l | getValue: mapService.layersMap " [zoom]="map?.zoom"
-                    (visibilityStatus)="emitLegendVisibility(visu.name, l, $event)" [legendUpdater]="legendUpdater"
-                    [visibilityUpdater]="visibilityUpdater" [highlightLegend]="highlightLegend"
-                  (downloadSourceEmitter)="downloadLayerSource($event)"></arlas-legend>
-                </div>
+                }
               }
             </div>
           </div>
@@ -36,8 +38,8 @@
   }
 </div>
 
-@if (displayCurrentCoordinates) {
-  <arlas-coordinates [currentLat]="map?.currentLat" [currentLng]="map?.currentLng"
+@if (displayCurrentCoordinates && map) {
+  <arlas-coordinates [currentLat]="map.currentLat" [currentLng]="map.currentLng"
     (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
 }
 

@@ -137,7 +137,7 @@ radiusCircleMode.onMouseMove = function (state, e) {
     const circleFeature = circle(center, radiusInKm, options);
     circleFeature.properties ??= {};
     circleFeature.properties.parent = state.line.id;
-    (circleFeature.properties as any).meta = 'radius';
+    circleFeature.properties.meta = 'radius';
     state.circle.setCoordinates(circleFeature.geometry.coordinates);
 };
 
@@ -175,7 +175,7 @@ radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
         const displayMeasurements = getDisplayMeasurements(geojson);
 
         // create custom feature for the current pointer position
-        const currentVertex = {
+        const currentVertex: GeoJSON.Feature<GeoJSON.Point> = {
             type: 'Feature',
             properties: {
                 meta: 'currentPosition',
@@ -185,7 +185,7 @@ radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
             },
             geometry: {
                 type: 'Point',
-                coordinates: geojson.geometry.coordinates[1],
+                coordinates: geojson.geometry.coordinates[1] as GeoJSON.Position,
             },
         };
         display(currentVertex);

@@ -31,7 +31,6 @@ import { ElementIdentifier, GetValuePipe } from 'arlas-web-components';
 import { Feature, FeatureCollection } from 'geojson';
 import { filter, finalize, fromEvent, Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
-import { GetCollectionPipe } from './arlas-map.pipe';
 import * as mapJsonSchema from './arlas-map.schema.json';
 import { AbstractArlasMapService } from './arlas-map.service';
 import { BasemapComponent } from './basemaps/basemap.component';
@@ -65,7 +64,7 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
   encapsulation: ViewEncapsulation.None,
   imports: [
     MatTooltip, MatIcon, CdkDropList, CdkDrag, CdkDragHandle, MatSlideToggle, LegendComponent,
-    CoordinatesComponent, BasemapComponent, ArlasDrawComponent, TranslatePipe, GetValuePipe, GetCollectionPipe]
+    CoordinatesComponent, BasemapComponent, ArlasDrawComponent, TranslatePipe, GetValuePipe]
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.
@@ -74,7 +73,7 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
 export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** Map instance. */
-  public map: AbstractArlasMapGL;
+  public map!: AbstractArlasMapGL;
   /** Whether the legend is visible (open) */
   public legendOpen = false;
   /** Used to clear geojson sources. */
@@ -89,7 +88,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
 
-  @ViewChild('drawComponent', { static: false }) public drawComponent: ArlasDrawComponent<ArlasDataLayer, S, M>;
+  @ViewChild('drawComponent', { static: false }) public drawComponent?: ArlasDrawComponent<ArlasDataLayer, S, M>;
 
 
   /** ANGULAR INPUTS */
@@ -103,7 +102,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** --- LAYERS */
 
   /** @description List of configured (by the builder) layers. */
-  @Input() public mapLayers: MapLayers<ArlasDataLayer>;
+  public mapLayers = input.required<MapLayers<ArlasDataLayer>>();
 
   /** --- SCALE & COORDINATES */
 
@@ -121,7 +120,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** --- BASEMAPS */
 
   /** @description Default basemap to display. */
-  @Input() public defaultBasemapStyle: BasemapStyle;
+  @Input() public defaultBasemapStyle?: BasemapStyle;
   /** @description List of available basemaps. */
   @Input() public basemapStyles = new Array<BasemapStyle>();
 
@@ -142,7 +141,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** @description Bounds that the view map fits. It's an array of two corners. */
   /** Each corner is an lat-long position. For example: boundsToFit = [[30.51, -54.3],[30.57, -54.2]] */
-  @Input() public boundsToFit: Array<Array<number>>;
+  @Input() public boundsToFit: Array<Array<number>> = [];
   /** @description The padding added in the top-left and bottom-right corners of a map container that shouldn't be accounted */
   /** for when setting the view to fit bounds.*/
   @Input() public fitBoundsOffSet: [number, number] = [0, 0];
@@ -154,28 +153,30 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** --- DATA LOADING STRATEGIES */
 
   /** @description Margin applied to the map extent. Data will be fetched in all this extent. */
-  @Input() public margePanForLoad: number;
-  /** @description Margin applied to the map extent. Before loading data,
-   * the components checks first if there are features already loaded in this extent. */
-  @Input() public margePanForTest: number;
+  @Input() public margePanForLoad = 5;
+  /**
+   * @description Margin applied to the map extent. Before loading data,
+   * the components checks first if there are features already loaded in this extent.
+   */
+  @Input() public margePanForTest = 5;
   /** @description A callback run before the Map makes a request for an external URL/ */
   @Input() public transformRequest: unknown /** TransformRequestFunction or RequestTransformRequest */;
 
   /** --- MAP INTERACTION */
-
+  // Will be removed, so typing does not matter
   /** @description Feature to highlight. */
-  @Input() public featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; };
+  @Input() public featureToHightLight!: { isleaving: boolean; elementidentifier: ElementIdentifier; };
   /** @description List of features to select. */
-  @Input() public featuresToSelect: Array<ElementIdentifier>;
+  @Input() public featuresToSelect: Array<ElementIdentifier> = [];
 
   /** --- SOURCES */
 
   /** @description List of sources to add to the map. */
-  @Input() public mapSources: Array<ArlasMapSource<S>>;
+  @Input() public mapSources: Array<ArlasMapSource<S>> = [];
   /** @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`. */
   @Input() public redrawSource = new Subject<{ source: string; data: Feature<GeoJSON.Geometry>[]; }>();
   /** @description List of data sources names that should be added to the map. Sources should be of type `geojson`. */
-  @Input() public dataSources: Set<string>;
+  @Input() public dataSources = new Set<string>();
 
   /** --- DRAW */
 
@@ -186,7 +187,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
-  @Input() public drawPolygonVerticesLimit: number;
+  @Input() public drawPolygonVerticesLimit?: number;
   /** @description Whether the drawing buffer is activated */
   /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
@@ -199,7 +200,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** --- MAP ICONS */
 
   /** @description List of icons to add to the map and that can be used in layers. */
-  @Input() public icons: Array<IconConfig>;
+  @Input() public icons = new Array<IconConfig>();
 
   /** --- LEGEND AND VISUALISATIONS */
 
@@ -211,11 +212,11 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
   /** @description List of visualisation sets. A Visualisation set is an entity where layers are grouped together. */
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
-  @Input() public visualisationSetsConfig: Array<VisualisationSetConfig>;
+  @Input() public visualisationSetsConfig = new Array<VisualisationSetConfig>();
 
   /** --- GLOBE */
   /** @description Whether to allow to switch to globe mode */
-  @Input() public enableGlobe: boolean;
+  @Input() public enableGlobe = false;
 
   /** --- LEGEND HIGHLIGHTS */
   /** @description Whether to highlight the keywords or color of hovered features */
@@ -411,7 +412,8 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     this.initTransformRequest();
     const arlasMapOption: ArlasMapOption = {
       container: this.id,
-      style: this.basemapService.getInitStyle(this.basemapService.basemaps.getSelected()),
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      style: this.basemapService.getInitStyle(this.basemapService.basemaps!.getSelected()),
       center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
@@ -476,7 +478,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
       this.addIcons();
       this.mapService.declareArlasDataSources(this.dataSources, this.emptyData, this.map);
       this.mapService.declareBasemapSources(this.mapSources, this.map);
-      this.mapService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers, this.map);
+      this.mapService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers(), this.map);
       this.listenToLayersEvents();
     });
 
@@ -508,10 +510,10 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    */
   public listenToLayersEvents() {
     /** Zooms on the clicked feature of the given layers. */
-    this.mapLayers.events.zoomOnClick.forEach(layerId => {
+    this.mapLayers().events.zoomOnClick.forEach(layerId => {
       this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) => this.zoomOnClick(e));
     });
-    this.mapLayers.events.onHover.forEach(layerId => {
+    this.mapLayers().events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
       this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
         this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
@@ -522,7 +524,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
       });
     });
     /** Emits the clicked on feature. */
-    this.mapLayers.events.emitOnClick.forEach(layerId => {
+    this.mapLayers().events.emitOnClick.forEach(layerId => {
       this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) =>
         this.queryRender(e));
     });
@@ -547,7 +549,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     });
 
     // For each layer other than select and hover layers, listen to the events of enter and exit of the mouse
-    this.mapLayers.layers.filter(l => !l.id.startsWith('arlas-select') && !l.id.startsWith('arlas-hover')).forEach(layer => {
+    this.mapLayers().layers.filter(l => !l.id.startsWith('arlas-select') && !l.id.startsWith('arlas-hover')).forEach(layer => {
       /** Emits the hovered feature on mousemove. */
       this.mapFrameworkService.onLayerEvent('mousemove', this.map, layer.id, (e) => {
         if (this.highlightLegend) {
@@ -620,7 +622,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** puts the layers list in the new order after dropping */
   public dropLayer(event: CdkDragDrop<string[]>, visuName: string) {
-    const layers = Array.from(this.mapService.findVisualisationSetLayer(visuName, this.visualisationSetsConfig));
+    const layers = Array.from(this.mapService.findVisualisationSetLayer(visuName, this.visualisationSetsConfig) ?? []);
     moveItemInArray(layers, event.previousIndex, event.currentIndex);
     this.mapService.setVisualisationSetLayers(visuName, layers, this.visualisationSetsConfig);
     this.reorderLayers();
@@ -644,18 +646,18 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   }
   /** Highlights, in all data sources,the feature(s) having the given elementIdentifier */
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.mapService.highlightFeature(this.mapLayers, this.map, featureToHightLight);
+    this.mapService.highlightFeature(this.mapLayers(), this.map, featureToHightLight);
   }
   /** Selects, in all data sources,the feature(s) having the given elementIdentifier */
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    this.mapService.selectFeatures(this.mapLayers, this.map, elementToSelect);
+    this.mapService.selectFeatures(this.mapLayers(), this.map, elementToSelect);
   }
   /** Selects, in all data sources, all the features having the given elementIdentifiers and under the given collection.
    * @param features list of features identifiers.
    * @param collection data collection (metadata of the data source).
   */
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    this.mapService.selectFeaturesByCollection(this.mapLayers, this.map, features, collection);
+    this.mapService.selectFeaturesByCollection(this.mapLayers(), this.map, features, collection);
   }
 
   public static getMapJsonSchema(): Object {
@@ -670,19 +672,19 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
-    this.drawComponent.addGeoBox();
+    this.drawComponent?.addGeoBox();
   }
 
   /**
    * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
   public removeAois() {
-    this.drawComponent.removeAois();
+    this.drawComponent?.removeAois();
   }
 
   /** @description Deletes the selected drawn geometry. If no drawn geometry is selected, all geometries are deteleted */
   public deleteSelectedItem() {
-    this.drawComponent.deleteSelectedItem();
+    this.drawComponent?.deleteSelectedItem();
   }
 
 
@@ -692,7 +694,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @param option Mapboxdraw option.
    */
   public switchToDrawMode(mode?: string, option?: any) {
-    this.drawComponent.switchToDrawMode(mode, option);
+    this.drawComponent?.switchToDrawMode(mode, option);
   }
 
   /**
@@ -701,7 +703,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    */
   public switchToDirectSelectMode(option?: { featureIds: Array<string>; allowCircleResize: boolean; }
     | { featureId: string; allowCircleResize: boolean; }) {
-    this.drawComponent.switchToDirectSelectMode(option);
+    this.drawComponent?.switchToDirectSelectMode(option);
   }
 
   /**
@@ -709,7 +711,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @param option Mapboxdraw option.
    */
   public switchToEditMode() {
-    this.drawComponent.switchToEditMode();
+    this.drawComponent?.switchToEditMode();
   }
 
   /**
@@ -718,7 +720,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @returns Wkt string or Geojson object.
    */
   public getAllPolygon(mode: 'wkt' | 'geojson') {
-    return this.drawComponent.getAllPolygon(mode);
+    return this.drawComponent?.getAllPolygon(mode);
   }
 
   /**
@@ -727,7 +729,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @returns Wkt string or Geojson object.
    */
   public getSelectedPolygon(mode: 'wkt' | 'geojson') {
-    return this.drawComponent.getSelectedPolygon(mode);
+    return this.drawComponent?.getSelectedPolygon(mode);
   }
 
   /**

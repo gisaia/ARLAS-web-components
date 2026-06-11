@@ -31,16 +31,16 @@ export type DrawModes = 'SIMPLE_SELECT' | 'DRAW_CIRCLE' | 'DIRECT_SELECT' |
   'DRAW_STRIP' | 'DIRECT_STRIP'| 'DRAW_RECTANGLE' | 'STATIC';
 
 export interface DrawEventsInterface {
-  onDrawCreate: (...args) => void;
-  onDrawUpdate: (...args) => void;
-  onDrawDelete: (...args) => void;
-  onDrawOnClick: (...args) => void;
-  onDrawOnStart: (...args) => void;
-  onDrawOnStop: (...args) => void;
-  onDrawInvalidGeometry: (...args) => void;
-  onDrawEditSaveInitialFeature: (...args) => void;
-  onDrawSelectionchange: (...args) => void;
-  onDrawModeChange: (...args) => void;
+  onDrawCreate: (...args: any[]) => void;
+  onDrawUpdate: (...args: any[]) => void;
+  onDrawDelete: (...args: any[]) => void;
+  onDrawOnClick: (...args: any[]) => void;
+  onDrawOnStart: (...args: any[]) => void;
+  onDrawOnStop: (...args: any[]) => void;
+  onDrawInvalidGeometry: (...args: any[]) => void;
+  onDrawEditSaveInitialFeature: (...args: any[]) => void;
+  onDrawSelectionchange: (...args: any[]) => void;
+  onDrawModeChange: (...args: any[]) => void;
 }
 
 export class AbstractDraw implements DrawEventsInterface {
@@ -48,6 +48,7 @@ export class AbstractDraw implements DrawEventsInterface {
   public arlasMap: AbstractArlasMapGL;
   public enabled: boolean;
   public drawProvider: MapboxDraw;
+
   public constructor(config: any, enabled: boolean, map: AbstractArlasMapGL) {
     const modes = MapboxDraw.modes;
     this.config = JSON.parse(JSON.stringify(config));
@@ -57,7 +58,7 @@ export class AbstractDraw implements DrawEventsInterface {
     this.enabled = enabled;
   }
 
-  public onAdd(map) {
+  public onAdd(map: AbstractArlasMapGL) {
     const controlContainer = this.drawProvider.onAdd(map);
     if (!this.enabled) {
       controlContainer.className += ' draw-control-disabled';
@@ -65,11 +66,11 @@ export class AbstractDraw implements DrawEventsInterface {
     return controlContainer;
   }
 
-  public onRemove(map) {
+  public onRemove(map: AbstractArlasMapGL) {
     return this.drawProvider.onRemove(map);
   }
 
-  public setMode(drawModes: DrawModes, replaceMode: any) {
+  public setMode(drawModes: DrawModes, replaceMode: string) {
     this.drawProvider.modes[drawModes] = replaceMode;
   }
 
@@ -77,61 +78,61 @@ export class AbstractDraw implements DrawEventsInterface {
     return this.getAll().features;
   }
 
-  public onDrawCreate(fn: (e) => void): void {
+  public onDrawCreate(fn: (e: any) => void): void {
     this.on('draw.create', (e) => {
       fn(e);
     });
   }
 
-  public onDrawDelete(fn: (e) => void): void {
+  public onDrawDelete(fn: (e: any) => void): void {
     this.on('draw.delete', (e) => {
       fn(e);
     });
   }
 
-  public onDrawEditSaveInitialFeature(fn: (e) => void): void {
+  public onDrawEditSaveInitialFeature(fn: (e: any) => void): void {
     this.on('draw.edit.saveInitialFeature', (e) => {
       fn(e);
     });
   }
 
-  public onDrawInvalidGeometry(fn: (e) => void): void {
+  public onDrawInvalidGeometry(fn: (e: any) => void): void {
     this.on('draw.invalidGeometry', (e) => {
       fn(e);
     });
   }
 
-  public onDrawModeChange(fn: (e) => void): void {
+  public onDrawModeChange(fn: (e: any) => void): void {
     this.on('draw.modechange', (e) => {
       fn(e);
     });
   }
 
-  public onDrawOnClick(fn: (e) => void): void {
+  public onDrawOnClick(fn: (e: any) => void): void {
     this.on('draw.onClick', (e) => {
       fn(e);
     });
   }
 
-  public onDrawOnStart(fn: (e) => void): void {
+  public onDrawOnStart(fn: (e: any) => void): void {
     this.on('draw.onStart', (e) => {
       fn(e);
     });
   }
 
-  public onDrawOnStop(fn: (e) => void): void {
+  public onDrawOnStop(fn: (e: any) => void): void {
     this.on('draw.onStop', (e) => {
       fn(e);
     });
   }
 
-  public onDrawSelectionchange(fn: (e) => void): void {
+  public onDrawSelectionchange(fn: (e: any) => void): void {
     this.on('draw.selectionchange', (e) => {
       fn(e);
     });
   }
 
-  public onDrawUpdate(fn: (e) => void): void {
+  public onDrawUpdate(fn: (e: any) => void): void {
     this.on('draw.update', (e) => {
       fn(e);
     });
@@ -141,8 +142,8 @@ export class AbstractDraw implements DrawEventsInterface {
     return this.drawProvider.modes[modes];
   }
 
-  public on(event: DrawEvents, func: (e) => void): void {
-    this.arlasMap.on(event, func);
+  public on(event: DrawEvents, fn: (e: any) => void): void {
+    this.arlasMap.on(event, fn);
   }
 
   public add(feature: Feature<Geometry> | FeatureCollection<GeoJSON.Geometry>) {

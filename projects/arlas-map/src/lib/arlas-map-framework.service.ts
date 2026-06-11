@@ -18,7 +18,7 @@
  */
 
 import { Injectable } from '@angular/core';
-import { FeatureCollection } from 'geojson';
+import { Feature, FeatureCollection } from 'geojson';
 import { Subject } from 'rxjs';
 import { AbstractDraw } from './draw/AbstractDraw';
 import { AbstractArlasMapGL, ArlasMapOption, MapConfig } from './map/AbstractArlasMapGL';
@@ -48,7 +48,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract buildMapProviderOption(mapOption: ArlasMapOption): M;
   public abstract createMap(config: MapConfig<M>): AbstractArlasMapGL;
 
-  public abstract createDraw(drawOptions, enabled: boolean, map: AbstractArlasMapGL): AbstractDraw;
+  public abstract createDraw(drawOptions: any, enabled: boolean, map: AbstractArlasMapGL): AbstractDraw;
 
   /**
    * @description Gets the bounds from the two given coordinates.
@@ -64,7 +64,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    * Fits the map to its current bounds. To be used when a map container is resized.
    * @param map Map instance.
    */
-  public abstract fitMapBounds(map: AbstractArlasMapGL);
+  public abstract fitMapBounds(map: AbstractArlasMapGL): void;
 
   public abstract getBoundsAsString(map: AbstractArlasMapGL): string;
 
@@ -81,7 +81,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    * @param source A Geojson source
    * @param data A feature collection object.
    */
-  public abstract setDataToGeojsonSource(source: S, data: FeatureCollection<GeoJSON.Geometry>);
+  public abstract setDataToGeojsonSource(source: S, data: FeatureCollection<GeoJSON.Geometry>): void;
 
 
   /**
@@ -90,7 +90,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    */
   public abstract getCanvas(map: AbstractArlasMapGL): HTMLCanvasElement;
 
-  public abstract addImage(name: string, url: string, map: AbstractArlasMapGL, errorMessage: string, opt?: any);
+  public abstract addImage(name: string, url: string, map: AbstractArlasMapGL, errorMessage: string, opt?: any): void;
 
   /**
    * @description Adds a layer to the map instance.
@@ -98,42 +98,42 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
    * @param layer A layer. It could be a layer identifier OR a layer object (it will depend on the framwork implementation).
    * @param beforeId Identifier of an already added layer. The 'layer' is added under this 'beforeId' layer.
    */
-  public abstract addLayer(map: AbstractArlasMapGL, layer: L, beforeId?: L | string);
+  public abstract addLayer(map: AbstractArlasMapGL, layer: L, beforeId?: L | string): void;
 
   public abstract getLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): L[];
   public abstract getLayersStartingWithSource(map: AbstractArlasMapGL, sourceIdPattern: string): L[];
   public abstract getAllLayers(map: AbstractArlasMapGL): L[];
 
-  public abstract hasLayer(map: AbstractArlasMapGL, layer: L | string);
-  public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
-  public abstract moveLayer(map: AbstractArlasMapGL, layer: L | string, beforeId?: string);
-  public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: L | string, fn: (e) => void);
-  public abstract removeLayer(map: AbstractArlasMapGL, layer: L | string, removeSource?: boolean);
-  public abstract removeLayers(map: AbstractArlasMapGL, layers: L[] | string[]);
-  public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string);
-  public abstract setLayerVisibility(layer: L | string, isVisible: boolean, map: AbstractArlasMapGL);
+  public abstract hasLayer(map: AbstractArlasMapGL, layer: L | string): boolean;
+  public abstract hasLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): boolean;
+  public abstract moveLayer(map: AbstractArlasMapGL, layer: L | string, beforeId?: string): void;
+  public abstract onLayerEvent(eventName: string, map: AbstractArlasMapGL, layer: L | string, fn: (e: any) => void): void;
+  public abstract removeLayer(map: AbstractArlasMapGL, layer: L | string, removeSource?: boolean): void;
+  public abstract removeLayers(map: AbstractArlasMapGL, layers: L[] | string[]): void;
+  public abstract removeLayersFromPattern(map: AbstractArlasMapGL, layersIdPattern: string): void;
+  public abstract setLayerVisibility(layer: L | string, isVisible: boolean, map: AbstractArlasMapGL): void;
   public abstract isLayerVisible(layer: L | string): boolean;
   public abstract getLayer(map: AbstractArlasMapGL, layerId: string): L;
   public abstract setTerrain(source: S, map: AbstractArlasMapGL, exaggeration?: number): string[];
   public abstract removeTerrain(map: AbstractArlasMapGL): void;
 
-  public abstract queryFeatures(mouseEvent: MapLayerMouseEvent, map: AbstractArlasMapGL, layersIdPattern: string, options?: any);
-  public abstract hasSource(map: AbstractArlasMapGL, source: L | AbstractArlasMapGL | string);
+  public abstract queryFeatures(mouseEvent: MapLayerMouseEvent, map: AbstractArlasMapGL, layersIdPattern: string, options?: any): Feature[];
+  public abstract hasSource(map: AbstractArlasMapGL, source: L | AbstractArlasMapGL | string): boolean;
   public abstract getSource(sourceId: string, options: L | AbstractArlasMapGL | string): S;
   public abstract getAllSources(options:  L | AbstractArlasMapGL | string): S[];
-  public abstract setSource(sourceId: string, source: S, options: L | AbstractArlasMapGL | string);
-  public abstract removeSource(map: AbstractArlasMapGL, source: S | string);
+  public abstract setSource(sourceId: string, source: S, options: L | AbstractArlasMapGL | string): void;
+  public abstract removeSource(map: AbstractArlasMapGL, source: S | string): void;
 
-  public abstract addPopup(map: AbstractArlasMapGL, popup: any);
-  public abstract createPopup(lng: number, lat: number, message: string);
-  public abstract removePopup(map: AbstractArlasMapGL, popup: any);
+  public abstract addPopup(map: AbstractArlasMapGL, popup: any): void;
+  public abstract createPopup(lng: number, lat: number, message: string): void;
+  public abstract removePopup(map: AbstractArlasMapGL, popup: any): void;
 
-  public abstract onMapEvent(eventName: any, map: AbstractArlasMapGL, fn: (e) => void);
+  public abstract onMapEvent(eventName: any, map: AbstractArlasMapGL, fn: (e: any) => void): void;
   public abstract setMapCursor(map: AbstractArlasMapGL, cursor: string): void;
-  public abstract flyTo(lat: number, lng: number, zoom: number, map: AbstractArlasMapGL);
+  public abstract flyTo(lat: number, lng: number, zoom: number, map: AbstractArlasMapGL): void;
 
   public abstract addIconLayer(map: AbstractArlasMapGL, layerId: string, iconName: string,
-    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>);
+    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void;
   public abstract addRasterLayer(map: AbstractArlasMapGL, layerId: string, url: string, bounds: number[],
     maxZoom: number, tileSize: number, beforeId?: string): void;
 
@@ -142,7 +142,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   ): void;
 
 
-  public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: L | string, filter: any);
+  public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: L | string, filter: any): void;
 
   public abstract createGeojsonSource(data: GeoJSON.GeoJSON): S;
   public abstract createRasterSource(url: string, bounds: number[], maxZoom: number, tileSize: number): S;

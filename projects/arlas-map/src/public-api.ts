@@ -23,7 +23,6 @@
 
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
 export { ArlasMapComponent } from './lib/arlas-map.component';
-export { GetCollectionPipe } from './lib/arlas-map.pipe';
 export { AbstractArlasMapService } from './lib/arlas-map.service';
 export { BasemapComponent } from './lib/basemaps/basemap.component';
 export { BasemapStyle } from './lib/basemaps/basemap.config';

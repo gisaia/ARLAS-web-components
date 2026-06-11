@@ -50,11 +50,11 @@ export abstract class LegendService {
   public abstract getColorField(paint: any, layerType: string): string;
 
   public highlightFeatures(layerId: string, features: Array<GeoJSON.Feature<GeoJSON.Geometry>>) {
-    this.highlightSource.next({layerId: layerId, properties: features.map(f => f.properties)});
+    this.highlightSource.next({layerId: layerId, properties: features.map(f => f.properties ?? {}).filter(p => !!p)});
   }
 
   public static setProvidedColorLegend(colorLegend: Legend, field: string,
-    legendData: Map<string, LegendData>, filter, translate: TranslateService) {
+    legendData: Map<string, LegendData>, filter: any[], translate: TranslateService) {
     colorLegend.title = field;
     if (!Array.isArray(field)) {
       colorLegend.type = PROPERTY_SELECTOR_SOURCE.provided;
@@ -63,8 +63,8 @@ export abstract class LegendService {
       }
       colorLegend.manualValues = new Map();
       if (legendData?.get(field)) {
-        const keysToColors = legendData.get(field).keysColorsMap;
-        const colorList = Array.from(keysToColors.keys()).map(k => [k, keysToColors.get(k)]).flat();
+        const keysToColors = legendData.get(field)?.keysColorsMap ?? new Map();
+        const colorList = Array.from(keysToColors.keys()).flatMap(k => [k, keysToColors.get(k)]);
         for (let i = 0; i < colorList.length; i += 2) {
           colorLegend.manualValues.set(translate ? translate.instant(colorList[i]) : colorList[i], { color: colorList[i + 1], highlight: false});
         }
@@ -83,7 +83,7 @@ export abstract class LegendService {
 
 
   public static setMatchColorLegend(colorLegend: Legend, colorExpression: any[], legendData: Map<string, LegendData>,
-    filter, translate: TranslateService) {
+    filter: any[], translate: TranslateService) {
     /** color = ["match", ["get", "field"], .... ]**/
     colorLegend.type = PROPERTY_SELECTOR_SOURCE.manual;
     const colorsLength = colorExpression.length;
@@ -97,7 +97,7 @@ export abstract class LegendService {
     let keysToColors: Map<string, string>;
     if (legendData?.get(field + '_color')) {
       // If there is a legendData, use only the colors in the keysToColors
-      keysToColors = legendData.get(field + '_color').keysColorsMap;
+      keysToColors = legendData.get(field + '_color')?.keysColorsMap ?? new Map();
     } else {
       // If no legendData for this field, use all the colors of colorExpression
       keysToColors = new Map();
@@ -140,7 +140,7 @@ export abstract class LegendService {
     const field = colorExpression[2].length === 2 ? colorExpression[2][1] : HEATMAP_DENSITY;
     colorLegend.title = field;
     colorLegend.interpolatedValues = [];
-    const palette = [];
+    const palette = new Array<{ proportion: number; value: string; }>();
     const colors = colorExpression.slice(3);
     colors.forEach((c, i) => {
       if (i % 2 === 0) {
@@ -150,18 +150,22 @@ export abstract class LegendService {
         });
       }
     });
-    const minimum = palette[0].proportion;
-    const maximum = palette.slice(-1)[0].proportion;
-    palette.forEach(c => colorLegend.interpolatedValues.push(c.value));
-    const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
-    if (legendData?.get(field) && field !== 'count') {
-      colorLegend.minValue = legendData.get(field).minValue;
-      colorLegend.maxValue = legendData.get(field).maxValue;
+
+    for (const c of palette) {
+      colorLegend.interpolatedValues.push(c.value);
+    }
+
+    const fieldLegend = legendData.get(field);
+    const countLegend = legendData.get('count');
+    if (fieldLegend && field !== 'count') {
+      colorLegend.minValue = fieldLegend.minValue;
+      colorLegend.maxValue = fieldLegend.maxValue;
       // For heatmaps, the count is used to fetch data, so we use it for the legend
-    } else if (field === HEATMAP_DENSITY && legendData?.get('count')) {
-      colorLegend.minValue = legendData.get('count').minValue;
-      colorLegend.maxValue = legendData.get('count').maxValue;
+    } else if (field === HEATMAP_DENSITY && countLegend) {
+      colorLegend.minValue = countLegend.minValue;
+      colorLegend.maxValue = countLegend.maxValue;
     } else {
+      const colorValues = colorExpression.filter((c, i) => i > 2 && i % 2 !== 0);
       colorLegend.minValue = colorValues[0] + '';
       colorLegend.maxValue = colorValues[colorValues.length - 1] + '';
     }
@@ -173,6 +177,9 @@ export abstract class LegendService {
         p.value = tinycolor(p.value.toString()).greyscale().lighten(20).toHexString();
       });
     }
+
+    const minimum = palette[0].proportion;
+    const maximum = palette.slice(-1)[0].proportion;
     return palette.map(c => c.value + ' ' + (100 * (c.proportion - minimum) / (maximum - minimum)) + '%').join(',');
 
   }
@@ -207,7 +214,7 @@ export abstract class LegendService {
   }
 
   public static buildColorLegend(colorExpression: string | any, visibleMode: boolean, legendData: Map<string, LegendData>,
-    filter?: any, translate?: TranslateService): [Legend, string] {
+    filter: any[], translate: TranslateService): [Legend, string] {
     const colorLegend: Legend = { visible: true };
     let colorPalette = '';
     if (typeof colorExpression === 'string') {
@@ -246,14 +253,17 @@ export abstract class LegendService {
             }
           });
           radiusLegend.title = field;
-          if (legendData?.get(field)) {
-            radiusLegend.minValue = legendData.get(field).minValue;
-            radiusLegend.maxValue = legendData.get(field).maxValue;
+          radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+
+          const fieldLegend = legendData.get(field);
+          if (fieldLegend) {
+            radiusLegend.minValue = fieldLegend.minValue;
+            radiusLegend.maxValue = fieldLegend.maxValue;
           } else {
             radiusLegend.minValue = circleRadiusEvolution[0].key + '';
             radiusLegend.maxValue = circleRadiusEvolution[circleRadiusEvolution.length - 1].key + '';
           }
-          radiusLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+
           const maxCircleRadius = getMax(circleRadiusEvolution);
           if (maxCircleRadius > MAX_CIRLE_RADIUS) {
             circleRadiusEvolution.forEach(lw => lw.value = lw.value * MAX_CIRLE_RADIUS / maxCircleRadius);
@@ -275,11 +285,14 @@ export abstract class LegendService {
         if (lineWidth[0] === INTERPOLATE) {
           const field = lineWidth[2][1];
           widthLegend.title = field;
-          if (legendData?.get(field)) {
-            widthLegend.minValue = legendData.get(field).minValue;
-            widthLegend.maxValue = legendData.get(field).maxValue;
-          }
           widthLegend.type = PROPERTY_SELECTOR_SOURCE.interpolated;
+
+          const fieldLegend = legendData.get(field);
+          if (fieldLegend) {
+            widthLegend.minValue = fieldLegend.minValue;
+            widthLegend.maxValue = fieldLegend.maxValue;
+          }
+
           const lineWidthEvolution: Array<HistogramData> = new Array();
           lineWidth.filter((w, i) => i >= 3).forEach((w, i) => {
             if (i % 2 === 0) {

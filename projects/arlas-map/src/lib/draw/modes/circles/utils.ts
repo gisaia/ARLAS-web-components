@@ -23,7 +23,7 @@ export function createSupplementaryPointsForCircle(geojson: GeoJSON.Feature<GeoJ
     const { properties, geometry } = geojson;
 
     if (!properties?.user_isCircle) {
-        return null;
+        return [];
     }
 
     const supplementaryPoints = [];
@@ -59,3 +59,13 @@ export const dragPan = {
         }, 0);
     }
 };
+
+export function moveCircleFeatureCenter(features: GeoJSON.Feature[], delta: MapboxDraw.LngLat) {
+  features
+    .filter(feature => feature.properties?.isCircle)
+    .map(circle => circle.properties?.center)
+    .forEach((center: [number, number]) => {
+        center[0] += delta.lng;
+        center[1] += delta.lat;
+    });
+}

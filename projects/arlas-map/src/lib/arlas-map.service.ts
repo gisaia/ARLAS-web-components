@@ -41,7 +41,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   /** @description List of arlas data sources declared in configuration */
   public dataSources: S[] = [];
   /** @description Map of ARLAS data layers and their ids (the ids being the key of the map).  */
-  public layersMap: Map<string, ArlasDataLayer>;
+  public layersMap: Map<string, ArlasDataLayer> = new Map();
   /**
    * @description Object to describe visualisation sets
    * - visulisations: a map of <visualisation name, set of layers identifiers>;
@@ -69,7 +69,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   public abstract declareBasemapSources(basemapSources: Array<ArlasMapSource<any>>, map: AbstractArlasMapGL): void;
 
-  public abstract setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>);
+  public abstract setLayersMap(mapLayers: MapLayers<ArlasDataLayer>, layers?: Array<ArlasDataLayer>): void;
 
   public updateLabelSources(labelSourceId: string, data: FeatureCollection<GeoJSON.Geometry>, map: AbstractArlasMapGL) {
     if (labelSourceId) {
@@ -86,7 +86,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
     if (visualisationSetsConfig) {
       visualisationSetsConfig.forEach(visu => {
         this.visualisationsSets.visualisations.set(visu.name, new Set(visu.layers));
-        this.visualisationsSets.status.set(visu.name, visu.enabled);
+        this.visualisationsSets.status.set(visu.name, !!visu.enabled);
       });
     }
   }
@@ -97,7 +97,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
+  public abstract moveArlasDataLayer(map: AbstractArlasMapGL, layer: any, layersMap: Map<string, ArlasDataLayer>, beforeId?: string): void;
 
   /**
    * Add a layer to the map instance. This method handles any specific treatment when adding ARLAS data.
@@ -108,7 +108,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
    * @param beforeId Identifier of an already added layer. The layers of layersMap are added under this 'beforeId' layer.
    */
   public abstract addArlasDataLayer(map: AbstractArlasMapGL, layer: ArlasDataLayer | string,
-    layersMap: Map<string, ArlasDataLayer>, beforeId?: string);
+    layersMap: Map<string, ArlasDataLayer>, beforeId?: string): void;
 
   public addArlasDataLayers(visualisationSetsConfig: VisualisationSetConfig[], mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL) {
     this.initMapLayers(mapLayers, map);
@@ -119,13 +119,15 @@ export abstract class AbstractArlasMapService<L, S, M> {
         for (let j = visualisation.layers.length - 1; j >= 0; j--) {
           const l = visualisation.layers[j];
           const layer = this.layersMap.get(l);
-          this.addArlasDataLayer(map, layer, this.layersMap);
+          if (layer) {
+            this.addArlasDataLayer(map, layer, this.layersMap);
+          }
         }
       }
     }
     this._addExternalEventLayers(mapLayers, map);
     this.visualisationsSets.status.forEach((visible, vs) => {
-      this.visualisationsSets.visualisations.get(vs).forEach(l => {
+      this.visualisationsSets.visualisations.get(vs)?.forEach(l => {
         this.mapFrameworkService.setLayerVisibility(l, visible, map);
       });
     });
@@ -135,7 +137,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
   private _addExternalEventLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL) {
     if (mapLayers.externalEventLayers) {
       mapLayers.layers
-        .filter(layer => mapLayers.externalEventLayers.map(e => e.id).includes(layer.id))
+        .filter(layer => mapLayers.externalEventLayers?.map(e => e.id).includes(layer.id))
         .forEach(l => {
           this.mapFrameworkService.addLayer(map, l as L);
         });
@@ -158,7 +160,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   }
 
-  protected abstract reorderDrawLayers(map: AbstractArlasMapGL);
+  protected abstract reorderDrawLayers(map: AbstractArlasMapGL): void;
 
 
   public abstract filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
@@ -171,7 +173,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
         elementToSelect.reduce((memo, element) => {
           memo.push(element.idValue);
           return memo;
-        }, []) : [];
+        }, new Array<string | number>()) : [];
       const numericalIds = ids.filter(id => !Number.isNaN(+id)).map(id => +id);
       const visibilityFilter = ids.length > 0 ? ['in', ['get', elementToSelect[0].idFieldName], ['literal', ids.concat(numericalIds)]] : [];
       this.filterLayers(mapLayers, map, (elementToSelect.length > 0), visibilityFilter, ExternalEvent.select);
@@ -202,7 +204,11 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   public updateLayoutVisibility(visualisationName: string, visualisationSetsConfig: VisualisationSetConfig[], map: AbstractArlasMapGL) {
     const visuStatus = !this.visualisationsSets.status.get(visualisationName);
-    visualisationSetsConfig.find(v => v.name === visualisationName).enabled = visuStatus;
+    const vs = visualisationSetsConfig.find(v => v.name === visualisationName);
+    if (vs) {
+      vs.enabled = visuStatus;
+    }
+
     if (!visuStatus) {
       const layersSet = new Set(this.visualisationsSets.visualisations.get(visualisationName));
       this.visualisationsSets.visualisations.forEach((ls, v) => {
@@ -265,7 +271,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
 
   public findVisualisationSetLayer(visuName: string, visualisationSetsConfig: VisualisationSetConfig[]) {
-    return visualisationSetsConfig.find(v => v.name === visuName).layers;
+    return visualisationSetsConfig.find(v => v.name === visuName)?.layers;
   }
   public setVisualisationSetLayers(visuName: string, layers: string[], visualisationSetsConfig: VisualisationSetConfig[]) {
     const f = visualisationSetsConfig.find(v => v.name === visuName);
@@ -276,7 +282,7 @@ export abstract class AbstractArlasMapService<L, S, M> {
 
   public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
 
-  public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>);
+  public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>): any[];
 
   /**
    * Move an external layer
