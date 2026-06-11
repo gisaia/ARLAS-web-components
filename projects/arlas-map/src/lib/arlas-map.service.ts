@@ -178,19 +178,6 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  public highlightFeature(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
-    featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    if (featureToHightLight?.elementidentifier) {
-      const ids: Array<number | string> = [featureToHightLight.elementidentifier.idValue];
-      if (!Number.isNaN(+featureToHightLight.elementidentifier.idValue)) {
-        ids.push(+featureToHightLight.elementidentifier.idValue);
-      }
-      const visibilityFilter = ['in', ['get', featureToHightLight.elementidentifier.idFieldName],
-        ['literal', ids]];
-      this.filterLayers(mapLayers, map, !featureToHightLight.isleaving, visibilityFilter, ExternalEvent.hover);
-    }
-  }
-
   public selectFeaturesByCollection(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
     features: Array<ElementIdentifier>, collection: string) {
     const ids: Array<number | string> = features.map(f => f.idValue);
@@ -327,6 +314,22 @@ export abstract class AbstractArlasMapService<L, S, M> {
    */
   public abstract adjustOpacityByRange(map: AbstractArlasMapGL, sourceIdPrefix: string, field: string,
     start: number, end: number, insideOpacity: number, outsideOpacity: number): void;
+
+  /**
+   * Applies an opacity style to map layers based on a list of field values.
+   * This method iterates over all layers whose source IDs start with the given sourceIdPrefix
+   * and adjusts the opacity of features within those layers. Features with field values
+   * within the specified list will have the insideOpacity applied, while features with values
+   * outside this list will have the outsideOpacity applied.
+   *
+   * @param {AbstractArlasMapGL} map - The map instance on which the opacity style will be applied.
+   * @param {string} sourceIdPrefix - The prefix used to identify source IDs of the layers to which the opacity style will be applied.
+   * @param {string[]} values - List of values to match
+   * @param {number} insideOpacity - The opacity value to apply to features with field values within the specified range.
+   * @param {number} outsideOpacity - The opacity value to apply to features with field values outside the specified range.
+   */
+  public abstract adjustOpacityByValue(map: AbstractArlasMapGL, sourceIdPrefix: string, field: string,
+    values: string[], insideOpacity: number, outsideOpacity: number): void;
 
   /**
    * Resets the initial configured opacity style of the map layers whose source IDs start with the given sourceIdPrefix.
