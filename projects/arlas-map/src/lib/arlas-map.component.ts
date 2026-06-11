@@ -42,6 +42,7 @@ import { CoordinatesComponent } from './coordinates/coordinates.component';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { AoiEdition } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
+import { DrawTheme } from './draw/themes/default-theme';
 import { LegendComponent } from './legend/legend.component';
 import { LegendData } from './legend/legend.config';
 import { LegendService } from './legend/legend.service';
@@ -193,6 +194,8 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** @description Whether the drawing buffer is activated */
   /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
+  /** @description Theme for the drawn polygons */
+  public drawTheme = input<DrawTheme>({});
 
   /** --- ATTRIBUTION */
 
