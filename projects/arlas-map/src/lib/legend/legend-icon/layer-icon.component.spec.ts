@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { ArlasDataLayer } from '../../map/model/layers';
 import { LayerIconComponent } from './layer-icon.component';
 
 describe('LayerIconComponent', () => {
@@ -15,6 +16,7 @@ describe('LayerIconComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(LayerIconComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('layer', { id: 'test', type: 'test', source: 'test' } as ArlasDataLayer);
     fixture.detectChanges();
   });
 

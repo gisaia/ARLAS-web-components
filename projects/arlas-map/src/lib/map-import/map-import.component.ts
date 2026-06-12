@@ -32,16 +32,13 @@ import centroid from '@turf/centroid';
 import { polygon } from '@turf/helpers';
 import { wktToGeoJSON } from 'betterknown';
 import { Feature, FeatureCollection, GeometryCollection, LineString, MultiLineString, MultiPoint, MultiPolygon, Point, Polygon } from 'geojson';
-import * as gpsi_ from 'geojson-polygon-self-intersections';
+import gpsi from 'geojson-polygon-self-intersections';
 import { valid } from 'geojson-validation';
 import JSZip from 'jszip';
 import { Subject } from 'rxjs';
 import shp from 'shpjs';
 import { ArlasMapFrameworkService } from '../arlas-map-framework.service';
 import { ArlasMapComponent } from '../arlas-map.component';
-
-
-const gpsi = gpsi_.default;
 
 type SimpleGeometry = Point | LineString | Polygon;
 type ComplexGeometry = MultiPoint | MultiLineString | MultiPolygon;
@@ -280,7 +277,7 @@ export class MapImportComponent<L, S, M> {
 
   public handleSimpleGeometry(feature: Feature<SimpleGeometry>, centroids: Feature<Point>[], importedGeojson: FeatureCollection) {
     // avoid self intersect control for point
-    if (feature.geometry.type === 'Point' || gpsi(feature).geometry.coordinates.length === 0) {
+    if (feature.geometry.type === 'Point' || (feature.geometry.type === 'Polygon' && gpsi(feature as Feature<Polygon>).length === 0)) {
       this.addFeature(feature, centroids, importedGeojson, ++this.featureIndex);
     } else {
       throw new Error('Geometry is not valid due to self-intersection');

@@ -189,3 +189,5 @@ declare module MapboxDraw {
 declare module '@mapbox/mapbox-gl-draw' {
     export = MapboxDraw;
 };
+
+declare module '@mapbox/mapbox-gl-draw-static-mode';
