@@ -23,7 +23,7 @@ import {
   ArlasDataLayer, CircleLegend, FillLegend, HeatmapLegend, LabelLegend,
   Legend, LegendData, LegendService, LineLegend, PaintValue
 } from 'arlas-map';
-import { CirclePaint, Expression, FillPaint, HeatmapPaint, LinePaint, StyleFunction, SymbolPaint } from 'mapbox-gl';
+import { CirclePaint, Expression, FillPaint, HeatmapPaint, LinePaint, StyleFunction, SymbolLayout, SymbolPaint } from 'mapbox-gl';
 
 
 @Injectable({
@@ -31,7 +31,7 @@ import { CirclePaint, Expression, FillPaint, HeatmapPaint, LinePaint, StyleFunct
 })
 export class MapboxLegendService extends LegendService {
 
-  public constructor(public translate: TranslateService) {
+  public constructor(private readonly translate: TranslateService) {
     super();
   }
 
@@ -39,10 +39,9 @@ export class MapboxLegendService extends LegendService {
     LegendService.filterLegend(colorLegendValues, filter, field);
   }
 
-  public static buildColorLegend(colorExpression: string | StyleFunction | Expression | PaintValue,
-    visibleMode: boolean, legendData: Map<string, LegendData>,
-    filter?: any, translate?: TranslateService): [Legend, string] {
-
+  public static buildColorLegend(colorExpression: string | StyleFunction | Expression | PaintValue | undefined,
+    visibleMode: boolean, legendData: Map<string, LegendData>, filter: any, translate: TranslateService
+  ): [Legend, string] {
     return LegendService.buildColorLegend(colorExpression, visibleMode, legendData, filter, translate);
   };
 
@@ -50,17 +49,16 @@ export class MapboxLegendService extends LegendService {
     return LegendService.buildRadiusLegend(radiusExpression, legendData);
   };
 
-  protected static buildWidthLegend(lineWidth: number | mapboxgl.StyleFunction | mapboxgl.Expression,
+  protected static buildWidthLegend(lineWidth: number | mapboxgl.StyleFunction | mapboxgl.Expression | undefined,
     legendData: Map<string, LegendData>): Legend {
     return LegendService.buildWidthLegend(lineWidth, legendData);
   }
 
   public getCircleLegend(paint: CirclePaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): CircleLegend {
-    const p: CirclePaint = paint;
-    const colors = MapboxLegendService.buildColorLegend(p['circle-color'], visibileMode, legendData, layer.filter, this.translate);
-    const strokeColors = MapboxLegendService.buildColorLegend(p['circle-stroke-color'], visibileMode, legendData,
+    const colors = MapboxLegendService.buildColorLegend(paint['circle-color'], visibileMode, legendData, layer.filter, this.translate);
+    const strokeColors = MapboxLegendService.buildColorLegend(paint['circle-stroke-color'], visibileMode, legendData,
       layer.filter, this.translate);
-    const radius = MapboxLegendService.buildRadiusLegend(p['circle-radius'], legendData);
+    const radius = MapboxLegendService.buildRadiusLegend(paint['circle-radius'], legendData);
     return ({
       color: colors[0],
       colorPalette: colors[1],
@@ -71,21 +69,19 @@ export class MapboxLegendService extends LegendService {
   }
 
   public getLineLegend(paint: LinePaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): LineLegend {
-    const p: LinePaint = paint;
-    const colors = MapboxLegendService.buildColorLegend(p['line-color'], visibileMode, legendData, layer.filter, this.translate);
-    const width = MapboxLegendService.buildWidthLegend(p['line-width'], legendData);
+    const colors = MapboxLegendService.buildColorLegend(paint['line-color'], visibileMode, legendData, layer.filter, this.translate);
+    const width = MapboxLegendService.buildWidthLegend(paint['line-width'], legendData);
     return ({
       color: colors[0],
       colorPalette: colors[1],
       width: width,
-      dashes: p['line-dasharray']
+      dashes: paint['line-dasharray'] as number[]
     });
   }
 
   public getFillLegend(paint: FillPaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): FillLegend {
-    const p: FillPaint = paint;
-    const colors = MapboxLegendService.buildColorLegend(p['fill-color'], visibileMode, legendData, layer.filter, this.translate);
-    let strokeColors: [Legend, string] = [undefined, ''];
+    const colors = MapboxLegendService.buildColorLegend(paint['fill-color'], visibileMode, legendData, layer.filter, this.translate);
+    let strokeColors: [Legend, string] = [{}, ''];
     if (layer.metadata?.stroke) {
       strokeColors = MapboxLegendService.buildColorLegend(layer.metadata.stroke.color, visibileMode, legendData,
         layer.filter, this.translate);
@@ -101,9 +97,8 @@ export class MapboxLegendService extends LegendService {
 
 
   public getHeatmapLegend(paint: HeatmapPaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): HeatmapLegend {
-    const p: HeatmapPaint = paint;
-    const colors = MapboxLegendService.buildColorLegend(p['heatmap-color'], visibileMode, legendData, layer.filter, this.translate);
-    const radius = MapboxLegendService.buildRadiusLegend(p['heatmap-radius'], legendData);
+    const colors = MapboxLegendService.buildColorLegend(paint['heatmap-color'], visibileMode, legendData, layer.filter, this.translate);
+    const radius = MapboxLegendService.buildRadiusLegend(paint['heatmap-radius'], legendData);
     if (layer.source.toString().startsWith('feature-metric')) {
       colors[0].visible = false;
     }
@@ -115,10 +110,11 @@ export class MapboxLegendService extends LegendService {
   }
 
 
-  public getLabelLegend(paint: SymbolPaint, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): LabelLegend {
-    const p: SymbolPaint = paint;
-    const colors = MapboxLegendService.buildColorLegend(p['text-color'], visibileMode, legendData, layer.filter, this.translate);
-    const size = MapboxLegendService.buildWidthLegend(p['text-size'], legendData);
+  public getLabelLegend(paint: SymbolPaint, layout: SymbolLayout,
+    visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer
+  ): LabelLegend {
+    const colors = MapboxLegendService.buildColorLegend(paint['text-color'], visibileMode, legendData, layer.filter, this.translate);
+    const size = MapboxLegendService.buildWidthLegend(layout['text-size'], legendData);
     return ({
       color: colors[0],
       colorPalette: colors[1],
@@ -128,6 +124,6 @@ export class MapboxLegendService extends LegendService {
 
   public getColorField(paint: CirclePaint | LinePaint | FillPaint | HeatmapPaint | SymbolPaint, layerType: string): string {
     const key = (layerType === 'symbol' ? 'text' : layerType) + '-color';
-    return paint[key]?.[1]?.[1];
+    return (paint as any)[key]?.[1]?.[1];
   }
 }

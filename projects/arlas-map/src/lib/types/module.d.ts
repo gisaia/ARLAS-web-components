@@ -1,5 +1,4 @@
-// Type declaration has mapbox-gl as a dependency
-// https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/mapbox__mapbox-gl-draw/index.d.ts
+// The MapboxDraw module is redclared here to have more leeway as to what can be in a DrawCustomMode when constructing our custom modes
 
 // implements Maplibregl.Icontrol & Mapboxgl.IControl
 declare class MapboxDraw {
@@ -155,7 +154,10 @@ declare module MapboxDraw {
             INACTIVE: 'false';
         };
         classes: {
-            CANVAS: string;
+            CANVAS: 'mapboxgl-canvas';
+            CONTROL_BASE: 'mapboxgl-ctrl';
+            CONTROL_PREFIX: 'mapboxgl-ctrl-';
+            CONTROL_GROUP: 'mapboxgl-ctrl-group';
         };
         geojsonTypes: {
             FEATURE: 'Feature';

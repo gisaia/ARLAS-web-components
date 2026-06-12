@@ -223,6 +223,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   private drawLegends(visibileMode: boolean): void {
     const type = this.layer().type;
     const paint = this.layer().paint;
+    const layout = this.layer().layout;
     switch (type) {
       case 'circle': {
         const circleLegend = this.legendService.getCircleLegend(paint, visibileMode, this.legendData, this.layer());
@@ -277,7 +278,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
         break;
       }
       case 'symbol': {
-        const symbolLegend = this.legendService.getLabelLegend(paint, visibileMode, this.legendData, this.layer());
+        const symbolLegend = this.legendService.getLabelLegend(paint, layout, visibileMode, this.legendData, this.layer());
         this.colorLegend.set(symbolLegend.color);
         this.colorPalette = symbolLegend.colorPalette;
         this.widthLegend.set(symbolLegend.size);

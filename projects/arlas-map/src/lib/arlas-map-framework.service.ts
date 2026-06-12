@@ -120,7 +120,7 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract queryFeatures(mouseEvent: MapLayerMouseEvent, map: AbstractArlasMapGL, layersIdPattern: string, options?: any): Feature[];
   public abstract hasSource(map: AbstractArlasMapGL, source: L | AbstractArlasMapGL | string): boolean;
   public abstract getSource(sourceId: string, options: L | AbstractArlasMapGL | string): S;
-  public abstract getAllSources(options:  L | AbstractArlasMapGL | string): S[];
+  public abstract getAllSources(options:  L | AbstractArlasMapGL | string): Record<string, S>;
   public abstract setSource(sourceId: string, source: S, options: L | AbstractArlasMapGL | string): void;
   public abstract removeSource(map: AbstractArlasMapGL, source: S | string): void;
 

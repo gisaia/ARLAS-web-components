@@ -20,5 +20,4 @@
 import mapboxgl from 'mapbox-gl';
 
 export type MapboxSourceType = mapboxgl.AnySourceData | mapboxgl.VectorSource | mapboxgl.RasterSource |
-mapboxgl.GeoJSONSource | mapboxgl.GeoJSONSourceRaw |
-mapboxgl.CanvasSource | mapboxgl.ImageSource | mapboxgl.VideoSource;
+    mapboxgl.GeoJSONSource | mapboxgl.GeoJSONSourceRaw | mapboxgl.CanvasSource | mapboxgl.ImageSource | mapboxgl.VideoSource;

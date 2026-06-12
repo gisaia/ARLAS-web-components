@@ -44,7 +44,8 @@ export abstract class LegendService {
 
   public abstract getHeatmapLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): HeatmapLegend;
 
-  public abstract getLabelLegend(paint: any, visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): LabelLegend;
+  public abstract getLabelLegend(paint: any, layout: any,
+    visibileMode: boolean, legendData: Map<string, LegendData>, layer: ArlasDataLayer): LabelLegend;
 
   /** Based on the paint of a layer and its type, returns the field used for the color matching */
   public abstract getColorField(paint: any, layerType: string): string;

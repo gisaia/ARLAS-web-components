@@ -96,9 +96,9 @@ export abstract class AbstractArlasMapGL {
    *  ex: endLngLat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startLngLat: ArlasLngLat;
-  public abstract endLngLat: ArlasLngLat;
-  public abstract moveLngLat: ArlasLngLat;
+  public abstract startLngLat?: ArlasLngLat;
+  public abstract endLngLat?: ArlasLngLat;
+  public abstract moveLngLat?: ArlasLngLat;
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -324,7 +324,7 @@ export abstract class AbstractArlasMapGL {
   public abstract disableDragPan(): void;
   public abstract enableDragPan(): void;
   public abstract fitBounds(bounds: ArlasLngLatBounds | number[], options?: unknown, unknown?: unknown): this;
-  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]): VideoEncoderBitrateMode;
+  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]): void;
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
   public abstract getEastBounds(): number;

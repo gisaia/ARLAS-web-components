@@ -18,8 +18,9 @@
  */
 
 import { ControlButton } from 'arlas-map';
+import mapboxgl from 'mapbox-gl';
 
-export class MapBoxControlButton extends ControlButton {
+export class MapBoxControlButton extends ControlButton<mapboxgl.Map> {
   protected _buildClasses() {
     this.btnClasses = ['mapboxgl-ctrl-icon', 'map__controls__icons', 'map__controls__icons--' + this.name];
     this.containerClasses = ['mapboxgl-ctrl', 'mapboxgl-ctrl-group', 'mapboxgl-ctrl-group-' + this.name];

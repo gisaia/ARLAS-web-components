@@ -197,7 +197,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
           }
         }
       } else {
-        map.setFilter(l, this.layersMap.get(l).filter);
+        map.setFilter(l, this.layersMap.get(l)?.filter);
         for (const id of layersIds) {
           const additionalLayer = this.mapService.getLayer(map, id);
           if (additionalLayer) {
@@ -211,14 +211,14 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
 
   public override getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
     const lFilter = this.layersMap.get(layer)?.filter as Expression;
-    const filters = [];
+    const filters: Expression[] = [];
     if (lFilter) {
       lFilter.forEach(f => {
         filters.push(f);
       });
     }
     if (filters.length === 0) {
-      filters.push('all');
+      filters.push(['all']);
     }
     filters.push([
       'match',
@@ -239,7 +239,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     });
     visualisations.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
-    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
+    this.visualisationsSets.status.set(visualisation.name, !!visualisation.enabled);
     layers.forEach(layer => {
       this.mapService.addLayer(map, layer as ArlasAnyLayer);
     });
@@ -264,6 +264,10 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
    */
   public moveArlasDataLayer(map: ArlasMapboxGL, layerId: string, arlasDataLayers: Map<string, ArlasDataLayer>, beforeId?: string) {
     const layer = arlasDataLayers.get(layerId);
+    if (!layer) {
+      return;
+    }
+
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollableLayer = arlasDataLayers.get(scrollableId);
     if (!!scrollableLayer && this.mapService.hasLayer(map, scrollableId)) {
@@ -316,29 +320,29 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMapboxGL,
-    visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
+    visibilityCondition: boolean, visibilityFilter: Expression, visibilityEvent: ExternalEvent,
     collection?: string): void {
     if (mapLayers?.externalEventLayers) {
       mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.mapService.hasLayer(map, layer.id)) {
           let originalLayerIsVisible = false;
           const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (!!collection && (fullLayer.source).includes(collection)));
+          const isCollectionCompatible = (!collection || (!!collection && fullLayer?.source.includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
             const originalLayer = this.mapService.getAllLayers(map).find(l => l.id === originalLayerId);
             if (originalLayer) {
               originalLayerIsVisible = this.mapService.isLayerVisible(originalLayer);
             }
-            const layerFilter: Array<any> = [];
+            const layerFilter = new Array<Expression>();
             const externalEventLayer = this.layersMap.get(layer.id);
             if (!!externalEventLayer && !!externalEventLayer.filter) {
-              externalEventLayer.filter.forEach(f => {
+              externalEventLayer.filter.forEach((f: Expression) => {
                 layerFilter.push(f);
               });
             }
             if (layerFilter.length === 0) {
-              layerFilter.push('all');
+              layerFilter.push(['all']);
             }
             if (visibilityCondition && originalLayerIsVisible) {
               layerFilter.push(visibilityFilter);
