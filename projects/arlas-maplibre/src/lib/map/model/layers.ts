@@ -22,5 +22,7 @@ import {
   HillshadeLayerSpecification, LineLayerSpecification, RasterLayerSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 
+
+
 export type ArlasLayerSpecification = FillLayerSpecification | LineLayerSpecification | SymbolLayerSpecification
   | CircleLayerSpecification | HeatmapLayerSpecification | RasterLayerSpecification | HillshadeLayerSpecification;

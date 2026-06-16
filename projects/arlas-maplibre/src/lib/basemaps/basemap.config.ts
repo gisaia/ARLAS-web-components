@@ -17,10 +17,9 @@
  * under the License.
  */
 
-
-import maplibre from 'maplibre-gl';
 import { BasemapStyle } from 'arlas-map';
+import maplibre from 'maplibre-gl';
 
-export interface MapLibreBasemapStyle extends BasemapStyle{
+export interface MapLibreBasemapStyle extends BasemapStyle {
   styleFile: string | maplibre.StyleSpecification;
 }

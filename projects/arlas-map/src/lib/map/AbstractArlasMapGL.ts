@@ -34,7 +34,7 @@ export interface MapConfig<T> {
   margePanForTest: number;
   wrapLatLng: boolean;
   offset: ArlasMapOffset;
-  mapProviderOptions?: T;
+  mapProviderOptions: T;
   maxWidthScale?: number;
   unitScale?: string;
   controls?: ControlsOption;

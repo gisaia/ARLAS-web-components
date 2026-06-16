@@ -46,10 +46,10 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this;
   }
 
-  protected _mapProvider: maplibregl.Map;
-  public endLngLat: maplibregl.LngLat;
-  public moveLngLat: maplibregl.LngLat;
-  public startLngLat: maplibregl.LngLat;
+  protected _mapProvider!: maplibregl.Map;
+  public endLngLat?: maplibregl.LngLat;
+  public moveLngLat?: maplibregl.LngLat;
+  public startLngLat?: maplibregl.LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);
@@ -135,9 +135,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        visualisationsSets.visualisations.get(vs).forEach(l => {
+        visualisationsSets.visualisations.get(vs)?.forEach(l => {
           const layer = this._mapProvider.getLayer(l);
-          if (layer.minzoom <= this.zoom && this.zoom <= layer.maxzoom) {
+          if (layer?.minzoom && layer.minzoom <= this.zoom && layer.maxzoom && this.zoom <= layer.maxzoom) {
             visibleLayers.add(l);
           }
         });
@@ -239,15 +239,15 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     );
   }
 
-  public addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
+  public addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?: any) => void; }): this;
   public addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
   public addControl(control: IControl, position?: ControlPosition | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left', eventOverride?: {
     event: string;
-    fn: (e?) => void;
+    fn: (e?: any) => void;
   }) {
     this.getMapProvider().addControl(control, position);
     if (control instanceof ControlButton && eventOverride) {
-      control.btn[eventOverride.event] = () => eventOverride.fn();
+      (control.btn as any)[eventOverride.event] = () => eventOverride.fn();
     }
     return this;
   }

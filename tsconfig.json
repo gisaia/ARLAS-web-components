@@ -43,7 +43,7 @@
     "strict": true
   },
   "exclude": [
-    "app"
+    "node_modules"
   ],
   "angularCompilerOptions": {
     "strictTemplates": true

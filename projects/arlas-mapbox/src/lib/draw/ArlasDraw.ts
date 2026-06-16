@@ -17,15 +17,16 @@
  * under the License.
  */
 
+import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { AbstractDraw } from 'arlas-map';
 import { ArlasMapboxGL } from '../map/ArlasMapboxGL';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 
 export class ArlasDraw extends AbstractDraw {
   public constructor(config: any, enabled: boolean, map: ArlasMapboxGL) {
     super(config, enabled, map);
 
+    MapboxDraw.constants.classes.CANVAS = 'mapboxgl-canvas';
     MapboxDraw.constants.classes.CONTROL_BASE  = 'mapboxgl-ctrl';
     MapboxDraw.constants.classes.CONTROL_PREFIX = 'mapboxgl-ctrl-';
     MapboxDraw.constants.classes.CONTROL_GROUP = 'mapboxgl-ctrl-group';

@@ -154,10 +154,10 @@ declare module MapboxDraw {
             INACTIVE: 'false';
         };
         classes: {
-            CANVAS: 'mapboxgl-canvas';
-            CONTROL_BASE: 'mapboxgl-ctrl';
-            CONTROL_PREFIX: 'mapboxgl-ctrl-';
-            CONTROL_GROUP: 'mapboxgl-ctrl-group';
+            CANVAS: string;
+            CONTROL_BASE: string;
+            CONTROL_PREFIX: string;
+            CONTROL_GROUP: string;
         };
         geojsonTypes: {
             FEATURE: 'Feature';
