@@ -19,8 +19,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import {
-    ChangeDetectorRef, Component,
-    ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ChangeDetectorRef, Component,
+  ElementRef, inject, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -29,11 +29,12 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe } from '@ngx-translate/core';
 import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject } from 'rxjs';
+import {Subject, tap} from 'rxjs';
 import { Item } from '../model/item';
 import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
+import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
 
 @Component({
     selector: 'arlas-result-detailed-grid',
@@ -58,7 +59,6 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    * @constant
    */
   public CLOSE_DETAILS = marker('Close details');
-  private fullScreenViewer = new FullScreenViewer();
 
   /**
    * @Input
@@ -155,6 +155,12 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   private viewer;
 
+  /**
+   * Full screaan
+   * @private
+   */
+  private readonly fullScreenService = inject(FullScreenViewerService);
+
   public constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private http: HttpClient
@@ -214,7 +220,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     }
     setTimeout(() => {
       if (this.isFullScreen) {
-        this.fullScreenViewer.show(this.imgSrc);
+        this.fullScreenService.showFullScreen(this.imgSrc);
       } else {
         if (!!this.imageViewer && !this.viewer) {
           this.viewer = new ImageViewer(this.imageViewer.nativeElement);
@@ -227,8 +233,8 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     if (this.viewer) {
       this.viewer = this.viewer.destroy();
     }
-    if (isComponentDestroy && this.fullScreenViewer) {
-      this.fullScreenViewer.destroy();
+    if (isComponentDestroy && this.fullScreenService.hasViewer()) {
+      this.fullScreenService.destroy();
     }
     // Add a delay to allow for the viewer to be destroyed properly
     // before removing it due to visibility rules in the template
@@ -256,32 +262,14 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   public showOverlay() {
     this.isFullScreen = true;
     this.resetViewer();
-
-    let viewerContainer: HTMLElement | undefined;
-    const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
-
-    const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
-    if (!!actionsInfos && !!actionsInfos[0]) {
-      viewerContainer = actionsInfos[0].parentElement;
-      const elements = actionsInfos.length;
-      for (let i = 0; i < elements; i++) {
-        // The element is removed from the list once retrieved
-        fullScreenContainer.appendChild(actionsInfos.item(0));
-      }
-    }
-
-    document.querySelector('.iv-fullscreen-close').addEventListener('click', () => {
-      this.isFullScreen = false;
-      if (viewerContainer) {
-        const actionsInfosFullScreen = fullScreenContainer.getElementsByClassName('viewer_actions-infos');
-        const elements = actionsInfosFullScreen.length;
-        for (let i = 0; i < elements; i++) {
-          // The element is removed from the list once retrieved
-          viewerContainer.appendChild(actionsInfosFullScreen.item(0));
-        }
-      }
-      this.resetViewer();
-    });
+    this.fullScreenService
+      .showOverlay()
+      .destroyElementOnClose()
+      .pipe(tap(() =>  {
+        this.isFullScreen = false;
+        this.resetViewer();
+      }))
+      .subscribe();
   }
 
   public onPrevious() {

@@ -16,7 +16,43 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-export enum ModeEnum {
-  list, grid, hybrid
+:host{
+  display: block;
+  height: 150px;
+  background: white;
 }
+
+
+.hybrid {
+  &__container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    padding: 16px 12px;
+  }
+
+  &__image{
+    flex: 0 0 130px;
+    background: red;
+  }
+
+  &__content{
+    flex: 0 0 370px;
+    max-width: 370px;
+    background: yellow;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    &-title {
+      min-height: 20px;
+      font-weight: 500;
+      text-transform: uppercase;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      background: red;
+    }
+  }
+}
+

@@ -1,0 +1,48 @@
+<div #cellTooltip="matTooltip"
+     (click)="setSelectedItem()" (mouseover)="hoverImage()"
+     class="thumbnail__image {{gridTile()?.iconCssClass}}"
+     id="{{'grid-tile-' + gridTile()?.identifier}}"
+     matTooltip="{{pictureTooltip() | translate}}">
+
+  <div class="image__header">
+    <div class="image__header--left">
+      @if (gridTile()?.isindeterminated) {
+        <mat-icon (click)="determinateItem()" class="primary image__icon-check mat-icon material-icons">
+          indeterminate_check_box
+        </mat-icon>
+      } @else {
+        <button (click)="setClickedOnItem()" class="checkbox__button" mat-icon-button>
+          <mat-icon class="image__icon-check">{{ gridTile()?.isChecked ? 'check_box' : 'check_box_outline_blank' }}
+          </mat-icon>
+        </button>
+      }
+    </div>
+    <div class="image__header--right">
+      <button (click)="fullScreen($event, gridTile()?.urlImages)"
+              class="action__btn" mat-icon-button matTooltip="{{fullScreenToolTip() | translate}}"
+              matTooltipPosition="below">
+        <mat-icon>fit_screen</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <img
+    (click)="fullScreen($event, gridTile()?.urlImages)"
+    [class.contain_thumbnail]="thumbnailFit() === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit() === ThumbnailFitEnum.height"
+    [class.round_thumbnail]="thumbnailFit() === ThumbnailFitEnum.round"
+    [class.width_thumbnail]="thumbnailFit() === ThumbnailFitEnum.width"
+    [ngSrc]="gridTile()?.urlThumbnail"
+    alt='' fill/>
+  @if (showActionsOnHover()) {
+    <div (focus)="hideCellTooltip($event)" (mouseover)="hideCellTooltip($event)" class="actions">
+      <arlas-result-actions
+        (actionOnItemEvent)="triggerActionOnItem($event)"
+        [activatedActionsPerItem]="activatedActionsPerItem()"
+        [detailedDataRetriever]="detailedDataRetriever()" [item]="gridTile()"
+        [stopPropagation]="true"></arlas-result-actions>
+    </div>
+  }
+  @if (displayInfoIcon()) {
+    <mat-icon class="resultlist__md-grid-tile__selected--icon">info_outline</mat-icon>
+  }
+</div>

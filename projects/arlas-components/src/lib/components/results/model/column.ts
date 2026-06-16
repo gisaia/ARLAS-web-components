@@ -61,15 +61,21 @@ export class Column {
    */
   public useColorService = false;
 
+  public isTitle = false;
+
+  public icon = '';
+
   /** Whether the column can be resized */
   public get isResizable() {
     return !this.isIdField && !this.isToggleField;
   }
 
-  public constructor(columnName: string, fieldName: string, dataType: string) {
+  public constructor(columnName: string, fieldName: string, dataType: string, isTitle = false, icon?: string) {
     this.columnName = columnName;
     this.fieldName = fieldName;
     this.dataType = dataType;
+    this.isTitle = isTitle;
+    this.icon = icon;
   }
 
 }

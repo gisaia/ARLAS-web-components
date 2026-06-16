@@ -17,24 +17,35 @@
  * under the License.
  */
 
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
-import { MatButton } from '@angular/material/button';
-import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
-import { from, Observable } from 'rxjs';
-import { Column } from '../../../projects/arlas-components/src/lib/components/results/model/column';
-import { ResultListComponent } from '../../../projects/arlas-components/src/lib/components/results/result-list/result-list.component';
-import { ModeEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/modeEnum';
-import { SortEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/sortEnum';
+import {Component, inject, OnInit, signal, ViewChild} from '@angular/core';
+import {MatButton} from '@angular/material/button';
+import {MatSidenav, MatSidenavContainer} from '@angular/material/sidenav';
+import {from, Observable} from 'rxjs';
+import {Column} from '../../../projects/arlas-components/src/lib/components/results/model/column';
 import {
-  Action, FieldsConfiguration, ItemDataType, ResultListOptions
+  ResultListComponent
+} from '../../../projects/arlas-components/src/lib/components/results/result-list/result-list.component';
+import {ModeEnum} from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/modeEnum';
+import {SortEnum} from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/sortEnum';
+import {
+  Action,
+  FieldsConfiguration,
+  ItemDataType,
+  ResultListOptions
 } from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
-import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
-
+import {DetailedDataRetrieverImp} from './utils/detailed-data-retriever';
+import {AwcColorGeneratorLoader, ColorGeneratorLoader} from 'arlas-web-components';
 
 @Component({
     selector: 'arlas-results-demo',
     templateUrl: './results-demo.component.html',
     styleUrls: ['./results-demo.component.css'],
+  providers: [
+    {
+      provide: ColorGeneratorLoader,
+      useClass: AwcColorGeneratorLoader
+    }
+  ],
     imports: [MatSidenavContainer, MatSidenav, MatButton, ResultListComponent]
 })
 export class ResultsDemoComponent implements OnInit {
@@ -55,6 +66,7 @@ export class ResultsDemoComponent implements OnInit {
     public isListOpen = signal(false);
 
     public ngOnInit() {
+      this.isListOpen.set(true)
       this.options.showActionsOnhover = true;
       this.options.hideDetailIconName = 'keyboard_arrow_up';
       this.options.showDetailIconName = 'keyboard_arrow_down';

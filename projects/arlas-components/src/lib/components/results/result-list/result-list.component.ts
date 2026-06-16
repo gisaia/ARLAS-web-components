@@ -58,6 +58,7 @@ import {
   Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
   matchAndReplace, PageQuery, ResultListOptions
 } from '../utils/results.utils';
+import {ResultHybridItemComponent} from '../result-hybrid-item/result-hybrid-item.component';
 
 /**
  * Structure summarizing the sort on a column
@@ -83,7 +84,7 @@ export interface SortedColumn {
     MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup, MatButtonModule,
     MatButtonToggle, ResultDetailedGridComponent, MatProgressSpinner, ResultScrollDirective, MatGridList,
     ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe,
-    ResizableColumnDirective, ResizableTableDirective]
+    ResizableColumnDirective, ResizableTableDirective, ResultHybridItemComponent]
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 
@@ -113,7 +114,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @constant
    */
   public LIST_MODE = marker('List mode');
-
+  /**
+   * @constant
+   */
+  public HYBRID_MODE = marker('Hybrid mode');
   /**
    * @constant
    */
@@ -502,6 +506,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
   public hasGridMode = false;
+  public hasHybridMode = true;
   public resultMode: ModeEnum;
   public allItemsChecked = false;
 
@@ -553,6 +558,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         this.hasGridMode = true;
       }
     }
+    //TODO: <Missing implementation to know if we are in HybridMode>
   }
 
   public ngAfterViewInit(): void {
@@ -882,8 +888,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';
-    } else {
+    } else  if(toggleChangeEvent.value === ModeEnum.list.toString()) {
       this.resultMode = ModeEnum.list;
+      this.displayListGrid = 'inline';
+    } else {
+      this.resultMode = ModeEnum.hybrid;
       this.displayListGrid = 'inline';
     }
     this.changeResultMode.next(this.resultMode);

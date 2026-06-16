@@ -1,5 +1,5 @@
 <mat-sidenav-container class="example-container">
-  <mat-sidenav align="end" #sidenav class="example-sidenav">
+  <mat-sidenav align="end" #sidenav class="example-sidenav" [opened] = true>
     <div class="table-wrapper">
       @if (isListOpen()) {
         <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"

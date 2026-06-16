@@ -1,0 +1,22 @@
+<div class="hybrid__container">
+  <div class="hybrid__image">
+    <arlas-result-thumbnail #arlasThumbnail
+                            (imageClicked)="setClickedOnItem()"
+                            (imageHovered)="showCellTooltip()"
+                            (onActionClick)="triggerActionOnItem($event)"
+                            (onDeterminateItem)="determinateItem()"
+                            (onFocusAction)="hideCellTooltip($event)"
+                            (onFullScreen)="createOverlay($event)"
+                            (onSetSelectedItem)="setSelectedItem()"
+                            [activatedActionsPerItem]="activatedActionsPerItem()"
+                            [detailedDataRetriever]="detailedDataRetriever()"
+                            [fullScreenToolTip]="VIEW_IMAGE"
+                            [gridTile]="rowItem()"
+                            [showActionsOnHover]="options().showActionsOnhover"
+                            [thumbnailFit]="ThumbnailFitEnum.round"
+    ></arlas-result-thumbnail>
+  </div>
+  <div class="hybrid__content">
+    <div class="hybrid__content-title"></div>
+  </div>
+</div>
