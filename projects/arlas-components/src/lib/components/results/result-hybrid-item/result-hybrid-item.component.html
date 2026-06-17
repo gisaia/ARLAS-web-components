@@ -17,6 +17,23 @@
     ></arlas-result-thumbnail>
   </div>
   <div class="hybrid__content">
-    <div class="hybrid__content-title"></div>
+    <div class="hybrid__content-title">
+      @if (titleField()) {
+        {{rowItem().itemData.get(titleField().fieldName)}}
+      }
+    </div>
+    <div class="hybrid__content-items">
+      @for (i of [1,2,3,4]; track $index){
+        <div class="hybrid__content-item-line">
+          @for (field  of fields(); track $index){
+            <div class="hybrid__content-item">
+              {{rowItem().itemData.get(field.fieldName)}}
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+
   </div>
 </div>

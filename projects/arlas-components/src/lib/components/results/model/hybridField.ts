@@ -17,13 +17,12 @@
  * under the License.
  */
 
-import { SortEnum } from '../utils/enumerations/sortEnum';
-
-export class Column {
-  /**
-   * @description The column name
-   */
-  public columnName: string;
+/**
+ *  Proposal. Not definitive way to do it.
+ *  Maybe we can keep column and enrich directly the Column class with the hybrid field properties ?
+ *  But for now, we keep it separate
+ */
+export class HybridField {
   /**
    * @description The name of the field related to this column.
    */
@@ -32,53 +31,18 @@ export class Column {
    * @description Type of data that is appended to column name : %, °C, ..
    */
   public dataType: string;
-  /**
-   * @description Width of the column.
-   */
-  public width: number;
-  /**
-   * @description Sort direction to apply to th column : ascending, descending or none
-   */
-  public sortDirection: SortEnum = SortEnum.none;
+
   /**
    * @description Whether this column represents an id field.
    */
   public isIdField = false;
-  /**
-   * @description Whether the cells of this column contains a toggle button.
-   */
-  public isToggleField = false;
-  /**
-   * @description Whether the filter search column has a dropdown.
-   */
-  public dropdown = false;
-  /**
-   * @description Size of the dropdown list.
-   */
-  public dropdownsize = 10;
-  /**
-   * @description Whether to allow colorizing cells that are within this column
-   */
-  public useColorService = false;
-
-  /**
-   * For Hybrid list
-   */
 
   public isTitle = false;
 
   public icon = '';
 
-  public isHybrid = false;
 
-
-  /** Whether the column can be resized */
-  public get isResizable() {
-    return !this.isIdField && !this.isToggleField;
-  }
-
-  public constructor(columnName: string, fieldName: string, dataType: string, isTitle = false, icon?: string) {
-    this.columnName = columnName;
+  public constructor(fieldName: string, dataType: string, isTitle = false, icon?: string) {
     this.fieldName = fieldName;
     this.dataType = dataType;
     this.isTitle = isTitle;

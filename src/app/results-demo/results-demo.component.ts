@@ -53,7 +53,7 @@ export class ResultsDemoComponent implements OnInit {
     @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
 
     public data: Array<Map<string, ItemDataType>>;
-    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>;
+    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; isHybrid?: boolean, icon?: string, isTitle?:boolean}>;
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
     public fieldsConfiguration: FieldsConfiguration;
     public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
@@ -91,13 +91,22 @@ export class ResultsDemoComponent implements OnInit {
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
         useHttpQuicklooks: false
       };
-      this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>();
+      this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean;
+        isHybrid?: boolean, icon?: string, isTitle?:boolean}>();
 
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
       this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
       this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', dropdown: true });
       this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', dropdown: true });
       this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°' });
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
+
+
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isTitle: true, icon: 'schedule' });
+      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', isHybrid: true, icon: 'cloud' });
+      this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '', isHybrid: true });
 
 
       this.dropDownMapValues.set('source', from([['source_1', 'source_2', 'source_3']]));
@@ -116,10 +125,12 @@ export class ResultsDemoComponent implements OnInit {
         map.set('thumbnailEnabled', 'true');
         if (i % 2 === 0) {
           map.set('source', 'Perusat');
+          map.set('source_title', 'Perusat');
           map.set('urlImage', 'https://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Per%f9sat/Per%faSAT-1%20-%20premi%e8res%20images%20-%20first%20images%20-%20Huamanga%20-%20Ayacucho%20-%20CONIDA%20-%202016.jpg');
         } else {
           map.set('source', 'Pleiades');
+          map.set('source_title', 'Pleiades');
           map.set('urlImage', 'http://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Pleiades%20-%20La%20suite/Airbus%20-%20Si%C3%A8ge%20Groupe%20-%20Toulouse%20-%20Pl%C3%A9iades%2'
             + '0-%20VHR%20-%20Tr%C3%A8s%20haute%20r%C3%A9solution%20-%20satellite.JPG');

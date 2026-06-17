@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Component, inject, input, OnDestroy, output, viewChild} from '@angular/core';
+import {Component, computed, inject, input, OnDestroy, output, viewChild} from '@angular/core';
 import {Item} from '../model/item';
 import {Action, ElementIdentifier, ResultListOptions} from '..//utils/results.utils';
 import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
@@ -57,6 +57,15 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   public selectedItems = input<Set<string>>(undefined);
   /** Translation marker for full screen view action */
   public VIEW_IMAGE = marker('View in full screen');
+
+  public titleField = computed(() => {
+   const field = this.rowItem().hybridFields.at(0);
+   return field ? field : null;
+  });
+
+  public fields = computed(() => {
+    return this.titleField() ? this.rowItem().hybridFields.slice(1) : this.rowItem().hybridFields;
+  });
 
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;

@@ -18,7 +18,7 @@
  */
 :host{
   display: block;
-  height: 150px;
+  height: 116px;
   background: white;
 }
 
@@ -28,12 +28,11 @@
     display: flex;
     height: 100%;
     width: 100%;
-    padding: 16px 12px;
+    padding: 6px 12px;
   }
 
   &__image{
     flex: 0 0 130px;
-    background: red;
   }
 
   &__content{
@@ -41,18 +40,33 @@
     max-width: 370px;
     background: yellow;
     display: flex;
+    padding-left: 6px;
     flex-direction: column;
     justify-content: start;
     &-title {
       min-height: 20px;
       font-weight: 500;
       text-transform: uppercase;
-      text-align: center;
       overflow: hidden;
+      padding-top: 3px;
       white-space: nowrap;
       text-overflow: ellipsis;
-      background: red;
+    }
+
+    &-item-line{
+      height: 20px;
+      background: blue;
+      display: flex;
+    }
+
+    &-item{
+      width: 80px;
     }
   }
 }
 
+
+/**
+ We have 364px width and 100px height for the content,
+ we have to split it in 4 parts, and can add 4 item per row. So 16 différent props..
+ */

@@ -59,6 +59,7 @@ import {
   matchAndReplace, PageQuery, ResultListOptions
 } from '../utils/results.utils';
 import {ResultHybridItemComponent} from '../result-hybrid-item/result-hybrid-item.component';
+import {HybridField} from '../model/hybridField';
 
 /**
  * Structure summarizing the sort on a column
@@ -174,6 +175,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * - columnName : Name of the field that will be displayed on the list column
    * - dataType : Unit of the field values if it exists (degree, percentage, etc)
    * - useColorService : Whether to colorize values on cells of the list with a color generated from the field value
+   * - isHybrid : Whether the field represents a hybrid field
    * NOTE : This list should include the ID field. It will be the id of each item
    */
   @Input() public fieldsList: Array<{
@@ -181,6 +183,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     columnName: string;
     dataType: string;
     useColorService?: boolean;
+    isHybrid?: boolean;
+    isHybridTitle?: boolean;
+    icon?: string;
   }>;
 
   /**
@@ -487,6 +492,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
   public columns: Array<Column>;
+  public hybridFields: Array<HybridField>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
@@ -972,6 +978,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
+    this.hybridFields = new Array<HybridField>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
     // id column is the first one and has a pre fixed width
@@ -981,10 +988,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
     this.fieldsList.forEach(field => {
-      const column = new Column(field.columnName, field.fieldName, field.dataType);
-      column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
-      column.useColorService = field.useColorService ? field.useColorService : false;
-      this.columns.push(column);
+      if(!field?.isHybrid){
+        const column = new Column(field.columnName, field.fieldName, field.dataType);
+        column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+        column.useColorService = field.useColorService ? field.useColorService : false;
+        this.columns.push(column);
+      } else {
+        const hybridField = new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon);
+        if( field.isHybridTitle){
+          this.hybridFields.unshift(hybridField);
+        } else {
+          this.hybridFields.push(hybridField);
+        }
+      }
     });
     // add a column for toggle icon
     const toggleColumn = new Column('', 'toggle', '');
@@ -994,7 +1010,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
-    const item = new Item(this.columns, itemData);
+    const item = new Item(this.columns, this.hybridFields, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     if (this.fieldsConfiguration.titleFieldNames) {
       item.title = this.fieldsConfiguration.titleFieldNames
