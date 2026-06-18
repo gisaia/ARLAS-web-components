@@ -25,12 +25,14 @@ import {marker} from '@colsen1991/ngx-translate-extract-marker';
 import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
 import {ItemComponent} from '../model/itemComponent';
 import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
+import {ResultMetaBadgesComponent} from '../result-meta-badges/result-meta-badges.component';
 
 @Component({
   selector: 'arlas-result-hybrid-item',
   templateUrl: './result-hybrid-item.component.html',
   imports: [
-    ResultThumbnailComponent
+    ResultThumbnailComponent,
+    ResultMetaBadgesComponent
   ],
   styleUrl: './result-hybrid-item.component.scss'
 })

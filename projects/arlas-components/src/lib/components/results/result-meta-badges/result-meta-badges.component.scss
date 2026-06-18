@@ -1,0 +1,21 @@
+.meta-badges{
+  &__container{
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+  }
+
+  &__row {
+    display: grid;
+    justify-content: start;
+  }
+
+  &__badge {
+    display: flex;
+    align-items: center;
+  }
+
+  &__spacer {
+    margin: 0 6px
+  }
+}

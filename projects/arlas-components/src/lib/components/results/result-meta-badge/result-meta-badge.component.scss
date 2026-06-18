@@ -1,0 +1,58 @@
+:host {
+  --badge-font-size: 14px;
+  --badge-icon-witdh: var(--badge-font-size);
+  --badge-color: #727377;
+}
+
+.meta-badge {
+  font-size: 14px;
+  color: gray;
+  &__container {
+    display: flex;
+    // 16px (*3 = 48 de perdu par ligne) pour une largeur de 333px (333- 48 de padding = 285px de large) s
+    // si max item 70 alors 4 par ligne. Si 90 3 par ligne si les trois on valuer full. sinon pas de max width
+    max-width: 120px;
+    flex: 1 1 fit-content;
+    align-items: baseline;
+    gap:2px;
+    height: 20px;
+  }
+
+  &__icon {
+    width: 18px;
+    font-size: var(--badge-font-size);
+    display: flex;          // ← flex pour centrer l'icône
+    align-items: center;    // ← centre verticalement
+    flex-shrink: 0;
+    line-height: 1;
+    & mat-icon {
+      font-size: var(--badge-font-size);
+      height: var(--badge-font-size);
+      width: var(--badge-font-size);
+      display: flex;         // ← remplace inline-block
+      align-items: center;   // ← centre le contenu de l'icône
+      color: var(--badge-color);
+    }
+  }
+
+  &__value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: inherit;
+    min-width: 0;
+    line-height: 1;
+    flex:1 1 auto;
+    max-width: 150px;
+    color: var(--badge-color);
+  }
+
+  &__unit {
+    font-size: var(--badge-font-size);
+    display: inline-block;
+    line-height: 1;
+    flex-shrink: 0;
+    max-width: 20px;
+    color: var(--badge-color);
+  }
+}

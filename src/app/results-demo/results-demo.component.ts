@@ -36,6 +36,18 @@ import {
 import {DetailedDataRetrieverImp} from './utils/detailed-data-retriever';
 import {AwcColorGeneratorLoader, ColorGeneratorLoader} from 'arlas-web-components';
 
+function generateRandomText(length) {
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomText = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    randomText += charset[randomIndex];
+  }
+
+  return randomText;
+}
+
 @Component({
     selector: 'arlas-results-demo',
     templateUrl: './results-demo.component.html',
@@ -102,11 +114,23 @@ export class ResultsDemoComponent implements OnInit {
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isTitle: true, icon: 'schedule' });
-      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isTitle: true,  });
+      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true , icon: 'alarm' });
       this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', isHybrid: true, icon: 'cloud' });
       this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°', isHybrid: true });
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'description', fieldName: 'description', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'distance', fieldName: 'distance', dataType: 'km', isHybrid: true, icon: 'rules' });
+      this.fieldsList.push({ columnName: 'mata_1', fieldName: 'mata_1', dataType: 'km', isHybrid: true });
+      this.fieldsList.push({ columnName: 'mata_2', fieldName: 'mata_2', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'mata_3', fieldName: 'mata_3', dataType: 'km', isHybrid: true});
+      this.fieldsList.push({ columnName: 'mata_4', fieldName: 'mata_4', dataType: 'km', isHybrid: true });
+      this.fieldsList.push({ columnName: 'mata_5', fieldName: 'mata_5', dataType: 'km', isHybrid: true,  });
+      this.fieldsList.push({ columnName: 'mata_6', fieldName: 'mata_6', dataType: 'km', isHybrid: true,  });
+      this.fieldsList.push({ columnName: 'mata_7', fieldName: 'mata_7', dataType: 'km', isHybrid: true, icon: 'planner_review' });
+      this.fieldsList.push({ columnName: 'mata_8', fieldName: 'mata_8', dataType: '', isHybrid: true,  });
+      this.fieldsList.push({ columnName: 'mata_9', fieldName: 'mata_9', dataType: '', isHybrid: true, icon: 'alarm' });
+      this.fieldsList.push({ columnName: 'mata_10', fieldName: 'mata_10', dataType: '', isHybrid: true,  });
 
 
       this.dropDownMapValues.set('source', from([['source_1', 'source_2', 'source_3']]));
@@ -123,8 +147,21 @@ export class ResultsDemoComponent implements OnInit {
         map.set('cloud', (i + 1) + '.0');
         map.set('imageEnabled', 'true');
         map.set('thumbnailEnabled', 'true');
+        map.set('description', generateRandomText(Math.floor(Math.random() * 30)));
+        map.set('distance', Math.floor(Math.random() * 1000000));
+        map.set('mata_1', generateRandomText(Math.floor(Math.random() * 30)));
+        map.set('mata_2', generateRandomText(Math.floor(Math.random() * 30)));
+        map.set('mata_3', Math.floor(Math.random() * 20));
+        map.set('mata_4', generateRandomText(Math.floor(Math.random() * 30)));
+        map.set('mata_5', Math.floor(Math.random() * 500));
+        map.set('mata_6', Math.floor(Math.random() * 1000));
+        map.set('mata_7', generateRandomText(Math.floor(Math.random() * 30)));
+        map.set('mata_8', generateRandomText(Math.floor(Math.random() * 60)));
+        map.set('mata_9', generateRandomText(Math.floor(Math.random() * 10)));
+        map.set('mata_10', Math.floor(Math.random() * 500));
         if (i % 2 === 0) {
           map.set('source', 'Perusat');
+
           map.set('source_title', 'Perusat');
           map.set('urlImage', 'https://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Per%f9sat/Per%faSAT-1%20-%20premi%e8res%20images%20-%20first%20images%20-%20Huamanga%20-%20Ayacucho%20-%20CONIDA%20-%202016.jpg');

@@ -31,24 +31,27 @@
     padding: 6px 12px;
   }
 
-  &__image{
+  &__image {
     flex: 0 0 130px;
+    max-width: 100px;
+    max-height: 100px;
   }
 
   &__content{
-    flex: 0 0 370px;
-    max-width: 370px;
-    background: yellow;
+    flex: 0 0 345px;
+    max-width: 345px;
     display: flex;
-    padding-left: 6px;
+    padding: 0 6px;
     flex-direction: column;
     justify-content: start;
     &-title {
       min-height: 20px;
-      font-weight: 500;
+      font-weight: bold;
       text-transform: uppercase;
       overflow: hidden;
       padding-top: 3px;
+      font-size: 14px;
+      margin-bottom: 3px;
       white-space: nowrap;
       text-overflow: ellipsis;
     }

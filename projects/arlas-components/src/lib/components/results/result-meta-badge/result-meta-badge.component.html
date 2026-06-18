@@ -1,0 +1,16 @@
+<div class="meta-badge__container" [matTooltip]="tooltip()">
+  @if (metaBadge().icon && metaBadge().value) {
+    <span class="meta-badge__icon">
+      <mat-icon class="small-icon">{{ metaBadge().icon }}</mat-icon>
+    </span>
+  }
+  <span class="meta-badge__value" #element>{{ metaBadge().value ? metaBadge().value : NO_VALUE }}
+    @if (metaBadge().unit && metaBadge().value) {
+      <span class="meta-badge__unit">
+      {{ metaBadge().unit }}
+    </span>
+    }
+  </span>
+
+
+</div>
