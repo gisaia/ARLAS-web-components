@@ -34,10 +34,19 @@ $img-proportion: 100%;
       display: none;
       background: rgba(255,255,255,0.8);
       border-radius: 5px;
+      margin-left: 0;
+
     }
 
     & .list_actions--icon {
       padding-right: 6px;
+      max-width: 100px;
+      top:7px;
+    }
+
+    & .list_actions{
+      flex-wrap: wrap-reverse;
+      gap: 2.5px;
     }
   }
 }

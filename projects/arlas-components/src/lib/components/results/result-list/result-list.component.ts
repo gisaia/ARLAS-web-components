@@ -524,6 +524,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
 
+  /**
+   * Whe
+   */
+  public get isDefaultModeIsGrid() {
+    return (this.defautMode.toString() === 'grid' || this.defautMode.toString() === ModeEnum.grid.toString());
+  }
+
+  public get isDefaultModeIsHybrid(){
+    return (this.defautMode.toString() === 'hybrid' || this.defautMode.toString() === ModeEnum.hybrid.toString())
+  }
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
     private readonly el: ElementRef,
@@ -556,15 +566,27 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngOnInit() {
-    this.resultMode = (this.defautMode && (this.defautMode.toString() === 'grid' ||
-      this.defautMode.toString() === ModeEnum.grid.toString())) ? ModeEnum.grid : ModeEnum.list;
+    this.resultMode = this.selectResultMode();
     this.options = Object.assign(new ResultListOptions(), this.options);
     if (!!this.fieldsConfiguration) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
         this.hasGridMode = true;
       }
+      this.hasHybridMode = this.fieldsConfiguration.hasHybridList;
     }
-    //TODO: <Missing implementation to know if we are in HybridMode>
+  }
+
+  /**
+   * Select a default mode to display data according to user configuration
+   */
+  public selectResultMode(){
+    if(this.isDefaultModeIsGrid){
+      return ModeEnum.grid;
+    } else if(this.isDefaultModeIsHybrid){
+      return  ModeEnum.hybrid;
+    } else {
+      return ModeEnum.list;
+    }
   }
 
   public ngAfterViewInit(): void {
@@ -578,15 +600,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.thumbnailFitEvent.next(this.thumbnailFit);
   }
 
+  public updateResultListDisplayWhenDefaultModeChange(){
+    if (this.isDefaultModeIsGrid || this.isDefaultModeIsHybrid) {
+      this.resultMode = ModeEnum.grid;
+      this.displayListGrid = 'block';
+    } else {
+      this.resultMode = ModeEnum.list;
+      this.displayListGrid = 'inline';
+    }
+  }
+
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
-      if (this.defautMode.toString() === 'grid' || this.defautMode.toString() === ModeEnum.grid.toString()) {
-        this.resultMode = ModeEnum.grid;
-        this.displayListGrid = 'block';
-      } else {
-        this.resultMode = ModeEnum.list;
-        this.displayListGrid = 'inline';
-      }
+      this.updateResultListDisplayWhenDefaultModeChange();
       this.setTableHeight();
     }
 
@@ -899,7 +925,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       this.displayListGrid = 'inline';
     } else {
       this.resultMode = ModeEnum.hybrid;
-      this.displayListGrid = 'inline';
+      this.displayListGrid = 'block';
     }
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
@@ -977,6 +1003,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   // Build the table's columns
   private setColumns() {
+    console.log('SETTING COLUMNS')
     this.columns = new Array<Column>();
     this.hybridFields = new Array<HybridField>();
     const checkboxColumnWidth = 25;

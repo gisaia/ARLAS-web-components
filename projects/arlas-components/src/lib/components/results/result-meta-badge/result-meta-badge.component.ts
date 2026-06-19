@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  input,
-  linkedSignal,
-  viewChild
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, input, linkedSignal} from '@angular/core';
 import {ItemDataType} from '../utils/results.utils';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
@@ -15,7 +7,7 @@ export interface MetaBadge {
   value: ItemDataType;
   icon?: string;
   unit?: string;
-  overlay?: string;
+  tooltip?: string;
 }
 
 @Component({
@@ -32,5 +24,5 @@ export class ResultMetaBadgeComponent {
   protected readonly NO_VALUE = '-';
   public metaBadge = input.required<MetaBadge>();
   public maxWidth = input<string>('120px');
-  public tooltip = linkedSignal<string>(() => this.metaBadge().overlay);
+  public tooltip = linkedSignal<string>(() => this.metaBadge().tooltip);
 }

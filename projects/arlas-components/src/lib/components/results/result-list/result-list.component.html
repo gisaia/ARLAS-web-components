@@ -182,6 +182,7 @@
             }
           } @else if (resultMode === ModeEnum.hybrid) {
             <arlas-result-hybrid-item [rowItem]="rowItem"
+                                      class="resultlist__hybrid-tile"
                                       [id]="id"
                                       [idFieldName]="fieldsConfiguration.idFieldName"
                                       [activatedActionsPerItem]="activatedActionsPerItem"
@@ -191,6 +192,7 @@
                                       (selectedItemsEvent)="setSelectedItems($event)"
                                       (clickedOnItemEvent)="setSelectedGridItem($event)"
                                       (actionOnItemEvent)="triggerActionOnItem($event)"
+                                      (mouseenter)="onEnterItem(rowItem)"
             ></arlas-result-hybrid-item>
             @if (rowItem.isDetailToggled) {
               <tr arlas-result-detailed-item class="resultlist__body--detailed-item"

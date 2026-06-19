@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, Output, ViewChild } from '@angular/core';
+import {Component, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -38,7 +38,7 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
   styleUrls: ['./result-grid-tile.component.scss'],
   imports: [MatIcon, MatIconButton, MatTooltip, LazyLoadImageModule, ResultActionsComponent, TranslatePipe]
 })
-export class ResultGridTileComponent extends ItemComponent {
+export class ResultGridTileComponent  extends ItemComponent implements OnInit {
   /**
    * @constant
    */
@@ -132,6 +132,10 @@ export class ResultGridTileComponent extends ItemComponent {
 
   public constructor() {
     super();
+  }
+
+  public ngOnInit() {
+    console.log(this.activatedActionsPerItem)
   }
 
   /**

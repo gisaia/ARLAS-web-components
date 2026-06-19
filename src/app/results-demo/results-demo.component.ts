@@ -101,7 +101,8 @@ export class ResultsDemoComponent implements OnInit {
         ],
         urlThumbnailTemplate: '{urlImage}',
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
-        useHttpQuicklooks: false
+        useHttpQuicklooks: false,
+        hasHybridList: true,
       };
       this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean;
         isHybrid?: boolean, icon?: string, isTitle?:boolean}>();

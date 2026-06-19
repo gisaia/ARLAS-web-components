@@ -116,6 +116,7 @@ export interface FieldsConfiguration {
   tooltipFieldNames?: Array<Field>;
   useHttpQuicklooks?: boolean;
   useHttpThumbnails?: boolean;
+  hasHybridList?: boolean;
   /**
    * @deprecated
    */
@@ -123,6 +124,7 @@ export interface FieldsConfiguration {
   iconCssClass?: string;
   iconColorFieldName?: string;
   detailsTitleTemplate?: string;
+
 }
 
 export interface DescribedUrl {
