@@ -19,7 +19,7 @@
 
 import { AsyncPipe } from '@angular/common';
 import {
-  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
+  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, inject, Input,
   IterableDiffers, OnChanges, OnInit, Output,
   SimpleChanges, ViewEncapsulation
 } from '@angular/core';
@@ -60,6 +60,7 @@ import {
 } from '../utils/results.utils';
 import {ResultHybridItemComponent} from '../result-hybrid-item/result-hybrid-item.component';
 import {HybridField} from '../model/hybridField';
+import {RowRenderCalcuolatorService} from '../../../services/row-render-calcuolator.service';
 
 /**
  * Structure summarizing the sort on a column
@@ -524,6 +525,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
 
+  private readonly rowRenderCalcuolatorService = inject(RowRenderCalcuolatorService)
+
   /**
    * Whe
    */
@@ -924,6 +927,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       this.resultMode = ModeEnum.list;
       this.displayListGrid = 'inline';
     } else {
+      this.rowRenderCalcuolatorService.resetCalculation();
       this.resultMode = ModeEnum.hybrid;
       this.displayListGrid = 'block';
     }
@@ -1003,32 +1007,37 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   // Build the table's columns
   private setColumns() {
-    console.log('SETTING COLUMNS')
     this.columns = new Array<Column>();
     this.hybridFields = new Array<HybridField>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
+
+    const hybridTitles = [];
+    const hybridOthers = [];
+    const nonHybridFields = [];
+
+    this.fieldsList
+      .forEach(field => {
+        if (field.isHybrid) {
+          (field.isHybridTitle ? hybridTitles : hybridOthers).push(
+            new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon)
+          );
+        } else {
+          nonHybridFields.push(field);
+        }
+      });
+    this.hybridFields.push(...hybridTitles, ...hybridOthers);
+
     // id column is the first one and has a pre fixed width
     // It is the column where checkboxes are put
     const idColumn = new Column('', this.fieldsConfiguration.idFieldName, '');
     idColumn.isIdField = true;
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
-     this.fieldsList
-      .filter(field => field?.isHybrid)
-       .forEach(field => {
-         const hybridField = new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon);
-         if( field.isHybridTitle){
-           this.hybridFields.unshift(hybridField);
-         } else {
-           this.hybridFields.push(hybridField);
-         }
-       });
-    const fieldList = this.fieldsList
-      .filter(field => !field?.isHybrid);
-    fieldList.forEach(field => {
+     const colWidth =  (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / nonHybridFields.length;
+    nonHybridFields.forEach(field => {
         const column = new Column(field.columnName, field.fieldName, field.dataType);
-        column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / fieldList.length;
+        column.width = colWidth;
         column.useColorService = field.useColorService ? field.useColorService : false;
         this.columns.push(column);
     });
