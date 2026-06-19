@@ -11,7 +11,6 @@
     display: flex;
     // 16px (*3 = 48 de perdu par ligne) pour une largeur de 333px (333- 48 de padding = 285px de large) s
     // si max item 70 alors 4 par ligne. Si 90 3 par ligne si les trois on valuer full. sinon pas de max width
-    max-width: 120px;
     flex: 1 1 fit-content;
     align-items: baseline;
     gap:2px;
@@ -23,7 +22,6 @@
     font-size: var(--badge-font-size);
     display: flex;          // ← flex pour centrer l'icône
     align-items: center;    // ← centre verticalement
-    flex-shrink: 0;
     line-height: 1;
     & mat-icon {
       font-size: var(--badge-font-size);
@@ -43,7 +41,7 @@
     min-width: 0;
     line-height: 1;
     flex:1 1 auto;
-    max-width: 150px;
+    // max-width: 150px;
     color: var(--badge-color);
   }
 
@@ -53,6 +51,7 @@
     line-height: 1;
     flex-shrink: 0;
     max-width: 20px;
+    min-width: 0;
     color: var(--badge-color);
   }
 }

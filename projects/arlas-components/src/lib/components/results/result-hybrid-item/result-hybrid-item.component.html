@@ -17,11 +17,25 @@
     ></arlas-result-thumbnail>
   </div>
   <div class="hybrid__content">
-    <div class="hybrid__content-title">
-      @if (titleField()) {
-        {{rowItem().itemData.get(titleField().fieldName)}}
-      }
+    <div class="hybrid__content-header">
+      <div class="hybrid__content-title">
+        @if (titleField()) {
+          {{rowItem().itemData.get(titleField().fieldName)}}
+        }
+      </div>
+      <div>
+        @if (detailedDataRetriever().detailsConfig?.length > 0) {
+          @let toggleId = (rowItem().isDetailToggled ? 'close' : 'open') + '-detail-' + rowItem().identifier;
+          @let toggleTooltip = rowItem().isDetailToggled ? HIDE_DETAILS : SHOW_DETAILS;
+          <button mat-icon-button [id]="toggleId" [matTooltip]="toggleTooltip | translate"
+                  class="resultitem__cell__toggle__button" (click)="toggleDetail()">
+            <mat-icon class="resultitem__cell__toggle--icon">
+              {{ rowItem().isDetailToggled ? options().hideDetailIconName : options().showDetailIconName}}</mat-icon>
+          </button>
+        }
+      </div>
     </div>
+
     <arlas-result-meta-badges [item]="rowItem()" [fields]="fields()"></arlas-result-meta-badges>
 
   </div>

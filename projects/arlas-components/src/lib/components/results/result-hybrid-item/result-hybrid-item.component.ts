@@ -26,13 +26,21 @@ import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
 import {ItemComponent} from '../model/itemComponent';
 import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
 import {ResultMetaBadgesComponent} from '../result-meta-badges/result-meta-badges.component';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {TranslatePipe} from '@ngx-translate/core';
+import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
   selector: 'arlas-result-hybrid-item',
   templateUrl: './result-hybrid-item.component.html',
   imports: [
     ResultThumbnailComponent,
-    ResultMetaBadgesComponent
+    ResultMetaBadgesComponent,
+    MatIconButton,
+    MatIcon,
+    TranslatePipe,
+    MatTooltip
   ],
   styleUrl: './result-hybrid-item.component.scss'
 })
@@ -59,6 +67,14 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   public selectedItems = input<Set<string>>(undefined);
   /** Translation marker for full screen view action */
   public VIEW_IMAGE = marker('View in full screen');
+  /**
+   * @constant
+   */
+  public HIDE_DETAILS = marker('Hide details');
+  /**
+   * @constant
+   */
+  public SHOW_DETAILS = marker('Show details');
 
   public titleField = computed(() => {
    const field = this.rowItem().hybridFields.at(0);
@@ -160,6 +176,15 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    */
   public ngOnDestroy(): void {
    // this.fullScreenService.destroy();
+    this.rowItem().isDetailToggled = false;
   }
 
+  protected toggleDetail() {
+   // const rev
+    if (this.rowItem().isDetailToggled === false) {
+      this.retrieveAdditionalInfo(this.detailedDataRetriever(), this.rowItem());
+    }
+
+    this.rowItem().isDetailToggled = !this.rowItem().isDetailToggled;
+  }
 }

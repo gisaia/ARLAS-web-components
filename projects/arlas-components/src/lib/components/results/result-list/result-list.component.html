@@ -192,6 +192,14 @@
                                       (clickedOnItemEvent)="setSelectedGridItem($event)"
                                       (actionOnItemEvent)="triggerActionOnItem($event)"
             ></arlas-result-hybrid-item>
+            @if (rowItem.isDetailToggled) {
+              <tr arlas-result-detailed-item class="resultlist__body--detailed-item"
+                  (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
+                  [detailedDataRetriever]="detailedDataRetriever" [activatedActionsPerItem]="activatedActionsPerItem"
+                  [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
+                  [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
+              </tr>
+            }
           } @else {
             <div class="div-grid-tile" (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)">
               @if (resultMode === ModeEnum.grid) {

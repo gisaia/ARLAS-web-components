@@ -987,20 +987,23 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     idColumn.isIdField = true;
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
-    this.fieldsList.forEach(field => {
-      if(!field?.isHybrid){
+     this.fieldsList
+      .filter(field => field?.isHybrid)
+       .forEach(field => {
+         const hybridField = new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon);
+         if( field.isHybridTitle){
+           this.hybridFields.unshift(hybridField);
+         } else {
+           this.hybridFields.push(hybridField);
+         }
+       });
+    const fieldList = this.fieldsList
+      .filter(field => !field?.isHybrid);
+    fieldList.forEach(field => {
         const column = new Column(field.columnName, field.fieldName, field.dataType);
-        column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+        column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / fieldList.length;
         column.useColorService = field.useColorService ? field.useColorService : false;
         this.columns.push(column);
-      } else {
-        const hybridField = new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon);
-        if( field.isHybridTitle){
-          this.hybridFields.unshift(hybridField);
-        } else {
-          this.hybridFields.push(hybridField);
-        }
-      }
     });
     // add a column for toggle icon
     const toggleColumn = new Column('', 'toggle', '');

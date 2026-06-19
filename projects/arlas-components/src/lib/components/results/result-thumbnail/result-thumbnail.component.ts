@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import {Component, input, output, signal, viewChild} from '@angular/core';
+import {Component, input, OnInit, output, signal, viewChild} from '@angular/core';
 import {ResultActionsComponent} from '../result-actions/result-actions.component';
 import {TranslatePipe} from '@ngx-translate/core';
 import {Item} from '../model/item';

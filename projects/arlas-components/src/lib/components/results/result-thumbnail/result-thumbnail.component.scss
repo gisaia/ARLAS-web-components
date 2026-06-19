@@ -16,11 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 $img-proportion: 100%;
 :host {
   display: block;
   height: 100%;
   width: 100%;
+
+  ::ng-deep {
+    & .resultitem-list__actions {
+      min-width: 0;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      width: 17px;
+      height: 17px;
+      display: none;
+      background: rgba(255,255,255,0.8);
+      border-radius: 5px;
+    }
+
+    & .list_actions--icon {
+      padding-right: 6px;
+    }
+  }
 }
 
 .checkbox__button{

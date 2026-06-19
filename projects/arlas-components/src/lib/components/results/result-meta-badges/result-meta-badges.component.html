@@ -1,9 +1,12 @@
-<div class="meta-badges__container">
+<div class="meta-badges__container" #container>
   @for (row  of metaBadgesRows(); track $index; let lastRow = $last){
-    <div class="meta-badges__row" [style.grid-template-columns]="`repeat(${MAX_ITEM_PER_LINE}, auto)`">
+    <div class="meta-badges__row"
+         [style.grid-template-columns]="`repeat(${MAX_ITEM_PER_LINE}, auto)`"
+    >
+      <!-- En fonction du nombre d'item courant recalculer le max width tehorique -->
       @for (metaBadge  of row; track $index; let lastMeta = $last){
         <div class="meta-badges__badge">
-        <arlas-result-meta-badge [style.max-width]="maxitemwidth" [metaBadge]="metaBadge"></arlas-result-meta-badge>
+        <arlas-result-meta-badge [maxWidth]="`${containerWidth() / row.length }px`" [metaBadge]="metaBadge"></arlas-result-meta-badge>
           @if (!lastMeta || !lastRow){
             <span class="meta-badges__spacer">{{ spacingChar() }}</span>
           }

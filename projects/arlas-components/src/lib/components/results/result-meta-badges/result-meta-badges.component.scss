@@ -8,14 +8,21 @@
   &__row {
     display: grid;
     justify-content: start;
+    overflow: hidden;
   }
 
   &__badge {
     display: flex;
     align-items: center;
+    max-width: 100%;
   }
 
   &__spacer {
-    margin: 0 6px
+    margin: 0 6px;
+    color: #727377;
   }
+}
+
+.item{
+  flex: 1 1 auto;
 }
