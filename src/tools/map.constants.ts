@@ -17,14 +17,8 @@
  * under the License.
  */
 
-import { VisualisationSetConfig } from '../../projects/arlas-map/src/lib/map/model/visualisationsets';
 import * as styles from '../../projects/arlas-map/src/lib/draw/themes/default-theme';
-
-export const defaultBasemapStyle = {
-  name: 'Basic',
-  styleFile: 'https://api.maptiler.com/maps/basic/style.json?key=xIhbu1RwgdbxfZNmoXn4',
-  image: 'https://cloud.maptiler.com/static/img/maps/basic.png'
-};
+import { VisualisationSetConfig } from '../../projects/arlas-map/src/lib/map/model/visualisationsets';
 
 export function getStyle(name: string) {
   return ({
@@ -33,6 +27,9 @@ export function getStyle(name: string) {
     image: `https://cloud.maptiler.com/static/img/maps/${name}.png`
   });
 }
+
+export const defaultBasemapStyle = getStyle('basic');
+
 export const basemapStyles = [
   getStyle('basic'),
   getStyle('bright'),

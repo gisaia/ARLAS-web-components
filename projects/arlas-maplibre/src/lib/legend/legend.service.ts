@@ -23,11 +23,7 @@ import {
   ArlasDataLayer, CircleLegend, FillLegend, HeatmapLegend,
   LabelLegend, Legend, LegendData, LegendService, LineLegend
 } from 'arlas-map';
-import { CirclePaintProps } from 'maplibre-gl/src/style/style_layer/circle_style_layer_properties.g';
-import { FillPaintProps } from 'maplibre-gl/src/style/style_layer/fill_style_layer_properties.g';
-import { HeatmapPaintProps } from 'maplibre-gl/src/style/style_layer/heatmap_style_layer_properties.g';
-import { LinePaintProps } from 'maplibre-gl/src/style/style_layer/line_style_layer_properties.g';
-import { SymbolLayoutProps, SymbolPaintProps } from 'maplibre-gl/src/style/style_layer/symbol_style_layer_properties.g';
+import { CirclePaintProps, FillPaintProps, HeatmapPaintProps, LinePaintProps, SymbolLayoutProps, SymbolPaintProps } from 'maplibre-gl';
 
 @Injectable({
   providedIn: 'root'

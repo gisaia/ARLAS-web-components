@@ -32,7 +32,7 @@ export interface MetricsTableHeader {
 }
 
 export interface MetricsTableCell {
-    value: number;
+    value: number | null;
     maxColumnValue: number;
     maxTableValue: number;
     metric: string;

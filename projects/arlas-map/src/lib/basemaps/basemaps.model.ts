@@ -20,11 +20,11 @@
 import { BasemapStyle } from './basemap.config';
 
 export class ArlasBasemaps {
-  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+  private readonly LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
   public _selectedStyle?: BasemapStyle;
   public _styles: BasemapStyle[] = [];
-  private defaultBasemapStyle?: BasemapStyle;
-  private basemapStyles?: BasemapStyle[];
+  private readonly defaultBasemapStyle?: BasemapStyle;
+  private readonly basemapStyles?: BasemapStyle[];
 
   public constructor(defaultBasemapStyle?: BasemapStyle, basemapStyles?: BasemapStyle[]) {
     if (defaultBasemapStyle && basemapStyles) {
@@ -36,7 +36,7 @@ export class ArlasBasemaps {
   }
 
   public styles(): BasemapStyle[] {
-    if (!this._styles && this.defaultBasemapStyle && this.basemapStyles) {
+    if (this._styles.length === 0 && this.defaultBasemapStyle && this.basemapStyles) {
       this._styles = this.getAllBasemapStyles(this.defaultBasemapStyle, this.basemapStyles);
     }
     return this._styles.filter(b => !b.errored);
@@ -48,7 +48,10 @@ export class ArlasBasemaps {
   }
 
   public getStyle(b?: BasemapStyle) {
-    return this.styles().find(s => s.name === b?.name);
+    if (!b) {
+      return undefined;
+    }
+    return this.styles().find(s => s.name === b.name);
   }
 
   public getSelected(): BasemapStyle {

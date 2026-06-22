@@ -26,7 +26,7 @@ import { DEFAULT_SHORTENING_PRECISION } from '../../components/componentsUtils';
 })
 export class ShortenNumberPipe implements PipeTransform {
 
-  public transform(number: number | string | undefined, precision: number = DEFAULT_SHORTENING_PRECISION) {
+  public transform(number: number | string | undefined | null, precision: number = DEFAULT_SHORTENING_PRECISION) {
     if (number !== null && number !== undefined) {
       if (Number.isNaN(+number)) {
         return number;

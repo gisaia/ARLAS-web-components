@@ -31,7 +31,7 @@ export class PowerBar {
   /**
    * @description Term's occurence.
    */
-  public count: number;
+  public count: number | null;
   /**
    * @description Powerbar progression.
    */
@@ -54,7 +54,7 @@ export class PowerBar {
    */
   public color?: string;
 
-  public constructor(term: string, parentTerm: string, count: number) {
+  public constructor(term: string, parentTerm: string, count: number | null) {
     this.term = term;
     this.parentTerm = parentTerm;
     this.count = count;

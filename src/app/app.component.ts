@@ -18,7 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -49,13 +49,13 @@ export class AppComponent implements OnInit {
     this.translate.setFallbackLang('fr');
   }
 
-  public selectedTab(e) {
+  public selectedTab(e: MatTabChangeEvent) {
     this.router.navigateByUrl(this.navLinks[e.index]);
   }
 
   public ngOnInit(): void {
     this.router.events.subscribe(() => {
-      this.activeLinkIndex = this.navLinks.indexOf(this.navLinks.find(tab => tab === this.router.url));
+      this.activeLinkIndex = this.navLinks.indexOf(this.router.url);
     });
   }
 }

@@ -205,12 +205,12 @@ export class MetricsTableComponent implements OnInit, OnChanges {
       merticsRow.data.forEach((item, i) => {
         let powerBar: PowerBar;
         if (this.applyColorTo === 'row') {
-          powerBar = new PowerBar(merticsRow.term, merticsRow.term, item?.value);
+          powerBar = new PowerBar(merticsRow.term, merticsRow.term, item.value);
         } else {
           const header = this.metricsTable().header[i];
-          powerBar = new PowerBar(header.title, header.title, item?.value);
+          powerBar = new PowerBar(header.title, header.title, item.value);
         }
-        if (item) {
+        if (item?.value) {
           let maxValue;
           if (this.normaliseBy === 'table') {
             maxValue = item.maxTableValue;

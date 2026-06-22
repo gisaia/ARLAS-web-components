@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
 import { from, Observable } from 'rxjs';
@@ -37,12 +37,9 @@ import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
     styleUrls: ['./results-demo.component.css'],
     imports: [MatSidenavContainer, MatSidenav, MatButton, ResultListComponent]
 })
-export class ResultsDemoComponent implements OnInit {
-
-    @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
-
-    public data: Array<Map<string, ItemDataType>>;
-    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>;
+export class ResultsDemoComponent {
+    public data: Array<Map<string, ItemDataType>> = [];
+    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }> = [];
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
     public fieldsConfiguration: FieldsConfiguration;
     public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
@@ -50,11 +47,11 @@ export class ResultsDemoComponent implements OnInit {
     public count = 0;
     public modeEnum = ModeEnum;
     public options = new ResultListOptions();
-    public activeSort: Column;
+    public activeSort: Column | null = null;
 
     public isListOpen = signal(false);
 
-    public ngOnInit() {
+    public constructor() {
       this.options.showActionsOnhover = true;
       this.options.hideDetailIconName = 'keyboard_arrow_up';
       this.options.showDetailIconName = 'keyboard_arrow_down';
@@ -94,7 +91,7 @@ export class ResultsDemoComponent implements OnInit {
 
 
 
-      this.globalActionsList.push({ id: '1', label: 'Download', actionBus: null, tooltip: 'Download' });
+      this.globalActionsList.push({ id: '1', label: 'Download', actionBus: undefined, tooltip: 'Download' });
       this.data = new Array();
       for (let i = 0; i < 50; i++) {
         const map = new Map<string, ItemDataType>();

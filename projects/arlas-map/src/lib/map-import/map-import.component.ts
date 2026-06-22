@@ -586,8 +586,9 @@ export class MapImportComponent<L, S, M> {
       throw new Error(this.TOO_MANY_FEATURES);
     } else if (importedResult.geojson.features.length > 0) {
       this.dialogRef.componentInstance.isRunning = false;
-      if (this.fitResult) {
-        this.mapComponent().fitToPaddedBounds(this.mapComponent().map.geometryToBounds(importedResult.geojson));
+      const map = this.mapComponent().map();
+      if (this.fitResult && map) {
+        this.mapComponent().fitToPaddedBounds(map.geometryToBounds(importedResult.geojson));
       }
       if (this.mapComponent().drawData.features.length > 0) {
         for (const df of this.mapComponent().drawData.features) {

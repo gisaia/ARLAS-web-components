@@ -45,10 +45,10 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
   public getActions(item: Item): Observable<Array<Action>> {
     const actionsList = new Array<Action>();
     actionsList.push({ id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS' },
-      { id: '2', label: 'Télécharger le produit', actionBus: null, tooltip: 'Download' },
-      { id: '3', label: 'WMTS', actionBus: null, tooltip: 'WMTS' },
-      { id: '4', label: 'WMTS', actionBus: null, tooltip: 'WMTS' },
-      { id: '5', label: 'WMTS', actionBus: null, tooltip: 'WMTS' }
+      { id: '2', label: 'Télécharger le produit', actionBus: undefined, tooltip: 'Download' },
+      { id: '3', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS' },
+      { id: '4', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS' },
+      { id: '5', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS' }
     );
     return from(new Array(actionsList));
   }
@@ -64,8 +64,8 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
 
     const actionsList = new Array<Action>();
     actionsList.push({ id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS', show: true },
-      { id: '2', label: 'Download', actionBus: null, tooltip: 'Download', show: true },
-      { id: '3', label: 'WMTS', actionBus: null, tooltip: 'WMTS', show: true });
+      { id: '2', label: 'Download', actionBus: undefined, tooltip: 'Download', show: true },
+      { id: '3', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS', show: true });
 
     const attachments = new Array<Attachment>();
     attachments.push({

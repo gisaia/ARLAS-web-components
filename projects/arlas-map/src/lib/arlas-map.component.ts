@@ -20,6 +20,7 @@
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   AfterViewInit, Component, DestroyRef, EventEmitter, inject, input, Input,
+  OnChanges, OnDestroy,
   Output, signal, SimpleChanges, ViewChild, ViewEncapsulation
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -70,10 +71,10 @@ import { VisualisationSetConfig } from './map/model/visualisationsets';
  *  S: a source class/interface.
  *  M: a Map configuration class/interface.
  */
-export class ArlasMapComponent<L, S, M> implements AfterViewInit {
+export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnDestroy {
 
   /** Map instance. */
-  public map!: AbstractArlasMapGL;
+  public map = signal<AbstractArlasMapGL | null>(null);
   /** Whether the legend is visible (open) */
   public legendOpen = false;
   /** Used to clear geojson sources. */
@@ -113,7 +114,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   /** @description Unit display for the map scale. */
   @Input() public unitScale = 'metric';
   /** @description Whether to display the coordinates of the mouse while moving. */
-  @Input() public displayCurrentCoordinates = false;
+  public displayCurrentCoordinates = input(false);
   /** @description If true, the coordinates values are wrapped between -180 and 180. */
   @Input() public wrapLatLng = true;
 
@@ -282,7 +283,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     private readonly drawService: MapboxAoiDrawService,
     private readonly basemapService: BasemapService<L, S, M>,
     private readonly translate: TranslateService,
-    protected mapService: AbstractArlasMapService<L, S, M>,
+    protected readonly mapService: AbstractArlasMapService<L, S, M>,
     private readonly legendService: LegendService
   ) {
     this.basemapService.protomapBasemapAdded$.pipe(takeUntilDestroyed())
@@ -326,10 +327,11 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.map && this.map.getMapProvider() !== undefined) {
+    const map = this.map();
+    if (map?.getMapProvider() !== undefined) {
       if (changes['boundsToFit'] !== undefined) {
         const newBoundsToFit = changes['boundsToFit'].currentValue;
-        this.map.fitBounds(newBoundsToFit, {
+        map.fitBounds(newBoundsToFit, {
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
         });
@@ -347,6 +349,17 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     }
   }
 
+  /**
+   * Tries to get the initialised map. If not ready yet, throws an error
+   */
+  private getMap() {
+    const map = this.map();
+    if (!map) {
+      throw new Error('The map is not initialised yet');
+    }
+    return map;
+  }
+
   /** If transformRequest' @Input was not set, set a default value : a function that maintains the same url */
   public initTransformRequest() {
     if (!this.transformRequest) {
@@ -358,22 +371,24 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @param mouseEvent Map mouse event provided by the map instance.
    */
   public zoomOnClick(mouseEvent: MapMouseEvent) {
-    const zoom = this.map.getZoom();
-      let newZoom: number;
-      if (zoom >= 0 && zoom < 3) {
-        newZoom = 4;
-      } else if (zoom >= 3 && zoom < 5) {
-        newZoom = 5;
-      } else if (zoom >= 5 && zoom < 7) {
-        newZoom = 7;
-      } else if (zoom >= 7 && zoom < 10) {
-        newZoom = 10;
-      } else if (zoom >= 10 && zoom < 11) {
-        newZoom = 11;
-      } else {
-        newZoom = 12;
-      }
-      this.mapFrameworkService.flyTo(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng, newZoom, this.map);
+    const map = this.getMap();
+
+    const zoom = map.getZoom();
+    let newZoom: number;
+    if (zoom >= 0 && zoom < 3) {
+      newZoom = 4;
+    } else if (zoom >= 3 && zoom < 5) {
+      newZoom = 5;
+    } else if (zoom >= 5 && zoom < 7) {
+      newZoom = 7;
+    } else if (zoom >= 7 && zoom < 10) {
+      newZoom = 10;
+    } else if (zoom >= 10 && zoom < 11) {
+      newZoom = 11;
+    } else {
+      newZoom = 12;
+    }
+    this.mapFrameworkService.flyTo(mouseEvent.lngLat.lat, mouseEvent.lngLat.lng, newZoom, map);
   }
 
   /**
@@ -381,7 +396,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @param mapLayerMouseEvent Map mouse event provided by a layer instance.
    */
   protected queryRender(mapLayerMouseEvent: MapLayerMouseEvent) {
-    const hasCrossOrDrawLayer = this.mapFrameworkService.queryFeatures(mapLayerMouseEvent, this.map, CROSS_LAYER_PREFIX);
+    const hasCrossOrDrawLayer = this.mapFrameworkService.queryFeatures(mapLayerMouseEvent, this.getMap(), CROSS_LAYER_PREFIX);
     if (!this.drawService.isDrawingBbox && !this.drawService.isDrawingPolygon
       && !this.drawService.isDrawingCircle && !this.drawService.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
       this.onFeatureClick.next({ features: mapLayerMouseEvent.features, point: [mapLayerMouseEvent.lngLat.lng, mapLayerMouseEvent.lngLat.lat] });
@@ -395,12 +410,12 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
         const iconName = icon.path.split('.')[0];
         const iconPath = this.ICONS_BASE_PATH + icon.path;
         const iconErrorMessage = 'The icon "' + this.ICONS_BASE_PATH + icon.path + '" is not found';
-        this.mapFrameworkService.addImage(iconName, iconPath, this.map, iconErrorMessage, { 'sdf': icon.recolorable });
+        this.mapFrameworkService.addImage(iconName, iconPath, this.getMap(), iconErrorMessage, { 'sdf': icon.recolorable });
       });
     }
 
-    this.mapFrameworkService.addImage('rotate', this.ICONS_BASE_PATH + 'rotate/01.png', this.map, 'Rotate not found');
-    this.mapFrameworkService.addImage('resize', this.ICONS_BASE_PATH + 'resize/01.png', this.map, 'Resize not found');
+    this.mapFrameworkService.addImage('rotate', this.ICONS_BASE_PATH + 'rotate/01.png', this.getMap(), 'Rotate not found');
+    this.mapFrameworkService.addImage('resize', this.ICONS_BASE_PATH + 'resize/01.png', this.getMap(), 'Resize not found');
   }
 
   /**
@@ -409,11 +424,15 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * It also starts emiting map moveend event.
    */
   public declareMap() {
+    const basemaps = this.basemapService.basemaps;
+    if (!basemaps) {
+      throw new Error('No basemaps defined');
+    }
+
     this.initTransformRequest();
     const arlasMapOption: ArlasMapOption = {
       container: this.id,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      style: this.basemapService.getInitStyle(this.basemapService.basemaps!.getSelected()),
+      style: this.basemapService.getInitStyle(basemaps.getSelected()),
       center: this.initCenter,
       zoom: this.initZoom,
       maxZoom: this.maxZoom,
@@ -434,7 +453,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     };
     const mapProviderOptions = this.mapFrameworkService.buildMapProviderOption(arlasMapOption);
     const config: MapConfig<M> = {
-      displayCurrentCoordinates: this.displayCurrentCoordinates,
+      displayCurrentCoordinates: this.displayCurrentCoordinates(),
       fitBoundsPadding: this.fitBoundsPadding,
       margePanForLoad: this.margePanForLoad,
       margePanForTest: this.margePanForTest,
@@ -467,31 +486,32 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
         }
       }
     };
-    this.map = this.mapFrameworkService.createMap(config);
+    this.map.set(this.mapFrameworkService.createMap(config));
     fromEvent(globalThis, 'beforeunload').subscribe(() => {
-      this.onMapClosed.next(this.map.getMapExtend());
+      this.onMapClosed.next(this.getMap().getMapExtend());
     });
 
-    this.map.onCustomEvent('beforeOnLoadInit', () => {
-      this.basemapService.declareProtomapProtocol(this.map);
-      this.basemapService.addProtomapBasemap(this.map);
+    this.getMap().onCustomEvent('beforeOnLoadInit', () => {
+      const map = this.getMap();
+      this.basemapService.declareProtomapProtocol(map);
+      this.basemapService.addProtomapBasemap(map);
       this.addIcons();
-      this.mapService.declareArlasDataSources(this.dataSources, this.emptyData, this.map);
-      this.mapService.declareBasemapSources(this.mapSources, this.map);
-      this.mapService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers(), this.map);
+      this.mapService.declareArlasDataSources(this.dataSources, this.emptyData, map);
+      this.mapService.declareBasemapSources(this.mapSources, map);
+      this.mapService.addArlasDataLayers(this.visualisationSetsConfig, this.mapLayers(), map);
       this.listenToLayersEvents();
     });
 
-    this.mapFrameworkService.onMapEvent('load', this.map, () => {
+    this.mapFrameworkService.onMapEvent('load', this.getMap(), () => {
       if (this.mapLayers !== null) {
         this.visibilityUpdater.subscribe(visibilityStatus => {
-          this.mapService.updateVisibility(visibilityStatus, this.visualisationSetsConfig, this.map);
+          this.mapService.updateVisibility(visibilityStatus, this.visualisationSetsConfig, this.getMap());
         });
       }
       this.onMapLoaded.next(true);
     });
 
-    this.map.onMoveEnd(this.mapService.visualisationsSets).subscribe((moveResult => {
+    this.getMap().onMoveEnd(this.mapService.visualisationsSets).subscribe((moveResult => {
       this.onMove.next(moveResult);
     }));
 
@@ -511,21 +531,21 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   public listenToLayersEvents() {
     /** Zooms on the clicked feature of the given layers. */
     this.mapLayers().events.zoomOnClick.forEach(layerId => {
-      this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) => this.zoomOnClick(e));
+      this.mapFrameworkService.onLayerEvent('click', this.getMap(), layerId, (e) => this.zoomOnClick(e));
     });
     this.mapLayers().events.onHover.forEach(layerId => {
       /** Emits the hovered feature on mousemove. */
-      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) => {
+      this.mapFrameworkService.onLayerEvent('mousemove', this.getMap(), layerId, (e) => {
         this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
       });
       /** Emits an empty object on mouse leaving a feature. */
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.getMap(), layerId, (e) => {
         this.onFeatureHover.next({});
       });
     });
     /** Emits the clicked on feature. */
     this.mapLayers().events.emitOnClick.forEach(layerId => {
-      this.mapFrameworkService.onLayerEvent('click', this.map, layerId, (e) =>
+      this.mapFrameworkService.onLayerEvent('click', this.getMap(), layerId, (e) =>
         this.queryRender(e));
     });
     const drawPolygonLayers = [
@@ -537,13 +557,13 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
       .reduce((p, ac) => ac.concat(p), []);
     /** Sets mouse cursor on drawn features */
     drawPolygonLayers.forEach(layerId => {
-      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layerId, (e) =>
-        this.mapFrameworkService.setMapCursor(this.map, 'pointer'));
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layerId, (e) => {
+      this.mapFrameworkService.onLayerEvent('mousemove', this.getMap(), layerId, (e) =>
+        this.mapFrameworkService.setMapCursor(this.getMap(), 'pointer'));
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.getMap(), layerId, (e) => {
         if (this.drawService.isDrawing()) {
-          this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
+          this.mapFrameworkService.setMapCursor(this.getMap(), 'crosshair');
         } else {
-          this.mapFrameworkService.setMapCursor(this.map, '');
+          this.mapFrameworkService.setMapCursor(this.getMap(), '');
         }
       });
     });
@@ -551,13 +571,13 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
     // For each layer other than select and hover layers, listen to the events of enter and exit of the mouse
     this.mapLayers().layers.filter(l => !l.id.startsWith('arlas-select') && !l.id.startsWith('arlas-hover')).forEach(layer => {
       /** Emits the hovered feature on mousemove. */
-      this.mapFrameworkService.onLayerEvent('mousemove', this.map, layer.id, (e) => {
+      this.mapFrameworkService.onLayerEvent('mousemove', this.getMap(), layer.id, (e) => {
         if (this.highlightLegend) {
           this.legendService.highlightFeatures(layer.id, e.features);
         }
       });
       /** Emits an empty object on mouse leaving a feature. */
-      this.mapFrameworkService.onLayerEvent('mouseleave', this.map, layer.id, (e) => {
+      this.mapFrameworkService.onLayerEvent('mouseleave', this.getMap(), layer.id, (e) => {
         if (this.highlightLegend) {
           this.legendService.highlightFeatures(layer.id, []);
         }
@@ -567,7 +587,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
 
   /** Sets the layers order according to the current order of `visualisationSetsConfig` list*/
   public reorderLayers() {
-    this.mapService.reorderLayers(this.visualisationSetsConfig, this.map);
+    this.mapService.reorderLayers(this.visualisationSetsConfig, this.getMap());
   }
 
   /** @description Display the basemapswitcher */
@@ -598,7 +618,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @param visualisationName Name of the visualisation.
    */
   public emitVisualisations(visualisationName: string) {
-    const layers = this.mapService.updateLayoutVisibility(visualisationName, this.visualisationSetsConfig, this.map);
+    const layers = this.mapService.updateLayoutVisibility(visualisationName, this.visualisationSetsConfig, this.getMap());
     this.visualisations.emit(layers);
     this.reorderLayers();
   }
@@ -635,29 +655,29 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @param bounds Bounds of the map to fit to.
    */
   public fitToPaddedBounds(bounds: ArlasLngLatBounds) {
-    this.map.fitToPaddedBounds(bounds);
+    this.getMap().fitToPaddedBounds(bounds);
   }
   /**
    * Centers the map to the given latitude/longitude coordinates.
    * @param lngLat Latitude/longitude coordinates.
    */
   public moveToCoordinates(lngLat: [number, number]) {
-    this.map.setCenter(lngLat);
+    this.getMap().setCenter(lngLat);
   }
   /** Highlights, in all data sources,the feature(s) having the given elementIdentifier */
   private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.mapService.highlightFeature(this.mapLayers(), this.map, featureToHightLight);
+    this.mapService.highlightFeature(this.mapLayers(), this.getMap(), featureToHightLight);
   }
   /** Selects, in all data sources,the feature(s) having the given elementIdentifier */
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
-    this.mapService.selectFeatures(this.mapLayers(), this.map, elementToSelect);
+    this.mapService.selectFeatures(this.mapLayers(), this.getMap(), elementToSelect);
   }
   /** Selects, in all data sources, all the features having the given elementIdentifiers and under the given collection.
    * @param features list of features identifiers.
    * @param collection data collection (metadata of the data source).
   */
   public selectFeaturesByCollection(features: Array<ElementIdentifier>, collection: string) {
-    this.mapService.selectFeaturesByCollection(this.mapLayers(), this.map, features, collection);
+    this.mapService.selectFeaturesByCollection(this.mapLayers(), this.getMap(), features, collection);
   }
 
   public static getMapJsonSchema(): Object {
@@ -665,8 +685,9 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
   }
   /** Destroys all the components subscriptions. */
   public ngOnDestroy(): void {
-    if (this.map) {
-      this.map.unsubscribeEvents();
+    const map = this.map();
+    if (map) {
+      map.unsubscribeEvents();
     }
   }
 
@@ -736,15 +757,16 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit {
    * @description Displays/Removes the terrain from the map
    */
   public toggleTerrain() {
-    if (this.terrain().enable) {
+    const map = this.getMap();
+    if (this.terrain().enable && map) {
       if (!this.hasTerrain()) {
         this.terrainSources = this.mapFrameworkService.setTerrain(
-          this.terrain().source, this.map, this.terrain().exaggeration);
+          this.terrain().source, map, this.terrain().exaggeration);
       } else {
-        this.mapFrameworkService.removeTerrain(this.map);
+        this.mapFrameworkService.removeTerrain(map);
         for (const source of this.terrainSources) {
-          this.mapFrameworkService.removeLayer(this.map, source);
-          this.mapFrameworkService.removeSource(this.map, source);
+          this.mapFrameworkService.removeLayer(map, source);
+          this.mapFrameworkService.removeSource(map, source);
         }
       }
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { TreeNode } from 'arlas-d3';
 import { PowerbarsComponent } from 'arlas-web-components';
 
@@ -27,7 +27,7 @@ import { PowerbarsComponent } from 'arlas-web-components';
     styleUrls: ['./powerbars-demo.component.css'],
     imports: [PowerbarsComponent]
 })
-export class PowerbarsDemoComponent implements OnInit {
+export class PowerbarsDemoComponent {
 
   public powerbarsConstructors: TreeNode;
 
@@ -37,9 +37,7 @@ export class PowerbarsDemoComponent implements OnInit {
   public powerbarsAirlines: TreeNode;
   public airlinesTitle = 'Airlines';
 
-  public constructor() { }
-
-  public ngOnInit() {
+  public constructor() {
     this.powerbarsConstructors = {
       id: 'root',
       isOther: false,

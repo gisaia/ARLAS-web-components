@@ -301,7 +301,12 @@ export class MapboxAoiDrawService {
    * @param feature
    */
   public isValidCircle(feature: Feature): boolean {
-    return this.isValidPolygon(feature) && feature.properties?.center;
+    if (feature.geometry.type !== 'Polygon') {
+      return false;
+    }
+
+    const coordinates = feature.geometry.coordinates;
+    return this.isCircle(feature) && coordinates?.[0]?.[0] !== null && coordinates?.[0]?.[0] !== undefined && feature.properties?.center;
   }
 
   public isValidPolygon(feature: Feature): boolean {
@@ -310,7 +315,7 @@ export class MapboxAoiDrawService {
     }
 
     const coordinates = feature.geometry.coordinates;
-    return this.isPolygon(feature) && coordinates?.[0]?.[0] !== null;
+    return this.isPolygon(feature) && coordinates?.[0]?.[0] !== null && coordinates?.[0]?.[0] !== undefined;
   }
 
   public isPolygon(feature: Feature): feature is Feature<Polygon> {

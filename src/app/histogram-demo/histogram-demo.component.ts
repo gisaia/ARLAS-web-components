@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {
-  ChartType, DataType, HistogramData, Position, SelectedInputValues, SelectedOutputValues, SelectionType, SwimlaneData, SwimlaneMode, SwimlaneStats
+  ChartType, DataType, HistogramData, Position,
+  SelectedOutputValues, SelectionType, SwimlaneData, SwimlaneMode, SwimlaneStats
 } from 'arlas-d3';
 import { HistogramComponent } from 'arlas-web-components';
 
@@ -30,45 +31,21 @@ import { HistogramComponent } from 'arlas-web-components';
     styleUrls: ['./histogram-demo.component.css'],
     imports: [HistogramComponent]
 })
-export class HistogramDemoComponent implements OnInit {
-  public curvedTimelineData: Array<{key: Date | number; value: number; }>;
-  public oneDimensionHistogramData: HistogramData[];
-  public defaultHistogramData: Array<{key: Date | number; value: number; }>;
+export class HistogramDemoComponent {
+  public curvedTimelineData: Array<HistogramData> = [];
+  public oneDimensionHistogramData: HistogramData[] = [];
+  public defaultHistogramData: Array<HistogramData> = [];
   public swimlaneHistogramData: SwimlaneData;
   public dataType = DataType;
   public swimlaneMode = SwimlaneMode;
   public chartType = ChartType;
-  public selectedTimeValues: SelectedOutputValues = { startvalue: null, endvalue: null };
-  public selectedNumericValues: SelectedOutputValues = { startvalue: null, endvalue: null };
-  public selectValues: SelectedInputValues;
-  public selectValuesSwimlane: SelectedInputValues;
-  public areaSelection: SelectedInputValues;
+  public selectedTimeValues: SelectedOutputValues = { startvalue: Number.NaN, endvalue: Number.NaN };
+  public selectedNumericValues: SelectedOutputValues = { startvalue: Number.NaN, endvalue: Number.NaN };
   public intervalListSelection: SelectedOutputValues[] = [];
   public SelectionType = SelectionType;
   public Position = Position;
 
-  public ngOnInit() {
-    this.showData();
-  }
-
-  public setSelectedTimeValues(selectedValues: SelectedOutputValues[]) {
-    this.selectedTimeValues.startvalue = selectedValues[0].startvalue;
-    this.selectedTimeValues.endvalue = selectedValues[0].endvalue;
-    if (selectedValues.length === 1) {
-      this.intervalListSelection = [];
-    } else {
-      selectedValues.pop();
-      this.intervalListSelection = selectedValues;
-    }
-  }
-
-  public setSelectedNumericValues(selectedValues: SelectedOutputValues[]) {
-    this.selectedNumericValues.startvalue = selectedValues[0].startvalue;
-    this.selectedNumericValues.endvalue = selectedValues[0].endvalue;
-
-  }
-
-  private showData() {
+  public constructor() {
     this.defaultHistogramData = [
       {value: -400, key: 0},
       {value: 123,  key: 1},
@@ -148,9 +125,9 @@ export class HistogramDemoComponent implements OnInit {
     });
 
     const columnStats = new Map();
-    const keys = lanes.get('Sweden').map(bucket => bucket.key);
+    const keys = lanes.get('Sweden')?.map(bucket => bucket.key);
 
-    keys.forEach((val, idx) => {
+    keys?.forEach((val, idx) => {
       let sum = 0;
       let max = -Infinity;
       let min = Infinity;
@@ -190,18 +167,20 @@ export class HistogramDemoComponent implements OnInit {
     };
   }
 
-
-
-  private stringToNumber(d) {
-    d.value = +d.value;
-    return d;
+  public setSelectedTimeValues(selectedValues: SelectedOutputValues[]) {
+    this.selectedTimeValues.startvalue = selectedValues[0].startvalue;
+    this.selectedTimeValues.endvalue = selectedValues[0].endvalue;
+    if (selectedValues.length === 1) {
+      this.intervalListSelection = [];
+    } else {
+      selectedValues.pop();
+      this.intervalListSelection = selectedValues;
+    }
   }
 
-  private oneToZero(d) {
-    d.value = +d.value / 1450;
-    return d;
+  public setSelectedNumericValues(selectedValues: SelectedOutputValues[]) {
+    this.selectedNumericValues.startvalue = selectedValues[0].startvalue;
+    this.selectedNumericValues.endvalue = selectedValues[0].endvalue;
+
   }
-
-
-
 }

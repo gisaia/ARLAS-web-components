@@ -69,26 +69,9 @@ function getDisplayMeasurements(feature: GeoJSON.Feature) {
     return displayMeasurements;
 }
 
-const doubleClickZoom = {
-    enable: (ctx: any) => {
-        setTimeout(() => {
-            // First check we've got a map and some context.
-            if (
-                !ctx.map?.doubleClickZoom ||
-                !ctx._ctx?.store?.getInitialConfigValue
-            ) {
-                return;
-            }
-            // Now check initial state wasn't false (we leave it disabled if so)
-            if (!ctx._ctx.store.getInitialConfigValue('doubleClickZoom')) {
-                return;
-            }
-            ctx.map.doubleClickZoom.enable();
-        }, 0);
-    },
-};
 radiusCircleMode.onSetup = function (opts) {
     const props = MapboxDraw.modes.draw_line_string.onSetup.call(this, opts);
+    MapboxDraw.lib.doubleClickZoom.disable(this);
     const polygon = this.newFeature({
         type: MapboxDraw.constants.geojsonTypes.FEATURE,
         properties: {
@@ -132,19 +115,20 @@ radiusCircleMode.onMouseMove = function (state, e) {
     MapboxDraw.modes.draw_line_string.onMouseMove.call(this, state, e);
     const geojson = state.line.toGeoJSON();
     const center = geojson.geometry.coordinates[0];
-    const radiusInKm = length(geojson, { units: 'kilometers' });
+    const radiusInKm = length(geojson, { units: state.units });
     const options =  {steps: state.steps, units: state.units};
     const circleFeature = circle(center, radiusInKm, options);
     circleFeature.properties ??= {};
     circleFeature.properties.parent = state.line.id;
     circleFeature.properties.meta = 'radius';
     state.circle.setCoordinates(circleFeature.geometry.coordinates);
+    state.circle.setProperty('center', center);
 };
 
 // creates the final geojson point feature with a radius property
 // triggers draw.create
 radiusCircleMode.onStop = function (state) {
-    doubleClickZoom.enable(this);
+    MapboxDraw.lib.doubleClickZoom.enable(this);
 
     this.activateUIButton();
 

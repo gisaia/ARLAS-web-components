@@ -69,7 +69,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @description HistogramData is a bucket of a given chart Id. Many charts ids can be represented in histogram. This
    * input sets the main chart id. So that the main one can be represented differently from the others
    */
-  public mainChartId = input.required<string>();
+  public mainChartId = input<string>();
   /**
    * @Input
    * @description To be set to `time` when x axis represents dates and to `numeric` otherwise.
@@ -488,6 +488,10 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @description Plots the histogram
    */
   public plotHistogram(inputData: HistogramData[] | SwimlaneData): void {
+    if (!this.chart) {
+      return;
+    }
+
     if (Array.isArray(inputData)) {
       (this.chart as AbstractChart).plot(inputData);
     } else {
@@ -499,7 +503,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
    * @description Resizes the histogram on windows resize event
    */
   public resizeHistogram(): void {
-    if (this.histogram && this.histogram.histogramParams.histogramContainer) {
+    if (this.histogram?.histogramParams.histogramContainer) {
       this.histogram.resize(this.histogram.histogramParams.histogramContainer);
       this.dataPlottedEvent.next('RESIZE');
     }
@@ -524,16 +528,15 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
     } else if (!this.xUnit) {
       this.xUnit = '';
     }
-    if (!this.dataUnit) {
-      this.dataUnit = '';
-    }
+
     if (!this.yUnit) {
       this.yUnit = '';
     }
     if (!this.selectionType) {
       this.selectionType = SelectionType.slider;
     }
-    const histogramParams = new HistogramParams(this.id(), this.mainChartId());
+    const histogramParams = new HistogramParams(this.id());
+    histogramParams.mainChartId = this.mainChartId();
     histogramParams.useUtc = this.useUtc;
     histogramParams.selectionType = this.selectionType;
     histogramParams.handlesRadius = this.handlesRadius;
@@ -559,7 +562,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
       histogramParams.swimlaneData = data;
     }
     histogramParams.dataType = this.dataType;
-    histogramParams.dataUnit = this.dataUnit;
+    histogramParams.dataUnit = this.xUnit;
     histogramParams.hoveredBucketEvent = this.hoveredBucketEvent;
     histogramParams.intervalListSelection = this.intervalListSelection;
     histogramParams.isHistogramSelectable = this.isHistogramSelectable;

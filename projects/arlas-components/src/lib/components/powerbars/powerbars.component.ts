@@ -451,13 +451,13 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     let sum = 0;
     // calculate the sum
     this.powerBarsList.forEach(powerBar => {
-      if (powerBar.count.toString() === 'NaN') {
+      if (!powerBar.count || powerBar.count.toString() === 'NaN') {
         powerBar.count = 0;
       }
       sum += powerBar.count;
     });
     this.selectedPowerbarsSet.forEach(selectedPowerBar => {
-      if (selectedPowerBar.count.toString() === 'NaN') {
+      if (!selectedPowerBar.count || selectedPowerBar.count.toString() === 'NaN') {
         selectedPowerBar.count = 0;
       }
       if (this.getPowerbar(selectedPowerBar.term, selectedPowerBar.parentTerm) === null) {
@@ -468,12 +468,16 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
 
     // calculate progression
     this.powerBarsList.forEach(powerBar => {
-      powerBar.progression = powerBar.count / sum * 100;
-      powerBar.progression = Math.min(powerBar.progression, 100);
+      if (powerBar.count !== null) {
+        powerBar.progression = powerBar.count / sum * 100;
+        powerBar.progression = Math.min(powerBar.progression, 100);
+      }
     });
     this.selectedPowerbarsSet.forEach(selectedPowerBar => {
-      selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
-      selectedPowerBar.progression = Math.min(selectedPowerBar.progression, 100);
+      if (selectedPowerBar.count !== null) {
+        selectedPowerBar.progression = selectedPowerBar.count / sum * 100;
+        selectedPowerBar.progression = Math.min(selectedPowerBar.progression, 100);
+      }
     });
   }
 
