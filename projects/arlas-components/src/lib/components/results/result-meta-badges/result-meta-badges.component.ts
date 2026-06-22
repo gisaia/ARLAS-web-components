@@ -140,7 +140,7 @@ export class ResultMetaBadgesComponent {
         value,
         icon: field?.icon || '',
         unit: field?.dataType || '',
-        tooltip: `${field.fieldName} ${this.TOOLTIP_VALUE_SPACER} ${value}
+        tooltip: `${field.prettyName} ${this.TOOLTIP_VALUE_SPACER} ${value}
         ${ hasValue ? (field?.dataType || '') : ''}`
       };
     });

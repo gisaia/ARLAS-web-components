@@ -39,8 +39,8 @@
   }
 
   &__content{
-    flex: 0 0 calc(100% - var(--image-dimension));
-    max-width: calc(100% - var(--image-dimension));
+    flex: 1 1 auto;
+    max-width: calc(100% - (var(--image-dimension) + 24px + 12px)); // 24: left/right container padding + left/right own padding.
     display: flex;
     padding: 0 6px;
     flex-direction: column;

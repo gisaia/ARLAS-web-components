@@ -26,6 +26,10 @@ export class HybridField {
   /**
    * @description The name of the field related to this column.
    */
+  public prettyName: string;
+  /**
+   * @description The name of the field related to this column.
+   */
   public fieldName: string;
   /**
    * @description Type of data that is appended to column name : %, °C, ..
@@ -42,7 +46,8 @@ export class HybridField {
   public icon = '';
 
 
-  public constructor(fieldName: string, dataType: string, isTitle = false, icon?: string) {
+  public constructor(prettyName: string, fieldName: string, dataType: string, isTitle = false, icon?: string) {
+    this.prettyName = prettyName;
     this.fieldName = fieldName;
     this.dataType = dataType;
     this.isTitle = isTitle;

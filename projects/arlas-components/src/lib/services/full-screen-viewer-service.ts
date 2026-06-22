@@ -18,7 +18,7 @@
  */
 
 import {Injectable} from '@angular/core';
-import {fromEvent} from 'rxjs';
+import {EMPTY, fromEvent} from 'rxjs';
 import {FullScreenViewer} from 'iv-viewer';
 
 @Injectable({
@@ -26,7 +26,7 @@ import {FullScreenViewer} from 'iv-viewer';
 })
 export class FullScreenViewerService {
   /** The full screen viewer instance from the iv-viewer library */
-  private fullScreenViewer: FullScreenViewer = new FullScreenViewer();
+  private fullScreenViewer: FullScreenViewer;
   /** The original container element where viewer actions are placed */
   private viewerContainer: HTMLElement | undefined;
   /** The full screen container element where actions are moved during full screen mode */
@@ -41,9 +41,14 @@ export class FullScreenViewerService {
    * to the full screen container for display during full screen mode
    * @returns this service instance for method chaining
    */
-  public showOverlay() {
+  public initOverlay() {
+    this.fullScreenViewer = new FullScreenViewer();
     this.fullScreenContainer = document.querySelector('.iv-fullscreen-container');
     this.closeIcon = document.querySelector(this.closeIconSelector);
+
+    if(!this.fullScreenContainer){
+      console.warn('No full screen container found');
+    }
 
     const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
     if (!!actionsInfos && !!actionsInfos[0]) {
@@ -64,6 +69,11 @@ export class FullScreenViewerService {
    * @returns an observable that emits when the close icon is clicked
    */
   public destroyElementOnClose() {
+
+    if(!this.closeIcon){
+      return  EMPTY;
+    }
+
     return fromEvent(this.closeIcon, 'click', () => {
       if (this.viewerContainer) {
         const actionsInfosFullScreen = this.fullScreenContainer.getElementsByClassName('viewer_actions-infos');
@@ -81,6 +91,10 @@ export class FullScreenViewerService {
    * @param imgSrc the image URL or ArrayBuffer to display
    */
   public showFullScreen(imgSrc: string | ArrayBuffer) {
+    if (!imgSrc) {
+      console.warn('Invalid image source provided');
+      return;
+    }
     this.fullScreenViewer.show(imgSrc);
   }
 
@@ -89,8 +103,13 @@ export class FullScreenViewerService {
    */
   public destroy(){
     if(this.fullScreenViewer){
-      this.fullScreenViewer.destroy();
+      try {
+        this.fullScreenViewer.destroy();
+      } catch (e) {
+
+      }
     }
+    this.fullScreenViewer = null;
   }
 
   /**

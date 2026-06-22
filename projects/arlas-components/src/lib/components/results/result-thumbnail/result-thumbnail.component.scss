@@ -38,6 +38,14 @@ $img-proportion: 100%;
 
     }
 
+    & .list_actions .icon {
+      width: 17px!important;
+      height: 17px!important;
+      font-size: 17px!important;
+      border-radius: 5px!important;
+      background: rgba(255,255,255,0.8)!important;
+    }
+
     & .list_actions--icon {
       padding-right: 6px;
       max-width: 100px;
@@ -72,14 +80,14 @@ $img-proportion: 100%;
     position: absolute;
     top: 0;
     width: 100%;
-    padding: 1px 6px;
     display: flex;
     z-index: 1;
     &--left {
-      justify-self: start;
+      margin-left: 6px;
     }
     &--right {
       margin-left: auto;
+      margin-right: 6px;
     }
   }
 

@@ -604,8 +604,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public updateResultListDisplayWhenDefaultModeChange(){
-    if (this.isDefaultModeIsGrid || this.isDefaultModeIsHybrid) {
+    if (this.isDefaultModeIsGrid) {
       this.resultMode = ModeEnum.grid;
+      this.displayListGrid = 'block';
+    } else if(this.isDefaultModeIsHybrid) {
+      this.resultMode = ModeEnum.hybrid;
       this.displayListGrid = 'block';
     } else {
       this.resultMode = ModeEnum.list;
@@ -1020,7 +1023,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       .forEach(field => {
         if (field.isHybrid) {
           (field.isHybridTitle ? hybridTitle : hybridOthers).push(
-            new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon)
+            new HybridField(field.columnName, field.fieldName, field.dataType, field.isHybridTitle, field.icon)
           );
         } else {
           nonHybridFields.push(field);

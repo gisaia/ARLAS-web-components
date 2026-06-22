@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import {Component, computed, input, output, signal, viewChild} from '@angular/core';
+import {Component, input, output, signal, viewChild} from '@angular/core';
 import {ResultActionsComponent} from '../result-actions/result-actions.component';
 import {TranslatePipe} from '@ngx-translate/core';
 import {Item} from '../model/item';
@@ -26,8 +26,8 @@ import {Action} from '../utils/results.utils';
 import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
-import {NgOptimizedImage} from '@angular/common';
 import {MatIconButton} from '@angular/material/button';
+import {LazyLoadImageModule} from 'ng-lazyload-image';
 
 @Component({
   selector: 'arlas-result-thumbnail',
@@ -35,7 +35,7 @@ import {MatIconButton} from '@angular/material/button';
     TranslatePipe,
     MatTooltip,
     MatIcon,
-    NgOptimizedImage,
+    LazyLoadImageModule,
     ResultActionsComponent,
     MatIconButton
   ],
@@ -62,10 +62,6 @@ export class ResultThumbnailComponent {
   protected readonly fullScreenToolTip = input<string>('');
   /** Input property: tooltip text for the picture/thumbnail */
   protected readonly pictureTooltip = input<string>('');
-
-  protected image = computed(() => {
-    return this.gridTile()?.urlThumbnail ?? this.defaultImgUrl();
-  });
 
   /** Signal: tracks whether to display the info icon */
   protected readonly displayInfoIcon = signal<boolean>(null);

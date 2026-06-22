@@ -153,7 +153,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    */
   public createOverlay(image: string | ArrayBuffer) {
     this.fullScreenService
-      .showOverlay()
+      .initOverlay()
       .destroyElementOnClose()
       .subscribe();
     this.showOverlay(image);
@@ -165,7 +165,11 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    */
   public showOverlay(image: string | ArrayBuffer){
     setTimeout(() => {
-      this.fullScreenService.showFullScreen(image);
+      try {
+        this.fullScreenService.showFullScreen(image);
+      } catch (e) {
+        console.warn('Failed to open full screen')
+      }
     }, 0);
   }
 
@@ -173,7 +177,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    * Lifecycle hook: cleans up the full screen viewer service on component destruction
    */
   public ngOnDestroy(): void {
-   // this.fullScreenService.destroy();
+    this.fullScreenService.destroy();
     this.rowItem().isDetailToggled = false;
   }
 

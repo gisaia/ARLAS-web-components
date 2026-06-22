@@ -52,7 +52,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    */
   public VIEW_IMAGE = marker('View in full screen');
   /**
-   * @constant
+s   * @constant
    */
   public SHOW_IMAGE = marker('Show image');
   /**
@@ -220,7 +220,11 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     }
     setTimeout(() => {
       if (this.isFullScreen) {
-        this.fullScreenService.showFullScreen(this.imgSrc);
+        try {
+          this.fullScreenService.showFullScreen(this.imgSrc);
+        } catch (e) {
+          console.warn('Failed to open full screen')
+        }
       } else {
         if (!!this.imageViewer && !this.viewer) {
           this.viewer = new ImageViewer(this.imageViewer.nativeElement);
@@ -263,7 +267,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     this.isFullScreen = true;
     this.resetViewer();
     this.fullScreenService
-      .showOverlay()
+      .initOverlay()
       .destroyElementOnClose()
       .pipe(tap(() =>  {
         this.isFullScreen = false;
