@@ -52,7 +52,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   /** Output event: emitted when an item is clicked */
   public clickedOnItemEvent = output<Item>();
   /** Output event: emitted when an action is triggered on an item */
-  public actionOnItemEvent = output<{ action: Action; elementidentifier: ElementIdentifier }>();
+  public actionOnItemEvent = output<{ action: Action; elementidentifier: ElementIdentifier; }>();
   /** Input property: specifies how the thumbnail should fit (default: round) */
   public thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.round);
   /** Input property: the name of the field used as item identifier */
@@ -81,15 +81,13 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    return field ? field : null;
   });
 
-  public fields = computed(() => {
-    return this.titleField() ? this.rowItem().hybridFields.slice(1) : this.rowItem().hybridFields;
-  });
+  public fields = computed(() => this.titleField() ? this.rowItem().hybridFields.slice(1) : this.rowItem().hybridFields);
 
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
 
   /** View child reference to the thumbnail component */
-  private arlasThumbnail = viewChild<ResultThumbnailComponent>('arlasThumbnail')
+  private arlasThumbnail = viewChild<ResultThumbnailComponent>('arlasThumbnail');
 
   /** Service for managing full screen viewer overlay */
   private readonly fullScreenService = inject(FullScreenViewerService);

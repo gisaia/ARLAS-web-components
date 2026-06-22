@@ -1,5 +1,7 @@
 <div class="hybrid__container">
+  <!-- Image section with thumbnail and action handlers -->
   <div class="hybrid__image">
+    <!-- Thumbnail component displaying item image with click/hover/action event handlers -->
     <arlas-result-thumbnail #arlasThumbnail
                             (imageClicked)="setClickedOnItem()"
                             (imageHovered)="showCellTooltip()"
@@ -12,19 +14,25 @@
                             [detailedDataRetriever]="detailedDataRetriever()"
                             [fullScreenToolTip]="VIEW_IMAGE"
                             [gridTile]="rowItem()"
-                            [showActionsOnHover]="options().showActionsOnhover"
+                            [showActionsOnHover]="options()?.showActionsOnhover"
                             [thumbnailFit]="ThumbnailFitEnum.round"
     ></arlas-result-thumbnail>
   </div>
+
+  <!-- Content section with title and metadata badges -->
   <div class="hybrid__content">
+    <!-- Header section: title and detail toggle button -->
     <div class="hybrid__content-header">
+      <!-- Item title from the configured title field -->
       <div class="hybrid__content-title">
         @if (titleField()) {
           {{rowItem().itemData.get(titleField().fieldName)}}
         }
       </div>
+
+      <!-- Detail toggle button (show/hide details panel) -->
       <div>
-        @if (detailedDataRetriever().detailsConfig?.length > 0) {
+        @if (detailedDataRetriever() && detailedDataRetriever().detailsConfig?.length > 0) {
           @let toggleId = (rowItem().isDetailToggled ? 'close' : 'open') + '-detail-' + rowItem().identifier;
           @let toggleTooltip = rowItem().isDetailToggled ? HIDE_DETAILS : SHOW_DETAILS;
           <button mat-icon-button [id]="toggleId" [matTooltip]="toggleTooltip | translate"
@@ -35,8 +43,7 @@
         }
       </div>
     </div>
-
+    <!-- Badge section displaying metadata fields (values, units, icons) -->
     <arlas-result-meta-badges [item]="rowItem()" [fields]="fields()"></arlas-result-meta-badges>
-
   </div>
 </div>

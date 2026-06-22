@@ -1,14 +1,12 @@
-<div class="meta-badge__container"   [matTooltip]="tooltip()">
-  @if (metaBadge().icon && metaBadge().value) {
+<div class="meta-badge__container"   [matTooltip]="metaBadge().tooltip">
+  @if (metaBadge().icon && !valueIsEmpty()) {
     <span class="meta-badge__icon">
       <mat-icon class="small-icon">{{ metaBadge().icon }}</mat-icon>
     </span>
   }
-  <span class="meta-badge__value"  [style.max-width]="`${maxWidth()}`" >{{ metaBadge().value ? metaBadge().value : NO_VALUE }}
-    @if (metaBadge().unit && metaBadge().value) {
-      <span class="meta-badge__unit">
+  <span class="meta-badge__value" >{{ !valueIsEmpty() ? metaBadge().value : NO_VALUE }}
+    @if(!valueIsEmpty()){
       {{ metaBadge().unit }}
-    </span>
     }
   </span>
 </div>

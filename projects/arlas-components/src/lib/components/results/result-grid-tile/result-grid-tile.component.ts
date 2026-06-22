@@ -17,20 +17,20 @@
  * under the License.
  */
 
-import {Component, Input, OnInit, Output, ViewChild} from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslatePipe } from '@ngx-translate/core';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
-import { Subject } from 'rxjs';
-import { Item } from '../model/item';
-import { ItemComponent } from '../model/itemComponent';
-import { ResultActionsComponent } from '../result-actions/result-actions.component';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import {Component, Input, Output, ViewChild} from '@angular/core';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {marker} from '@colsen1991/ngx-translate-extract-marker';
+import {TranslatePipe} from '@ngx-translate/core';
+import {LazyLoadImageModule} from 'ng-lazyload-image';
+import {Subject} from 'rxjs';
+import {Item} from '../model/item';
+import {ItemComponent} from '../model/itemComponent';
+import {ResultActionsComponent} from '../result-actions/result-actions.component';
+import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
+import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
+import {Action, ElementIdentifier, ResultListOptions} from '../utils/results.utils';
 
 @Component({
   selector: 'arlas-result-grid-tile',
@@ -38,7 +38,7 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
   styleUrls: ['./result-grid-tile.component.scss'],
   imports: [MatIcon, MatIconButton, MatTooltip, LazyLoadImageModule, ResultActionsComponent, TranslatePipe]
 })
-export class ResultGridTileComponent  extends ItemComponent implements OnInit {
+export class ResultGridTileComponent  extends ItemComponent {
   /**
    * @constant
    */
@@ -132,10 +132,6 @@ export class ResultGridTileComponent  extends ItemComponent implements OnInit {
 
   public constructor() {
     super();
-  }
-
-  public ngOnInit() {
-    console.log(this.activatedActionsPerItem)
   }
 
   /**

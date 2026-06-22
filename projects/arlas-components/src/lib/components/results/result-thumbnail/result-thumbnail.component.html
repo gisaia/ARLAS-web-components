@@ -31,7 +31,7 @@
     [class.contain_thumbnail]="thumbnailFit() === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit() === ThumbnailFitEnum.height"
     [class.round_thumbnail]="thumbnailFit() === ThumbnailFitEnum.round"
     [class.width_thumbnail]="thumbnailFit() === ThumbnailFitEnum.width"
-    [ngSrc]="gridTile()?.urlThumbnail ?? defaultImgUrl()"
+    [ngSrc]="image()"
     alt='' fill/>
   @if (showActionsOnHover()) {
     <div (focus)="hideCellTooltip($event)" (mouseover)="hideCellTooltip($event)" class="actions">

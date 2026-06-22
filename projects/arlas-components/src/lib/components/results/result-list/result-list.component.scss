@@ -399,3 +399,9 @@ tr {
 
   --mat-radio-state-layer-size: 20px;
 }
+
+.hybrid-toggle{
+  & mat-icon {
+    transform: scale(-1);
+  }
+}

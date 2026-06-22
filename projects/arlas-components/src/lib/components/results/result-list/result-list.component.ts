@@ -60,7 +60,7 @@ import {
 } from '../utils/results.utils';
 import {ResultHybridItemComponent} from '../result-hybrid-item/result-hybrid-item.component';
 import {HybridField} from '../model/hybridField';
-import {RowRenderCalcuolatorService} from '../../../services/row-render-calcuolator.service';
+import {RowRenderCalculatorService} from '../../../services/row-render-calculator.service';
 
 /**
  * Structure summarizing the sort on a column
@@ -525,17 +525,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
 
-  private readonly rowRenderCalcuolatorService = inject(RowRenderCalcuolatorService)
+  private readonly rowRenderCalcuolatorService = inject(RowRenderCalculatorService);
 
   /**
    * Whe
    */
   public get isDefaultModeIsGrid() {
-    return (this.defautMode.toString() === 'grid' || this.defautMode.toString() === ModeEnum.grid.toString());
+    return (this.defautMode?.toString() === 'grid' || this.defautMode?.toString() === ModeEnum.grid.toString());
   }
 
   public get isDefaultModeIsHybrid(){
-    return (this.defautMode.toString() === 'hybrid' || this.defautMode.toString() === ModeEnum.hybrid.toString())
+    return (this.defautMode?.toString() === 'hybrid' || this.defautMode?.toString() === ModeEnum.hybrid.toString());
   }
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
@@ -695,7 +695,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
     const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
     if (columnChanges) {
-      this.setColumns();
+      this.setColumnsAndHybridFields();
     }
     if (itemChanges) {
       let itemIndex = 0;
@@ -1006,27 +1006,27 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   // Build the table's columns
-  private setColumns() {
+  private setColumnsAndHybridFields() {
     this.columns = new Array<Column>();
     this.hybridFields = new Array<HybridField>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
 
-    const hybridTitles = [];
+    const hybridTitle = [];
     const hybridOthers = [];
     const nonHybridFields = [];
 
     this.fieldsList
       .forEach(field => {
         if (field.isHybrid) {
-          (field.isHybridTitle ? hybridTitles : hybridOthers).push(
+          (field.isHybridTitle ? hybridTitle : hybridOthers).push(
             new HybridField(field.fieldName, field.dataType, field.isHybridTitle, field.icon)
           );
         } else {
           nonHybridFields.push(field);
         }
       });
-    this.hybridFields.push(...hybridTitles, ...hybridOthers);
+    this.hybridFields.push(...hybridTitle, ...hybridOthers);
 
     // id column is the first one and has a pre fixed width
     // It is the column where checkboxes are put

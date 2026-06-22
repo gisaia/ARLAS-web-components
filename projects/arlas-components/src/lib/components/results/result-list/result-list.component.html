@@ -98,7 +98,7 @@
                 </mat-button-toggle>
                 }
                 @if(hasHybridMode) {
-                  <mat-button-toggle id="hybrid_mode_btn" matTooltip="{{HYBRID_MODE | translate}}" value="{{ModeEnum.hybrid}}"
+                  <mat-button-toggle class="hybrid-toggle" id="hybrid_mode_btn" matTooltip="{{HYBRID_MODE | translate}}" value="{{ModeEnum.hybrid}}"
                                      [checked]="resultMode==ModeEnum.hybrid">
                     <mat-icon>vertical_split</mat-icon>
                   </mat-button-toggle>

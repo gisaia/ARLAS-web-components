@@ -1,16 +1,32 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 :host {
   --badge-font-size: 14px;
   --badge-icon-witdh: var(--badge-font-size);
-  --badge-color: #727377;
+  --badge-color: #6F7278;
 }
 
 .meta-badge {
   font-size: 14px;
-  color: gray;
   &__container {
     display: flex;
-    // 16px (*3 = 48 de perdu par ligne) pour une largeur de 333px (333- 48 de padding = 285px de large) s
-    // si max item 70 alors 4 par ligne. Si 90 3 par ligne si les trois on valuer full. sinon pas de max width
     flex: 1 1 fit-content;
     align-items: baseline;
     gap:2px;
@@ -20,15 +36,15 @@
   &__icon {
     width: 18px;
     font-size: var(--badge-font-size);
-    display: flex;          // ← flex pour centrer l'icône
-    align-items: center;    // ← centre verticalement
+    display: flex;
+    align-items: center;
     line-height: 1;
     & mat-icon {
       font-size: var(--badge-font-size);
       height: var(--badge-font-size);
       width: var(--badge-font-size);
-      display: flex;         // ← remplace inline-block
-      align-items: center;   // ← centre le contenu de l'icône
+      display: flex;
+      align-items: center;
       color: var(--badge-color);
     }
   }
@@ -41,7 +57,6 @@
     min-width: 0;
     line-height: 1;
     flex:1 1 auto;
-    // max-width: 150px;
     color: var(--badge-color);
   }
 

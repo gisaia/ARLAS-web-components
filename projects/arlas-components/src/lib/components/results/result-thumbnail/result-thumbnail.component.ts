@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import {Component, input, OnInit, output, signal, viewChild} from '@angular/core';
+import {Component, computed, input, output, signal, viewChild} from '@angular/core';
 import {ResultActionsComponent} from '../result-actions/result-actions.component';
 import {TranslatePipe} from '@ngx-translate/core';
 import {Item} from '../model/item';
-import {DetailedDataRetriever} from '../utils/detailed-data-retriever'
-import {Action} from '../utils/results.utils'
-import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum'
+import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
+import {Action} from '../utils/results.utils';
+import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
 import {MatTooltip} from '@angular/material/tooltip';
 import {MatIcon} from '@angular/material/icon';
 import {NgOptimizedImage} from '@angular/common';
@@ -63,6 +63,10 @@ export class ResultThumbnailComponent {
   /** Input property: tooltip text for the picture/thumbnail */
   protected readonly pictureTooltip = input<string>('');
 
+  protected image = computed(() => {
+    return this.gridTile()?.urlThumbnail ?? this.defaultImgUrl();
+  });
+
   /** Signal: tracks whether to display the info icon */
   protected readonly displayInfoIcon = signal<boolean>(null);
   /** Reference to the ThumbnailFitEnum for use in template */
@@ -96,7 +100,6 @@ export class ResultThumbnailComponent {
     this.imageHovered.emit();
   }
 
-
   /**
    * Forwards the action event to parent component when an action is triggered
    * @param $event the action that was triggered
@@ -129,6 +132,6 @@ export class ResultThumbnailComponent {
    */
   protected fullScreen(clickEv: Event, images: string[]) {
     clickEv.stopPropagation();
-    this.onFullScreen.emit(images.at(0));
+    this.onFullScreen.emit(images.at(0) ?? '');
   }
 }

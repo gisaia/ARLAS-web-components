@@ -153,8 +153,6 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
    * @param item
    */
   private setItemActions(item: Item): void {
-    console.log(item.actions)
-    console.log(this.detailedDataRetriever)
     if (item && (!item.actions || (item.actions && item.actions.length === 0))) {
       item.actions = new Array<Action>();
       this.detailedDataRetriever.getActions(item).pipe(take(1)).subscribe(actions => {
@@ -172,7 +170,6 @@ export class ResultActionsComponent implements OnInit, OnChanges, OnDestroy {
             show: action.show
           });
         });
-        console.log(item.actions)
         this.actions = item.actions;
         this.updateActions();
       });

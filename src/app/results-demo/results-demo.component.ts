@@ -115,30 +115,39 @@ export class ResultsDemoComponent implements OnInit {
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isTitle: true,  });
-      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true , icon: 'alarm' });
-      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', isHybrid: true, icon: 'cloud' });
-      this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isTitle: true });
+      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true, icon: 'alarm' });
+      this.fieldsList.push({ columnName: 'Cloud Cover', fieldName: 'cloudCover', dataType: '%', isHybrid: true, icon: 'cloud' });
+      this.fieldsList.push({ columnName: 'Incidence Angle', fieldName: 'incidenceAngle', dataType: '°', isHybrid: true });
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'description', fieldName: 'description', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'distance', fieldName: 'distance', dataType: 'km', isHybrid: true, icon: 'rules' });
-      this.fieldsList.push({ columnName: 'mata_1', fieldName: 'mata_1', dataType: 'km', isHybrid: true });
-      this.fieldsList.push({ columnName: 'mata_2', fieldName: 'mata_2', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'mata_3', fieldName: 'mata_3', dataType: 'km', isHybrid: true});
-      this.fieldsList.push({ columnName: 'mata_4', fieldName: 'mata_4', dataType: 'km', isHybrid: true });
-      this.fieldsList.push({ columnName: 'mata_5', fieldName: 'mata_5', dataType: 'km', isHybrid: true,  });
-      this.fieldsList.push({ columnName: 'mata_6', fieldName: 'mata_6', dataType: 'km', isHybrid: true,  });
-      this.fieldsList.push({ columnName: 'mata_7', fieldName: 'mata_7', dataType: 'km', isHybrid: true, icon: 'planner_review' });
-      this.fieldsList.push({ columnName: 'mata_8', fieldName: 'mata_8', dataType: '', isHybrid: true,  });
-      this.fieldsList.push({ columnName: 'mata_9', fieldName: 'mata_9', dataType: '', isHybrid: true, icon: 'alarm' });
-      this.fieldsList.push({ columnName: 'mata_10', fieldName: 'mata_10', dataType: '', isHybrid: true,  });
-
+      this.fieldsList.push({ columnName: 'Description', fieldName: 'description', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Ground Resolution', fieldName: 'groundResolution', dataType: 'm', isHybrid: true, icon: 'rules' });
+      this.fieldsList.push({ columnName: 'Sun Azimuth', fieldName: 'sunAzimuth', dataType: '°', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Sun Elevation', fieldName: 'sunElevation', dataType: '°', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Satellite Azimuth', fieldName: 'satelliteAzimuth', dataType: '°', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Off-nadir Angle', fieldName: 'offNadirAngle', dataType: '°', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Spectral Bands', fieldName: 'spectralBands', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Scene Width', fieldName: 'sceneWidth', dataType: 'km', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Scene Height', fieldName: 'sceneHeight', dataType: 'km', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Orbit Direction', fieldName: 'orbitDirection', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Processing Level', fieldName: 'processingLevel', dataType: '', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Radiometric Accuracy', fieldName: 'radiometricAccuracy', dataType: '%', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Snow Cover', fieldName: 'snowCover', dataType: '%', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Target Elevation', fieldName: 'targetElevation', dataType: 'm', isHybrid: true });
+      this.fieldsList.push({ columnName: 'Image Quality', fieldName: 'imageQuality', dataType: '/10', isHybrid: true });
 
       this.dropDownMapValues.set('source', from([['source_1', 'source_2', 'source_3']]));
       this.dropDownMapValues.set('acquired', from([['acquired_1', 'acquired_2', 'acquired_3']]));
       this.dropDownMapValues.set('cloud', from([['cloud_1', 'cloud_2', 'cloud_3']]));
 
+      const SPECTRAL_BANDS = ['PAN', 'RGB', 'RGBN', 'RGBNE', 'MS4', 'MS8', 'SWIR', 'PAN+MS'];
+      const PROCESSING_LEVELS = ['L1A', 'L1B', 'L2A', 'L3A', 'Ortho'];
+      const ORBIT_DIRECTIONS = ['Ascending', 'Descending'];
 
+      const randFloat = (min, max, dec = 1) =>
+        parseFloat((Math.random() * (max - min) + min).toFixed(dec));
+      const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+      const pick = arr => arr[randInt(0, arr.length - 1)];
 
       this.globalActionsList.push({ id: '1', label: 'Download', actionBus: null, tooltip: 'Download' });
       this.data = new Array();
@@ -150,16 +159,30 @@ export class ResultsDemoComponent implements OnInit {
         map.set('thumbnailEnabled', 'true');
         map.set('description', generateRandomText(Math.floor(Math.random() * 30)));
         map.set('distance', Math.floor(Math.random() * 1000000));
-        map.set('mata_1', generateRandomText(Math.floor(Math.random() * 30)));
-        map.set('mata_2', generateRandomText(Math.floor(Math.random() * 30)));
-        map.set('mata_3', Math.floor(Math.random() * 20));
-        map.set('mata_4', generateRandomText(Math.floor(Math.random() * 30)));
-        map.set('mata_5', Math.floor(Math.random() * 500));
-        map.set('mata_6', Math.floor(Math.random() * 1000));
-        map.set('mata_7', generateRandomText(Math.floor(Math.random() * 30)));
-        map.set('mata_8', generateRandomText(Math.floor(Math.random() * 60)));
-        map.set('mata_9', generateRandomText(Math.floor(Math.random() * 10)));
-        map.set('mata_10', Math.floor(Math.random() * 500));
+        // Sun geometry
+        map.set('sunAzimuth', randFloat(0, 360));
+        map.set('sunElevation', randFloat(20, 75));
+
+        // Satellite geometry
+        map.set('satelliteAzimuth', randFloat(0, 360));
+        map.set('offNadirAngle', randFloat(0, 30));
+
+        // Spectral & radiometric
+        map.set('spectralBands', pick(SPECTRAL_BANDS));
+        map.set('radiometricAccuracy', randFloat(85, 99));
+
+        // Scene extent
+        map.set('sceneWidth', randFloat(10, 120, 1));
+        map.set('sceneHeight', randFloat(10, 120, 1));
+
+        // Orbit & processing
+        map.set('orbitDirection', pick(ORBIT_DIRECTIONS));
+        map.set('processingLevel', pick(PROCESSING_LEVELS));
+
+        // Terrain & quality
+        map.set('targetElevation', randInt(-100, 4500));
+        map.set('snowCover', randFloat(0, 40));
+        map.set('imageQuality', randInt(5, 10));
         if (i % 2 === 0) {
           map.set('source', 'Perusat');
 

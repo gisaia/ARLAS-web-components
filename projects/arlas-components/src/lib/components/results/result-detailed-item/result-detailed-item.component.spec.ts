@@ -41,7 +41,7 @@ describe('ResultDetailedItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultDetailedItemComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('rowItem', new Item([], new Map()));
+    fixture.componentRef.setInput('rowItem', new Item([], [], new Map()));
     fixture.componentRef.setInput('detailedDataRetriever', {
       detailsConfig: [],
       getActions: (i: Item) => of([])

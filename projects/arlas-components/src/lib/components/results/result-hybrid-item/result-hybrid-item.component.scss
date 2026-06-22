@@ -18,8 +18,9 @@
  */
 :host{
   display: block;
-  height: 116px;
+  height: 116px; // item height
   background: white;
+  --image-dimension: 100px;
 }
 
 
@@ -33,13 +34,13 @@
 
   &__image {
     flex: 0 0 100px;
-    max-width: 100px;
-    max-height: 100px;
+    max-width: var(--image-dimension);
+    max-height: var(--image-dimension);
   }
 
   &__content{
-    flex: 0 0 calc(100% - 90px);
-    max-width: calc(100% - 90px);
+    flex: 0 0 calc(100% - var(--image-dimension));
+    max-width: calc(100% - var(--image-dimension));
     display: flex;
     padding: 0 6px;
     flex-direction: column;
@@ -72,13 +73,6 @@
     }
   }
 }
-
-
-/**
- We have 364px width and 100px height for the content,
- we have to split it in 4 parts, and can add 4 item per row. So 16 différent props..
- */
-
 
 .resultitem__cell__toggle__button {
   --mat-icon-button-touch-target-size: 18px;
