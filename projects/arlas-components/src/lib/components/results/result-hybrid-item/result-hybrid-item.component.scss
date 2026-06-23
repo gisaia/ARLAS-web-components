@@ -27,8 +27,7 @@
 .hybrid {
   &__container {
     display: flex;
-    height: 100%;
-    width: 100%;
+    height: calc(100% - 12px); // total top padding
     padding: 6px 12px;
   }
 
@@ -40,9 +39,9 @@
 
   &__content{
     flex: 1 1 auto;
-    max-width: calc(100% - (var(--image-dimension) + 24px + 12px)); // 24: left/right container padding + left/right own padding.
+    max-width: calc(100% - (var(--image-dimension)));
     display: flex;
-    padding: 0 6px;
+    padding-left: 6px;
     flex-direction: column;
     justify-content: start;
     &-title {

@@ -403,5 +403,6 @@ tr {
 .hybrid-toggle{
   & mat-icon {
     transform: scale(-1);
+    margin-bottom: 6px;
   }
 }
