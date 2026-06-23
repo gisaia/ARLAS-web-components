@@ -18,7 +18,7 @@
  */
 import {Component, computed, ElementRef, inject, input, viewChild} from '@angular/core';
 import {HybridField} from '../model/hybridField';
-import {Item} from '../../../../../lib/components/results/model/item';
+import {Item} from '../model/item';
 import {MetaBadge, ResultMetaBadgeComponent} from '../result-meta-badge/result-meta-badge.component';
 import {RowRenderCalculatorService} from '../../../services/row-render-calculator.service';
 
