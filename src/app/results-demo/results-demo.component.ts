@@ -145,7 +145,7 @@ export class ResultsDemoComponent implements OnInit {
       const ORBIT_DIRECTIONS = ['Ascending', 'Descending'];
 
       const randFloat = (min, max, dec = 1) =>
-        parseFloat((Math.random() * (max - min) + min).toFixed(dec));
+        Number.parseFloat((Math.random() * (max - min) + min).toFixed(dec));
       const randInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
       const pick = arr => arr[randInt(0, arr.length - 1)];
 

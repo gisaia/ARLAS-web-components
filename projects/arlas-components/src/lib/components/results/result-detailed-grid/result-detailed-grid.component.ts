@@ -223,7 +223,7 @@ s   * @constant
         try {
           this.fullScreenService.showFullScreen(this.imgSrc);
         } catch (e) {
-          console.warn('Failed to open full screen')
+          console.warn('Failed to open full screen');
         }
       } else {
         if (!!this.imageViewer && !this.viewer) {
