@@ -1,4 +1,5 @@
 <div #cellTooltip="matTooltip"
+     (keydown)="setSelectedItem()"
      (click)="setSelectedItem()" (mouseover)="hoverImage()"
      class="thumbnail__image {{gridTile()?.iconCssClass}}"
      id="{{'grid-tile-' + gridTile()?.identifier}}"
@@ -7,7 +8,7 @@
   <div class="image__header">
     <div class="image__header--left">
       @if (gridTile()?.isindeterminated) {
-        <mat-icon (click)="determinateItem()" class="primary image__icon-check mat-icon material-icons">
+        <mat-icon (keydown)="determinateItem()" (click)="determinateItem()" class="primary image__icon-check mat-icon material-icons">
           indeterminate_check_box
         </mat-icon>
       } @else {
@@ -27,6 +28,7 @@
   </div>
 
   <img
+    (keydown)="fullScreen($event, gridTile()?.urlImages)"
     [defaultImage]="defaultImgUrl()" [lazyLoad]="gridTile()?.urlThumbnail"
     (click)="fullScreen($event, gridTile()?.urlImages)"
     [class.contain_thumbnail]="thumbnailFit() === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit() === ThumbnailFitEnum.height"

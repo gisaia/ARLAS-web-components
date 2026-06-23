@@ -87,7 +87,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
 
   /** View child reference to the thumbnail component */
-  private arlasThumbnail = viewChild<ResultThumbnailComponent>('arlasThumbnail');
+  private readonly arlasThumbnail = viewChild<ResultThumbnailComponent>('arlasThumbnail');
 
   /** Service for managing full screen viewer overlay */
   private readonly fullScreenService = inject(FullScreenViewerService);
@@ -168,7 +168,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
       try {
         this.fullScreenService.showFullScreen(image);
       } catch (e) {
-        console.warn('Failed to open full screen')
+        console.warn('Failed to open full screen');
       }
     }, 0);
   }

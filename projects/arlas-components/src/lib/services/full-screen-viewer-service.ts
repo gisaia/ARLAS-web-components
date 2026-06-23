@@ -34,7 +34,7 @@ export class FullScreenViewerService {
   /** The close button element for the full screen viewer */
   private closeIcon: Element;
   /** CSS selector for the full screen close icon */
-  private closeIconSelector = '.iv-fullscreen-close';
+  private readonly closeIconSelector = '.iv-fullscreen-close';
 
   /**
    * Initializes the full screen overlay by querying and moving viewer action elements

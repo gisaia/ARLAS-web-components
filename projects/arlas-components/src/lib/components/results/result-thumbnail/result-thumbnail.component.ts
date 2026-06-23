@@ -68,19 +68,19 @@ export class ResultThumbnailComponent {
   /** Reference to the ThumbnailFitEnum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
   /** Output event: emitted when an action is clicked */
-  protected onActionClick = output<Action>();
+  protected actionClickEvent = output<Action>();
   /** Output event: emitted when focus action occurs */
-  protected onFocusAction = output<FocusEvent>();
+  protected focusActionEvent = output<FocusEvent>();
   /** Output event: emitted when the image is clicked */
   public imageClicked = output<void>();
   /** Output event: emitted when the image is hovered */
   public imageHovered = output<void>();
 
-  public onDeterminateItem = output<void>();
+  public selectDeterminateItem = output<void>();
 
-  public onSetSelectedItem = output<void>();
+  public setSelectedItemEvent = output<void>();
   /** Output event: emitted when full screen view is requested, contains image data */
-  public onFullScreen = output<string | ArrayBuffer>();
+  public openFullScreen = output<string | ArrayBuffer>();
 
   /**
    * Emits the image click event when the thumbnail is clicked
@@ -101,7 +101,7 @@ export class ResultThumbnailComponent {
    * @param $event the action that was triggered
    */
   protected triggerActionOnItem($event: Action) {
-    this.onActionClick.emit($event);
+    this.actionClickEvent.emit($event);
   }
 
   /**
@@ -109,15 +109,15 @@ export class ResultThumbnailComponent {
    * @param $event the focus event
    */
   protected hideCellTooltip($event: FocusEvent) {
-    this.onFocusAction.emit($event);
+    this.focusActionEvent.emit($event);
   }
 
   protected determinateItem() {
-    this.onDeterminateItem.emit();
+    this.selectDeterminateItem.emit();
   }
 
   protected setSelectedItem() {
-    this.onSetSelectedItem.emit();
+    this.setSelectedItemEvent.emit();
   }
 
   /**
@@ -128,6 +128,6 @@ export class ResultThumbnailComponent {
    */
   protected fullScreen(clickEv: Event, images: string[]) {
     clickEv.stopPropagation();
-    this.onFullScreen.emit(images.at(0) ?? '');
+    this.openFullScreen.emit(images.at(0) ?? '');
   }
 }
