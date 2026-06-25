@@ -34,16 +34,16 @@ export interface MetaBadge {
 }
 
 @Component({
-  selector: 'arlas-result-meta-badge',
+  selector: 'arlas-result-metadata-entry',
   imports: [
     MatIcon,
     MatTooltip
   ],
-  templateUrl: './result-meta-badge.component.html',
-  styleUrl: './result-meta-badge.component.scss',
+  templateUrl: './result-metadata-entry.component.html',
+  styleUrl: './result-metadata-entry.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ResultMetaBadgeComponent {
+export class ResultMetadataEntryComponent {
   /** Default text to display when no value is available */
   protected readonly NO_VALUE = '-';
   /** The badge data to display (required input) */

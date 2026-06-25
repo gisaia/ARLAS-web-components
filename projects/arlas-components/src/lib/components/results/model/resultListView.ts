@@ -17,16 +17,13 @@
  * under the License.
  */
 
-/**
- *  Proposal. Not definitive way to do it.
- *  Maybe we can keep column and enrich directly the Column class with the hybrid field properties ?
- *  But for now, we keep it separate
- */
-export class HybridField {
+import { SortEnum } from '../utils/enumerations/sortEnum';
+
+export class ResultListView {
   /**
-   * @description The name of the field related to this column.
+   * @description The column name
    */
-  public prettyName: string;
+  public columnName: string;
   /**
    * @description The name of the field related to this column.
    */
@@ -37,21 +34,18 @@ export class HybridField {
   public dataType: string;
 
   /**
+   * @description Sort direction to apply to th column : ascending, descending or none
+   */
+  public sortDirection: SortEnum = SortEnum.none;
+  /**
    * @description Whether this column represents an id field.
    */
   public isIdField = false;
 
-  public isTitle = false;
-
-  public icon = '';
-
-
-  public constructor(prettyName: string, fieldName: string, dataType: string, isTitle = false, icon?: string) {
-    this.prettyName = prettyName;
+  public constructor(columnName: string, fieldName: string, dataType: string) {
+    this.columnName = columnName;
     this.fieldName = fieldName;
     this.dataType = dataType;
-    this.isTitle = isTitle;
-    this.icon = icon;
   }
 }
 

@@ -17,36 +17,12 @@
  * under the License.
  */
 
-import { SortEnum } from '../utils/enumerations/sortEnum';
+import {ResultListView} from './resultListView';
 
-export class Column {
-  /**
-   * @description The column name
-   */
-  public columnName: string;
-  /**
-   * @description The name of the field related to this column.
-   */
-  public fieldName: string;
-  /**
-   * @description Type of data that is appended to column name : %, °C, ..
-   */
-  public dataType: string;
-  /**
-   * @description Width of the column.
-   */
+export class Column  extends ResultListView {
+
   public width: number;
-  /**
-   * @description Sort direction to apply to th column : ascending, descending or none
-   */
-  public sortDirection: SortEnum = SortEnum.none;
-  /**
-   * @description Whether this column represents an id field.
-   */
-  public isIdField = false;
-  /**
-   * @description Whether the cells of this column contains a toggle button.
-   */
+
   public isToggleField = false;
   /**
    * @description Whether the filter search column has a dropdown.
@@ -61,28 +37,13 @@ export class Column {
    */
   public useColorService = false;
 
-  /**
-   * For Hybrid list
-   */
-
-  public isTitle = false;
-
-  public icon = '';
-
-  public isHybrid = false;
-
-
   /** Whether the column can be resized */
   public get isResizable() {
     return !this.isIdField && !this.isToggleField;
   }
 
-  public constructor(columnName: string, fieldName: string, dataType: string, isTitle = false, icon?: string) {
-    this.columnName = columnName;
-    this.fieldName = fieldName;
-    this.dataType = dataType;
-    this.isTitle = isTitle;
-    this.icon = icon;
+  public constructor(columnName: string, fieldName: string, dataType: string) {
+    super(columnName, fieldName, dataType);
   }
 }
 

@@ -17,26 +17,30 @@
  * under the License.
  */
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ResultListView} from './resultListView';
 
-import { ResultMetaBadgesComponent } from './result-meta-badges.component';
-import { beforeEach, describe, expect, it } from 'vitest';
-describe('ResultMetaBadgesComponent', () => {
-  let component: ResultMetaBadgesComponent;
-  let fixture: ComponentFixture<ResultMetaBadgesComponent>;
+/**
+ *  Proposal. Not definitive way to do it.
+ *  Maybe we can keep column and enrich directly the Column class with the hybrid field properties ?
+ *  But for now, we keep it separate
+ */
+export class HybridMetadata extends ResultListView{
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ResultMetaBadgesComponent]
-    })
-    .compileComponents();
+  /**
+   * Whether the field is used as title
+   */
+  public isTitle = false;
 
-    fixture = TestBed.createComponent(ResultMetaBadgesComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+  /**
+   * Icon displayed next to the value
+   */
+  public icon: string | undefined;
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+
+  public constructor(prettyName: string, fieldName: string, dataType: string, isTitle = false, icon?: string) {
+    super(prettyName, fieldName, dataType);
+    this.isTitle = isTitle;
+    this.icon = icon;
+  }
+}
+

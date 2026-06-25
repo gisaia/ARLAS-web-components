@@ -91,7 +91,7 @@
   border-bottom: 1px dashed var(--arlas-resultilist-border-color);
 }
 
-.resultlist__body--item-hover-true {
+.resultlist__body--item-hover-true, .resultlist__body--item-hover-true.resultlist__hybrid-tile {
   border-top: 1px solid var(--arlas-resultilist-border-color);
   border-bottom: 1px dashed var(--arlas-resultilist-border-color);
   background-color: #fff;
@@ -107,7 +107,7 @@
   display: flex;
 }
 
-.resultlist__body--item-hover-false {
+.resultlist__body--item-hover-false, .resultlist__body--item-hover-false.resultlist__hybrid-tile  {
   border-top: 1px solid var(--arlas-resultilist-border-color);
   border-bottom: 1px dashed var(--arlas-resultilist-border-color);
   position: relative;

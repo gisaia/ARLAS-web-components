@@ -25,7 +25,7 @@ import {marker} from '@colsen1991/ngx-translate-extract-marker';
 import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
 import {ItemComponent} from '../model/itemComponent';
 import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
-import {ResultMetaBadgesComponent} from '../result-meta-badges/result-meta-badges.component';
+import {ResultMetadataEntriesComponent} from '../result-metadata-entries/result-metadata-entries.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslatePipe} from '@ngx-translate/core';
@@ -36,7 +36,7 @@ import {MatTooltip} from '@angular/material/tooltip';
   templateUrl: './result-hybrid-item.component.html',
   imports: [
     ResultThumbnailComponent,
-    ResultMetaBadgesComponent,
+    ResultMetadataEntriesComponent,
     MatIconButton,
     MatIcon,
     TranslatePipe,
@@ -77,11 +77,11 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   public SHOW_DETAILS = marker('Show details');
 
   public titleField = computed(() => {
-   const field = this.rowItem().hybridFields.at(0);
+   const field = this.rowItem().hybridMetadata.at(0);
    return field ? field : null;
   });
 
-  public fields = computed(() => this.titleField() ? this.rowItem().hybridFields.slice(1) : this.rowItem().hybridFields);
+  public fields = computed(() => this.titleField() ? this.rowItem().hybridMetadata.slice(1) : this.rowItem().hybridMetadata);
 
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;

@@ -19,21 +19,19 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResultMetaBadgeComponent } from './result-meta-badge.component';
+import { ResultMetadataEntriesComponent } from './result-metadata-entries.component';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {Item} from 'arlas-web-components';
-describe('ResultMetaBadgeComponent', () => {
-  let component: ResultMetaBadgeComponent;
-  let fixture: ComponentFixture<ResultMetaBadgeComponent>;
+describe('ResultMetaBadgesComponent', () => {
+  let component: ResultMetadataEntriesComponent;
+  let fixture: ComponentFixture<ResultMetadataEntriesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultMetaBadgeComponent]
+      imports: [ResultMetadataEntriesComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ResultMetaBadgeComponent);
-    fixture.componentRef.setInput('metaBadge', {value: 'test'});
+    fixture = TestBed.createComponent(ResultMetadataEntriesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

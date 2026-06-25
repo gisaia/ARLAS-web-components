@@ -59,7 +59,7 @@ import {
   matchAndReplace, PageQuery, ResultListOptions
 } from '../utils/results.utils';
 import {ResultHybridItemComponent} from '../result-hybrid-item/result-hybrid-item.component';
-import {HybridField} from '../model/hybridField';
+import {HybridMetadata} from '../model/hybridMetadata';
 import {RowRenderCalculatorService} from '../../../services/row-render-calculator.service';
 
 /**
@@ -493,7 +493,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
   public columns: Array<Column>;
-  public hybridFields: Array<HybridField>;
+  public hybridFields: Array<HybridMetadata>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
@@ -1011,7 +1011,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   // Build the table's columns
   private setColumnsAndHybridFields() {
     this.columns = new Array<Column>();
-    this.hybridFields = new Array<HybridField>();
+    this.hybridFields = new Array<HybridMetadata>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
 
@@ -1023,7 +1023,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       .forEach(field => {
         if (field.isHybrid) {
           (field.isHybridTitle ? hybridTitle : hybridOthers).push(
-            new HybridField(field.columnName, field.fieldName, field.dataType, field.isHybridTitle, field.icon)
+            new HybridMetadata(field.columnName, field.fieldName, field.dataType, field.isHybridTitle, field.icon)
           );
         } else {
           nonHybridFields.push(field);

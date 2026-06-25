@@ -17,24 +17,24 @@
  * under the License.
  */
 import {Component, computed, ElementRef, inject, input, viewChild} from '@angular/core';
-import {HybridField} from '../model/hybridField';
+import {HybridMetadata} from '../model/hybridMetadata';
 import {Item} from '../model/item';
-import {MetaBadge, ResultMetaBadgeComponent} from '../result-meta-badge/result-meta-badge.component';
+import {MetaBadge, ResultMetadataEntryComponent} from '../result-metadata-entry/result-metadata-entry.component';
 import {RowRenderCalculatorService} from '../../../services/row-render-calculator.service';
 
 @Component({
-  selector: 'arlas-result-meta-badges',
+  selector: 'arlas-result-metadata-entries',
   imports: [
-    ResultMetaBadgeComponent
+    ResultMetadataEntryComponent
   ],
-  templateUrl: './result-meta-badges.component.html',
-  styleUrl: './result-meta-badges.component.scss'
+  templateUrl: './result-metadata-entries.component.html',
+  styleUrl: './result-metadata-entries.component.scss'
 })
-export class ResultMetaBadgesComponent {
+export class ResultMetadataEntriesComponent {
   /** Item containing the data to display */
   public item = input<Item>(undefined);
   /** Hybrid fields to display as badges */
-  public fields = input<HybridField[]>([]);
+  public fields = input<HybridMetadata[]>([]);
   /** Character used to separate items */
   public spacingChar = input<string>('•');
   public emptyValue = input<string>('-');
@@ -140,7 +140,7 @@ export class ResultMetaBadgesComponent {
         value,
         icon: field?.icon || '',
         unit: field?.dataType || '',
-        tooltip: `${field.prettyName} ${this.TOOLTIP_VALUE_SPACER} ${value}
+        tooltip: `${field.columnName} ${this.TOOLTIP_VALUE_SPACER} ${value}
         ${ hasValue ? (field?.dataType || '') : ''}`
       };
     });

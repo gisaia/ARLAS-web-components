@@ -4,6 +4,7 @@ import { ResultHybridItemComponent } from './result-hybrid-item.component';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {TranslateLoader, TranslateModule, TranslateNoOpLoader} from '@ngx-translate/core';
 import { Item } from '../model/item';
+import {LazyLoadImageModule} from 'ng-lazyload-image';
 
 describe('ResultHybrideItemComponent', () => {
   let component: ResultHybridItemComponent;
@@ -12,6 +13,7 @@ describe('ResultHybrideItemComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ResultHybridItemComponent,
+        LazyLoadImageModule,
         TranslateModule.forRoot({
         loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
       })]

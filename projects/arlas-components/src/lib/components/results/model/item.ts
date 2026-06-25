@@ -19,7 +19,7 @@
 
 import { Action, Attachment, ItemDataType } from '../utils/results.utils';
 import { Column } from './column';
-import {HybridField} from './hybridField';
+import {HybridMetadata} from './hybridMetadata';
 
 export interface ItemDetailGroup {
   group: string;
@@ -64,7 +64,7 @@ export class Item {
    * @description The item's data is organized in this columns when represented in a table.
    */
   public columns = new Array<Column>();
-  public hybridFields = new Array<HybridField>();
+  public hybridMetadata = new Array<HybridMetadata>();
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
@@ -124,9 +124,9 @@ export class Item {
    */
   public detailsTitleEnabled: boolean;
 
-  public constructor(columns: Array<Column>, hybridFields: HybridField[], itemData: Map<string, ItemDataType>) {
+  public constructor(columns: Array<Column>, hybridFields: HybridMetadata[], itemData: Map<string, ItemDataType>) {
     this.columns = columns;
-    this.hybridFields = hybridFields;
+    this.hybridMetadata = hybridFields;
     this.itemData = itemData;
   }
 }

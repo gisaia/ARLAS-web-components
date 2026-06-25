@@ -182,7 +182,7 @@
             }
           } @else if (resultMode === ModeEnum.hybrid) {
             <arlas-result-hybrid-item [rowItem]="rowItem"
-                                      class="resultlist__hybrid-tile"
+                                      [class]="`resultlist__hybrid-tile resultlist__body--item-hover-${rowItem.ishighLight}`"
                                       [id]="id"
                                       [idFieldName]="fieldsConfiguration.idFieldName"
                                       [activatedActionsPerItem]="activatedActionsPerItem"
