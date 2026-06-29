@@ -85,7 +85,7 @@
           @if (hasGridMode || hasHybridMode) {
             <div class="resultlist__tools--separator">|</div>
             <div class="resultlist__tools--mode" id="resultlist_mode">
-              <mat-button-toggle-group [name]="'modeGroup'" (change)="whichMode($event)"
+              <mat-button-toggle-group [name]="'modeGroup'" (change)="switchMode($event)"
                 [hideSingleSelectionIndicator]="true">
                 <mat-button-toggle id="list_mode_btn" matTooltip="{{LIST_MODE | translate}}" value="{{ModeEnum.list}}"
                   [checked]="resultMode==ModeEnum.list">
@@ -99,7 +99,7 @@
                 }
                 @if(hasHybridMode) {
                   <mat-button-toggle class="hybrid-toggle" id="hybrid_mode_btn" matTooltip="{{HYBRID_MODE | translate}}" value="{{ModeEnum.hybrid}}"
-                                     [checked]="resultMode==ModeEnum.hybrid">
+                                     [checked]="resultMode===ModeEnum.hybrid">
                     <mat-icon>vertical_split</mat-icon>
                   </mat-button-toggle>
                 }

@@ -515,13 +515,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   private readonly rowRenderCalculatorService = inject(RowRenderCalculatorService);
 
-  public get isDefaultModeIsGrid() {
-    return (this.defautMode?.toString() === 'grid' || this.defautMode?.toString() === ModeEnum.grid.toString());
-  }
-
-  public get isDefaultModeIsHybrid(){
-    return (this.defautMode?.toString() === 'hybrid' || this.defautMode?.toString() === ModeEnum.hybrid.toString());
-  }
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
     private readonly el: ElementRef,
@@ -881,7 +874,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets the display style according to the mode
    */
-  public whichMode(toggleChangeEvent: MatButtonToggleChange) {
+  public switchMode(toggleChangeEvent: MatButtonToggleChange) {
     this.updateResultMode(toggleChangeEvent.value);
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();

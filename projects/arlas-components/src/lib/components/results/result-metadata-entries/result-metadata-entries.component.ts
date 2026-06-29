@@ -32,7 +32,7 @@ import {RowRenderCalculatorService} from '../../../services/row-render-calculato
 })
 export class ResultMetadataEntriesComponent {
   /** Item containing the data to display */
-  public item = input<Item>(undefined);
+  public item = input.required<Item>();
   /** Hybrid fields to display as badges */
   public fields = input<HybridMetadata[]>([]);
   /** Character used to separate items */
@@ -40,17 +40,20 @@ export class ResultMetadataEntriesComponent {
   public emptyValue = input<string>('-');
   /** Reference to the HTML container for badges */
   public contentContainer = viewChild<ElementRef<HTMLElement>>('container');
-  /** Number of items per line */
+  /** Number of items per line. As we have 100px */
   protected maxItemPerLine = 3;
-  /** Maximum number of lines for display */
-  private MaxRow = 3;
-  /** Container width in pixels */
+  /** Maximum number of lines for display the metadata.
+   *  Minus the title we have 72 px to display our metadata. Each line has 20 px height.
+   *  The number of row could be less if we have less data. 3 meta can be displayed in one line. 6 on two.
+   *  */
+  private maxRow = 3;
+  /** Container width in pixels. Width used in arlas to display result list used as fallback */
   public containerWidth = 364;
   /** Since the display area is approximately 300px wide and 100px high,
    *  it was assumed as a starting point that the best-case scenario would be
    *  to have three items per line, with a maximum of three lines.
    * */
-  public  itemDefaultMinWidth = 100;
+  public itemDefaultMinWidth = 100;
   /** Separator used in tooltip (e.g., fieldName : value) */
   public readonly TOOLTIP_VALUE_SPACER = ':';
   private readonly rowRenderCalculatorService = inject(RowRenderCalculatorService);
@@ -111,14 +114,14 @@ export class ResultMetadataEntriesComponent {
   private calculateLayout(badgeCount: number): void {
     try {
       const {maxRow, maxItemPerLine} = this.rowRenderCalculatorService
-        .calculateRender(this.containerWidth, this.MaxRow, badgeCount, this.itemDefaultMinWidth);
+        .calculateRender(this.containerWidth, this.maxRow, badgeCount, this.itemDefaultMinWidth);
 
-      this.MaxRow = maxRow;
+      this.maxRow = maxRow;
       this.maxItemPerLine = maxItemPerLine;
     } catch (e) {
       console.error('ResultMetaBadgesComponent: Layout calculation failed, using defaults', e);
       // Fallback to safe defaults
-      this.MaxRow = Math.min(3, Math.ceil(badgeCount / 3));
+      this.maxRow = Math.min(3, Math.ceil(badgeCount / 3));
       this.maxItemPerLine = 3;
     }
   }
@@ -160,15 +163,15 @@ export class ResultMetadataEntriesComponent {
       return [];
     }
 
-    if (this.maxItemPerLine <= 0 || this.MaxRow <= 0) {
-      console.warn(`ResultMetaBadgesComponent.createRows: Invalid dimensions. maxItemPerLine=${this.maxItemPerLine}, MaxRow=${this.MaxRow}`);
+    if (this.maxItemPerLine <= 0 || this.maxRow <= 0) {
+      console.warn(`ResultMetaBadgesComponent.createRows: Invalid dimensions. maxItemPerLine=${this.maxItemPerLine}, MaxRow=${this.maxRow}`);
       return [metaBages]; // Fallback: single row
     }
 
     const result: MetaBadge[][] = [];
     let slice = this.maxItemPerLine;
 
-    for (let i = 0; i < this.MaxRow; i++) {
+    for (let i = 0; i < this.maxRow; i++) {
       const start = slice - this.maxItemPerLine;
       const end = slice;
       const row = metaBages.slice(start, end);
