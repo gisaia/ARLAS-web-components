@@ -46,8 +46,9 @@ export class ResultMetadataEntriesComponent {
   private MaxRow = 3;
   /** Container width in pixels */
   public containerWidth = 364;
-  /** Default minimum width of an item. This value is totally arbitrary and asumle that
-   * the best case is when we can add 3 item per ligne
+  /** Since the display area is approximately 300px wide and 100px high,
+   *  it was assumed as a starting point that the best-case scenario would be
+   *  to have three items per line, with a maximum of three lines.
    * */
   public  itemDefaultMinWidth = 100;
   /** Separator used in tooltip (e.g., fieldName : value) */

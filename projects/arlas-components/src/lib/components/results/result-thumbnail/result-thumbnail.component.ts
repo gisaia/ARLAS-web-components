@@ -47,19 +47,19 @@ export class ResultThumbnailComponent {
   /** Input property (required): the grid tile item data to display */
   public gridTile = input.required<Item>();
   /** Input property: default image URL to display if item image is unavailable */
-  public defaultImgUrl = input<string>('');
+  public defaultImgUrl = input<string>('./assets/no-view.png');
   /** Input property: determines if action buttons are shown on hover */
   public showActionsOnHover = input<boolean>(false);
   /** Input property: map of activated actions per item */
   protected activatedActionsPerItem = input<Map<string, Set<string>>>();
   /** Input property: retriever for fetching additional item details */
-  protected detailedDataRetriever = input<DetailedDataRetriever>();
+  protected detailedDataRetriever = input.required<DetailedDataRetriever>();
   /** Input property: specifies how the thumbnail image should fit (default: contain) */
   protected thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.contain);
 
   public cellTooltip = viewChild<MatTooltip>('cellTooltip');
   /** Input property: tooltip text for the full screen action */
-  protected readonly fullScreenToolTip = input<string>('');
+  protected readonly fullScreenToolTip = 'View in full screen';
   /** Input property: tooltip text for the picture/thumbnail */
   protected readonly pictureTooltip = input<string>('');
 

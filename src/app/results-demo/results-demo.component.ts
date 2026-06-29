@@ -65,7 +65,7 @@ export class ResultsDemoComponent implements OnInit {
     @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
 
     public data: Array<Map<string, ItemDataType>>;
-    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; isHybrid?: boolean, icon?: string, isTitle?:boolean}>;
+    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; isHybrid?: boolean; isHybridTitle?: boolean, icon?: string, isTitle?:boolean}>;
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
     public fieldsConfiguration: FieldsConfiguration;
     public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
@@ -104,10 +104,8 @@ export class ResultsDemoComponent implements OnInit {
         useHttpQuicklooks: false,
         hasHybridList: true,
       };
-      this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean;
-        isHybrid?: boolean, icon?: string, isTitle?:boolean}>();
+      this.fieldsList = [];
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
       this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
       this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', dropdown: true });
       this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', dropdown: true });
@@ -115,7 +113,7 @@ export class ResultsDemoComponent implements OnInit {
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isTitle: true });
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isHybridTitle: true });
       this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true, icon: 'alarm' });
       this.fieldsList.push({ columnName: 'Cloud Cover', fieldName: 'cloudCover', dataType: '%', isHybrid: true, icon: 'cloud' });
       this.fieldsList.push({ columnName: 'Incidence Angle', fieldName: 'incidenceAngle', dataType: '°', isHybrid: true });

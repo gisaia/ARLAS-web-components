@@ -24,7 +24,7 @@ import {ResultListView} from './resultListView';
  *  Maybe we can keep column and enrich directly the Column class with the hybrid field properties ?
  *  But for now, we keep it separate
  */
-export class HybridMetadata extends ResultListView{
+export class HybridMetadata extends ResultListView {
 
   /**
    * Whether the field is used as title

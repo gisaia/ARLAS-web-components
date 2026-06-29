@@ -61,6 +61,7 @@ import {
 import {ResultHybridItemComponent} from '../result-hybrid-item/result-hybrid-item.component';
 import {HybridMetadata} from '../model/hybridMetadata';
 import {RowRenderCalculatorService} from '../../../services/row-render-calculator.service';
+import {Field} from '../model/field';
 
 /**
  * Structure summarizing the sort on a column
@@ -172,22 +173,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
-   * - fieldName : Name/path of the field to add to list
-   * - columnName : Name of the field that will be displayed on the list column
-   * - dataType : Unit of the field values if it exists (degree, percentage, etc)
-   * - useColorService : Whether to colorize values on cells of the list with a color generated from the field value
-   * - isHybrid : Whether the field represents a hybrid field
    * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public fieldsList: Array<{
-    fieldName: string;
-    columnName: string;
-    dataType: string;
-    useColorService?: boolean;
-    isHybrid?: boolean;
-    isHybridTitle?: boolean;
-    icon?: string;
-  }>;
+  @Input() public fieldsList: Array<Field>;
 
   /**
    * @Input : Angular
@@ -513,7 +501,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
   public hasGridMode = false;
-  public hasHybridMode = true;
+  public hasHybridMode = false;
   public resultMode: ModeEnum;
   public allItemsChecked = false;
 
@@ -525,11 +513,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
 
-  private readonly rowRenderCalcuolatorService = inject(RowRenderCalculatorService);
+  private readonly rowRenderCalculatorService = inject(RowRenderCalculatorService);
 
-  /**
-   * Whe
-   */
   public get isDefaultModeIsGrid() {
     return (this.defautMode?.toString() === 'grid' || this.defautMode?.toString() === ModeEnum.grid.toString());
   }
@@ -569,26 +554,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngOnInit() {
-    this.resultMode = this.selectResultMode();
+    this.updateResultMode(this.defautMode?.toString());
     this.options = Object.assign(new ResultListOptions(), this.options);
     if (!!this.fieldsConfiguration) {
       if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
         this.hasGridMode = true;
       }
       this.hasHybridMode = this.fieldsConfiguration.hasHybridList;
-    }
-  }
-
-  /**
-   * Select a default mode to display data according to user configuration
-   */
-  public selectResultMode(){
-    if(this.isDefaultModeIsGrid){
-      return ModeEnum.grid;
-    } else if(this.isDefaultModeIsHybrid){
-      return  ModeEnum.hybrid;
-    } else {
-      return ModeEnum.list;
     }
   }
 
@@ -603,22 +575,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.thumbnailFitEvent.next(this.thumbnailFit);
   }
 
-  public updateResultListDisplayWhenDefaultModeChange(){
-    if (this.isDefaultModeIsGrid) {
-      this.resultMode = ModeEnum.grid;
-      this.displayListGrid = 'block';
-    } else if(this.isDefaultModeIsHybrid) {
-      this.resultMode = ModeEnum.hybrid;
-      this.displayListGrid = 'block';
-    } else {
-      this.resultMode = ModeEnum.list;
-      this.displayListGrid = 'inline';
-    }
-  }
-
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
-      this.updateResultListDisplayWhenDefaultModeChange();
+      this.updateResultMode(this.defautMode?.toString());
       this.setTableHeight();
     }
 
@@ -923,19 +882,26 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Sets the display style according to the mode
    */
   public whichMode(toggleChangeEvent: MatButtonToggleChange) {
-    if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
+    this.updateResultMode(toggleChangeEvent.value);
+    this.changeResultMode.next(this.resultMode);
+    this.setTableHeight();
+  }
+
+  /**
+   * Update result mode to display data according to user selection
+   */
+  public updateResultMode(value: string){
+    if (value === ModeEnum.grid.toString()) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';
-    } else  if(toggleChangeEvent.value === ModeEnum.list.toString()) {
+    } else  if(value === ModeEnum.list.toString()) {
       this.resultMode = ModeEnum.list;
       this.displayListGrid = 'inline';
     } else {
-      this.rowRenderCalcuolatorService.resetCalculation();
+      this.rowRenderCalculatorService.resetCalculation();
       this.resultMode = ModeEnum.hybrid;
       this.displayListGrid = 'block';
     }
-    this.changeResultMode.next(this.resultMode);
-    this.setTableHeight();
   }
 
   /**

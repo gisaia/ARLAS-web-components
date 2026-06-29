@@ -117,6 +117,6 @@ export class FullScreenViewerService {
    * @returns the full screen viewer instance if it exists, undefined otherwise
    */
   public hasViewer(){
-    return this.fullScreenViewer;
+    return this.fullScreenViewer !== null;
   }
 }

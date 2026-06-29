@@ -38,7 +38,7 @@ import {Action, ElementIdentifier, ResultListOptions} from '../utils/results.uti
   styleUrls: ['./result-grid-tile.component.scss'],
   imports: [MatIcon, MatIconButton, MatTooltip, LazyLoadImageModule, ResultActionsComponent, TranslatePipe]
 })
-export class ResultGridTileComponent  extends ItemComponent {
+export class ResultGridTileComponent extends ItemComponent {
   /**
    * @constant
    */

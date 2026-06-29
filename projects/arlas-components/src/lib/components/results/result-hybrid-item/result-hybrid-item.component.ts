@@ -34,39 +34,27 @@ import {MatTooltip} from '@angular/material/tooltip';
 @Component({
   selector: 'arlas-result-hybrid-item',
   templateUrl: './result-hybrid-item.component.html',
-  imports: [
-    ResultThumbnailComponent,
-    ResultMetadataEntriesComponent,
-    MatIconButton,
-    MatIcon,
-    TranslatePipe,
-    MatTooltip
-  ],
+  imports: [ResultThumbnailComponent, ResultMetadataEntriesComponent, MatIconButton, MatIcon, TranslatePipe, MatTooltip],
   styleUrl: './result-hybrid-item.component.scss'
 })
-export class ResultHybridItemComponent extends ItemComponent implements OnDestroy  {
+export class ResultHybridItemComponent extends ItemComponent implements OnDestroy {
   /** Input property: the item data to be displayed in the hybrid result view */
-  public rowItem = input<Item>();
+  public rowItem = input.required<Item>();
+  /** Input property: the name of the field used as item identifier */
+  public idFieldName = input.required<string>();
+  /** Input property: specifies how the thumbnail should fit (default: round) */
+  public thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.round);
+  /** Input property: result list display options */
+  public options = input<ResultListOptions>(undefined);
+  /** Input property: set of currently selected item identifiers */
+  public selectedItems = input<Set<string>>(undefined);
   /** Output event: emitted when selected items change */
   public selectedItemsEvent = output<Set<string>>();
   /** Output event: emitted when an item is clicked */
   public clickedOnItemEvent = output<Item>();
   /** Output event: emitted when an action is triggered on an item */
   public actionOnItemEvent = output<{ action: Action; elementidentifier: ElementIdentifier; }>();
-  /** Input property: specifies how the thumbnail should fit (default: round) */
-  public thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.round);
-  /** Input property: the name of the field used as item identifier */
-  public idFieldName = input('');
-  /** Input property: map of activated actions per item */
-  protected activatedActionsPerItem = input<Map<string, Set<string>>>();
-  /** Input property: retriever for fetching additional item details */
-  protected detailedDataRetriever = input<DetailedDataRetriever>();
-  /** Input property: result list display options */
-  public options = input<ResultListOptions>(undefined);
-  /** Input property: set of currently selected item identifiers */
-  public selectedItems = input<Set<string>>(undefined);
-  /** Translation marker for full screen view action */
-  public VIEW_IMAGE = marker('View in full screen');
+
   /**
    * @constant
    */
@@ -75,14 +63,15 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    * @constant
    */
   public SHOW_DETAILS = marker('Show details');
-
   public titleField = computed(() => {
-   const field = this.rowItem().hybridMetadata.at(0);
-   return field ? field : null;
+    const field = this.rowItem().hybridMetadata.find(meta => meta.isTitle);
+    return field ? field : null;
   });
-
-  public fields = computed(() => this.titleField() ? this.rowItem().hybridMetadata.slice(1) : this.rowItem().hybridMetadata);
-
+  public fields = computed(() => this.rowItem().hybridMetadata.filter(meta => !meta.isTitle));
+  /** Input property: map of activated actions per item */
+  protected activatedActionsPerItem = input<Map<string, Set<string>>>();
+  /** Input property: retriever for fetching additional item details */
+  protected detailedDataRetriever = input<DetailedDataRetriever>();
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
 
@@ -91,6 +80,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
 
   /** Service for managing full screen viewer overlay */
   private readonly fullScreenService = inject(FullScreenViewerService);
+
   /**
    * Hides the cell's tooltip when the mouse is over the attachements buttons
    * @param event mouseover event
@@ -139,12 +129,9 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    * @param action the action to trigger on the item
    */
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.emit(
-      {
-        action: action,
-        elementidentifier: { idFieldName: this.idFieldName(), idValue: this.rowItem().identifier }
-      }
-    );
+    this.actionOnItemEvent.emit({
+      action: action, elementidentifier: {idFieldName: this.idFieldName(), idValue: this.rowItem().identifier}
+    });
   }
 
   /**
@@ -163,7 +150,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
    * Displays the image in full screen mode with a slight delay to ensure DOM is ready
    * @param image the image URL or ArrayBuffer to display in full screen
    */
-  public showOverlay(image: string | ArrayBuffer){
+  public showOverlay(image: string | ArrayBuffer) {
     setTimeout(() => {
       try {
         this.fullScreenService.showFullScreen(image);
@@ -182,7 +169,6 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   }
 
   protected toggleDetail() {
-   // const rev
     if (this.rowItem().isDetailToggled === false) {
       this.retrieveAdditionalInfo(this.detailedDataRetriever(), this.rowItem());
     }

@@ -12,7 +12,6 @@
                             (setSelectedItemEvent)="setSelectedItem()"
                             [activatedActionsPerItem]="activatedActionsPerItem()"
                             [detailedDataRetriever]="detailedDataRetriever()"
-                            [fullScreenToolTip]="VIEW_IMAGE"
                             [gridTile]="rowItem()"
                             [defaultImgUrl]="options()?.defautlImgUrl"
                             [showActionsOnHover]="options()?.showActionsOnhover"
@@ -27,7 +26,7 @@
       <!-- Item title from the configured title field -->
       <div class="hybrid__content-title">
         @if (titleField()) {
-          {{rowItem().itemData.get(titleField().fieldName)}}
+          {{rowItem().itemData.get(titleField().fieldName) }}
         }
       </div>
 

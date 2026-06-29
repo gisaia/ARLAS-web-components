@@ -32,7 +32,7 @@
   }
 
   &__image {
-    flex: 0 0 100px;
+    flex: 0 0 var(--image-dimension);
     max-width: var(--image-dimension);
     max-height: var(--image-dimension);
   }
