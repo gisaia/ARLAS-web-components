@@ -88,12 +88,12 @@
 .resultlist__body--item /* @doc Sets a row border style. (list mode)*/
 {
   border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px dashed var(--arlas-resultilist-border-color);
+  border-bottom: 1px solid var(--arlas-resultilist-border-color);
 }
 
 .resultlist__body--item-hover-true {
   border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px dashed var(--arlas-resultilist-border-color);
+  border-bottom: 1px solid var(--arlas-resultilist-border-color);
   background-color: #fff;
   position: relative;
   font-weight: 500;
@@ -101,7 +101,7 @@
 
 .resultlist__body--item-hover- {
   border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px dashed var(--arlas-resultilist-border-color);
+  border-bottom: 1px solid var(--arlas-resultilist-border-color);
   position: relative;
   background-color: #fff;
   display: flex;
@@ -109,7 +109,7 @@
 
 .resultlist__body--item-hover-false {
   border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px dashed var(--arlas-resultilist-border-color);
+  border-bottom: 1px solid var(--arlas-resultilist-border-color);
   position: relative;
   background-color: #eee;
   color: #aaa;
@@ -133,13 +133,13 @@ tr {
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
 {
-  border-top: 1px dashed var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultilist-border-color);
   border-bottom: 0px solid var(--arlas-resultilist-border-color);
 }
 
 .resultlist__body--detailed-item /* @doc Sets the last row border style. (list mode)*/
 {
-  border-top: 1px dashed var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultilist-border-color);
   border-bottom: 1px solid var(--arlas-resultilist-border-color);
   background-color: #fff;
 }

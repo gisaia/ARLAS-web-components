@@ -510,7 +510,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public resultMode: ModeEnum;
   public allItemsChecked = false;
 
-  public borderStyle = 'solid';
   public displayListGrid = 'inline';
   public isShiftDown = false;
 
@@ -854,13 +853,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public onLeaveItem(item: Item): void {
     this.setConsultedItem('leave-' + item.identifier);
-  }
-
-  /**
-   * @description Sets the border style of rows
-   */
-  public setBorderStyle(borderStyle): void {
-    this.borderStyle = borderStyle;
   }
 
   /**

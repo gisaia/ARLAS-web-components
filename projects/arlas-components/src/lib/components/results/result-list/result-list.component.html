@@ -160,7 +160,6 @@
               [useColorService]="useColorService" [cellBackgroundStyle]="cellBackgroundStyle" [keysToColors]="keysToColors"
               [colorsSaturationWeight]="colorsSaturationWeight" [detailedDataRetriever]="detailedDataRetriever"
               [selectedItems]="selectedItems" (selectedItemsEvent)="setSelectedItems($event)"
-              (borderStyleEvent)="setBorderStyle($event)" [style.border-bottom-style]="borderStyle"
               (actionOnItemEvent)="triggerActionOnItem($event)">
             </tr>
             @if (rowItem.isDetailToggled) {

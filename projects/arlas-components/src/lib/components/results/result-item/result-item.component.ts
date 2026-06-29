@@ -134,16 +134,9 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    */
   @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
 
-  /**
-   * @Output
-   * @description Emits the border line style depending on the item's toggle state.
-   */
-  @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
-
   public isDetailToggled = false;
   public detailedData = '';
   public actions;
-  public borderStyle = 'solid';
   public colors = {};
   protected identifier: string;
 
@@ -160,17 +153,12 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
 
   }
 
-  // Detailed data is retrieved wheb the row is toggled for the first time
+  // Detailed data is retrieved when the row is toggled for the first time
   public toggle() {
     if (this.rowItem.isDetailToggled === false) {
       this.retrieveAdditionalInfo(this.detailedDataRetriever, this.rowItem);
-      this.borderStyle = 'dashed';
-    } else {
-      this.borderStyle = 'solid';
     }
-    this.borderStyleEvent.next(this.borderStyle);
     this.rowItem.isDetailToggled = !this.rowItem.isDetailToggled;
-
   }
 
   // Update the list of the selected items
