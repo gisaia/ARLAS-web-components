@@ -19,7 +19,7 @@
 
 import { AsyncPipe } from '@angular/common';
 import {
-  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, Input,
+  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, input, Input,
   IterableDiffers, OnChanges, OnInit, Output,
   SimpleChanges, ViewEncapsulation
 } from '@angular/core';
@@ -368,6 +368,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * - `contain` fit the wholethumbnail.
    */
   @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
+
+  /**
+   * Whether the columns of the resultlist in list mode can be resized
+   */
+  public isListResizable = input(true);
 
   /**
    * @Output : Angular

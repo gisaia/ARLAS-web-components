@@ -1,4 +1,4 @@
-<table [style.width.px]="tableWidth" class="resultlist" [arlasResizableTable]="true" [columns]="columns">
+<table [style.width.px]="tableWidth" class="resultlist" [arlasResizableTable]="isListResizable()" [columns]="columns">
   @if (displayThead) {
     <thead>
       @if (displayFilters) {
@@ -113,7 +113,7 @@
             } @else {
               <th [style.max-width.px]="column.width" [style.min-width.px]="column.width" class="resultlist__header--columns"
                   scope="col" [matTooltip]="(column.columnName | translate) + (!!column.dataType ? '(' + column.dataType + ')' : '')"
-                  [arlasResizableColumn]="column.columnName">
+                  [arlasResizableColumn]="column.columnName" [allowResize]="isListResizable()">
                 <span>
                   {{column.columnName | translate}}{{column.dataType ? ' (' + column.dataType + ')': ''}}
                 </span>
