@@ -58,7 +58,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
    * @Input : Angular
    * @description Data formated as a tree to be plotted as powerbars
    */
-  public inputData = input.required<TreeNode>();
+  public inputData = input<TreeNode>();
 
   /**
    * @Input : Angular
@@ -394,8 +394,10 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     this.powerBarsList = this.fetchPowerbarsList(this.level, this.inputData());
   }
 
-  private fetchPowerbarsList(level: number, data: TreeNode, powerBarsList?: Array<PowerBar>, recursivityCount?: number, path?: SimpleNode[]) {
-    if (!data.children) {
+  private fetchPowerbarsList(level: number, data: TreeNode | undefined,
+    powerBarsList?: Array<PowerBar>, recursivityCount?: number, path?: SimpleNode[]
+  ) {
+    if (!data?.children) {
       return [];
     }
 

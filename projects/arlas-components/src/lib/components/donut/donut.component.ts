@@ -43,7 +43,7 @@ export class DonutComponent implements OnChanges {
    * @Input : Angular
    * @description Data tree to plot in the donut.
    */
-  public donutData = input.required<TreeNode>();
+  public donutData = input<TreeNode>();
 
   /**
    * @Input : Angular
@@ -167,8 +167,9 @@ export class DonutComponent implements OnChanges {
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.donut === undefined) {
-      const donutParams = this.getDonutParams();
+    const data = this.donutData();
+    if (this.donut === undefined && data) {
+      const donutParams = this.getDonutParams(data);
       if (this.multiselectable) {
         this.donut = new MultiSelectionDonut(donutParams);
       } else {
@@ -176,8 +177,8 @@ export class DonutComponent implements OnChanges {
       }
     }
 
-    if (changes.donutData && this.donutData() && this.donut?.donutParams !== undefined) {
-      this.donut.dataChange(this.donutData());
+    if (changes.donutData && data && this.donut?.donutParams !== undefined) {
+      this.donut.dataChange(data);
     }
 
     if (changes.selectedArcsList && !!this.selectedArcsList && this.donut?.donutParams?.donutNodes !== undefined) {
@@ -192,13 +193,13 @@ export class DonutComponent implements OnChanges {
     return donutJsonSchema;
   }
 
-  private getDonutParams(): DonutParams {
+  private getDonutParams(data: TreeNode): DonutParams {
     if (!this.unit) {
       this.unit = '';
     }
     const container = this.el.nativeElement.getElementsByClassName('donut__container').item(0) as HTMLElement;
 
-    const donutParams = new DonutParams(this.id(), this.donutData(), container.querySelector('svg') as SVGElement, container, this.colorService);
+    const donutParams = new DonutParams(this.id(), data, container.querySelector('svg') as SVGElement, container, this.colorService);
     donutParams.customizedCssClass = this.customizedCssClass;
     donutParams.hoveredNodesEvent = this.hoveredNodesEvent;
     donutParams.tooltipEvent = this.hoveredNodeTooltipEvent;
