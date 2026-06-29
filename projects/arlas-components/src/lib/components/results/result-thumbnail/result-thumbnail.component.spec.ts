@@ -18,7 +18,7 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ResultThumbnailComponent } from './result-thumbnail.component';
 import {TranslateLoader, TranslateModule, TranslateNoOpLoader} from '@ngx-translate/core';
 import { Item } from '../model/item';
@@ -40,7 +40,6 @@ describe('ResultThumbnailComponent', () => {
     const i = new Item([], [], new Map());
     i.urlThumbnail = 'test.png';
     fixture.componentRef.setInput('gridTile', i);
-    fixture.componentRef.setInput('defaultImgUrl', 'default.png');
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
