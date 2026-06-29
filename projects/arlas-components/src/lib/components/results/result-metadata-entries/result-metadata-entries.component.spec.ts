@@ -21,6 +21,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResultMetadataEntriesComponent } from './result-metadata-entries.component';
 import { beforeEach, describe, expect, it } from 'vitest';
+import {Item} from 'arlas-web-components';
 describe('ResultMetaBadgesComponent', () => {
   let component: ResultMetadataEntriesComponent;
   let fixture: ComponentFixture<ResultMetadataEntriesComponent>;
@@ -32,6 +33,8 @@ describe('ResultMetaBadgesComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ResultMetadataEntriesComponent);
+    const i = new Item([], [], new Map());
+    fixture.componentRef.setInput('item', i);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

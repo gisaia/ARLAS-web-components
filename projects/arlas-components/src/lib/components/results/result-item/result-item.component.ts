@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, Input, OnInit, Output } from '@angular/core';
+import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -41,7 +41,7 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
   styleUrls: ['./result-item.component.scss'],
   imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe]
 })
-export class ResultItemComponent extends ItemComponent implements OnInit {
+export class ResultItemComponent extends ItemComponent implements OnInit, OnDestroy {
 
   /**
    * @constant
@@ -157,7 +157,11 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public ngOnInit() {
     this.identifier = this.rowItem?.identifier;
     this.updateColors();
+  }
 
+  public ngOnDestroy() {
+    // close detail when we change list
+    this.rowItem.isDetailToggled = false;
   }
 
   // Detailed data is retrieved wheb the row is toggled for the first time
