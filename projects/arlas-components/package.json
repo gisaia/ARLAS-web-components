@@ -1,6 +1,6 @@
 {
   "name": "arlas-web-components",
-  "version": "28.1.0-rc.1",
+  "version": "28.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/gisaia/ARLAS-web-components.git"
