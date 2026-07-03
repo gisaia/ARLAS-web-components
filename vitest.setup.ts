@@ -7,6 +7,4 @@ const IntersectionObserverMock = vi.fn(class {
   unobserve = vi.fn()
 })
 
-vi.stubGlobal('IntersectionObserver', IntersectionObserverMock)
-
-console.log('called')
+vi.stubGlobal('IntersectionObserver', IntersectionObserverMock);

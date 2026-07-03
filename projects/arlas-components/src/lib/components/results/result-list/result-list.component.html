@@ -190,9 +190,9 @@
                                       [options]="options"
                                       [selectedItems]="selectedItems"
                                       (selectedItemsEvent)="setSelectedItems($event)"
-                                      (clickedOnItemEvent)="setSelectedGridItem($event)"
                                       (actionOnItemEvent)="triggerActionOnItem($event)"
                                       (mouseenter)="onEnterItem(rowItem)"
+                                      (mouseleave)="onLeaveItem(rowItem)"
             ></arlas-result-hybrid-item>
             @if (rowItem.isDetailToggled) {
               <tr arlas-result-detailed-item class="resultlist__body--detailed-item"

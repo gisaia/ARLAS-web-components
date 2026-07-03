@@ -1,6 +1,6 @@
 <div #cellTooltip="matTooltip"
-     (keydown)="setSelectedItem()"
-     (click)="setSelectedItem()" (mouseover)="hoverImage()"
+     (click)="setClickedOnItem()"
+     (mouseover)="hoverImage()"
      class="thumbnail__image {{gridTile()?.iconCssClass}}"
      id="{{'grid-tile-' + gridTile()?.identifier}}"
      matTooltip="{{pictureTooltip() | translate}}">
@@ -12,7 +12,7 @@
           indeterminate_check_box
         </mat-icon>
       } @else {
-        <button (click)="setClickedOnItem()" class="checkbox__button" mat-icon-button>
+        <button (click)="setSelectedItem()" class="checkbox__button" mat-icon-button>
           <mat-icon class="image__icon-check">{{ gridTile()?.isChecked ? 'check_box' : 'check_box_outline_blank' }}
           </mat-icon>
         </button>
@@ -20,7 +20,7 @@
     </div>
     <div class="image__header--right">
       <button (click)="fullScreen($event, gridTile()?.urlImages)"
-              class="action__btn" mat-icon-button matTooltip="{{fullScreenToolTip | translate}}"
+              class="action__btn" mat-icon-button matTooltip="{{'View in full screen' | translate}}"
               matTooltipPosition="below">
         <mat-icon>fit_screen</mat-icon>
       </button>

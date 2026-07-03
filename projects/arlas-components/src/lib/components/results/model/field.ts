@@ -19,7 +19,8 @@
 
 
 /**
- * Should be iso with the fieldList of ResultListContributor fieldList attribute
+ * Should be iso with the fieldList of ResultListContributor fieldList attribute.
+ * Describes a Field used to display data in the Resultlist table
  */
 export interface Field {
   /** Name/path of the field to add to list **/

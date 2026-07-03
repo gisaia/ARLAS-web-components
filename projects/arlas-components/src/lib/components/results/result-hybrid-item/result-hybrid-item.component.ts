@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Component, computed, inject, input, OnDestroy, output, viewChild} from '@angular/core';
+import {Component, computed, inject, input, output, viewChild} from '@angular/core';
 import {Item} from '../model/item';
 import {Action, ElementIdentifier, ResultListOptions} from '..//utils/results.utils';
 import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
@@ -37,7 +37,7 @@ import {MatTooltip} from '@angular/material/tooltip';
   imports: [ResultThumbnailComponent, ResultMetadataEntriesComponent, MatIconButton, MatIcon, TranslatePipe, MatTooltip],
   styleUrl: './result-hybrid-item.component.scss'
 })
-export class ResultHybridItemComponent extends ItemComponent implements OnDestroy {
+export class ResultHybridItemComponent extends ItemComponent {
   /** Input property: the item data to be displayed in the hybrid result view */
   public rowItem = input.required<Item>();
   /** Input property: the name of the field used as item identifier */
@@ -48,12 +48,17 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
   public options = input<ResultListOptions>(undefined);
   /** Input property: set of currently selected item identifiers */
   public selectedItems = input<Set<string>>(undefined);
+  /** Input property: map of activated actions per item */
+  protected activatedActionsPerItem = input<Map<string, Set<string>>>();
+  /** Input property: retriever for fetching additional item details */
+  protected detailedDataRetriever = input<DetailedDataRetriever>();
   /** Output event: emitted when selected items change */
   public selectedItemsEvent = output<Set<string>>();
   /** Output event: emitted when an item is clicked */
   public clickedOnItemEvent = output<Item>();
   /** Output event: emitted when an action is triggered on an item */
   public actionOnItemEvent = output<{ action: Action; elementidentifier: ElementIdentifier; }>();
+
 
   /**
    * @constant
@@ -68,10 +73,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
     return field ? field : null;
   });
   public fields = computed(() => this.rowItem().hybridMetadata.filter(meta => !meta.isTitle));
-  /** Input property: map of activated actions per item */
-  protected activatedActionsPerItem = input<Map<string, Set<string>>>();
-  /** Input property: retriever for fetching additional item details */
-  protected detailedDataRetriever = input<DetailedDataRetriever>();
+
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
 
@@ -116,6 +118,7 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
     this.selectedItemsEvent.emit(this.selectedItems());
   }
 
+
   /**
    * Retrieves additional item details and emits item click event
    */
@@ -158,14 +161,6 @@ export class ResultHybridItemComponent extends ItemComponent implements OnDestro
         console.warn('Failed to open full screen');
       }
     }, 0);
-  }
-
-  /**
-   * Lifecycle hook: cleans up the full screen viewer service on component destruction
-   */
-  public ngOnDestroy(): void {
-    this.fullScreenService.destroy();
-    this.rowItem().isDetailToggled = false;
   }
 
   protected toggleDetail() {

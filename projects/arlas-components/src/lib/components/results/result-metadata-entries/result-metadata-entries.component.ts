@@ -42,7 +42,7 @@ export class ResultMetadataEntriesComponent {
   public contentContainer = viewChild<ElementRef<HTMLElement>>('container');
   /** Number of items per line. As we have 100px */
   protected maxItemPerLine = 3;
-  /** Maximum number of lines for display the metadata.
+  /** Maximum number of lines to display the metadata.
    *  Minus the title we have 72 px to display our metadata. Each line has 20 px height.
    *  The number of row could be less if we have less data. 3 meta can be displayed in one line. 6 on two.
    *  */

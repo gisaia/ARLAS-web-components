@@ -17,22 +17,22 @@
  * under the License.
  */
 
-import {Component, Input, OnDestroy, OnInit, Output} from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
-import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
-import { ArlasColorService } from '../../../services/color.generator.service';
-import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
-import { Item } from '../model/item';
-import { ItemComponent } from '../model/itemComponent';
-import { ResultActionsComponent } from '../result-actions/result-actions.component';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
-import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import {Component, Input, OnInit, Output} from '@angular/core';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {marker} from '@colsen1991/ngx-translate-extract-marker';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {Subject} from 'rxjs';
+import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
+import {ArlasColorService} from '../../../services/color.generator.service';
+import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
+import {Item} from '../model/item';
+import {ItemComponent} from '../model/itemComponent';
+import {ResultActionsComponent} from '../result-actions/result-actions.component';
+import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
+import {CellBackgroundStyleEnum} from '../utils/enumerations/cellBackgroundStyleEnum';
+import {Action, ElementIdentifier, ResultListOptions} from '../utils/results.utils';
 
 
 @Component({
@@ -41,7 +41,7 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
   styleUrls: ['./result-item.component.scss'],
   imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe]
 })
-export class ResultItemComponent extends ItemComponent implements OnInit, OnDestroy {
+export class ResultItemComponent extends ItemComponent implements OnInit {
 
   /**
    * @constant
@@ -159,11 +159,6 @@ export class ResultItemComponent extends ItemComponent implements OnInit, OnDest
     this.updateColors();
   }
 
-  public ngOnDestroy() {
-    // close detail when we change list
-    this.rowItem.isDetailToggled = false;
-  }
-
   // Detailed data is retrieved wheb the row is toggled for the first time
   public toggle() {
     if (this.rowItem.isDetailToggled === false) {
@@ -174,7 +169,6 @@ export class ResultItemComponent extends ItemComponent implements OnInit, OnDest
     }
     this.borderStyleEvent.next(this.borderStyle);
     this.rowItem.isDetailToggled = !this.rowItem.isDetailToggled;
-
   }
 
   // Update the list of the selected items

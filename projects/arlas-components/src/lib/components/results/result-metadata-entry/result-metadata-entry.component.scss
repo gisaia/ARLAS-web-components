@@ -18,10 +18,10 @@
  */
 
 :host {
-  --entry-font-size: 14px;
-  --entry-icon-witdh: var(--entry-font-size);
-  --entry-color: grey;
-  --entry-value-color: black;
+  --arlas-entry-font-size: 14px;
+  --arlas-entry-icon-width: var(--arlas-entry-font-size);
+  --arlas-entry-color: grey;
+  --arlas-entry-value-color: black;
 }
 
 .meta-badge {
@@ -36,17 +36,17 @@
 
   &__icon {
     width: 18px;
-    font-size: var(--entry-font-size);
+    font-size: var(--arlas-entry-font-size);
     display: flex;
     align-items: center;
     line-height: 1;
     & mat-icon {
-      font-size: var(--entry-font-size);
-      height: var(--entry-font-size);
-      width: var(--entry-font-size);
+      font-size: var(--arlas-entry-font-size);
+      height: var(--arlas-entry-font-size);
+      width: var(--arlas-entry-font-size);
       display: flex;
       align-items: center;
-      color: var(--entry-color);
+      color: var(--arlas-entry-color);
     }
   }
 
@@ -58,16 +58,16 @@
     min-width: 0;
     line-height: 1;
     flex:1 1 auto;
-    color: var(--entry-value-color);
+    color: var(--arlas-entry-value-color);
   }
 
   &__unit {
-    font-size: var(--entry-font-size);
+    font-size: var(--arlas-entry-font-size);
     display: inline-block;
     line-height: 1;
     flex-shrink: 0;
     max-width: 20px;
     min-width: 0;
-    color: var(--entry-color);
+    color: var(--arlas-entry-color);
   }
 }

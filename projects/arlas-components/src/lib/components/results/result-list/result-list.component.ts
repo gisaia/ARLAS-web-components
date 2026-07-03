@@ -895,6 +895,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       this.resultMode = ModeEnum.hybrid;
       this.displayListGrid = 'block';
     }
+    this.changeResultMode.next(this.resultMode);
+    this.setTableHeight();
   }
 
   /**

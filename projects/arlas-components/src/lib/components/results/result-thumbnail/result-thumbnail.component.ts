@@ -58,8 +58,6 @@ export class ResultThumbnailComponent {
   protected thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.contain);
 
   public cellTooltip = viewChild<MatTooltip>('cellTooltip');
-  /** Input property: tooltip text for the full screen action */
-  protected readonly fullScreenToolTip = 'View in full screen';
   /** Input property: tooltip text for the picture/thumbnail */
   protected readonly pictureTooltip = input<string>('');
 

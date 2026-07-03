@@ -3,7 +3,6 @@
   <div class="hybrid__image">
     <!-- Thumbnail component displaying item image with click/hover/action event handlers -->
     <arlas-result-thumbnail #arlasThumbnail
-                            (imageClicked)="setClickedOnItem()"
                             (imageHovered)="showCellTooltip()"
                             (actionClickEvent)="triggerActionOnItem($event)"
                             (selectDeterminateItem)="determinateItem()"
