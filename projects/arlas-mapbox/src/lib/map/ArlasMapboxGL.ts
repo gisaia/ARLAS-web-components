@@ -217,8 +217,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
       if (b) {
         visualisationsSets.visualisations.get(vs)?.forEach(l => {
           const layer = this._mapProvider.getLayer(l) as ArlasAnyLayer;
-          // TODO: Can a layer not have a minzoom or maxzoom?
-          if (layer.minzoom && layer.minzoom <= this.zoom && layer.maxzoom && this.zoom <= layer.maxzoom) {
+          if (layer.minzoom !== undefined && layer.minzoom <= this.zoom && layer.maxzoom !== undefined && this.zoom <= layer.maxzoom) {
             visibleLayers.add(l);
           }
         });

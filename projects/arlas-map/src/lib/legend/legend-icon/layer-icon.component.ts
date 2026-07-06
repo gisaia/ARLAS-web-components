@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AfterViewInit, Component, ElementRef, input, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, input, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { select } from 'd3-selection';
 import { ArlasDataLayer, CellShape } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
@@ -27,7 +27,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   templateUrl: './layer-icon.component.html',
   styleUrls: ['./layer-icon.component.scss']
 })
-export class LayerIconComponent implements AfterViewInit, OnChanges {
+export class LayerIconComponent implements OnChanges {
   public layer = input.required<ArlasDataLayer>();
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
@@ -36,21 +36,8 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
   @Input() public lineDasharray: Array<number> = [];
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement?: ElementRef;
 
-  public constructor() {
-  }
-
-  public ngAfterViewInit() {
-    if (this.layer()) {
-      this.drawIcons();
-    }
-  }
-
   public ngOnChanges(changes: SimpleChanges) {
-    if (changes['layer'] !== undefined) {
-      if (this.layer() && this.layerIconElement) {
-        this.drawIcons();
-      }
-    }
+    this.drawIcons();
   }
 
   private drawIcons(): void {
@@ -550,7 +537,10 @@ export function getClusterFillColors(colorLegend: Legend): (string | number)[] {
       } else if (iv.length === 2) {
         fourColors.push(iv[0], iv[1], iv[0], iv[1]);
       } else if (iv.length >= 3) {
-        fourColors.push(iv[0], iv[Math.trunc(2 * iv.length / 3)], iv[iv.length - 1], iv[Math.trunc(iv.length / 3)]);
+        fourColors.push(iv[0],
+          iv[Math.trunc(2 * iv.length / 3)],
+          iv[iv.length - 1],
+          iv[Math.trunc(iv.length / 3)]);
       }
     }
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix && colorLegend.fixValue) {

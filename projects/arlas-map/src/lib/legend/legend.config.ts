@@ -20,16 +20,16 @@
 import { HistogramData } from 'arlas-d3';
 
 export interface LegendData {
-  minValue?: string;
-  maxValue?: string;
+  minValue: number | string;
+  maxValue: number | string;
   keysColorsMap?: Map<string, string>;
 }
 
 export interface Legend {
   type?: PROPERTY_SELECTOR_SOURCE;
   title?: string;
-  minValue?: string;
-  maxValue?: string;
+  minValue?: string | number;
+  maxValue?: string | number;
   fixValue?: string | number;
   interpolatedValues?: Array<string | number>;
   /** Map (field, (color & highlight)) */

@@ -517,7 +517,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
 
     if (this.redrawSource) {
       this.redrawSource.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(sd => {
-        this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map), {
+        this.mapFrameworkService.setDataToGeojsonSource(this.mapFrameworkService.getSource(sd.source, this.map()), {
           'type': 'FeatureCollection',
           'features': sd.data
         });
