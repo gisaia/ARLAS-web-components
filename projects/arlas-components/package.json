@@ -19,7 +19,6 @@
     "@angular/router": "^21.2.6",
     "@ngx-translate/core": "^17.0.0",
     "@ngx-translate/http-loader": "^17.0.0",
-    "@types/tinycolor2": "^1.4.0",
     "core-js": "~3.26.1",
     "moment": "^2.24.0",
     "rxjs": "^7.4.0",

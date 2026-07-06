@@ -24,5 +24,11 @@
   "dependencies": {
     "mapbox-gl": "^1.6.1",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/mapbox__mapbox-gl-draw": "^1.4.9"
+  },
+  "overrides": {
+    "mapbox-gl": "^1.6.1"
   }
 }
