@@ -408,11 +408,6 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
     if (this.histogram === undefined) {
       const histogramParams = this.getHistogramParameters();
       switch (this.chartType) {
-        case ChartType.area: {
-          this.histogram = new ChartArea(histogramParams);
-          this.chart = this.histogram as ChartArea;
-          break;
-        }
         case ChartType.curve: {
           this.histogram = new ChartCurve(histogramParams);
           this.chart = this.histogram as ChartCurve;
@@ -434,10 +429,13 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
           } else {
             this.histogram = new SwimlaneBars(histogramParams);
           }
+          this.chart = this.histogram as AbstractSwimlane;
           break;
         }
+        case ChartType.area:
         default: {
           this.histogram = new ChartArea(histogramParams);
+          this.chart = this.histogram as ChartArea;
           break;
         }
       }
