@@ -18,7 +18,7 @@
  */
 
 import { DecimalPipe } from '@angular/common';
-import { Component, computed, EventEmitter, input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -39,8 +39,8 @@ import { CoordinatesErrorPipe } from './coordinates.pipe';
     MatInput, MatError, MatIcon, DecimalPipe, TranslatePipe, CoordinatesErrorPipe]
 })
 export class CoordinatesComponent {
-  public currentLat = input.required<string>();
-  public currentLng = input.required<string>();
+  @Input() public currentLat = '0';
+  @Input() public currentLng = '0';
 
   /**
    * @constant
@@ -48,22 +48,26 @@ export class CoordinatesComponent {
   public placeHolder = marker('1.1 or 1°6\'3"');
 
   @Output() public moveToCoordinates$: EventEmitter<[number, number]> = new EventEmitter();
-  public coordinatesForm = computed(() => new PointFormGroup(this.currentLat(), this.currentLng()));
+  public coordinatesForm: PointFormGroup;
   public editionMode = false;
+
+  public constructor() {
+    this.coordinatesForm = new PointFormGroup(this.currentLat, this.currentLng);
+  }
 
   public switchToEditionMode() {
     this.editionMode = true;
-    this.coordinatesForm().latitude.setValue(this.currentLat);
-    this.coordinatesForm().longitude.setValue(this.currentLng);
+    this.coordinatesForm.latitude.setValue(this.currentLat);
+    this.coordinatesForm.longitude.setValue(this.currentLng);
   }
 
   public moveToCoordinates() {
-    const lat = Coordinate.parse(this.coordinatesForm().latitude.value);
-    const lng = Coordinate.parse(this.coordinatesForm().longitude.value);
+    const lat = Coordinate.parse(this.coordinatesForm.latitude.value);
+    const lng = Coordinate.parse(this.coordinatesForm.longitude.value);
     this.moveToCoordinates$.emit([lng, lat]);
     this.editionMode = false;
-    // this.currentLat = String(lat);
-    // this.currentLng = String(lng);
+    this.currentLat = String(lat);
+    this.currentLng = String(lng);
   }
 
 }

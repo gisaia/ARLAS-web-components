@@ -22,7 +22,7 @@
  */
 
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
-export { ArlasMapComponent } from './lib/arlas-map.component';
+export { ArlasMapComponent, LayerDownloadEvent } from './lib/arlas-map.component';
 export { AbstractArlasMapService } from './lib/arlas-map.service';
 export { BasemapComponent } from './lib/basemaps/basemap.component';
 export { BasemapStyle } from './lib/basemaps/basemap.config';
@@ -70,7 +70,7 @@ export {
 export {
   ConfigControls, ControlButton, ControlPosition, ControlsOption, DrawConfigControl, DrawControlsOption, IconConfig
 } from './lib/map/model/controls';
-export { MapLayerMouseEvent, MapMouseEvent } from './lib/map/model/events';
+export { InteractedFeature, InteractedFeatures, MapLayerMouseEvent, MapMouseEvent } from './lib/map/model/events';
 export { MapExtent } from './lib/map/model/extent';
 export { GET, HEATMAP_DENSITY, IN, INTERPOLATE, MATCH, NOT_IN, OTHER } from './lib/map/model/filters';
 export * from './lib/map/model/layers';

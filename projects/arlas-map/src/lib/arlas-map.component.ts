@@ -30,7 +30,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ElementIdentifier, GetValuePipe } from 'arlas-web-components';
 import { Feature, FeatureCollection } from 'geojson';
-import { filter, finalize, fromEvent, Subject } from 'rxjs';
+import { filter, finalize, fromEvent, Observable, Subject } from 'rxjs';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
 import * as mapJsonSchema from './arlas-map.schema.json';
 import { AbstractArlasMapService } from './arlas-map.service';
@@ -50,13 +50,21 @@ import {
   DISABLE_GLOBE, ENABLE_GLOBE, MapConfig, RESET_BEARING, ZOOM_IN, ZOOM_OUT
 } from './map/AbstractArlasMapGL';
 import { ControlPosition, IconConfig } from './map/model/controls';
-import { MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
+import { InteractedFeatures, MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
 import { MapExtent } from './map/model/extent';
 import { ARLAS_VSET, ArlasDataLayer, getLayerName, MapLayers } from './map/model/layers';
 import { ArlasLngLatBounds, OnMoveResult } from './map/model/map';
 import { ArlasMapSource } from './map/model/sources';
 import { TerrainConfiguration } from './map/model/terrain';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
+
+export interface LayerDownloadEvent {
+  layerId: string;
+  layerName: string;
+  collection: string;
+  sourceName: string;
+  downloadType: string;
+}
 
 @Component({
   selector: 'arlas-map',
@@ -166,7 +174,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   /** --- MAP INTERACTION */
   // Will be removed, so typing does not matter
   /** @description Feature to highlight. */
-  @Input() public featureToHightLight!: { isleaving: boolean; elementidentifier: ElementIdentifier; };
+  @Input() public featureToHightLight?: { isleaving: boolean; elementidentifier: ElementIdentifier; };
   /** @description List of features to select. */
   @Input() public featuresToSelect: Array<ElementIdentifier> = [];
 
@@ -175,7 +183,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   /** @description List of sources to add to the map. */
   @Input() public mapSources: Array<ArlasMapSource<S>> = [];
   /** @description Subject to which the component subscribes to redraw on the map the `data` of the given `source`. */
-  @Input() public redrawSource = new Subject<{ source: string; data: Feature<GeoJSON.Geometry>[]; }>();
+  @Input() public redrawSource = new Observable<{ source: string; data: Feature<GeoJSON.Geometry>[]; }>();
   /** @description List of data sources names that should be added to the map. Sources should be of type `geojson`. */
   @Input() public dataSources = new Set<string>();
 
@@ -210,7 +218,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   @Input() public legendUpdater: Subject<Map<string, Map<string, LegendData>>> = new Subject();
   /** @description Subject of [layerId, boolean] map. The map subscribes to it to keep */
   /** the legend updated with the visibility of the layer.*/
-  @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
+  @Input() public visibilityUpdater = new Observable<Map<string, boolean>>();
   /** @description List of visualisation sets. A Visualisation set is an entity where layers are grouped together. */
   /** If a visualisation set is enabled, all the layers in it can be displayed on the map, otherwise the layers are removed from the map. */
   @Input() public visualisationSetsConfig = new Array<VisualisationSetConfig>();
@@ -248,10 +256,10 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   @Output() public visualisations: EventEmitter<Set<string>> = new EventEmitter();
 
   /** @description Emits the features that were clicked on. */
-  @Output() public onFeatureClick = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; }>();
+  @Output() public onFeatureClick = new EventEmitter<InteractedFeatures | undefined>();
 
   /** @description Emits the features that were hovered. */
-  @Output() public onFeatureHover = new EventEmitter<{ features: Array<GeoJSON.Feature<GeoJSON.Geometry>>; point: [number, number]; } | {}>();
+  @Output() public onFeatureHover = new EventEmitter<InteractedFeatures | undefined>();
 
   /** @description Emits the geojson of all aois added to the map. */
   @Output() public onAoiChanged: EventEmitter<FeatureCollection<GeoJSON.Geometry>> = new EventEmitter();
@@ -266,13 +274,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   @Output() public legendVisibiltyStatus: Subject<Map<string, boolean>> = new Subject();
 
   /** @description  Notifies that the user wants to download the selected layer */
-  @Output() public downloadSourceEmitter: Subject<{
-    layerId: string;
-    layerName: string;
-    collection: string;
-    sourceName: string;
-    downloadType: string;
-  }> = new Subject();
+  @Output() public downloadSourceEmitter: Subject<LayerDownloadEvent> = new Subject();
 
   protected ICONS_BASE_PATH = 'assets/icons/';
 
@@ -540,7 +542,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
       });
       /** Emits an empty object on mouse leaving a feature. */
       this.mapFrameworkService.onLayerEvent('mouseleave', this.getMap(), layerId, (e) => {
-        this.onFeatureHover.next({});
+        this.onFeatureHover.next(undefined);
       });
     });
     /** Emits the clicked on feature. */

@@ -18,6 +18,7 @@
  */
 
 import { ArlasPoint } from './geometry';
+import { ArlasDataLayer } from './layers';
 import { ArlasLngLat } from './map';
 
 export interface MapMouseEvent {
@@ -26,6 +27,16 @@ export interface MapMouseEvent {
   lngLat: ArlasLngLat;
 }
 
+export type InteractedFeature = GeoJSON.Feature & {
+  source: string;
+  layer: ArlasDataLayer;
+}
+
+export interface InteractedFeatures {
+  features: InteractedFeature[];
+  point: [number, number];
+}
+
 export interface MapLayerMouseEvent extends MapMouseEvent {
-  features: GeoJSON.Feature<GeoJSON.Geometry>[];
+  features: InteractedFeature[];
 }

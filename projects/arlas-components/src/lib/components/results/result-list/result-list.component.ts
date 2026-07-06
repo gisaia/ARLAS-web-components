@@ -289,7 +289,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description The column that is currently sorted on
    */
-  @Input() public currentSortedColumn: SortedColumn | null = null;
+  @Input() public currentSortedColumn?: SortedColumn;
 
   /**
    * @Input : Angular
@@ -802,7 +802,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     });
     // Reset column filter when geo sort request
     this.sortedColumn = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
-    this.currentSortedColumn = null;
+    this.currentSortedColumn = undefined;
 
     this.geoSortEvent.next(this.GEO_DISTANCE);
   }

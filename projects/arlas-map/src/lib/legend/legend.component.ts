@@ -32,7 +32,7 @@ import { ArlasColorService, GetCollectionDisplayNamePipe, GetColorPipe } from 'a
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
-import { Subject, takeUntil } from 'rxjs';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import {
   ARLAS_ID, ArlasDataLayer, EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX, HOVER_LAYER_PREFIX, SELECT_LAYER_PREFIX
 } from '../map/model/layers';
@@ -84,7 +84,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
    * @description Subject of [field, boolean] map. The map subscribes to it to keep
    * the legend updated with the visibility of the layer.
    */
-  @Input() public visibilityUpdater: Subject<Map<string, boolean>> = new Subject();
+  @Input() public visibilityUpdater = new Observable<Map<string, boolean>>();
   /**
    * @Input : Angular
    * @description Whether to highlight the keywords or color of hovered features
