@@ -575,11 +575,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public ngOnInit() {
     this.updateResultMode(this.defautMode?.toString());
     this.options = Object.assign(new ResultListOptions(), this.options);
-    if (!!this.fieldsConfiguration) {
-      if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
-        this.hasGridMode = true;
-      }
-    }
   }
 
   public ngAfterViewInit(): void {
