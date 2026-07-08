@@ -116,7 +116,6 @@ export interface FieldsConfiguration {
   tooltipFieldNames?: Array<Field>;
   useHttpQuicklooks?: boolean;
   useHttpThumbnails?: boolean;
-  hasHybridList?: boolean;
   /**
    * @deprecated
    */

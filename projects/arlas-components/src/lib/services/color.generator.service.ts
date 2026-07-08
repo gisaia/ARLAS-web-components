@@ -29,7 +29,7 @@ export class ArlasColorService {
   private readonly changekeysToColors =  new Subject<void>();
   public changekeysToColors$ = this.changekeysToColors.asObservable();
   public constructor(public colorGenerator: ColorGeneratorLoader) {
-    this.colorGenerator.changekeysToColors$.subscribe(() => this.changekeysToColors.next());
+    this.colorGenerator.changekeysToColors$?.subscribe(() => this.changekeysToColors.next());
 
   }
 

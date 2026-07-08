@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { Action, Attachment, ItemDataType } from '../utils/results.utils';
-import { Column } from './column';
-import {HybridMetadata} from './hybridMetadata';
+import {Action, Attachment, ItemDataType} from '../utils/results.utils';
+import {Column} from './column';
+import {CardViewEntry} from './cardViewEntry';
 
 export interface ItemDetailGroup {
   group: string;
@@ -64,7 +64,10 @@ export class Item {
    * @description The item's data is organized in this columns when represented in a table.
    */
   public columns = new Array<Column>();
-  public hybridMetadata = new Array<HybridMetadata>();
+  /**
+   * @description The item's data is organized in card when represented in a card view.
+   */
+  public cardsView = new Array<CardViewEntry[]>;
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
@@ -124,9 +127,9 @@ export class Item {
    */
   public detailsTitleEnabled: boolean;
 
-  public constructor(columns: Array<Column>, hybridFields: HybridMetadata[], itemData: Map<string, ItemDataType>) {
+  public constructor(columns: Array<Column>, cardsView: Array<CardViewEntry[]>, itemData: Map<string, ItemDataType>) {
     this.columns = columns;
-    this.hybridMetadata = hybridFields;
+    this.cardsView = cardsView;
     this.itemData = itemData;
   }
 }

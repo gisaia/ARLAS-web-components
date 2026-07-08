@@ -18,6 +18,7 @@
  */
 import {Component, computed, inject, input, output, viewChild} from '@angular/core';
 import {Item} from '../model/item';
+import {CardViewEntry} from '../model/cardViewEntry';
 import {Action, ElementIdentifier, ResultListOptions} from '..//utils/results.utils';
 import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
 import {ResultThumbnailComponent} from '../result-thumbnail/result-thumbnail.component';
@@ -25,20 +26,20 @@ import {marker} from '@colsen1991/ngx-translate-extract-marker';
 import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
 import {ItemComponent} from '../model/itemComponent';
 import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
-import {ResultMetadataEntriesComponent} from '../result-metadata-entries/result-metadata-entries.component';
+import {ResultCardItemEntriesComponent} from '../result-card-item-entries/result-card-item-entries.component';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatTooltip} from '@angular/material/tooltip';
 
 @Component({
-  selector: 'arlas-result-hybrid-item',
-  templateUrl: './result-hybrid-item.component.html',
-  imports: [ResultThumbnailComponent, ResultMetadataEntriesComponent, MatIconButton, MatIcon, TranslatePipe, MatTooltip],
-  styleUrl: './result-hybrid-item.component.scss'
+  selector: 'arlas-resul-card-item',
+  templateUrl: './result-card-item.component.html',
+  imports: [ResultThumbnailComponent, ResultCardItemEntriesComponent, MatIconButton, MatIcon, TranslatePipe, MatTooltip],
+  styleUrl: './result-card-item.component.scss'
 })
-export class ResultHybridItemComponent extends ItemComponent {
-  /** Input property: the item data to be displayed in the hybrid result view */
+export class ResultCardItemComponent extends ItemComponent {
+  /** Input property: the item data to be displayed in the card result view */
   public rowItem = input.required<Item>();
   /** Input property: the name of the field used as item identifier */
   public idFieldName = input.required<string>();
@@ -68,11 +69,25 @@ export class ResultHybridItemComponent extends ItemComponent {
    * @constant
    */
   public SHOW_DETAILS = marker('Show details');
-  public titleField = computed(() => {
-    const field = this.rowItem().hybridMetadata.find(meta => meta.isTitle);
-    return field ? field : null;
+  private parsedCardsView = computed(() => {
+    const cardsView = this.rowItem().cardsView;
+    const title: CardViewEntry[] = [];
+    const fields: CardViewEntry[][] = [];
+    for (const row of cardsView) {
+      const nonTitle: CardViewEntry[] = [];
+      for (const entry of row) {
+        if (entry.isTitle) {
+          title.push(entry);
+        } else {
+          nonTitle.push(entry);
+        }
+      }
+      fields.push(nonTitle);
+    }
+    return { title, fields };
   });
-  public fields = computed(() => this.rowItem().hybridMetadata.filter(meta => !meta.isTitle));
+  public titleField = computed(() => this.parsedCardsView().title);
+  public fields = computed(() => this.parsedCardsView().fields);
 
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;

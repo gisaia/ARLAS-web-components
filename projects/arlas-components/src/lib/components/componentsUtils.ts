@@ -20,6 +20,7 @@
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
+import {Injectable} from '@angular/core';
 
 export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
@@ -50,6 +51,9 @@ export function getValues(map): Array<any> {
   return Array.from(map.values());
 }
 
+@Injectable({
+  providedIn: 'root'
+})
 export abstract class ColorGeneratorLoader {
   public abstract keysToColors: Array<[string, string]>;
   public abstract colorsSaturationWeight: number;

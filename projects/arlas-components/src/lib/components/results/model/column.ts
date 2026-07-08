@@ -17,9 +17,13 @@
  * under the License.
  */
 
-import {ResultListView} from './resultListView';
+import {ResultListEntry} from './resultListEntry';
 
-export class Column  extends ResultListView {
+export class Column  extends ResultListEntry {
+  /**
+   * @description The column name
+   */
+  public columnName: string;
 
   public width: number;
 
@@ -43,7 +47,8 @@ export class Column  extends ResultListView {
   }
 
   public constructor(columnName: string, fieldName: string, dataType: string) {
-    super(columnName, fieldName, dataType);
+    super(fieldName, dataType);
+    this.columnName = columnName;
   }
 }
 

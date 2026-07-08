@@ -1,6 +1,6 @@
-<div class="hybrid__container">
+<div class="card__container">
   <!-- Image section with thumbnail and action handlers -->
-  <div class="hybrid__image">
+  <div class="card__image">
     <!-- Thumbnail component displaying item image with click/hover/action event handlers -->
     <arlas-result-thumbnail #arlasThumbnail
                             (imageHovered)="showCellTooltip()"
@@ -19,13 +19,15 @@
   </div>
 
   <!-- Content section with title and metadata badges -->
-  <div class="hybrid__content">
+  <div class="card__content">
     <!-- Header section: title and detail toggle button -->
-    <div class="hybrid__content-header">
+    <div class="card__content-header">
       <!-- Item title from the configured title field -->
-      <div class="hybrid__content-title">
-        @if (titleField()) {
-          {{rowItem().itemData.get(titleField().fieldName) }}
+      <div class="card__content-title">
+        @if (titleField().length > 0) {
+          @for( filed of titleField(); track filed.fieldName){
+            {{rowItem().itemData.get(filed.fieldName)}}
+          }
         }
       </div>
 
@@ -43,6 +45,6 @@
       </div>
     </div>
     <!-- Badge section displaying metadata fields (values, units, icons) -->
-    <arlas-result-metadata-entries [item]="rowItem()" [fields]="fields()"></arlas-result-metadata-entries>
+    <arlas-result-card-item-entries [item]="rowItem()" [fields]="fields()"></arlas-result-card-item-entries>
   </div>
 </div>

@@ -19,11 +19,8 @@
 
 import { SortEnum } from '../utils/enumerations/sortEnum';
 
-export class ResultListView {
-  /**
-   * @description The column name
-   */
-  public columnName: string;
+export class ResultListEntry {
+
   /**
    * @description The name of the field related to this column.
    */
@@ -42,8 +39,7 @@ export class ResultListView {
    */
   public isIdField = false;
 
-  public constructor(columnName: string, fieldName: string, dataType: string) {
-    this.columnName = columnName;
+  public constructor(fieldName: string, dataType: string) {
     this.fieldName = fieldName;
     this.dataType = dataType;
   }

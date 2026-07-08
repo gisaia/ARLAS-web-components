@@ -19,20 +19,20 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResultMetadataEntryComponent } from './result-metadata-entry.component';
+import { CardResultItemMetadataEntryComponent } from './card-result-item-metadata-entry.component';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {Item} from 'arlas-web-components';
 describe('ResultMetaBadgeComponent', () => {
-  let component: ResultMetadataEntryComponent;
-  let fixture: ComponentFixture<ResultMetadataEntryComponent>;
+  let component: CardResultItemMetadataEntryComponent;
+  let fixture: ComponentFixture<CardResultItemMetadataEntryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultMetadataEntryComponent]
+      imports: [CardResultItemMetadataEntryComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ResultMetadataEntryComponent);
+    fixture = TestBed.createComponent(CardResultItemMetadataEntryComponent);
     fixture.componentRef.setInput('metaBadge', {value: 'test'});
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -82,7 +82,7 @@
               </button>
             }
           </div>
-          @if (hasGridMode || hasHybridMode) {
+          @if (hasGridMode || hasCardView) {
             <div class="resultlist__tools--separator">|</div>
             <div class="resultlist__tools--mode" id="resultlist_mode">
               <mat-button-toggle-group [name]="'modeGroup'" (change)="switchMode($event)"
@@ -97,10 +97,10 @@
                   <mat-icon>grid_view</mat-icon>
                 </mat-button-toggle>
                 }
-                @if(hasHybridMode) {
-                  <mat-button-toggle class="hybrid-toggle" id="hybrid_mode_btn" matTooltip="{{HYBRID_MODE | translate}}" value="{{ModeEnum.hybrid}}"
-                                     [checked]="resultMode===ModeEnum.hybrid">
-                    <mat-icon>vertical_split</mat-icon>
+                @if(hasCardView) {
+                  <mat-button-toggle class="card-toggle" id="card_mode_btn" matTooltip="{{CARD_MODE | translate}}" value="{{ModeEnum.card}}"
+                                     [checked]="resultMode===ModeEnum.card">
+                    <mat-icon>event_list</mat-icon>
                   </mat-button-toggle>
                 }
               </mat-button-toggle-group>
@@ -179,9 +179,9 @@
                 [idFieldName]="fieldsConfiguration.idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)">
               </tr>
             }
-          } @else if (resultMode === ModeEnum.hybrid) {
-            <arlas-result-hybrid-item [rowItem]="rowItem"
-                                      [class]="`resultlist__hybrid-tile resultlist__body--item-hover-${rowItem.ishighLight}`"
+          } @else if (resultMode === ModeEnum.card) {
+            <arlas-resul-card-item [rowItem]="rowItem"
+                                      [class]="`resultlist__card-tile resultlist__body--item-hover-${rowItem.ishighLight}`"
                                       [id]="id"
                                       [idFieldName]="fieldsConfiguration.idFieldName"
                                       [activatedActionsPerItem]="activatedActionsPerItem"
@@ -192,7 +192,7 @@
                                       (actionOnItemEvent)="triggerActionOnItem($event)"
                                       (mouseenter)="onEnterItem(rowItem)"
                                       (mouseleave)="onLeaveItem(rowItem)"
-            ></arlas-result-hybrid-item>
+            ></arlas-resul-card-item>
             @if (rowItem.isDetailToggled) {
               <tr arlas-result-detailed-item class="resultlist__body--detailed-item"
                   (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"

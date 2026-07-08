@@ -34,7 +34,7 @@ import {
   ResultListOptions
 } from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 import {DetailedDataRetrieverImp} from './utils/detailed-data-retriever';
-import {AwcColorGeneratorLoader, ColorGeneratorLoader} from 'arlas-web-components';
+import {AwcColorGeneratorLoader, CardViewProperties, ColorGeneratorLoader, ResultField} from 'arlas-web-components';
 
 function generateRandomText(length) {
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -65,7 +65,8 @@ export class ResultsDemoComponent implements OnInit {
     @ViewChild('resultlist', { static: false }) public resultListComponent: ResultListComponent;
 
     public data: Array<Map<string, ItemDataType>>;
-    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; isHybrid?: boolean; isHybridTitle?: boolean, icon?: string, isTitle?:boolean}>;
+    public fieldsList: Array<ResultField>;
+    public cardFields: Array<CardViewProperties> = [];
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
     public fieldsConfiguration: FieldsConfiguration;
     public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
@@ -101,38 +102,114 @@ export class ResultsDemoComponent implements OnInit {
         ],
         urlThumbnailTemplate: '{urlImage}',
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
-        useHttpQuicklooks: false,
-        hasHybridList: true,
+        useHttpQuicklooks: false
       };
-      this.fieldsList = [];
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
-      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', dropdown: true });
-      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', dropdown: true });
+      this.fieldsList = [];
+      this.cardFields = [];
+
+
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '' });
+      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '' });
+      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%'});
       this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°' });
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', isHybrid: true, isHybridTitle: true });
-      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', isHybrid: true, icon: 'alarm' });
-      this.fieldsList.push({ columnName: 'Cloud Cover', fieldName: 'cloudCover', dataType: '%', isHybrid: true, icon: 'cloud' });
-      this.fieldsList.push({ columnName: 'Incidence Angle', fieldName: 'incidenceAngle', dataType: '°', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Description', fieldName: 'description', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Ground Resolution', fieldName: 'groundResolution', dataType: 'm', isHybrid: true, icon: 'rules' });
-      this.fieldsList.push({ columnName: 'Sun Azimuth', fieldName: 'sunAzimuth', dataType: '°', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Sun Elevation', fieldName: 'sunElevation', dataType: '°', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Satellite Azimuth', fieldName: 'satelliteAzimuth', dataType: '°', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Off-nadir Angle', fieldName: 'offNadirAngle', dataType: '°', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Spectral Bands', fieldName: 'spectralBands', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Scene Width', fieldName: 'sceneWidth', dataType: 'km', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Scene Height', fieldName: 'sceneHeight', dataType: 'km', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Orbit Direction', fieldName: 'orbitDirection', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Processing Level', fieldName: 'processingLevel', dataType: '', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Radiometric Accuracy', fieldName: 'radiometricAccuracy', dataType: '%', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Snow Cover', fieldName: 'snowCover', dataType: '%', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Target Elevation', fieldName: 'targetElevation', dataType: 'm', isHybrid: true });
-      this.fieldsList.push({ columnName: 'Image Quality', fieldName: 'imageQuality', dataType: '/10', isHybrid: true });
+      this.cardFields.push({
+        prettyName: 'Source', fieldName: 'source', dataType: '', isTitle: true,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Acquired', fieldName: 'acquired', dataType: '', icon: 'alarm', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Cloud Cover', fieldName: 'cloudCover', dataType: '%', icon: 'cloud', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Incidence Angle', fieldName: 'incidenceAngle', dataType: '°', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Id', fieldName: 'id', dataType: '',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Description', fieldName: 'description', dataType: '', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Ground Resolution', fieldName: 'groundResolution', dataType: 'm', icon: 'rules', isTitle: true,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Sun Azimuth', fieldName: 'sunAzimuth', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Sun Elevation', fieldName: 'sunElevation', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Satellite Azimuth', fieldName: 'satelliteAzimuth', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Off-nadir Angle', fieldName: 'offNadirAngle', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Spectral Bands', fieldName: 'spectralBands', dataType: '',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Scene Width', fieldName: 'sceneWidth', dataType: 'km',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Scene Height', fieldName: 'sceneHeight', dataType: 'km',
+        isTitle: false,
+        lineNumber: 2
+      });
+      this.cardFields.push({
+        prettyName: 'Orbit Direction', fieldName: 'orbitDirection', dataType: '',
+        isTitle: false,
+        lineNumber: 2
+      });
+      this.cardFields.push({
+        prettyName: 'Processing Level', fieldName: 'processingLevel', dataType: '',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Radiometric Accuracy', fieldName: 'radiometricAccuracy', dataType: '%',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Snow Cover', fieldName: 'snowCover', dataType: '%',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Target Elevation', fieldName: 'targetElevation', dataType: 'm',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Image Quality', fieldName: 'imageQuality', dataType: '/10',
+        isTitle: false,
+        lineNumber: 3
+      });
 
       this.dropDownMapValues.set('source', from([['source_1', 'source_2', 'source_3']]));
       this.dropDownMapValues.set('acquired', from([['acquired_1', 'acquired_2', 'acquired_3']]));
