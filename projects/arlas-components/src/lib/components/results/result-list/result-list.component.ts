@@ -577,8 +577,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngOnInit() {
-    console.log('init', this.defautMode)
-    console.log('init', this.defautMode)
+    console.log('init', this.defautMode);
+    console.log('init', this.defautMode);
     this.updateResultMode(this.defautMode?.toString());
     this.options = Object.assign(new ResultListOptions(), this.options);
   }
@@ -596,7 +596,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
-      console.log('ngonchange', this.defautMode)
+      console.log('ngonchange', this.defautMode);
       this.updateResultMode(this.defautMode?.toString());
       this.setTableHeight();
     }
@@ -901,7 +901,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Sets the display style according to the mode
    */
   public switchMode(toggleChangeEvent: MatButtonToggleChange) {
-    console.log('toggle change event value', toggleChangeEvent.value)
+    console.log('toggle change event value', toggleChangeEvent.value);
     this.updateResultMode(toggleChangeEvent.value);
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
@@ -913,7 +913,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public updateResultMode(value: string){
     const enumFound = this.stringEnumToModeEnum(value);
     console.log('enumFound', enumFound,  ModeEnum.grid,
-      enumFound === ModeEnum.card)
+      enumFound === ModeEnum.card);
     if (enumFound === ModeEnum.grid) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';
