@@ -17,26 +17,22 @@
  * under the License.
  */
 
+import { Field } from './field';
+
 /**
  * Configuration for a single field displayed in a card view badge.
- * Each instance describes one badge: how to look up the value, display it,
+ * Each instance describes one card property: how to look up the value, display it,
  * and which row it belongs to.
  */
-export interface CardViewProperties {
-  /** Key to look up the value in item.itemData */
-  fieldName: string;
+export interface CardViewProperties  extends Field {
   /** Display label shown in the badge tooltip */
   prettyName: string;
-  /** Unit suffix appended to the value (e.g. "%", "km", "€") */
-  dataType?: string;
   /** Optional processing function name applied to the raw value */
   process?: string;
   /** Whether this field is the card title (displayed prominently) */
   isTitle: boolean;
   /** Row index for grouping badges into lines (same value = same row) */
   lineNumber: number;
-  /** Whether to colorize the cell background from the field value via the color service */
-  useColorService?: boolean;
   /** Material icon name displayed alongside the value */
   icon?: string;
   /** Sort key for ordering entries within a line */

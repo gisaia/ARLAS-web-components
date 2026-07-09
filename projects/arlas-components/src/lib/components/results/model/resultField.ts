@@ -18,13 +18,12 @@
  */
 
 
-export interface Field {
-  /** Name/path of the field to add to list **/
-  fieldName: string;
-  /** Unit of the field values if it exists (degree, percentage, etc) **/
-  dataType: string;
-  /** Whether to colorize values on cells of the list with a color generated from the field value **/
-  useColorService?: boolean;
-  /** Whether to display an icon or note **/
-  icon?: string;
+import {Field} from './field';
+
+/**
+ * Should be iso with the fieldList of ResultListContributor fieldList attribute.
+ * Describes a Field used to display data in the Resultlist table and card view
+ */
+export interface ResultField extends Field {
+  columnName: string;
 }

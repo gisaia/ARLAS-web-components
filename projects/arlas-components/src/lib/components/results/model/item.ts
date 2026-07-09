@@ -65,7 +65,7 @@ export class Item {
    */
   public columns = new Array<Column>();
   /**
-   * @description The item's data is organized in card when represented in a card view.
+   * @description The item's data is organized in a multi-line list of metadata.
    */
   public cardsView = new Array<CardViewEntry[]>;
   /**

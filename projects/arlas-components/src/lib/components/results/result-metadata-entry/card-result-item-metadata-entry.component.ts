@@ -47,22 +47,22 @@ export class CardResultItemMetadataEntryComponent {
   /** Default text to display when no value is available */
   protected readonly NO_VALUE = '-';
   /** The badge data to display (required input) */
-  public metaBadge = input.required<MetaBadge>();
+  public metadataEntry = input.required<MetaBadge>();
 
   /** Whether the value is empty **/
   public valueIsEmpty = computed(() => {
-    if(this.metaBadge().value === undefined || this.metaBadge().value === null){
+    if(this.metadataEntry().value === undefined || this.metadataEntry().value === null){
       return true;
     }
 
-    if(typeof this.metaBadge().value === 'string' &&
-      ((this.metaBadge().value as string).trim().length === 0 ||
-      (this.metaBadge().value as string).trim() === this.NO_VALUE)){
+    if(typeof this.metadataEntry().value === 'string' &&
+      ((this.metadataEntry().value as string).trim().length === 0 ||
+      (this.metadataEntry().value as string).trim() === this.NO_VALUE)){
       return true;
     }
 
-    if(typeof this.metaBadge().value === 'number' &&
-      Number.isNaN(this.metaBadge().value as number)){
+    if(typeof this.metadataEntry().value === 'number' &&
+      Number.isNaN(this.metadataEntry().value as number)){
       return true;
     }
 

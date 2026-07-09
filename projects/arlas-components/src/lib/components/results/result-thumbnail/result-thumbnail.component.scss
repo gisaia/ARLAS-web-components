@@ -24,20 +24,6 @@ $img-proportion: 100%;
   width: 100%;
 
   ::ng-deep {
-    & .resultitem-list__actions {
-      min-width: 0;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      width: 17px;
-      height: 17px;
-      display: none;
-      background: rgba(255,255,255,0.8);
-      border-radius: 5px;
-      margin-left: 0;
-
-    }
-
     & .list_actions .icon {
       width: 17px!important;
       height: 17px!important;

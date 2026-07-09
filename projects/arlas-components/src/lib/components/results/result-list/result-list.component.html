@@ -82,7 +82,7 @@
               </button>
             }
           </div>
-          @if (hasGridMode || hasCardView) {
+          @if (hasGridMode || hasCardMode) {
             <div class="resultlist__tools--separator">|</div>
             <div class="resultlist__tools--mode" id="resultlist_mode">
               <mat-button-toggle-group [name]="'modeGroup'" (change)="switchMode($event)"
@@ -97,7 +97,7 @@
                   <mat-icon>grid_view</mat-icon>
                 </mat-button-toggle>
                 }
-                @if(hasCardView) {
+                @if(hasCardMode) {
                   <mat-button-toggle class="card-toggle" id="card_mode_btn" matTooltip="{{CARD_MODE | translate}}" value="{{ModeEnum.card}}"
                                      [checked]="resultMode===ModeEnum.card">
                     <mat-icon>event_list</mat-icon>

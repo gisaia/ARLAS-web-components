@@ -52,12 +52,6 @@ function generateRandomText(length) {
     selector: 'arlas-results-demo',
     templateUrl: './results-demo.component.html',
     styleUrls: ['./results-demo.component.css'],
-  providers: [
-    {
-      provide: ColorGeneratorLoader,
-      useClass: AwcColorGeneratorLoader
-    }
-  ],
     imports: [MatSidenavContainer, MatSidenav, MatButton, ResultListComponent]
 })
 export class ResultsDemoComponent implements OnInit {

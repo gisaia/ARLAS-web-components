@@ -21,6 +21,20 @@
   height: 116px; // item height
   background: white;
   --image-dimension: 100px;
+
+
+  ::ng-deep  .card__image .resultitem-list__actions {
+      min-width: 0;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      width: 17px;
+      height: 17px;
+      display: none;
+      background: rgba(255,255,255,0.8);
+      border-radius: 5px;
+      margin-left: 0;
+    }
 }
 
 

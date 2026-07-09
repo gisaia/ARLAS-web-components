@@ -74,5 +74,5 @@ export { FilterOperator } from './lib/tools/models/term-filters';
 export { ProtectImageDirective } from './lib/tools/protect-image.directive';
 export { CardViewProperties } from './lib/components/results/model/cardViewProperties';
 export { CardViewEntry } from './lib/components/results/model/cardViewEntry';
-export { Field as ResultField } from './lib/components/results/model/field';
+export { ResultField } from './lib/components/results/model/resultField';
 

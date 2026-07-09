@@ -73,6 +73,10 @@ export class ResultCardItemComponent extends ItemComponent {
     const cardsView = this.rowItem().cardsView;
     const title: CardViewEntry[] = [];
     const fields: CardViewEntry[][] = [];
+    if(!cardsView){
+      return  { title, fields };
+    }
+
     for (const row of cardsView) {
       const nonTitle: CardViewEntry[] = [];
       for (const entry of row) {
@@ -86,7 +90,7 @@ export class ResultCardItemComponent extends ItemComponent {
     }
     return { title, fields };
   });
-  public titleField = computed(() => this.parsedCardsView().title);
+  public titleFields = computed(() => this.parsedCardsView()?.title);
   public fields = computed(() => this.parsedCardsView().fields);
 
   /** Reference to the thumbnail enum for use in template */

@@ -28,7 +28,7 @@ export class CardViewEntry  extends ResultListEntry {
   public lineNumber: number;
   /** Optional Material icon name to display alongside the value */
   public icon?: string;
-  /** Optional sort key for ordering entries within a line */
+  /** Optional default sort key for ordering entries  */
   public sort?: string;
 
   /**

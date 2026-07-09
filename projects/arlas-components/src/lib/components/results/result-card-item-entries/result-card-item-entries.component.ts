@@ -40,7 +40,7 @@ export class ResultCardItemEntriesComponent {
   public metaDataEntries = signal<MetaBadge[][]>([]);
 
   /** Separator used in tooltip (e.g., fieldName : value) */
-  public readonly TOOLTIP_VALUE_SPACER = ':';
+  public readonly TOOLTIP_VALUE_SPACER = ' : ';
 
   public constructor() {
 
@@ -54,7 +54,7 @@ export class ResultCardItemEntriesComponent {
   }
 
   /**
-   * Create badges based on the provided fields and item data.
+   * Create entries based on the provided fields and item data.
    * Uses guard clauses to validate data, only wraps DOM/service operations in try-catch.
    * @returns An array of MetaBadge objects representing the badges to display
    */
@@ -71,7 +71,7 @@ export class ResultCardItemEntriesComponent {
         value,
         icon: field?.icon,
         unit: field?.dataType,
-        tooltip: `${field.prettyName} ${this.TOOLTIP_VALUE_SPACER} ${value}
+        tooltip: `${field.prettyName}${this.TOOLTIP_VALUE_SPACER}${value}
         ${hasValue ? (field?.dataType || '') : ''}`
       };
     }));

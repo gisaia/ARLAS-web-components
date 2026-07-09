@@ -76,7 +76,7 @@ import {
   ResultListOptions
 } from '../utils/results.utils';
 import {ResultCardItemComponent} from '../result-card-item/result-card-item.component';
-import {Field} from '../model/field';
+import {ResultField} from '../model/resultField';
 import {CardViewEntry} from '../model/cardViewEntry';
 import {CardViewProperties} from '../model/cardViewProperties';
 
@@ -192,9 +192,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description List of the fields displayed in the table (including the id field)
    * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public fieldsList: Array<Field>;
+  @Input() public fieldsList: Array<ResultField>;
 
 
+  /**
+   * @Input : Angular
+   * @description List of the card displayed in the card view.
+   */
   @Input() public cardViewProperties: Array<CardViewProperties>;
 
   /**
@@ -388,7 +392,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
 
   @Input()public hasGridMode = false;
-  @Input() public hasCardView = false;
+  @Input() public hasCardMode = false;
 
   /**
    * Whether the columns of the resultlist in list mode can be resized
@@ -509,7 +513,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
   public columns: Array<Column>;
-  public cardViewLines: Array<CardViewEntry[]>;
+  public cardViewRows: Array<CardViewEntry[]>;
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
@@ -573,6 +577,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngOnInit() {
+    console.log('init', this.defautMode)
+    console.log('init', this.defautMode)
     this.updateResultMode(this.defautMode?.toString());
     this.options = Object.assign(new ResultListOptions(), this.options);
   }
@@ -590,6 +596,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
+      console.log('ngonchange', this.defautMode)
       this.updateResultMode(this.defautMode?.toString());
       this.setTableHeight();
     }
@@ -894,6 +901,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Sets the display style according to the mode
    */
   public switchMode(toggleChangeEvent: MatButtonToggleChange) {
+    console.log('toggle change event value', toggleChangeEvent.value)
     this.updateResultMode(toggleChangeEvent.value);
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
@@ -903,19 +911,47 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * Update result mode to display data according to user selection
    */
   public updateResultMode(value: string){
-    if (value === ModeEnum.grid.toString()) {
+    const enumFound = this.stringEnumToModeEnum(value);
+    console.log('enumFound', enumFound,  ModeEnum.grid,
+      enumFound === ModeEnum.card)
+    if (enumFound === ModeEnum.grid) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';
-    } else  if(value === ModeEnum.list.toString()) {
-      this.resultMode = ModeEnum.list;
-      this.displayListGrid = 'inline';
-    } else {
+    } else if(enumFound === ModeEnum.card) {
       this.resultMode = ModeEnum.card;
       this.displayListGrid = 'block';
+    }  else  {
+      this.resultMode = ModeEnum.list;
+      this.displayListGrid = 'inline';
     }
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
   }
+
+  // For retro compatibility; In previous conf the value passed to defaultMode was grid or list.
+  // But the value stand for an enum.
+  public stringEnumToModeEnum(value: string){
+
+    const isNumeric = !Number.isNaN(Number(value)) && value.trim() !== '';
+    if(isNumeric){
+      return Number(value) as unknown as ModeEnum;
+    }
+
+    // Part for retro compatibility
+    switch (value) {
+      case 'grid' :
+        return ModeEnum.grid;
+
+      case 'list' :
+        return ModeEnum.list;
+
+      case 'card' :
+        return ModeEnum.card;
+      default:
+        return  ModeEnum.list;
+    }
+  }
+
 
   /**
    * @description Selects all the items
@@ -988,7 +1024,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public setCardViewProperties(){
-    this.cardViewLines = [];
+    this.cardViewRows = [];
     let cardsViewProperties: CardViewEntry[] = [];
     const sortedCards =  [...(this.cardViewProperties || [])]
       .sort((d1, d2) => d1.lineNumber - d2.lineNumber);
@@ -998,15 +1034,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       const cardEntry = new CardViewEntry(curr.prettyName, curr.fieldName, curr.dataType, curr.isTitle,
         curr.lineNumber, curr.icon, curr.sort);
       if(prev && prev.lineNumber !== cardEntry.lineNumber){
-        this.cardViewLines.push(cardsViewProperties);
+        this.cardViewRows.push(cardsViewProperties);
         cardsViewProperties = [];
       }
       cardsViewProperties.push(cardEntry);
-      // push the final group once we've processed the last item
-      if (i === sortedCards.length - 1) {
-        this.cardViewLines.push(cardsViewProperties);
-      }
     });
+    // push the final group once we've processed the last item
+    this.cardViewRows.push(cardsViewProperties);
   }
 
   // Build the table's columns
@@ -1034,7 +1068,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
-    const item = new Item(this.columns, this.cardViewLines, itemData);
+    const item = new Item(this.columns, this.cardViewRows, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     if (this.fieldsConfiguration.titleFieldNames) {
       item.title = this.fieldsConfiguration.titleFieldNames

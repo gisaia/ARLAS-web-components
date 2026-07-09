@@ -24,9 +24,9 @@
     <div class="card__content-header">
       <!-- Item title from the configured title field -->
       <div class="card__content-title">
-        @if (titleField().length > 0) {
-          @for( filed of titleField(); track filed.fieldName){
-            {{rowItem().itemData.get(filed.fieldName)}}
+        @if (titleFields().length > 0) {
+          @for( field of titleFields(); track field.fieldName ){
+            {{rowItem().itemData.get(field.fieldName)}}
           }
         }
       </div>
