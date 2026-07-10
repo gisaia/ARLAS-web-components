@@ -67,10 +67,10 @@
                 }
               </mat-select-trigger>
               <mat-option [value]="" class="resultlist__tools--sort-option"> - - </mat-option>
-              @for (column of columns; track column.fieldName) {
-                @if (!column.isIdField && !column.isToggleField) {
-                  <mat-option [value]="column" class="resultlist__tools--sort-option">
-                    {{column.columnName | translate}}
+              @for (sortOption of sortOptions; track sortOption.fieldName) {
+                @if (!sortOption?.isIdField && !sortOption?.isToggleField) {
+                  <mat-option [value]="sortOption" class="resultlist__tools--sort-option">
+                    {{sortOption.columnName | translate}}
                   </mat-option>
                 }
               }

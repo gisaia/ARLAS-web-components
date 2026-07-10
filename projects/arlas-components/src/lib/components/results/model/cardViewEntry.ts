@@ -28,8 +28,7 @@ export class CardViewEntry  extends ResultListEntry {
   public lineNumber: number;
   /** Optional Material icon name to display alongside the value */
   public icon?: string;
-  /** Optional default sort key for ordering entries  */
-  public sort?: string;
+
 
   /**
    * @param prettyName  Display label for the card badge
@@ -42,12 +41,11 @@ export class CardViewEntry  extends ResultListEntry {
    */
   public constructor(prettyName: string, fieldName: string, dataType: string,
                      isTitle: boolean, lineNumber: number, icon?: string, sort?: string) {
-    super(fieldName, dataType);
+    super(fieldName, dataType, sort);
     this.prettyName = prettyName;
     this.isTitle = isTitle;
     this.lineNumber = lineNumber;
     this.icon = icon;
-    this.sort = sort;
   }
 }
 

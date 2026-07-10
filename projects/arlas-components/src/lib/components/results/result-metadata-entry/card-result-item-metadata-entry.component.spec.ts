@@ -33,7 +33,7 @@ describe('ResultMetaBadgeComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(CardResultItemMetadataEntryComponent);
-    fixture.componentRef.setInput('metaBadge', {value: 'test'});
+    fixture.componentRef.setInput('metadataEntry', {value: 'test'});
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -78,7 +78,9 @@ import {
 import {ResultCardItemComponent} from '../result-card-item/result-card-item.component';
 import {ResultField} from '../model/resultField';
 import {CardViewEntry} from '../model/cardViewEntry';
-import {CardViewProperties} from '../model/cardViewProperties';
+import {CardViewProperty} from '../model/cardViewProperty';
+import {SortableEntry, toSortableEntries} from '../model/sortableEntry';
+import {stringEnumToModeEnum} from '../utils/stringEnumToModeEnum';
 
 /**
  * Structure summarizing the sort on a column
@@ -199,7 +201,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description List of the card displayed in the card view.
    */
-  @Input() public cardViewProperties: Array<CardViewProperties>;
+  @Input() public cardViewProperties: Array<CardViewProperty>;
 
   /**
    * @Input : Angular
@@ -512,8 +514,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
-  public columns: Array<Column>;
-  public cardViewRows: Array<CardViewEntry[]>;
+  public columns: Array<Column> = [];
+  public cardViewRows: Array<CardViewEntry[]> = [];
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
@@ -542,6 +544,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly debouncer = new Subject<ElementIdentifier>();
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
+  protected sortOptions: Array<SortableEntry> = [];
 
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
@@ -577,8 +580,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngOnInit() {
-    console.log('init', this.defautMode);
-    console.log('init', this.defautMode);
     this.updateResultMode(this.defautMode?.toString());
     this.options = Object.assign(new ResultListOptions(), this.options);
   }
@@ -596,7 +597,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
-      console.log('ngonchange', this.defautMode);
       this.updateResultMode(this.defautMode?.toString());
       this.setTableHeight();
     }
@@ -683,6 +683,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
     if(cardViewPropertiesChanges){
       this.setCardViewProperties();
+    }
+
+    if(columnChanges || cardViewPropertiesChanges){
+      this.buildSortOptions();
     }
 
     if (itemChanges) {
@@ -822,7 +826,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public setSortedColumn(event: MatSelectChange) {
     if (event.value) {
       this.sortedColumn = {
-        columnName: event.value.columnName,
+        columnName: event.value?.columnName,
         fieldName: event.value.fieldName,
         sortDirection: this.sortedColumn?.sortDirection ?? SortEnum.none
       };
@@ -901,7 +905,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description Sets the display style according to the mode
    */
   public switchMode(toggleChangeEvent: MatButtonToggleChange) {
-    console.log('toggle change event value', toggleChangeEvent.value);
     this.updateResultMode(toggleChangeEvent.value);
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
@@ -911,13 +914,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * Update result mode to display data according to user selection
    */
   public updateResultMode(value: string){
-    const enumFound = this.stringEnumToModeEnum(value);
-    console.log('enumFound', enumFound,  ModeEnum.grid,
-      enumFound === ModeEnum.card);
+    const enumFound = stringEnumToModeEnum(value);
     if (enumFound === ModeEnum.grid) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';
-    } else if(enumFound === ModeEnum.card) {
+    } else if (enumFound === ModeEnum.card) {
       this.resultMode = ModeEnum.card;
       this.displayListGrid = 'block';
     }  else  {
@@ -927,31 +928,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
   }
-
-  // For retro compatibility; In previous conf the value passed to defaultMode was grid or list.
-  // But the value stand for an enum.
-  public stringEnumToModeEnum(value: string){
-
-    const isNumeric = !Number.isNaN(Number(value)) && value.trim() !== '';
-    if(isNumeric){
-      return Number(value) as unknown as ModeEnum;
-    }
-
-    // Part for retro compatibility
-    switch (value) {
-      case 'grid' :
-        return ModeEnum.grid;
-
-      case 'list' :
-        return ModeEnum.list;
-
-      case 'card' :
-        return ModeEnum.card;
-      default:
-        return  ModeEnum.list;
-    }
-  }
-
 
   /**
    * @description Selects all the items
@@ -1030,9 +1006,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       .sort((d1, d2) => d1.lineNumber - d2.lineNumber);
 
     sortedCards.forEach((curr, i) => {
-      const prev: CardViewProperties = sortedCards[i - 1];
+      const prev: CardViewProperty = sortedCards[i - 1];
       const cardEntry = new CardViewEntry(curr.prettyName, curr.fieldName, curr.dataType, curr.isTitle,
-        curr.lineNumber, curr.icon, curr.sort);
+        curr.lineNumber, curr.icon, curr?.sort);
       if(prev && prev.lineNumber !== cardEntry.lineNumber){
         this.cardViewRows.push(cardsViewProperties);
         cardsViewProperties = [];
@@ -1204,5 +1180,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
           'Try to limit the element visibility to when it is really on screen to avoid this issue.');
       }
     }
+  }
+
+  private buildSortOptions() {
+    const sortOptions = this.hasCardMode ? [...this.columns, ...this.cardViewRows.flat()] : this.columns;
+    this.sortOptions = toSortableEntries(sortOptions);
   }
 }

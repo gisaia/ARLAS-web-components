@@ -17,25 +17,29 @@
  * under the License.
  */
 
-import { Field } from './field';
 
-/**
- * Configuration for a single field displayed in a card view badge.
- * Each instance describes one card property: how to look up the value, display it,
- * and which row it belongs to.
- */
-export interface CardViewProperties  extends Field {
-  /** Display label shown in the badge tooltip */
-  prettyName: string;
-  /** Optional processing function name applied to the raw value */
-  process?: string;
-  /** Whether this field is the card title (displayed prominently) */
-  isTitle: boolean;
-  /** Row index for grouping badges into lines (same value = same row) */
-  lineNumber: number;
-  /** Material icon name displayed alongside the value */
-  icon?: string;
-  /** Sort key for ordering entries within a line */
-  sort?: string;
+// For retro compatibility; In previous conf the value passed to defaultMode was grid or list.
+import { ModeEnum } from './enumerations/modeEnum';
+
+// But the value stand for an enum.
+export function stringEnumToModeEnum(value: string){
+
+  const isNumeric = !Number.isNaN(Number(value)) && value.trim() !== '';
+  if(isNumeric){
+    return Number(value) as unknown as ModeEnum;
+  }
+
+  // Part for retro compatibility
+  switch (value) {
+    case 'grid' :
+      return ModeEnum.grid;
+
+    case 'list' :
+      return ModeEnum.list;
+
+    case 'card' :
+      return ModeEnum.card;
+    default:
+      return  ModeEnum.list;
+  }
 }
-

@@ -17,18 +17,22 @@
  * under the License.
  */
 
+import { Field } from './field';
 
-export interface Field {
-  /** Name/path of the field to add to list **/
-  fieldName: string;
-  /** Unit of the field values if it exists (degree, percentage, etc) **/
-  dataType: string;
-  /** Whether to colorize values on cells of the list with a color generated from the field value **/
-  useColorService?: boolean;
-  /** Whether to display an icon or note **/
+/**
+ * Configuration for a single field displayed in a card view badge.
+ * Each instance describes one card property: how to look up the value, display it,
+ * and which row it belongs to.
+ */
+export interface CardViewProperty extends Field {
+  /** Display label shown in the badge tooltip */
+  prettyName: string;
+  /** Whether this field is the card title (displayed prominently) */
+  isTitle: boolean;
+  /** Row index for grouping badges into lines (same value = same row) */
+  lineNumber: number;
+  /** Material icon name displayed alongside the value */
   icon?: string;
-  /**
-   * @description  Internal field created by the builder for both configuration
-   */
-  sort?: string;
+
 }
+

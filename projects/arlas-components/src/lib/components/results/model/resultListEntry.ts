@@ -39,9 +39,16 @@ export class ResultListEntry {
    */
   public isIdField = false;
 
-  public constructor(fieldName: string, dataType: string) {
+  /**
+   * @description  Internal field created by the builder for both configuration
+   */
+  public sort: string;
+
+
+  public constructor(fieldName: string, dataType: string, sort?: string) {
     this.fieldName = fieldName;
     this.dataType = dataType;
+    this.sort  = sort;
   }
 }
 
