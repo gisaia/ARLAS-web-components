@@ -191,7 +191,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     const newColor = {};
     this.rowItem?.columns.forEach(c => {
       if (c.useColorService){
-        const key = this.rowItem?.itemData.get(c.fieldName);
+        const key = this.rowItem?.itemData.get(c.fieldName + '_' + c.columnName + '_table');
         if (key !== undefined && key !== null) {
           newColor[key.toString()] = {};
           newColor[key.toString()]['color'] = this.getColor(key);
