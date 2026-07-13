@@ -4,7 +4,7 @@
       <mat-icon class="small-icon">{{ metadataEntry().icon }}</mat-icon>
     </span>
   }
-  <span class="meta-badge__value" >{{ !valueIsEmpty() ? metadataEntry().value : NO_VALUE }}
+  <span class="meta-badge__value" >{{ !valueIsEmpty() ? (metadataEntry().value | formatNumber:NUMBER_FORMAT_CHAR) : NO_VALUE }}
     @if(!valueIsEmpty()){
       {{ metadataEntry().unit }}
     }

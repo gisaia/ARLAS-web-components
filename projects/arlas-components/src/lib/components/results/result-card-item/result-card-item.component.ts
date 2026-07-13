@@ -31,11 +31,14 @@ import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
 import {TranslatePipe} from '@ngx-translate/core';
 import {MatTooltip} from '@angular/material/tooltip';
+import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
+import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
 
 @Component({
   selector: 'arlas-resul-card-item',
   templateUrl: './result-card-item.component.html',
-  imports: [ResultThumbnailComponent, ResultCardItemEntriesComponent, MatIconButton, MatIcon, TranslatePipe, MatTooltip],
+  imports: [ResultThumbnailComponent, ResultCardItemEntriesComponent, MatIconButton, MatIcon,
+    TranslatePipe, MatTooltip, FormatNumberPipe],
   styleUrl: './result-card-item.component.scss'
 })
 export class ResultCardItemComponent extends ItemComponent {
@@ -59,6 +62,8 @@ export class ResultCardItemComponent extends ItemComponent {
   public clickedOnItemEvent = output<Item>();
   /** Output event: emitted when an action is triggered on an item */
   public actionOnItemEvent = output<{ action: Action; elementidentifier: ElementIdentifier; }>();
+
+  protected readonly NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
 
   /**
@@ -189,4 +194,5 @@ export class ResultCardItemComponent extends ItemComponent {
 
     this.rowItem().isDetailToggled = !this.rowItem().isDetailToggled;
   }
+
 }

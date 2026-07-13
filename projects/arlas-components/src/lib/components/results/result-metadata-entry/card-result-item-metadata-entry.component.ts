@@ -21,7 +21,8 @@ import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core
 import {ItemDataType} from '../utils/results.utils';
 import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
-
+import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
+import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
 export interface MetaBadge {
   /** The value to display in the badge */
   value: ItemDataType;
@@ -37,7 +38,8 @@ export interface MetaBadge {
   selector: 'arlas-card-result-item-metadata-entry',
   imports: [
     MatIcon,
-    MatTooltip
+    MatTooltip,
+    FormatNumberPipe
   ],
   templateUrl: './card-result-item-metadata-entry.component.html',
   styleUrl: './card-result-item-metadata-entry.component.scss',
@@ -68,4 +70,5 @@ export class CardResultItemMetadataEntryComponent {
 
     return false;
   });
+  protected readonly NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 }

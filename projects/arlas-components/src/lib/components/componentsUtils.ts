@@ -51,9 +51,6 @@ export function getValues(map): Array<any> {
   return Array.from(map.values());
 }
 
-@Injectable({
-  providedIn: 'root'
-})
 export abstract class ColorGeneratorLoader {
   public abstract keysToColors: Array<[string, string]>;
   public abstract colorsSaturationWeight: number;

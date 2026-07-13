@@ -65,7 +65,7 @@ export class ResultCardItemEntriesComponent {
     }
 
     return this.fields().map(cardViewEntry => cardViewEntry.map<MetaBadge>(field => {
-      const value = this.item().itemData.get(field.fieldName) ?? this.emptyValue();
+      const value = this.item().itemData.get(`${field.fieldName}_${field.prettyName}_${field?.icon}_card`) ?? this.emptyValue();
       const hasValue = value !== this.emptyValue();
       return {
         value,
