@@ -19,8 +19,7 @@
 
 import { HttpClient } from '@angular/common/http';
 import {
-    ChangeDetectorRef, Component,
-    ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ChangeDetectorRef, Component, ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -214,7 +213,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     }
     setTimeout(() => {
       if (this.isFullScreen) {
-        this.fullScreenViewer.show(this.imgSrc);
+        this.fullScreenViewer.show(this.imgSrc as string);
       } else {
         if (!!this.imageViewer && !this.viewer) {
           this.viewer = new ImageViewer(this.imageViewer.nativeElement);
