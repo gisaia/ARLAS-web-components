@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
-// For retro compatibility; In previous conf the value passed to defaultMode was grid or list.
 import { ModeEnum } from './enumerations/modeEnum';
 
-// But the value stand for an enum.
+
+/**
+ * For retro compatibility; In previous conf the value passed to defaultMode was grid or list.
+ * But the value stand for an enum.
+ **/
 export function stringEnumToModeEnum(value: string){
 
   const isNumeric = !Number.isNaN(Number(value)) && value.trim() !== '';

@@ -826,7 +826,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public setSortedColumn(event: MatSelectChange) {
     if (event.value) {
       this.sortedColumn = {
-        columnName: event.value?.columnName,
+        columnName: event.value.columnName,
         fieldName: event.value.fieldName,
         sortDirection: this.sortedColumn?.sortDirection ?? SortEnum.none
       };

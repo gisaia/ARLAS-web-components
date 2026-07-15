@@ -31,11 +31,11 @@ export class CardViewEntry  extends ResultListEntry {
 
 
   /**
-   * @param prettyName  Display label for the card badge
+   * @param prettyName  Display label for the card
    * @param fieldName   Key to look up the value in item.itemData
    * @param dataType    Unit or type suffix (e.g. "%", "km")
    * @param isTitle     Whether this entry is the card title
-   * @param lineNumber  Row index for grouping badges
+   * @param lineNumber  Row index for grouping metaData
    * @param icon        Material icon name
    * @param sort        Sort key within the row
    */

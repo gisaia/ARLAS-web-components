@@ -23,8 +23,8 @@ import {MatIcon} from '@angular/material/icon';
 import {MatTooltip} from '@angular/material/tooltip';
 import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
 import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
-export interface MetaBadge {
-  /** The value to display in the badge */
+export interface MetaDataEntry {
+  /** The value to display in the metadata */
   value: ItemDataType;
   /** Optional icon to display alongside the value */
   icon?: string;
@@ -48,8 +48,8 @@ export interface MetaBadge {
 export class CardResultItemMetadataEntryComponent {
   /** Default text to display when no value is available */
   protected readonly NO_VALUE = '-';
-  /** The badge data to display (required input) */
-  public metadataEntry = input.required<MetaBadge>();
+  /** The metaData to display (required input) */
+  public metadataEntry = input.required<MetaDataEntry>();
 
   /** Whether the value is empty **/
   public valueIsEmpty = computed(() => {

@@ -26,7 +26,7 @@
       <div class="card__content-title">
         @if (titleFields().length > 0) {
           @for( field of titleFields(); track field.fieldName ){
-            {{rowItem().itemData.get(`${field.fieldName}_${field.prettyName}_${field?.icon}_card` | formatNumber:NUMBER_FORMAT_CHAR)}}
+            {{rowItem().itemData.get((field | buildItemField:'card') | formatNumber:NUMBER_FORMAT_CHAR)}}
           }
         }
       </div>

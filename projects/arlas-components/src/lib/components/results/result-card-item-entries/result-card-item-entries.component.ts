@@ -18,8 +18,9 @@
  */
 import {Component, effect, input, signal, untracked} from '@angular/core';
 import {Item} from '../model/item';
-import {MetaBadge, CardResultItemMetadataEntryComponent} from '../result-metadata-entry/card-result-item-metadata-entry.component';
+import {MetaDataEntry, CardResultItemMetadataEntryComponent} from '../result-metadata-entry/card-result-item-metadata-entry.component';
 import {CardViewEntry} from '../model/cardViewEntry';
+import {buildCardItemField} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
 
 @Component({
   selector: 'arlas-result-card-item-entries',
@@ -37,7 +38,7 @@ export class ResultCardItemEntriesComponent {
   /** Character used to separate items */
   public spacingChar = input<string>('•');
   public emptyValue = input<string>('-');
-  public metaDataEntries = signal<MetaBadge[][]>([]);
+  public metaDataEntries = signal<MetaDataEntry[][]>([]);
 
   /** Separator used in tooltip (e.g., fieldName : value) */
   public readonly TOOLTIP_VALUE_SPACER = ' : ';
@@ -64,8 +65,8 @@ export class ResultCardItemEntriesComponent {
       return [];
     }
 
-    return this.fields().map(cardViewEntry => cardViewEntry.map<MetaBadge>(field => {
-      const value = this.item().itemData.get(`${field.fieldName}_${field.prettyName}_${field?.icon}_card`) ?? this.emptyValue();
+    return this.fields().map(cardViewEntry => cardViewEntry.map<MetaDataEntry>(field => {
+      const value = this.item().itemData.get(buildCardItemField(field)) ?? this.emptyValue();
       const hasValue = value !== this.emptyValue();
       return {
         value,

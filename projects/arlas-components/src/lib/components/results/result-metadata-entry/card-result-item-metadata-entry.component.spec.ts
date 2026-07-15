@@ -21,14 +21,18 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CardResultItemMetadataEntryComponent } from './card-result-item-metadata-entry.component';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {Item} from 'arlas-web-components';
+import {TranslateLoader, TranslateModule, TranslateNoOpLoader} from '@ngx-translate/core';
 describe('ResultMetaBadgeComponent', () => {
   let component: CardResultItemMetadataEntryComponent;
   let fixture: ComponentFixture<CardResultItemMetadataEntryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CardResultItemMetadataEntryComponent]
+      imports: [CardResultItemMetadataEntryComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
+        })
+      ]
     })
     .compileComponents();
 

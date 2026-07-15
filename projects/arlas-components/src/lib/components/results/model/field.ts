@@ -28,7 +28,7 @@ export interface Field {
   /** Whether to display an icon or note **/
   icon?: string;
   /**
-   * @description  Internal field created by the builder for both configuration
+   * @description  Internal field created by the builder for both configuration to determine default sort
    */
   sort?: string;
 }

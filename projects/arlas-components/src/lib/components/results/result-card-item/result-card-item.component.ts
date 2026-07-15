@@ -33,12 +33,13 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {MatTooltip} from '@angular/material/tooltip';
 import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
 import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
+import {BuildItemFieldPipe} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
 
 @Component({
   selector: 'arlas-resul-card-item',
   templateUrl: './result-card-item.component.html',
   imports: [ResultThumbnailComponent, ResultCardItemEntriesComponent, MatIconButton, MatIcon,
-    TranslatePipe, MatTooltip, FormatNumberPipe],
+    TranslatePipe, MatTooltip, FormatNumberPipe, BuildItemFieldPipe],
   styleUrl: './result-card-item.component.scss'
 })
 export class ResultCardItemComponent extends ItemComponent {
@@ -76,24 +77,24 @@ export class ResultCardItemComponent extends ItemComponent {
   public SHOW_DETAILS = marker('Show details');
   private parsedCardsView = computed(() => {
     const cardsView = this.rowItem().cardsView;
-    const title: CardViewEntry[] = [];
+    const titles: CardViewEntry[] = [];
     const fields: CardViewEntry[][] = [];
     if(!cardsView){
-      return  { title, fields };
+      return  { title: titles, fields };
     }
 
     for (const row of cardsView) {
       const nonTitle: CardViewEntry[] = [];
       for (const entry of row) {
         if (entry.isTitle) {
-          title.push(entry);
+          titles.push(entry);
         } else {
           nonTitle.push(entry);
         }
       }
       fields.push(nonTitle);
     }
-    return { title, fields };
+    return { title: titles, fields };
   });
   public titleFields = computed(() => this.parsedCardsView()?.title);
   public fields = computed(() => this.parsedCardsView().fields);

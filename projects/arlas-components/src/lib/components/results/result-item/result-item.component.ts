@@ -33,13 +33,14 @@ import {ResultActionsComponent} from '../result-actions/result-actions.component
 import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
 import {CellBackgroundStyleEnum} from '../utils/enumerations/cellBackgroundStyleEnum';
 import {Action, ElementIdentifier, ResultListOptions} from '../utils/results.utils';
+import {BuildItemFieldPipe, buildTableItemField} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
 
 
 @Component({
   selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
   styleUrls: ['./result-item.component.scss'],
-  imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe]
+  imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe, BuildItemFieldPipe]
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 
@@ -191,7 +192,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     const newColor = {};
     this.rowItem?.columns.forEach(c => {
       if (c.useColorService){
-        const key = this.rowItem?.itemData.get(c.fieldName + '_' + c.columnName + '_table');
+        const key = this.rowItem?.itemData.get(buildTableItemField(c));
         if (key !== undefined && key !== null) {
           newColor[key.toString()] = {};
           newColor[key.toString()]['color'] = this.getColor(key);

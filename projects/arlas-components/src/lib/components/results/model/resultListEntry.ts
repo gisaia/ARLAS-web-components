@@ -40,7 +40,7 @@ export class ResultListEntry {
   public isIdField = false;
 
   /**
-   * @description  Internal field created by the builder for both configuration
+   * @description  Internal field created by the builder for both configuration to determine default sort
    */
   public sort: string;
 
