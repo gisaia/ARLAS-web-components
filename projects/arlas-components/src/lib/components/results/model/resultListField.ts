@@ -18,8 +18,9 @@
  */
 
 import { SortEnum } from '../utils/enumerations/sortEnum';
+import {SortableField} from './sortableField';
 
-export class ResultListEntry {
+export abstract class ResultListField {
 
   /**
    * @description The name of the field related to this column.
@@ -43,6 +44,9 @@ export class ResultListEntry {
    * @description  Internal field created by the builder for both configuration to determine default sort
    */
   public sort: string;
+
+  public abstract toSortableField(): SortableField;
+
 
 
   public constructor(fieldName: string, dataType: string, sort?: string) {

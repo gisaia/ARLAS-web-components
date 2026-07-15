@@ -72,7 +72,7 @@ export { ArlasColorService } from './lib/services/color.generator.service';
 export { ResultlistNotifierService } from './lib/services/resultlist.notifier.service';
 export { FilterOperator } from './lib/tools/models/term-filters';
 export { ProtectImageDirective } from './lib/tools/protect-image.directive';
-export { CardViewProperty } from './lib/components/results/model/cardViewProperty';
-export { CardViewEntry } from './lib/components/results/model/cardViewEntry';
-export { ResultField } from './lib/components/results/model/resultField';
+export { CardFieldConfig } from './lib/components/results/config/cardFieldConfig';
+export { CardField } from './lib/components/results/model/cardField';
+export { TableFieldConfig } from './lib/components/results/config/tableFieldConfig';
 

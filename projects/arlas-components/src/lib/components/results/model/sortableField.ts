@@ -16,14 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-
-import {Field} from './field';
-
-/**
- * Should be iso with the fieldList of ResultListContributor fieldList attribute.
- * Describes a Field used to display data in the Resultlist table and card view
- */
-export interface ResultField extends Field {
+export interface SortableField {
+  fieldName: string;
   columnName: string;
+  sort?: string;
+  isIdField: boolean;
+  isToggleField: boolean;
 }

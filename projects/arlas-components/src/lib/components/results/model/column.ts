@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import {ResultListEntry} from './resultListEntry';
+import {ResultListField} from './resultListField';
+import {SortableField} from './sortableField';
 
-export class Column  extends ResultListEntry {
+export class Column  extends ResultListField {
   /**
    * @description The column name
    */
@@ -44,6 +45,16 @@ export class Column  extends ResultListEntry {
   /** Whether the column can be resized */
   public get isResizable() {
     return !this.isIdField && !this.isToggleField;
+  }
+
+  public toSortableField(): SortableField {
+    return ({
+      fieldName: this.fieldName,
+      columnName: this.columnName,
+      sort: this.sort,
+      isIdField: this.isIdField,
+      isToggleField:  this.isToggleField
+    });
   }
 
   public constructor(columnName: string, fieldName: string, dataType: string) {

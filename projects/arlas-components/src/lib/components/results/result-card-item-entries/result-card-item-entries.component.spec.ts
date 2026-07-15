@@ -22,7 +22,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ResultCardItemEntriesComponent } from './result-card-item-entries.component';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {Item} from 'arlas-web-components';
-describe('ResultMetaBadgesComponent', () => {
+describe('ResultCardItemEntriesComponent', () => {
   let component: ResultCardItemEntriesComponent;
   let fixture: ComponentFixture<ResultCardItemEntriesComponent>;
 

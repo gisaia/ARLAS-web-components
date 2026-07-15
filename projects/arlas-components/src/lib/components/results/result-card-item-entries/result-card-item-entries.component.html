@@ -1,15 +1,15 @@
-<div class="meta-badges__container">
-  <!-- Iterate over each row of badges calculated by metaBadgesRows() signal -->
+<div class="meta-data-entries__container">
+  <!-- Iterate over each row of metadata calculated by metaDataEntries() signal -->
   @for (row  of metaDataEntries(); track $index; let lastRow = $last){
-    <div class="meta-badges__row">
-      <!-- For each badge in the row, render the badge component with optional spacer -->
-      @for (metaBadge  of row; track $index; let lastMeta = $last){
-        <div class="meta-badges__badge">
-          <!-- Display the badge with data -->
-          <arlas-card-result-item-metadata-entry class="item"  [metadataEntry]="metaBadge"></arlas-card-result-item-metadata-entry>
-          <!-- Add spacer character between badges, except after last badge in last row -->
+    <div class="meta-data-entries__row">
+      <!-- For each entry in the row, render the entry component with optional spacer -->
+      @for (metaDataEntry  of row; track $index; let lastMeta = $last){
+        <div class="meta-data-entries__entry">
+          <!-- Display field data -->
+          <arlas-card-result-item-metadata-entry class="item"  [metadataEntry]="metaDataEntry"></arlas-card-result-item-metadata-entry>
+          <!-- Add spacer character between entries, except after last entry in last row -->
           @if (!lastMeta || !lastRow){
-            <span class="meta-badges__spacer">{{ spacingChar() }}</span>
+            <span class="meta-data-entries__spacer">{{ spacingChar() }}</span>
           }
         </div>
       }

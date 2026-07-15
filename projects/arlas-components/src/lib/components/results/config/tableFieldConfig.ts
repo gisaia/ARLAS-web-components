@@ -17,22 +17,13 @@
  * under the License.
  */
 
-import { Field } from './field';
+
+import {FieldConfig} from './fieldConfig';
 
 /**
- * Configuration for a single field displayed in a card view badge.
- * Each instance describes one card property: how to look up the value, display it,
- * and which row it belongs to.
+ * Should be iso with the fieldList of ResultListContributor fieldList attribute.
+ * Describes a Field used to display data in the Resultlist table and card view
  */
-export interface CardViewProperty extends Field {
-  /** Display label shown in the badge tooltip */
-  prettyName: string;
-  /** Whether this field is the card title (displayed prominently) */
-  isTitle: boolean;
-  /** Row index for grouping badges into lines (same value = same row) */
-  lineNumber: number;
-  /** Material icon name displayed alongside the value */
-  icon?: string;
-
+export interface TableFieldConfig extends FieldConfig {
+  columnName: string;
 }
-

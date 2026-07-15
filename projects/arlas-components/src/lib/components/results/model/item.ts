@@ -19,7 +19,7 @@
 
 import {Action, Attachment, ItemDataType} from '../utils/results.utils';
 import {Column} from './column';
-import {CardViewEntry} from './cardViewEntry';
+import {CardField} from './cardField';
 
 export interface ItemDetailGroup {
   group: string;
@@ -67,7 +67,7 @@ export class Item {
   /**
    * @description The item's data is organized in a multi-line list of metadata.
    */
-  public cardsView = new Array<CardViewEntry[]>;
+  public cardsFieldsRows = new Array<CardField[]>;
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
@@ -127,9 +127,9 @@ export class Item {
    */
   public detailsTitleEnabled: boolean;
 
-  public constructor(columns: Array<Column>, cardsView: Array<CardViewEntry[]>, itemData: Map<string, ItemDataType>) {
+  public constructor(columns: Array<Column>, cardsFieldsRows: Array<CardField[]>, itemData: Map<string, ItemDataType>) {
     this.columns = columns;
-    this.cardsView = cardsView;
+    this.cardsFieldsRows = cardsFieldsRows;
     this.itemData = itemData;
   }
 }

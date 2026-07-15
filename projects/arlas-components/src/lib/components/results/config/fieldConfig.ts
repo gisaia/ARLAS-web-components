@@ -17,31 +17,18 @@
  * under the License.
  */
 
-import { CardViewEntry } from './cardViewEntry';
-import {Column} from './column';
 
-
-export interface SortableEntry {
+export interface FieldConfig {
+  /** Name/path of the field to add to list **/
   fieldName: string;
-  columnName: string;
+  /** Unit of the field values if it exists (degree, percentage, etc) **/
+  dataType: string;
+  /** Whether to colorize values on cells of the list with a color generated from the field value **/
+  useColorService?: boolean;
+  /** Whether to display an icon or note **/
+  icon?: string;
+  /**
+   * @description  Internal field created by the builder for both configuration to determine default sort
+   */
   sort?: string;
-  isIdField: boolean;
-  isToggleField: boolean;
-}
-
-export function toSortableEntries(fields: (Column | CardViewEntry)[]): SortableEntry[] {
- const uniqueField = new Map<string, SortableEntry>();
-  fields.forEach(f =>{
-
-    if(!uniqueField.has(f.fieldName)){
-      uniqueField.set(f.fieldName, ({
-        fieldName: f.fieldName,
-        columnName: 'prettyName' in f ? f.prettyName : f.columnName,
-        sort: f.sort,
-        isIdField: f.isIdField,
-        isToggleField:  'isToggleField' in f ? f.isToggleField : false
-      }));
-    }
-  });
- return  Array.from(uniqueField.values());
 }

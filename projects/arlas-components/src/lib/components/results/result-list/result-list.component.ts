@@ -76,10 +76,10 @@ import {
   ResultListOptions
 } from '../utils/results.utils';
 import {ResultCardItemComponent} from '../result-card-item/result-card-item.component';
-import {ResultField} from '../model/resultField';
-import {CardViewEntry} from '../model/cardViewEntry';
-import {CardViewProperty} from '../model/cardViewProperty';
-import {SortableEntry, toSortableEntries} from '../model/sortableEntry';
+import {TableFieldConfig} from '../config/tableFieldConfig';
+import {CardField} from '../model/cardField';
+import {CardFieldConfig} from '../config/cardFieldConfig';
+import {SortableField} from '../model/sortableField';
 import {stringEnumToModeEnum} from '../utils/stringEnumToModeEnum';
 
 /**
@@ -194,14 +194,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description List of the fields displayed in the table (including the id field)
    * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public fieldsList: Array<ResultField>;
-
+  @Input() public tableFields: Array<TableFieldConfig>;
 
   /**
    * @Input : Angular
    * @description List of the card displayed in the card view.
    */
-  @Input() public cardViewProperties: Array<CardViewProperty>;
+  @Input() public cardFields: Array<CardFieldConfig>;
 
   /**
    * @Input : Angular
@@ -515,7 +514,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
   public columns: Array<Column> = [];
-  public cardViewRows: Array<CardViewEntry[]> = [];
+  public cardFieldsRows: Array<CardField[]> = [];
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
@@ -544,7 +543,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly debouncer = new Subject<ElementIdentifier>();
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
-  protected sortOptions: Array<SortableEntry> = [];
+  protected sortableFields: Array<SortableField> = [];
 
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
@@ -674,19 +673,19 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngDoCheck() {
-    const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
-    const cardViewPropertiesChanges = this.iterableCardsDiffer.diff(this.cardViewProperties);
+    const columnChanges = this.iterableColumnsDiffer.diff(this.tableFields);
+    const cardFieldsChanges = this.iterableCardsDiffer.diff(this.cardFields);
     const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
     if (columnChanges) {
       this.setColumns();
     }
 
-    if(cardViewPropertiesChanges){
-      this.setCardViewProperties();
+    if(cardFieldsChanges){
+      this.setCardFields();
     }
 
-    if(columnChanges || cardViewPropertiesChanges){
-      this.buildSortOptions();
+    if(columnChanges || cardFieldsChanges){
+      this.buildSortableFields();
     }
 
     if (itemChanges) {
@@ -999,24 +998,24 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
   }
 
-  public setCardViewProperties(){
-    this.cardViewRows = [];
-    let cardsViewProperties: CardViewEntry[] = [];
-    const sortedCards =  [...(this.cardViewProperties || [])]
+  public setCardFields(){
+    this.cardFieldsRows = [];
+    let cardsViewProperties: CardField[] = [];
+    const sortedCards =  [...(this.cardFields || [])]
       .sort((d1, d2) => d1.lineNumber - d2.lineNumber);
 
     sortedCards.forEach((curr, i) => {
-      const prev: CardViewProperty = sortedCards[i - 1];
-      const cardEntry = new CardViewEntry(curr.prettyName, curr.fieldName, curr.dataType, curr.isTitle,
+      const prev: CardFieldConfig = sortedCards[i - 1];
+      const cardEntry = new CardField(curr.prettyName, curr.fieldName, curr.dataType, curr.isTitle,
         curr.lineNumber, curr.icon, curr?.sort);
       if(prev && prev.lineNumber !== cardEntry.lineNumber){
-        this.cardViewRows.push(cardsViewProperties);
+        this.cardFieldsRows.push(cardsViewProperties);
         cardsViewProperties = [];
       }
       cardsViewProperties.push(cardEntry);
     });
     // push the final group once we've processed the last item
-    this.cardViewRows.push(cardsViewProperties);
+    this.cardFieldsRows.push(cardsViewProperties);
   }
 
   // Build the table's columns
@@ -1030,9 +1029,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     idColumn.isIdField = true;
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
-    this.fieldsList.forEach(field => {
+    this.tableFields.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
-      column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+      column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.tableFields.length;
       column.useColorService = field.useColorService ? field.useColorService : false;
       this.columns.push(column);
     });
@@ -1044,7 +1043,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
-    const item = new Item(this.columns, this.cardViewRows, itemData);
+    const item = new Item(this.columns, this.cardFieldsRows, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     if (this.fieldsConfiguration.titleFieldNames) {
       item.title = this.fieldsConfiguration.titleFieldNames
@@ -1182,8 +1181,22 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
   }
 
-  private buildSortOptions() {
-    const sortOptions = this.hasCardMode ? [...this.columns, ...this.cardViewRows.flat()] : this.columns;
-    this.sortOptions = toSortableEntries(sortOptions);
+  /**
+   * Build field list used to sort the data.
+   * @private
+   */
+  private buildSortableFields() {
+    const uniqueField = new Set<string>();
+    const fields = this.hasCardMode
+      ? [...this.columns, ...this.cardFieldsRows.flat()]
+      : this.columns;
+
+    for (const f of fields) {
+      const sortableField = f.toSortableField();
+      if (!uniqueField.has(sortableField.fieldName)) {
+        uniqueField.add(sortableField.fieldName);
+        this.sortableFields.push(sortableField);
+      }
+    }
   }
 }

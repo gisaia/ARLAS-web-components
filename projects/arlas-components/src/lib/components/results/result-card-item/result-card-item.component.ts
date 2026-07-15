@@ -18,7 +18,7 @@
  */
 import {Component, computed, inject, input, output, viewChild} from '@angular/core';
 import {Item} from '../model/item';
-import {CardViewEntry} from '../model/cardViewEntry';
+import {CardField} from '../model/cardField';
 import {Action, ElementIdentifier, ResultListOptions} from '..//utils/results.utils';
 import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
 import {ResultThumbnailComponent} from '../result-thumbnail/result-thumbnail.component';
@@ -75,16 +75,16 @@ export class ResultCardItemComponent extends ItemComponent {
    * @constant
    */
   public SHOW_DETAILS = marker('Show details');
-  private parsedCardsView = computed(() => {
-    const cardsView = this.rowItem().cardsView;
-    const titles: CardViewEntry[] = [];
-    const fields: CardViewEntry[][] = [];
-    if(!cardsView){
+  private parsedCardsFieldsRows = computed(() => {
+    const cardsFieldsRows = this.rowItem().cardsFieldsRows;
+    const titles: CardField[] = [];
+    const fields: CardField[][] = [];
+    if(!cardsFieldsRows){
       return  { title: titles, fields };
     }
 
-    for (const row of cardsView) {
-      const nonTitle: CardViewEntry[] = [];
+    for (const row of cardsFieldsRows) {
+      const nonTitle: CardField[] = [];
       for (const entry of row) {
         if (entry.isTitle) {
           titles.push(entry);
@@ -96,8 +96,8 @@ export class ResultCardItemComponent extends ItemComponent {
     }
     return { title: titles, fields };
   });
-  public titleFields = computed(() => this.parsedCardsView()?.title);
-  public fields = computed(() => this.parsedCardsView().fields);
+  public titleFields = computed(() => this.parsedCardsFieldsRows()?.title);
+  public fields = computed(() => this.parsedCardsFieldsRows().fields);
 
   /** Reference to the thumbnail enum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;

@@ -19,7 +19,7 @@
 import {Component, effect, input, signal, untracked} from '@angular/core';
 import {Item} from '../model/item';
 import {MetaDataEntry, CardResultItemMetadataEntryComponent} from '../result-metadata-entry/card-result-item-metadata-entry.component';
-import {CardViewEntry} from '../model/cardViewEntry';
+import {CardField} from '../model/cardField';
 import {buildCardItemField} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
 
 @Component({
@@ -33,8 +33,8 @@ import {buildCardItemField} from '../../../pipes/get-item-data-value/get-item-da
 export class ResultCardItemEntriesComponent {
   /** Item containing the data to display */
   public item = input.required<Item>();
-  /** Card fields to display as badges */
-  public fields = input<CardViewEntry[][]>([]);
+  /** Card fields to display as metadata */
+  public fields = input<CardField[][]>([]);
   /** Character used to separate items */
   public spacingChar = input<string>('•');
   public emptyValue = input<string>('-');
@@ -46,7 +46,7 @@ export class ResultCardItemEntriesComponent {
   public constructor() {
 
     effect((() => {
-      const entries = this.createCardEntries();
+      const entries = this.createCardMetadata();
       untracked(() =>{
         this.metaDataEntries.set(entries);
       });
@@ -57,15 +57,15 @@ export class ResultCardItemEntriesComponent {
   /**
    * Create entries based on the provided fields and item data.
    * Uses guard clauses to validate data, only wraps DOM/service operations in try-catch.
-   * @returns An array of MetaBadge objects representing the badges to display
+   * @returns An array of metadata objects representing the data to display
    */
-  public createCardEntries() {
+  public createCardMetadata() {
     // Guard: Validate prerequisites
     if (!this.item()?.itemData || !this.fields()?.length) {
       return [];
     }
 
-    return this.fields().map(cardViewEntry => cardViewEntry.map<MetaDataEntry>(field => {
+    return this.fields().map(cardFields => cardFields.map<MetaDataEntry>(field => {
       const value = this.item().itemData.get(buildCardItemField(field)) ?? this.emptyValue();
       const hasValue = value !== this.emptyValue();
       return {

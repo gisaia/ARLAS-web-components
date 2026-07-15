@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import {ResultListEntry} from './resultListEntry';
+import {ResultListField} from './resultListField';
+import {SortableField} from './sortableField';
 
-export class CardViewEntry  extends ResultListEntry {
+export class CardField extends ResultListField {
   /** Display label for the field shown in the card entry */
   public prettyName: string;
   /** Whether this entry is the title of the card (displayed prominently) */
@@ -28,6 +29,16 @@ export class CardViewEntry  extends ResultListEntry {
   public lineNumber: number;
   /** Optional Material icon name to display alongside the value */
   public icon?: string;
+
+  public toSortableField(): SortableField {
+    return ({
+      fieldName: this.fieldName,
+      columnName: this.prettyName,
+      sort: this.sort,
+      isIdField: this.isIdField,
+      isToggleField:  false
+    });
+  }
 
 
   /**
