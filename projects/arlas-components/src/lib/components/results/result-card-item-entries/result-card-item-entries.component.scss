@@ -17,6 +17,42 @@
  * under the License.
  */
 
-export enum ModeEnum {
-  list, grid, card
+.meta-data-entries{
+  &__container{
+    max-width: 100%;
+    max-height: 100%;
+    padding-right: 6px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+  }
+
+  &__entry {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    min-width: 0;
+    max-width: fit-content;
+  }
+
+  &__spacer {
+    flex: 0 0 auto;
+    margin: 0 6px;
+    color: lightgrey;
+  }
+}
+
+.item{
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: inherit;
+  flex: 0 1 auto;
+  min-width: 0;
 }

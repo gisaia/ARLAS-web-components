@@ -21,7 +21,7 @@
   @if (!column.isIdField && !column.isToggleField) {
     <td class="resultitem__cell resultitem__cell__{{column.fieldName}}"
         [style.max-width.px]="column.width" [style.min-width.px]="column.width">
-      @let itemFieldValue = rowItem?.itemData.get(column.fieldName) + '';
+      @let itemFieldValue = rowItem?.itemData.get(column | buildItemField:'table') + '';
 
       @if (column.useColorService && useColorService && cellBackgroundStyle) {
         @if (cellBackgroundStyle === CellBackgroundStyleEnum.filled) {

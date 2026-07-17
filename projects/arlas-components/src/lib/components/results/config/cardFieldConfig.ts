@@ -17,6 +17,22 @@
  * under the License.
  */
 
-export enum ModeEnum {
-  list, grid, card
+import { FieldConfig } from './fieldConfig';
+
+/**
+ * Configuration for a single field displayed in a card entry.
+ * Each instance describes one card property: how to look up the value, display it,
+ * and which row it belongs to.
+ */
+export interface CardFieldConfig extends FieldConfig {
+  /** Display label shown in the card tooltip */
+  prettyName: string;
+  /** Whether this field is the card title (displayed prominently) */
+  isTitle: boolean;
+  /** Row index for grouping field into lines (same value = same row) */
+  lineNumber: number;
+  /** Material icon name displayed alongside the value */
+  icon?: string;
+
 }
+

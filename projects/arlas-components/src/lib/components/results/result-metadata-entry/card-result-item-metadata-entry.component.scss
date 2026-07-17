@@ -1,0 +1,73 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+:host {
+  --arlas-entry-font-size: 14px;
+  --arlas-entry-icon-width: var(--arlas-entry-font-size);
+  --arlas-entry-color: grey;
+  --arlas-entry-value-color: black;
+}
+
+.meta-data-entry {
+  font-size: 14px;
+  &__container {
+    display: flex;
+    flex: 1 1 fit-content;
+    align-items: baseline;
+    gap:2px;
+    height: 20px;
+  }
+
+  &__icon {
+    width: 18px;
+    font-size: var(--arlas-entry-font-size);
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    & mat-icon {
+      font-size: var(--arlas-entry-font-size);
+      height: var(--arlas-entry-font-size);
+      width: var(--arlas-entry-font-size);
+      display: flex;
+      align-items: center;
+      color: var(--arlas-entry-color);
+    }
+  }
+
+  &__value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: inherit;
+    min-width: 0;
+    line-height: 1;
+    flex:1 1 auto;
+    color: var(--arlas-entry-value-color);
+  }
+
+  &__unit {
+    font-size: var(--arlas-entry-font-size);
+    display: inline-block;
+    line-height: 1;
+    flex-shrink: 0;
+    max-width: 20px;
+    min-width: 0;
+    color: var(--arlas-entry-color);
+  }
+}

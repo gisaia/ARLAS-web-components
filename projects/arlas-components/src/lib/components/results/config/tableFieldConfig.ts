@@ -17,6 +17,13 @@
  * under the License.
  */
 
-export enum ModeEnum {
-  list, grid, card
+
+import {FieldConfig} from './fieldConfig';
+
+/**
+ * Should be iso with the fieldList of ResultListContributor fieldList attribute.
+ * Describes a Field used to display data in the Resultlist table and card view
+ */
+export interface TableFieldConfig extends FieldConfig {
+  columnName: string;
 }

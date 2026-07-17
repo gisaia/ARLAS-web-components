@@ -62,7 +62,7 @@ describe('ResultItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultItemComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('rowItem', new Item([], new Map()));
+    fixture.componentRef.setInput('rowItem', new Item([], [], new Map()));
     fixture.detectChanges();
   });
 

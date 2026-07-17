@@ -16,7 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-export enum ModeEnum {
-  list, grid, card
+export interface SortableField {
+  fieldName: string;
+  columnName: string;
+  sort?: string;
+  isIdField: boolean;
+  isToggleField: boolean;
 }

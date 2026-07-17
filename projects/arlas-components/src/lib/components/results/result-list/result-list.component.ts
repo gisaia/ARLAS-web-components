@@ -17,47 +17,70 @@
  * under the License.
  */
 
-import { AsyncPipe } from '@angular/common';
+import {AsyncPipe} from '@angular/common';
 import {
-  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, input, Input,
-  IterableDiffers, OnChanges, OnInit, Output,
-  SimpleChanges, ViewEncapsulation
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  DoCheck,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  input,
+  Input,
+  IterableDiffers,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewEncapsulation
 } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { MatIcon } from '@angular/material/icon';
-import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatOption, MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { MatTooltip } from '@angular/material/tooltip';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslatePipe } from '@ngx-translate/core';
-import { debounceTime, fromEvent, Observable, Subject } from 'rxjs';
-import { ArlasColorService } from '../../../services/color.generator.service';
-import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
-import { Column } from '../model/column';
-import { Item } from '../model/item';
-import { ResultDetailedGridComponent } from '../result-detailed-grid/result-detailed-grid.component';
-import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
-import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
-import { ResultFilterComponent } from '../result-filter/result-filter.component';
-import { ResultGridTileComponent } from '../result-grid-tile/result-grid-tile.component';
-import { ResultItemComponent } from '../result-item/result-item.component';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
-import { PageEnum } from '../utils/enumerations/pageEnum';
-import { SortEnum } from '../utils/enumerations/sortEnum';
-import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
-import { ResizableColumnDirective, ResizableTableDirective } from '../utils/resizable-column.directive';
+import {FormsModule} from '@angular/forms';
+import {MatButtonModule} from '@angular/material/button';
+import {MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup} from '@angular/material/button-toggle';
+import {MatCheckbox} from '@angular/material/checkbox';
+import {MatGridList, MatGridTile} from '@angular/material/grid-list';
+import {MatIcon} from '@angular/material/icon';
+import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
+import {MatProgressSpinner} from '@angular/material/progress-spinner';
+import {MatOption, MatSelect, MatSelectChange, MatSelectTrigger} from '@angular/material/select';
+import {MatSlideToggle} from '@angular/material/slide-toggle';
+import {MatTooltip} from '@angular/material/tooltip';
+import {marker} from '@colsen1991/ngx-translate-extract-marker';
+import {TranslatePipe} from '@ngx-translate/core';
+import {debounceTime, fromEvent, Observable, Subject} from 'rxjs';
+import {ArlasColorService} from '../../../services/color.generator.service';
+import {ResultlistNotifierService} from '../../../services/resultlist.notifier.service';
+import {Column} from '../model/column';
+import {Item} from '../model/item';
+import {ResultDetailedGridComponent} from '../result-detailed-grid/result-detailed-grid.component';
+import {ResultDetailedItemComponent} from '../result-detailed-item/result-detailed-item.component';
+import {ResultScrollDirective} from '../result-directive/result-scroll.directive';
+import {ResultFilterComponent} from '../result-filter/result-filter.component';
+import {ResultGridTileComponent} from '../result-grid-tile/result-grid-tile.component';
+import {ResultItemComponent} from '../result-item/result-item.component';
+import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
+import {CellBackgroundStyleEnum} from '../utils/enumerations/cellBackgroundStyleEnum';
+import {ModeEnum} from '../utils/enumerations/modeEnum';
+import {PageEnum} from '../utils/enumerations/pageEnum';
+import {SortEnum} from '../utils/enumerations/sortEnum';
+import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
+import {ResizableColumnDirective, ResizableTableDirective} from '../utils/resizable-column.directive';
 import {
-  Action, ElementIdentifier, FieldsConfiguration, ItemDataType,
-  matchAndReplace, PageQuery, ResultListOptions
+  Action,
+  ElementIdentifier,
+  FieldsConfiguration,
+  ItemDataType,
+  matchAndReplace,
+  PageQuery,
+  ResultListOptions
 } from '../utils/results.utils';
+import {ResultCardItemComponent} from '../result-card-item/result-card-item.component';
+import {TableFieldConfig} from '../config/tableFieldConfig';
+import {CardField} from '../model/cardField';
+import {CardFieldConfig} from '../config/cardFieldConfig';
+import {SortableField} from '../model/sortableField';
+import {stringEnumToModeEnum} from '../utils/stringEnumToModeEnum';
 
 /**
  * Structure summarizing the sort on a column
@@ -83,7 +106,7 @@ export interface SortedColumn {
     MatSlideToggle, MatSelect, FormsModule, MatSelectTrigger, MatOption, MatButtonToggleGroup, MatButtonModule,
     MatButtonToggle, ResultDetailedGridComponent, MatProgressSpinner, ResultScrollDirective, MatGridList,
     ResultItemComponent, ResultDetailedItemComponent, MatGridTile, ResultGridTileComponent, AsyncPipe, TranslatePipe,
-    ResizableColumnDirective, ResizableTableDirective]
+    ResizableColumnDirective, ResizableTableDirective, ResultCardItemComponent]
 })
 export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterViewInit {
 
@@ -113,7 +136,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @constant
    */
   public LIST_MODE = marker('List mode');
-
+  /**
+   * @constant
+   */
+  public CARD_MODE = marker('Card mode');
   /**
    * @constant
    */
@@ -166,18 +192,15 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @Input : Angular
    * @description List of the fields displayed in the table (including the id field)
-   * - fieldName : Name/path of the field to add to list
-   * - columnName : Name of the field that will be displayed on the list column
-   * - dataType : Unit of the field values if it exists (degree, percentage, etc)
-   * - useColorService : Whether to colorize values on cells of the list with a color generated from the field value
    * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public fieldsList: Array<{
-    fieldName: string;
-    columnName: string;
-    dataType: string;
-    useColorService?: boolean;
-  }>;
+  @Input() public tableFields: Array<TableFieldConfig>;
+
+  /**
+   * @Input : Angular
+   * @description List of the card displayed in the card view.
+   */
+  @Input() public cardFields: Array<CardFieldConfig>;
 
   /**
    * @Input : Angular
@@ -369,6 +392,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
 
+  @Input()public hasGridMode = false;
+  @Input() public hasCardMode = false;
+
   /**
    * Whether the columns of the resultlist in list mode can be resized
    */
@@ -487,7 +513,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Output() public onListLoaded = new EventEmitter<boolean>();
 
-  public columns: Array<Column>;
+  public columns: Array<Column> = [];
+  public cardFieldsRows: Array<CardField[]> = [];
   public items: Array<Item> = new Array<Item>();
   public sortedColumn: { columnName: string; fieldName: string; sortDirection: SortEnum; }
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
@@ -503,10 +530,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   private readonly iterableRowsDiffer;
   private readonly iterableColumnsDiffer;
+  private readonly iterableCardsDiffer;
 
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
-  public hasGridMode = false;
   public resultMode: ModeEnum;
   public allItemsChecked = false;
 
@@ -516,9 +543,11 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly debouncer = new Subject<ElementIdentifier>();
   private readonly scrollDebouncer = new Subject<any>();
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
+  protected sortableFields: Array<SortableField> = [];
 
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
+                     iterableCardsDiffer: IterableDiffers,
     private readonly el: ElementRef,
     private readonly colorService: ArlasColorService,
     private readonly notifier: ResultlistNotifierService,
@@ -526,6 +555,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   ) {
     this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
     this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
+    this.iterableCardsDiffer = iterableCardsDiffer.find([]).create(null);
     // Resize the table height on window resize
     fromEvent(globalThis, 'resize')
       .pipe(debounceTime(500))
@@ -549,14 +579,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngOnInit() {
-    this.resultMode = (this.defautMode && (this.defautMode.toString() === 'grid' ||
-      this.defautMode.toString() === ModeEnum.grid.toString())) ? ModeEnum.grid : ModeEnum.list;
+    this.updateResultMode(this.defautMode?.toString());
     this.options = Object.assign(new ResultListOptions(), this.options);
-    if (!!this.fieldsConfiguration) {
-      if (this.fieldsConfiguration.urlThumbnailTemplate !== undefined) {
-        this.hasGridMode = true;
-      }
-    }
   }
 
   public ngAfterViewInit(): void {
@@ -572,13 +596,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['defautMode'] !== undefined) {
-      if (this.defautMode.toString() === 'grid' || this.defautMode.toString() === ModeEnum.grid.toString()) {
-        this.resultMode = ModeEnum.grid;
-        this.displayListGrid = 'block';
-      } else {
-        this.resultMode = ModeEnum.list;
-        this.displayListGrid = 'inline';
-      }
+      this.updateResultMode(this.defautMode?.toString());
       this.setTableHeight();
     }
 
@@ -655,11 +673,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngDoCheck() {
-    const columnChanges = this.iterableColumnsDiffer.diff(this.fieldsList);
+    const columnChanges = this.iterableColumnsDiffer.diff(this.tableFields);
+    const cardFieldsChanges = this.iterableCardsDiffer.diff(this.cardFields);
     const itemChanges = this.iterableRowsDiffer.diff(this.rowItemList);
     if (columnChanges) {
       this.setColumns();
     }
+
+    if(cardFieldsChanges){
+      this.setCardFields();
+    }
+
+    if(columnChanges || cardFieldsChanges){
+      this.buildSortableFields();
+    }
+
     if (itemChanges) {
       let itemIndex = 0;
       itemChanges.forEachAddedItem(i => {
@@ -875,11 +903,24 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets the display style according to the mode
    */
-  public whichMode(toggleChangeEvent: MatButtonToggleChange) {
-    if (toggleChangeEvent.value === ModeEnum.grid.toString()) {
+  public switchMode(toggleChangeEvent: MatButtonToggleChange) {
+    this.updateResultMode(toggleChangeEvent.value);
+    this.changeResultMode.next(this.resultMode);
+    this.setTableHeight();
+  }
+
+  /**
+   * Update result mode to display data according to user selection
+   */
+  public updateResultMode(value: string){
+    const enumFound = stringEnumToModeEnum(value);
+    if (enumFound === ModeEnum.grid) {
       this.resultMode = ModeEnum.grid;
       this.displayListGrid = 'block';
-    } else {
+    } else if (enumFound === ModeEnum.card) {
+      this.resultMode = ModeEnum.card;
+      this.displayListGrid = 'block';
+    }  else  {
       this.resultMode = ModeEnum.list;
       this.displayListGrid = 'inline';
     }
@@ -957,6 +998,26 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
   }
 
+  public setCardFields(){
+    this.cardFieldsRows = [];
+    let cardsViewProperties: CardField[] = [];
+    const sortedCards =  [...(this.cardFields || [])]
+      .sort((d1, d2) => d1.lineNumber - d2.lineNumber);
+
+    sortedCards.forEach((curr, i) => {
+      const prev: CardFieldConfig = sortedCards[i - 1];
+      const cardEntry = new CardField(curr.prettyName, curr.fieldName, curr.dataType, curr.isTitle,
+        curr.lineNumber, curr.icon, curr?.sort);
+      if(prev && prev.lineNumber !== cardEntry.lineNumber){
+        this.cardFieldsRows.push(cardsViewProperties);
+        cardsViewProperties = [];
+      }
+      cardsViewProperties.push(cardEntry);
+    });
+    // push the final group once we've processed the last item
+    this.cardFieldsRows.push(cardsViewProperties);
+  }
+
   // Build the table's columns
   private setColumns() {
     this.columns = new Array<Column>();
@@ -968,9 +1029,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     idColumn.isIdField = true;
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
-    this.fieldsList.forEach(field => {
+    this.tableFields.forEach(field => {
       const column = new Column(field.columnName, field.fieldName, field.dataType);
-      column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.fieldsList.length;
+      column.width = (this.tableWidth - checkboxColumnWidth - toggleColumnWidth) / this.tableFields.length;
       column.useColorService = field.useColorService ? field.useColorService : false;
       this.columns.push(column);
     });
@@ -982,7 +1043,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
-    const item = new Item(this.columns, itemData);
+    const item = new Item(this.columns, this.cardFieldsRows, itemData);
     item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
     if (this.fieldsConfiguration.titleFieldNames) {
       item.title = this.fieldsConfiguration.titleFieldNames
@@ -1116,6 +1177,25 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       } else {
         console.error('Failed to load the result list\'s height in less than 10 trials.' +
           'Try to limit the element visibility to when it is really on screen to avoid this issue.');
+      }
+    }
+  }
+
+  /**
+   * Build field list used to sort the data.
+   * @private
+   */
+  private buildSortableFields() {
+    const uniqueField = new Set<string>();
+    const fields = this.hasCardMode
+      ? [...this.columns, ...this.cardFieldsRows.flat()]
+      : this.columns;
+
+    for (const f of fields) {
+      const sortableField = f.toSortableField();
+      if (!uniqueField.has(sortableField.fieldName)) {
+        uniqueField.add(sortableField.fieldName);
+        this.sortableFields.push(sortableField);
       }
     }
   }

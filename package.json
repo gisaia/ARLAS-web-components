@@ -11,7 +11,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "test-components": "ng test arlas-web-components",
+    "test-components": "ng test --runner-config vitest.config.ts arlas-web-components",
     "test-map": "ng test arlas-map",
     "test-mapbox": "ng test arlas-mapbox",
     "test-maplibre": "ng test arlas-maplibre",

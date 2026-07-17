@@ -17,29 +17,30 @@
  * under the License.
  */
 
-import { Component, Input, OnInit, Output } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatTooltip } from '@angular/material/tooltip';
-import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Subject } from 'rxjs';
-import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
-import { ArlasColorService } from '../../../services/color.generator.service';
-import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
-import { Item } from '../model/item';
-import { ItemComponent } from '../model/itemComponent';
-import { ResultActionsComponent } from '../result-actions/result-actions.component';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
-import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
+import {Component, Input, OnInit, Output} from '@angular/core';
+import {MatIconButton} from '@angular/material/button';
+import {MatIcon} from '@angular/material/icon';
+import {MatTooltip} from '@angular/material/tooltip';
+import {marker} from '@colsen1991/ngx-translate-extract-marker';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {Subject} from 'rxjs';
+import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
+import {ArlasColorService} from '../../../services/color.generator.service';
+import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
+import {Item} from '../model/item';
+import {ItemComponent} from '../model/itemComponent';
+import {ResultActionsComponent} from '../result-actions/result-actions.component';
+import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
+import {CellBackgroundStyleEnum} from '../utils/enumerations/cellBackgroundStyleEnum';
+import {Action, ElementIdentifier, ResultListOptions} from '../utils/results.utils';
+import {BuildItemFieldPipe, buildTableItemField} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
 
 
 @Component({
   selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
   styleUrls: ['./result-item.component.scss'],
-  imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe]
+  imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe, BuildItemFieldPipe]
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 
@@ -150,7 +151,6 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   public ngOnInit() {
     this.identifier = this.rowItem?.identifier;
     this.updateColors();
-
   }
 
   // Detailed data is retrieved when the row is toggled for the first time
@@ -192,7 +192,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     const newColor = {};
     this.rowItem?.columns.forEach(c => {
       if (c.useColorService){
-        const key = this.rowItem?.itemData.get(c.fieldName);
+        const key = this.rowItem?.itemData.get(buildTableItemField(c));
         if (key !== undefined && key !== null) {
           newColor[key.toString()] = {};
           newColor[key.toString()]['color'] = this.getColor(key);

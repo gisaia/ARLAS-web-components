@@ -20,5 +20,6 @@
 export enum ThumbnailFitEnum {
     height = 'height',
     width = 'width',
-    contain = 'contain'
+    contain = 'contain',
+    round = 'round'
 }

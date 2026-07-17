@@ -17,36 +17,17 @@
  * under the License.
  */
 
-import { SortEnum } from '../utils/enumerations/sortEnum';
+import {ResultListField} from './resultListField';
+import {SortableField} from './sortableField';
 
-export class Column {
+export class Column  extends ResultListField {
   /**
    * @description The column name
    */
   public columnName: string;
-  /**
-   * @description The name of the field related to this column.
-   */
-  public fieldName: string;
-  /**
-   * @description Type of data that is appended to column name : %, °C, ..
-   */
-  public dataType: string;
-  /**
-   * @description Width of the column.
-   */
+
   public width: number;
-  /**
-   * @description Sort direction to apply to th column : ascending, descending or none
-   */
-  public sortDirection: SortEnum = SortEnum.none;
-  /**
-   * @description Whether this column represents an id field.
-   */
-  public isIdField = false;
-  /**
-   * @description Whether the cells of this column contains a toggle button.
-   */
+
   public isToggleField = false;
   /**
    * @description Whether the filter search column has a dropdown.
@@ -66,10 +47,19 @@ export class Column {
     return !this.isIdField && !this.isToggleField;
   }
 
-  public constructor(columnName: string, fieldName: string, dataType: string) {
-    this.columnName = columnName;
-    this.fieldName = fieldName;
-    this.dataType = dataType;
+  public toSortableField(): SortableField {
+    return ({
+      fieldName: this.fieldName,
+      columnName: this.columnName,
+      sort: this.sort,
+      isIdField: this.isIdField,
+      isToggleField:  this.isToggleField
+    });
   }
 
+  public constructor(columnName: string, fieldName: string, dataType: string) {
+    super(fieldName, dataType);
+    this.columnName = columnName;
+  }
 }
+

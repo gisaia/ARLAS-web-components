@@ -20,6 +20,7 @@
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
+import {Injectable} from '@angular/core';
 
 export function formatNumber(x, formatChar = ' '): string {
   if (formatChar === NUMBER_FORMAT_CHAR) {
