@@ -29,6 +29,7 @@ export interface VisualisationInterface {
   name: string;
   description: string;
   dataGroups: DataGroup[];
+  default: boolean;
 }
 
 export interface DataGroup {

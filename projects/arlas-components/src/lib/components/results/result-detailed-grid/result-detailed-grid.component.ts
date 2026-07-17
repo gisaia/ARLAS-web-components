@@ -221,7 +221,7 @@ s   * @constant
     setTimeout(() => {
       if (this.isFullScreen) {
         try {
-          this.fullScreenService.showFullScreen(this.imgSrc);
+          this.fullScreenService.showFullScreen(this.imgSrc as string);
         } catch (e) {
           console.warn('Failed to open full screen');
         }
