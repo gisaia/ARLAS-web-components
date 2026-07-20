@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResultCardItemComponent } from './result-card-item.component';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {TranslateLoader, TranslateModule, TranslateNoOpLoader} from '@ngx-translate/core';
-import { Item } from '../model/item';
-import {LazyLoadImageModule} from 'ng-lazyload-image';
+import { mockDetailedDataRetriever, mockRowItem } from '../../../test/mock';
+import { ResultCardItemComponent } from './result-card-item.component';
 
 describe('ResultCardItemComponent', () => {
   let component: ResultCardItemComponent;
@@ -21,9 +21,10 @@ describe('ResultCardItemComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ResultCardItemComponent);
-    const i = new Item([], [], new Map());
+    const i = mockRowItem;
     i.urlThumbnail = 'test.png';
     fixture.componentRef.setInput('rowItem', i);
+    fixture.componentRef.setInput('detailedDataRetriever', mockDetailedDataRetriever);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
