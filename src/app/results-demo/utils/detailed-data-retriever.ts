@@ -94,6 +94,6 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
   }
 
   public getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo> {
-    return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: new Map() });
+    return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: {} });
   }
 }

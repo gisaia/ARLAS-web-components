@@ -593,7 +593,7 @@ export class HistogramComponent implements AfterViewInit, OnChanges, AfterViewCh
     histogramParams.swimlaneRepresentation = this.swimlaneRepresentation !== undefined ?
       this.swimlaneRepresentation : SwimlaneRepresentation.global;
     histogramParams.histogramContainer = this.el.nativeElement.getElementsByClassName('histogram').item(0) as HTMLElement;
-    histogramParams.svgNode = histogramParams.histogramContainer.querySelector('svg');
+    histogramParams.svgNode = histogramParams.histogramContainer.querySelector('svg') as SVGElement;
     histogramParams.displayOnlyIntervalsWithData = this.displayOnlyIntervalsWithData;
     histogramParams.yAxisFromZero = this.yAxisStartsFromZero;
     histogramParams.showStripes = this.showStripes;

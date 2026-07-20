@@ -19,8 +19,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import {
-  ChangeDetectorRef, Component,
-  ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ChangeDetectorRef, Component, ElementRef, inject, input,
+  Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -28,8 +28,9 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe } from '@ngx-translate/core';
-import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import { Subject } from 'rxjs';
+import { ImageViewer } from 'iv-viewer';
+import { Subject, tap } from 'rxjs';
+import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
 import { Item } from '../model/item';
 import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
@@ -51,14 +52,13 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    */
   public VIEW_IMAGE = marker('View in full screen');
   /**
-   * @constant
+s   * @constant
    */
   public SHOW_IMAGE = marker('Show image');
   /**
    * @constant
    */
   public CLOSE_DETAILS = marker('Close details');
-  private fullScreenViewer = new FullScreenViewer();
 
   /**
    * @Input
@@ -154,6 +154,11 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   private viewer?: ImageViewer;
 
+  /**
+   * Full screen
+   */
+  private readonly fullScreenService = inject(FullScreenViewerService);
+
   public constructor(
     private readonly changeDetectorRef: ChangeDetectorRef,
     private readonly http: HttpClient
@@ -209,8 +214,10 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     this.resetViewer();
     setTimeout(() => {
       if (this.isFullScreen) {
-        if (this.imgSrc) {
-          this.fullScreenViewer.show(this.imgSrc);
+        try {
+          this.fullScreenService.showFullScreen(this.imgSrc as string);
+        } catch {
+          console.warn('Failed to open full screen');
         }
       } else {
         if (!!this.imageViewer && !this.viewer) {
@@ -221,9 +228,9 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   }
 
   public destroyViewer(isComponentDestroy?: boolean): void {
-    this.updateViewer();
-    if (isComponentDestroy && this.fullScreenViewer) {
-      this.fullScreenViewer.destroy();
+    this.resetViewer();
+    if (isComponentDestroy && this.fullScreenService.hasViewer()) {
+      this.fullScreenService.destroy();
     }
     // Add a delay to allow for the viewer to be destroyed properly
     // before removing it due to visibility rules in the template
@@ -250,33 +257,15 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   public showOverlay() {
     this.isFullScreen = true;
-    this.updateViewer();
-
-    let viewerContainer: HTMLElement | null;
-    const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
-
-    const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
-    if (fullScreenContainer && actionsInfos && actionsInfos[0]) {
-      viewerContainer = actionsInfos[0].parentElement;
-      const elements = actionsInfos.length;
-      for (let i = 0; i < elements; i++) {
-        // The element is removed from the list once retrieved
-        fullScreenContainer.appendChild(actionsInfos.item(0) as Element);
-      }
-    }
-
-    document.querySelector('.iv-fullscreen-close')?.addEventListener('click', () => {
-      this.isFullScreen = false;
-      if (viewerContainer && fullScreenContainer) {
-        const actionsInfosFullScreen = fullScreenContainer.getElementsByClassName('viewer_actions-infos');
-        const elements = actionsInfosFullScreen.length;
-        for (let i = 0; i < elements; i++) {
-          // The element is removed from the list once retrieved
-          viewerContainer.appendChild(actionsInfosFullScreen.item(0) as Element);
-        }
-      }
-      this.updateViewer();
-    });
+    this.resetViewer();
+    this.fullScreenService
+      .initOverlay()
+      ?.destroyElementOnClose()
+      .pipe(tap(() =>  {
+        this.isFullScreen = false;
+        this.resetViewer();
+      }))
+      .subscribe();
   }
 
   public onPrevious() {

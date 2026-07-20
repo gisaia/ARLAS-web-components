@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { Action, Attachment, ItemDataType } from '../utils/results.utils';
-import { Column } from './column';
+import {Action, Attachment, ItemDataType} from '../utils/results.utils';
+import {Column} from './column';
+import {CardField} from './cardField';
 
 export interface ItemDetailGroup {
   group: string;
@@ -63,6 +64,10 @@ export class Item {
    * @description The item's data is organized in this columns when represented in a table.
    */
   public columns = new Array<Column>();
+  /**
+   * @description The item's data is organized in a multi-line list of metadata.
+   */
+  public cardsFieldsRows = new Array<CardField[]>;
   /**
    * @description A fieldName-fieldValue map representing the item's data.
    */
@@ -113,8 +118,9 @@ export class Item {
    */
   public detailsTitleEnabled = false;
 
-  public constructor(columns: Array<Column>, itemData: Map<string, ItemDataType>, identifier: string, position: number) {
+  public constructor(columns: Array<Column>, cardsFieldsRows: Array<CardField[]>, itemData: Map<string, ItemDataType>, identifier: string, position: number) {
     this.columns = columns;
+    this.cardsFieldsRows = cardsFieldsRows;
     this.itemData = itemData;
     this.identifier = identifier;
     this.position = position;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, ElementRef, input, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, input, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { select } from 'd3-selection';
 import { ArlasDataLayer, CellShape } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
@@ -27,7 +27,7 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   templateUrl: './layer-icon.component.html',
   styleUrls: ['./layer-icon.component.scss']
 })
-export class LayerIconComponent implements OnChanges {
+export class LayerIconComponent implements OnChanges, AfterViewInit {
   public layer = input.required<ArlasDataLayer>();
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
@@ -37,6 +37,10 @@ export class LayerIconComponent implements OnChanges {
   @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement?: ElementRef;
 
   public ngOnChanges(changes: SimpleChanges) {
+    this.drawIcons();
+  }
+
+  public ngAfterViewInit() {
     this.drawIcons();
   }
 

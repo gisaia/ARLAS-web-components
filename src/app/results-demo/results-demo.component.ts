@@ -20,16 +20,24 @@
 import { Component, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
-import { from, Observable } from 'rxjs';
-import { Column } from '../../../projects/arlas-components/src/lib/components/results/model/column';
-import { ResultListComponent } from '../../../projects/arlas-components/src/lib/components/results/result-list/result-list.component';
-import { ModeEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/modeEnum';
-import { SortEnum } from '../../../projects/arlas-components/src/lib/components/results/utils/enumerations/sortEnum';
 import {
-  Action, FieldsConfiguration, ItemDataType, ResultListOptions
-} from '../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
+  Action, CardFieldConfig, Column, FieldsConfiguration, ItemDataType, ModeEnum,
+  ResultListComponent, ResultListOptions, SortedColumn, SortEnum, TableFieldConfig
+} from 'arlas-web-components';
+import { from, Observable } from 'rxjs';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 
+function generateRandomText(length: number) {
+  const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let randomText = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    randomText += charset[randomIndex];
+  }
+
+  return randomText;
+}
 
 @Component({
     selector: 'arlas-results-demo',
@@ -39,7 +47,8 @@ import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 })
 export class ResultsDemoComponent {
     public data: Array<Map<string, ItemDataType>> = [];
-    public fieldsList: Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }> = [];
+    public fieldsList: Array<TableFieldConfig>;
+    public cardFields: Array<CardFieldConfig> = [];
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();
     public fieldsConfiguration: FieldsConfiguration;
     public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
@@ -47,9 +56,9 @@ export class ResultsDemoComponent {
     public count = 0;
     public modeEnum = ModeEnum;
     public options = new ResultListOptions();
-    public activeSort: Column | null = null;
+    public activeSort: SortedColumn | undefined;
 
-    public isListOpen = signal(false);
+    public isListOpen = signal(true);
 
     public constructor() {
       this.options.showActionsOnhover = true;
@@ -76,20 +85,125 @@ export class ResultsDemoComponent {
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
         useHttpQuicklooks: false
       };
-      this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; dropdown?: boolean; }>();
 
-      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '', dropdown: true });
-      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '', dropdown: true });
-      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%', dropdown: true });
+      this.fieldsList = [];
+      this.cardFields = [];
+
+
+      this.fieldsList.push({ columnName: 'Source', fieldName: 'source', dataType: '' });
+      this.fieldsList.push({ columnName: 'Acquired', fieldName: 'acquired', dataType: '' });
+      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%'});
       this.fieldsList.push({ columnName: 'Incidence', fieldName: 'incidence', dataType: '°' });
       this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
 
+
+      this.cardFields.push({
+        prettyName: 'Source', fieldName: 'source', dataType: '', isTitle: true,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Acquired', fieldName: 'acquired', dataType: '', icon: 'alarm', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Cloud Cover', fieldName: 'cloudCover', dataType: '%', icon: 'cloud', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Incidence Angle', fieldName: 'incidenceAngle', dataType: '°', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Id', fieldName: 'id', dataType: '',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Description', fieldName: 'description', dataType: '', isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Ground Resolution', fieldName: 'groundResolution', dataType: 'm', icon: 'rules', isTitle: true,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Sun Azimuth', fieldName: 'sunAzimuth', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Sun Elevation', fieldName: 'sunElevation', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Satellite Azimuth', fieldName: 'satelliteAzimuth', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Off-nadir Angle', fieldName: 'offNadirAngle', dataType: '°',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Spectral Bands', fieldName: 'spectralBands', dataType: '',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Scene Width', fieldName: 'sceneWidth', dataType: 'km',
+        isTitle: false,
+        lineNumber: 0
+      });
+      this.cardFields.push({
+        prettyName: 'Scene Height', fieldName: 'sceneHeight', dataType: 'km',
+        isTitle: false,
+        lineNumber: 2
+      });
+      this.cardFields.push({
+        prettyName: 'Orbit Direction', fieldName: 'orbitDirection', dataType: '',
+        isTitle: false,
+        lineNumber: 2
+      });
+      this.cardFields.push({
+        prettyName: 'Processing Level', fieldName: 'processingLevel', dataType: '',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Radiometric Accuracy', fieldName: 'radiometricAccuracy', dataType: '%',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Snow Cover', fieldName: 'snowCover', dataType: '%',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Target Elevation', fieldName: 'targetElevation', dataType: 'm',
+        isTitle: false,
+        lineNumber: 3
+      });
+      this.cardFields.push({
+        prettyName: 'Image Quality', fieldName: 'imageQuality', dataType: '/10',
+        isTitle: false,
+        lineNumber: 3
+      });
 
       this.dropDownMapValues.set('source', from([['source_1', 'source_2', 'source_3']]));
       this.dropDownMapValues.set('acquired', from([['acquired_1', 'acquired_2', 'acquired_3']]));
       this.dropDownMapValues.set('cloud', from([['cloud_1', 'cloud_2', 'cloud_3']]));
 
+      const SPECTRAL_BANDS = ['PAN', 'RGB', 'RGBN', 'RGBNE', 'MS4', 'MS8', 'SWIR', 'PAN+MS'];
+      const PROCESSING_LEVELS = ['L1A', 'L1B', 'L2A', 'L3A', 'Ortho'];
+      const ORBIT_DIRECTIONS = ['Ascending', 'Descending'];
 
+      const randFloat = (min: number, max: number, dec = 1) =>
+        Number.parseFloat((Math.random() * (max - min) + min).toFixed(dec));
+      const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+      const pick = (arr: any[]) => arr[randInt(0, arr.length - 1)];
 
       this.globalActionsList.push({ id: '1', label: 'Download', actionBus: undefined, tooltip: 'Download' });
       this.data = new Array();
@@ -99,12 +213,41 @@ export class ResultsDemoComponent {
         map.set('cloud', (i + 1) + '.0');
         map.set('imageEnabled', 'true');
         map.set('thumbnailEnabled', 'true');
+        map.set('description', generateRandomText(Math.floor(Math.random() * 30)));
+        map.set('distance', Math.floor(Math.random() * 1000000));
+        // Sun geometry
+        map.set('sunAzimuth', randFloat(0, 360));
+        map.set('sunElevation', randFloat(20, 75));
+
+        // Satellite geometry
+        map.set('satelliteAzimuth', randFloat(0, 360));
+        map.set('offNadirAngle', randFloat(0, 30));
+
+        // Spectral & radiometric
+        map.set('spectralBands', pick(SPECTRAL_BANDS));
+        map.set('radiometricAccuracy', randFloat(85, 99));
+
+        // Scene extent
+        map.set('sceneWidth', randFloat(10, 120, 1));
+        map.set('sceneHeight', randFloat(10, 120, 1));
+
+        // Orbit & processing
+        map.set('orbitDirection', pick(ORBIT_DIRECTIONS));
+        map.set('processingLevel', pick(PROCESSING_LEVELS));
+
+        // Terrain & quality
+        map.set('targetElevation', randInt(-100, 4500));
+        map.set('snowCover', randFloat(0, 40));
+        map.set('imageQuality', randInt(5, 10));
         if (i % 2 === 0) {
           map.set('source', 'Perusat');
+
+          map.set('source_title', 'Perusat');
           map.set('urlImage', 'https://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Per%f9sat/Per%faSAT-1%20-%20premi%e8res%20images%20-%20first%20images%20-%20Huamanga%20-%20Ayacucho%20-%20CONIDA%20-%202016.jpg');
         } else {
           map.set('source', 'Pleiades');
+          map.set('source_title', 'Pleiades');
           map.set('urlImage', 'http://www.un-autre-regard-sur-la-terre.org/document/blogUARST/Satellites/' +
             'Pleiades%20-%20La%20suite/Airbus%20-%20Si%C3%A8ge%20Groupe%20-%20Toulouse%20-%20Pl%C3%A9iades%2'
             + '0-%20VHR%20-%20Tr%C3%A8s%20haute%20r%C3%A9solution%20-%20satellite.JPG');

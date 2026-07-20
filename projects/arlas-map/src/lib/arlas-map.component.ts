@@ -42,6 +42,7 @@ import { CoordinatesComponent } from './coordinates/coordinates.component';
 import { ArlasDrawComponent } from './draw/arlas-draw.component';
 import { AoiEdition } from './draw/draw.models';
 import { MapboxAoiDrawService } from './draw/draw.service';
+import { DrawTheme } from './draw/themes/default-theme';
 import { LegendComponent } from './legend/legend.component';
 import { LegendData } from './legend/legend.config';
 import { LegendService } from './legend/legend.service';
@@ -53,7 +54,7 @@ import { ControlPosition, IconConfig } from './map/model/controls';
 import { InteractedFeatures, MapLayerMouseEvent, MapMouseEvent } from './map/model/events';
 import { MapExtent } from './map/model/extent';
 import { ARLAS_VSET, ArlasDataLayer, getLayerName, MapLayers } from './map/model/layers';
-import { ArlasLngLatBounds, OnMoveResult } from './map/model/map';
+import { ArlasLngLat, ArlasLngLatBounds, OnMoveResult } from './map/model/map';
 import { ArlasMapSource } from './map/model/sources';
 import { TerrainConfiguration } from './map/model/terrain';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
@@ -96,6 +97,9 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
 
   /** Visibility status of each visualisation set*. */
   public visibilityStatus = new Map<string, boolean>();
+
+  /** Stores the currently hovered features indexed by layer ID. */
+  public hoveredFeaturesByLayer = new Map<string, any>();
 
   @ViewChild('drawComponent', { static: false }) public drawComponent?: ArlasDrawComponent<ArlasDataLayer, S, M>;
 
@@ -172,9 +176,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   @Input() public transformRequest: unknown /** TransformRequestFunction or RequestTransformRequest */;
 
   /** --- MAP INTERACTION */
-  // Will be removed, so typing does not matter
-  /** @description Feature to highlight. */
-  @Input() public featureToHightLight?: { isleaving: boolean; elementidentifier: ElementIdentifier; };
   /** @description List of features to select. */
   @Input() public featuresToSelect: Array<ElementIdentifier> = [];
 
@@ -192,7 +193,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   /**  @description Options object for draw tools : https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#options */
   @Input() public drawOption: any = {};
   /** @description Features drawn at component start */
-  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData});
+  @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
@@ -200,6 +201,8 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   /** @description Whether the drawing buffer is activated */
   /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
+  /** @description Theme for the drawn polygons */
+  public drawTheme = input<DrawTheme>({});
 
   /** --- ATTRIBUTION */
 
@@ -337,11 +340,6 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
           maxZoom: this.fitBoundsMaxZoom,
           offset: this.fitBoundsOffSet
         });
-      }
-      if (changes['featureToHightLight'] !== undefined
-        && changes['featureToHightLight'].currentValue !== changes['featureToHightLight'].previousValue) {
-        const featureToHightLight = changes['featureToHightLight'].currentValue;
-        this.highlightFeature(featureToHightLight);
       }
       if (changes['featuresToSelect'] !== undefined
         && changes['featuresToSelect'].currentValue !== changes['featuresToSelect'].previousValue) {
@@ -535,14 +533,17 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
     this.mapLayers().events.zoomOnClick.forEach(layerId => {
       this.mapFrameworkService.onLayerEvent('click', this.getMap(), layerId, (e) => this.zoomOnClick(e));
     });
+
+    this.hoveredFeaturesByLayer = new Map();
     this.mapLayers().events.onHover.forEach(layerId => {
-      /** Emits the hovered feature on mousemove. */
       this.mapFrameworkService.onLayerEvent('mousemove', this.getMap(), layerId, (e) => {
-        this.onFeatureHover.next({ features: e.features, point: [e.lngLat.lng, e.lngLat.lat] });
+        this.hoveredFeaturesByLayer.set(layerId, e.features ?? []);
+        this.emitAggregatedHover(e.lngLat);
       });
-      /** Emits an empty object on mouse leaving a feature. */
+
       this.mapFrameworkService.onLayerEvent('mouseleave', this.getMap(), layerId, (e) => {
-        this.onFeatureHover.next(undefined);
+        this.hoveredFeaturesByLayer.delete(layerId);
+        this.emitAggregatedHover();
       });
     });
     /** Emits the clicked on feature. */
@@ -584,6 +585,25 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
           this.legendService.highlightFeatures(layer.id, []);
         }
       });
+    });
+  }
+
+  /**
+   * Aggregates hovered features from all layers and emits a single event.
+   * Emits an empty object if no features are currently hovered.
+   *
+   * @param lngLat - The current cursor position. Optional since mouseleave does not always provide it.
+   */
+  private emitAggregatedHover(lngLat?: ArlasLngLat) {
+    const allFeatures = [...this.hoveredFeaturesByLayer.values()].flat();
+    if (allFeatures.length === 0 || !lngLat) {
+      this.onFeatureHover.next(undefined);
+      return;
+    }
+
+    this.onFeatureHover.next({
+      features: allFeatures,
+      point: [lngLat.lng, lngLat.lat],
     });
   }
 
@@ -666,10 +686,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   public moveToCoordinates(lngLat: [number, number]) {
     this.getMap().setCenter(lngLat);
   }
-  /** Highlights, in all data sources,the feature(s) having the given elementIdentifier */
-  private highlightFeature(featureToHightLight: { isleaving: boolean; elementidentifier: ElementIdentifier; }) {
-    this.mapService.highlightFeature(this.mapLayers(), this.getMap(), featureToHightLight);
-  }
+
   /** Selects, in all data sources,the feature(s) having the given elementIdentifier */
   private selectFeatures(elementToSelect: Array<ElementIdentifier>) {
     this.mapService.selectFeatures(this.mapLayers(), this.getMap(), elementToSelect);

@@ -1,12 +1,15 @@
 <mat-sidenav-container class="example-container">
-  <mat-sidenav align="end" #sidenav class="example-sidenav">
+  <mat-sidenav align="end" #sidenav class="example-sidenav" [opened] = true>
     <div class="table-wrapper">
       @if (isListOpen()) {
-        <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [fieldsList]="fieldsList"
+        <arlas-result-list #resultlist style="height:100%" [rowItemList]="data" [tableFields]="fieldsList"
+                           [cardFields]="cardFields"
+                           [hasCardMode]="true"
+                           [hasGridMode]="true"
           [globalActionsList]="globalActionsList" [detailedDataRetriever]="detailedDataRetriever"
           [fieldsConfiguration]="fieldsConfiguration" [nbLinesBeforeFetch]="20"
           [options]="options" [isGeoSortEnabled]="true" [tableWidth]="500"
-          [defautMode]="modeEnum.grid" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
+          [defautMode]="modeEnum.card" [dropDownMapValues]="dropDownMapValues" [displayFilters]="false"
           (paginationEvent)="addMoreData()" (setFiltersEvent)="setFilters($event)" [currentSortedColumn]="activeSort"></arlas-result-list>
       }
     </div>

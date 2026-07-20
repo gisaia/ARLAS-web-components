@@ -56,6 +56,7 @@
   <arlas-draw #drawComponent [map]="mapInstance" [emptyData]="emptyData" [drawData]="drawData"
     [drawButtonEnabled]="drawButtonEnabled" [drawOption]="drawOption"
     [drawPolygonVerticesLimit]="drawPolygonVerticesLimit" [preserveDrawingBuffer]="preserveDrawingBuffer"
+    [drawTheme]="drawTheme()"
     (onAoiChanged)="onAoiChanged.emit($event)"
     (onAoiEdit)="onAoiEdit.emit($event)"></arlas-draw>
 }

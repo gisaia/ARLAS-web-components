@@ -25,6 +25,8 @@ body {
   --mat-dialog-actions-alignment: end;
   --mat-dialog-headline-padding: 10px 0;
 
+  --arlas-resultilist-border-color: #e9ecef;
+
   .mdc-dialog__surface {
     padding: 12px 24px;
   }

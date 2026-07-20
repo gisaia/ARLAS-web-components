@@ -22,7 +22,7 @@ import { vi } from 'vitest';
 import { Item } from '../components/results/model/item';
 import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
 
-export const mockRowItem = new Item([], new Map(), '', 0);
+export const mockRowItem = new Item([], [], new Map(), '', 0);
 
 export const mockDetailedDataRetriever = {
     detailsConfig: [],

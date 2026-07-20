@@ -18,5 +18,5 @@
  */
 
 export enum ModeEnum {
-  list, grid
+  list, grid, card
 }

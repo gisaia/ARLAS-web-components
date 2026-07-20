@@ -25,6 +25,7 @@ import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
+import { BuildItemFieldPipe, buildTableItemField } from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
@@ -39,7 +40,7 @@ import { Action, ElementIdentifier, ItemDataType, ResultListOptions } from '../u
   selector: '[arlas-result-item]',
   templateUrl: './result-item.component.html',
   styleUrls: ['./result-item.component.scss'],
-  imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe]
+  imports: [MatIconButton, MatIcon, ResultActionsComponent, MatTooltip, TranslatePipe, FormatNumberPipe, BuildItemFieldPipe]
 })
 export class ResultItemComponent extends ItemComponent implements OnInit {
 
@@ -135,15 +136,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    */
   @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
 
-  /**
-   * @Output
-   * @description Emits the border line style depending on the item's toggle state.
-   */
-  @Output() public borderStyleEvent: Subject<string> = new Subject<string>();
-
   public isDetailToggled = false;
-  public detailedData = '';
-  public borderStyle = 'solid';
   public colors: Record<string, { color: string; textColor: string; }> = {};
   protected identifier = computed(() => this.rowItem().identifier);
 
@@ -158,15 +151,14 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     this.updateColors();
   }
 
-  // Detailed data is retrieved wheb the row is toggled for the first time
+  /**
+   * Detailed data is retrieved when the row is toggled for the first time
+   */
   public toggle() {
     if (this.rowItem().isDetailToggled === false) {
       this.retrieveAdditionalInfo(this.detailedDataRetriever(), this.rowItem());
-      this.borderStyle = 'dashed';
-    } else {
-      this.borderStyle = 'solid';
     }
-    this.borderStyleEvent.next(this.borderStyle);
+    this.rowItem().isDetailToggled = !this.rowItem().isDetailToggled;
   }
 
   // Update the list of the selected items
@@ -192,7 +184,7 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
     const newColor: Record<string, { color: string; textColor: string; }> = {};
     this.rowItem().columns.forEach(c => {
       if (c.useColorService){
-        const key = this.rowItem().itemData.get(c.fieldName);
+        const key = this.rowItem().itemData.get(buildTableItemField(c));
         if (key !== undefined && key !== null) {
           newColor[key.toString()] = {
             color: this.getColor(key),
