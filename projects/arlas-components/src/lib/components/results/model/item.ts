@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import {Action, Attachment, ItemDataType} from '../utils/results.utils';
-import {Column} from './column';
-import {CardField} from './cardField';
+import { Action, Attachment, ItemDataType } from '../utils/results.utils';
+import { CardField } from './cardField';
+import { Column } from './column';
 
 export interface ItemDetailGroup {
   group: string;
@@ -118,7 +118,9 @@ export class Item {
    */
   public detailsTitleEnabled = false;
 
-  public constructor(columns: Array<Column>, cardsFieldsRows: Array<CardField[]>, itemData: Map<string, ItemDataType>, identifier: string, position: number) {
+  public constructor(columns: Column[], cardsFieldsRows: CardField[][],
+    itemData: Map<string, ItemDataType>, identifier: string, position: number
+  ) {
     this.columns = columns;
     this.cardsFieldsRows = cardsFieldsRows;
     this.itemData = itemData;
