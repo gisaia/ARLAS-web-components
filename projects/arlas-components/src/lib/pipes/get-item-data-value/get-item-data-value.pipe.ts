@@ -37,10 +37,10 @@ export class BuildItemFieldPipe implements PipeTransform {
   }
 }
 
-export function buildCardItemField(value: CardField){
-  return `${value.fieldName}_${value.prettyName}_${value?.icon}_card`;
+export function buildCardItemField(field: CardField){
+  return `${field.fieldName}_${field.prettyName}_${field?.icon}_card`;
 }
 
-export function buildTableItemField(value: Column){
-  return `${value.fieldName}_${value.columnName}_table`;
+export function buildTableItemField(field: Column){
+  return `${field.fieldName}_${field.columnName}_table`;
 }

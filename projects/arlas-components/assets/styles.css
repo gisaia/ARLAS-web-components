@@ -24,6 +24,7 @@ body {
   --mat-dialog-with-actions-content-padding: 0;
   --mat-dialog-actions-alignment: end;
   --mat-dialog-headline-padding: 10px 0;
+  --mat-dialog-supporting-text-tracking: 0;
 
   --arlas-resultilist-border-color: #e9ecef;
 
