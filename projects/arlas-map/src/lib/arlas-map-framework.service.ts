@@ -133,13 +133,12 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract flyTo(lat: number, lng: number, zoom: number, map: AbstractArlasMapGL);
 
   public abstract addIconLayer(map: AbstractArlasMapGL, layerId: string, iconName: string,
-    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>);
+    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string): void;
   public abstract addRasterLayer(map: AbstractArlasMapGL, layerId: string, url: string, bounds: number[],
     maxZoom: number, tileSize: number, beforeId?: string): void;
 
   public abstract addGeojsonLayer(map: AbstractArlasMapGL, layerId: string, style: VectorStyle,
-    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>
-  ): void;
+    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string): void;
 
 
   public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: L | string, filter: any);

@@ -449,9 +449,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param iconName The icon name
    * @param iconSize The icon size
    * @param data Geojson data which features will be represented with the given icon.
+   * @param beforeId Id of the layer before which to add this layer
    */
   public addIconLayer(map: ArlasMapboxGL, layerId: string, iconName: string, iconSize: number,
-    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>) {
+    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string) {
     const iconSource: GeoJSONSourceRaw = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, iconSource, map);
@@ -465,7 +466,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
         'visibility': 'visible'
       }
     };
-    this.addLayer(map, iconLayer);
+    this.addLayer(map, iconLayer, beforeId);
   };
 
   /**
@@ -475,9 +476,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param layerId The identifier of the new icon layer
    * @param style Vector style to apply to the geojson
    * @param data Geojson data which features will be styled with the given style.
+   * @param beforeId Id of the layer before which to add this layer
    */
   public addGeojsonLayer(map: ArlasMapboxGL, layerId: string, style: VectorStyle,
-    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void {
+    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string): void {
     const source: GeoJSONSourceRaw = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, source, map);
@@ -490,7 +492,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
         'visibility': 'visible'
       },
     };
-    this.addLayer(map, geojsonLayer);
+    this.addLayer(map, geojsonLayer, beforeId);
   }
 
 
