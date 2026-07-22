@@ -17,9 +17,12 @@
  * under the License.
  */
 
+:host {
+  --arlas-cog-legend-border-color: var(--mat-sys-on-background); /* was #a1a1a1 */
+}
+
 .legend {
     --arlas-cog-legend-border-radius: 4px;
-    --arlas-cog-legend-border-color: #a1a1a1;
 
     display: flex;
     height: fit-content;

@@ -22,6 +22,11 @@ $xs-spacing: calc($sm-spacing / 2);
 $sm-font-size: 12px;
 $default-font-size: 14px;
 
+:host {
+  --arlas-coordinates-bg: var(--mat-sys-background); /* was white */
+  --arlas-coordinates-text-color: var(--mat-sys-on-background); /* was white */
+}
+
 .current-coordinate,
 .current-coordinate-edition {
     position: absolute;
@@ -30,7 +35,8 @@ $default-font-size: 14px;
 }
 
 .current-coordinate {
-    background-color: white;
+    background-color: var(--arlas-coordinates-bg);
+    color: var(--arlas-coordinates-text-color);
     border: 1px solid #a1a1a1;
     border-radius: 4px;
     cursor: pointer;
@@ -52,7 +58,7 @@ $default-font-size: 14px;
 }
 
 .current-coordinate-edition {
-    background-color: white;
+    background-color: var(--arlas-coordinates-bg);
     border: 1px solid grey;
     border-radius: 4px;
     padding: 5px;
@@ -83,7 +89,8 @@ $default-font-size: 14px;
     .exit {
         $radius: 10px;
         $icon-size: calc($radius * 1.5);
-
+        color: var(--arlas-coordinates-text-color);
+        fill: var(--arlas-coordinates-text-color);
         cursor: pointer;
         position: absolute;
         top: -$radius;
@@ -101,6 +108,6 @@ $default-font-size: 14px;
             width: $icon-size;
         }
 
-        background-color: white;
+        background-color: var(--arlas-coordinates-bg);
     }
 }

@@ -18,6 +18,24 @@
  */
 @use "../../assets/styles/sizes";
 
+:host {
+  --arlas-map-bg: var(--mat-sys-background); /* was white */
+  --arlas-map-text: var(--mat-sys-on-background); /* was #333 */
+  --arlas-map-disabled-text: var(--mat-sys-on-background); /* was #bbb */
+  --arlas-map-layer-bg: var(--mat-sys-background); /* was #fff */
+  --arlas-map-drag-icon-color: #999; /* was #999 */
+  --arlas-map-drag-icon-hover-color: #444;
+  --arlas-map-tooltip-bg: var(--mat-sys-background); /* was #fff */
+}
+
+.dark-theme {
+  .map__legend-button:hover {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+  }
+  --arlas-map-drag-icon-color: var(--mat-sys-on-background); /* was #999 */
+  --arlas-map-drag-icon-hover-color: var(--mat-sys-on-background); /* was #444 */
+}
+
 .map__container {
   width: 100%;
   height: 100%;
@@ -39,7 +57,7 @@
   cursor: pointer;
   margin-bottom: 4px;
   border-radius: 3px;
-  background-color: white;
+  background-color: var(--arlas-map-bg);
   width: 30px;
   height: 30px;
   padding: 3px;
@@ -63,7 +81,7 @@
   padding-right: 3px;
   width: 225px;
   border: 0.8px solid #ddd;
-  background: white;
+  background: var(--arlas-map-bg);
   border-radius: 3px;
 }
 
@@ -98,12 +116,12 @@
   }
 
   &-text {
-    color: #333;
+    color: var(--arlas-map-text);
     padding: 3px;
     padding-left: 3px;
 
     &--disabled {
-      color: #bbb;
+      color: var(--arlas-map-disabled-text);
     }
   }
 }
@@ -119,7 +137,7 @@
 }
 
 .map__visu-layer {
-  background-color: #fff;
+  background-color: var(--arlas-map-layer-bg);
   position: relative;
   overflow: hidden;
 
@@ -134,7 +152,7 @@
       font-size: 18px;
       width: 18px;
       height: 18px;
-      color: #999;
+      color: var(--arlas-map-drag-icon-color);
     }
   }
 
@@ -144,7 +162,7 @@
       z-index: 2;
 
       mat-icon{
-        color: #444;
+        color: var(--arlas-map-drag-icon-hover-color);
       }
     }
   }
@@ -159,7 +177,7 @@
   position: fixed;
   overflow: hidden;
   font-size: 0.8em;
-  background-color: #fff;
+  background-color: var(--arlas-map-tooltip-bg);
   border-radius: 2px;
   padding: 2px;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -190,7 +208,7 @@
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 
   .map__visu-layer .map__visu-layer-drag  mat-icon{
-    color: #444;
+    color: var(--arlas-map-drag-icon-hover-color);
   }
 }
 

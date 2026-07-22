@@ -27,7 +27,7 @@ import { ItemDataType } from '../utils/results.utils';
 @Component({
   selector: '[arlas-result-filter]',
   templateUrl: './result-filter.component.html',
-  styleUrls: ['./result-filter.component.css'],
+  styleUrls: ['./result-filter.component.scss'],
   imports: [MatFormField, MatSelect, MatOption, FormsModule]
 })
 export class ResultFilterComponent implements OnChanges {

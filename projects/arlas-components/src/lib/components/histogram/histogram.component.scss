@@ -17,6 +17,27 @@
  * under the License.
  */
 
+
+.dark-theme {
+  .histogram{
+    --arlas-histogram-desctiption-tiltle-text-color: var(--mat-sys-on-background); /* was #555 */
+    --arlas-histogram-export-color: var(--mat-sys-on-background); /* was dimgrey */
+    --arlas-histogram-description-color: var(--mat-sys-on-background); /* was #555 */
+    --arlas-histogram-axis-color: var(--mat-sys-on-background); /* was #757575 */
+    --arlas-histogram-tick-label-color: var(--mat-sys-on-background); /* was #757575 */
+    --arlas-histogram-tooltip-background: var(--mat-sys-background); /* was #fff */
+    --arlas-histogram-tooltip-color: var(--mat-sys-on-background); /* was #555 */
+    --arlas-histogram-brush-tooltip-background: var(--mat-sys-background); /* was #fff */
+    --arlas-histogram-brush-tooltip-color: var(--mat-sys-on-background); /* was #000 */
+    --arlas-histogram-brush-handle-color: var(--mat-sys-on-background); /* was #868686 */
+    --arlas-histogram-unselected-area-color: var(--mat-sys-on-background); /* was #b7b7b7 */
+    --arlas-histogram-unselected-curve-color: var(--mat-sys-on-background); /* was #a5a5a5 */
+    --arlas-histogram-bar-fill: var(--mat-sys-background); /* was #FFF */
+    --arlas-histogram-swimlane-label-neutral-color: var(--mat-sys-on-background);
+    --arlas-histogram-swimlane-label-container-hovered-fill: rgba(255, 255, 255, 0.50);
+  }
+}
+
 .histogram__export {
   position: absolute !important;
   right: -14px;
@@ -25,7 +46,7 @@
   width: 24px !important;
   height: 24px !important;
   padding: 0 !important;
-  color: dimgrey;
+  color: var(--arlas-histogram-export-color, dimgrey);
 
   ::ng-deep .mat-mdc-button-touch-target,
   .mat-mdc-button-touch-target {
@@ -35,7 +56,14 @@
 }
 
 .histogram {
-  background: rgba(0,0,255,0);
+  --arlas-histogram-tooltip-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  --arlas-histogram-brush-tooltip-border-radius: 2px;
+  --arlas-histogram-unselected-area-opacity: 0.7;
+  --arlas-histogram-bar-stroke-width: 0.4px;
+  --arlas-histogram-swimlane-label-container-hovered-fill: #efefef;
+
+  --arlas-histogram-plot-background: rgba(0,0,255,0);
+  background: var(--arlas-histogram-plot-background);
   width: 100%;
   height: 100%;
   position: relative;
@@ -60,7 +88,7 @@
     font-family: "Roboto", "Helvetica Neue", sans-serif;
     font-size: 0.9em;
     line-height: 1.3;
-    color: #555;
+    color: var(--arlas-histogram-description-color, #555);
     opacity: 1;
     z-index: 10000;
 }
@@ -75,7 +103,7 @@
     font-size: 1.0em;
     flex: 1 1 100%;
     max-width: 40%;
-    color: #555;
+    color: var(--arlas-histogram-desctiption-tiltle-text-color, #555);
     opacity: 1;
     text-align: center;
     z-index: 8000;
@@ -95,19 +123,19 @@
 
 .histogram__ticks /* @doc Sets the ticks style*/
 {
-  stroke: #757575;
+  stroke: var(--arlas-histogram-axis-color, #757575);
   stroke-width: 1px;
 }
 
 .histogram__axis /* @doc Sets the axes style*/
 {
-  stroke: #757575;
+  stroke: var(--arlas-histogram-axis-color, #757575);
   stroke-width: 1px;
 }
 
 .tick text /* @doc Sets the labels style*/
 {
-  fill: #757575;
+  fill: var(--arlas-histogram-tick-label-color, #757575);
   font-size: 0.9em;
 }
 
@@ -124,20 +152,19 @@
   text-align: left;
   padding: 4px;
   font: 12px sans-serif;
-  background: #fff;
+  background: var(--arlas-histogram-tooltip-background, #fff);
   border: 0px;
   border-radius: 1px;
   pointer-events: none;
-  color: #555;
+  color: var(--arlas-histogram-tooltip-color, #555);
   z-index: 20000;
   min-width: 100px;
 
-  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: var(--arlas-histogram-tooltip-shadow);
 }
 
 .selected_bars_zone {
-  fill: #b7b7b7;
+  fill: var(--arlas-histogram-unselected-area-color, #b7b7b7);
   fill-opacity: 0.1;
 }
 
@@ -147,9 +174,9 @@
   text-align: center;
   position: absolute;
   padding: 2px;
-  background: white;
+  background: var(--arlas-histogram-brush-tooltip-background, #fff);
   pointer-events: none;
-  color: #000;
+  color: var(--arlas-histogram-brush-tooltip-color, #000);
   z-index: 20000;
 }
 
@@ -158,8 +185,8 @@
 .histogram__brush-tooltip__vertical--left, /* @doc Sets the vertical left brush tooltip style*/
 .histogram__brush-tooltip__vertical--right /* @doc Sets the vertical right brush tooltip style*/
 {
-  background-color: #fff;
-  border-radius: 2px;
+  background-color: var(--arlas-histogram-brush-tooltip-background, #fff);
+  border-radius: var(--arlas-histogram-brush-tooltip-border-radius);
 }
 
 .histogram__brush-tooltip__vertical--left__rotation {
@@ -169,7 +196,8 @@
 
 .histogram__brush-tooltip__vertical--right__rotation {
   transform: rotate(90deg) translateY(-100%);
-  transform-origin: top left;}
+  transform-origin: top left;
+}
 
 
 .histogram__ticks-axis text {
@@ -196,7 +224,7 @@
 }
 
 .histogram__ticks-axis line {
-  stroke: #B3B1B1;
+  stroke: var(--arlas-histogram-ticks-line-color, #B3B1B1);
 }
 
 .histogram__line-separator text {
@@ -204,7 +232,7 @@
 }
 
 .histogram__line-separator .domain {
-  stroke: #B3B1B1;
+  stroke: var(--arlas-histogram-line-separator-color, #B3B1B1);
 }
 
 .histogram__ticks-axis__hidden {
@@ -220,12 +248,12 @@
 }
 
 .histogram__only-axis .line {
-  stroke: #bdbdbd;
+  stroke: var(--arlas-histogram-only-axis-color, #bdbdbd);
   stroke-width: 1px;
 }
 
 .histogram__only-axis-right .line {
-  stroke: #bdbdbd;
+  stroke: var(--arlas-histogram-only-axis-color, #bdbdbd);
   stroke-width: 1px;
 }
 
@@ -241,28 +269,28 @@
 
 .histogram__brush--handles /* @doc Sets the brush handles style*/
 {
-  stroke: #868686;
-  fill: #868686;
+  stroke: var(--arlas-histogram-brush-handle-color, #868686);
+  fill: var(--arlas-histogram-brush-handle-color, #868686);
   opacity: 1;
   z-index: 30000;
 }
 
 .histogram__area_circle
 {
-  fill: #7fa5a1;
-  stroke: #7fa5a1;
+  fill: var(--arlas-histogram-area-circle-color, #7fa5a1);
+  stroke: var(--arlas-histogram-area-circle-color, #7fa5a1);
 }
 
 .histogram__tooltip_cursor_rect
 {
-  fill: #bbbbbb;
-  stroke: #bbbbbb;
+  fill: var(--arlas-histogram-cursor-color, #bbbbbb);
+  stroke: var(--arlas-histogram-cursor-color, #bbbbbb);
   opacity: 0.5;
 }
 .histogram__tooltip_cursor_line
 {
-  fill: #bbbbbb;
-  stroke: #bbbbbb;
+  fill: var(--arlas-histogram-cursor-color, #bbbbbb);
+  stroke: var(--arlas-histogram-cursor-color, #bbbbbb);
 }
 
 .swimlane_legend_color, .swimlane_legend_value {
@@ -291,26 +319,26 @@
 
 .histogram__chart--fixed-selected--area /* @doc Sets the style of the area's selected parts*/
 {
-  fill: #88c9c3;
+  fill: var(--arlas-histogram-selected-color, #88c9c3);
   fill-opacity: 1;
 }
 
 .histogram__chart--current-selected--area /* @doc Sets the style of the area's selected parts*/
 {
-  fill: #88c9c3;
+  fill: var(--arlas-histogram-selected-color, #88c9c3);
   fill-opacity: 1;
 }
 
 .histogram__chart--unselected--area /* @doc Sets the style of the area's unselected parts*/
 {
-  fill: #b7b7b7;
-  fill-opacity: .7;
+  fill: var(--arlas-histogram-unselected-area-color, #b7b7b7);
+  fill-opacity: var(--arlas-histogram-unselected-area-opacity);
 }
 
 .histogram__chart--fixed-selected--curve /* @doc Sets the style of the curve's selected parts*/
 {
   fill: none;
-  stroke: #88c9c3;
+  stroke: var(--arlas-histogram-selected-color, #88c9c3);
 }
 
 .histogram__chart--fixed-selected--curve--without_color
@@ -321,7 +349,7 @@
 .histogram__chart--current-selected--curve /* @doc Sets the style of the curve's selected parts*/
 {
   fill: none;
-  stroke: #88c9c3;
+  stroke: var(--arlas-histogram-selected-color, #88c9c3);
 }
 
 .histogram__chart--current-selected--curve--without_color
@@ -332,7 +360,7 @@
 .histogram__chart--unselected--curve /* @doc Sets the style of the curve's unselected parts*/
 {
   fill: none;
-  stroke: #a5a5a5;
+  stroke: var(--arlas-histogram-unselected-curve-color, #a5a5a5);
   stroke-width: 0.8px;
 }
 
@@ -346,102 +374,102 @@
 
 .histogram__chart--bar__fullyselected /* @doc Sets the fixed selected bars style*/
 {
-  fill: #FFF;
-  stroke: #a5a5a5;
-  stroke-width: 0.4px;
+  fill: var(--arlas-histogram-bar-fill, #FFF);
+  stroke: var(--arlas-histogram-bar-selected-stroke, #a5a5a5);
+  stroke-width: var(--arlas-histogram-bar-stroke-width);
 }
 
 .histogram__chart--bar__currentselection /* @doc Sets the currently selected bars style*/
 {
-  fill: #FFF;
-  stroke: #a5a5a5;
-  stroke-width: 0.4px;
+  fill: var(--arlas-histogram-bar-fill, #FFF);
+  stroke: var(--arlas-histogram-bar-selected-stroke, #a5a5a5);
+  stroke-width: var(--arlas-histogram-bar-stroke-width);
 }
 
 .histogram__chart--bar__partlyselected /* @doc Sets the partly selected bars style*/
 {
-  fill: #FFF;
-  stroke: #a5a5a5;
-  stroke-width: 0.4px;
+  fill: var(--arlas-histogram-bar-fill, #FFF);
+  stroke: var(--arlas-histogram-bar-selected-stroke, #a5a5a5);
+  stroke-width: var(--arlas-histogram-bar-stroke-width);
 }
 
 .histogram__chart--bar /* @doc Sets the unselected selected bars style*/
 {
-  fill: #FFF;
-  stroke: #b7b7b7;
-  stroke-width: 0.4px;
+  fill: var(--arlas-histogram-bar-fill, #FFF);
+  stroke: var(--arlas-histogram-bar-stroke, #b7b7b7);
+  stroke-width: var(--arlas-histogram-bar-stroke-width);
 }
 
 .histogram__swimlane--vertical-tooltip-line /* @doc Sets the vertical line that's shown when hovering bars in swimlane*/
 {
   stroke-width: 1px;
-  stroke: rgb(37, 37, 37);
+  stroke: var(--arlas-histogram-swimlane-tooltip-line-color, rgb(37, 37, 37));
   fill: none;
 }
 
 .headband_currentselection /* @doc Sets the currently selected headbands style (a headband is a band over the bar)*/
 {
-  fill: #88c9c3 !important;
-  stroke: #88c9c3 !important;
+  fill: var(--arlas-histogram-headband-selected-color, #88c9c3) !important;
+  stroke: var(--arlas-histogram-headband-selected-color, #88c9c3) !important;
   stroke-width: 0.4px !important;;
   height: 1.5px !important;
 }
 
 .headband_currentselection_min /* @doc Sets the currently selected headbands style (a headband is a band over the bar)*/
 {
-  fill: #e62938 !important;
-  stroke: #e62938 !important;
+  fill: var(--arlas-histogram-headband-minmax-color, #e62938) !important;
+  stroke: var(--arlas-histogram-headband-minmax-color, #e62938) !important;
   stroke-width: 0.4px !important;;
   height: 1.5px !important;
 }
 
 .headband_currentselection_max /* @doc Sets the currently selected headbands style (a headband is a band over the bar)*/
 {
-  fill: #e62938 !important;
-  stroke: #e62938 !important;
+  fill: var(--arlas-histogram-headband-minmax-color, #e62938) !important;
+  stroke: var(--arlas-histogram-headband-minmax-color, #e62938) !important;
   stroke-width: 0.4px !important;;
   height: 1.5px !important;
 }
 .headband_partlyselected /* @doc Sets the partly selected headbands style (a headband is a band over the bar)*/
 {
-  fill: #88c9c3 !important;
-  stroke: #88c9c3 !important;
+  fill: var(--arlas-histogram-headband-selected-color, #88c9c3) !important;
+  stroke: var(--arlas-histogram-headband-selected-color, #88c9c3) !important;
   stroke-width: 0.4px !important;
   height: 1.5px !important;
 }
 .headband_fullyselected /* @doc Sets the fully selected headbands style (a headband is a band over the bar)*/
 {
-  fill: #88c9c3 !important;
-  stroke: #88c9c3 !important;
+  fill: var(--arlas-histogram-headband-selected-color, #88c9c3) !important;
+  stroke: var(--arlas-histogram-headband-selected-color, #88c9c3) !important;
   stroke-width: 0.4px !important;
   height: 1.5px !important;
 }
-.headband_notselected /* @doc Sets the not selected headbands style (a headband is a band over the bar)*/
+.headband_notselected
 {
-  fill: #FFF !important;
-  stroke: #b7b7b7 !important;
+  fill: var(--arlas-histogram-headband-notselected-fill, #FFF) !important;
+  stroke: var(--arlas-histogram-headband-notselected-stroke, #b7b7b7) !important;
   stroke-width: 0 !important;
   height: 0 !important;
 }
 
 .swimlane-label-unselected /* @doc Sets the unselected labels style of the swimlane*/
 {
-  fill: gray;
+  fill: var(--arlas-histogram-swimlane-label-unselected-color, gray);
 }
 
 .swimlane-label-selected /* @doc Sets the selected labels style of the swimlane*/
 {
-  fill: #FF4081;
+  fill: var(--arlas-histogram-swimlane-label-selected-color, #FF4081);
 }
 
 .swimlane-label-neutral /* @doc Sets all labels style of the swimlane when none of them are selected*/
 {
-  fill: black;
+  fill: var(--arlas-histogram-swimlane-label-neutral-color, black);
 }
 
 .swimlane-label-container-hovered /* @doc Sets the hovered label container style of the swimlane*/
 {
-  fill: #efefef;
+  fill: var(--arlas-histogram-swimlane-label-container-hovered-fill);
 }
 
 .swimlane-label-container-neutral /* @doc Sets all labels containers style of the swimlane when none of them are selected*/
@@ -455,6 +483,10 @@
 .swimlane-label-container-unselected /* @doc Sets the unselected labels containers style of the swimlane*/
 {
 
+}
+
+.swimlane-labels-container{
+  fill:transparent;
 }
 
 .selection {

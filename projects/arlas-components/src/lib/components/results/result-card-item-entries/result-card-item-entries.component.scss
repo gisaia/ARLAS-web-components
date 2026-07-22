@@ -17,6 +17,10 @@
  * under the License.
  */
 
+:host {
+  --arlas-card-item-entries-spacer-color: var(--mat-sys-on-background); /* was lightgrey */
+}
+
 .meta-data-entries{
   &__container{
     max-width: 100%;
@@ -43,7 +47,7 @@
   &__spacer {
     flex: 0 0 auto;
     margin: 0 6px;
-    color: lightgrey;
+    color: var(--arlas-card-item-entries-spacer-color, lightgrey);
   }
 }
 

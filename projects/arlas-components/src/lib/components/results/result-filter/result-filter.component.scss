@@ -17,7 +17,17 @@
  * under the License.
  */
 
+:host {
+  --arlas-result-filter-bg: var(--mat-sys-surface-container);
+  --arlas-result-filter-border:1px solid lightgrey;
+  --arlas-result-filter-text-color: var(--mat-sys-on-background);
+}
+
 .resultlist__header--filters /* @doc Sets filters container style.*/
 {
-  margin: 0
+  margin: 0;
+  background: var(--arlas-result-filter-bg);
+  border: var(--arlas-result-filter-border);
+  color:var(--arlas-result-filter-text-color);
+  border-radius: 3px;
 }

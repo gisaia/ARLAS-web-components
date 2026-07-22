@@ -68,7 +68,7 @@
     }
 
     .checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
-      border-color: rgba(0, 0, 0, .04) !important;
+      border-color: var(--arlas-metrics-table-row-checkbox-border-color, rgba(0, 0, 0, .04)) !important;
     }
 
   }
@@ -139,7 +139,7 @@
 .empty {
   display: inline-block;
   width: 5px;
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  border: solid 1px var(--arlas-metrics-table-row-empty-border-color, rgba(0, 0, 0, 0.2));
 }
 
 .terms-head {

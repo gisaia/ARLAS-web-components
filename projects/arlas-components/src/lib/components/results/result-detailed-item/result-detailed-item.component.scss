@@ -17,13 +17,23 @@
  * under the License.
  */
 
+:host {
+  --arlas-result-detailed-item-title-bg: var(--mat-sys-background); /* was white */
+  --arlas-result-detailed-item-group-title-border-color: #f0eeeecf; /* was #f0eeeecf */
+  --arlas-result-detailed-item-item-color: var(--mat-sys-on-background); /* was black */
+  --arlas-result-detailed-item-item-border-color: #f0eeee7e; /* was #f0eeee7e */
+  --arlas-result-detailed-item-key-color: grey; /* was gray */
+  --arlas-result-detailed-item-actions-bg: var(--mat-sys-background); /* was white */
+  --arlas-result-detailed-item-attachments-title-color: #322d90; /* was #322d90 - kept as-is */
+}
+
 .grid-container {
   overflow-y: auto;
   display: block;
   height: 100%;
   padding: 0;
   .details-title {
-    background-color: white;
+    background-color: var(--arlas-result-detailed-item-title-bg, white);
     position: sticky;
     top: 0px;
   }
@@ -46,22 +56,22 @@
   &--group {
     &-title {
       font-size: 16px;
-      border-bottom: 1px solid #f0eeeecf;
+      border-bottom: 1px solid var(--arlas-result-detailed-item-group-title-border-color, #f0eeeecf);
       display: block;
     }
   }
 
   &--item {
-    color: black;
+    color: var(--arlas-result-detailed-item-item-color, black);
     padding: 2px;
-    border-bottom: 1px solid #f0eeee7e;
+    border-bottom: 1px solid var(--arlas-result-detailed-item-item-border-color, #f0eeee7e);
     display: flex;
     gap: 10px;
 
     &--key /* @doc Sets key style. (key: value part)*/ {
       font-size: 12px;
       text-align: end;
-      color: gray;
+      color: var(--arlas-result-detailed-item-key-color, gray);
       flex: 2;
     }
 
@@ -76,7 +86,7 @@
     &--sticky {
       position: sticky;
       bottom: 0;
-      background-color: white;
+      background-color: var(--arlas-result-detailed-item-actions-bg, white);
     }
   }
 }
@@ -88,7 +98,7 @@
 
   &--title /* @doc Sets the style of attachments section's title*/ {
     font-weight: bold;
-    color: #322d90;
+    color: var(--arlas-result-detailed-item-attachments-title-color, #322d90);
     font-size: 1.1em;
   }
 

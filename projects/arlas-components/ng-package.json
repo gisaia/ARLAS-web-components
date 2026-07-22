@@ -1,7 +1,11 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/arlas-web-components",
-  "assets": ["./assets"],
+  "assets": ["./assets", {
+   "input": "./src/lib/components/",
+    "glob": "**/*.theme.scss",
+    "output": "./assets/styles/theme"
+  }],
   "allowedNonPeerDependencies": [
     "arlas-d3",
     "iv-viewer",

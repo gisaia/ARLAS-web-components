@@ -17,6 +17,13 @@
  * under the License.
  */
 
+:host {
+  --arlas-result-actions-color: var(--mat-sys-on-background); /* was white */
+  --arlas-result-actions-bg: var(--mat-sys-background); /* was white */
+  --arlas-result-actions-icon-bg: #{rgb(var(--mat-sys-background), 0.8)}; /* was white */
+  --arlas-result-actions-text-action-bg: var(--mat-sys-background); /* was #fff */
+}
+
 .resultitem-list__actions {
     min-width: 0;
     border-radius: 50%;
@@ -25,8 +32,8 @@
     width: 24px;
     height: 24px;
     font-size: 0;
-    color: white;
-    background-color: white;
+    color: var(--arlas-result-actions-color, white);
+    background-color: var(--arlas-result-actions-bg, white);
     background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2720%27%20height%3D%2720%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%20%3Cg%3E%20%20%3Ctitle%3Ebackground%3C%2Ftitle%3E%20%20%3Crect%20fill%3D%27%23fff%27%20id%3D%27canvas_background%27%20height%3D%2722%27%20width%3D%2722%27%20y%3D%27-1%27%20x%3D%27-1%27%2F%3E%20%20%3Cg%20display%3D%27none%27%20overflow%3D%27visible%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%20id%3D%27canvasGrid%27%3E%20%20%20%3Crect%20fill%3D%27url(%23gridpattern)%27%20stroke-width%3D%270%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%2F%3E%20%20%3C%2Fg%3E%20%3C%2Fg%3E%20%3Cg%3E%20%20%3Ctitle%3ELayer%201%3C%2Ftitle%3E%20%20%3Cellipse%20stroke%3D%27%23000000%27%20ry%3D%275.779194%27%20rx%3D%275.5%27%20id%3D%27svg_1%27%20cy%3D%2710.000004%27%20cx%3D%2710%27%20stroke-width%3D%272.5%27%20fill%3D%27%23ffffff%27%2F%3E%20%3C%2Fg%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: center;
@@ -67,7 +74,7 @@
     .icon {
         float: right;
         font-size: 20px;
-        background-color: white;
+        background-color: var(--arlas-result-actions-icon-bg, white);
         border-radius: 50%;
         cursor: pointer;
         align-items: center;
@@ -89,7 +96,7 @@
 .text-action {
     font-size: 12px;
     padding: 5px 10px;
-    background-color: #fff;
+    background-color: var(--arlas-result-actions-text-action-bg, #fff);
 
     height: 25px;
     --mat-button-outlined-touch-target-size: 25px;
