@@ -20,9 +20,9 @@
 :host {
   --arlas-result-actions-color: var(--mat-sys-on-background); /* was white */
   --arlas-result-actions-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-actions-icon-bg: #{rgb(var(--mat-sys-background), 0.8)}; /* was white */
   --arlas-result-actions-text-action-bg: var(--mat-sys-background); /* was #fff */
 }
+
 
 .resultitem-list__actions {
     min-width: 0;

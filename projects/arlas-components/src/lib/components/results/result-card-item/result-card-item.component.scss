@@ -18,7 +18,6 @@
  */
 :host{
   --arlas-result-card-item-bg: var(--mat-sys-surface); /* was white */
-  --arlas-result-card-item-image-bg: rgba(255,255,255,0.8); /* was rgba(255,255,255,0.8) - kept as-is */
   --arlas-result-card-item-line-bg: blue; /* was blue - kept as-is */
 
   display: block;
@@ -41,6 +40,15 @@
     }
   }
 }
+
+.dark-theme{
+  :host {
+    --arlas-result-card-item-image-bg: var(--mat-sys-background);
+    --arlas-result-thumbnail-list-icon-bg: var(--mat-sys-background);
+    --arlas-result-thumbnail-action-btn-bg:  var(--mat-sys-background);
+  }
+}
+
 
 .card {
   &__container {
