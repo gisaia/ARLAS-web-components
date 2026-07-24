@@ -582,9 +582,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   * @param layerId The identifier of the new icon layer
   * @param style Vector style to apply to the geojson
   * @param data Geojson data which features will be styled with the given style.
+  * @param beforeId Id of the layer before which to add this layer
   */
   public addGeojsonLayer(map: ArlasMaplibreGL, layerId: string, style: VectorStyle,
-    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void {
+    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string): void {
     const source: GeoJSONSourceSpecification = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, source, map);
@@ -597,7 +598,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
         'visibility': 'visible'
       },
     };
-    this.addLayer(map, geojsonLayer);
+    this.addLayer(map, geojsonLayer, beforeId);
   }
 
   /**
@@ -608,9 +609,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @param iconName The icon name
    * @param iconSize The icon size
    * @param data Geojson data which features will be represented with the given icon.
+   * @param beforeId Id of the layer before which to add this layer
    */
   public addIconLayer(map: ArlasMaplibreGL, layerId: string, iconName: string,
-    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>) {
+    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string) {
     const iconSource: GeoJSONSourceSpecification = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, iconSource, map);
@@ -624,7 +626,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
         'visibility': 'visible'
       }
     };
-    this.addLayer(map, iconLayer);
+    this.addLayer(map, iconLayer, beforeId);
   };
 
   public flyTo(lat: number, lng: number, zoom: number, map: ArlasMaplibreGL) {
