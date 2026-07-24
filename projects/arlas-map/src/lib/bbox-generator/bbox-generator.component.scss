@@ -31,6 +31,7 @@
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
+        color: var(--arlas-bbox-generator-text);
         .clear {
             cursor: pointer;
         }
@@ -54,6 +55,7 @@
         .section {
             .title {
                 margin-bottom: 5px;
+                color: var(--arlas-bbox-generator-text);
             }
             display: flex;
             flex-direction: column;

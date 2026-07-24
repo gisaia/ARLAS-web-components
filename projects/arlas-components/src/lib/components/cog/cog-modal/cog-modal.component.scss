@@ -31,6 +31,12 @@
   --arlas-cog-modal-exit-bg: var(--mat-sys-background); /* was white */
 }
 
+.dark-theme {
+  :host{
+    --arlas-cog-modal-item-bg: var(--mat-sys-surface);
+  }
+}
+
 .visualisation {
   display: flex;
   flex-direction: column;
