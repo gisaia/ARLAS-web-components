@@ -44,11 +44,12 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
   }
   public getActions(item: Item): Observable<Array<Action>> {
     const actionsList = new Array<Action>();
-    actionsList.push({ id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS' },
-      { id: '2', label: 'Télécharger le produit', actionBus: undefined, tooltip: 'Download' },
+    actionsList.push(
+      { id: '1', label: 'Show', tooltip: 'Show', cssClass: 'CASSCLAS', icon: 'eye_tracking', reverseAction: { id: 'r', label: 'Hide', icon: 'visibility_off' }, fields: [] },
+      { id: '2', label: 'Télécharger le produit', actionBus: undefined, tooltip: 'Download', icon: 'download' },
       { id: '3', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS' },
-      { id: '4', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS' },
-      { id: '5', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS' }
+      { id: '4', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS', icon: 'satellite_alt' },
+      { id: '5', label: 'WMTS', actionBus: undefined, tooltip: 'WMTS', icon: 'satellite_alt' }
     );
     return from(new Array(actionsList));
   }

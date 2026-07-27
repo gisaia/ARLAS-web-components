@@ -136,7 +136,7 @@ export class ResultsDemoComponent {
       const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
       const pick = (arr: any[]) => arr[randInt(0, arr.length - 1)];
 
-      this.globalActionsList.push({ id: '1', label: 'Download', actionBus: undefined, tooltip: 'Download' });
+      this.globalActionsList.push({ id: '1', label: 'Download', actionBus: undefined, tooltip: 'Download', icon: 'download' });
       this.data = new Array();
       for (let i = 0; i < 50; i++) {
         const map = new Map<string, ItemDataType>();

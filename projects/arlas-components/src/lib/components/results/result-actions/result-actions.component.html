@@ -10,13 +10,13 @@
             <button (click)="triggerAction($event, action)"
               [matTooltip]="action | actionDisplayer:'tooltip' |translate"
               class="resultitem-list__actions {{action.id}}-onhover-action {{action.cssClass}}-onhover-action">
-              {{action | actionDisplayer:'label' | translate}}
+              {{ action | actionDisplayer:'label' | translate }}
             </button>
           } @else {
             <!-- The icon is provided by the action itself.-->
             <mat-icon (click)="triggerAction($event, action)" class="icon"
-              [matTooltip]="action | actionDisplayer:'tooltip' |translate">
-              {{action | actionDisplayer:'icon'}}
+              [matTooltip]="action | actionDisplayer:'tooltip' | translate">
+              {{ action | actionDisplayer:'icon' }}
             </mat-icon>
           }
         } @else {

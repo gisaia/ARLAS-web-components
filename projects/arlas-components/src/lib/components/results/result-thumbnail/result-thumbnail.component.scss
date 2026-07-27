@@ -25,22 +25,20 @@ $img-proportion: 100%;
 
   ::ng-deep {
     & .list_actions .icon {
-      width: 17px!important;
-      height: 17px!important;
-      font-size: 17px!important;
-      border-radius: 5px!important;
-      background: rgba(255,255,255,0.8)!important;
+      width: 18px;
+      height: 18px;
+      font-size: 16px !important;
+      border-radius: 5px !important;
+      background-color: rgba(255,255,255,0.8) !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     & .list_actions--icon {
       padding-right: 6px;
       max-width: 100px;
-      top: 7px;
-    }
-
-    & .list_actions{
-      flex-wrap: wrap-reverse;
-      gap: 2.5px;
+      top: 8px !important;
     }
   }
 }
@@ -137,7 +135,7 @@ $img-proportion: 100%;
     .actions {
       ::ng-deep .list_actions {
         .not_activated {
-          display: block;
+          display: flex;
         }
       }
     }
