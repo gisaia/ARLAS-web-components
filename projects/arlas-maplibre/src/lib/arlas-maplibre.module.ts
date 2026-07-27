@@ -27,8 +27,6 @@ import { MaplibreLegendService } from './legend/legend.service';
     ArlasMaplibreService,
     MaplibreBasemapService,
     MaplibreLegendService
-  ],
-  exports: [
   ]
 })
 export class ArlasMaplibreModule { }

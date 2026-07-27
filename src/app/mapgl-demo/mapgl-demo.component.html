@@ -20,7 +20,7 @@
   </div>
 }
 <div class="mapgl-options">
-  <button mat-icon-button (click)="mapImportComponent.openDialog()" class="mapgl-import-button">
+  <button mat-icon-button (click)="demoImportMap.openDialog()" class="mapgl-import-button">
     <mat-icon aria-label="Import polygon on your map">get_app</mat-icon>
   </button>
   <button mat-icon-button (click)="openSettings()" class="mapgl-settings-button">
@@ -28,16 +28,15 @@
   </button>
 </div>
 <div id="mapgldemo" style="height:94%; width:100%">
-  <arlas-map-import #demoImportMap [mapComponent]="mapComponent" [maxFeatures]="1000" [maxVertexByPolygon]="5" [maxLoadingTime]="10000"
+  <arlas-map-import #demoImportMap [mapComponent]="demoMap" [maxFeatures]="1000" [maxVertexByPolygon]="5" [maxLoadingTime]="10000"
     [maxFileSize]="1050000" [allowedImportType]="['wkt', 'shp', 'kml', 'geojson']">
   </arlas-map-import>
-  <arlas-map-settings #mapSettings>
+  <arlas-map-settings #mapSettings></arlas-map-settings>
 
-  </arlas-map-settings>
   <arlas-map #demoMap [defaultBasemapStyle]="defaultBasemapStyle" [basemapStyles]="basemapStyles"
-    [margePanForLoad]=40 [margePanForTest]=2 [mapLayers]="mapLayers"
-    [displayScale]=true [displayCurrentCoordinates]=true [minZoom]=1 [maxZoom]=28 (onPolygonChange)="polygonChange($event)"
-    (onPolygonSelect)="polygonSelect($event)" [drawOption]="drawOptions" [drawData]="drawData" [drawButtonEnabled]="true"
+    [margePanForLoad]="40" [margePanForTest]="2" [mapLayers]="mapLayers"
+    [displayScale]="true" [displayCurrentCoordinates]="true" [minZoom]="1" [maxZoom]="28"
+    [drawOption]="drawOptions" [drawData]="drawData" [drawButtonEnabled]="true"
     [drawPolygonVerticesLimit]="5" [transformRequest]="transformRequest" (onAoiChanged)="onAoiChanged($event)"
     [visualisationSetsConfig]="visualisationSets" [visibilityUpdater]="visibilityUpdater"
     (onMapLoaded)="onMapLoaded()" [dataSources]="mapDataSources" [enableGlobe]="true" (onMove)="onMove($event)"

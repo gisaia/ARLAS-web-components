@@ -16,7 +16,7 @@ describe('MultiCollectionBarsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-    imports: [
+      imports: [
         FormatLongTitlePipe,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } }),
         MatTooltipModule,
@@ -28,15 +28,16 @@ describe('MultiCollectionBarsComponent', () => {
             }
         }),
         MetricsTableRowComponent, MetricsTableComponent
-    ],
-    providers: [
+      ],
+      providers: [
         ArlasColorService
-    ]
-})
+      ]
+    })
       .compileComponents();
 
     fixture = TestBed.createComponent(MetricsTableComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('metricsTable', { header: [], data: [] });
     fixture.detectChanges();
   });
 

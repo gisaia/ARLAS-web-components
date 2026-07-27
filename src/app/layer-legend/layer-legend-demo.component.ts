@@ -18,6 +18,7 @@
  */
 
 
+import { KeyValuePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { ArlasDataLayer, LayerIconComponent, Legend, PROPERTY_SELECTOR_SOURCE } from 'arlas-map';
 
@@ -25,7 +26,7 @@ import { ArlasDataLayer, LayerIconComponent, Legend, PROPERTY_SELECTOR_SOURCE } 
     selector: 'arlas-layer-legend-demo',
     templateUrl: './layer-legend-demo.component.html',
     styleUrl: './layer-legend-demo.component.scss',
-    imports: [LayerIconComponent]
+    imports: [LayerIconComponent, KeyValuePipe]
 })
 export class LayerLegendDemoComponent {
 protected layersLeg = new Map<string, { layer: ArlasDataLayer, colorLegend: Legend, strokeColorLegend: Legend}>([

@@ -19,8 +19,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import {
-  ChangeDetectorRef, Component,
-  ElementRef, inject, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ChangeDetectorRef, Component, ElementRef, inject, input,
+  Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -28,13 +28,13 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe } from '@ngx-translate/core';
-import { FullScreenViewer, ImageViewer } from 'iv-viewer';
-import {Subject, tap} from 'rxjs';
+import { ImageViewer } from 'iv-viewer';
+import { Subject, tap } from 'rxjs';
+import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
 import { Item } from '../model/item';
 import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
-import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
 
 @Component({
     selector: 'arlas-result-detailed-grid',
@@ -64,27 +64,27 @@ s   * @constant
    * @Input
    * @description An object representing an Item and that contains the detailed data.
    */
-  @Input() public gridTile: Item;
+  public gridTile = input.required<Item>();
   /**
    * @Input
    * @description Width of the detailed grid.
    */
-  @Input() public detailWidth: number;
+  public detailWidth = input.required<number>();
   /**
    * @Input
    * @description Height of the detailed grid.
    */
-  @Input() public detailHeight: number;
+  public detailHeight = input.required<number>();
   /**
    * @Input
    * @description Name of the id field.
    */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
   /**
    * @Input
    * @description Whether the detail is visible.
    */
-  @Input() public isDetailShowed: boolean;
+  @Input() public isDetailShowed = false;
   /**
    * @Input
    * @description Whether display group with no detail.
@@ -108,7 +108,7 @@ s   * @constant
   * @description A detailed-data-retriever object that implements
   * DetailedDataRetriever interface.
   */
-  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
 
   /**
    * @Input
@@ -120,15 +120,14 @@ s   * @constant
    * @description Emits the event of applying the specified action on the specified item.
    */
 
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
   /**
  * @Output
  * @description Emits the event of closing details.
  */
   @Output() public closeDetail: Subject<boolean> = new Subject();
 
-  @ViewChild('image_detail', { static: false }) public imageViewer: ElementRef;
+  @ViewChild('image_detail', { static: false }) public imageViewer?: ElementRef;
 
 
   public isDetailedDataShowed = false;
@@ -136,7 +135,7 @@ s   * @constant
   /**
    * @description The image source to display. Either is an url or the content of the image.
    */
-  public imgSrc: string | ArrayBuffer;
+  public imgSrc: string | undefined;
 
   /**
    * @description Whether the request for the image is being processed
@@ -153,17 +152,16 @@ s   * @constant
    */
   public isFullScreen = false;
 
-  private viewer;
+  private viewer?: ImageViewer;
 
   /**
-   * Full screaan
-   * @private
+   * Full screen
    */
   private readonly fullScreenService = inject(FullScreenViewerService);
 
   public constructor(
-    private changeDetectorRef: ChangeDetectorRef,
-    private http: HttpClient
+    private readonly changeDetectorRef: ChangeDetectorRef,
+    private readonly http: HttpClient
   ) { }
 
   public ngOnDestroy(): void {
@@ -172,9 +170,7 @@ s   * @constant
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      if (this.viewer) {
-        this.viewer = this.viewer.destroy();
-      }
+      this.resetViewer();
       this.isFullScreen = false;
       this.currentImageIndex = 0;
       this.getImage();
@@ -183,21 +179,21 @@ s   * @constant
 
   private getImage() {
     this.imgSrc = undefined;
-    if (!this.gridTile || (this.gridTile && (!this.gridTile.urlImages || this.gridTile.urlImages.length === 0))) {
+    if (!this.gridTile().urlImages || this.gridTile().urlImages.length === 0) {
       return;
     }
 
     if (this.useHttp) {
       this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
+      this.http.get(this.gridTile().urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
         .subscribe({
           next: (image: Blob) => {
             const reader = new FileReader();
             reader.addEventListener('load', () => {
-              this.imgSrc = reader.result;
-              this.gridTile.imageEnabled = true;
+              this.imgSrc = reader.result?.toString();
+              this.gridTile().imageEnabled = true;
               this.isLoading = false;
-              this.resetViewer();
+              this.updateViewer();
             }, false);
             if (image) {
               reader.readAsDataURL(image);
@@ -208,21 +204,19 @@ s   * @constant
           }
         });
     } else {
-      this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
-      this.gridTile.imageEnabled = true;
-      this.resetViewer();
+      this.imgSrc = this.gridTile().urlImages[this.currentImageIndex];
+      this.gridTile().imageEnabled = true;
+      this.updateViewer();
     }
   }
 
-  private resetViewer() {
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
+  private updateViewer() {
+    this.resetViewer();
     setTimeout(() => {
       if (this.isFullScreen) {
         try {
           this.fullScreenService.showFullScreen(this.imgSrc as string);
-        } catch (e) {
+        } catch {
           console.warn('Failed to open full screen');
         }
       } else {
@@ -234,9 +228,7 @@ s   * @constant
   }
 
   public destroyViewer(isComponentDestroy?: boolean): void {
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
+    this.resetViewer();
     if (isComponentDestroy && this.fullScreenService.hasViewer()) {
       this.fullScreenService.destroy();
     }
@@ -250,7 +242,7 @@ s   * @constant
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
-    this.resetViewer();
+    this.updateViewer();
   }
 
   public closeDetailedData() {
@@ -268,7 +260,7 @@ s   * @constant
     this.resetViewer();
     this.fullScreenService
       .initOverlay()
-      .destroyElementOnClose()
+      ?.destroyElementOnClose()
       .pipe(tap(() =>  {
         this.isFullScreen = false;
         this.resetViewer();
@@ -279,16 +271,23 @@ s   * @constant
   public onPrevious() {
     this.currentImageIndex -= 1;
     if (this.currentImageIndex < 0) {
-      this.currentImageIndex = this.gridTile.urlImages.length - 1;
+      this.currentImageIndex = this.gridTile().urlImages.length - 1;
     }
     this.getImage();
   }
 
   public onNext() {
     this.currentImageIndex += 1;
-    if (this.currentImageIndex >= this.gridTile.urlImages.length) {
+    if (this.currentImageIndex >= this.gridTile().urlImages.length) {
       this.currentImageIndex = 0;
     }
     this.getImage();
+  }
+
+  private resetViewer() {
+    if (this.viewer) {
+      this.viewer.destroy();
+      this.viewer = undefined;
+    }
   }
 }

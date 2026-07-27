@@ -22,7 +22,7 @@
     "rxjs": "^7.4.0"
   },
   "dependencies": {
-    "maplibre-gl": "^5.21.0",
+    "maplibre-gl": "^5.24.0",
     "tslib": "^2.3.0"
   }
 }

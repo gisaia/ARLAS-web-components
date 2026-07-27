@@ -27,8 +27,7 @@ import rhumbDestination from '@turf/rhumb-destination';
 import transformRotate from '@turf/transform-rotate';
 import { buildStrip, computeStripProperties } from './strip.mode';
 
-export const stripDirectSelectMode: any = {};
-
+export const stripDirectSelectMode = {} as MapboxDraw.DrawCustomMode;
 
 stripDirectSelectMode.onSetup = function (opts) {
     const featureId = opts.featureId;
@@ -83,10 +82,11 @@ stripDirectSelectMode.onSetup = function (opts) {
 };
 
 stripDirectSelectMode.fireOnStop = function () {
-    this.map.fire('draw.onStop', 'draw end');
+    (this.map as any).fire('draw.onStop', 'draw end');
 };
 
 stripDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
+    geojson.properties ??= {};
     if (state.featureId === geojson.properties.id) {
         geojson.properties.active = MapboxDraw.constants.activeStates.ACTIVE;
         push(geojson);
@@ -116,11 +116,11 @@ stripDirectSelectMode.onStop = function () {
     this.fireOnStop();
 };
 
-stripDirectSelectMode.pathsToCoordinates = function (featureId, paths) {
-    return paths.map(coord_path => ({ feature_id: featureId, coord_path }));
-};
+stripDirectSelectMode.pathsToCoordinates = MapboxDraw.modes.direct_select.pathsToCoordinates;
 
-stripDirectSelectMode._createActionPoint = function (actionWidgets, featureId, v1, v2, rotCenter, radiusScale, type) {
+stripDirectSelectMode.createActionPointHelper = function (actionWidgets, featureId, v1, v2, rotCenter, radiusScale, type) {
+    // TODO: check typing here
+    console.log(v1);
     const cR0 = midpoint(v1, v2).geometry.coordinates;
     const heading = rhumbBearing(rotCenter, cR0);
     const distance0 = distance(rotCenter, cR0);
@@ -135,7 +135,8 @@ stripDirectSelectMode._createActionPoint = function (actionWidgets, featureId, v
             parent: featureId,
             lng: cR1[0],
             lat: cR1[1],
-            coord_path: v1.properties.coord_path,
+            // TODO: check typing here
+            coord_path: (v1 as any).properties.coord_path,
             coord_path_coords: cR0,
             heading: heading,
         },
@@ -148,25 +149,25 @@ stripDirectSelectMode._createActionPoint = function (actionWidgets, featureId, v
 };
 
 stripDirectSelectMode.createActionPoints = function (state, geojson, suppPoints) {
-    const { type, coordinates } = geojson.geometry;
+    const { type } = geojson.geometry;
     const featureId = geojson.properties && geojson.properties.id;
-    const actionWidgets = [];
+    const actionWidgets = new Array<GeoJSON.Feature>();
     if (type !== MapboxDraw.constants.geojsonTypes.POLYGON) {
         return;
     }
     const corners = suppPoints.slice(0);
     corners[corners.length] = corners[0];
-    let v1 = null;
+    let v1: GeoJSON.Feature<GeoJSON.Point> | null = null;
     const rotCenter = this.computeCenter(state, geojson);
     corners.forEach((v2) => {
-        if (v1 != null && (v1.properties.coord_path === '0.2')) {
-            this._createActionPoint(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'resize');
+        if (v1?.properties?.coord_path === '0.2') {
+            this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'resize');
         }
-        if (v1 != null && (v1.properties.coord_path === '0.0')) {
-            this._createActionPoint(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'origin');
+        if (v1?.properties?.coord_path === '0.0') {
+            this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'origin');
         }
-        if (v1 != null && (v1.properties.coord_path === '0.3')) {
-            this._createActionPoint(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'rotation');
+        if (v1?.properties?.coord_path === '0.3') {
+            this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'rotation');
         }
         v1 = v2;
     });
@@ -207,10 +208,10 @@ stripDirectSelectMode.onActivatePoint = function (state, e) {
     this.computeAxes(state, state.feature.toGeoJSON());
     this.startDragging(state, e);
     const about = e.featureTarget.properties;
-    state.selectedCoordPaths = [about.coord_path];
-    if (e.featureTarget.properties.actionType === 'rotation') {
+    state.selectedCoordPaths = [about?.coord_path];
+    if (e.featureTarget.properties?.actionType === 'rotation') {
         state.stripDirectMode = stripDirectMode.Rotate;
-    } else if (e.featureTarget.properties.actionType === 'resize') {
+    } else if (e.featureTarget.properties?.actionType === 'resize') {
         state.stripDirectMode = stripDirectMode.Resize;
     }
 };
@@ -223,19 +224,14 @@ stripDirectSelectMode.onFeature = function (state, e) {
 stripDirectSelectMode.coordinateIndex = function (coordPaths) {
     if (coordPaths.length >= 1) {
         const parts = coordPaths[0].split('.');
-        return parseInt(parts[parts.length - 1], 10);
+        return Number.parseInt(parts[parts.length - 1], 10);
     } else {
         return 0;
     }
 };
 
-stripDirectSelectMode.computeCenter = function (state, polygon) {
-    const center0 = center(polygon);
-    return center0;
-};
-
 stripDirectSelectMode.computeAxes = function (state, polygon) {
-    const center = this.computeCenter(state, polygon);
+    const centroid = center(polygon);
     const corners = polygon.geometry.coordinates[0].slice(0);
     const n = corners.length - 1;
     const iHalf = Math.floor(n / 2);
@@ -249,8 +245,8 @@ stripDirectSelectMode.computeAxes = function (state, polygon) {
         const c0 = corners[i0];
         const c1 = corners[i1];
         const rotPoint = midpoint(point(c0), point(c1));
-        rotateCenters[i1] = center.geometry.coordinates;
-        headings[i1] = rhumbBearing(center, rotPoint);
+        rotateCenters[i1] = centroid.geometry.coordinates;
+        headings[i1] = rhumbBearing(centroid, rotPoint);
     }
     state.rotation = {
         feature0: polygon,  // initial feature state
@@ -321,9 +317,9 @@ stripDirectSelectMode.dragResizePoint = function (state, e, delta) {
     }
     if (!state.start || state.selectedResizePaths !== state.selectedCoordPaths[0]) {
         if (state.selectedCoordPaths[0] === '0.0') {
-            start = state.actionWidgets.find(a => a.properties.coord_path === '0.2').properties.coord_path_coords;
+            start = state.actionWidgets.find((a: GeoJSON.Feature) => a.properties?.coord_path === '0.2').properties.coord_path_coords;
         } else {
-            start = state.actionWidgets.find(a => a.properties.coord_path === '0.0').properties.coord_path_coords;
+            start = state.actionWidgets.find((a: GeoJSON.Feature) => a.properties?.coord_path === '0.0').properties.coord_path_coords;
         }
         state.start = start;
     }
@@ -336,8 +332,6 @@ stripDirectSelectMode.dragResizePoint = function (state, e, delta) {
     }
 };
 
-
-
 stripDirectSelectMode.dragFeature = function (state, e, delta) {
     MapboxDraw.lib.moveFeatures(this.getSelected(), delta);
     state.dragMoveLocation = e.lngLat;
@@ -349,7 +343,7 @@ stripDirectSelectMode.dragFeature = function (state, e, delta) {
 stripDirectSelectMode.fireUpdate = function () {
     this.map.fire(MapboxDraw.constants.events.UPDATE, {
         action: MapboxDraw.constants.updateActions.CHANGE_COORDINATES,
-        features: this.getSelected().map(f => f.toGeoJSON())
+        features: this.getSelected().map((f: any) => f.toGeoJSON())
     });
 };
 
@@ -367,37 +361,28 @@ stripDirectSelectMode.onTouchEnd = stripDirectSelectMode.onMouseUp = function (s
     this.stopDragging(state);
 };
 
-stripDirectSelectMode.clickActiveFeature = function (state) {
-    state.selectedCoordPaths = [];
-    this.clearSelectedCoordinates();
-    state.feature.changed();
-};
-
 stripDirectSelectMode.onClick = function (state, e) {
     if (MapboxDraw.lib.CommonSelectors.noTarget(e)) {
-        return this.clickNoTarget(state, e);
+        if (state.canSelectFeatures) {
+            this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
+        }
+        return;
     }
     if (MapboxDraw.lib.CommonSelectors.isActiveFeature(e)) {
-        return this.clickActiveFeature(state, e);
+        state.selectedCoordPaths = [];
+        this.clearSelectedCoordinates();
+        state.feature.changed();
+        return;
     }
     if (MapboxDraw.lib.CommonSelectors.isInactiveFeature(e)) {
-        return this.clickInactive(state, e);
+        if (state.canSelectFeatures) {
+            this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
+                featureIds: [e.featureTarget.properties?.id]
+            });
+        }
+        return;
     }
     this.stopDragging(state);
-};
-
-stripDirectSelectMode.clickNoTarget = function (state, e) {
-    if (state.canSelectFeatures) {
-        this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT);
-    }
-};
-
-stripDirectSelectMode.clickInactive = function (state, e) {
-    if (state.canSelectFeatures) {
-        this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
-            featureIds: [e.featureTarget.properties.id]
-        });
-    }
 };
 
 stripDirectSelectMode.onTrash = function () {

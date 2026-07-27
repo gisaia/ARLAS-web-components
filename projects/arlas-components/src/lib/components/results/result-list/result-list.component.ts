@@ -17,55 +17,47 @@
  * under the License.
  */
 
-import {AsyncPipe} from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  DoCheck,
-  ElementRef,
-  EventEmitter,
-  HostListener,
-  input,
-  Input,
-  IterableDiffers,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewEncapsulation
+  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, input, Input,
+  IterableDiffer, IterableDiffers, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {MatButtonModule} from '@angular/material/button';
-import {MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup} from '@angular/material/button-toggle';
-import {MatCheckbox} from '@angular/material/checkbox';
-import {MatGridList, MatGridTile} from '@angular/material/grid-list';
-import {MatIcon} from '@angular/material/icon';
-import {MatMenu, MatMenuItem, MatMenuTrigger} from '@angular/material/menu';
-import {MatProgressSpinner} from '@angular/material/progress-spinner';
-import {MatOption, MatSelect, MatSelectChange, MatSelectTrigger} from '@angular/material/select';
-import {MatSlideToggle} from '@angular/material/slide-toggle';
-import {MatTooltip} from '@angular/material/tooltip';
-import {marker} from '@colsen1991/ngx-translate-extract-marker';
-import {TranslatePipe} from '@ngx-translate/core';
-import {debounceTime, fromEvent, Observable, Subject} from 'rxjs';
-import {ArlasColorService} from '../../../services/color.generator.service';
-import {ResultlistNotifierService} from '../../../services/resultlist.notifier.service';
-import {Column} from '../model/column';
-import {Item} from '../model/item';
-import {ResultDetailedGridComponent} from '../result-detailed-grid/result-detailed-grid.component';
-import {ResultDetailedItemComponent} from '../result-detailed-item/result-detailed-item.component';
-import {ResultScrollDirective} from '../result-directive/result-scroll.directive';
-import {ResultFilterComponent} from '../result-filter/result-filter.component';
-import {ResultGridTileComponent} from '../result-grid-tile/result-grid-tile.component';
-import {ResultItemComponent} from '../result-item/result-item.component';
-import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
-import {CellBackgroundStyleEnum} from '../utils/enumerations/cellBackgroundStyleEnum';
-import {ModeEnum} from '../utils/enumerations/modeEnum';
-import {PageEnum} from '../utils/enumerations/pageEnum';
-import {SortEnum} from '../utils/enumerations/sortEnum';
-import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
-import {ResizableColumnDirective, ResizableTableDirective} from '../utils/resizable-column.directive';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggle, MatButtonToggleChange, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatOption, MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatTooltip } from '@angular/material/tooltip';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
+import { debounceTime, fromEvent, Observable, Subject } from 'rxjs';
+import { ArlasColorService } from '../../../services/color.generator.service';
+import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
+import { CardFieldConfig } from '../config/cardFieldConfig';
+import { TableFieldConfig } from '../config/tableFieldConfig';
+import { CardField } from '../model/cardField';
+import { Column } from '../model/column';
+import { Item } from '../model/item';
+import { SortableField } from '../model/sortableField';
+import { ResultCardItemComponent } from '../result-card-item/result-card-item.component';
+import { ResultDetailedGridComponent } from '../result-detailed-grid/result-detailed-grid.component';
+import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
+import { ResultFilterComponent } from '../result-filter/result-filter.component';
+import { ResultGridTileComponent } from '../result-grid-tile/result-grid-tile.component';
+import { ResultItemComponent } from '../result-item/result-item.component';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
+import { ModeEnum } from '../utils/enumerations/modeEnum';
+import { PageEnum } from '../utils/enumerations/pageEnum';
+import { SortEnum } from '../utils/enumerations/sortEnum';
+import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
+import { ResizableColumnDirective, ResizableTableDirective } from '../utils/resizable-column.directive';
 import {
   Action,
   ElementIdentifier,
@@ -75,12 +67,7 @@ import {
   PageQuery,
   ResultListOptions
 } from '../utils/results.utils';
-import {ResultCardItemComponent} from '../result-card-item/result-card-item.component';
-import {TableFieldConfig} from '../config/tableFieldConfig';
-import {CardField} from '../model/cardField';
-import {CardFieldConfig} from '../config/cardFieldConfig';
-import {SortableField} from '../model/sortableField';
-import {stringEnumToModeEnum} from '../utils/stringEnumToModeEnum';
+import { stringEnumToModeEnum } from '../utils/stringEnumToModeEnum';
 
 /**
  * Structure summarizing the sort on a column
@@ -186,7 +173,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description An input to customize the resultlist
    */
-  @Input() public options: ResultListOptions;
+  @Input() public options = new ResultListOptions();
 
   @Input() public fetchState = { endListUp: true, endListDown: false };
   /**
@@ -194,34 +181,33 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description List of the fields displayed in the table (including the id field)
    * NOTE : This list should include the ID field. It will be the id of each item
    */
-  @Input() public tableFields: Array<TableFieldConfig>;
+  @Input() public tableFields: Array<TableFieldConfig> = [];
 
   /**
    * @Input : Angular
    * @description List of the card displayed in the card view.
    */
-  @Input() public cardFields: Array<CardFieldConfig>;
+  @Input() public cardFields: Array<CardFieldConfig> = [];
 
   /**
    * @Input : Angular
    * @description List of fieldName-fieldValue map. Each map corresponds to a row/grid.
    * @note In order to apply `selectInBetween` method properly, this list must be ascendingly sorted on the item identifier.
    */
-  @Input() public rowItemList: Array<Map<string, ItemDataType>>;
+  @Input() public rowItemList: Array<Map<string, ItemDataType>> = [];
 
   /**
    * @Input : Angular
-   * @description A configuration object that sets id field, title field and urls
-   * to images && thumbnails
+   * @description A configuration object that sets id field, title field and urls to images && thumbnails
    */
-  @Input() public fieldsConfiguration: FieldsConfiguration;
+  public fieldsConfiguration = input.required<FieldsConfiguration>();
 
   /**
    * @Input : Angular
    * @description The table width. If not specified, the tableWidth value is
    * equal to container width.
    */
-  @Input() public tableWidth: number = null;
+  @Input() public tableWidth!: number;
 
   /**
    * @Input : Angular
@@ -229,7 +215,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * When scrolling up or down, once there is `nLastLines` items left at the top or bottom of the list, previous/next data is loaded.
    * @deprecated nLastLines is deprecated and used only if `nbLinesBeforeFetch` is not set
   */
-  @Input() public nLastLines: number;
+  @Input() public nLastLines?: number;
 
   /**
    * @Input : Angular
@@ -262,13 +248,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input() public detailedDataRetriever: DetailedDataRetriever = null;
-
-  /**
-   * @Input : Angular
-   * @description List of items ids that are in a indeterminated status.
-   */
-  @Input() public indeterminatedItems: Set<string> = new Set<string>();
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
 
   /**
    * @Input : Angular
@@ -292,13 +272,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description Mode of representation : `list` or `grid`.
    */
-  @Input() public defautMode: ModeEnum;
+  @Input() public defautMode = ModeEnum.grid;
 
   /**
  * @Input : Angular
  * @description Whether the body table is hidden or not.
  */
-  @Input() public isBodyHidden: boolean;
+  @Input() public isBodyHidden = false;
   /**
    * @Input : Angular
    * @description Whether filters on list are displayed.
@@ -321,21 +301,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description The column that is currently sorted on
    */
-  @Input() public currentSortedColumn: SortedColumn;
+  @Input() public currentSortedColumn?: SortedColumn;
 
   /**
    * @Input : Angular
    * @description A fieldName-fieldValue map of fields to filter.
    */
 
-  @Input() public filtersMap: Map<string, ItemDataType>;
+  @Input() public filtersMap = new Map<string, ItemDataType>();
 
   /**
    * @Input : Angular
    * @description A  map of fieldName- Observable of array value for dropdown filter
    */
 
-  @Input() public dropDownMapValues: Map<string, Observable<Array<string>>>;
+  @Input() public dropDownMapValues = new Map<string, Observable<string[]>>();
   /**
    * @Input : Angular
    * @description A  boolean to show or hide thead of table
@@ -346,7 +326,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<[string, string]>;
+  @Input() public keysToColors = new Array<[string, string]>();
 
   /**
    * @Input : Angular
@@ -371,7 +351,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description A  item to show detail
    */
-  @Input() public selectedGridItem: Item;
+  @Input() public selectedGridItem?: Item;
   /**
    * @Input
    * @description Whether display group with no detail.
@@ -392,7 +372,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   @Input() public thumbnailFit: ThumbnailFitEnum = ThumbnailFitEnum.contain;
 
-  @Input()public hasGridMode = false;
+  @Input() public hasGridMode = false;
   @Input() public hasCardMode = false;
 
   /**
@@ -423,7 +403,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the list of items identifiers whose checkboxes are selected.
    */
-  @Output() public selectedItemsEvent: Subject<Array<string>> = new Subject<Array<string>>();
+  @Output() public selectedItemsEvent = new Subject<Array<string>>();
 
   /**
    * @Output : Angular
@@ -520,21 +500,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
 
   // Heights of table elements
-  public tbodyHeight: number = null;
-  public theadHeight: number = null;
+  public tbodyHeight?: number;
+  public theadHeight?: number;
 
   public ModeEnum = ModeEnum;
   public ThumbnailFitEnum = ThumbnailFitEnum;
   public PageEnum = PageEnum;
   public SortEnum = SortEnum;
 
-  private readonly iterableRowsDiffer;
+  private readonly iterableRowsDiffer: IterableDiffer<Map<string, ItemDataType>>;
   private readonly iterableColumnsDiffer;
   private readonly iterableCardsDiffer;
 
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
-  public resultMode: ModeEnum;
+  public resultMode = ModeEnum.grid;
   public allItemsChecked = false;
 
   public displayListGrid = 'inline';
@@ -553,9 +533,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     private readonly notifier: ResultlistNotifierService,
     private readonly cdr: ChangeDetectorRef
   ) {
-    this.iterableRowsDiffer = iterableRowsDiffer.find([]).create(null);
-    this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create(null);
-    this.iterableCardsDiffer = iterableCardsDiffer.find([]).create(null);
+    this.iterableRowsDiffer = iterableRowsDiffer.find([]).create();
+    this.iterableColumnsDiffer = iterableColumnsDiffer.find([]).create();
+    this.iterableCardsDiffer = iterableCardsDiffer.find([]).create();
     // Resize the table height on window resize
     fromEvent(globalThis, 'resize')
       .pipe(debounceTime(500))
@@ -590,7 +570,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public emitThumbnailsFitStatus(fitChange: MatButtonToggleChange): void {
-    this.thumbnailFit = ThumbnailFitEnum[fitChange.value as string];
+    this.thumbnailFit = fitChange.value;
     this.thumbnailFitEvent.next(this.thumbnailFit);
   }
 
@@ -608,7 +588,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
       // If the selected item is not in the current list of items, close the detail
       const selectedItemInData = !!this.selectedGridItem && this.rowItemList
-        .map(item => <string>item.get(this.fieldsConfiguration.idFieldName))
+        .map(item => <string>item.get(this.fieldsConfiguration().idFieldName))
         .includes(this.selectedGridItem.identifier);
       if (!(!!changes['rowItemList'].currentValue && selectedItemInData)) {
         this.closeDetail(true);
@@ -619,16 +599,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     if (changes['isDetailledGridOpen'] !== undefined) {
       this.isDetailledGridOpen = changes['isDetailledGridOpen'].currentValue;
     }
-    if (changes['indeterminatedItems'] !== undefined) {
-      this.items.forEach(item => {
-        item.isindeterminated = false;
-        this.indeterminatedItems.forEach(id => {
-          if (item.identifier === id && !this.selectedItems.has(id)) {
-            item.isindeterminated = true;
-          }
-        });
-      });
-    }
+
     if (changes['selectedItems'] !== undefined) {
       this.items.forEach(item => {
         item.isChecked = false;
@@ -777,10 +748,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Sets and emits the identifiers list of selected items
    */
-  public setSelectedItems(selectedItems: Set<string>, stopPropagation?: boolean) {
+  public setSelectedItems(selectedItems: Set<string>, item?: Item, stopPropagation?: boolean) {
     // remove all text selection on current document
     // SB : Sometime blinking append, need to be deepened
-    document.getSelection().removeAllRanges();
+    document.getSelection()?.removeAllRanges();
+
+    if (item) {
+      item.isChecked = !item.isChecked;
+    }
 
     this.selectedItems = selectedItems;
     if (selectedItems.size < this.items.length) {
@@ -849,8 +824,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     });
     // Reset column filter when geo sort request
-    this.sortedColumn = null;
-    this.currentSortedColumn = null;
+    this.sortedColumn = { columnName: '', fieldName: '', sortDirection: SortEnum.asc };
+    this.currentSortedColumn = undefined;
 
     this.geoSortEvent.next(this.GEO_DISTANCE);
   }
@@ -860,7 +835,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    */
   public setConsultedItem(identifier: string) {
     const elementidentifier: ElementIdentifier = {
-      idFieldName: this.fieldsConfiguration.idFieldName,
+      idFieldName: this.fieldsConfiguration().idFieldName,
       idValue: identifier
     };
     this.debouncer.next(elementidentifier);
@@ -936,7 +911,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.selectedItems = new Set<string>();
     this.items.forEach(item => {
       item.isChecked = this.allItemsChecked;
-      item.isindeterminated = false;
       if (this.allItemsChecked) {
         this.selectedItems.add(item.identifier);
       }
@@ -967,11 +941,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         }
         if (inBetween) {
           item.isChecked = true;
-          item.isindeterminated = false;
           this.selectedItems.add(item.identifier);
         }
       });
-      this.setSelectedItems(this.selectedItems, true);
+      this.setSelectedItems(this.selectedItems, undefined, true);
     }
   }
 
@@ -989,7 +962,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     this.setSelectedItems(new Set());
     this.items.forEach(item => {
       item.isChecked = false;
-      item.isindeterminated = false;
     });
   }
 
@@ -1020,12 +992,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   // Build the table's columns
   private setColumns() {
+    if (!this.tableWidth) {
+      return;
+    }
+
     this.columns = new Array<Column>();
     const checkboxColumnWidth = 25;
     const toggleColumnWidth = 35;
     // id column is the first one and has a pre fixed width
     // It is the column where checkboxes are put
-    const idColumn = new Column('', this.fieldsConfiguration.idFieldName, '');
+    const idColumn = new Column('', this.fieldsConfiguration().idFieldName, '');
     idColumn.isIdField = true;
     idColumn.width = checkboxColumnWidth;
     this.columns.unshift(idColumn);
@@ -1043,24 +1019,29 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private onAddItems(itemData: Map<string, ItemDataType>, addOnTop: boolean, index: number) {
-    const item = new Item(this.columns, this.cardFieldsRows, itemData);
-    item.identifier = <string>itemData.get(this.fieldsConfiguration.idFieldName);
-    if (this.fieldsConfiguration.titleFieldNames) {
-      item.title = this.fieldsConfiguration.titleFieldNames
-        .map(field => <string>itemData.get(field.fieldPath + '_title'))
+    const id = <string>itemData.get(this.fieldsConfiguration().idFieldName);
+    const item = new Item(this.columns, this.cardFieldsRows, itemData, id, this.items.length);
+    item.identifier = id;
+    if (this.fieldsConfiguration().titleFieldNames) {
+      item.title = this.fieldsConfiguration().titleFieldNames
+        ?.map(field => <string>itemData.get(field.fieldPath + '_title'))
         .join(' ');
       if (item.title) {
         item.title = item.title.trim();
       }
     }
-    if (this.useColorService && this.fieldsConfiguration.iconColorFieldName) {
-      const colorFieldValue = <string>itemData.get(this.fieldsConfiguration.iconColorFieldName + '_title');
+
+    const iconColorFieldName = this.fieldsConfiguration().iconColorFieldName;
+    if (this.useColorService && iconColorFieldName) {
+      const colorFieldValue = <string>itemData.get(iconColorFieldName + '_title');
       if (colorFieldValue) {
         item.color = this.colorService.getColor(colorFieldValue, this.keysToColors, this.colorsSaturationWeight);
       }
     }
-    if (this.fieldsConfiguration.tooltipFieldNames) {
-      item.tooltip = this.fieldsConfiguration.tooltipFieldNames
+
+    const tooltipFieldNames = this.fieldsConfiguration().tooltipFieldNames;
+    if (tooltipFieldNames) {
+      item.tooltip = tooltipFieldNames
         .map(field => <string>itemData.get(field.fieldPath + '_tooltip'))
         .join(' ');
       if (item.tooltip) {
@@ -1068,11 +1049,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       }
     }
 
-    if (this.fieldsConfiguration.icon) {
-      item.icon = this.fieldsConfiguration.icon;
-    }
-    if (this.fieldsConfiguration.iconCssClass) {
-      item.iconCssClass = <string>itemData.get(this.fieldsConfiguration.iconCssClass);
+    const iconCssClass = this.fieldsConfiguration().iconCssClass;
+    if (iconCssClass) {
+      item.iconCssClass = <string>itemData.get(iconCssClass);
       if (item.iconCssClass) {
         item.iconCssClass = item.iconCssClass.trim();
       }
@@ -1082,21 +1061,23 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     item.detailsTitleEnabled = itemData.get('detailsTitleEnabled') === 'true';
 
     /** Retro-compatibility code */
-    if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplate) {
+    const urlImageTemplate = this.fieldsConfiguration().urlImageTemplate;
+    if (item.imageEnabled && urlImageTemplate) {
       item.urlImages = new Array<string>();
-      item.urlImages.push(matchAndReplace(itemData, this.fieldsConfiguration.urlImageTemplate));
+      item.urlImages.push(matchAndReplace(itemData, urlImageTemplate));
     }
     /** End of retro-compatibility code */
 
-    if (item.imageEnabled && this.fieldsConfiguration.urlImageTemplates && this.fieldsConfiguration.urlImageTemplates.length > 0) {
+    const urlImageTemplates = this.fieldsConfiguration().urlImageTemplates;
+    if (item.imageEnabled && urlImageTemplates && urlImageTemplates.length > 0) {
       item.urlImages = new Array<string>();
       item.descriptions = new Array<string>();
-      this.fieldsConfiguration.urlImageTemplates.forEach(descUrl => {
+      urlImageTemplates.forEach(descUrl => {
         let condition = !descUrl.filter;
         if (descUrl.filter) {
           const data = itemData.get(descUrl.filter.field);
           if (Array.isArray(data)) {
-            condition = data.some(v => descUrl.filter.values.includes(v));
+            condition = data.some(v => descUrl.filter?.values.includes(v));
           } else if (data) {
             condition = descUrl.filter.values.includes(data.toString());
           } else {
@@ -1109,15 +1090,17 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         }
       });
     }
-    if (item.thumbnailEnabled && this.fieldsConfiguration.urlThumbnailTemplate) {
-      item.urlThumbnail = matchAndReplace(itemData, this.fieldsConfiguration.urlThumbnailTemplate);
+
+    const urlThumbnailTemplate = this.fieldsConfiguration().urlThumbnailTemplate;
+    if (item.thumbnailEnabled && urlThumbnailTemplate) {
+      item.urlThumbnail = matchAndReplace(itemData, urlThumbnailTemplate);
     }
 
-    if (item.detailsTitleEnabled && this.fieldsConfiguration.detailsTitleTemplate) {
-      item.detailsTitle = matchAndReplace(itemData, this.fieldsConfiguration.detailsTitleTemplate);
+    const detailsTitleTemplate = this.fieldsConfiguration().detailsTitleTemplate;
+    if (item.detailsTitleEnabled && detailsTitleTemplate) {
+      item.detailsTitle = matchAndReplace(itemData, detailsTitleTemplate);
     }
 
-    item.position = this.items.length + 1;
     item.ishighLight = undefined;
     // When new data is loaded, check the one that were already checked +
     // remove the no longuer existing data from selectedItems (thanks to actualSelectedItems)
@@ -1127,11 +1110,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     } else {
       if (this.selectedItems.has(item.identifier)) {
         item.isChecked = true;
-      }
-      if (this.indeterminatedItems.has(item.identifier)) {
-        item.isindeterminated = true;
-      } else {
-        item.isindeterminated = false;
       }
     }
     if (addOnTop) {

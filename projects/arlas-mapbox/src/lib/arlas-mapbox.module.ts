@@ -27,8 +27,6 @@ import { MapboxLegendService } from './legend/legend.service';
     ArlasMapboxService,
     MapboxBasemapService,
     MapboxLegendService
-  ],
-  exports: [
   ]
 })
 export class ArlasMapboxModule { }

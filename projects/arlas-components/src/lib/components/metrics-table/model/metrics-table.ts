@@ -26,13 +26,13 @@ export interface MetricsTableHeader {
     title: string;
     subTitle: string;
     metric: string;
-    span?: number;
+    span: number;
     rowfield: string;
     color: string;
 }
 
 export interface MetricsTableCell {
-    value: number;
+    value: number | null;
     maxColumnValue: number;
     maxTableValue: number;
     metric: string;

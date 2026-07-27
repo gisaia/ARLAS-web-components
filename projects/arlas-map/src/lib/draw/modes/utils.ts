@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export function createDrawVertex(parentId, coordinates, path, selected) {
+export function createDrawVertex(parentId: string, coordinates: GeoJSON.Position, path: string, selected: boolean): MapboxDraw.DisplayedFeature {
   return {
     type: 'Feature',
     properties: {
@@ -32,11 +32,14 @@ export function createDrawVertex(parentId, coordinates, path, selected) {
     },
   };
 }
-export function displayFeatures(state, geojson, display) {
+export function displayFeatures(state: Record<string, any>,
+  geojson: MapboxDraw.DisplayedFeature, display: (geojson: MapboxDraw.DisplayedFeature) => void
+) {
+  geojson.properties ??= {};
   const isActiveLine = geojson.properties.id === state.line.id;
   geojson.properties.active = isActiveLine ? 'true' : 'false';
   if (!isActiveLine) {
-    if (!geojson.geometry.coordinates[0][0]) {
+    if (geojson.geometry.type === 'Point' || !geojson.geometry.coordinates[0][0]) {
       return null;
     }
     return display(geojson);
@@ -53,10 +56,10 @@ export function displayFeatures(state, geojson, display) {
     createDrawVertex(
       state.line.id,
       geojson.geometry.coordinates[
-      state.direction === 'forward'
-        ? geojson.geometry.coordinates.length - 2
-        : 1
-      ],
+        state.direction === 'forward'
+          ? geojson.geometry.coordinates.length - 2
+          : 1
+      ] as GeoJSON.Position,
       `${state.direction === 'forward'
         ? geojson.geometry.coordinates.length - 2
         : 1
@@ -70,8 +73,7 @@ export function displayFeatures(state, geojson, display) {
 
 }
 
-
-export function updateCoordinates(state, e) {
+export function updateCoordinates(state: Record<string, any>, e: MapboxDraw.MapMouseEvent) {
   if (state.direction === 'forward') {
     state.currentVertexPosition += 1;
     state.line.updateCoordinate(

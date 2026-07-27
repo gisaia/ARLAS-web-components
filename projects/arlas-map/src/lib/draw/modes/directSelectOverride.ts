@@ -19,35 +19,23 @@
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import circle from '@turf/circle';
-import { point } from '@turf/helpers';
 import distance from '@turf/distance';
-import { createSupplementaryPointsForCircle } from './circles/utils';
+import { point } from '@turf/helpers';
+import { createSupplementaryPointsForCircle, moveCircleFeatureCenter } from './circles/utils';
 
 
 export const directModeOverride = MapboxDraw.modes.direct_select;
 
 directModeOverride.dragFeature = function (state, e, delta) {
     MapboxDraw.lib.moveFeatures(this.getSelected(), delta);
-    this.getSelected()
-        .filter(feature => feature.properties.isCircle)
-        .map(circle => circle.properties.center)
-        .forEach(center => {
-            center[0] += delta.lng;
-            center[1] += delta.lat;
-        });
+    moveCircleFeatureCenter(this.getSelected(), delta);
     state.dragMoveLocation = e.lngLat;
 };
 
 directModeOverride.dragVertex = function (state, e, delta) {
     if (state.feature.properties.isCircle && state.feature.properties.isFixedRadius) {
         MapboxDraw.lib.moveFeatures(this.getSelected(), delta);
-        this.getSelected()
-            .filter(feature => feature.properties.isCircle)
-            .map(circle => circle.properties.center)
-            .forEach(center => {
-                center[0] += delta.lng;
-                center[1] += delta.lat;
-            });
+        moveCircleFeatureCenter(this.getSelected(), delta);
         state.dragMoveLocation = e.lngLat;
     } else {
         if (state.feature.properties.isCircle) {
@@ -58,8 +46,8 @@ directModeOverride.dragVertex = function (state, e, delta) {
             state.feature.incomingCoords(circleFeature.geometry.coordinates);
             state.feature.properties.radiusInKm = radius;
         } else {
-            const selectedCoords = state.selectedCoordPaths.map(coord_path => state.feature.getCoordinate(coord_path));
-            const selectedCoordPoints = selectedCoords.map(coords => ({
+            const selectedCoords = state.selectedCoordPaths.map((coord_path: string) => state.feature.getCoordinate(coord_path));
+            const selectedCoordPoints = selectedCoords.map((coords: GeoJSON.Position) => ({
                 type: MapboxDraw.constants.geojsonTypes.FEATURE,
                 properties: {},
                 geometry: {
@@ -78,16 +66,22 @@ directModeOverride.dragVertex = function (state, e, delta) {
 
 };
 
-directModeOverride.toDisplayFeatures = function (state, geojson, push) {
+directModeOverride.toDisplayFeatures = function (state, geojson: GeoJSON.Feature<GeoJSON.Polygon>, push) {
+    geojson.properties ??= {};
     if (state.featureId === geojson.properties.id) {
         geojson.properties.active = MapboxDraw.constants.activeStates.ACTIVE;
         push(geojson);
-        const supplementaryPoints = geojson.properties.user_isCircle ? createSupplementaryPointsForCircle(geojson)
-            : MapboxDraw.lib.createSupplementaryPoints(geojson, {
+
+        let supplementaryPoints;
+        if (geojson.properties.user_isCircle) {
+            supplementaryPoints = createSupplementaryPointsForCircle(geojson);
+        } else {
+            supplementaryPoints = MapboxDraw.lib.createSupplementaryPoints(geojson, {
                 map: this.map,
                 midpoints: true,
                 selectedPaths: state.selectedCoordPaths
             });
+        }
         supplementaryPoints.forEach(push);
     } else {
         geojson.properties.active = MapboxDraw.constants.activeStates.INACTIVE;

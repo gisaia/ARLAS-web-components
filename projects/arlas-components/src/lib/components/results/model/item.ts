@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import {Action, Attachment, ItemDataType} from '../utils/results.utils';
-import {Column} from './column';
-import {CardField} from './cardField';
+import { Action, Attachment, ItemDataType } from '../utils/results.utils';
+import { CardField } from './cardField';
+import { Column } from './column';
 
 export interface ItemDetailGroup {
   group: string;
@@ -43,23 +43,23 @@ export class Item {
   /**
    * @description If image is enabled (to avoid 404 not found)
    */
-  public imageEnabled: boolean;
+  public imageEnabled = false;
   /**
    * @description Url that links the item's thumbnail.
    */
-  public urlThumbnail: string;
+  public urlThumbnail?: string;
   /**
    * @description If thumbnail is enabled (to avoid 404 nott found)
    */
-  public thumbnailEnabled: boolean;
+  public thumbnailEnabled = false;
   /**
    * @description Item's title.
    */
-  public title: string;
+  public title?: string;
   /**
    * @description Item's tooltip.
    */
-  public tooltip: string;
+  public tooltip?: string;
   /**
    * @description The item's data is organized in this columns when represented in a table.
    */
@@ -94,42 +94,37 @@ export class Item {
    */
   public isChecked = false;
   /**
-   * @description Whether the item state is indeterminated.
-   */
-  public isindeterminated = false;
-  /**
    * @description Whether to highlight the item.
    */
-  public ishighLight = undefined;
+  public ishighLight: boolean | undefined = undefined;
   /**
    * @description The item position in a list of items.
    */
   public position: number;
   /**
-   * @description The material grid icon.
-   * @deprecated
-   */
-  public icon: string;
-  /**
    * @description The css class for material grid icon.
    */
-  public iconCssClass: string;
+  public iconCssClass?: string;
   /**
    * @description color characterising the item
    */
-  public color: string;
+  public color?: string;
   /**
     * @description Title for the details section.
     */
-  public detailsTitle: string;
+  public detailsTitle?: string;
   /**
    * @description If details item title is enabled
    */
-  public detailsTitleEnabled: boolean;
+  public detailsTitleEnabled = false;
 
-  public constructor(columns: Array<Column>, cardsFieldsRows: Array<CardField[]>, itemData: Map<string, ItemDataType>) {
+  public constructor(columns: Column[], cardsFieldsRows: CardField[][],
+    itemData: Map<string, ItemDataType>, identifier: string, position: number
+  ) {
     this.columns = columns;
     this.cardsFieldsRows = cardsFieldsRows;
     this.itemData = itemData;
+    this.identifier = identifier;
+    this.position = position;
   }
 }

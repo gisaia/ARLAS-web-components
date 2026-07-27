@@ -1,25 +1,19 @@
 <div #cellTooltip="matTooltip"
      (click)="setClickedOnItem()"
      (mouseover)="hoverImage()"
-     class="thumbnail__image {{gridTile()?.iconCssClass}}"
-     id="{{'grid-tile-' + gridTile()?.identifier}}"
+     class="thumbnail__image {{gridTile().iconCssClass}}"
+     id="{{'grid-tile-' + gridTile().identifier}}"
      matTooltip="{{pictureTooltip() | translate}}">
 
   <div class="image__header">
     <div class="image__header--left">
-      @if (gridTile()?.isindeterminated) {
-        <mat-icon (keydown)="determinateItem()" (click)="determinateItem()" class="primary image__icon-check mat-icon material-icons">
-          indeterminate_check_box
+      <button (click)="setSelectedItem()" class="checkbox__button" mat-icon-button>
+        <mat-icon class="image__icon-check">{{ gridTile().isChecked ? 'check_box' : 'check_box_outline_blank' }}
         </mat-icon>
-      } @else {
-        <button (click)="setSelectedItem()" class="checkbox__button" mat-icon-button>
-          <mat-icon class="image__icon-check">{{ gridTile()?.isChecked ? 'check_box' : 'check_box_outline_blank' }}
-          </mat-icon>
-        </button>
-      }
+      </button>
     </div>
     <div class="image__header--right">
-      <button (click)="fullScreen($event, gridTile()?.urlImages)"
+      <button (click)="fullScreen($event, gridTile().urlImages)"
               class="action__btn" mat-icon-button matTooltip="{{'View in full screen' | translate}}"
               matTooltipPosition="below">
         <mat-icon>fit_screen</mat-icon>
@@ -28,9 +22,9 @@
   </div>
 
   <img
-    (keydown)="fullScreen($event, gridTile()?.urlImages)"
-    [defaultImage]="defaultImgUrl()" [lazyLoad]="gridTile()?.urlThumbnail"
-    (click)="fullScreen($event, gridTile()?.urlImages)"
+    (keydown)="fullScreen($event, gridTile().urlImages)"
+    [defaultImage]="defaultImgUrl()" [lazyLoad]="gridTile().urlThumbnail ?? defaultImgUrl()"
+    (click)="fullScreen($event, gridTile().urlImages)"
     [class.contain_thumbnail]="thumbnailFit() === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit() === ThumbnailFitEnum.height"
     [class.round_thumbnail]="thumbnailFit() === ThumbnailFitEnum.round"
     [class.width_thumbnail]="thumbnailFit() === ThumbnailFitEnum.width"

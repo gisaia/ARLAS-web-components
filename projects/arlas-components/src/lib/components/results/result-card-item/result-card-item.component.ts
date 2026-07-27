@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Component, computed, inject, input, output, viewChild} from '@angular/core';
-import {Item} from '../model/item';
-import {CardField} from '../model/cardField';
-import {Action, ElementIdentifier, ResultListOptions} from '..//utils/results.utils';
-import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
-import {ResultThumbnailComponent} from '../result-thumbnail/result-thumbnail.component';
-import {marker} from '@colsen1991/ngx-translate-extract-marker';
-import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
-import {ItemComponent} from '../model/itemComponent';
-import {FullScreenViewerService} from '../../../services/full-screen-viewer-service';
-import {ResultCardItemEntriesComponent} from '../result-card-item-entries/result-card-item-entries.component';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
-import {TranslatePipe} from '@ngx-translate/core';
-import {MatTooltip} from '@angular/material/tooltip';
-import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
-import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
-import {BuildItemFieldPipe} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
+import { Component, computed, inject, input, output, viewChild } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe } from '@ngx-translate/core';
+import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
+import { BuildItemFieldPipe } from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
+import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { Action, ElementIdentifier, ResultListOptions } from '..//utils/results.utils';
+import { CardField } from '../model/cardField';
+import { Item } from '../model/item';
+import { ItemComponent } from '../model/itemComponent';
+import { ResultCardItemEntriesComponent } from '../result-card-item-entries/result-card-item-entries.component';
+import { ResultThumbnailComponent } from '../result-thumbnail/result-thumbnail.component';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 
 @Component({
   selector: 'arlas-resul-card-item',
@@ -50,13 +50,13 @@ export class ResultCardItemComponent extends ItemComponent {
   /** Input property: specifies how the thumbnail should fit (default: round) */
   public thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.round);
   /** Input property: result list display options */
-  public options = input<ResultListOptions>(undefined);
+  public options = input<ResultListOptions>(new ResultListOptions());
   /** Input property: set of currently selected item identifiers */
-  public selectedItems = input<Set<string>>(undefined);
+  public selectedItems = input<Set<string>>(new Set());
   /** Input property: map of activated actions per item */
-  protected activatedActionsPerItem = input<Map<string, Set<string>>>();
+  protected activatedActionsPerItem = input<Map<string, Set<string>>>(new Map());
   /** Input property: retriever for fetching additional item details */
-  protected detailedDataRetriever = input<DetailedDataRetriever>();
+  protected detailedDataRetriever = input.required<DetailedDataRetriever>();
   /** Output event: emitted when selected items change */
   public selectedItemsEvent = output<Set<string>>();
   /** Output event: emitted when an item is clicked */
@@ -66,7 +66,6 @@ export class ResultCardItemComponent extends ItemComponent {
 
   protected readonly NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-
   /**
    * @constant
    */
@@ -75,7 +74,8 @@ export class ResultCardItemComponent extends ItemComponent {
    * @constant
    */
   public SHOW_DETAILS = marker('Show details');
-  private parsedCardsFieldsRows = computed(() => {
+
+  private readonly parsedCardsFieldsRows = computed(() => {
     const cardsFieldsRows = this.rowItem().cardsFieldsRows;
     const titles: CardField[] = [];
     const fields: CardField[][] = [];
@@ -114,14 +114,14 @@ export class ResultCardItemComponent extends ItemComponent {
    */
   public hideCellTooltip(event: Event) {
     event.stopPropagation();
-    this.arlasThumbnail()?.cellTooltip().hide();
+    this.arlasThumbnail()?.cellTooltip()?.hide();
   }
 
   /**
    * Shows the cell's tooltip when the mouse is over the tile
    */
   public showCellTooltip() {
-    this.arlasThumbnail()?.cellTooltip().show();
+    this.arlasThumbnail()?.cellTooltip()?.show();
   }
 
   /**
@@ -137,7 +137,6 @@ export class ResultCardItemComponent extends ItemComponent {
 
   public determinateItem() {
     this.rowItem().isChecked = true;
-    this.rowItem().isindeterminated = false;
     this.selectedItems().add(this.rowItem().identifier);
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
     this.selectedItemsEvent.emit(this.selectedItems());
@@ -169,7 +168,7 @@ export class ResultCardItemComponent extends ItemComponent {
   public createOverlay(image: string | ArrayBuffer) {
     this.fullScreenService
       .initOverlay()
-      .destroyElementOnClose()
+      ?.destroyElementOnClose()
       .subscribe();
     this.showOverlay(image);
   }
@@ -182,7 +181,7 @@ export class ResultCardItemComponent extends ItemComponent {
     setTimeout(() => {
       try {
         this.fullScreenService.showFullScreen(image);
-      } catch (e) {
+      } catch {
         console.warn('Failed to open full screen');
       }
     }, 0);

@@ -18,7 +18,7 @@
  */
 
 import { SortEnum } from '../utils/enumerations/sortEnum';
-import {SortableField} from './sortableField';
+import { SortableField } from './sortableField';
 
 export abstract class ResultListField {
 
@@ -43,7 +43,7 @@ export abstract class ResultListField {
   /**
    * @description  Internal field created by the builder for both configuration to determine default sort
    */
-  public sort: string;
+  public sort?: string;
 
   public abstract toSortableField(): SortableField;
 
@@ -52,7 +52,7 @@ export abstract class ResultListField {
   public constructor(fieldName: string, dataType: string, sort?: string) {
     this.fieldName = fieldName;
     this.dataType = dataType;
-    this.sort  = sort;
+    this.sort = sort;
   }
 }
 

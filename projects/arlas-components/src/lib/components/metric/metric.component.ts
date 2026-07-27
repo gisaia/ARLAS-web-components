@@ -43,9 +43,9 @@ import * as metricJsonSchema from './metric.schema.json';
 export class MetricComponent implements OnInit, OnChanges {
 
   @Input() public beforeValue = '';
-  @Input() public value: number;
+  @Input() public value?: number;
   @Input() public afterValue = '';
-  @Input() public customizedCssClass: string;
+  @Input() public customizedCssClass = '';
   @Input() public valuePrecision = 2;
   /**
    * Whether to shorten the metric value
@@ -60,27 +60,18 @@ export class MetricComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description Chart's width. If not specified, the chart takes the component's container width.
    */
-  @Input() public chartWidth = null;
+  @Input() public chartWidth?: number;
 
   public displayedValue: string | number = '0';
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
-  public constructor() { }
-
   public ngOnInit() {
-    if (this.value) {
-      this.setDisplayedValue();
-    }
+    this.setDisplayedValue();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['value']) {
-      if (this.value !== undefined && !Number.isNaN(this.value)) {
-        this.setDisplayedValue();
-      } else {
-        /** '-' will be set when `value` is undefined or not a number */
-        this.displayedValue = '-';
-      }
+      this.setDisplayedValue();
     }
   }
 
@@ -104,10 +95,15 @@ export class MetricComponent implements OnInit, OnChanges {
    * Sets the value displayed in html
    */
   private setDisplayedValue(): void {
-    if (this.shortValue) {
-      this.displayedValue = HistogramUtils.numberToShortValue(this.value, this.valuePrecision);
+    if (this.value !== undefined && !Number.isNaN(this.value)) {
+      if (this.shortValue) {
+        this.displayedValue = HistogramUtils.numberToShortValue(this.value, this.valuePrecision);
+      } else {
+        this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
+      }
     } else {
-      this.displayedValue = MetricComponent.round(this.value, this.valuePrecision);
+      /** '-' will be set when `value` is undefined or not a number */
+      this.displayedValue = '-';
     }
   }
 }

@@ -17,17 +17,17 @@
  * under the License.
  */
 
-import {Component, input, output, signal, viewChild} from '@angular/core';
-import {ResultActionsComponent} from '../result-actions/result-actions.component';
-import {TranslatePipe} from '@ngx-translate/core';
-import {Item} from '../model/item';
-import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
-import {Action} from '../utils/results.utils';
-import {ThumbnailFitEnum} from '../utils/enumerations/thumbnailFitEnum';
-import {MatTooltip} from '@angular/material/tooltip';
-import {MatIcon} from '@angular/material/icon';
-import {MatIconButton} from '@angular/material/button';
-import {LazyLoadImageModule} from 'ng-lazyload-image';
+import { Component, input, output, signal, viewChild } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe } from '@ngx-translate/core';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
+import { Item } from '../model/item';
+import { ResultActionsComponent } from '../result-actions/result-actions.component';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
+import { Action } from '../utils/results.utils';
 
 @Component({
   selector: 'arlas-result-thumbnail',
@@ -51,7 +51,7 @@ export class ResultThumbnailComponent {
   /** Input property: determines if action buttons are shown on hover */
   public showActionsOnHover = input<boolean>(false);
   /** Input property: map of activated actions per item */
-  protected activatedActionsPerItem = input<Map<string, Set<string>>>();
+  protected activatedActionsPerItem = input<Map<string, Set<string>>>(new Map());
   /** Input property: retriever for fetching additional item details */
   protected detailedDataRetriever = input.required<DetailedDataRetriever>();
   /** Input property: specifies how the thumbnail image should fit (default: contain) */
@@ -62,7 +62,7 @@ export class ResultThumbnailComponent {
   protected readonly pictureTooltip = input<string>('');
 
   /** Signal: tracks whether to display the info icon */
-  protected readonly displayInfoIcon = signal<boolean>(null);
+  protected readonly displayInfoIcon = signal<boolean>(false);
   /** Reference to the ThumbnailFitEnum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
   /** Output event: emitted when an action is clicked */

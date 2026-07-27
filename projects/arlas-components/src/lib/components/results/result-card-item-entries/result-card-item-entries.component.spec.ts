@@ -18,10 +18,9 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ResultCardItemEntriesComponent } from './result-card-item-entries.component';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {Item} from 'arlas-web-components';
+import { mockRowItem } from '../../../test/mock';
+import { ResultCardItemEntriesComponent } from './result-card-item-entries.component';
 describe('ResultCardItemEntriesComponent', () => {
   let component: ResultCardItemEntriesComponent;
   let fixture: ComponentFixture<ResultCardItemEntriesComponent>;
@@ -33,7 +32,7 @@ describe('ResultCardItemEntriesComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ResultCardItemEntriesComponent);
-    const i = new Item([], [], new Map());
+    const i = mockRowItem;
     fixture.componentRef.setInput('item', i);
     component = fixture.componentInstance;
     fixture.detectChanges();

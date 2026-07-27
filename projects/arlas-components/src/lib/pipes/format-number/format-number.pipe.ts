@@ -27,7 +27,12 @@ import { formatNumber } from '../../components/componentsUtils';
 export class FormatNumberPipe implements PipeTransform {
 
   public constructor(private readonly translate: TranslateService) {}
-  public transform(x, formatChar: string = ' '): any {
+
+  public transform(x: string | number | undefined, formatChar: string = ' '): any {
+    if (x === undefined) {
+      return '';
+    }
+
     return formatNumber(x, this.translate.instant(formatChar));
   }
 

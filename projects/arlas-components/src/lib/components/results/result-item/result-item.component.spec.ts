@@ -28,11 +28,8 @@ import {
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
 import { ArlasColorService } from '../../../services/color.generator.service';
-import {
-  AwcColorGeneratorLoader,
-  ColorGeneratorLoader,
-} from '../../componentsUtils';
-import { Item } from '../model/item';
+import { mockRowItem } from '../../../test/mock';
+import { AwcColorGeneratorLoader, ColorGeneratorLoader } from '../../componentsUtils';
 import { ResultItemComponent } from './result-item.component';
 
 describe('ResultItemComponent', () => {
@@ -62,7 +59,7 @@ describe('ResultItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultItemComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('rowItem', new Item([], [], new Map()));
+    fixture.componentRef.setInput('rowItem', mockRowItem);
     fixture.detectChanges();
   });
 

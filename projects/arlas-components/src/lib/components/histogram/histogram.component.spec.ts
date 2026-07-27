@@ -52,6 +52,9 @@ describe('HistogramComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HistogramComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('id', 'test');
+    fixture.componentRef.setInput('mainChartId', 'test');
+    fixture.componentRef.setInput('data', []);
     fixture.detectChanges();
   });
 

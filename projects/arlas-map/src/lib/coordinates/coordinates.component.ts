@@ -18,7 +18,7 @@
  */
 
 import { DecimalPipe } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -38,9 +38,9 @@ import { CoordinatesErrorPipe } from './coordinates.pipe';
     MatTooltip, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatButtonModule,
     MatInput, MatError, MatIcon, DecimalPipe, TranslatePipe, CoordinatesErrorPipe]
 })
-export class CoordinatesComponent implements OnInit {
-  @Input() public currentLat: string;
-  @Input() public currentLng: string;
+export class CoordinatesComponent {
+  @Input() public currentLat = '0';
+  @Input() public currentLng = '0';
 
   /**
    * @constant
@@ -51,7 +51,7 @@ export class CoordinatesComponent implements OnInit {
   public coordinatesForm: PointFormGroup;
   public editionMode = false;
 
-  public ngOnInit(): void {
+  public constructor() {
     this.coordinatesForm = new PointFormGroup(this.currentLat, this.currentLng);
   }
 

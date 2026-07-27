@@ -17,23 +17,23 @@
  * under the License.
  */
 
-import {Component, Input, OnInit, Output} from '@angular/core';
-import {MatIconButton} from '@angular/material/button';
-import {MatIcon} from '@angular/material/icon';
-import {MatTooltip} from '@angular/material/tooltip';
-import {marker} from '@colsen1991/ngx-translate-extract-marker';
-import {TranslatePipe, TranslateService} from '@ngx-translate/core';
-import {Subject} from 'rxjs';
-import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
-import {ArlasColorService} from '../../../services/color.generator.service';
-import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
-import {Item} from '../model/item';
-import {ItemComponent} from '../model/itemComponent';
-import {ResultActionsComponent} from '../result-actions/result-actions.component';
-import {DetailedDataRetriever} from '../utils/detailed-data-retriever';
-import {CellBackgroundStyleEnum} from '../utils/enumerations/cellBackgroundStyleEnum';
-import {Action, ElementIdentifier, ResultListOptions} from '../utils/results.utils';
-import {BuildItemFieldPipe, buildTableItemField} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
+import { Component, computed, input, Input, OnInit, Output } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { marker } from '@colsen1991/ngx-translate-extract-marker';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { Subject } from 'rxjs';
+import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
+import { BuildItemFieldPipe, buildTableItemField } from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
+import { ArlasColorService } from '../../../services/color.generator.service';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { Item } from '../model/item';
+import { ItemComponent } from '../model/itemComponent';
+import { ResultActionsComponent } from '../result-actions/result-actions.component';
+import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
+import { Action, ElementIdentifier, ItemDataType, ResultListOptions } from '../utils/results.utils';
 
 
 @Component({
@@ -58,35 +58,35 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * @Input : Angular
    * @description An input to customize the resultlist behaviour
    */
-  @Input() public options: ResultListOptions;
+  @Input() public options = new ResultListOptions();
   /**
    * @Input
    * @description An object representing an Item .
    */
-  @Input({ required: true }) public rowItem: Item;
+  public rowItem = input.required<Item>();
   /**
   * @Input
   * @description Name of the id field.
   */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
   /**
    * @Input
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
   /**
    * @Input
    * @description List of all selected items in the result-list.component.
    * This component sets directly this list.
    */
-  @Input() public selectedItems: Set<string>;
+  @Input() public selectedItems = new Set<string>();
 
   /**
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<[string, string]>;
+  @Input() public keysToColors: Array<[string, string]> = [];
 
   /**
    * @Input : Angular
@@ -114,7 +114,8 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
    * @description Map <itemId, Set<actionIds>> : for each item, gives the list of activated actions.
   */
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
-  @Input() public tableWidth: number;
+
+  public tableWidth = input.required<number>();
   /**
    * @Output
    * @description Emits the list of selected items in result-list.component.
@@ -136,10 +137,8 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   @Output() public selectedItemPositionEvent: Subject<Item> = new Subject<Item>();
 
   public isDetailToggled = false;
-  public detailedData = '';
-  public actions;
-  public colors = {};
-  protected identifier: string;
+  public colors: Record<string, { color: string; textColor: string; }> = {};
+  protected identifier = computed(() => this.rowItem().identifier);
 
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
@@ -149,34 +148,27 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public ngOnInit() {
-    this.identifier = this.rowItem?.identifier;
     this.updateColors();
   }
 
-  // Detailed data is retrieved when the row is toggled for the first time
+  /**
+   * Detailed data is retrieved when the row is toggled for the first time
+   */
   public toggle() {
-    if (this.rowItem.isDetailToggled === false) {
-      this.retrieveAdditionalInfo(this.detailedDataRetriever, this.rowItem);
+    if (this.rowItem().isDetailToggled === false) {
+      this.retrieveAdditionalInfo(this.detailedDataRetriever(), this.rowItem());
     }
-    this.rowItem.isDetailToggled = !this.rowItem.isDetailToggled;
+    this.rowItem().isDetailToggled = !this.rowItem().isDetailToggled;
   }
 
   // Update the list of the selected items
   public setSelectedItem() {
-    super.setSelectedItem(this.rowItem.isChecked, this.identifier, this.selectedItems);
-    this.rowItem.isChecked = !this.rowItem.isChecked;
-    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
-    this.selectedItemsEvent.next(this.selectedItems);
-  }
-  public determinateItem() {
-    this.rowItem.isChecked = true;
-    this.rowItem.isindeterminated = false;
-    this.selectedItems.add(this.identifier);
+    super.setSelectedItem(this.rowItem().isChecked, this.identifier(), this.selectedItems);
     // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
     this.selectedItemsEvent.next(this.selectedItems);
   }
 
-  public getTextColor(key): string {
+  public getTextColor(key: ItemDataType): string {
     if (key !== undefined && key !== null) {
       return this.colorService.getTextColor(key.toString());
     } else {
@@ -185,26 +177,26 @@ export class ResultItemComponent extends ItemComponent implements OnInit {
   }
 
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
+    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName(), idValue: this.rowItem().identifier } });
   }
 
   private updateColors() {
-    const newColor = {};
-    this.rowItem?.columns.forEach(c => {
+    const newColor: Record<string, { color: string; textColor: string; }> = {};
+    this.rowItem().columns.forEach(c => {
       if (c.useColorService){
-        const key = this.rowItem?.itemData.get(buildTableItemField(c));
+        const key = this.rowItem().itemData.get(buildTableItemField(c));
         if (key !== undefined && key !== null) {
-          newColor[key.toString()] = {};
-          newColor[key.toString()]['color'] = this.getColor(key);
-          newColor[key.toString()]['textColor'] = this.getTextColor(key);
-
+          newColor[key.toString()] = {
+            color: this.getColor(key),
+            textColor: this.getTextColor(key)
+          };
         }
       }
     });
     this.colors = newColor;
   }
 
-  private getColor(key): string {
+  private getColor(key: ItemDataType): string {
     if (key !== undefined && key !== null) {
       return this.colorService.getColor(key.toString(), this.keysToColors, this.colorsSaturationWeight);
     } else {

@@ -14,10 +14,10 @@
   </mat-form-field>
 
   <p>You selected: {{getCapaUrl}}</p>
-  <button mat-icon-button (click)="wmtsLayerMangerComponent?.run()">
+  <button mat-icon-button (click)="wmtsLayerManager.run()">
     <mat-icon aria-label="Add WMTS">get_app</mat-icon>
   </button>
 </div>
 <arlas-wmts-layer-manager #wmtsLayerManager [metadata]="metadata" [getCapaUrl]="getCapaUrl"></arlas-wmts-layer-manager>
-<div>{{ wmtsLayerMangerComponent?.getTilesInfoBus | async | json }}</div>
-<div>{{ wmtsLayerMangerComponent?.onError | async }}</div>
+<div>{{ wmtsLayerManager.getTilesInfoBus | async | json }}</div>
+<div>{{ wmtsLayerManager.onError | async }}</div>

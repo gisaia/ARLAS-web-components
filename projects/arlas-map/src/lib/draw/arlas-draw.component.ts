@@ -18,8 +18,7 @@
  */
 
 import {
-  Component, EventEmitter, HostListener, inject, input, Input,
-  OnInit, Output, signal, SimpleChanges, ViewEncapsulation
+  Component, EventEmitter, HostListener, inject, input, Input, OnInit, Output, signal, SimpleChanges, viewChild, ViewEncapsulation
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -63,7 +62,7 @@ import { buildDrawStyle, DrawTheme } from './themes/default-theme';
  */
 export class ArlasDrawComponent<L, S, M> implements OnInit {
 
-  @Input() public map: AbstractArlasMapGL;
+  public map = input.required<AbstractArlasMapGL>();
 
   @Input() public emptyData: FeatureCollection<GeoJSON.Geometry> = {
     'type': 'FeatureCollection',
@@ -72,13 +71,13 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /**  @description Options object for draw tools : https://github.com/mapbox/mapbox-gl-draw/blob/master/docs/API.md#options */
   @Input() public drawOption: any = {};
   /** Draw instance. */
-  public draw: AbstractDraw;
+  public draw!: AbstractDraw;
   /** @description Features drawn at component start */
   @Input() public drawData: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
   /** @description Whether the draw tools are activated. */
   @Input() public drawButtonEnabled = false;
   /** @description Maximum number of vertices allowed for a polygon. */
-  @Input() public drawPolygonVerticesLimit: number;
+  @Input() public drawPolygonVerticesLimit?: number;
   /** @description Whether the drawing buffer is activated */
   /** If true, the map's canvas can be exported to a PNG using map.getCanvas().toDataURL(). Default: false */
   @Input() public preserveDrawingBuffer = false;
@@ -100,13 +99,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** List of drawn polygons centroid */
   public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
 
-
+  // TODO: typing
   /** Drawn geometry's state when editing/updating. */
-  protected savedEditFeature = null;
-  /** Map container Html element */
-  protected canvas: HTMLElement;
+  protected savedEditFeature?: any;
   /** Html element that holds the drawing message. */
-  protected drawTooltipElement: HTMLElement;
+  protected drawTooltipElement = viewChild<HTMLElement>('arlas-draw-tooltip');
   /** Message shown to explain how to draw. */
   public drawTooltipMessage = signal<string>('');
 
@@ -156,9 +153,11 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       if (e) {
         const features = e.features;
         if (features && features.length > 0) {
-          this.savedEditFeature = { ...features[0] };
-          this.savedEditFeature.coordinates = [[]];
-          features[0].geometry.coordinates[0].forEach(f => this.savedEditFeature.coordinates[0].push(f));
+          this.savedEditFeature = { ...features[0], coordinates: [[]] };
+          for (const f of features[0].geometry.coordinates[0]) {
+            // TODO: WARNING issue in typing with savedEditFeature
+            (this.savedEditFeature as any).coordinates[0].push(f);
+          }
         }
       }
     });
@@ -199,7 +198,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         this.draw.add(currentFeature as Feature<Polygon>);
       }
       this.openInvalidGeometrySnackBar();
-      this.mapFrameworkService.setMapCursor(this.map, '');
+      this.mapFrameworkService.setMapCursor(this.map(), '');
     });
   }
 
@@ -219,7 +218,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
             ).map(f => cleanCoords(f))
           });
         this.switchToStaticMode();
-        this.mapFrameworkService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map(), '');
       }
     });
   }
@@ -237,24 +236,24 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       if (e.mode === 'simple_select') {
         this.drawService.isInSimpleDrawMode = true;
       } else if (e.mode === 'static') {
-        this.mapFrameworkService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map(), '');
       } else if (e.mode === 'direct_select') {
         const selectedFeatures = this.draw.getSelectedFeatures();
         const selectedIds = this.draw.getSelectedIds();
         if (selectedFeatures && selectedIds && selectedIds.length > 0) {
-          if (selectedFeatures[0].properties.source === 'bbox') {
+          if (selectedFeatures[0].properties?.source === 'bbox') {
             this.draw.changeMode('simple_select', {
               featureIds: [selectedIds[0]]
             });
             this.drawService.isInSimpleDrawMode = true;
-          } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta !== 'strip') {
+          } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties?.meta !== 'strip') {
             this.draw.changeMode('limit_vertex', {
               featureId: selectedIds[0],
               maxVertexByPolygon: this.drawPolygonVerticesLimit,
               selectedCoordPaths: (selectedFeatures[0] as Feature<LineString | MultiLineString | Polygon | MultiPolygon>).geometry.coordinates
             });
             this.drawService.isInSimpleDrawMode = false;
-          } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties.meta === 'strip') {
+          } else if (this.drawPolygonVerticesLimit && selectedFeatures[0].properties?.meta === 'strip') {
             this.draw.changeMode('direct_strip', {
               featureId: selectedIds[0],
               maxLength: selectedFeatures[0].properties.maxLength,
@@ -264,14 +263,13 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           }
         } else {
           this.drawService.isInSimpleDrawMode = false;
-          this.mapFrameworkService.setMapCursor(this.map, '');
+          this.mapFrameworkService.setMapCursor(this.map(), '');
         }
       }
     });
   }
 
   public ngOnInit(): void {
-    this.drawTooltipElement = document.getElementById('arlas-draw-tooltip');
     const drawStyles = buildDrawStyle(this.drawTheme());
     const drawOptions = {
       ...this.drawOption,
@@ -290,7 +288,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       },
       suppressAPIEvents: true
     };
-    this.draw = this.mapFrameworkService.createDraw(drawOptions, this.drawButtonEnabled, this.map);
+    this.draw = this.mapFrameworkService.createDraw(drawOptions, this.drawButtonEnabled, this.map());
     this.draw.setMode('DRAW_CIRCLE', 'draw_circle');
     this.draw.setMode('DRAW_RADIUS_CIRCLE', 'draw_radius_circle');
     this.draw.setMode('DRAW_STRIP', 'draw_strip');
@@ -312,24 +310,23 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         overrideEvent: { event: 'click', fn: this.removeAois }
       }
     };
-    this.map.initDrawControls(drawControlConfig);
+    this.map().initDrawControls(drawControlConfig);
     this.drawService.setDraw(this.draw);
-    this.mapFrameworkService.onMapEvent('load', this.map, () => {
-      this.mapService.declareLabelSources('', this.polygonlabeldata, this.map);
+    this.mapFrameworkService.onMapEvent('load', this.map(), () => {
+      this.mapService.declareLabelSources('', this.polygonlabeldata, this.map());
       this.switchToStaticMode();
-      this.canvas = this.map.getCanvasContainer();
       this.listenToDrawOnCreate();
       this.listenToDrawUpdate();
       this.listenToDrawDelete();
-      this.canvas.addEventListener('mousemove', this.mouseMoveForDraw, true);
+      this.map().getCanvasContainer().addEventListener('mousemove', this.mouseMoveForDraw, true);
 
       this.draw.onDrawOnStart((e) => {
         this.drawClickCounter = 0;
-        this.mapFrameworkService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map(), '');
       });
       this.draw.onDrawOnStop((e) => {
         this.drawClickCounter = 0;
-        this.mapFrameworkService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map(), '');
       });
 
       this.listenToDrawInvalidGeometry();
@@ -337,12 +334,13 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       this.draw.onDrawEditSaveInitialFeature((edition) => {
         this.savedEditFeature = { ...edition.feature };
         this.savedEditFeature.coordinates = [[]];
-        edition.feature.coordinates[0].forEach(c => this.savedEditFeature.coordinates[0].push(c));
+        // TODO: typing
+        edition.feature.coordinates[0].forEach((c: any) => this.savedEditFeature.coordinates[0].push(c));
       });
 
       this.listenToDrawSelectionChange();
       this.listenToDrawModeChange();
-      this.mapFrameworkService.onMapEvent('click', this.map, (e) => {
+      this.mapFrameworkService.onMapEvent('click', this.map(), (e) => {
         if (this.drawService.isDrawing()) {
           this.drawClickCounter++;
           this.updateTooltipMessage();
@@ -356,7 +354,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           this.stopDrawingAtVerticeLimit();
         } else {
           this.nbPolygonVertices = 0;
-          const features = this.map.queryRenderedFeatures(e.point);
+          const features = this.map().queryRenderedFeatures(e.point);
           // edit polygon condition : no arlas feature && mapbox-gl-draw source present
           const editCondition = features.filter(f => f.layer.id?.indexOf('arlas') >= 0).length === 0 &&
             features.filter(f => f.source.startsWith('mapbox-gl-draw')).length > 0;
@@ -384,23 +382,25 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       });
     });
 
-    this.mapFrameworkService.onMapEvent('mousemove', this.map, (e: MapMouseEvent) => {
+    this.mapFrameworkService.onMapEvent('mousemove', this.map(), (e: MapMouseEvent) => {
       if (this.drawService.isDrawingBbox || this.drawService.isDrawingPolygon) {
-        this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
-        this.map.moveLngLat = e.lngLat;
+        this.mapFrameworkService.setMapCursor(this.map(), 'crosshair');
+        // TODO: not sure this will work, might need a method
+        this.map().moveLngLat = e.lngLat;
       }
     });
 
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.map && this.map.getMapProvider() !== undefined) {
+    if (this.map && this.map().getMapProvider() !== undefined) {
       if (changes['drawData'] !== undefined && this.drawService.isReady) {
         const centroides = new Array();
         this.drawData.features.forEach(feature => {
           const poly = polygon((feature.geometry as Polygon).coordinates);
           const cent = centroid(poly);
-          cent.properties.arlas_id = feature.properties.arlas_id;
+          cent.properties ??= {};
+          cent.properties.arlas_id = feature.properties?.arlas_id;
           centroides.push(cent);
         });
         this.polygonlabeldata = {
@@ -409,7 +409,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         };
 
         this.drawService.addFeatures(this.drawData, /** deleteOld */ true);
-        this.mapService.updateLabelSources(this.map.POLYGON_LABEL_SOURCE, this.polygonlabeldata, this.map);
+        this.mapService.updateLabelSources(this.map().POLYGON_LABEL_SOURCE, this.polygonlabeldata, this.map());
       }
 
     }
@@ -419,7 +419,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * Update the tooltip message when drawing to reflect drawing mode and state
    */
   public updateTooltipMessage() {
-    let tooltipMessage;
+    let tooltipMessage = '';
     switch (this.draw.getCurrentMode().toLocaleUpperCase() as DrawModes) {
       case 'DRAW_RADIUS_CIRCLE':
         if (this.drawClickCounter === 0) {
@@ -466,8 +466,12 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   private readonly mouseMoveForDraw = (e: MouseEvent) => {
     const x = e.clientX;
     const y = e.clientY;
-    this.drawTooltipElement.style.top = (y + 20) + 'px';
-    this.drawTooltipElement.style.left = (x + 20) + 'px';
+
+    const drawTooltip = this.drawTooltipElement();
+    if (drawTooltip) {
+      drawTooltip.style.top = (y + 20) + 'px';
+      drawTooltip.style.left = (x + 20) + 'px';
+    }
   };
 
   /**
@@ -510,7 +514,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
   /** @description Enables bbox drawing mode.*/
   public addGeoBox() {
-    this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
+    this.mapFrameworkService.setMapCursor(this.map(), 'crosshair');
     this.switchToDrawMode('draw_rectangle');
   }
 
@@ -518,7 +522,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
    * @description Removes all the aois if none of them is selected. Otherwise it removes the selected one only
    */
   public removeAois() {
-    this.mapFrameworkService.setMapCursor(this.map, '');
+    this.mapFrameworkService.setMapCursor(this.map(), '');
     this.drawService.isDrawingBbox = false;
     this.deleteSelectedItem();
   }
@@ -559,7 +563,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.drawService.isDrawingBbox = selectedMode === this.draw.getMode('DRAW_RECTANGLE');
     this.drawService.isInSimpleDrawMode = false;
 
-    this.mapFrameworkService.setMapCursor(this.map, 'crosshair');
+    this.mapFrameworkService.setMapCursor(this.map(), 'crosshair');
     this.draw.changeMode(selectedMode, option ?? {});
     this.updateTooltipMessage();
   }
@@ -633,8 +637,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   public getSelectedPolygon(mode: 'wkt' | 'geojson'): string | Object {
     let polygon;
     if (mode === 'wkt') {
-      polygon = latLngToWKT(this.draw.getSelected().features.filter(f => this.drawService.isPolygon(f) ||
-        this.drawService.isCircle(f)));
+      polygon = latLngToWKT(this.draw.getSelected().features
+        .filter(f => this.drawService.isPolygon(f) || this.drawService.isCircle(f)) as Feature<Polygon>[]);
     } else {
       polygon = {
         'type': 'FeatureCollection',
@@ -650,7 +654,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     if (event.key === 'Escape') {
       if (this.drawService.isDrawing()) {
         this.drawService.deleteUnregisteredFeatures();
-        this.mapFrameworkService.setMapCursor(this.map, '');
+        this.mapFrameworkService.setMapCursor(this.map(), '');
 
         this.switchToStaticMode();
         this.drawService.endDimensionsEmission();

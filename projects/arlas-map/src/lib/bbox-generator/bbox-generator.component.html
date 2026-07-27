@@ -7,8 +7,8 @@
       <mat-icon>info</mat-icon>
       <span>{{DESCRIPTION | translate}}</span>
     </div>
-    @if (bboxForm?.firstCorner) {
-      <div class="section" [formGroup]="bboxForm?.firstCorner">
+    @if (bboxForm.firstCorner) {
+      <div class="section" [formGroup]="bboxForm.firstCorner">
         <div class="title">{{'First corner' | translate}}</div>
         <div class="coordinate">
           <mat-form-field appearance="outline" >
@@ -30,8 +30,8 @@
         </div>
       </div>
     }
-    @if (bboxForm?.secondCorner) {
-      <div class="section" [formGroup]="bboxForm?.secondCorner">
+    @if (bboxForm.secondCorner) {
+      <div class="section" [formGroup]="bboxForm.secondCorner">
         <div class="title">{{'Second corner' | translate}}</div>
         <div class="coordinate">
           <mat-form-field appearance="outline" >

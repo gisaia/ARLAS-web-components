@@ -18,13 +18,13 @@
  */
 
 import { Component, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
   selector: 'arlas-cog-preview',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     ProtectImageDirective
   ],
   templateUrl: './cog-preview.component.html',

@@ -20,11 +20,13 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  getAdditionalFillLayers, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, VectorStyle
+  ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
+  getAdditionalFillLayers, HILLSHADE_SOURCE,
+  MapLayerMouseEvent,
+  SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import { FeatureCollection } from 'geojson';
-import {
+import mapboxgl, {
   AnyLayer, AnySourceData, GeoJSONSource, GeoJSONSourceRaw,
   MapboxOptions, Point, Popup, RasterDemSource, RasterLayer, RasterSource, SymbolLayer
 } from 'mapbox-gl';
@@ -131,7 +133,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     const mapboxMap = map.getMapProvider();
     mapboxMap.loadImage(
       url,
-      (error, image) => {
+      (error: any, image: any) => {
         if (error) {
           console.warn(errorMessage);
         }
@@ -197,7 +199,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   public setTerrain(source: RasterDemSource, map: ArlasMapboxGL, exaggeration=1) {
     this.setSource(HILLSHADE_SOURCE, source, map);
 
-    const firstArlasLayer = map.getMapProvider().getStyle().layers.map(l => l.id)
+    const firstArlasLayer = map.getMapProvider().getStyle().layers?.map(l => l.id)
       .find(l => l.startsWith('arlas_id') || l.startsWith('arlas-') || l.startsWith('scrollable_arlas_id'));
 
     this.addLayer(map, {
@@ -240,7 +242,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param layer Layer identifier.
    * @param fn Function to execute on event of the given layer.
    */
-  public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave', map: ArlasMapboxGL, layer: string, fn: (e) => void): void {
+  public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave', map: ArlasMapboxGL, layer: string, fn: (e: any) => void): void {
     map.getMapProvider().on(eventName, layer, fn);
   }
 
@@ -251,7 +253,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param map Map instance.
    * @param fn Function to execute on given event on the map.
    */
-  public onMapEvent(eventName: 'load' | 'moveend' | 'zoomend', map: ArlasMapboxGL, fn: (e) => void) {
+  public onMapEvent(eventName: 'load' | 'moveend' | 'zoomend', map: ArlasMapboxGL, fn: (e: any) => void) {
     map.getMapProvider().on(eventName, fn);
   }
 
@@ -370,7 +372,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @param layersIdPattern Identifiers pattern to remove from the map.
    */
   public removeLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string) {
-    map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)).forEach(l => this.removeLayer(map, l.id));
+    map.getMapProvider().getStyle().layers?.filter(l => l.id.includes(layersIdPattern)).forEach(l => this.removeLayer(map, l.id));
   }
 
   /**
@@ -381,7 +383,7 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @returns true if any layer's id includes the given id pattern.
    */
   public hasLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): boolean {
-    return map.getMapProvider().getStyle().layers.some(l => l.id.includes(layersIdPattern));
+    return !!map.getMapProvider().getStyle().layers?.some(l => l.id.includes(layersIdPattern));
   }
 
   /**
@@ -504,13 +506,14 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     map.getMapProvider().setFilter(layerId, filter);
   }
 
-  public queryFeatures(e: any, map: ArlasMapboxGL, layersIdPattern: string, options: any) {
-    map.getMapProvider().queryRenderedFeatures(e.point, options).filter(f => !!f.layer && !!f.layer.id && f.layer.id.includes(layersIdPattern));
+  public queryFeatures(e: MapLayerMouseEvent, map: ArlasMapboxGL, layersIdPattern: string, options: any) {
+    return map.getMapProvider().queryRenderedFeatures([e.point.x, e.point.y], options)
+      .filter(f => !!f.layer && !!f.layer.id && f.layer.id.includes(layersIdPattern));
   };
 
 
   public isLayerVisible(layer: ArlasAnyLayer): boolean {
-    return layer.layout.visibility === 'visible';
+    return layer.layout?.visibility === 'visible';
   }
 
   public getSource(sourceId: string, map: ArlasMapboxGL) {
@@ -525,11 +528,11 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    * @returns a list of layers whose ids include the the given id pattern.
    */
   public getLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): ArlasAnyLayer[] {
-    return map.getMapProvider().getStyle().layers.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
+    return map.getMapProvider().getStyle().layers?.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
   }
 
   public getLayersStartingWithSource(map: ArlasMapboxGL, sourceId: string): ArlasAnyLayer[] {
-    return map.getMapProvider().getStyle().layers.filter(l => ((l as ArlasAnyLayer).source as string)?.startsWith(sourceId)) as ArlasAnyLayer[];
+    return map.getMapProvider().getStyle().layers?.filter(l => ((l as ArlasAnyLayer).source as string)?.startsWith(sourceId)) as ArlasAnyLayer[];
   }
 
   public getAllLayers(map: ArlasMapboxGL): ArlasAnyLayer[] {
@@ -552,6 +555,6 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
   }
 
   public getAllSources(map: ArlasMapboxGL) {
-    return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;
+    return map.getMapProvider().getStyle().sources as mapboxgl.Sources;
   }
 }

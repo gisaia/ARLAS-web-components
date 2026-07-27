@@ -23,6 +23,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  input,
   Input,
   OnChanges,
   OnInit,
@@ -54,7 +55,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description Data to build the table.
    */
-  @Input() public metricsTable: MetricsTable;
+  public metricsTable = input.required<MetricsTable>();
 
   /**
      * @Input : Angular
@@ -78,13 +79,13 @@ export class MetricsTableComponent implements OnInit, OnChanges {
    * @Input : Angular
    * @description selected terms list.
    */
-  @Input() public selectedTerms: string[];
+  @Input() public selectedTerms: string[] = [];
 
   /**
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<[string, string]>;
+  @Input() public keysToColors: Array<[string, string]> = [];
 
 
   /**
@@ -106,7 +107,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
    * factor (between 0 and 1) that tightens this scale to [(1-colorsSaturationWeight), 1].
    * Therefore saturation of generated colors will be within this tightened scale.
    */
-  @Input() public colorsSaturationWeight;
+  @Input() public colorsSaturationWeight?: number;
 
   /**
    * @description Allow to select a row by a checkbox
@@ -126,7 +127,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
   @Output() public onSelect = new EventEmitter<Set<string>>();
 
-  @ViewChild('tableHeader') protected header: ElementRef;
+  @ViewChild('tableHeader') protected header?: ElementRef;
 
 
   // keep it time complexity o(1) with get.
@@ -136,8 +137,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   protected selectedRows: Map<string, MetricsTableRow> = new Map();
   protected pendingMode = false;
   protected titleAreDifferent = true;
-  protected uniqueTitles: MetricsTableHeader[];
-
+  protected uniqueTitles: MetricsTableHeader[] = [];
 
   public constructor(private readonly colorService: ArlasColorService, private readonly cdr: ChangeDetectorRef) {
     this.colorService.changekeysToColors$.subscribe(() => {
@@ -152,18 +152,14 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   }
 
   public ngOnInit(): void {
-    if (this.metricsTable) {
-      this.updateSelectedTermWithDefaultValue();
-      this.buildPowerBars();
-      this.buildHeaders();
-    }
+    this.updateSelectedTermWithDefaultValue();
+    this.buildPowerBars();
+    this.buildHeaders();
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes.metricsTable) {
-      if (this.metricsTable !== undefined && this.metricsTable !== null) {
-        this.ngOnInit();
-      }
+      this.ngOnInit();
     }
     if (changes.selectedTerms) {
       this.updateSelection(this.selectedTerms);
@@ -174,7 +170,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
     this.uniqueTitles = [];
     let previousId = '';
     let nextIndex = 0;
-    this.metricsTable.header.forEach((header, i) => {
+    this.metricsTable().header.forEach((header, i) => {
       header.color = this.defineColor(header.title);
       const currentId = header.title + header.rowfield;
       if (currentId !== previousId) {
@@ -183,10 +179,12 @@ export class MetricsTableComponent implements OnInit, OnChanges {
         nextIndex++;
         previousId = currentId;
       } else {
-        this.uniqueTitles[nextIndex - 1].span++;
+        const lastTitle = this.uniqueTitles[nextIndex - 1];
+        lastTitle.span ??= 0;
+        lastTitle.span++;
       }
     });
-    this.titleAreDifferent = this.uniqueTitles.length === this.metricsTable?.data[0]?.data.length;
+    this.titleAreDifferent = this.uniqueTitles.length === this.metricsTable().data[0]?.data.length;
 
   }
 
@@ -202,17 +200,17 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   public buildPowerBars() {
     this.powerBarsMap.clear();
     this.clearAll();
-    this.metricsTable.data?.forEach((merticsRow, rowIndex) => {
+    this.metricsTable().data.forEach((merticsRow, rowIndex) => {
       this.powerBarsMap.set(merticsRow.term, []);
       merticsRow.data.forEach((item, i) => {
         let powerBar: PowerBar;
         if (this.applyColorTo === 'row') {
-          powerBar = new PowerBar(merticsRow.term, merticsRow.term, item?.value);
+          powerBar = new PowerBar(merticsRow.term, merticsRow.term, item.value);
         } else {
-          const header = this.metricsTable.header[i];
-          powerBar = new PowerBar(header.title, header.title, item?.value);
+          const header = this.metricsTable().header[i];
+          powerBar = new PowerBar(header.title, header.title, item.value);
         }
-        if (item) {
+        if (item?.value) {
           let maxValue;
           if (this.normaliseBy === 'table') {
             maxValue = item.maxTableValue;
@@ -228,7 +226,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
           merticsRow.selected = true;
           this.selectedRows.set(merticsRow.term, merticsRow);
         }
-        this.powerBarsMap.get(merticsRow.term).push(powerBar);
+        this.powerBarsMap.get(merticsRow.term)?.push(powerBar);
       });
     });
   }
@@ -241,7 +239,7 @@ export class MetricsTableComponent implements OnInit, OnChanges {
   }
 
   public clearAll() {
-    this.metricsTable?.data?.forEach(row => row.selected = false);
+    this.metricsTable().data.forEach(row => row.selected = false);
     this.selectedRows.clear();
   }
   public addTermToSelectedList(key: string) {
@@ -261,23 +259,23 @@ export class MetricsTableComponent implements OnInit, OnChanges {
 
 
   public updateSelectedRow(key: string) {
-    const row = this.metricsTable.data.find(row => row.term === key);
-    if (this.selectedRows.has(key)) {
-      row.selected = false;
-      this.selectedRows.delete(key);
-    } else if (row) {
+    const row = this.metricsTable().data.find(row => row.term === key);
+    if (row) {
+      if (this.selectedRows.has(key)) {
+        row.selected = false;
+        this.selectedRows.delete(key);
+      } else {
         row.selected = true;
         this.selectedRows.set(key, row);
-      } else {
-        /** If we select a row that does not exists, it means we data is not  */
       }
+    }
   }
 
   public togglePendingMode() {
     this.pendingMode = this.selectedKeys.size !== 0;
   }
 
-  public trackByFn(index, item) {
+  public trackByFn(index: number, item: MetricsTableRow) {
     return item.term; // Use the 'id' property as the unique identifier
   }
 

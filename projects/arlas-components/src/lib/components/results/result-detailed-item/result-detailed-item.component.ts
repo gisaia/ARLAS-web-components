@@ -43,21 +43,20 @@ export class ResultDetailedItemComponent {
    * @Input
    * @description Number of columns in the parent table so that this component occupies the entire line.
    */
-  @Input() public detailColspan: number;
+  public detailColspan = input.required<number>();
   /**
    * @Input
    * @description Name of the id field.
    */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
 
-
-  @Input() public containerType: string;
+  public containerType = input.required<'list' | 'grid'>();
 
   /**
    * @Input
    * @description An object representing an Item and that contains the detailed data.
    */
-  @Input({ required: true }) public rowItem: Item;
+  public rowItem = input.required<Item>();
 
   /**
    * @Input
@@ -77,7 +76,7 @@ export class ResultDetailedItemComponent {
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input({ required: true }) public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
   /**
    * @Input : Angular
    * @description List of active actions per item.
@@ -95,11 +94,11 @@ export class ResultDetailedItemComponent {
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
+    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName(), idValue: this.rowItem().identifier } });
   }
 
   public getGroups() {
-    return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
+    return (this.showEmptyGroup) ? (this.rowItem().itemDetailedData) : (this.rowItem().itemDetailedData.filter(d => d.details.length > 0));
   }
 
   public getAttachmentLabel(attachment: Attachment, index: number): string {

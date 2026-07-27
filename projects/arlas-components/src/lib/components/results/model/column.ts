@@ -26,7 +26,7 @@ export class Column  extends ResultListField {
    */
   public columnName: string;
 
-  public width: number;
+  public width = 50;
 
   public isToggleField = false;
   /**

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, input, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { select } from 'd3-selection';
 import { ArlasDataLayer, CellShape } from '../../map/model/layers';
 import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
@@ -27,35 +27,30 @@ import { Legend, PROPERTY_SELECTOR_SOURCE } from '../legend.config';
   templateUrl: './layer-icon.component.html',
   styleUrls: ['./layer-icon.component.scss']
 })
-export class LayerIconComponent implements AfterViewInit, OnChanges {
-  @Input() public layer: ArlasDataLayer;
+export class LayerIconComponent implements OnChanges, AfterViewInit {
+  public layer = input.required<ArlasDataLayer>();
   @Input() public colorLegend: Legend = {};
   @Input() public strokeColorLegend: Legend = {};
   @Input() public widthLegend: Legend = {};
   @Input() public radiusLegend: Legend = {};
-  @Input() public lineDasharray: Array<number>;
-  @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement: ElementRef;
+  @Input() public lineDasharray: Array<number> = [];
+  @ViewChild('layer_icon', { read: ElementRef, static: false }) public layerIconElement?: ElementRef;
 
-  public constructor() {
+  public ngOnChanges(changes: SimpleChanges) {
+    this.drawIcons();
   }
 
   public ngAfterViewInit() {
-    if (this.layer) {
-      this.drawIcons();
-    }
-  }
-
-  public ngOnChanges(changes: SimpleChanges) {
-    if (changes['layer'] !== undefined) {
-      if (this.layer && this.layerIconElement) {
-        this.drawIcons();
-      }
-    }
+    this.drawIcons();
   }
 
   private drawIcons(): void {
-    const type = this.layer.type;
-    const source = this.layer.source;
+    if (!this.layerIconElement) {
+      return;
+    }
+
+    const type = this.layer().type;
+    const source = this.layer().source;
     switch (type) {
       case 'circle':
       case 'circle-heatmap': {
@@ -79,7 +74,7 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
       }
       case 'fill': {
         if (source.startsWith('cluster')) {
-          const fillShape = this.layer.metadata?.cellShape ?? this.layer?.metadata['cell-shape'];
+          const fillShape = this.layer().metadata?.cellShape ?? (this.layer().metadata as any)['cell-shape'];
           drawClusterFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, fillShape);
         } else if (source.startsWith('feature-metric')) {
           drawFeatureFillIcon(this.layerIconElement.nativeElement, this.colorLegend, this.strokeColorLegend, true);
@@ -89,11 +84,11 @@ export class LayerIconComponent implements AfterViewInit, OnChanges {
         break;
       }
       case 'heatmap': {
-        drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer.source.toString().startsWith('feature-metric'));
+        drawHeatmapIcon(this.layerIconElement.nativeElement, this.colorLegend, this.layer().source.toString().startsWith('feature-metric'));
         break;
       }
       case 'symbol': {
-        const l: any = (this.layer.layout);
+        const l: any = (this.layer().layout);
         if (l['text-field']) {
           drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }
@@ -201,7 +196,7 @@ export function drawFeatureFillIcon(svgNode: SVGElement, colorLegend: Legend, st
     .attr('stroke-width', 0.9);
   if (isMetric) {
     svg.append('g').append('text').text('∑')
-      .attr('x', 14).attr('y', 14).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
+      .attr('x', 14).attr('y', 14).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue ?? '#eee');
   }
 }
 
@@ -210,13 +205,18 @@ export function getOneColor(legend: Legend): string {
   let color = '';
   if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = legend.interpolatedValues;
-    color = iv[0] + '';
+    if (iv) {
+      color = iv[0].toString();
+    }
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.fix) {
     color = legend.fixValue + '';
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
     || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const mv = legend.manualValues;
-    color = mv.values().next().value.color;
+    const firstManualValue = mv?.values().next().value;
+    if (firstManualValue) {
+      color = firstManualValue.color.toString();
+    }
   }
   return color;
 }
@@ -226,7 +226,7 @@ export function drawTextIcon(svgNode: SVGElement, colorLegend: Legend) {
   const svg = select(svgNode);
   svg.selectAll('g').remove();
   svg.append('g').append('text').text(' T ').attr('transform', ' translate(5 0)')
-    .attr('y', 14).attr('font-size', '0.9em').attr('font-family', 'Garamond').attr('fill', colorLegend.fixValue);
+    .attr('y', 14).attr('font-size', '0.9em').attr('font-family', 'Garamond').attr('fill', colorLegend.fixValue ?? '#eee');
 }
 
 /**
@@ -283,6 +283,8 @@ export function drawHeatmapIcon(svgNode: SVGElement, colorLegend: Legend, small:
         if (i === 3) {
           return 3;
         }
+        // Fallback case
+        return 0;
       })
       .style('fill', (d, i) => d)
       .attr('filter', 'url(#blur)');
@@ -310,7 +312,10 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray
   } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.manual || colorLegend.type === PROPERTY_SELECTOR_SOURCE.generated
     || colorLegend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const mv = colorLegend.manualValues;
-    lineColor = mv.values().next().value.color;
+    const firstManualValue = mv?.values().next().value;
+    if (firstManualValue) {
+      lineColor = firstManualValue.color.toString();
+    }
   }
   let svgDashArray = '0';
   if (!!dashArray && dashArray.length > 1) {
@@ -342,7 +347,7 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray
     .attr('stroke', lineColor).attr('stroke-width', 1.5).attr('stroke-dasharray', svgDashArray);
   if (isMetric) {
     svg.append('g').append('text').text('∑')
-      .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
+      .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue ?? '#eee');
   }
 }
 
@@ -354,8 +359,8 @@ export function drawLineIcon(svgNode: SVGElement, colorLegend: Legend, dashArray
  * @param [isMetric=false] Whether the layer depends on a metric
  */
 export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, isMetric = false) {
-  const colorsList = [];
-  const strokeColorsList = [];
+  const colorsList = new Array<string | number>();
+  const strokeColorsList = new Array<string | number>();
   populateListFromLegend(colorsList, colorLegend);
   populateListFromLegend(strokeColorsList, strokeColorLegend);
 
@@ -378,6 +383,8 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
         if (i === 2) {
           return 5;
         }
+        // Fallback case
+        return 0;
       }
     })
     .attr('cy', (d, i) => {
@@ -393,6 +400,8 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
         if (i === 2) {
           return 15;
         }
+        // Fallback case
+        return 0;
       }
     })
     .attr('r', (d, i) => {
@@ -407,7 +416,7 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
 
   if (isMetric) {
     svg.append('g').append('text').text('∑')
-      .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue);
+      .attr('x', 10).attr('y', 16).attr('font-size', '0.5em').attr('font-weight', 'bold').attr('fill', colorLegend.fixValue ?? '#eee');
   }
 }
 
@@ -421,8 +430,8 @@ export function drawFeatureCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
  */
 export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, strokeColorLegend: Legend, addBlur = false) {
   // todo include radius legend in drawing icons
-  const colorsList = [];
-  const strokeColorsList = [];
+  const colorsList = new Array<string | number>();
+  const strokeColorsList = new Array<string | number>();
   populateListFromLegend(colorsList, colorLegend);
   populateListFromLegend(strokeColorsList, strokeColorLegend);
   const svg = select(svgNode);
@@ -448,6 +457,8 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
       if (i === 2) {
         return 10;
       }
+      // Fallback case
+      return 0;
     })
     .attr('cy', (d, i) => {
       if (i === 0) {
@@ -459,6 +470,8 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
       if (i === 2) {
         return 15;
       }
+      // Fallback case
+      return 0;
     })
     .attr('r', (d, i) => {
       if (i === 0) {
@@ -470,6 +483,8 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
       if (i === 2) {
         return 3;
       }
+      // Fallback case
+      return 0;
     })
     .style('fill', (d, i) => d).style('fill-opacity', 0.7)
     .style('stroke', (d, i) => strokeColorsList[i]).style('stroke-width', 0.8);
@@ -482,11 +497,9 @@ export function drawClusterCircleIcon(svgNode: SVGElement, colorLegend: Legend, 
 
 
 export function populateListFromLegend(list: Array<string | number>, legend: Legend) {
-  if (legend.type === PROPERTY_SELECTOR_SOURCE.fix) {
-    list.push(legend.fixValue);
-    list.push(legend.fixValue);
-    list.push(legend.fixValue);
-  } else if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
+  if (legend.type === PROPERTY_SELECTOR_SOURCE.fix && legend.fixValue) {
+    list.push(legend.fixValue, legend.fixValue, legend.fixValue);
+  } else if (legend.type === PROPERTY_SELECTOR_SOURCE.interpolated && legend.interpolatedValues) {
     const iv = legend.interpolatedValues;
     if (iv?.length === 1) {
       list.push(iv[0], iv[0], iv[0]);
@@ -498,23 +511,25 @@ export function populateListFromLegend(list: Array<string | number>, legend: Leg
   } else if (legend.type === PROPERTY_SELECTOR_SOURCE.manual || legend.type === PROPERTY_SELECTOR_SOURCE.generated
     || legend.type === PROPERTY_SELECTOR_SOURCE.provided) {
     const iv = legend.manualValues;
-    if (iv) {
+    if (iv && iv.size > 0) {
       if (iv.size === 1) {
-        const color = iv.values().next().value.color;
-        list.push(color, color, color);
+        const color = iv.values().next().value?.color;
+        if (color) {
+          list.push(color, color, color);
+        }
       } else if (iv.size === 2) {
         list.push(Array.from(iv.values())[0].color, Array.from(iv.values())[0].color, Array.from(iv.values())[1].color);
       } else if (iv.size >= 3) {
         list.push(Array.from(iv.values())[0].color, Array.from(iv.values())[Math.trunc(Array.from(iv.keys()).length / 2)].color,
           Array.from(iv.values())[Array.from(iv.keys()).length - 1].color);
       }
-    } else if (!iv || iv.size === 0) {
+    } else {
       list.push('#eee', '#eee', '#eee');
     }
   }
 }
 
-export function getClusterFillColors(colorLegend: Legend): string[] {
+export function getClusterFillColors(colorLegend: Legend): (string | number)[] {
   const fourColors = [];
   if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.interpolated) {
     const iv = colorLegend.interpolatedValues;
@@ -524,18 +539,15 @@ export function getClusterFillColors(colorLegend: Legend): string[] {
           fourColors.push(iv[0]);
         }
       } else if (iv.length === 2) {
-        fourColors.push(iv[0]);
-        fourColors.push(iv[1]);
-        fourColors.push(iv[0]);
-        fourColors.push(iv[1]);
+        fourColors.push(iv[0], iv[1], iv[0], iv[1]);
       } else if (iv.length >= 3) {
-        fourColors.push(iv[0]);
-        fourColors.push(iv[Math.trunc(2 * iv.length / 3)]);
-        fourColors.push(iv[iv.length - 1]);
-        fourColors.push(iv[Math.trunc(iv.length / 3)]);
+        fourColors.push(iv[0],
+          iv[Math.trunc(2 * iv.length / 3)],
+          iv[iv.length - 1],
+          iv[Math.trunc(iv.length / 3)]);
       }
     }
-  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix) {
+  } else if (colorLegend.type === PROPERTY_SELECTOR_SOURCE.fix && colorLegend.fixValue) {
     const c = colorLegend.fixValue;
     fourColors.push(c, c, c, c);
   }

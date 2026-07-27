@@ -34,11 +34,11 @@ export interface ArlasMapboxConfig extends MapConfig<MapboxOptions> {
 
 export class ArlasMapboxGL extends AbstractArlasMapGL {
 
-  protected _mapProvider: mapboxgl.Map;
+  protected _mapProvider!: mapboxgl.Map;
   // Lat/lng on mousedown (start); mouseup (end) and mousemove (between start and end)
-  public startLngLat: mapboxgl.LngLat;
-  public endLngLat: mapboxgl.LngLat;
-  public moveLngLat: mapboxgl.LngLat;
+  public startLngLat?: mapboxgl.LngLat;
+  public endLngLat?: mapboxgl.LngLat;
+  public moveLngLat?: mapboxgl.LngLat;
 
   public constructor(protected config: ArlasMapboxConfig) {
     super(config);
@@ -141,14 +141,14 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return { bounds: bounds.toArray(), center: bounds.getCenter().toArray(), zoom: this.getMapProvider().getZoom() };
   }
 
-  public addControl(control: Control | IControl | ControlButton,
+  public addControl(control: Control | IControl | ControlButton<mapboxgl.Map>,
     position?: ControlPosition,
     eventOverride?: {
-      event: string; fn: (e?) => void;
+      event: string; fn: (e?: any) => void;
     }) {
     this.getMapProvider().addControl(control, position);
     if (control instanceof ControlButton && eventOverride) {
-      control.btn[eventOverride.event] = () => eventOverride.fn();
+      (control.btn as any)[eventOverride.event] = () => eventOverride.fn();
     }
     return this;
   }
@@ -215,9 +215,9 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        visualisationsSets.visualisations.get(vs).forEach(l => {
+        visualisationsSets.visualisations.get(vs)?.forEach(l => {
           const layer = this._mapProvider.getLayer(l) as ArlasAnyLayer;
-          if (layer.minzoom <= this.zoom && this.zoom <= layer.maxzoom) {
+          if (layer.minzoom !== undefined && layer.minzoom <= this.zoom && layer.maxzoom !== undefined && this.zoom <= layer.maxzoom) {
             visibleLayers.add(l);
           }
         });
@@ -286,7 +286,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     this.fitBounds(bounds, boundsOptions);
   }
 
-  public addSourceType(ind: string, protocol: any, cb: (e?) => void) {
+  public addSourceType(ind: string, protocol: any, cb: (e?: any) => void) {
     (this.getMapProvider() as any).addSourceType(ind, protocol, cb);
   }
 
@@ -334,7 +334,7 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
     return this._mapProvider.getCanvasContainer();
   }
 
-  public queryRenderedFeatures(point) {
+  public queryRenderedFeatures(point?: mapboxgl.PointLike | [mapboxgl.PointLike, mapboxgl.PointLike] | undefined) {
     return this._mapProvider.queryRenderedFeatures(point);
   }
 

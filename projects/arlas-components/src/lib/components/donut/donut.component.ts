@@ -43,7 +43,7 @@ export class DonutComponent implements OnChanges {
    * @Input : Angular
    * @description Data tree to plot in the donut.
    */
-  @Input() public donutData: TreeNode;
+  public donutData = input<TreeNode>();
 
   /**
    * @Input : Angular
@@ -55,7 +55,7 @@ export class DonutComponent implements OnChanges {
    * @Input : Angular
    * @description Css class name to use to customize a specific powerbar's style.
    */
-  @Input() public customizedCssClass;
+  @Input() public customizedCssClass = '';
 
   /**
    * @Input : Angular
@@ -73,13 +73,13 @@ export class DonutComponent implements OnChanges {
    * @Input : Angular
    * @description id of the donut
    */
-  @Input() public id: string;
+  public id = input.required<string>();
 
   /**
    * @Input : Angular
    * @description List of [key, color] couples that associates a hex color to each key
    */
-  @Input() public keysToColors: Array<[string, string]>;
+  @Input() public keysToColors: Array<[string, string]> = [];
 
   /**
    * @Input : Angular
@@ -93,13 +93,13 @@ export class DonutComponent implements OnChanges {
    * @Input : Angular
    * @description Diameter of the donut. If it's not set, the donut take the Max(width,height) of the div containing the svg.
    */
-  @Input() public diameter: number;
+  @Input() public diameter?: number;
 
   /**
    * @Input : Angular
    * @description Width of the svg containing the donut. If it's not set, the container width takes the donut's diameter.
    */
-  @Input() public containerWidth: number;
+  @Input() public containerWidth?: number;
 
   /**
    * @Input : Angular
@@ -117,20 +117,20 @@ export class DonutComponent implements OnChanges {
    * @Output : Angular
    * @description Emits the list of selected nodes and the paths to their ultimate parent
    */
-  @Output() public selectedNodesEvent: Subject<Array<Array<SimpleNode>>> = new Subject<Array<Array<SimpleNode>>>();
+  @Output() public selectedNodesEvent = new Subject<SimpleNode[][]>();
 
   /**
    * @Output : Angular
    * @description Emits the hovered node and the path to it's parents.
    * The key of the map is the node's name and the value is its color on the donut
    */
-  @Output() public hoveredNodesEvent: Subject<Map<string, string>> = new Subject<Map<string, string>>();
+  @Output() public hoveredNodesEvent = new Subject<Map<string, string>>();
 
   /**
    * @Output : Angular
    * @description Emits the information about the hovered node and its parents.
    */
-  @Output() public hoveredNodeTooltipEvent: Subject<ARLASDonutTooltip> = new Subject<ARLASDonutTooltip>();
+  @Output() public hoveredNodeTooltipEvent = new Subject<ARLASDonutTooltip | null>();
 
   /**
    * @Output : Angular
@@ -138,7 +138,7 @@ export class DonutComponent implements OnChanges {
    */
   public exportEvent = output<void>();
 
-  public donut: AbstractDonut;
+  public donut?: AbstractDonut;
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -150,30 +150,35 @@ export class DonutComponent implements OnChanges {
     fromEvent(globalThis, 'resize')
       .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((event: Event) => {
-        this.donut.resize(this.donut.donutParams.donutContainer);
+        if (this.donut) {
+          this.donut.resize(this.donut.donutParams.donutContainer);
+        }
       });
 
     this.colorService.changekeysToColors$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
-        this.donut.donutParams.keysToColors = this.colorService.colorGenerator.keysToColors;
-        this.donut.donutParams.donutNodeColorizer = this.colorService;
-        this.donut.resize(this.donut.donutParams.donutContainer);
+        if (this.donut) {
+          this.donut.donutParams.keysToColors = this.colorService.colorGenerator.keysToColors;
+          this.donut.donutParams.donutNodeColorizer = this.colorService;
+          this.donut.resize(this.donut.donutParams.donutContainer);
+        }
       });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (this.donut === undefined) {
+    const data = this.donutData();
+    if (this.donut === undefined && data) {
+      const donutParams = this.getDonutParams(data);
       if (this.multiselectable) {
-        this.donut = new MultiSelectionDonut();
+        this.donut = new MultiSelectionDonut(donutParams);
       } else {
-        this.donut = new OneSelectionDonut();
+        this.donut = new OneSelectionDonut(donutParams);
       }
-      this.setDonutParameters();
     }
 
-    if (changes.donutData && this.donutData !== undefined && this.donutData !== null && this.donut?.donutParams !== undefined) {
-      this.donut.dataChange(this.donutData);
+    if (changes.donutData && data && this.donut?.donutParams !== undefined) {
+      this.donut.dataChange(data);
     }
 
     if (changes.selectedArcsList && !!this.selectedArcsList && this.donut?.donutParams?.donutNodes !== undefined) {
@@ -188,27 +193,26 @@ export class DonutComponent implements OnChanges {
     return donutJsonSchema;
   }
 
-  private setDonutParameters(): void {
+  private getDonutParams(data: TreeNode): DonutParams {
     if (!this.unit) {
       this.unit = '';
     }
-    this.donut.donutParams = new DonutParams();
-    this.donut.donutParams.id = this.id;
-    this.donut.donutParams.customizedCssClass = this.customizedCssClass;
-    this.donut.donutParams.donutData = this.donutData;
-    this.donut.donutParams.hoveredNodesEvent = this.hoveredNodesEvent;
-    this.donut.donutParams.tooltipEvent = this.hoveredNodeTooltipEvent;
-    this.donut.donutParams.multiselectable = this.multiselectable;
-    this.donut.donutParams.opacity = this.opacity;
-    this.donut.donutParams.selectedArcsList = this.selectedArcsList;
-    this.donut.donutParams.selectedNodesEvent = this.selectedNodesEvent;
-    this.donut.donutParams.donutContainer = this.el.nativeElement.getElementsByClassName('donut__container').item(0) as HTMLElement;
-    this.donut.donutParams.svgElement = this.donut.donutParams.donutContainer.querySelector('svg');
-    this.donut.donutParams.keysToColors = this.keysToColors;
-    this.donut.donutParams.colorsSaturationWeight = this.colorsSaturationWeight;
-    this.donut.donutParams.donutNodeColorizer = this.colorService;
-    this.donut.donutParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
-    this.donut.donutParams.diameter = this.diameter;
-    this.donut.donutParams.containerWidth = this.containerWidth;
+    const container = this.el.nativeElement.getElementsByClassName('donut__container').item(0) as HTMLElement;
+
+    const donutParams = new DonutParams(this.id(), data, container.querySelector('svg') as SVGElement, container, this.colorService);
+    donutParams.customizedCssClass = this.customizedCssClass;
+    donutParams.hoveredNodesEvent = this.hoveredNodesEvent;
+    donutParams.tooltipEvent = this.hoveredNodeTooltipEvent;
+    donutParams.multiselectable = this.multiselectable;
+    donutParams.opacity = this.opacity;
+    donutParams.selectedArcsList = this.selectedArcsList;
+    donutParams.selectedNodesEvent = this.selectedNodesEvent;
+    donutParams.keysToColors = this.keysToColors;
+    donutParams.colorsSaturationWeight = this.colorsSaturationWeight;
+    donutParams.numberFormatChar = this.translate.instant(NUMBER_FORMAT_CHAR);
+    donutParams.diameter = this.diameter;
+    donutParams.containerWidth = this.containerWidth;
+
+    return donutParams;
   }
 }

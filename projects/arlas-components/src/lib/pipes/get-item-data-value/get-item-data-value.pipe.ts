@@ -18,8 +18,8 @@
  */
 
 import { Pipe, PipeTransform } from '@angular/core';
-import { Column } from '../../components/results/model/column';
 import { CardField } from '../../components/results/model/cardField';
+import { Column } from '../../components/results/model/column';
 
 @Pipe({
   name: 'buildItemField'
@@ -27,18 +27,20 @@ import { CardField } from '../../components/results/model/cardField';
 export class BuildItemFieldPipe implements PipeTransform {
 
   public transform(value: Column| CardField, mode: 'table' | 'card'): string {
-    if(mode === 'card' && value instanceof  CardField){
+    if (mode === 'card' && value instanceof CardField){
       return buildCardItemField(value);
-    } else if(mode === 'table' && value instanceof  Column) {
+    } else if (mode === 'table' && value instanceof Column) {
       return buildTableItemField(value);
+    } else {
+      return '';
     }
   }
 }
 
-export function buildCardItemField(value: CardField){
-  return `${value.fieldName}_${value.prettyName}_${value?.icon}_card`;
+export function buildCardItemField(field: CardField){
+  return `${field.fieldName}_${field.prettyName}_${field?.icon}_card`;
 }
 
-export function buildTableItemField(value: Column){
-  return `${value.fieldName}_${value.columnName}_table`;
+export function buildTableItemField(field: Column){
+  return `${field.fieldName}_${field.columnName}_table`;
 }

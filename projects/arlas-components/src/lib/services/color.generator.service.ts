@@ -37,7 +37,7 @@ export class ArlasColorService {
     return this.colorGenerator.getColor(key, keysToColors, colorsSaturationWeight);
   }
 
-  public getTextColor(color): string {
+  public getTextColor(color: string): string {
     return this.colorGenerator.getTextColor(color);
   }
 

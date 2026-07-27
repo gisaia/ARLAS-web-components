@@ -17,22 +17,22 @@
  * under the License.
  */
 
-import {Injectable} from '@angular/core';
-import {EMPTY, fromEvent} from 'rxjs';
-import {FullScreenViewer} from 'iv-viewer';
+import { Injectable } from '@angular/core';
+import { FullScreenViewer } from 'iv-viewer';
+import { EMPTY, fromEvent } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FullScreenViewerService {
   /** The full screen viewer instance from the iv-viewer library */
-  private fullScreenViewer: FullScreenViewer;
+  private fullScreenViewer: FullScreenViewer | undefined;
   /** The original container element where viewer actions are placed */
-  private viewerContainer: HTMLElement | undefined;
+  private viewerContainer: HTMLElement | null = null;
   /** The full screen container element where actions are moved during full screen mode */
-  private fullScreenContainer: Element;
+  private fullScreenContainer: Element | null = null;
   /** The close button element for the full screen viewer */
-  private closeIcon: Element;
+  private closeIcon: Element | null = null;
   /** CSS selector for the full screen close icon */
   private readonly closeIconSelector = '.iv-fullscreen-close';
 
@@ -46,8 +46,9 @@ export class FullScreenViewerService {
     this.fullScreenContainer = document.querySelector('.iv-fullscreen-container');
     this.closeIcon = document.querySelector(this.closeIconSelector);
 
-    if(!this.fullScreenContainer){
+    if (!this.fullScreenContainer) {
       console.warn('No full screen container found');
+      return;
     }
 
     const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
@@ -56,7 +57,7 @@ export class FullScreenViewerService {
       const elements = actionsInfos.length;
       for (let i = 0; i < elements; i++) {
         // The element is removed from the list once retrieved
-        this.fullScreenContainer.appendChild(actionsInfos.item(0));
+        this.fullScreenContainer.appendChild(actionsInfos.item(0) as Element);
       }
     }
 
@@ -75,12 +76,12 @@ export class FullScreenViewerService {
     }
 
     return fromEvent(this.closeIcon, 'click', () => {
-      if (this.viewerContainer) {
+      if (this.viewerContainer && this.fullScreenContainer) {
         const actionsInfosFullScreen = this.fullScreenContainer.getElementsByClassName('viewer_actions-infos');
         const elements = actionsInfosFullScreen.length;
         for (let i = 0; i < elements; i++) {
           // The element is removed from the list once retrieved
-          this.viewerContainer.appendChild(actionsInfosFullScreen.item(0));
+          this.viewerContainer.appendChild(actionsInfosFullScreen.item(0) as Element);
         }
       }
     });
@@ -95,7 +96,7 @@ export class FullScreenViewerService {
       console.warn('Invalid image source provided');
       return;
     }
-    this.fullScreenViewer.show(imgSrc);
+    this.fullScreenViewer?.show(imgSrc as string);
   }
 
   /**
@@ -105,11 +106,9 @@ export class FullScreenViewerService {
     if(this.fullScreenViewer){
       try {
         this.fullScreenViewer.destroy();
-      } catch (e) {
-
-      }
+      } catch { }
     }
-    this.fullScreenViewer = null;
+    this.fullScreenViewer = undefined;
   }
 
   /**
@@ -117,6 +116,6 @@ export class FullScreenViewerService {
    * @returns the full screen viewer instance if it exists, undefined otherwise
    */
   public hasViewer(){
-    return this.fullScreenViewer !== null;
+    return !!this.fullScreenViewer;
   }
 }

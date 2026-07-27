@@ -1,4 +1,4 @@
-<div id="{{id}}" #calendar_timeline class="calendar-timeline">
+<div id="{{id()}}" #calendar_timeline class="calendar-timeline">
   <div class="container">
     @if (!climatological) {
       <button mat-icon-button class="move_button past" [class.hide_left_button]="hideLeftButton"

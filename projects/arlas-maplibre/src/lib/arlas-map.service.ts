@@ -257,7 +257,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
           }
         }
       } else {
-        map.setFilter(l, this.layersMap.get(l).filter as ExpressionSpecification);
+        map.setFilter(l, this.layersMap.get(l)?.filter as ExpressionSpecification);
         const strokeLayerId = l.replace('_id:', '-fill_stroke-');
         const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
         if (!!strokeLayer) {
@@ -269,15 +269,15 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
   }
 
   public getVisibleIdsFilter(layer: any, ids: Array<string | number>): ExpressionSpecification[] {
-    const lFilter = this.layersMap.get(layer)?.filter as ExpressionSpecification;
-    const filters = [];
+    const lFilter = this.layersMap.get(layer)?.filter as ExpressionSpecification[];
+    const filters = new Array<ExpressionSpecification>();
     if (lFilter) {
       lFilter.forEach(f => {
         filters.push(f);
       });
     }
     if (filters.length === 0) {
-      filters.push('all');
+      filters.push(['all']);
     }
     filters.push([
       'match',
@@ -285,7 +285,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
       Array.from(new Set(ids)),
       true,
       false
-    ]);
+    ] as ExpressionSpecification);
     return filters;
   }
 
@@ -298,7 +298,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     });
     visualisations.unshift(visualisation);
     this.visualisationsSets.visualisations.set(visualisation.name, new Set(visualisation.layers));
-    this.visualisationsSets.status.set(visualisation.name, visualisation.enabled);
+    this.visualisationsSets.status.set(visualisation.name, !!visualisation.enabled);
     layers.forEach(layer => {
       this.mapService.addLayer(map, layer as ArlasLayerSpecification);
     });
@@ -324,6 +324,10 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
 
   public moveArlasDataLayer(map: ArlasMaplibreGL, layerId: string, arlasDataLayers: Map<string, ArlasDataLayer>, before?: string) {
     const layer = arlasDataLayers.get(layerId);
+    if (!layer) {
+      return;
+    }
+
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollableLayer = arlasDataLayers.get(scrollableId);
     if (!!scrollableLayer && this.mapService.hasLayer(map, scrollableId)) {
@@ -383,7 +387,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
         if (this.mapService.hasLayer(map, layer.id)) {
           let originalLayerIsVisible = false;
           const fullLayer = this.layersMap.get(layer.id);
-          const isCollectionCompatible = (!collection || (collection && fullLayer.source.includes(collection)));
+          const isCollectionCompatible = (!collection || (collection && fullLayer?.source.includes(collection)));
           if (isCollectionCompatible) {
             const originalLayerId = layer.id.replace('arlas-' + visibilityEvent.toString() + '-', '');
             const originalLayer = this.mapService.getAllLayers(map).find(l => l.id === originalLayerId);

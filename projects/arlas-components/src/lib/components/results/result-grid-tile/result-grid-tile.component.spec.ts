@@ -25,9 +25,34 @@ import {
   TranslateModule,
   TranslateNoOpLoader,
 } from '@ngx-translate/core';
-import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { mockRowItem } from '../../../test/mock';
 import { ResultGridTileComponent } from './result-grid-tile.component';
+
+// Mock the IntersectionObserver, see https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
+// Needed for the ng-lazyload as in JSDOM, there is no IntersectionObserver
+export class IntersectionObserver {
+  public root = null;
+  public rootMargin = '';
+  public thresholds = [];
+
+  public disconnect() {
+    return null;
+  }
+
+  public observe() {
+    return null;
+  }
+
+  public takeRecords() {
+    return [];
+  }
+
+  public unobserve() {
+    return null;
+  }
+}
+window.IntersectionObserver = IntersectionObserver;
 
 describe('ResultGridTileComponent', () => {
   let component: ResultGridTileComponent;
@@ -41,15 +66,15 @@ describe('ResultGridTileComponent', () => {
         }),
         MatTooltipModule,
         MatIconModule,
-        LazyLoadImageModule,
-        ResultGridTileComponent,
-      ],
+        ResultGridTileComponent
+      ]
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultGridTileComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('gridTile', mockRowItem);
     fixture.detectChanges();
   });
 

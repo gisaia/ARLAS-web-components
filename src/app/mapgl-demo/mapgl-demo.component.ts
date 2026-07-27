@@ -53,13 +53,12 @@ export class MapglDemoComponent<L, S, M> {
   private readonly mapFramework = inject(ArlasMapFrameworkService<L, S, M>);
 
   // eslint-disable-next-line max-len
-  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<L, S, M>;
+  @ViewChild('demoMap', { static: true }) public mapComponent?: ArlasMapComponent<L, S, M>;
   // eslint-disable-next-line max-len
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<L, S, M>;;
-  @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
+  @ViewChild('mapSettings', { static: true }) public mapSettings?: MapSettingsComponent;
 
   public modeChoice = 'all';
-  public idToSelect: number;
+  public idToSelect?: number;
   public actionDisabled = false;
   public drawEnabled = true;
   public defaultBasemapStyle = defaultBasemapStyle;
@@ -100,17 +99,13 @@ export class MapglDemoComponent<L, S, M> {
     this.mapFrameworkService.errorBus$.subscribe(e => console.log(e));
   }
 
-  public polygonChange(event) {
-    console.log(event);
-  }
-
   public getWKT() {
     switch (this.modeChoice) {
       case 'all':
-        console.log(this.mapComponent.getAllPolygon('wkt'));
+        console.log(this.mapComponent?.getAllPolygon('wkt'));
         break;
       case 'selected':
-        console.log(this.mapComponent.getSelectedPolygon('wkt'));
+        console.log(this.mapComponent?.getSelectedPolygon('wkt'));
         break;
     }
   }
@@ -118,27 +113,23 @@ export class MapglDemoComponent<L, S, M> {
   public getGeojson() {
     switch (this.modeChoice) {
       case 'all':
-        console.log(JSON.stringify(this.mapComponent.getAllPolygon('geojson')));
+        console.log(JSON.stringify(this.mapComponent?.getAllPolygon('geojson')));
         break;
       case 'selected':
-        console.log(JSON.stringify(this.mapComponent.getSelectedPolygon('geojson')));
+        console.log(JSON.stringify(this.mapComponent?.getSelectedPolygon('geojson')));
         break;
     }
   }
 
-  public switchToDrawMode(mode?, opts?) {
-    this.mapComponent.switchToDrawMode(mode, opts);
+  public switchToDrawMode(mode?: string, opts?: any) {
+    this.mapComponent?.switchToDrawMode(mode, opts);
   }
 
   public delete() {
-    this.mapComponent.deleteSelectedItem();
+    this.mapComponent?.deleteSelectedItem();
   }
 
-  public polygonSelect(event) {
-    console.log(event);
-  }
-
-  public onAoiChanged(event) {
+  public onAoiChanged(event: GeoJSON.FeatureCollection) {
     this.drawData = event;
     console.log(event);
   }
@@ -148,10 +139,14 @@ export class MapglDemoComponent<L, S, M> {
   });
 
   public openSettings() {
-    this.mapSettings.openDialog(new MapSettings());
+    this.mapSettings?.openDialog(new MapSettings());
   }
 
   public onMapLoaded() {
+    if (!this.mapComponent) {
+      return;
+    }
+
     this.mapComponent.visibilityStatus = new Map();
     this.mapComponent.visibilityStatus.set('All products' + ARLAS_VSET + 'arlas_id:Number of products:1677155990578', true);
     this.mapComponent.visibilityStatus.set('Latest products' + ARLAS_VSET + 'arlas_id:Latest products:1677155839933', false);
@@ -166,7 +161,7 @@ export class MapglDemoComponent<L, S, M> {
   }
 
   public addGeoBox() {
-    this.mapComponent.addGeoBox();
+    this.mapComponent?.addGeoBox();
   }
 
   /**
@@ -174,11 +169,12 @@ export class MapglDemoComponent<L, S, M> {
    * Useful to compare between Mercator and globe projection
    */
   public onMove(event: OnMoveResult) {
-    if (!this.updateBbox) {
+    const map = this.mapComponent?.map();
+    if (!this.updateBbox || !map) {
       return;
     }
 
-    const bounds: LngLatBounds = this.mapComponent.map.getBounds() as any;
+    const bounds = map.getBounds() as LngLatBounds;
 
     const f: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
       type: 'FeatureCollection',
@@ -201,13 +197,13 @@ export class MapglDemoComponent<L, S, M> {
         }
       ]
     };
-    const boundsSource = this.mapFramework.getSource('bounds', this.mapComponent.map);
+    const boundsSource = this.mapFramework.getSource('bounds', map);
     this.mapFramework.setDataToGeojsonSource(boundsSource, f);
 
-    const pwithinSource = this.mapFramework.getSource('pwithin', this.mapComponent.map);
+    const pwithinSource = this.mapFramework.getSource('pwithin', map);
     this.mapFramework.setDataToGeojsonSource(pwithinSource, this.boundsToFeatureCollection(event.extendWithOffset));
 
-    const pwithinrawSource = this.mapFramework.getSource('pwithinraw', this.mapComponent.map);
+    const pwithinrawSource = this.mapFramework.getSource('pwithinraw', map);
     this.mapFramework.setDataToGeojsonSource(pwithinrawSource, this.boundsToFeatureCollection(event.rawExtendWithOffset));
   }
 
@@ -240,7 +236,10 @@ export class MapglDemoComponent<L, S, M> {
       properties: {}
     };
 
-    this.mapFramework.addGeojsonLayer(this.mapComponent.map, name, style, geojsonBbox);
+    const map = this.mapComponent?.map();
+    if (map) {
+      this.mapFramework.addGeojsonLayer(map, name, style, geojsonBbox);
+    }
   }
 
   private boundsToFeatureCollection(bounds: number[]) {

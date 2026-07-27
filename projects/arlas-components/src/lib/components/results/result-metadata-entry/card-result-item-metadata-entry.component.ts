@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import {ChangeDetectionStrategy, Component, computed, input} from '@angular/core';
-import {ItemDataType} from '../utils/results.utils';
-import {MatIcon} from '@angular/material/icon';
-import {MatTooltip} from '@angular/material/tooltip';
-import {NUMBER_FORMAT_CHAR} from '../../componentsUtils';
-import {FormatNumberPipe} from '../../../pipes/format-number/format-number.pipe';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
+import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
+import { ItemDataType } from '../utils/results.utils';
 export interface MetaDataEntry {
   /** The value to display in the metadata */
   value: ItemDataType;
@@ -51,24 +51,24 @@ export class CardResultItemMetadataEntryComponent {
   /** The metaData to display (required input) */
   public metadataEntry = input.required<MetaDataEntry>();
 
-  /** Whether the value is empty **/
+  /** Whether the value is empty */
   public valueIsEmpty = computed(() => {
-    if(this.metadataEntry().value === undefined || this.metadataEntry().value === null){
+    if (this.metadataEntry().value === undefined || this.metadataEntry().value === null) {
       return true;
     }
 
-    if(typeof this.metadataEntry().value === 'string' &&
+    if (typeof this.metadataEntry().value === 'string' &&
       ((this.metadataEntry().value as string).trim().length === 0 ||
-      (this.metadataEntry().value as string).trim() === this.NO_VALUE)){
+      (this.metadataEntry().value as string).trim() === this.NO_VALUE)) {
       return true;
     }
 
-    if(typeof this.metadataEntry().value === 'number' &&
-      Number.isNaN(this.metadataEntry().value as number)){
+    if (typeof this.metadataEntry().value === 'number' && Number.isNaN(this.metadataEntry().value as number)) {
       return true;
     }
 
     return false;
   });
+
   protected readonly NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 }

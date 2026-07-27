@@ -18,10 +18,10 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { mockRowItem } from '../../../test/mock';
 import { ResultThumbnailComponent } from './result-thumbnail.component';
-import {TranslateLoader, TranslateModule, TranslateNoOpLoader} from '@ngx-translate/core';
-import { Item } from '../model/item';
 
 describe('ResultThumbnailComponent', () => {
   let component: ResultThumbnailComponent;
@@ -37,7 +37,7 @@ describe('ResultThumbnailComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(ResultThumbnailComponent);
-    const i = new Item([], [], new Map());
+    const i = mockRowItem;
     i.urlThumbnail = 'test.png';
     fixture.componentRef.setInput('gridTile', i);
     component = fixture.componentInstance;

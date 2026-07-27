@@ -25,13 +25,11 @@ import { displayFeatures, updateCoordinates } from '../utils';
 
 export const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
-
 radiusCircleMode.fireOnStop = function () {
-    this.map.fire('draw.onStop', 'draw end');
+    (this.map as any).fire('draw.onStop', 'draw end');
 };
 
-
-function getDisplayMeasurements(feature) {
+function getDisplayMeasurements(feature: GeoJSON.Feature) {
     // should log both metric and standard display strings for the current drawn feature
 
     // metric calculation
@@ -71,26 +69,9 @@ function getDisplayMeasurements(feature) {
     return displayMeasurements;
 }
 
-const doubleClickZoom = {
-    enable: (ctx) => {
-        setTimeout(() => {
-            // First check we've got a map and some context.
-            if (
-                !ctx.map?.doubleClickZoom ||
-                !ctx._ctx?.store?.getInitialConfigValue
-            ) {
-                return;
-            }
-            // Now check initial state wasn't false (we leave it disabled if so)
-            if (!ctx._ctx.store.getInitialConfigValue('doubleClickZoom')) {
-                return;
-            }
-            ctx.map.doubleClickZoom.enable();
-        }, 0);
-    },
-};
 radiusCircleMode.onSetup = function (opts) {
     const props = MapboxDraw.modes.draw_line_string.onSetup.call(this, opts);
+    MapboxDraw.lib.doubleClickZoom.disable(this);
     const polygon = this.newFeature({
         type: MapboxDraw.constants.geojsonTypes.FEATURE,
         properties: {
@@ -134,18 +115,20 @@ radiusCircleMode.onMouseMove = function (state, e) {
     MapboxDraw.modes.draw_line_string.onMouseMove.call(this, state, e);
     const geojson = state.line.toGeoJSON();
     const center = geojson.geometry.coordinates[0];
-    const radiusInKm = length(geojson, { units: 'kilometers' });
+    const radiusInKm = length(geojson, { units: state.units });
     const options =  {steps: state.steps, units: state.units};
     const circleFeature = circle(center, radiusInKm, options);
+    circleFeature.properties ??= {};
     circleFeature.properties.parent = state.line.id;
-    (circleFeature.properties as any).meta = 'radius';
+    circleFeature.properties.meta = 'radius';
     state.circle.setCoordinates(circleFeature.geometry.coordinates);
+    state.circle.setProperty('center', center);
 };
 
 // creates the final geojson point feature with a radius property
 // triggers draw.create
 radiusCircleMode.onStop = function (state) {
-    doubleClickZoom.enable(this);
+    MapboxDraw.lib.doubleClickZoom.enable(this);
 
     this.activateUIButton();
 
@@ -176,7 +159,7 @@ radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
         const displayMeasurements = getDisplayMeasurements(geojson);
 
         // create custom feature for the current pointer position
-        const currentVertex = {
+        const currentVertex: GeoJSON.Feature<GeoJSON.Point> = {
             type: 'Feature',
             properties: {
                 meta: 'currentPosition',
@@ -186,7 +169,7 @@ radiusCircleMode.toDisplayFeatures = function (state, geojson, display) {
             },
             geometry: {
                 type: 'Point',
-                coordinates: geojson.geometry.coordinates[1],
+                coordinates: geojson.geometry.coordinates[1] as GeoJSON.Position,
             },
         };
         display(currentVertex);
