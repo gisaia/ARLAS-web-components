@@ -19,7 +19,7 @@
 
 :host {
   display: table-row-group;
-
+  --arlas-metrics-table-row-empty-border-color: var(--mat-sys-on-surface);
   ::ng-deep {
     arlas-powerbar {
       .powerbars__powerbar--count {
@@ -113,12 +113,14 @@
       text-overflow: ellipsis;
       overflow: hidden;
       padding: 0 3px;
+      color: var(--mat-sys-on-surface)
     }
   }
 
   &__data {
     padding: 0 6px;
     vertical-align: middle;
+    color: var(--mat-sys-on-surface)
   }
 
   td,
@@ -134,6 +136,7 @@
   display: flex;
   gap: 4px;
   align-items: center;
+
 }
 
 .empty {

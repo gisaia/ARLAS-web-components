@@ -17,20 +17,26 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../service/theme.service';
 
 @Component({
   selector: 'arlas-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   imports: [
-    RouterOutlet, MatTab, MatTabGroup
+    RouterOutlet, MatTab, MatTabGroup, MatIcon
   ]
 })
 export class AppComponent implements OnInit {
+
+  private readonly themeService = inject(ThemeService);
+  public isDarkMode = computed(() => this.themeService.isDarkMode());
+
   public activeLinkIndex = 0;
   public navLinks = [
     '/',
@@ -57,6 +63,10 @@ export class AppComponent implements OnInit {
     this.router.events.subscribe(() => {
       this.activeLinkIndex = this.navLinks.indexOf(this.router.url);
     });
+  }
+
+  protected toggleDarkMode() {
+    this.themeService.toggleThemeMode();
   }
 }
 

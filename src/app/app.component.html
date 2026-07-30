@@ -1,3 +1,6 @@
+<button class="theme-mode" mat-icon-button (click)="toggleDarkMode()">
+  <mat-icon>{{isDarkMode() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+</button>
 <mat-tab-group (focusChange)="selectedTab($event)" [selectedIndex]="activeLinkIndex" >
   <mat-tab label="Map">
   </mat-tab>

@@ -34,6 +34,10 @@ body {
   --mat-button-filled-container-color: green;
 }
 
+body.dark-theme{
+  background: black;
+}
+
 *, ::after, ::before {
   box-sizing: border-box;
 }

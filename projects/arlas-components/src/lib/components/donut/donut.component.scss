@@ -17,6 +17,12 @@
  * under the License.
  */
 
+.dark-theme{
+  :host{
+    --arlas-donut-export-color: var(--mat-sys-on-background);
+  }
+}
+
 :host {
   position: relative;
   .donut__export {

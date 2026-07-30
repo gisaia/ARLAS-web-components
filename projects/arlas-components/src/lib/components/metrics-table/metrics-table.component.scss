@@ -21,19 +21,22 @@
   min-width: 200px;
   display: block;
   height: 100%;
+  --arlas-metrics-table-header-bg: var(--mat-sys-surface);
+  --arlas-metrics-table-indicator-text-color: var(--mat-sys-on-surface);
+  --arlas-metrics-table-operation-color: var(--mat-sys-on-surface);
+  --arlas-metrics-table-operation-selected-color: var(--mat-sys-on-surface);
 }
+
 
 
 .tools {
   .include_exclude {
     display: flex;
     align-items: baseline;
-
     .operation {
       font-size: 12px;
       color: var(--arlas-metrics-table-operation-color, #aaa);
       border-radius: 3px;
-      font-weight: bold;
       margin-right: 5px;
       cursor: pointer;
       padding-bottom: 3px;
@@ -98,7 +101,7 @@
     .column-head {
       width: 70px;
     }
-    
+
   }
 
   td,
@@ -122,6 +125,7 @@
       border-right: 2px solid var(--arlas-metrics-table-indicator-border-color, #ffff);
       background: var(--arlas-metrics-table-indicator-bg, #e5e5e554);
       box-sizing: border-box;
+      color: var(--arlas-metrics-table-indicator-text-color);
     }
 
     &-title {
@@ -150,7 +154,7 @@
     margin: 0 auto;
     word-wrap: break-word;
     text-align: center;
-
+    color: var(--mat-sys-on-surface);
     &-title {
       max-height: 50px;
       overflow: hidden;
