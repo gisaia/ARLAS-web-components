@@ -41,6 +41,9 @@
   }
 }
 
+/**
+* Override inner token to update style when in card mode.
+ */
 .dark-theme{
   :host {
     --arlas-result-card-item-image-bg: var(--mat-sys-background);

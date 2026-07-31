@@ -19,22 +19,18 @@
 @use "../../../assets/styles/sizes";
 
 :host {
-  --arlas-legend-layer-name-text-invisible-colo: #444;
-  --arlas-legend-layer-name-text-invisible-color: #d3d3d3;
   --arlas-legend-detail-button-bg:  var(--mat-sys-background); /* was #fff */
   --arlas-legend-icon-color: var(--mat-sys-on-background); /* was #555 */
-  --arlas-legend-layer-name-text-color:  var(--mat-sys-on-background);
 }
 
 .dark-theme {
   .layer_name {
-    font-size: sizes.$default-font-size;
     &--visible{
-      color: var(--mat-sys-on-background);
+      --arlas-legend-layer-name-text-visible-color: var(--mat-sys-on-background);
     }
 
     &--invisible{
-      color: var(--mat-sys-background);
+      --arlas-legend-layer-name-text-invisible-color: var(--mat-sys-background);
     }
   }
 }
@@ -42,7 +38,7 @@
 .layer_name {
   font-size: sizes.$default-font-size;
   &--visible{
-    color: var(--arlas-legend-layer-name-text-color, #444);
+    color: var(--arlas-legend-layer-name-text-visible-color, #444);
   }
 
   &--invisible{
