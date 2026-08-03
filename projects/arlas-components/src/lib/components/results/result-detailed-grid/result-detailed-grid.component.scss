@@ -17,6 +17,19 @@
  * under the License.
  */
 
+:host {
+  --arlas-result-detailed-grid-viewer-desc-color: var(--mat-sys-on-background); /* was white */
+  --arlas-result-detailed-grid-viewer-desc-bg: var(--mat-sys-on-background); /* was #6d6d6d99 */
+  --arlas-result-detailed-grid-nav-button-bg: var(--mat-sys-background); /* was white */
+  --arlas-result-detailed-grid-disabled-color: var(--mat-sys-on-background); /* was grey */
+  --arlas-result-detailed-grid-view-button-bg: var(--mat-sys-background); /* was #fff */
+  --arlas-result-detailed-grid-view-button-color: var(--mat-sys-on-background); /* was #000 */
+  --arlas-result-detailed-grid-scrollbar-bg: var(--mat-sys-background); /* was white */
+  --arlas-result-detailed-grid-scrollbar-track-bg: var(--mat-sys-background); /* was white */
+  --arlas-result-detailed-grid-scrollbar-thumb-bg: var(--mat-sys-on-background); /* was #555 */
+  --arlas-result-detailed-grid-overlay-bg: var(--mat-sys-on-background); /* was #555 */
+}
+
 $default-icon-size: 24px;
 $sm-spacing: 5px;
 
@@ -37,8 +50,8 @@ $sm-spacing: 5px;
   z-index: 999;
 
   &.description {
-    color: white;
-    background-color: #6d6d6d99;
+    color: var(--arlas-result-detailed-grid-viewer-desc-color, white);
+    background-color: var(--arlas-result-detailed-grid-viewer-desc-bg, #6d6d6d99);
     padding: 0 $sm-spacing;
     left: 50%;
     transform: translateX(-50%);
@@ -47,7 +60,7 @@ $sm-spacing: 5px;
   &.navigate-button {
     height: $default-icon-size;
     width: $default-icon-size;
-    background-color: white;
+    background-color: var(--arlas-result-detailed-grid-nav-button-bg, white);
     border: 1px solid #a1a1a1;
     border-radius: 4px;
     cursor: pointer;
@@ -93,15 +106,15 @@ $sm-spacing: 5px;
   z-index: 1;
 
   ::ng-deep.mat-mdc-mini-fab[disabled] {
-    color: grey;
+    color: var(--arlas-result-detailed-grid-disabled-color, grey);
   }
 }
 
 .resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button{
   top: 5px;
   right: 15px;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--arlas-result-detailed-grid-view-button-bg, #fff);
+  color: var(--arlas-result-detailed-grid-view-button-color, #000);
   width: 24px;
   height: 24px;
   margin-right: 5px;
@@ -129,18 +142,18 @@ $sm-spacing: 5px;
 {
 	width: 6px;
   height: 6px;
-	background-color: white;
+	background-color: var(--arlas-result-detailed-grid-scrollbar-bg, white);
 }
 
 ::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: white;
+	background-color: var(--arlas-result-detailed-grid-scrollbar-track-bg, white);
 }
 
 ::-webkit-scrollbar-thumb
 {
-	background-color: #555;
+	background-color: var(--arlas-result-detailed-grid-scrollbar-thumb-bg, #555);
 }
 
 .resultgrid__info_outline, .resultgrid__close, .resultgrid__image {
@@ -155,6 +168,6 @@ $sm-spacing: 5px;
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #555;
+  background-color: var(--arlas-result-detailed-grid-overlay-bg, #555);
   opacity: 0.5;
 }

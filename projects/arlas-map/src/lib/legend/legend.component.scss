@@ -18,8 +18,32 @@
  */
 @use "../../../assets/styles/sizes";
 
+:host {
+  --arlas-legend-detail-button-bg:  var(--mat-sys-background); /* was #fff */
+  --arlas-legend-icon-color: var(--mat-sys-on-background); /* was #555 */
+}
+
+.dark-theme {
+  .layer_name {
+    &--visible{
+      --arlas-legend-layer-name-text-visible-color: var(--mat-sys-on-background);
+    }
+
+    &--invisible{
+      --arlas-legend-layer-name-text-invisible-color: var(--mat-sys-background);
+    }
+  }
+}
+
 .layer_name {
   font-size: sizes.$default-font-size;
+  &--visible{
+    color: var(--arlas-legend-layer-name-text-visible-color, #444);
+  }
+
+  &--invisible{
+    color: var(--arlas-legend-layer-name-text-invisible-color, #d3d3d3);
+  }
 }
 
 .layer_wrapper {
@@ -50,13 +74,13 @@
   display: flex;
 }
 .detail_button, .download_button {
-  background-color: #fff;
+  background-color: var(--arlas-legend-detail-button-bg);
   height: 20px;
   width: 20px;
   cursor: pointer;
 }
 .detail_icon, .download_icon {
-  color: #555;
+  color: var(--arlas-legend-icon-color);
   font-size: 16px;
   width: 20px;
   height: 20px;

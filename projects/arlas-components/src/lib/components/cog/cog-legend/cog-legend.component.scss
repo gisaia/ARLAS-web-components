@@ -17,9 +17,12 @@
  * under the License.
  */
 
+:host {
+  --arlas-cog-legend-border-color: var(--mat-sys-on-background); /* was #a1a1a1 */
+}
+
 .legend {
     --arlas-cog-legend-border-radius: 4px;
-    --arlas-cog-legend-border-color: #a1a1a1;
 
     display: flex;
     height: fit-content;
@@ -32,6 +35,7 @@
         border: 1px solid var(--arlas-cog-legend-border-color);
         border-radius: var(--arlas-cog-legend-border-radius) 0 0 var(--arlas-cog-legend-border-radius);
         padding: 0 5px;
+        color: var(--mat-sys-on-background);
     }
 
     &__detail {
@@ -46,7 +50,7 @@
         border-radius: 0 var(--arlas-cog-legend-border-radius) var(--arlas-cog-legend-border-radius) 0;
         border-left: 0;
         padding: 0 5px;
-
+        color: var(--mat-sys-on-background);
         &__min,
         &__max {
             font-size: 14px;

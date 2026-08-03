@@ -17,6 +17,10 @@
  * under the License.
  */
 
+:host {
+  --arlas-map-import-dialog-error-color:  #f44336;
+}
+
 ::ng-deep.map-import-dialog {
   --mat-dialog-subhead-size: 20px;
   --mat-dialog-subhead-tracking: 0;
@@ -44,7 +48,7 @@
 }
 
 .mapgl-import-error {
-  color: #f44336;
+  color: var(--arlas-map-import-dialog-error-color);
   font-size: 75%;
 }
 

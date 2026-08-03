@@ -17,16 +17,36 @@
  * under the License.
  */
 
+:host {
+  --arlas-cog-modal-visualisation-bg: var(--mat-sys-background); /* was whitesmoke */
+  --arlas-cog-modal-title-color: var(--mat-sys-on-background); /* was black */
+  --arlas-cog-modal-item-color: var(--mat-sys-on-background); /* was grey */
+  --arlas-cog-modal-item-border-color: var(--mat-sys-background); /* was white */
+  --arlas-cog-modal-item-selected-border-color: #1a73e8; /* was #1a73e8 - kept as-is */
+  --arlas-cog-modal-item-hover-border-color: var(--mat-sys-on-background); /* was #bbbbbb */
+  --arlas-cog-modal-item-matched-color: var(--mat-sys-on-background); /* was black */
+  --arlas-cog-modal-item-warning-color: #ff8f00; /* was #ff8f00 - kept as-is */
+  --arlas-cog-modal-item-error-color: #ec0000; /* was #ec0000 - kept as-is */
+  --arlas-cog-modal-spinner-bg: rgba(211, 211, 211, 0.6); /* was rgba(211, 211, 211, 0.6) - kept as-is */
+  --arlas-cog-modal-exit-bg: var(--mat-sys-background); /* was white */
+}
+
+.dark-theme {
+  :host{
+    --arlas-cog-modal-item-bg: var(--mat-sys-surface);
+  }
+}
+
 .visualisation {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: whitesmoke;
+  background-color: var(--arlas-cog-modal-visualisation-bg, whitesmoke);
 
   &__spinner {
     width: 100%;
     height: 100%;
-    background-color: rgba(211, 211, 211, 0.6);
+    background-color: var(--arlas-cog-modal-spinner-bg, rgba(211, 211, 211, 0.6));
     z-index: 1;
 
     position: absolute;
@@ -40,32 +60,32 @@
 
   &__title {
     font-size: 20px;
-    color: black;
+    color: var(--arlas-cog-modal-title-color, black);
     padding: 10px 0;
   }
 
   &__item {
     cursor: pointer;
-    color: grey;
-    border: 2px solid white;
+    color: var(--arlas-cog-modal-item-color, grey);
+    border: 2px solid var(--arlas-cog-modal-item-border-color, white);
     border-radius: 6px;
     position: relative;
-    background-color: white;
+    background-color: var(--arlas-cog-modal-item-bg, white);
 
     &--unmatched {
       cursor: not-allowed;
     }
 
     &--matched {
-      color: black;
+      color: var(--arlas-cog-modal-item-matched-color, black);
     }
 
     &--selected {
-      border-color: #1a73e8;
+      border-color: var(--arlas-cog-modal-item-selected-border-color, #1a73e8);
     }
 
     &:hover {
-      border-color: #bbbbbb;
+      border-color: var(--arlas-cog-modal-item-hover-border-color, #bbbbbb);
     }
 
     &__warning,
@@ -77,11 +97,11 @@
     }
 
     &__warning {
-      color: #ff8f00;
+      color: var(--arlas-cog-modal-item-warning-color, #ff8f00);
     }
 
     &__error {
-      color: #ec0000;
+      color: var(--arlas-cog-modal-item-error-color, #ec0000);
     }
   }
 
@@ -90,6 +110,6 @@
     font-size: 14px;
     margin-bottom: 6px;
     --mat-outlined-button-label-text-tracking: 0;
-    background-color: white;
+    background-color: var(--arlas-cog-modal-exit-bg, white);
   }
 }

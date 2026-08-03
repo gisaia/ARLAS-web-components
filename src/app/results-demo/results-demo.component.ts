@@ -47,7 +47,7 @@ function generateRandomText(length: number) {
     imports: [MatSidenavContainer, MatSidenav, MatButton, ResultListComponent]
 })
 export class ResultsDemoComponent {
-    public data: Array<Map<string, ItemDataType>> = [];
+    public data: Array<Map<string, ItemDataType>>;
     public fieldsList: Array<TableFieldConfig>;
     public cardFields: Array<CardFieldConfig> = [];
     public dropDownMapValues: Map<string, Observable<Array<string>>> = new Map<string, Observable<Array<string>>>();

@@ -38,10 +38,12 @@
     &__title {
       width: 100%;
       padding-bottom: 5px;
+      color: var(--mat-sys-on-background)
     }
 
     &__description {
       font-size: 14px;
+      color: var(--mat-sys-on-background)
     }
   }
 }

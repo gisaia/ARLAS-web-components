@@ -17,6 +17,8 @@
  * under the License.
  */
 
+
+
 .arlas-resizable {
   &-table {
     position: relative;
@@ -60,7 +62,7 @@
   }
 
   &-cursor {
-    background: var(--arlas-resultilist-border-color);
+    background: var(--arlas-resizable-cursor-color);
     position: absolute;
     top: 0;
     height: 100%;
@@ -78,16 +80,15 @@
 }
 
 .arlas-resizable-table  thead th {
-  --arlas-sys-resizable-column-background: white;
   border-right-style:  solid;
   border-left-style:  solid;
   border-left-width: 1px;
   border-right-width: 1px;
-  border-left-color: var(--arlas-sys-resizable-column-background);
-  border-right-color: var(--arlas-sys-resizable-column-background);
+  border-left-color: var(--arlas-sys-resizable-column-background, white);
+  border-right-color: var(--arlas-sys-resizable-column-background, white);
 }
 
 .arlas-resizable-table:not(.cdk-drop-list-dragging) thead:hover th {
-  border-left-color: var(--arlas-resultilist-border-color);
-  border-right-color: var(--arlas-resultilist-border-color);
+  border-left-color: var(--arlas-resizable-th-border-color);
+  border-right-color: var(--arlas-resizable-th-border-color);
 }

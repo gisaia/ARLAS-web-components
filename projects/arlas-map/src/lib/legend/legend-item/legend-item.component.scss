@@ -19,6 +19,23 @@
 
 @use "../../../../assets/styles/sizes";
 
+:host {
+  --arlas-legend-item-title-text: #666;
+  --arlas-legend-item-range-text: #666;
+  --arlas-legend-item-highlighted-text: var(--mat-sys-on-background); /* was black */
+  --arlas-legend-item-lessened-text: grey;
+  --arlas-legend-item-cursor-value-bg: var(--mat-sys-background); /* was white */
+}
+
+.dark-theme {
+  :host{
+    --arlas-legend-item-lessened-text: var(--mat-sys-on-background);
+    --arlas-legend-item-title-text: lightgrey; /* was #666 */
+    --arlas-legend-item-range-text: lightgrey; /* was #666 */
+  }
+
+}
+
 .legend {
     display: flex;
     flex-direction: column;
@@ -27,7 +44,7 @@
     &__title {
         text-align: center;
         font-size: sizes.$sm-font-size;
-        color: #666;
+        color: var(--arlas-legend-item-title-text);
 
         text-overflow: ellipsis;
         overflow: hidden;
@@ -55,7 +72,7 @@
             margin: var(--arlas-legend-item-highlight-size);
 
             &--highlighted {
-                color: black;
+                color: var(--arlas-legend-item-highlighted-text);
 
                 .legend--manual__item__color {
                     opacity: 1;
@@ -63,7 +80,7 @@
             }
 
             &--lessened {
-                color: grey;
+                color: var(--arlas-legend-item-lessened-text);
 
                 .legend--manual__item__color {
                     opacity: 0.4;
@@ -133,7 +150,7 @@
         &__cursor__value {
             position: absolute;
             bottom: 0;
-            background-color: white;
+            background-color: var(--arlas-legend-item-cursor-value-bg);
             white-space: nowrap;
 
             // Properly align with the value
@@ -155,7 +172,7 @@
 
             &__value {
                 font-size: sizes.$sm-font-size;
-                color: #666;
+                color: var(--arlas-legend-item-range-text);
             }
         }
     }

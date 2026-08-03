@@ -17,6 +17,13 @@
  * under the License.
  */
 
+:host {
+  --arlas-powerbar-progression-color: #88c9c3; /* was #88c9c3 - kept as-is */
+  --arlas-powerbar-term-unselected-color: var(--mat-sys-on-background); /* was #888 */
+  --arlas-powerbar-selected-bar-bg: var(--mat-sys-background); /* was #fff */
+  --arlas-powerbar-selected-no-mounted-bar-bg: var(--mat-sys-background); /* was #fff */
+}
+
 .container {
     display: flex;
     align-items: flex-start;
@@ -75,7 +82,7 @@
 }
 
 .powerbars__powerbar--progression-default-colour /* @doc Style of all powerbars progression bar when no color is specified.*/ {
-    background-color: #88c9c3;
+    background-color: var(--arlas-powerbar-progression-color, #88c9c3);
     height: 4px;
     border-radius: 2px;
 }
@@ -123,12 +130,12 @@
 }
 
 .powerbars__powerbar--term-unselected-bar {
-    color: #888;
+    color: var(--arlas-powerbar-term-unselected-color, #888);
 }
 
 .powerbars__powerbar--selected-bar {
-    background-color: #fff;
+    background-color: var(--arlas-powerbar-selected-bar-bg, #fff);
 }
 .powerbars__powerbar--selected-no-mounted-bar {
-    background-color: #fff;
+    background-color: var(--arlas-powerbar-selected-no-mounted-bar-bg, #fff);
 }

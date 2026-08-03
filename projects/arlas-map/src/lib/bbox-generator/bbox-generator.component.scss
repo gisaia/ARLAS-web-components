@@ -17,14 +17,21 @@
  * under the License.
  */
 
+:host {
+  --arlas-bbox-generator-bg: var(--mat-sys-background); /* was white */
+  --arlas-bbox-generator-text: var(--mat-sys-on-background); /* was rgb(146, 146, 146) */
+  --arlas-bbox-generator-error-color: #f44336;
+}
+
 .wrapper {
-    background-color: white;
+    background-color: var(--arlas-bbox-generator-bg);
 
     .title-wrapper {
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-weight: 600;
+        color: var(--arlas-bbox-generator-text);
         .clear {
             cursor: pointer;
         }
@@ -37,7 +44,7 @@
             display: flex;
             align-items: center;
             font-size: 14px;
-            color: rgb(146, 146, 146);
+            color: var(--arlas-bbox-generator-text);
             mat-icon {
                 font-size: 18px;
                 height: 18px;
@@ -48,6 +55,7 @@
         .section {
             .title {
                 margin-bottom: 5px;
+                color: var(--arlas-bbox-generator-text);
             }
             display: flex;
             flex-direction: column;
@@ -82,7 +90,7 @@
                 height: 16px;
                 width: 16px;
                 margin-right: 5px;
-                color: #f44336;
+                color: var(--arlas-bbox-generator-error-color);
             }
             margin-bottom: 10px;
             display: flex;

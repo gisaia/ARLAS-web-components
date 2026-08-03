@@ -28,6 +28,7 @@
             ],
             "styles": [
               "src/styles.css",
+              "src/theme.scss",
               "node_modules/mapbox-gl/dist/mapbox-gl.css",
               "node_modules/maplibre-gl/dist/maplibre-gl.css",
               "node_modules/@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css",
