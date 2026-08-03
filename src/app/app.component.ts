@@ -18,6 +18,7 @@
  */
 
 import { Component, computed, inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router, RouterOutlet } from '@angular/router';
@@ -29,7 +30,7 @@ import { ThemeService } from '../service/theme.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   imports: [
-    RouterOutlet, MatTab, MatTabGroup, MatIcon
+    RouterOutlet, MatTab, MatTabGroup, MatIcon, MatButtonModule
   ]
 })
 export class AppComponent implements OnInit {
