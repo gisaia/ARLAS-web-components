@@ -62,7 +62,7 @@
   }
 
   &-cursor {
-    background: var(--arlas-resizible-cursor-color);
+    background: var(--arlas-resizable-cursor-color);
     position: absolute;
     top: 0;
     height: 100%;
@@ -89,6 +89,6 @@
 }
 
 .arlas-resizable-table:not(.cdk-drop-list-dragging) thead:hover th {
-  border-left-color: var(--arlas-resizible-th-border-color);
-  border-right-color: var(--arlas-resizible-th-border-color);
+  border-left-color: var(--arlas-resizable-th-border-color);
+  border-right-color: var(--arlas-resizable-th-border-color);
 }

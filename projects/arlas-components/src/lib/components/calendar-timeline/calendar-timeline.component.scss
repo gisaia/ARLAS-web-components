@@ -18,7 +18,7 @@
  */
 
 :host {
-  --arlas-calendar-timeline-move-button-bg: var(--mat-sys-on-background); /* was #b7b7b7 */
+  --arlas-calendar-timeline-move-button-bg: var(--mat-sys-on-background, #b7b7b7);
 }
 
 .calendar-timeline {
@@ -32,7 +32,7 @@
 
         .move_button {
             width: 15px;
-            background-color: var(--arlas-calendar-timeline-move-button-bg, #b7b7b7);
+            background-color: var(--arlas-calendar-timeline-move-button-bg);
 
             display: flex;
             flex-direction: column;
