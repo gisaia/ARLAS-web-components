@@ -77,8 +77,9 @@
         background-color: var(--arlas-result-actions-icon-bg, white);
         border-radius: 50%;
         cursor: pointer;
-        align-items: center;
-        justify-content: center;
+        // Add a padding to center the icon in the middle of the circle
+        padding: calc((/** container size */ 24px - /** font size */ 20px) / 2);
+        box-sizing: border-box;
     }
 }
 
