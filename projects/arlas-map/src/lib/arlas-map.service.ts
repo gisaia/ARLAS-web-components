@@ -327,9 +327,10 @@ export abstract class AbstractArlasMapService<L, S, M> {
    * @param {string[]} values - List of values to match
    * @param {number} insideOpacity - The opacity value to apply to features with field values within the specified range.
    * @param {number} outsideOpacity - The opacity value to apply to features with field values outside the specified range.
+   * @param {string[]} ignoreLayer - List of layer IDs to ignore when changing opacity.
    */
   public abstract adjustOpacityByValue(map: AbstractArlasMapGL, sourceIdPrefix: string, field: string,
-    values: string[], insideOpacity: number, outsideOpacity: number): void;
+    values: string[], insideOpacity: number, outsideOpacity: number, ignoreLayer?: string[]): void;
 
   /**
    * Resets the initial configured opacity style of the map layers whose source IDs start with the given sourceIdPrefix.
