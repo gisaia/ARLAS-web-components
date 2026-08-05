@@ -27,6 +27,12 @@
   --arlas-result-detailed-item-attachments-title-color: #322d90; /* was #322d90 - kept as-is */
 }
 
+.dark-theme {
+  :host {
+    --arlas-result-detailed-item-key-color: #b7b7b7;
+  }
+}
+
 .grid-container {
   overflow-y: auto;
   display: block;

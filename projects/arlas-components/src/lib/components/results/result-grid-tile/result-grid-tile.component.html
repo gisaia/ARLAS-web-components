@@ -6,7 +6,8 @@
 
     <div id="{{'grid-tile-' + gridTile().identifier}}" (click)="setClickedOnItem()" (mouseover)="showCellTooltip()" #cellTooltip="matTooltip" [matTooltip]="SHOW_IMAGE | translate"  class="resultgrid__img {{gridTile().iconCssClass}}">
       <img [defaultImage]="options.defautlImgUrl" [lazyLoad]="gridTile().urlThumbnail ?? options.defautlImgUrl"
-        [class.contain_thumbnail]="thumbnailFit === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit === ThumbnailFitEnum.height"
+        [class.contain_thumbnail]="thumbnailFit === ThumbnailFitEnum.contain"
+        [class.height_thumbnail]="thumbnailFit === ThumbnailFitEnum.height"
         [class.width_thumbnail]="thumbnailFit === ThumbnailFitEnum.width">
       @if (options.showActionsOnhover) {
         <div class="actions" (mouseover)="hideCellTooltip($event)" (focus)="hideCellTooltip($event)">
