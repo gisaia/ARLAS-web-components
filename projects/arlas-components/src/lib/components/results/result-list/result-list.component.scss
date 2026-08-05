@@ -130,8 +130,7 @@
   border-top: 1px solid var(--arlas-resultilist-border-color);
   border-bottom: 1px solid var(--arlas-resultilist-border-color);
   position: relative;
-  background-color: var(--arlas-resultilist-hover-bg-color,#fff);
-  display: flex;
+  background-color: var(--arlas-resultilist-hover-bg-color, #fff);
 }
 
 .resultlist__body--item-hover-false, .resultlist__body--item-hover-false.resultlist__card-tile  {
