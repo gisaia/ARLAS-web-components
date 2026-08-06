@@ -48,7 +48,7 @@
 
 .dark-theme {
   .resultlist {
-    --arlas-resultilist-border-color: var(--mat-sys-background);
+    --arlas-resultlist-border-color: var(--mat-sys-background);
     --arlas-resultilist-hover-false-bg: rgba(255, 255, 255, 0.5);
     --arlas-resultilist-hover-false-text-color:lightgrey;
     --arlas-list-tbody-background: var(--mat-sys-background);
@@ -61,7 +61,7 @@
 }
 
 .resultlist {
-  --arlas-resizable-th-border-color: var(--arlas-resultilist-border-color);
+  --arlas-resizable-th-border-color: var(--arlas-resultlist-border-color);
   --arlas-resizable-cursor-color: white;
   --arlas-result-grid-tile-actions-bg: var(--mat-sys-background); /* was white */
   --arlas-result-grid-tile-container-bg: var(--mat-sys-background); /* was #fff */
@@ -114,29 +114,29 @@
 
 .resultlist__body--item /* @doc Sets a row border style. (list mode)*/
 {
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color);
 }
 
 .resultlist__body--item-hover-true, .resultlist__body--item-hover-true.resultlist__card-tile {
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color);
 
   position: relative;
   font-weight: 500;
 }
 
 .resultlist__body--item-hover- {
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color);
   position: relative;
   background-color: var(--arlas-resultilist-hover-bg-color, #fff);
 }
 
 .resultlist__body--item-hover-false, .resultlist__body--item-hover-false.resultlist__card-tile  {
 
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color);
   position: relative;
   background-color: var(--arlas-resultilist-hover-false-bg);
   color: var(--arlas-resultilist-hover-false-text-color);
@@ -160,14 +160,14 @@ tr {
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
 {
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 0px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 0px solid var(--arlas-resultlist-border-color);
 }
 
 .resultlist__body--detailed-item /* @doc Sets the last row border style. (list mode)*/
 {
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color);
   background-color:  var(--arlas-resultilist-detail-bg-color, white);
 }
 
@@ -176,8 +176,8 @@ tr {
 .resultlist__tools, /* @doc Sets the border style of the tools list container (select-all, select-in-between, grid-list-mode, ...).*/
 .resultlist__grid-detail /* @doc Sets the detail grid border style.*/
 {
-  border-top: 1px solid var(--arlas-resultilist-border-color);
-  border-bottom: 1px solid var(--arlas-resultilist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color);
 }
 
 .resultlist__tools {

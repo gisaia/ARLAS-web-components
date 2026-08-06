@@ -71,6 +71,8 @@ export class ItemComponent {
               });
             });
           }
+
+          item.tasks = additionalInfo.tasks ?? [];
         });
     }
   }

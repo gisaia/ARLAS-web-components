@@ -1,0 +1,113 @@
+@use "../result-detailed-item/detail.scss" as detail;
+
+$infoColor: #0c5460;
+$errorColor: #d43f3a;
+$successColor: #5cb85c;
+$progressColor: #337ab7;
+$dismissedColor: #5f5f5f;
+
+.tasks {
+    &__title {
+        @include detail.title();
+    }
+
+    &__latest {
+        @include detail.entry();
+        align-items: center;
+
+        &__toggle {
+            --mat-icon-button-touch-target-size: 18px;
+            --mat-icon-button-state-layer-size: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: absolute;
+            // TODO: 6px in list mode
+            right: 12px;
+
+            mat-icon {
+                font-size: 18px;
+                height: 18px;
+                width: 18px;
+            }
+        }
+    }
+
+    &__process {
+        @include detail.key();
+        justify-content: flex-end;
+    }
+
+    // TODO: remove status if using chips
+    &__process,
+    &__status {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        mat-icon {
+            font-size: 20px;
+            height: 20px;
+            width: 20px;
+        }
+    }
+
+    &__status {
+        @include detail.value();
+        // TODO: remove if using chips
+        justify-content: flex-start;
+
+        mat-chip-option {
+            --mat-chip-elevated-container-color: transparent;
+            --mat-chip-container-height: 24px;
+
+            ::ng-deep button {
+                cursor: unset;
+                overflow: clip;
+            }
+        }
+
+        &--successful {
+            color: $successColor;
+            border: 1px solid $successColor;
+        }
+
+        &--accepted {
+            color: $infoColor;
+            border: 1px solid $infoColor;
+        }
+
+        &--running {
+            color: $progressColor;
+            border: 1px solid $progressColor;
+        }
+
+        &--failed {
+            color: $errorColor;
+            border: 1px solid $errorColor;
+        }
+
+        &--dismissed {
+            color: $dismissedColor;
+            border: 1px solid $dismissedColor;
+        }
+    }
+
+    &__table {
+        --mat-table-header-container-height: 20px;
+        --mat-table-row-item-container-height: 30px;
+
+        .mat-column-type {
+            mat-icon {
+                // Center the icon in the row
+                height: 30px;
+                display: flex;
+                align-items: center;
+
+                font-size: 20px;
+            }
+        }
+    }
+}

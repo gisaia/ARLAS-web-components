@@ -17,30 +17,30 @@
  * under the License.
  */
 
-/* You can add global styles to this file, and also import other style files */
 
+export enum TaskStatus {
+  accepted = 'accepted',
+  running = 'running',
+  successful = 'successful',
+  failed = 'failed',
+  dismissed = 'dismissed'
+}
 
-body {
-  --mat-dialog-with-actions-content-padding: 0;
-  --mat-dialog-actions-alignment: end;
-  --mat-dialog-headline-padding: 10px 0;
-  --mat-dialog-supporting-text-tracking: 0;
+export type AvailableProcess = 'download' | 'ingest' | 'directory_ingest' | 'enrich' | 'dc3build';
 
-  --arlas-resultlist-border-color: #e9ecef;
-
-  --arlas-result-detailed-item-key-color: grey;
-  .dark-theme {
-    --arlas-result-detailed-item-key-color: #b7b7b7;
-  }
-
-  .mdc-dialog__surface {
-    padding: 12px 24px;
-  }
-
-  .mdc-dialog__title {
-    &::before {
-      height: unset;
-      content: unset;
-    }
-  }
+export interface Task {
+  processID: AvailableProcess;
+  type: string;
+  jobID: string;
+  status: TaskStatus;
+  message: string;
+  created: number;
+  started: number;
+  finished?: number;
+  updated?: number;
+  // TODO: unsure it is sent
+  progress?: number;
+  // TODO: unsure it is sent
+  links?: any;
+  resourceID: string;
 }

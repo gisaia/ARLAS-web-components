@@ -18,6 +18,7 @@
  */
 
 import { Subject } from 'rxjs';
+import { Task } from './aias-process';
 import { PageEnum } from './enumerations/pageEnum';
 
 /**
@@ -154,6 +155,7 @@ export interface AdditionalInfo {
   details?: Map<string, Map<string, string>>;
   actions?: Array<Action>;
   attachments?: Array<Attachment>;
+  tasks?: Task[];
 }
 
 export type ItemDataType = string | number | Date | Array<string>;

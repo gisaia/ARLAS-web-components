@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { Task } from '../utils/aias-process';
 import { Action, Attachment, ItemDataType } from '../utils/results.utils';
 import { CardField } from './cardField';
 import { Column } from './column';
@@ -85,6 +86,10 @@ export class Item {
    * @description List of actions that can be applied to this item.
    */
   public actions = new Array<Action>();
+  /**
+   * @description List of Tasks associated to this item
+   */
+  public tasks = new Array<Task>();
   /**
    * @description Whether to display the detailed data.
    */

@@ -29,6 +29,7 @@ import { ReplacePipe } from '../../../pipes/replace/replace.pipe';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
 import { ResultActionsComponent } from '../result-actions/result-actions.component';
+import { ResultTasksComponent } from '../result-tasks/result-tasks.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
 
@@ -36,7 +37,10 @@ import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
   selector: '[arlas-result-detailed-item]',
   templateUrl: './result-detailed-item.component.html',
   styleUrls: ['./result-detailed-item.component.scss'],
-  imports: [ResultActionsComponent, MatTooltip, MatIcon, LowerCasePipe, TranslatePipe, FormatNumberPipe, ReplacePipe, GetAttachmentUrlPipe]
+  imports: [
+    ResultActionsComponent, MatTooltip, MatIcon, LowerCasePipe, TranslatePipe,
+    FormatNumberPipe, ReplacePipe, GetAttachmentUrlPipe, ResultTasksComponent
+  ]
 })
 export class ResultDetailedItemComponent {
   /**

@@ -5,6 +5,8 @@
     <div class="details-title">{{rowItem().detailsTitle}}</div>
   }
   <div class="resultdetaileditem">
+    <arlas-result-tasks [tasks]="rowItem().tasks"></arlas-result-tasks>
+
     @for (group of rowItem().itemDetailedData; track group) {
       @if (showEmptyGroup || group.details.length > 0) {
         <div class="resultdetaileditem--group">

@@ -1,0 +1,27 @@
+@mixin title() {
+    font-size: 16px;
+    border-bottom: 1px solid #f0eeeecf;
+    display: block;
+}
+
+@mixin entry() {
+    color: var(--mat-sys-on-background);
+    padding: 2px;
+    border-bottom: 1px solid #f0eeee7e;
+    display: flex;
+    gap: 10px;
+}
+
+@mixin key() {
+    font-size: 12px;
+    text-align: end;
+    color: var(--arlas-result-detailed-item-key-color, gray);
+    flex: 2;
+}
+
+@mixin value() {
+    font-size: 12px;
+    overflow-wrap: anywhere;
+    flex: 5;
+}
+

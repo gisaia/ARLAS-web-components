@@ -17,12 +17,10 @@
  * under the License.
  */
 
+@use "./detail.scss" as detail;
+
 :host {
   --arlas-result-detailed-item-title-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-detailed-item-group-title-border-color: #f0eeeecf; /* was #f0eeeecf */
-  --arlas-result-detailed-item-item-color: var(--mat-sys-on-background); /* was black */
-  --arlas-result-detailed-item-item-border-color: #f0eeee7e; /* was #f0eeee7e */
-  --arlas-result-detailed-item-key-color: grey; /* was gray */
   --arlas-result-detailed-item-actions-bg: var(--mat-sys-background); /* was white */
   --arlas-result-detailed-item-attachments-title-color: #322d90; /* was #322d90 - kept as-is */
 }
@@ -55,30 +53,19 @@
 
   &--group {
     &-title {
-      font-size: 16px;
-      border-bottom: 1px solid var(--arlas-result-detailed-item-group-title-border-color, #f0eeeecf);
-      display: block;
+      @include detail.title();
     }
   }
 
   &--item {
-    color: var(--arlas-result-detailed-item-item-color, black);
-    padding: 2px;
-    border-bottom: 1px solid var(--arlas-result-detailed-item-item-border-color, #f0eeee7e);
-    display: flex;
-    gap: 10px;
+    @include detail.entry();
 
     &--key /* @doc Sets key style. (key: value part)*/ {
-      font-size: 12px;
-      text-align: end;
-      color: var(--arlas-result-detailed-item-key-color, gray);
-      flex: 2;
+      @include detail.key();
     }
 
     &--value /* @doc Sets value style (key: value part)*/ {
-      font-size: 12px;
-      overflow-wrap: anywhere;
-      flex: 5;
+      @include detail.value();
     }
   }
 
