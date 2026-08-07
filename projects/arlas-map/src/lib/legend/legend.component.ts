@@ -293,7 +293,6 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     if (!this.colorLegend().fixValue) {
       this.colorLegend().fixValue = visibileMode ? '#444' : '#d3d3d3';
     }
-    // TODO: check that it is updated
   }
 }
 

@@ -29,5 +29,6 @@ export const mockDetailedDataRetriever = {
     getActions: vi.fn(() => of([])),
     getData: vi.fn(),
     getMatch: vi.fn(),
-    getValues: vi.fn()
+    getValues: vi.fn(),
+    getTasks: vi.fn()
 } as DetailedDataRetriever;
