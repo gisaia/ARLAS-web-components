@@ -18,7 +18,7 @@
  */
 
 import { LowerCasePipe } from '@angular/common';
-import { Component, input, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, input, Input, OnDestroy, output, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -30,8 +30,17 @@ import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
 import { ResultActionsComponent } from '../result-actions/result-actions.component';
 import { ResultTasksComponent } from '../result-tasks/result-tasks.component';
+import { AvailableProcess } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
+
+/**
+ * Event emitted when an Item's detail is being opened/closed
+ */
+export interface ItemDetailToggleEvent {
+  item: Item;
+  open: boolean;
+}
 
 @Component({
   selector: '[arlas-result-detailed-item]',
@@ -42,7 +51,7 @@ import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
     FormatNumberPipe, ReplacePipe, GetAttachmentUrlPipe, ResultTasksComponent
   ]
 })
-export class ResultDetailedItemComponent {
+export class ResultDetailedItemComponent implements OnDestroy, AfterViewInit {
   /**
    * @Input
    * @description Number of columns in the parent table so that this component occupies the entire line.
@@ -88,13 +97,30 @@ export class ResultDetailedItemComponent {
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   /**
+   * Emits an event every time the detail of an item is displayed/hidden.
+   * Emits at component creation and destruction.
+   */
+  public itemDetailToggleEvent = output<ItemDetailToggleEvent>();
+
+  /**
    * Whether to make the actions 'sticky' and to always show them in the details
    */
   public alwaysShowActions = input<boolean>(false);
 
+  /** List of processes to not display in the Task summary */
+  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
+
   public NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   public constructor(private readonly translate: TranslateService) { }
+
+  public ngAfterViewInit() {
+    this.itemDetailToggleEvent.emit({ item: this.rowItem(), open: true });
+  }
+
+  public ngOnDestroy() {
+    this.itemDetailToggleEvent.emit({ item: this.rowItem(), open: false });
+  }
 
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {

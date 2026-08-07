@@ -169,6 +169,13 @@ tr {
   border-top: 1px solid var(--arlas-resultlist-border-color);
   border-bottom: 1px solid var(--arlas-resultlist-border-color);
   background-color:  var(--arlas-resultilist-detail-bg-color, white);
+
+  &--card {
+    // Align toggle with the card toggle
+    .tasks__latest__toggle {
+      right: 6px !important;
+    }
+  }
 }
 
 .resultlist__header, /* @doc Sets the header border style.*/

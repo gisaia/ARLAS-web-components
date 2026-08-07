@@ -35,7 +35,7 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe } from '@ngx-translate/core';
-import { debounceTime, fromEvent, Observable, Subject } from 'rxjs';
+import { debounceTime, first, fromEvent, interval, Observable, Subject, Subscription } from 'rxjs';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 import { CardFieldConfig } from '../config/cardFieldConfig';
@@ -46,11 +46,12 @@ import { Item } from '../model/item';
 import { SortableField } from '../model/sortableField';
 import { ResultCardItemComponent } from '../result-card-item/result-card-item.component';
 import { ResultDetailedGridComponent } from '../result-detailed-grid/result-detailed-grid.component';
-import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ItemDetailToggleEvent, ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
 import { ResultFilterComponent } from '../result-filter/result-filter.component';
 import { ResultGridTileComponent } from '../result-grid-tile/result-grid-tile.component';
 import { ResultItemComponent } from '../result-item/result-item.component';
+import { AvailableProcess, TaskStatus } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { ModeEnum } from '../utils/enumerations/modeEnum';
@@ -59,13 +60,7 @@ import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { ResizableColumnDirective, ResizableTableDirective } from '../utils/resizable-column.directive';
 import {
-  Action,
-  ElementIdentifier,
-  FieldsConfiguration,
-  ItemDataType,
-  matchAndReplace,
-  PageQuery,
-  ResultListOptions
+  Action, ElementIdentifier, FieldsConfiguration, ItemDataType, matchAndReplace, PageQuery, ResultListOptions
 } from '../utils/results.utils';
 import { stringEnumToModeEnum } from '../utils/stringEnumToModeEnum';
 
@@ -381,6 +376,16 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public isListResizable = input(true);
 
   /**
+   * List of processes to not display in the Task summary
+   */
+  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
+
+  /**
+   * Timer between each refresh of items tasks when its detail is displayed
+   */
+  public taskRetrievalTimer = input<number>(5000);
+
+  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
@@ -525,6 +530,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
   protected sortableFields: Array<SortableField> = [];
 
+  private itemTasksSubscriptions = new Map<string, Subscription>();
 
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
                      iterableCardsDiffer: IterableDiffers,
@@ -988,6 +994,43 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     });
     // push the final group once we've processed the last item
     this.cardFieldsRows.push(cardsViewProperties);
+  }
+
+  /**
+   * Updates the subscription to retrieve action status.
+   * @param event
+   */
+  public onItemDetailToggle(event: ItemDetailToggleEvent) {
+    if (event.open) {
+      this.stopTaskRetrieval(event.item.identifier);
+
+      // Every set interval of time, updates the status of item's tasks
+      const obs$ = interval(this.taskRetrievalTimer())
+        .subscribe(_ => {
+          this.detailedDataRetriever().getTasks(event.item.identifier)
+            .pipe(first())
+            .subscribe(tasks => {
+              event.item.tasks = tasks;
+              // If all tasks are in a final state, then stop retrieving updated state
+              if (tasks.filter(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running).length === 0) {
+                this.stopTaskRetrieval(event.item.identifier);
+              }
+            });
+        });
+
+      this.itemTasksSubscriptions.set(event.item.identifier, obs$);
+      return;
+    }
+
+    this.stopTaskRetrieval(event.item.identifier);
+  }
+
+  private stopTaskRetrieval(itemId: string) {
+    const previousSubscription = this.itemTasksSubscriptions.get(itemId);
+    if (previousSubscription) {
+      previousSubscription.unsubscribe();
+      this.itemTasksSubscriptions.delete(itemId);
+    }
   }
 
   // Build the table's columns

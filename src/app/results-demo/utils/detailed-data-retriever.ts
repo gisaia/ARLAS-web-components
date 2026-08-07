@@ -43,6 +43,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
   public getValues(identifier: string, fields: string[]): Observable<string[]> {
     return of([]);
   }
+
   public getActions(item: Item): Observable<Array<Action>> {
     const actionsList = new Array<Action>();
     actionsList.push(
@@ -54,6 +55,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     );
     return from(new Array(actionsList));
   }
+
   public getData(identifier: string): Observable<AdditionalInfo> {
     const detailsDataMap = new Map<string, Map<string, string>>();
 
@@ -93,6 +95,14 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       });
     }
 
+    return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments } as AdditionalInfo));
+  }
+
+  public getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo> {
+    return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: {} });
+  }
+
+  public getTasks(identifier: string): Observable<Task[]> {
     const tasks: Task[] = [
       {
         processID: 'enrich',
@@ -127,12 +137,8 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         finished: 1751551221,
         resourceID: identifier
       }
-    ]
+    ];
 
-    return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments, tasks } as AdditionalInfo));
-  }
-
-  public getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo> {
-    return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: {} });
+    return of(tasks);
   }
 }

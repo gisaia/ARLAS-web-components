@@ -6,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
-import { Task } from '../utils/aias-process';
+import { AvailableProcess, Task } from '../utils/aias-process';
 import { ProcessIconPipe } from './icons/process-icon-pipe';
 
 @Component({
@@ -28,8 +28,11 @@ import { ProcessIconPipe } from './icons/process-icon-pipe';
 export class ResultTasksComponent {
   public tasks = input.required<Task[]>();
 
+  /** List of processes to not display in the Task summary */
+  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
+
   public visibleTasks = computed(() => this.tasks()
-    .filter(t => t.processID !== 'ingest' && t.processID !== 'directory_ingest')
+    .filter(t => !this.ignoredProcesses().has(t.processID))
     // Most recent should be first
     .sort((a, b) => b.created - a.created)
   );

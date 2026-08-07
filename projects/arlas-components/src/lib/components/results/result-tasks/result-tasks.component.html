@@ -9,11 +9,6 @@
             <span>{{ mostRecentTask.processID | translate }}</span>
         </div>
 
-        <!-- <div class="tasks__latest__status">
-            <span>{{ mostRecentTask.status | translate }}</span>
-            <mat-icon>{{ mostRecentTask.status | taskStatusIcon }}</mat-icon>
-        </div> -->
-
         <mat-chip-listbox [selectable]="false" class="tasks__status">
             <mat-chip-option class="tasks__status--{{mostRecentTask.status}}">
                 {{ mostRecentTask.status | translate }}
@@ -27,7 +22,7 @@
     </div>
 
     @if (showTaskTable()) {
-        <mat-table [dataSource]="visibleTasks()" class="tasks__table">
+        <table mat-table [dataSource]="visibleTasks()" class="tasks__table">
             <!-- Type Column -->
             <ng-container matColumnDef="type">
                 <th mat-header-cell *matHeaderCellDef>{{ 'Type' | translate }}</th>
@@ -54,7 +49,9 @@
             <ng-container matColumnDef="created">
                 <th mat-header-cell *matHeaderCellDef>{{ 'Created' | translate }}</th>
                 <td mat-cell *matCellDef="let task">
-                    <div>{{ task.created ? (task.created * 1000 | date:'short') : '--' }}</div>
+                    <div class="task__time-info">
+                        {{ task.created ? (task.created * 1000 | date:'short') : '--' }}
+                    </div>
                 </td>
             </ng-container>
 
@@ -62,14 +59,16 @@
             <ng-container matColumnDef="finished">
                 <th mat-header-cell *matHeaderCellDef>{{ 'Finished' | translate }}</th>
                 <td mat-cell *matCellDef="let task">
-                    {{ task.finished ? (task.finished * 1000 | date:'short') : '--' }}
+                    <div class="task__time-info">
+                        {{ task.finished ? (task.finished * 1000 | date:'short') : '--' }}
+                    </div>
                 </td>
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
             <tr mat-row *matRowDef="let element; columns: columnsToDisplay;">
             </tr>
-        </mat-table>
+        </table>
     }
 </div>
 }

@@ -20,7 +20,7 @@
 import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectorRef, Component, ElementRef, inject, input,
-  Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  Input, OnChanges, OnDestroy, output, Output, SimpleChanges, ViewChild
 } from '@angular/core';
 import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -32,7 +32,8 @@ import { ImageViewer } from 'iv-viewer';
 import { Subject, tap } from 'rxjs';
 import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
 import { Item } from '../model/item';
-import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ItemDetailToggleEvent, ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { AvailableProcess } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
 
@@ -115,6 +116,10 @@ s   * @constant
    * @description Default img
    */
   public noViewImg = input<string>('assets/no-view.png');
+
+  /** List of processes to not display in the Task summary */
+  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
+
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
@@ -126,6 +131,12 @@ s   * @constant
  * @description Emits the event of closing details.
  */
   @Output() public closeDetail: Subject<boolean> = new Subject();
+
+  /**
+   * Emits an event every time the detail of an item is displayed/hidden.
+   * Transmits the event from the arlas-result-detailed-item component
+   */
+  public itemDetailToggleEvent = output<ItemDetailToggleEvent>();
 
   @ViewChild('image_detail', { static: false }) public imageViewer?: ElementRef;
 

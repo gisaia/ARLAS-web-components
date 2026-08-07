@@ -24,7 +24,6 @@ $dismissedColor: #5f5f5f;
             justify-content: center;
 
             position: absolute;
-            // TODO: 6px in list mode
             right: 12px;
 
             mat-icon {
@@ -37,14 +36,9 @@ $dismissedColor: #5f5f5f;
 
     &__process {
         @include detail.key();
-        justify-content: flex-end;
-    }
-
-    // TODO: remove status if using chips
-    &__process,
-    &__status {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
         gap: 5px;
 
         mat-icon {
@@ -56,12 +50,11 @@ $dismissedColor: #5f5f5f;
 
     &__status {
         @include detail.value();
-        // TODO: remove if using chips
-        justify-content: flex-start;
 
         mat-chip-option {
             --mat-chip-elevated-container-color: transparent;
             --mat-chip-container-height: 24px;
+            margin: 4px 0;
 
             ::ng-deep button {
                 cursor: unset;
@@ -97,12 +90,12 @@ $dismissedColor: #5f5f5f;
 
     &__table {
         --mat-table-header-container-height: 20px;
-        --mat-table-row-item-container-height: 30px;
+        --mat-table-row-item-container-height: 36px;
 
         .mat-column-type {
             mat-icon {
                 // Center the icon in the row
-                height: 30px;
+                height: var(--mat-table-row-item-container-height);
                 display: flex;
                 align-items: center;
 
