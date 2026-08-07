@@ -6,6 +6,16 @@ $successColor: #5cb85c;
 $progressColor: #337ab7;
 $dismissedColor: #5f5f5f;
 
+:host {
+    --arlas-resizable-th-border-color: white;
+}
+
+.dark-theme {
+    :host {
+        --arlas-resizable-th-border-color: var(--mat-sys-surface);
+    }
+}
+
 .tasks {
     &__title {
         @include detail.title();
