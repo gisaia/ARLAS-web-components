@@ -1,6 +1,6 @@
 {
   "name": "arlas-maplibre",
-  "version": "29.0.0-rc.5",
+  "version": "29.0.0-rc.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/gisaia/ARLAS-web-components.git"
@@ -22,6 +22,7 @@
     "rxjs": "^7.4.0"
   },
   "dependencies": {
+    "arlas-map": "29.0.0-rc.6",
     "maplibre-gl": "^5.24.0",
     "tslib": "^2.3.0"
   }
