@@ -23,7 +23,7 @@ import { Action, Attachment } from '../utils/results.utils';
 
 export class ItemComponent {
 
-  public setSelectedItem(isChecked: Boolean, identifier: string, selectedItems: Set<string>) {
+  public setSelectedItem(isChecked: boolean, identifier: string, selectedItems: Set<string>) {
     isChecked = !isChecked;
     if (isChecked) {
       if (!selectedItems.has(identifier)) {
@@ -37,8 +37,8 @@ export class ItemComponent {
   }
 
   public retrieveAdditionalInfo(detailedDataRetriever: DetailedDataRetriever, item: Item) {
-    if (detailedDataRetriever !== null && item.itemDetailedData.length === 0) {
-      detailedDataRetriever.getData((item.identifier))
+    if (detailedDataRetriever && item.itemDetailedData.length === 0) {
+      detailedDataRetriever.getData(item.identifier)
         .subscribe(additionalInfo => {
           item.actions = new Array<Action>();
           additionalInfo.actions?.forEach(action => {
@@ -72,6 +72,20 @@ export class ItemComponent {
             });
           }
         });
+    }
+
+    this.retrieveTasks(detailedDataRetriever, item);
+  }
+
+  /**
+   * Retrieves the AIAS tasks linked to this item's id
+   * @param detailedDataRetriever
+   * @param item
+   */
+  public retrieveTasks(detailedDataRetriever: DetailedDataRetriever, item: Item) {
+    if (detailedDataRetriever) {
+      detailedDataRetriever.getTasks(item.identifier)
+        .subscribe(tasks => item.tasks = tasks);
     }
   }
 }

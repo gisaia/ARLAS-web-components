@@ -33,12 +33,15 @@ export { MetricsTableComponent } from './lib/components/metrics-table/metrics-ta
 export { PowerBar } from './lib/components/powerbars/model/powerbar';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
+export { CardFieldConfig } from './lib/components/results/config/cardFieldConfig';
+export { TableFieldConfig } from './lib/components/results/config/tableFieldConfig';
+export { CardField } from './lib/components/results/model/cardField';
 export { Column } from './lib/components/results/model/column';
 export { Item, ItemDetailGroup } from './lib/components/results/model/item';
 export { ResultActionsComponent } from './lib/components/results/result-actions/result-actions.component';
 export { ActionDisplayerPipe } from './lib/components/results/result-actions/result-actions.pipe';
 export { ResultDetailedGridComponent } from './lib/components/results/result-detailed-grid/result-detailed-grid.component';
-export { ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
+export { ItemDetailToggleEvent, ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
 export { ResultScrollDirective } from './lib/components/results/result-directive/result-scroll.directive';
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
@@ -71,7 +74,4 @@ export { ArlasColorService } from './lib/services/color.generator.service';
 export { ResultlistNotifierService } from './lib/services/resultlist.notifier.service';
 export { FilterOperator } from './lib/tools/models/term-filters';
 export { ProtectImageDirective } from './lib/tools/protect-image.directive';
-export { CardFieldConfig } from './lib/components/results/config/cardFieldConfig';
-export { CardField } from './lib/components/results/model/cardField';
-export { TableFieldConfig } from './lib/components/results/config/tableFieldConfig';
 

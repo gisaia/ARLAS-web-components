@@ -17,18 +17,28 @@
  * under the License.
  */
 
-import { of } from 'rxjs';
-import { vi } from 'vitest';
-import { Item } from '../components/results/model/item';
-import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
+import { Pipe, PipeTransform } from '@angular/core';
+import { TaskStatus } from '../../utils/aias-process';
 
-export const mockRowItem = new Item([], [], new Map(), '', 0);
+@Pipe({
+  name: 'taskStatusIcon',
+})
+export class TaskStatusIconPipe implements PipeTransform {
 
-export const mockDetailedDataRetriever = {
-    detailsConfig: [],
-    getActions: vi.fn(() => of([])),
-    getData: vi.fn(),
-    getMatch: vi.fn(),
-    getValues: vi.fn(),
-    getTasks: vi.fn()
-} as DetailedDataRetriever;
+  public transform(status: TaskStatus): string {
+    switch (status) {
+      case TaskStatus.accepted:
+        return 'play_for_work';
+      case TaskStatus.running:
+        return 'progress_activity';
+      case TaskStatus.successful:
+        return 'check';
+      case TaskStatus.failed:
+        return 'error';
+      case TaskStatus.dismissed:
+        return 'cancel';
+      default:
+        return 'question_mark';
+    };
+  }
+}

@@ -20,6 +20,7 @@
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ActionFilter, AdditionalInfo, ItemDataType } from '../utils/results.utils';
+import { Task } from './aias-process';
 
 export interface FieldDetail {
   path: string;
@@ -50,4 +51,5 @@ export interface DetailedDataRetriever {
 
   getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
 
+  getTasks(identifier: string): Observable<Task[]>;
 }

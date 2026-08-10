@@ -385,7 +385,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
     this.mapFrameworkService.onMapEvent('mousemove', this.map(), (e: MapMouseEvent) => {
       if (this.drawService.isDrawingBbox || this.drawService.isDrawingPolygon) {
         this.mapFrameworkService.setMapCursor(this.map(), 'crosshair');
-        // TODO: not sure this will work, might need a method
         this.map().moveLngLat = e.lngLat;
       }
     });

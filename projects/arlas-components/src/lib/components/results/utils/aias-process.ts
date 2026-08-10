@@ -17,18 +17,28 @@
  * under the License.
  */
 
-import { of } from 'rxjs';
-import { vi } from 'vitest';
-import { Item } from '../components/results/model/item';
-import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
 
-export const mockRowItem = new Item([], [], new Map(), '', 0);
+export enum TaskStatus {
+  accepted = 'accepted',
+  running = 'running',
+  successful = 'successful',
+  failed = 'failed',
+  dismissed = 'dismissed'
+}
 
-export const mockDetailedDataRetriever = {
-    detailsConfig: [],
-    getActions: vi.fn(() => of([])),
-    getData: vi.fn(),
-    getMatch: vi.fn(),
-    getValues: vi.fn(),
-    getTasks: vi.fn()
-} as DetailedDataRetriever;
+export type AvailableProcess = 'download' | 'ingest' | 'directory_ingest' | 'enrich' | 'dc3build';
+
+export interface Task {
+  processID: AvailableProcess;
+  type: string;
+  jobID: string;
+  status: TaskStatus;
+  message: string;
+  created: number;
+  started: number;
+  finished?: number;
+  updated?: number;
+  progress?: number;
+  links?: any;
+  resourceID: string;
+}

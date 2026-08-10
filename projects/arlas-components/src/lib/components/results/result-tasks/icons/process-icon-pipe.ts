@@ -17,18 +17,28 @@
  * under the License.
  */
 
-import { of } from 'rxjs';
-import { vi } from 'vitest';
-import { Item } from '../components/results/model/item';
-import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
+import { Pipe, PipeTransform } from '@angular/core';
+import { AvailableProcess } from '../../utils/aias-process';
 
-export const mockRowItem = new Item([], [], new Map(), '', 0);
+@Pipe({
+  name: 'processIcon',
+})
+export class ProcessIconPipe implements PipeTransform {
 
-export const mockDetailedDataRetriever = {
-    detailsConfig: [],
-    getActions: vi.fn(() => of([])),
-    getData: vi.fn(),
-    getMatch: vi.fn(),
-    getValues: vi.fn(),
-    getTasks: vi.fn()
-} as DetailedDataRetriever;
+  public transform(processID: AvailableProcess): unknown {
+    switch (processID) {
+      case 'ingest':
+        return 'add_photo_alternate';
+      case 'directory_ingest':
+        return 'create_new_folder';
+      case 'enrich':
+        return 'auto_awesome_motion';
+      case 'download':
+        return 'download';
+      case 'dc3build':
+        return 'deployed_code';
+      default:
+        return 'question_mark';
+    }
+  }
+}

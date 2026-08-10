@@ -137,7 +137,8 @@
               [idFieldName]="fieldsConfiguration().idFieldName" [isDetailShowed]="isDetailledGridOpen"
               (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
               [useHttp]="!!fieldsConfiguration().useHttpQuicklooks" (closeDetail)="closeDetail($event)"
-              [detailedDataRetriever]="detailedDataRetriever()">
+              [detailedDataRetriever]="detailedDataRetriever()" [ignoredProcesses]="ignoredProcesses()"
+              (itemDetailToggleEvent)="onItemDetailToggle($event)">
             </arlas-result-detailed-grid>
           </td>
         </tr>
@@ -177,7 +178,9 @@
                 [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
                 [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                 [idFieldName]="fieldsConfiguration().idFieldName" [containerType]="'list'"
-                (actionOnItemEvent)="triggerActionOnItem($event)">
+                (actionOnItemEvent)="triggerActionOnItem($event)"
+                [ignoredProcesses]="ignoredProcesses()"
+                (itemDetailToggleEvent)="onItemDetailToggle($event)">
               </tr>
             }
           } @else if (resultMode === ModeEnum.card) {
@@ -195,12 +198,13 @@
                                       (mouseleave)="onLeaveItem(rowItem)"
             ></arlas-resul-card-item>
             @if (rowItem.isDetailToggled) {
-              <tr arlas-result-detailed-item class="resultlist__body--detailed-item"
+              <tr arlas-result-detailed-item class="resultlist__body--detailed-item resultlist__body--detailed-item--card"
                   (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
                   [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
-                  [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]=showEmptyGroup
+                  [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                   [idFieldName]="fieldsConfiguration().idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
-                  [containerType]="'grid'">
+                  [containerType]="'grid'" [ignoredProcesses]="ignoredProcesses()"
+                  (itemDetailToggleEvent)="onItemDetailToggle($event)">
               </tr>
             }
           } @else {

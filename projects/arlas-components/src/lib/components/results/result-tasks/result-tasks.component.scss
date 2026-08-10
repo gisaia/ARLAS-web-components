@@ -1,0 +1,135 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+@use "../result-detailed-item/detail.scss" as detail;
+
+$infoColor: #0c5460;
+$errorColor: #d43f3a;
+$successColor: #5cb85c;
+$progressColor: #337ab7;
+$dismissedColor: #5f5f5f;
+
+:host {
+    --arlas-resizable-th-border-color: white;
+}
+
+.dark-theme {
+    :host {
+        --arlas-resizable-th-border-color: var(--mat-sys-surface);
+    }
+}
+
+.tasks {
+    &__title {
+        @include detail.title();
+    }
+
+    &__latest {
+        @include detail.entry();
+        align-items: center;
+
+        &__toggle {
+            --mat-icon-button-touch-target-size: 18px;
+            --mat-icon-button-state-layer-size: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: absolute;
+            right: 12px;
+
+            mat-icon {
+                font-size: 18px;
+                height: 18px;
+                width: 18px;
+            }
+        }
+    }
+
+    &__process {
+        @include detail.key();
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+
+        mat-icon {
+            font-size: 20px;
+            height: 20px;
+            width: 20px;
+        }
+    }
+
+    &__status {
+        @include detail.value();
+
+        mat-chip-option {
+            --mat-chip-elevated-container-color: transparent;
+            --mat-chip-container-height: 24px;
+            margin: 4px 0;
+
+            ::ng-deep button {
+                cursor: unset;
+                overflow: clip;
+            }
+        }
+
+        &--successful {
+            color: $successColor;
+            border: 1px solid $successColor;
+        }
+
+        &--accepted {
+            color: $infoColor;
+            border: 1px solid $infoColor;
+        }
+
+        &--running {
+            color: $progressColor;
+            border: 1px solid $progressColor;
+        }
+
+        &--failed {
+            color: $errorColor;
+            border: 1px solid $errorColor;
+        }
+
+        &--dismissed {
+            color: $dismissedColor;
+            border: 1px solid $dismissedColor;
+        }
+    }
+
+    &__table {
+        --mat-table-header-container-height: 20px;
+        --mat-table-row-item-container-height: 36px;
+
+        .mat-column-type {
+            mat-icon {
+                // Center the icon in the row
+                height: var(--mat-table-row-item-container-height);
+                display: flex;
+                align-items: center;
+
+                font-size: 20px;
+            }
+        }
+    }
+}

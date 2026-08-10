@@ -20,6 +20,7 @@
 
 import { Action, AdditionalInfo, Attachment, DetailedDataRetriever, Item, MatchInfo } from 'arlas-web-components';
 import { Observable, from, of } from 'rxjs';
+import { Task, TaskStatus } from '../../../../projects/arlas-components/src/lib/components/results/utils/aias-process';
 import { Detail } from '../../../../projects/arlas-components/src/lib/components/results/utils/detailed-data-retriever';
 import { ActionFilter } from '../../../../projects/arlas-components/src/lib/components/results/utils/results.utils';
 
@@ -42,6 +43,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
   public getValues(identifier: string, fields: string[]): Observable<string[]> {
     return of([]);
   }
+
   public getActions(item: Item): Observable<Array<Action>> {
     const actionsList = new Array<Action>();
     actionsList.push(
@@ -53,6 +55,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     );
     return from(new Array(actionsList));
   }
+
   public getData(identifier: string): Observable<AdditionalInfo> {
     const detailsDataMap = new Map<string, Map<string, string>>();
 
@@ -91,10 +94,51 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
 
       });
     }
-    return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments }));
+
+    return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments } as AdditionalInfo));
   }
 
   public getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo> {
     return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: {} });
+  }
+
+  public getTasks(identifier: string): Observable<Task[]> {
+    const tasks: Task[] = [
+      {
+        processID: 'enrich',
+        type: 'process',
+        jobID: '',
+        status: TaskStatus.successful,
+        message: '',
+        created: 1751551011,
+        started: 1751551011,
+        finished: 1751551021,
+        resourceID: identifier
+      },
+      {
+        processID: 'ingest',
+        type: 'process',
+        jobID: '',
+        status: TaskStatus.accepted,
+        message: '',
+        created: 1751551011,
+        started: 1751551011,
+        finished: 1751551021,
+        resourceID: identifier
+      },
+      {
+        processID: 'dc3build',
+        type: 'process',
+        jobID: '',
+        status: TaskStatus.accepted,
+        message: '',
+        created: 1751551200,
+        started: 1751551200,
+        finished: 1751551221,
+        resourceID: identifier
+      }
+    ];
+
+    return of(tasks);
   }
 }

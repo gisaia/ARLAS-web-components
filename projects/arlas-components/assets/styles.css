@@ -26,7 +26,12 @@ body {
   --mat-dialog-headline-padding: 10px 0;
   --mat-dialog-supporting-text-tracking: 0;
 
-  --arlas-resultilist-border-color: #e9ecef;
+  --arlas-resultlist-border-color: #e9ecef;
+
+  --arlas-result-detailed-item-key-color: grey;
+  .dark-theme {
+    --arlas-result-detailed-item-key-color: #b7b7b7;
+  }
 
   .mdc-dialog__surface {
     padding: 12px 24px;
