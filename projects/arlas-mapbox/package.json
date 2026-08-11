@@ -22,7 +22,6 @@
     "rxjs": "^7.4.0"
   },
   "dependencies": {
-    "arlas-map": "29.0.0-rc.7",
     "mapbox-gl": "^1.6.1",
     "tslib": "^2.3.0"
   },
