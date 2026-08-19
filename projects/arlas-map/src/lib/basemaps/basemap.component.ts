@@ -27,12 +27,13 @@ import { ArlasMapSource } from '../map/model/sources';
 import { BasemapStyle } from './basemap.config';
 import { BasemapService } from './basemap.service';
 import { ArlasBasemaps } from './basemaps.model';
+import { LazyLoadImageModule } from 'ng-lazyload-image';
 
 @Component({
     selector: 'arlas-basemap',
     templateUrl: './basemap.component.html',
     styleUrls: ['./basemap.component.scss'],
-    imports: [MatIcon, TranslatePipe]
+    imports: [MatIcon, TranslatePipe, LazyLoadImageModule]
 })
 /** L: a layer class/interface.
  *  S: a source class/interface.
