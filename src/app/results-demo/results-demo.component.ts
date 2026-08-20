@@ -21,8 +21,8 @@ import { Component, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatSidenav, MatSidenavContainer } from '@angular/material/sidenav';
 import {
-  Action, CardFieldConfig, Column, FieldsConfiguration, ItemDataType, ModeEnum,
-  ResultListComponent, ResultListOptions, SortedColumn, SortEnum, TableFieldConfig
+  Action, CardFieldConfig, Column, FieldsConfiguration, ItemDataType, ResultListComponent,
+  ResultlistModeEnum, ResultListOptions, SortedColumn, SortEnum, TableFieldConfig
 } from 'arlas-web-components';
 import { from, Observable } from 'rxjs';
 import { buildCardItemField, buildTableItemField } from '../../../projects/arlas-components/src/lib/pipes/get-item-data-value/get-item-data-value.pipe';
@@ -55,7 +55,7 @@ export class ResultsDemoComponent {
     public detailedDataRetriever: DetailedDataRetrieverImp = new DetailedDataRetrieverImp();
     public globalActionsList = new Array<Action>();
     public count = 0;
-    public modeEnum = ModeEnum;
+    public modeEnum = ResultlistModeEnum;
     public options = new ResultListOptions();
     public activeSort: SortedColumn | undefined;
 

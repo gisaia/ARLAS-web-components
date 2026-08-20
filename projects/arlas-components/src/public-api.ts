@@ -49,14 +49,15 @@ export { ResultItemComponent } from './lib/components/results/result-item/result
 export { ResultListComponent, SortedColumn } from './lib/components/results/result-list/result-list.component';
 export { DetailedDataRetriever, MatchInfo } from './lib/components/results/utils/detailed-data-retriever';
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';
-export { ModeEnum } from './lib/components/results/utils/enumerations/modeEnum';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';
+export { ResultlistModeEnum } from './lib/components/results/utils/enumerations/resultlistModeEnum';
 export { SortEnum } from './lib/components/results/utils/enumerations/sortEnum';
 export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/thumbnailFitEnum';
 export {
     Action, ActionHandler, AdditionalInfo, Attachment, DescribedUrl, ElementIdentifier, Field,
     FieldsConfiguration, ItemDataType, matchAndReplace, PageQuery, PROTECTED_REQUEST_HEADER, ResultListOptions
 } from './lib/components/results/utils/results.utils';
+export { stringToResultlistModeEnum } from './lib/components/results/utils/stringToResultlistModeEnum';
 export {
     Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent
 } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';

@@ -20,7 +20,7 @@
 import { Directive, ElementRef, HostListener, input, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
+import { ResultlistModeEnum } from '../utils/enumerations/resultlistModeEnum';
 import { ItemDataType } from '../utils/results.utils';
 
 @Directive({
@@ -31,7 +31,7 @@ export class ResultScrollDirective implements OnChanges {
   @Input() public items: Array<Item> = [];
   public nbLinesBeforeFetch = input.required<number>();
   public nbGridColumns = input.required<number>();
-  public resultMode = input.required<ModeEnum>();
+  public resultMode = input.required<ResultlistModeEnum>();
   @Input() public fetchState?: { endListUp: boolean; endListDown: boolean; };
   @Input() public scrollOptions?: { maintainScrollUpPosition: boolean; maintainScrollDownPosition: boolean; nbLines: number; };
 
@@ -92,7 +92,7 @@ export class ResultScrollDirective implements OnChanges {
   /** This method allows to stay around the same items when switching the mode grid/list */
   public adjustScrollToMode() {
     if (this.items) {
-      if (this.resultMode() === ModeEnum.grid) {
+      if (this.resultMode() === ResultlistModeEnum.grid) {
         this.nbScrolledLines = Math.round(this.scrollTop / this.scrollHeight * this.items.length);
         if (this.nbScrolledLines % this.nbGridColumns() !== 0) {
           this.nbScrolledLines = Math.max(this.nbScrolledLines - this.nbScrolledLines % this.nbGridColumns(), 0);
@@ -108,8 +108,8 @@ export class ResultScrollDirective implements OnChanges {
   // Loading the previous/next data is triggered when [nbEndScrollItems] items are left while scrolling up/down respectively
   @HostListener('scroll')
   public onScroll() {
-    const nLastLines = this.nbLinesBeforeFetch() / ((this.nbGridColumns() - 1) * this.resultMode() + 1);
-    const dataLength = this.items.length / ((this.nbGridColumns() - 1) * this.resultMode() + 1);
+    const nLastLines = this.nbLinesBeforeFetch() / ((this.nbGridColumns() - 1) * (this.resultMode() === ResultlistModeEnum.grid ? 1 : 0) + 1);
+    const dataLength = this.items.length / ((this.nbGridColumns() - 1) * (this.resultMode() === ResultlistModeEnum.grid ? 1 : 0) + 1);
     const downPositionTrigger = this.scrollHeight * (1 - nLastLines / dataLength - this.tableBodyHeight / this.scrollHeight);
     const upPositionTrigger = this.scrollHeight * nLastLines / dataLength;
     if (this.scrolledProgramatically) {

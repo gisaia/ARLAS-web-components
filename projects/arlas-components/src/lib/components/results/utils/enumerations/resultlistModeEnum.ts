@@ -17,6 +17,8 @@
  * under the License.
  */
 
-export enum ModeEnum {
-  list, grid, card
+export enum ResultlistModeEnum {
+  list = 'list',
+  grid = 'grid',
+  card = 'card'
 }
