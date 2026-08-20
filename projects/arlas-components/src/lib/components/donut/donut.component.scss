@@ -32,7 +32,7 @@
 
     --mat-icon-button-state-layer-size: 24px;
     padding: 0;
-    color: var(--arlas-donut-export-color, dimgrey);
+    color: var(--arlas-donut-export-color, var(--mat-sys-on-background));
 
     ::ng-deep .mat-mdc-button-touch-target {
       height: 24px;

@@ -17,19 +17,6 @@
  * under the License.
  */
 
-:host {
-  --arlas-result-detailed-grid-viewer-desc-color: var(--mat-sys-on-background); /* was white */
-  --arlas-result-detailed-grid-viewer-desc-bg: var(--mat-sys-on-background); /* was #6d6d6d99 */
-  --arlas-result-detailed-grid-nav-button-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-detailed-grid-disabled-color: var(--mat-sys-on-background); /* was grey */
-  --arlas-result-detailed-grid-view-button-bg: var(--mat-sys-background); /* was #fff */
-  --arlas-result-detailed-grid-view-button-color: var(--mat-sys-on-background); /* was #000 */
-  --arlas-result-detailed-grid-scrollbar-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-detailed-grid-scrollbar-track-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-detailed-grid-scrollbar-thumb-bg: var(--mat-sys-on-background); /* was #555 */
-  --arlas-result-detailed-grid-overlay-bg: var(--mat-sys-on-background); /* was #555 */
-}
-
 $default-icon-size: 24px;
 $sm-spacing: 5px;
 
@@ -50,8 +37,8 @@ $sm-spacing: 5px;
   z-index: 999;
 
   &.description {
-    color: var(--arlas-result-detailed-grid-viewer-desc-color, white);
-    background-color: var(--arlas-result-detailed-grid-viewer-desc-bg, #6d6d6d99);
+    color: var(--arlas-result-detailed-grid-viewer-desc-color, var(--mat-sys-on-background));
+    background-color: var(--arlas-result-detailed-grid-viewer-desc-background, var(--mat-sys-on-background));
     padding: 0 $sm-spacing;
     left: 50%;
     transform: translateX(-50%);
@@ -60,7 +47,7 @@ $sm-spacing: 5px;
   &.navigate-button {
     height: $default-icon-size;
     width: $default-icon-size;
-    background-color: var(--arlas-result-detailed-grid-nav-button-bg, white);
+    background-color: var(--arlas-result-detailed-grid-nav-button-background, var(--mat-sys-background));
     border: 1px solid #a1a1a1;
     border-radius: 4px;
     cursor: pointer;
@@ -106,15 +93,15 @@ $sm-spacing: 5px;
   z-index: 1;
 
   ::ng-deep.mat-mdc-mini-fab[disabled] {
-    color: var(--arlas-result-detailed-grid-disabled-color, grey);
+    color: var(--arlas-result-detailed-grid-disabled-color, var(--mat-sys-on-background));
   }
 }
 
 .resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button{
   top: 5px;
   right: 15px;
-  background-color: var(--arlas-result-detailed-grid-view-button-bg, #fff);
-  color: var(--arlas-result-detailed-grid-view-button-color, #000);
+  background-color: var(--arlas-result-detailed-grid-view-button-background, var(--mat-sys-background));
+  color: var(--arlas-result-detailed-grid-view-button-color, var(--mat-sys-on-background));
   width: 24px;
   height: 24px;
   margin-right: 5px;
@@ -142,18 +129,18 @@ $sm-spacing: 5px;
 {
 	width: 6px;
   height: 6px;
-	background-color: var(--arlas-result-detailed-grid-scrollbar-bg, white);
+	background-color: var(--arlas-result-detailed-grid-scrollbar-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: var(--arlas-result-detailed-grid-scrollbar-track-bg, white);
+	background-color: var(--arlas-result-detailed-grid-scrollbar-track-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-thumb
 {
-	background-color: var(--arlas-result-detailed-grid-scrollbar-thumb-bg, #555);
+	background-color: var(--arlas-result-detailed-grid-scrollbar-thumb-background, var(--mat-sys-on-background));
 }
 
 .resultgrid__info_outline, .resultgrid__close, .resultgrid__image {
@@ -168,6 +155,6 @@ $sm-spacing: 5px;
   position: absolute;
   top: 0;
   left: 0;
-  background-color: var(--arlas-result-detailed-grid-overlay-bg, #555);
+  background-color: var(--arlas-result-detailed-grid-overlay-background, var(--mat-sys-on-background));
   opacity: 0.5;
 }

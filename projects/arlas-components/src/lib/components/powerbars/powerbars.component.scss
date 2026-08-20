@@ -17,18 +17,11 @@
  * under the License.
  */
 
-:host {
-  --arlas-powerbars-operation-color: var(--mat-sys-on-background); /* was #aaa */
-  --arlas-powerbars-operation-selected-color: var(--mat-sys-on-background); /* was #555 */
-  --arlas-powerbars-export-color: var(--mat-sys-on-background); /* was dimgrey */
-  --arlas-powerbars-scrollbar-separator-color: var(--mat-sys-on-background); /* was rgb(209, 209, 209) */
-  --arlas-powerbars-scrollbar-bg: var(--mat-sys-background); /* was #f5f5f5 */
-  --arlas-powerbars-scrollbar-thumb-bg: var(--mat-sys-on-background); /* was #555 */
-}
-
 .tools {
   position: relative;
-
+  .powerbars__title {
+    color: var(--mat-sys-on-background);
+  }
   .powerbars__title, .powerbars__search {
     // If the download button is display, reduce the width to leave space for the download button
     &--short {
@@ -67,19 +60,19 @@
 
     .operation {
       font-size: 12px;
-      color: var(--arlas-powerbars-operation-color, #aaa);
+      color: var(--arlas-powerbars-operation-color, var(--mat-sys-on-background));
       border-radius: 3px;
       margin-right: 5px;
       cursor: pointer;
       padding-bottom: 5px;
 
       &--selected {
-        color: var(--arlas-powerbars-operation-selected-color, #555);
+        color: var(--arlas-powerbars-operation-selected-color, var(--mat-sys-on-background));
         font-weight: bold;
       }
     }
     .exclude {
-      color: var(--arlas-powerbars-operation-selected-color, #555);
+      color: var(--arlas-powerbars-operation-selected-color, var(--mat-sys-on-background));
       cursor: unset ;
     }
   }
@@ -92,7 +85,7 @@
 
     --mat-icon-button-state-layer-size: 24px;
     padding: 0;
-    color: var(--arlas-powerbars-export-color, dimgrey);
+    color: var(--arlas-powerbars-export-color, var(--mat-sys-on-background));
 
     ::ng-deep .mat-mdc-button-touch-target {
       height: 24px;
@@ -116,7 +109,7 @@
   .powerbar-selected-scrollable {
     // One powerbar is 26px, and we want to have 5 at maximum
     max-height: 131px;
-    border-bottom: 1px solid var(--arlas-powerbars-scrollbar-separator-color, rgb(209, 209, 209));
+    border-bottom: 1px solid var(--arlas-powerbars-scrollbar-separator-color, var(--mat-sys-on-background));
     overflow-y: auto;
     overflow-x: clip;
     padding-bottom: 2px;
@@ -133,14 +126,14 @@
 
 ::-webkit-scrollbar {
   width: 6px;
-  background-color: var(--arlas-powerbars-scrollbar-bg, #f5f5f5);
+  background-color: var(--arlas-powerbars-scrollbar-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: var(--arlas-powerbars-scrollbar-bg, #f5f5f5);
+  background-color: var(--arlas-powerbars-scrollbar-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--arlas-powerbars-scrollbar-thumb-bg, #555);
+  background-color: var(--arlas-powerbars-scrollbar-thumb-background, var(--mat-sys-on-background));
 }

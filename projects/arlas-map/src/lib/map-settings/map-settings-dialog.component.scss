@@ -17,9 +17,6 @@
  * under the License.
  */
 
-:host {
-  --arlas-map-settings-dialog-cancel-color: var(--mat-sys-on-background); /* was #000 */
-}
 
 .mapgl-settings {
   position: relative;
@@ -59,7 +56,7 @@
 
 .mapgl-settings__actions {
   &--cancel {
-    color: var(--arlas-map-settings-dialog-cancel-color);
+    color: var(--arlas-map-settings-dialog-cancel-color, var(--mat-sys-on-background));
     margin: 2px;
     outline: none;
   }

@@ -19,14 +19,14 @@
 
 @mixin title() {
     font-size: 16px;
-    border-bottom: 1px solid #f0eeeecf;
+    border-bottom: var(--arlas-entry-title-border-botom, 1px solid #f0eeeecf);
     display: block;
 }
 
 @mixin entry() {
     color: var(--mat-sys-on-background);
     padding: 2px;
-    border-bottom: 1px solid #f0eeee7e;
+    border-bottom: var(--arlas-entry-border-top, 1px solid #f0eeee7e);
     display: flex;
     gap: 10px;
 }
@@ -34,7 +34,7 @@
 @mixin key() {
     font-size: 12px;
     text-align: end;
-    color: var(--arlas-result-detailed-item-key-color, gray);
+    color: var(--arlas-result-detailed-item-key-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent));
     flex: 2;
 }
 

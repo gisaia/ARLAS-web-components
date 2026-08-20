@@ -49,30 +49,25 @@
 .dark-theme {
   .resultlist {
     --arlas-resultlist-border-color: var(--mat-sys-background);
-    --arlas-resultilist-hover-false-bg: rgba(255, 255, 255, 0.5);
-    --arlas-resultilist-hover-false-text-color:lightgrey;
-    --arlas-list-tbody-background: var(--mat-sys-background);
-    --arlas-resultilist-hover-bg-color: var(--mat-sys-surface-container);
-    --arlas-resultilist-detail-bg-color: var(--mat-sys-surface);
-    --arlas-resizable-cursor-color: lightgrey;
-    --arlas-sys-resizable-column-background: var(--mat-sys-surface);
-    --arlas-resizable-th-border-color: var(--mat-sys-background);
+    --arlas-result-list-hover-false-background: rgba(255, 255, 255, 0.5);
+    --arlas-result-list-hover-false-text-color: lightgrey;
+    --arlas-result-list-tbody-background: var(--mat-sys-background);
+    --arlas-result-list-hover-background-color: var(--mat-sys-surface-container);
+    --arlas-result-list-detail-background-color: var(--mat-sys-surface);
+    --arlas-entry-border-top: 1px solid rgba(170, 169, 169, 0.20);
+    --arlas-entry-title-border-botom: 1px solid rgb(116 117 118 / 81%);
+    --arlas-result-detailed-item-attachments-title-color: #3c3791;
   }
 }
 
 .resultlist {
-  --arlas-resizable-th-border-color: var(--arlas-resultlist-border-color);
-  --arlas-resizable-cursor-color: white;
-  --arlas-result-grid-tile-actions-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-grid-tile-container-bg: var(--mat-sys-background); /* was #fff */
+  --arlas-result-grid-tile-actions-background: var(--mat-sys-background); /* was white */
+  --arlas-result-grid-tile-container-background: var(--mat-sys-background); /* was #fff */
   --arlas-result-grid-tile-container-color: var(--mat-sys-on-background); /* was #000 */
   --arlas-result-grid-tile-icon-check-color: var(--mat-sys-on-background); /* was white */
   --arlas-result-grid-tile-title-color: var(--mat-sys-on-background); /* was #000 */
   --arlas-result-grid-tile-selected-icon-color: var(--mat-sys-on-background); /* was white */
-  --arlas-resultilist-detail-bg-color: white;
-  --arlas-resultilist-hover-bg-color: #fff;
-  --arlas-resultilist-hover-false-bg:#eee;
-  --arlas-resultilist-hover-false-text-color:#aaa;
+  --arlas-result-list-detail-background-color: white;
 
   width: 100%;
   overflow: hidden;
@@ -114,32 +109,32 @@
 
 .resultlist__body--item /* @doc Sets a row border style. (list mode)*/
 {
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
 }
 
 .resultlist__body--item-hover-true, .resultlist__body--item-hover-true.resultlist__card-tile {
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
 
   position: relative;
   font-weight: 500;
 }
 
 .resultlist__body--item-hover- {
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
   position: relative;
-  background-color: var(--arlas-resultilist-hover-bg-color, #fff);
+  background-color: var(--arlas-result-list-hover-background-color, #fff);
 }
 
 .resultlist__body--item-hover-false, .resultlist__body--item-hover-false.resultlist__card-tile  {
 
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
   position: relative;
-  background-color: var(--arlas-resultilist-hover-false-bg);
-  color: var(--arlas-resultilist-hover-false-text-color);
+  background-color: var(--arlas-result-list-hover-false-background, #eee);
+  color: var(--arlas-result-list-hover-false-text-color, #aaa);
 }
 
 tr {
@@ -160,15 +155,15 @@ tr {
 
 .resultlist__lastline /* @doc Sets the last row border style. (list mode)*/
 {
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 0px solid var(--arlas-resultlist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 0px solid var(--arlas-resultlist-border-color, #e9ecef);
 }
 
 .resultlist__body--detailed-item /* @doc Sets the last row border style. (list mode)*/
 {
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color);
-  background-color:  var(--arlas-resultilist-detail-bg-color, white);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  background-color:  var(--arlas-result-list-detail-background-color, white);
 
   &--card {
     // Align toggle with the card toggle
@@ -183,8 +178,8 @@ tr {
 .resultlist__tools, /* @doc Sets the border style of the tools list container (select-all, select-in-between, grid-list-mode, ...).*/
 .resultlist__grid-detail /* @doc Sets the detail grid border style.*/
 {
-  border-top: 1px solid var(--arlas-resultlist-border-color);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color);
+  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
 }
 
 .resultlist__tools {
@@ -283,7 +278,7 @@ tr {
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
-  background-color: var(--arlas-list-tbody-background, #ddd);
+  background-color: var(--arlas-result-list-tbody-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar {
@@ -383,15 +378,15 @@ tr {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: var(--arlas-list-thumbnail-fit-size);
-    width: var(--arlas-list-thumbnail-fit-size);
+    height: var(--arlas-list-thumbnail-fit-size, 26px);
+    width: var(--arlas-list-thumbnail-fit-size, 26px);
     padding: 0 !important;
     margin: 0 10px;
   }
 }
 
 .fit-group {
-  height: var(--arlas-list-thumbnail-fit-size);
+  height: var(--arlas-list-thumbnail-fit-size, 26px);
   align-items: center;
 }
 

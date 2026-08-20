@@ -18,8 +18,7 @@
  */
 
 :host {
-  --arlas-entry-font-size: 14px;
-  --arlas-entry-icon-width: var(--arlas-entry-font-size);
+  --arlas-entry-icon-width: var(--arlas-entry-font-size, 14px);
 }
 
 .meta-data-entry {
@@ -34,17 +33,17 @@
 
   &__icon {
     width: 18px;
-    font-size: var(--arlas-entry-font-size);
+    font-size: var(--arlas-entry-font-size, 14px);
     display: flex;
     align-items: center;
     line-height: 1;
     & mat-icon {
-      font-size: var(--arlas-entry-font-size);
-      height: var(--arlas-entry-font-size);
-      width: var(--arlas-entry-font-size);
+      font-size: var(--arlas-entry-font-size, 14px);
+      height: var(--arlas-entry-font-size, 14px);
+      width: var(--arlas-entry-font-size, 14px);
       display: flex;
       align-items: center;
-      color: var(--arlas-entry-color);
+      color: var(--arlas-entry-color, var(--arlas-card-result-item-metadata-entry-color));
     }
   }
 
@@ -56,16 +55,16 @@
     min-width: 0;
     line-height: 1;
     flex:1 1 auto;
-    color: var(--arlas-entry-value-color);
+    color: var(--arlas-entry-value-color, var(--arlas-card-result-item-metadata-entry-value-color));
   }
 
   &__unit {
-    font-size: var(--arlas-entry-font-size);
+    font-size: var(--arlas-entry-font-size, 14px);
     display: inline-block;
     line-height: 1;
     flex-shrink: 0;
     max-width: 20px;
     min-width: 0;
-    color: var(--arlas-entry-color);
+    color: var(--arlas-entry-color, var(--arlas-card-result-item-metadata-entry-color));
   }
 }
