@@ -167,8 +167,8 @@ tr {
 
   &--card {
     // Align toggle with the card toggle
-    .tasks__latest__toggle {
-      right: 6px !important;
+    .tasks__title__toggle {
+      right: 0 !important;
     }
 
     // Because table cells don't have a width in card mode, the height needs to be set through css

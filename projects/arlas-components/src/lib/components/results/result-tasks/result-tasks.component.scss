@@ -26,13 +26,15 @@ $progressColor: #337ab7;
 $dismissedColor: #5f5f5f;
 
 .tasks {
+    --mat-table-header-container-height: 32px;
+    --mat-table-row-item-container-height: 32px;
+
+    --mat-table-header-headline-size: 12px;
+    --mat-table-row-item-label-text-size: 12px;
+
     &__title {
         @include detail.title();
-    }
-
-    &__latest {
-        @include detail.entry();
-        align-items: center;
+        position: relative;
 
         &__toggle {
             --mat-icon-button-touch-target-size: 18px;
@@ -43,7 +45,10 @@ $dismissedColor: #5f5f5f;
             justify-content: center;
 
             position: absolute;
-            right: 12px;
+            right: 6px;
+            // Center the button on the header of the table
+            bottom: calc(-1 * (var(--mat-table-header-container-height) - var(--mat-icon-button-touch-target-size)) / 2);
+            transform: translateY(100%);
 
             mat-icon {
                 font-size: 18px;
@@ -73,6 +78,7 @@ $dismissedColor: #5f5f5f;
         mat-chip-option {
             --mat-chip-elevated-container-color: transparent;
             --mat-chip-container-height: 24px;
+            --mat-chip-label-text-size: 12px;
             margin: 4px 0;
 
             ::ng-deep button {
@@ -108,10 +114,7 @@ $dismissedColor: #5f5f5f;
     }
 
     &__table {
-        --mat-table-header-container-height: 20px;
-        --mat-table-row-item-container-height: 36px;
-
-        .mat-column-type {
+        .mat-column-process {
             mat-icon {
                 // Center the icon in the row
                 height: var(--mat-table-row-item-container-height);
@@ -120,6 +123,11 @@ $dismissedColor: #5f5f5f;
 
                 font-size: 20px;
             }
+        }
+
+        // Avoid resizing when latest task has a short status
+        .mat-column-status {
+            min-width: 130px;
         }
     }
 }

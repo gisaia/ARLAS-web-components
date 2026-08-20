@@ -116,7 +116,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         processID: 'dc3build',
         type: 'process',
         jobID: '',
-        status: TaskStatus.accepted,
+        status: TaskStatus.failed,
         message: '',
         created: 1751551200,
         started: 1751551200,

@@ -61,6 +61,7 @@ export { stringToResultlistModeEnum } from './lib/components/results/utils/strin
 export {
     Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent
 } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
+export { DeltaTimePipe } from './lib/pipes/delta-time.pipe';
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
 export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';

@@ -25,6 +25,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
+import { DeltaTimePipe } from '../../../pipes/delta-time.pipe';
 import { AvailableProcess, Task } from '../utils/aias-process';
 import { ProcessIconPipe } from './icons/process-icon-pipe';
 
@@ -39,7 +40,8 @@ import { ProcessIconPipe } from './icons/process-icon-pipe';
     MatChipListbox,
     MatChipOption,
     MatTableModule,
-    DatePipe
+    DatePipe,
+    DeltaTimePipe
 ],
   templateUrl: './result-tasks.component.html',
   styleUrl: './result-tasks.component.scss',
@@ -54,15 +56,14 @@ export class ResultTasksComponent {
     .filter(t => !this.ignoredProcesses().has(t.processID))
     // Most recent should be first
     .sort((a, b) => b.created - a.created)
+    .filter((_, idx) => this.displayAllTasks() ? true : idx === 0)
   );
 
-  public latestTask = computed(() => this.visibleTasks().at(0));
+  public displayAllTasks = signal(false);
 
-  public showTaskTable = signal(false);
+  public columnsToDisplay = ['process', 'status', 'created', 'duration'];
 
-  public columnsToDisplay = ['type', 'status', 'created', 'finished'];
-
-  public toggleTaskTable() {
-    this.showTaskTable.set(!this.showTaskTable());
+  public toggleTaskDisplay() {
+    this.displayAllTasks.set(!this.displayAllTasks());
   }
 }
