@@ -36,7 +36,7 @@ import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 
 @Component({
-  selector: 'arlas-resul-card-item',
+  selector: 'arlas-result-card-item',
   templateUrl: './result-card-item.component.html',
   imports: [ResultThumbnailComponent, ResultCardItemEntriesComponent, MatIconButton, MatIcon,
     TranslatePipe, MatTooltip, FormatNumberPipe, BuildItemFieldPipe],

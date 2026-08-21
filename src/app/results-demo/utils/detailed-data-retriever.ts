@@ -81,20 +81,6 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       url: 'arlas.io',
     });
 
-    for (let i = 0; i < 100; i++) {
-      attachments.push({
-        icon: 'list',
-
-        label: 'Gisaia',
-        url: 'gisaia.fr',
-        description: "Developpeur d'ARLAS",
-
-      }, {
-        url: 'arlas.io',
-
-      });
-    }
-
     return from(new Array({ details: detailsDataMap, actions: actionsList, attachments: attachments } as AdditionalInfo));
   }
 
