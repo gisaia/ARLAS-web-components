@@ -4,17 +4,13 @@
       @if (displayFilters) {
         <tr class="resultlist__filter resultlist__thead__tr">
           @for (column of columns; track column) {
-            @if (column.isIdField) {
-              <td [style.width.px]="column.width">
-                <span class="resultlist__header--columns--hidden"></span>
-              </td>
-            } @else if (column.isToggleField) {
+            @if (column.isIdField || column.isToggleField) {
               <td [style.width.px]="column.width">
                 <span class="resultlist__header--columns--hidden"></span>
               </td>
             } @else  {
               <td arlas-result-filter class="resultlist__filter__{{column.columnName}}"
-                [matTooltip]="(FILTER_ON | translate) + (column.columnName | translate)" [style.width.px]="column.width"
+                [matTooltip]="FILTER_ON | translate:{ column: column.columnName | translate }" [style.width.px]="column.width"
                 [column]="column" [dropdownValues]="(dropDownMapValues.get(column.fieldName) | async) ?? []" [filtersMap]="filtersMap"
                 (columnChanged)="columnChanged($event)" (setFiltersEvent)="setFilters($event)">
               </td>
