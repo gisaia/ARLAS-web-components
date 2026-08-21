@@ -175,6 +175,14 @@ tr {
     .tasks__latest__toggle {
       right: 6px !important;
     }
+
+    // Because table cells don't have a width in card mode, the height needs to be set through css
+    .checkboxcell {
+      width: 25px;
+    }
+    .details {
+      width: 100%;
+    }
   }
 }
 

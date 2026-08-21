@@ -522,7 +522,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public resultMode = ResultlistModeEnum.grid;
   public allItemsChecked = false;
 
-  public displayListGrid = 'inline';
   public isShiftDown = false;
 
   private readonly debouncer = new Subject<ElementIdentifier>();
@@ -897,13 +896,10 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     const enumFound = stringToResultlistModeEnum(value);
     if (enumFound === ResultlistModeEnum.grid) {
       this.resultMode = ResultlistModeEnum.grid;
-      this.displayListGrid = 'block';
     } else if (enumFound === ResultlistModeEnum.card) {
       this.resultMode = ResultlistModeEnum.card;
-      this.displayListGrid = 'block';
     }  else  {
       this.resultMode = ResultlistModeEnum.list;
-      this.displayListGrid = 'inline';
     }
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
