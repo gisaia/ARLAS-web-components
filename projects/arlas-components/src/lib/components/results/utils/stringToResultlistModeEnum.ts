@@ -24,8 +24,8 @@ import { ResultlistModeEnum } from './enumerations/resultlistModeEnum';
  * But the value stand for an enum.
  **/
 export function stringToResultlistModeEnum(value: string): ResultlistModeEnum {
-
   const isNumeric = !Number.isNaN(Number(value)) && value.trim() !== '';
+
   if (isNumeric) {
     switch (Number(value)) {
       case 0:
@@ -37,17 +37,17 @@ export function stringToResultlistModeEnum(value: string): ResultlistModeEnum {
       default:
         return ResultlistModeEnum.list;
     }
-  }
-
-  // Part for retro compatibility
-  switch (value) {
-    case 'grid' :
-      return ResultlistModeEnum.grid;
-    case 'list' :
-      return ResultlistModeEnum.list;
-    case 'card' :
-      return ResultlistModeEnum.card;
-    default:
-      return ResultlistModeEnum.list;
+  } else {
+    // Part for retro compatibility
+    switch (value) {
+      case 'grid' :
+        return ResultlistModeEnum.grid;
+      case 'list' :
+        return ResultlistModeEnum.list;
+      case 'card' :
+        return ResultlistModeEnum.card;
+      default:
+        return ResultlistModeEnum.list;
+    }
   }
 }
