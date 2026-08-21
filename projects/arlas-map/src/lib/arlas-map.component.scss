@@ -43,11 +43,14 @@
   flex-wrap: wrap-reverse;
 }
 
+.map__legend-wrapper {
+  background-color: var(--arlas-map-legend-button-background, var(--mat-sys-surface));
+}
+
 .map__legend-button {
   cursor: pointer;
   margin-bottom: 4px;
   border-radius: 3px;
-  background-color: var(--arlas-map-legend-button-background, var(--mat-sys-background));
   width: 30px;
   height: 30px;
   padding: 3px;
