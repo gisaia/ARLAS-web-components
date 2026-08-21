@@ -28,7 +28,7 @@ export class FormatNumberPipe implements PipeTransform {
 
   public constructor(private readonly translate: TranslateService) {}
 
-  public transform(x: string | number | undefined, formatChar: string = ' '): any {
+  public transform(x: string | number | undefined, formatChar: string = ' '): string {
     if (x === undefined) {
       return '';
     }

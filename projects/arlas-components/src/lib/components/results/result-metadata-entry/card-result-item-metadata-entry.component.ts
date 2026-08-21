@@ -23,6 +23,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { FormatNumberPipe } from '../../../pipes/format-number/format-number.pipe';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { ItemDataType } from '../utils/results.utils';
+
 export interface MetaDataEntry {
   /** The value to display in the metadata */
   value: ItemDataType;

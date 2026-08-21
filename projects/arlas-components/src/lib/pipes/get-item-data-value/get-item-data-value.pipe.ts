@@ -26,7 +26,7 @@ import { Column } from '../../components/results/model/column';
 })
 export class BuildItemFieldPipe implements PipeTransform {
 
-  public transform(value: Column| CardField, mode: 'table' | 'card'): string {
+  public transform(value: Column | CardField, mode: 'table' | 'card'): string {
     if (mode === 'card' && value instanceof CardField){
       return buildCardItemField(value);
     } else if (mode === 'table' && value instanceof Column) {
