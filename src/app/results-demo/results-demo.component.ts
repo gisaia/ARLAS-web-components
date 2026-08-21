@@ -24,7 +24,8 @@ import {
   Action, CardFieldConfig, Column, FieldsConfiguration, ItemDataType, ModeEnum,
   ResultListComponent, ResultListOptions, SortedColumn, SortEnum, TableFieldConfig
 } from 'arlas-web-components';
-import { from, Observable } from 'rxjs';
+import moment from 'moment';
+import { Observable, of } from 'rxjs';
 import { buildCardItemField, buildTableItemField } from '../../../projects/arlas-components/src/lib/pipes/get-item-data-value/get-item-data-value.pipe';
 import { DetailedDataRetrieverImp } from './utils/detailed-data-retriever';
 
@@ -39,6 +40,17 @@ function generateRandomText(length: number) {
 
   return randomText;
 }
+
+const sourceField = { columnName: 'Source', fieldName: 'source', dataType: '',
+  prettyName: 'Source', isTitle: true, lineNumber: 0 };
+const acquiredField = { columnName: 'Acquired', fieldName: 'acquired', dataType: '',
+  prettyName: 'Acquired', icon: 'alarm', isTitle: false, lineNumber: 0 };
+const cloudField = { columnName: 'Cloud', fieldName: 'cloud', dataType: '%',
+  prettyName: 'Cloud Cover', isTitle: false, lineNumber: 0};
+const incidenceField = { columnName: 'Incidence', fieldName: 'incidence', dataType: '°',
+  prettyName: 'Incidence Angle', isTitle: false, lineNumber: 0};
+const idField = { columnName: 'Id', fieldName: 'id', dataType: '',
+  prettyName: 'Id', isTitle: false, lineNumber: 0};
 
 @Component({
     selector: 'arlas-results-demo',
@@ -90,42 +102,33 @@ export class ResultsDemoComponent {
       this.fieldsList = [];
       this.cardFields = [];
 
-      const sourceField = { columnName: 'Source', fieldName: 'source', dataType: '',
-        prettyName: 'Source', isTitle: true, lineNumber: 0 };
-      const acquiredField = { columnName: 'Acquired', fieldName: 'acquired', dataType: '',
-        prettyName: 'Acquired', icon: 'alarm', isTitle: false, lineNumber: 0 };
-      const cloudField = { columnName: 'Cloud', fieldName: 'cloud', dataType: '%',
-        prettyName: 'Cloud Cover', isTitle: false, lineNumber: 0};
-      const incidenceField = { columnName: 'Incidence', fieldName: 'incidence', dataType: '°',
-        prettyName: 'Incidence Angle', isTitle: false, lineNumber: 0};
-      const idField = { columnName: 'Id', fieldName: 'id', dataType: '',
-        prettyName: 'Id', isTitle: false, lineNumber: 0};
-
       this.fieldsList.push(sourceField, acquiredField, cloudField, incidenceField, idField);
       this.cardFields.push(sourceField, acquiredField, cloudField, incidenceField, idField);
 
       const descriptionField = { prettyName: 'Description', fieldName: 'description', dataType: '', isTitle: false, lineNumber: 0 };
       const gsdField = { prettyName: 'Ground Resolution', fieldName: 'groundResolution', dataType: 'm', icon: 'rules', isTitle: true, lineNumber: 0 };
-      const sunAzimuthField = { prettyName: 'Sun Azimuth', fieldName: 'sunAzimuth', dataType: '°', isTitle: false, lineNumber: 0 };
-      const sunElevationField = { prettyName: 'Sun Elevation', fieldName: 'sunElevation', dataType: '°', isTitle: false, lineNumber: 0 };
-      const satelliteAzimuthField = { prettyName: 'Satellite Azimuth', fieldName: 'satelliteAzimuth', dataType: '°', isTitle: false, lineNumber: 0 };
-      const offNadirAngleField = { prettyName: 'Off-nadir Angle', fieldName: 'offNadirAngle', dataType: '°', isTitle: false, lineNumber: 0 };
-      const bandsField = { prettyName: 'Spectral Bands', fieldName: 'spectralBands', dataType: '', isTitle: false, lineNumber: 0 };
-      const sceneWidthField = { prettyName: 'Scene Width', fieldName: 'sceneWidth', dataType: 'km', isTitle: false, lineNumber: 0 };
-      const sceneHeightField = { prettyName: 'Scene Height', fieldName: 'sceneHeight', dataType: 'km', isTitle: false, lineNumber: 2 };
-      const orbitDirectionField = { prettyName: 'Orbit Direction', fieldName: 'orbitDirection', dataType: '', isTitle: false, lineNumber: 2 };
+      const sunAzimuthField = { prettyName: 'Sun Azimuth', fieldName: 'sunAzimuth', dataType: '°', isTitle: false, lineNumber: 0, icon: 'sunny' };
+      const sunElevationField = { prettyName: 'Sun Elevation', fieldName: 'sunElevation', dataType: '°', isTitle: false, lineNumber: 0, icon: 'sunny' };
+      const satelliteAzimuthField = { prettyName: 'Satellite Azimuth', fieldName: 'satelliteAzimuth', dataType: '°', isTitle: false, lineNumber: 0, icon: 'satellite_alt' };
+      const offNadirAngleField = { prettyName: 'Off-nadir Angle', fieldName: 'offNadirAngle', dataType: '°', isTitle: false, lineNumber: 1 };
+      const bandsField = { prettyName: 'Spectral Bands', fieldName: 'spectralBands', dataType: '', isTitle: false, lineNumber: 1 };
+      const sceneWidthField = { prettyName: 'Scene Width', fieldName: 'sceneWidth', dataType: 'km', isTitle: false, lineNumber: 1 };
+      const sceneHeightField = { prettyName: 'Scene Height', fieldName: 'sceneHeight', dataType: 'km', isTitle: false, lineNumber: 1 };
+      const orbitDirectionField = { prettyName: 'Orbit Direction', fieldName: 'orbitDirection', dataType: '', isTitle: false, lineNumber: 1 };
       const processingLevelField = { prettyName: 'Processing Level', fieldName: 'processingLevel', dataType: '', isTitle: false, lineNumber: 3 };
       const accuracyField = { prettyName: 'Radiometric Accuracy', fieldName: 'radiometricAccuracy', dataType: '%', isTitle: false, lineNumber: 3 };
       const snowCoverField = { prettyName: 'Snow Cover', fieldName: 'snowCover', dataType: '%', isTitle: false, lineNumber: 3 };
       const elevationField = { prettyName: 'Target Elevation', fieldName: 'targetElevation', dataType: 'm', isTitle: false, lineNumber: 3 };
       const qualityField = { prettyName: 'Image Quality', fieldName: 'imageQuality', dataType: '/10', isTitle: false, lineNumber: 3 };
 
-      this.cardFields.push(descriptionField, gsdField, sunAzimuthField, sunElevationField, satelliteAzimuthField, offNadirAngleField,
-        bandsField, sceneWidthField, sceneHeightField, orbitDirectionField, processingLevelField, accuracyField, snowCoverField, elevationField, qualityField);
+      this.cardFields.push(
+        descriptionField, gsdField, sunAzimuthField, sunElevationField, satelliteAzimuthField,
+        offNadirAngleField, bandsField, sceneWidthField, sceneHeightField, orbitDirectionField,
+        processingLevelField, accuracyField, snowCoverField, elevationField, qualityField);
 
-      this.dropDownMapValues.set(sourceField.fieldName, from([['source_1', 'source_2', 'source_3']]));
-      this.dropDownMapValues.set(acquiredField.fieldName, from([['acquired_1', 'acquired_2', 'acquired_3']]));
-      this.dropDownMapValues.set(cloudField.fieldName, from([['cloud_1', 'cloud_2', 'cloud_3']]));
+      this.dropDownMapValues.set(sourceField.fieldName, of(['source_1', 'source_2', 'source_3']));
+      this.dropDownMapValues.set(acquiredField.fieldName, of(['acquired_1', 'acquired_2', 'acquired_3']));
+      this.dropDownMapValues.set(cloudField.fieldName, of(['cloud_1', 'cloud_2', 'cloud_3']));
 
       const SPECTRAL_BANDS = ['PAN', 'RGB', 'RGBN', 'RGBNE', 'MS4', 'MS8', 'SWIR', 'PAN+MS'];
       const PROCESSING_LEVELS = ['L1A', 'L1B', 'L2A', 'L3A', 'Ortho'];
@@ -140,7 +143,7 @@ export class ResultsDemoComponent {
       this.data = new Array();
       for (let i = 0; i < 50; i++) {
         const map = new Map<string, ItemDataType>();
-        this.setValue(map, acquiredField, '2017-0' + (i + 1) + '-' + (i + 3));
+        this.setValue(map, acquiredField, this.computeDate(i));
         this.setValue(map, cloudField, (i + 1) + '.0');
         this.setValue(map, idField, (i + 10) + 'd');
         this.setValue(map, incidenceField, i + 10);
@@ -150,7 +153,10 @@ export class ResultsDemoComponent {
 
         this.setValue(map, descriptionField, generateRandomText(Math.floor(Math.random() * 30)));
         this.setValue(map, sunAzimuthField, randFloat(0, 360));
-        this.setValue(map, sunElevationField, randFloat(20, 75));
+        // Check that the icon is displayed even with no data
+        if (i % 5 !== 0) {
+          this.setValue(map, sunElevationField, randFloat(20, 75));
+        }
         this.setValue(map, satelliteAzimuthField, randFloat(0, 360));
         this.setValue(map, offNadirAngleField, randFloat(0, 30));
         this.setValue(map, bandsField, pick(SPECTRAL_BANDS));
@@ -186,11 +192,11 @@ export class ResultsDemoComponent {
         if (this.count < 2) {
           for (let i = 50; i < 100; i++) {
             const map = new Map<string, ItemDataType>();
-            map.set('source', 'SPOT' + (i + 1));
-            map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
-            map.set('cloud', (i + 1) + '.0');
-            map.set('incidence', (i + 10));
-            map.set('id', (i + (this.count + 1) * 100) + '');
+            this.setValue(map, sourceField, 'SPOT' + (i + 1));
+            this.setValue(map, acquiredField, this.computeDate(i));
+            this.setValue(map, cloudField, (i + 1) + '.0');
+            this.setValue(map, idField, (i + (this.count + 1) * 100) + 'd');
+            this.setValue(map, incidenceField, i + 10);
             this.data.push(map);
           }
           this.count++;
@@ -198,11 +204,11 @@ export class ResultsDemoComponent {
           this.data = new Array();
           for (let i = 50; i < 150; i++) {
             const map = new Map<string, ItemDataType>();
-            map.set('source', 'SPOT' + (i + 1));
-            map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
-            map.set('cloud', (i + 1) + '.0');
-            map.set('incidence', (i + 10));
-            map.set('id', (i + (this.count + 1) * 1000) + '');
+            this.setValue(map, sourceField, 'SPOT' + (i + 1));
+            this.setValue(map, acquiredField, this.computeDate(i));
+            this.setValue(map, cloudField, (i + 1) + '.0');
+            this.setValue(map, idField, (i + (this.count + 1) * 1000) + 'd');
+            this.setValue(map, incidenceField, i + 10);
             this.data.push(map);
           }
           this.count++;
@@ -215,79 +221,18 @@ export class ResultsDemoComponent {
         this.data = new Array();
         for (let i = 0; i < 50; i++) {
           const map = new Map<string, ItemDataType>();
-          map.set('source', 'SPOT' + (i + 1));
-          map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
-          map.set('cloud', (i + 1) + '.0');
-          map.set('incidence', (i + 10));
-          map.set('id', (i + 10) + 'd');
+          this.setValue(map, sourceField, 'SPOT' + (i + 1));
+          this.setValue(map, acquiredField, this.computeDate(i));
+          this.setValue(map, cloudField, (i + 1) + '.0');
+          this.setValue(map, idField, (i + 10) + 'd');
+          this.setValue(map, incidenceField, i + 10);
           this.data.push(map);
         }
       }, 1000);
     }
 
-    public addData() {
-      const map = new Map<string, ItemDataType>();
-      map.set('source', 'SPOT' + (5 + 1));
-      map.set('acquired', '2017-0' + (5 + 1) + '-' + (5 + 3));
-      map.set('cloud', (5 + 1) + '.0');
-      map.set('incidence', (5 + 10));
-      map.set('id', (5 + 10));
-      this.data.push(map);
-    }
-
-    public newColumns() {
-      this.fieldsList = new Array<{ columnName: string; fieldName: string; dataType: string; }>();
-      this.fieldsList.push({ columnName: 'Src', fieldName: 'source', dataType: '' });
-      this.fieldsList.push({ columnName: 'Acquiered', fieldName: 'acquired', dataType: '' });
-      this.fieldsList.push({ columnName: 'Cloud', fieldName: 'cloud', dataType: '%' });
-      this.fieldsList.push({ columnName: 'Angle', fieldName: 'incidence', dataType: '°' });
-      this.fieldsList.push({ columnName: 'Test1', fieldName: 'test_1', dataType: '°' });
-      this.fieldsList.push({ columnName: 'Test2', fieldName: 'test_2', dataType: '°C' });
-      this.fieldsList.push({ columnName: 'Test3', fieldName: 'test_3', dataType: '°C' });
-      this.fieldsList.push({ columnName: 'Id', fieldName: 'id', dataType: '' });
-
-      this.data = new Array();
-      for (let i = 0; i < 5; i++) {
-        const map = new Map<string, ItemDataType>();
-        map.set('source', 'SPOT' + (i + 1));
-        map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
-        map.set('cloud', (i + 1) + '.0');
-        map.set('test_1', (i + 10));
-        map.set('test_2', (i * 2 + 10));
-        map.set('test_3', (i * 2 + 10));
-        map.set('incidence', (i + 10));
-        map.set('id', (i + 10));
-        this.data.push(map);
-      }
-    }
-
     public setFilters(fieldsToFilter: Map<string, ItemDataType>) {
-      setTimeout(() => {
-        if (this.count < 2) {
-          for (let i = 50; i < 100; i++) {
-            const map = new Map<string, ItemDataType>();
-            map.set('source', 'SPOT' + (i + 1));
-            map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
-            map.set('cloud', (i + 1) + '.0');
-            map.set('incidence', (i + 10));
-            map.set('id', (i + (this.count + 1) * 100) + '');
-            this.data.push(map);
-          }
-          this.count++;
-        } else {
-          this.data = new Array<Map<string, ItemDataType>>();
-          for (let i = 50; i < 60; i++) {
-            const map = new Map<string, ItemDataType>();
-            map.set('source', 'SPOT' + (i + 1));
-            map.set('acquired', '2017-0' + (i + 1) + '-' + (i + 3));
-            map.set('cloud', (i + 1) + '.0');
-            map.set('incidence', (i + 10));
-            map.set('id', (i + (this.count + 1) * 1000) + '');
-            this.data.push(map);
-          }
-          this.count++;
-        }
-      }, 1000);
+      this.addMoreData();
     }
 
     public setSort() {
@@ -299,5 +244,10 @@ export class ResultsDemoComponent {
     private setValue(map: Map<string, ItemDataType>, field: any, value: ItemDataType) {
       map.set(buildCardItemField(field), value);
       map.set(buildTableItemField(field), value);
+    }
+
+    private computeDate(index: number) {
+      const startDate = new Date(2017, 0, 1);
+      return moment(startDate).add(index, 'days').toDate().toDateString();
     }
 }
