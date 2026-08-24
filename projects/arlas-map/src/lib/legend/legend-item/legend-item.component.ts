@@ -22,7 +22,7 @@ import { Component, DestroyRef, ElementRef, input, Input, OnInit, signal, ViewCh
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { FormatNumberPipe, ShortenNumberPipe } from 'arlas-web-components';
+import { FormatNumberPipe, NUMBER_FORMAT_CHAR, ShortenNumberPipe } from 'arlas-web-components';
 import { filter } from 'rxjs';
 import { OTHER } from '../../map/model/filters';
 import { ArlasDataLayer } from '../../map/model/layers';
@@ -46,6 +46,7 @@ export class LegendItemComponent implements OnInit {
   @ViewChild('interpolated_svg', { read: ElementRef, static: false }) public interpolatedElement?: ElementRef;
 
   protected PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
+  protected readonly NUMBER_FORMAT_CHAR = NUMBER_FORMAT_CHAR;
 
   /** List of cursors to display around the interpolated legend */
   public cursors = new Array<{position: number; value: string | undefined;}>();

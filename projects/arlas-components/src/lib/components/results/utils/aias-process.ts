@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { Injectable } from '@angular/core';
 
 export enum TaskStatus {
   accepted = 'accepted',
@@ -41,4 +42,29 @@ export interface Task {
   progress?: number;
   links?: any;
   resourceID: string;
+}
+
+/** Default time in ms between each call to retrieve a service's tasks */
+export const DEFAULT_TASK_RETRIEVAL_INTERVAL = 5000;
+
+export interface TaskSettings {
+  /** Whether the retrieval of AIAS task status is enabled */
+  enabled: boolean;
+  /** Name of the service */
+  service: string;
+  /** URL of the APROC service */
+  url: string;
+  /** Collections for which the task retrieval is allowed */
+  collections: string[];
+  /** Processes to hide from the user */
+  ignoredProcess?: string[];
+  /** If one task is not in a final state, interval in ms before refreshing the tasks */
+  taskRetrievalTimer?: number;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export abstract class TaskSettingsService {
+  public abstract getServiceTaskSettings(service: string): TaskSettings | undefined;
 }

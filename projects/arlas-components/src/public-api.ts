@@ -25,7 +25,7 @@ export { CogLegendComponent } from './lib/components/cog/cog-legend/cog-legend.c
 export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
 export { CogVisualisationConfig, DataGroup, VisualisationInterface } from './lib/components/cog/model';
-export { AwcColorGeneratorLoader, ColorGeneratorLoader } from './lib/components/componentsUtils';
+export { AwcColorGeneratorLoader, ColorGeneratorLoader, NUMBER_FORMAT_CHAR } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { MetricComponent } from './lib/components/metric/metric.component';
@@ -47,6 +47,7 @@ export { ResultFilterComponent } from './lib/components/results/result-filter/re
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
 export { ResultListComponent, SortedColumn } from './lib/components/results/result-list/result-list.component';
+export { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettings, TaskSettingsService } from './lib/components/results/utils/aias-process';
 export { DetailedDataRetriever, MatchInfo } from './lib/components/results/utils/detailed-data-retriever';
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';

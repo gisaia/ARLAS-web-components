@@ -84,8 +84,13 @@ export class ItemComponent {
    */
   public retrieveTasks(detailedDataRetriever: DetailedDataRetriever, item: Item) {
     if (detailedDataRetriever) {
-      detailedDataRetriever.getTasks(item.identifier)
-        .subscribe(tasks => item.tasks = tasks);
+      item.tasks = new Map();
+      const taskMap$ = detailedDataRetriever.getAllTasks(item.identifier);
+      taskMap$.forEach((t$, service) => {
+        t$.subscribe(tasks => {
+          item.tasks.set(service, tasks);
+        });
+      });
     }
   }
 }

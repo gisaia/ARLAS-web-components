@@ -1,7 +1,7 @@
 @if (visibleTasks().length > 0) {
 <div class="tasks">
     <div class="tasks__title">
-        {{ 'Status of tasks' | translate }}
+        {{ service() | translate }}
 
         <button mat-icon-button (click)="toggleTaskDisplay()" class="tasks__title__toggle"
                 [matTooltip]="(displayAllTasks() ? 'Show only latest' : 'Display all') | translate" [matTooltipPosition]="'above'">

@@ -18,7 +18,7 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipListbox, MatChipOption } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
@@ -26,7 +26,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
 import { DeltaTimePipe } from '../../../pipes/delta-time.pipe';
-import { AvailableProcess, Task } from '../utils/aias-process';
+import { Task, TaskSettingsService } from '../utils/aias-process';
 import { ProcessIconPipe } from './icons/process-icon-pipe';
 
 @Component({
@@ -49,8 +49,13 @@ import { ProcessIconPipe } from './icons/process-icon-pipe';
 export class ResultTasksComponent {
   public tasks = input.required<Task[]>();
 
+  public service = input.required<string>();
+
   /** List of processes to not display in the Task summary */
-  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
+  public ignoredProcesses = computed(() => {
+    const settings = this.taskService.getServiceTaskSettings(this.service());
+    return new Set(settings?.ignoredProcess ?? []);
+  });
 
   public visibleTasks = computed(() => this.tasks()
     .filter(t => !this.ignoredProcesses().has(t.processID))
@@ -62,6 +67,8 @@ export class ResultTasksComponent {
   public displayAllTasks = signal(false);
 
   public columnsToDisplay = ['process', 'status', 'created', 'duration'];
+
+  private readonly taskService = inject(TaskSettingsService);
 
   public toggleTaskDisplay() {
     this.displayAllTasks.set(!this.displayAllTasks());

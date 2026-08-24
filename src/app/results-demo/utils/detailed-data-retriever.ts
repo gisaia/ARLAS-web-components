@@ -1,4 +1,3 @@
-
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -88,7 +87,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: {} });
   }
 
-  public getTasks(identifier: string): Observable<Task[]> {
+  public getServiceTasks(identifier: string, service: string): Observable<Task[]> {
     const tasks: Task[] = [
       {
         processID: 'enrich',
@@ -126,5 +125,13 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     ];
 
     return of(tasks);
+  }
+
+  public getAllTasks(identifier: string): Map<string, Observable<Task[]>> {
+    const taskMap = new Map();
+    taskMap.set('AIAS APROC Service', this.getServiceTasks(identifier, ''));
+    taskMap.set('Other service', this.getServiceTasks(identifier, ''));
+
+    return taskMap;
   }
 }

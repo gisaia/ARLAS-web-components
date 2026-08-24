@@ -51,5 +51,9 @@ export interface DetailedDataRetriever {
 
   getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
 
-  getTasks(identifier: string): Observable<Task[]>;
+  /** Retrieves the tasks associated to an item for all services */
+  getAllTasks(identifier: string): Map<string, Observable<Task[]>>;
+
+  /** Retrieves the tasks associated to an item for one service */
+  getServiceTasks(identifier: string, service: string): Observable<Task[]>;
 }

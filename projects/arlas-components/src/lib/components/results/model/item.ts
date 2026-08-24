@@ -87,9 +87,9 @@ export class Item {
    */
   public actions = new Array<Action>();
   /**
-   * @description List of Tasks associated to this item
+   * @description List of Tasks associated to this item per service
    */
-  public tasks = new Array<Task>();
+  public tasks = new Map<string, Task[]>();
   /**
    * @description Whether to display the detailed data.
    */
