@@ -19,11 +19,15 @@
 
 @use "../result-detailed-item/detail.scss" as detail;
 
-$infoColor: #0c5460;
-$errorColor: #d43f3a;
-$successColor: #5cb85c;
-$progressColor: #337ab7;
-$dismissedColor: #5f5f5f;
+:host {
+    --arlas-resizable-th-border-color: white;
+}
+
+.dark-theme {
+    :host {
+        --arlas-resizable-th-border-color: var(--mat-sys-surface);
+    }
+}
 
 .tasks {
     --mat-table-header-container-height: 32px;
@@ -69,47 +73,6 @@ $dismissedColor: #5f5f5f;
             font-size: 20px;
             height: 20px;
             width: 20px;
-        }
-    }
-
-    &__status {
-        @include detail.value();
-
-        mat-chip-option {
-            --mat-chip-elevated-container-color: transparent;
-            --mat-chip-container-height: 24px;
-            --mat-chip-label-text-size: 12px;
-            margin: 4px 0;
-
-            ::ng-deep button {
-                cursor: unset;
-                overflow: clip;
-            }
-        }
-
-        &--successful {
-            color: $successColor;
-            border: 1px solid $successColor;
-        }
-
-        &--accepted {
-            color: $infoColor;
-            border: 1px solid $infoColor;
-        }
-
-        &--running {
-            color: $progressColor;
-            border: 1px solid $progressColor;
-        }
-
-        &--failed {
-            color: $errorColor;
-            border: 1px solid $errorColor;
-        }
-
-        &--dismissed {
-            color: $dismissedColor;
-            border: 1px solid $dismissedColor;
         }
     }
 

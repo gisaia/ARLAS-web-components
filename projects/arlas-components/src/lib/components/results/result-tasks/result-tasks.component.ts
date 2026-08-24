@@ -20,7 +20,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipListbox, MatChipOption } from '@angular/material/chips';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -28,6 +27,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DeltaTimePipe } from '../../../pipes/delta-time.pipe';
 import { Task, TaskSettingsService } from '../utils/aias-process';
 import { ProcessIconPipe } from './icons/process-icon-pipe';
+import { TaskStatusComponent } from './task-status/task-status.component';
 
 @Component({
   selector: 'arlas-result-tasks',
@@ -37,11 +37,10 @@ import { ProcessIconPipe } from './icons/process-icon-pipe';
     TranslatePipe,
     MatButtonModule,
     MatTooltip,
-    MatChipListbox,
-    MatChipOption,
     MatTableModule,
     DatePipe,
-    DeltaTimePipe
+    DeltaTimePipe,
+    TaskStatusComponent
 ],
   templateUrl: './result-tasks.component.html',
   styleUrl: './result-tasks.component.scss',

@@ -1,0 +1,66 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+@use '@angular/material' as mat;
+
+@mixin chip-color-border($color, $backgroundColor) {
+  @include mat.chips-overrides(
+    (
+      label-text-color: $color,
+      elevated-container-color: $backgroundColor,
+      container-shape-radius: 12px,
+      label-text-weight: 600,
+      label-text-size: 12px,
+      container-height: 24px
+    )
+  );
+}
+
+:host {
+    mat-chip-option {
+        margin: 4px 0;
+
+        ::ng-deep button {
+            cursor: unset;
+            overflow: clip;
+        }
+    }
+}
+
+.status-chip {
+    &--successful {
+        @include chip-color-border(var(--arlas-task-success-color, #166534), var(--arlas-task-success-background-color, #bbf7d0));
+    }
+
+    &--accepted {
+        @include chip-color-border(var(--arlas-task-info-color, #0c5460), var(--arlas-task-info-background-color, #e0f2fe));
+    }
+
+    &--running {
+        @include chip-color-border(var(--arlas-task-progress-color, #1d4ed8), var(--arlas-task-progress-background-color, #e1f5fe));
+    }
+
+    &--failed {
+        @include chip-color-border(var(--arlas-task-error-color, #991b1b), var(--arlas-task-error-background-color, #fecaca));
+    }
+
+    &--dismissed {
+        @include chip-color-border(var(--arlas-task-dismissed-color, #475569), var(--arlas-task-dismissed-background-color, #e2e8f0));
+    }
+}

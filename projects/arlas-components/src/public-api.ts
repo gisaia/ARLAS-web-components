@@ -47,6 +47,7 @@ export { ResultFilterComponent } from './lib/components/results/result-filter/re
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
 export { ResultListComponent, SortedColumn } from './lib/components/results/result-list/result-list.component';
+export { TaskStatusComponent } from './lib/components/results/result-tasks/task-status/task-status.component';
 export { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettings, TaskSettingsService } from './lib/components/results/utils/aias-process';
 export { DetailedDataRetriever, MatchInfo } from './lib/components/results/utils/detailed-data-retriever';
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';

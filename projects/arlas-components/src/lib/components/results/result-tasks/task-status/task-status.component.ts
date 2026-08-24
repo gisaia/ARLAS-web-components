@@ -17,28 +17,20 @@
  * under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { TaskStatus } from '../../utils/aias-process';
+import { Component, input } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Task } from '../../utils/aias-process';
 
-@Pipe({
-  name: 'taskStatusIcon',
+@Component({
+  selector: 'arlas-task-status',
+  imports: [
+    MatChipsModule,
+    TranslatePipe
+  ],
+  templateUrl: './task-status.component.html',
+  styleUrl: './task-status.component.scss',
 })
-export class TaskStatusIconPipe implements PipeTransform {
-
-  public transform(status: TaskStatus): string {
-    switch (status) {
-      case TaskStatus.accepted:
-        return 'play_for_work';
-      case TaskStatus.running:
-        return 'progress_activity';
-      case TaskStatus.successful:
-        return 'check';
-      case TaskStatus.failed:
-        return 'error';
-      case TaskStatus.dismissed:
-        return 'cancel';
-      default:
-        return 'question_mark';
-    };
-  }
+export class TaskStatusComponent {
+  public task = input.required<Task>();
 }
