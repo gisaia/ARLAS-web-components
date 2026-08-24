@@ -20,6 +20,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -40,7 +41,8 @@ import { TaskStatusComponent } from './task-status/task-status.component';
     MatTableModule,
     DatePipe,
     DeltaTimePipe,
-    TaskStatusComponent
+    TaskStatusComponent,
+    MatButtonToggleModule
 ],
   templateUrl: './result-tasks.component.html',
   styleUrl: './result-tasks.component.scss',
@@ -60,8 +62,10 @@ export class ResultTasksComponent {
     .filter(t => !this.ignoredProcesses().has(t.processID))
     // Most recent should be first
     .sort((a, b) => b.created - a.created)
-    .filter((_, idx) => this.displayAllTasks() ? true : idx === 0)
   );
+
+  public tableTasks = computed(() => this.visibleTasks()
+    .filter((_, idx) => this.displayAllTasks() ? true : idx === 0));
 
   public displayAllTasks = signal(false);
 
@@ -69,7 +73,7 @@ export class ResultTasksComponent {
 
   private readonly taskService = inject(TaskSettingsService);
 
-  public toggleTaskDisplay() {
-    this.displayAllTasks.set(!this.displayAllTasks());
+  public toggleTaskDisplay(displayAll: boolean) {
+    this.displayAllTasks.set(displayAll);
   }
 }

@@ -166,11 +166,6 @@ tr {
   background-color:  var(--arlas-result-list-detail-background-color, white);
 
   &--card {
-    // Align toggle with the card toggle
-    .tasks__title__toggle {
-      right: 0 !important;
-    }
-
     // Because table cells don't have a width in card mode, the height needs to be set through css
     .checkboxcell {
       width: 25px;

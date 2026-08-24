@@ -3,13 +3,17 @@
     <div class="tasks__title">
         {{ service() | translate }}
 
-        <button mat-icon-button (click)="toggleTaskDisplay()" class="tasks__title__toggle"
-                [matTooltip]="(displayAllTasks() ? 'Show only latest' : 'Display all') | translate" [matTooltipPosition]="'above'">
-            <mat-icon>{{ displayAllTasks() ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
-        </button>
+        @if (visibleTasks().length > 1) {
+        <mat-button-toggle-group class="tasks__title__toggle" (valueChange)="toggleTaskDisplay($event)" [hideSingleSelectionIndicator]="true">
+            <mat-button-toggle [checked]="displayAllTasks()" [value]="true" [matTooltip]="'Show all tasks' | translate">
+                {{ 'All' | translate }}</mat-button-toggle>
+            <mat-button-toggle [checked]="!displayAllTasks()" [value]="false" [matTooltip]="'Show only latest tasks' | translate">
+                {{ 'Latest' | translate }}</mat-button-toggle>
+        </mat-button-toggle-group>
+        }
     </div>
 
-    <table mat-table [dataSource]="visibleTasks()" class="tasks__table">
+    <table mat-table [dataSource]="tableTasks()" class="tasks__table">
         <!-- Process Column -->
         <ng-container matColumnDef="process">
             <th mat-header-cell *matHeaderCellDef>{{ 'Process' | translate }}</th>

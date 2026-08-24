@@ -17,6 +17,7 @@
  * under the License.
  */
 
+@use '@angular/material' as mat;
 @use "../result-detailed-item/detail.scss" as detail;
 
 :host {
@@ -38,26 +39,23 @@
 
     &__title {
         @include detail.title();
-        position: relative;
+        display: flex;
+        justify-content: space-between;
 
         &__toggle {
-            --mat-icon-button-touch-target-size: 18px;
-            --mat-icon-button-state-layer-size: 18px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            @include mat.button-toggle-overrides((
+                height: 24px,
+                label-text-size: 12px
+            ));
 
-            position: absolute;
-            right: 6px;
-            // Center the button on the header of the table
-            bottom: calc(-1 * (var(--mat-table-header-container-height) - var(--mat-icon-button-touch-target-size)) / 2);
-            transform: translateY(100%);
-
-            mat-icon {
-                font-size: 18px;
-                height: 18px;
-                width: 18px;
+            ::ng-deep .mat-button-toggle-label-content {
+                padding: 0 6px;
+            }
+            ::ng-deep .mat-button-toggle-checkbox-wrapper {
+                left: 6px;
+            }
+            ::ng-deep .mat-button-toggle-checked .mat-button-toggle-button:has(.mat-button-toggle-checkbox-wrapper) {
+                padding-left: 24px;
             }
         }
     }

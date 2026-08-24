@@ -124,13 +124,16 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       }
     ];
 
-    return of(tasks);
+    if (service === 'AIAS APROC Service') {
+      return of(tasks);
+    }
+    return of(tasks.slice(0, 1));
   }
 
   public getAllTasks(identifier: string): Map<string, Observable<Task[]>> {
     const taskMap = new Map();
-    taskMap.set('AIAS APROC Service', this.getServiceTasks(identifier, ''));
-    taskMap.set('Other service', this.getServiceTasks(identifier, ''));
+    taskMap.set('AIAS APROC Service', this.getServiceTasks(identifier, 'AIAS APROC Service'));
+    taskMap.set('Other service', this.getServiceTasks(identifier, 'Other service'));
 
     return taskMap;
   }
