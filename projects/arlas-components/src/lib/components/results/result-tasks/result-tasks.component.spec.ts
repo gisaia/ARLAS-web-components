@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { Task, TaskStatus } from '../utils/aias-process';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { Task, TaskSettingsService, TaskStatus } from '../utils/aias-process';
 import { ResultTasksComponent } from './result-tasks.component';
 
 describe('ResultTasksComponent', () => {
@@ -15,6 +15,14 @@ describe('ResultTasksComponent', () => {
         TranslateModule.forRoot({
           loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
         })
+      ],
+      providers: [
+        {
+          provide: TaskSettingsService,
+          useValue: {
+            getServiceTaskSettings: vi.fn()
+          }
+        }
       ]
     })
     .compileComponents();
@@ -35,6 +43,7 @@ describe('ResultTasksComponent', () => {
       }
     ];
     fixture.componentRef.setInput('tasks', tasks);
+    fixture.componentRef.setInput('service', 'AIAS APROC Service');
     await fixture.whenStable();
   });
 
