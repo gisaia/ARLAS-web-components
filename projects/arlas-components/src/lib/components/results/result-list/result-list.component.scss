@@ -54,7 +54,7 @@
     --arlas-list-tbody-background: var(--mat-sys-background);
     --arlas-resultilist-hover-bg-color: var(--mat-sys-surface-container);
     --arlas-resultilist-detail-bg-color: var(--mat-sys-surface);
-    --arlas-resizable-cursor-color: lightgrey;
+    --arlas-resizable-cursor-color: var(--arlas-resultlist-border-color);
     --arlas-sys-resizable-column-background: var(--mat-sys-surface);
     --arlas-resizable-th-border-color: var(--mat-sys-background);
   }
@@ -62,7 +62,7 @@
 
 .resultlist {
   --arlas-resizable-th-border-color: var(--arlas-resultlist-border-color);
-  --arlas-resizable-cursor-color: white;
+  --arlas-resizable-cursor-color: var(--arlas-resultlist-border-color);
   --arlas-result-grid-tile-actions-bg: var(--mat-sys-background); /* was white */
   --arlas-result-grid-tile-container-bg: var(--mat-sys-background); /* was #fff */
   --arlas-result-grid-tile-container-color: var(--mat-sys-on-background); /* was #000 */
@@ -281,9 +281,14 @@ tr {
 }
 
 .resultlist__thead__tr {
-  display: block;
+  display: flex;
+  align-items: center;
   position: relative;
   width: 100%;
+}
+
+.resultlist__filter {
+  height: 48px;
 }
 
 .resultlist__tbody {

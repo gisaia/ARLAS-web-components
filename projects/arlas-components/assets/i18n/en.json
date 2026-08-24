@@ -25,7 +25,7 @@
 	"Cannot be applied to all of the currently visualised elements": "Cannot be applied to all of the currently visualised elements",
 	"Cancel": "Cancel",
 	"maxRow must be greater than 0": "maxRow must be greater than 0",
-	"Filter on": "Filter on",
+	"Filter on": "Filter on {{column}}",
 	"Global actions": "Global actions",
 	"Geo sort action": "Sort according to the distance to the map center",
 	"Grid mode": "Grid mode",

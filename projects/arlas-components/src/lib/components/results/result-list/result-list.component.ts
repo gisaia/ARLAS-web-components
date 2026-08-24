@@ -155,7 +155,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @constant
    */
-  public FILTERS_HEIGHT = 50;
+  public FILTERS_HEIGHT = 48;
 
   /**
    * @constant
