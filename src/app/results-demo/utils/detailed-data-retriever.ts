@@ -101,7 +101,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         resourceID: identifier
       },
       {
-        processID: 'ingest',
+        processID: 'order',
         type: 'process',
         jobID: '',
         status: TaskStatus.accepted,

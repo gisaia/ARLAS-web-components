@@ -30,7 +30,10 @@ export class AwcTaskSettingsService implements TaskSettingsService {
         enabled: true,
         url: '',
         collections: [],
-        taskRetrievalTimer: service === 'AIAS APROC Service' ? DEFAULT_TASK_RETRIEVAL_INTERVAL : 7000
+        taskRetrievalTimer: service === 'AIAS APROC Service' ? DEFAULT_TASK_RETRIEVAL_INTERVAL : 7000,
+        processIcons: {
+            'order': 'satellite_alt'
+        }
     };
   }
 }

@@ -17,15 +17,23 @@
  * under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
-import { AvailableProcess } from '../../utils/aias-process';
+import { inject, Pipe, PipeTransform } from '@angular/core';
+import { TaskSettingsService } from '../../utils/aias-process';
 
 @Pipe({
   name: 'processIcon',
 })
 export class ProcessIconPipe implements PipeTransform {
+  private readonly taskSettingsService = inject(TaskSettingsService);
 
-  public transform(processID: AvailableProcess): unknown {
+  public transform(processID: string, service: string): string {
+    // Check processes defined in the dashboard
+    const settings = this.taskSettingsService.getServiceTaskSettings(service);
+    if (settings?.processIcons?.[processID]) {
+      return settings.processIcons[processID];
+    }
+
+    // If not found, then check the pre-configured AIAS processes
     switch (processID) {
       case 'ingest':
         return 'add_photo_alternate';
@@ -37,8 +45,9 @@ export class ProcessIconPipe implements PipeTransform {
         return 'download';
       case 'dc3build':
         return 'deployed_code';
-      default:
-        return 'question_mark';
     }
+
+    // Return unknown icon
+    return 'question_mark';
   }
 }

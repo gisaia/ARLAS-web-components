@@ -27,10 +27,8 @@ export enum TaskStatus {
   dismissed = 'dismissed'
 }
 
-export type AvailableProcess = 'download' | 'ingest' | 'directory_ingest' | 'enrich' | 'dc3build';
-
 export interface Task {
-  processID: AvailableProcess;
+  processID: string;
   type: string;
   jobID: string;
   status: TaskStatus;
@@ -60,6 +58,8 @@ export interface TaskSettings {
   ignoredProcess?: string[];
   /** If one task is not in a final state, interval in ms before refreshing the tasks */
   taskRetrievalTimer?: number;
+  /** Map of processes and the icon to display for them */
+  processIcons?: Record<string, string>;
 }
 
 @Injectable({

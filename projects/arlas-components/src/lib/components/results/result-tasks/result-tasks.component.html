@@ -19,7 +19,7 @@
             <th mat-header-cell *matHeaderCellDef>{{ 'Process' | translate }}</th>
             <td mat-cell *matCellDef="let task">
                 <mat-icon [matTooltip]="task.processID | translate" [matTooltipPosition]="'before'">
-                    {{ task.processID | processIcon }}
+                    {{ task.processID | processIcon:service() }}
                 </mat-icon>
             </td>
         </ng-container>
