@@ -1,10 +1,10 @@
-<div class="meta-data-entry__container"   [matTooltip]="metadataEntry().tooltip">
-  @if (metadataEntry().icon && !valueIsEmpty()) {
+<div class="meta-data-entry__container" [matTooltip]="metadataEntry().tooltip">
+  @if (metadataEntry().icon) {
     <span class="meta-data-entry__icon">
       <mat-icon class="small-icon">{{ metadataEntry().icon }}</mat-icon>
     </span>
   }
-  <span class="meta-data-entry__value" >{{ !valueIsEmpty() ? ($any(metadataEntry().value) | formatNumber:NUMBER_FORMAT_CHAR) : NO_VALUE }}
+  <span class="meta-data-entry__value">{{ !valueIsEmpty() ? ($any(metadataEntry().value) | formatNumber:NUMBER_FORMAT_CHAR) : NO_VALUE }}
     @if (!valueIsEmpty() ){
       {{ metadataEntry().unit }}
     }

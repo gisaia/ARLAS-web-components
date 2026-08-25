@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import {Component, effect, input, signal, untracked} from '@angular/core';
-import {Item} from '../model/item';
-import {MetaDataEntry, CardResultItemMetadataEntryComponent} from '../result-metadata-entry/card-result-item-metadata-entry.component';
-import {CardField} from '../model/cardField';
-import {buildCardItemField} from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
+import { Component, effect, input, signal, untracked } from '@angular/core';
+import { buildCardItemField } from '../../../pipes/get-item-data-value/get-item-data-value.pipe';
+import { CardField } from '../model/cardField';
+import { Item } from '../model/item';
+import { CardResultItemMetadataEntryComponent, MetaDataEntry } from '../result-metadata-entry/card-result-item-metadata-entry.component';
 
 @Component({
   selector: 'arlas-result-card-item-entries',

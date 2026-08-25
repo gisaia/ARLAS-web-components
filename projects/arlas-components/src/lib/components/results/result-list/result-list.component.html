@@ -4,17 +4,13 @@
       @if (displayFilters) {
         <tr class="resultlist__filter resultlist__thead__tr">
           @for (column of columns; track column) {
-            @if (column.isIdField) {
-              <td [style.width.px]="column.width">
-                <span class="resultlist__header--columns--hidden"></span>
-              </td>
-            } @else if (column.isToggleField) {
+            @if (column.isIdField || column.isToggleField) {
               <td [style.width.px]="column.width">
                 <span class="resultlist__header--columns--hidden"></span>
               </td>
             } @else  {
               <td arlas-result-filter class="resultlist__filter__{{column.columnName}}"
-                [matTooltip]="(FILTER_ON | translate) + (column.columnName | translate)" [style.width.px]="column.width"
+                [matTooltip]="FILTER_ON | translate:{ column: column.columnName | translate }" [style.width.px]="column.width"
                 [column]="column" [dropdownValues]="(dropDownMapValues.get(column.fieldName) | async) ?? []" [filtersMap]="filtersMap"
                 (columnChanged)="columnChanged($event)" (setFiltersEvent)="setFilters($event)">
               </td>
@@ -159,7 +155,7 @@
       [nbLinesBeforeFetch]="(nbLinesBeforeFetch !== undefined) ? nbLinesBeforeFetch : (nLastLines ?? 5)" [fetchState]="fetchState"
       [resultMode]="resultMode" (visibleItems)="emitVisibleItems($event)"
       (nextDataEvent)="paginate($event, PageEnum.next)" (previousDataEvent)="paginate($event, PageEnum.previous)">
-      <mat-grid-list cols="{{nbGridColumns}}" rowHeight="1:1" [style.display]="displayListGrid">
+      <mat-grid-list [cols]="nbGridColumns" rowHeight="1:1">
         @for (rowItem of items; track $index) {
           @let id = rowItem.identifier;
           @if (resultMode === ModeEnum.list) {
@@ -184,7 +180,7 @@
               </tr>
             }
           } @else if (resultMode === ModeEnum.card) {
-            <arlas-resul-card-item [rowItem]="rowItem"
+            <arlas-result-card-item [rowItem]="rowItem"
                                       [class]="`resultlist__card-tile resultlist__body--item-hover-${rowItem.ishighLight}`"
                                       [id]="id"
                                       [idFieldName]="fieldsConfiguration().idFieldName"
@@ -196,14 +192,14 @@
                                       (actionOnItemEvent)="triggerActionOnItem($event)"
                                       (mouseenter)="onEnterItem(rowItem)"
                                       (mouseleave)="onLeaveItem(rowItem)"
-            ></arlas-resul-card-item>
+            ></arlas-result-card-item>
             @if (rowItem.isDetailToggled) {
-              <tr arlas-result-detailed-item class="resultlist__body--detailed-item resultlist__body--detailed-item--card"
+              <tr arlas-result-detailed-item class="resultlist__body--detailed-item resultlist__body--detailed-item--card" [style.width.px]="tableWidth"
                   (mouseenter)="onEnterItem(rowItem)" (mouseleave)="onLeaveItem(rowItem)"
                   [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
                   [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                   [idFieldName]="fieldsConfiguration().idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
-                  [containerType]="'grid'" [ignoredProcesses]="ignoredProcesses()"
+                  [containerType]="'list'" [ignoredProcesses]="ignoredProcesses()"
                   (itemDetailToggleEvent)="onItemDetailToggle($event)">
               </tr>
             }

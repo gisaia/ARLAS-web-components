@@ -16,31 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ModeEnum } from './enumerations/modeEnum';
+import { ResultlistModeEnum } from './enumerations/resultlistModeEnum';
 
 
 /**
  * For retro compatibility; In previous conf the value passed to defaultMode was grid or list.
  * But the value stand for an enum.
  **/
-export function stringEnumToModeEnum(value: string){
-
+export function stringToResultlistModeEnum(value: string): ResultlistModeEnum {
   const isNumeric = !Number.isNaN(Number(value)) && value.trim() !== '';
-  if(isNumeric){
-    return Number(value) as unknown as ModeEnum;
-  }
 
-  // Part for retro compatibility
-  switch (value) {
-    case 'grid' :
-      return ModeEnum.grid;
-
-    case 'list' :
-      return ModeEnum.list;
-
-    case 'card' :
-      return ModeEnum.card;
-    default:
-      return  ModeEnum.list;
+  if (isNumeric) {
+    switch (Number(value)) {
+      case 0:
+        return ResultlistModeEnum.list;
+      case 1:
+        return ResultlistModeEnum.grid;
+      case 2:
+        return ResultlistModeEnum.card;
+      default:
+        return ResultlistModeEnum.list;
+    }
+  } else {
+    // Part for retro compatibility
+    switch (value) {
+      case 'grid' :
+        return ResultlistModeEnum.grid;
+      case 'list' :
+        return ResultlistModeEnum.list;
+      case 'card' :
+        return ResultlistModeEnum.card;
+      default:
+        return ResultlistModeEnum.list;
+    }
   }
 }

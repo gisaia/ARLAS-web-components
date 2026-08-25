@@ -17,6 +17,28 @@
  * under the License.
  */
 
+:host {
+  --mat-form-field-container-vertical-padding: 0;
+  --mat-form-field-container-height: 34px;
+
+  ::ng-deep {
+    .mdc-text-field {
+      padding: 0 8px;
+    }
+
+    .mat-mdc-form-field-infix {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  mat-select {
+    ::ng-deep .cdk-overlay-pane {
+      width: unset !important;
+    }
+  }
+}
+
 .resultlist__header--filters /* @doc Sets filters container style.*/
 {
   margin: 0;

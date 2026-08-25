@@ -54,15 +54,15 @@ import { ResultItemComponent } from '../result-item/result-item.component';
 import { AvailableProcess, TaskStatus } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
-import { ModeEnum } from '../utils/enumerations/modeEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
+import { ResultlistModeEnum } from '../utils/enumerations/resultlistModeEnum';
 import { SortEnum } from '../utils/enumerations/sortEnum';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { ResizableColumnDirective, ResizableTableDirective } from '../utils/resizable-column.directive';
 import {
   Action, ElementIdentifier, FieldsConfiguration, ItemDataType, matchAndReplace, PageQuery, ResultListOptions
 } from '../utils/results.utils';
-import { stringEnumToModeEnum } from '../utils/stringEnumToModeEnum';
+import { stringToResultlistModeEnum } from '../utils/stringToResultlistModeEnum';
 
 /**
  * Structure summarizing the sort on a column
@@ -155,7 +155,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @constant
    */
-  public FILTERS_HEIGHT = 50;
+  public FILTERS_HEIGHT = 48;
 
   /**
    * @constant
@@ -267,7 +267,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Input : Angular
    * @description Mode of representation : `list` or `grid`.
    */
-  @Input() public defautMode = ModeEnum.grid;
+  @Input() public defautMode = ResultlistModeEnum.grid;
 
   /**
  * @Input : Angular
@@ -466,7 +466,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the event of clicking on the switch mode button. Emits the new mode (grid or list).
    */
-  @Output() public changeResultMode: Subject<ModeEnum> = new Subject<ModeEnum>();
+  @Output() public changeResultMode: Subject<ResultlistModeEnum> = new Subject<ResultlistModeEnum>();
 
   /**
    * @Output : Angular
@@ -508,7 +508,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public tbodyHeight?: number;
   public theadHeight?: number;
 
-  public ModeEnum = ModeEnum;
+  public ModeEnum = ResultlistModeEnum;
   public ThumbnailFitEnum = ThumbnailFitEnum;
   public PageEnum = PageEnum;
   public SortEnum = SortEnum;
@@ -519,10 +519,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public isNextPageRequested = false;
   public isPreviousPageRequested = false;
-  public resultMode = ModeEnum.grid;
+  public resultMode = ResultlistModeEnum.grid;
   public allItemsChecked = false;
 
-  public displayListGrid = 'inline';
   public isShiftDown = false;
 
   private readonly debouncer = new Subject<ElementIdentifier>();
@@ -894,16 +893,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * Update result mode to display data according to user selection
    */
   public updateResultMode(value: string){
-    const enumFound = stringEnumToModeEnum(value);
-    if (enumFound === ModeEnum.grid) {
-      this.resultMode = ModeEnum.grid;
-      this.displayListGrid = 'block';
-    } else if (enumFound === ModeEnum.card) {
-      this.resultMode = ModeEnum.card;
-      this.displayListGrid = 'block';
+    const enumFound = stringToResultlistModeEnum(value);
+    if (enumFound === ResultlistModeEnum.grid) {
+      this.resultMode = ResultlistModeEnum.grid;
+    } else if (enumFound === ResultlistModeEnum.card) {
+      this.resultMode = ResultlistModeEnum.card;
     }  else  {
-      this.resultMode = ModeEnum.list;
-      this.displayListGrid = 'inline';
+      this.resultMode = ResultlistModeEnum.list;
     }
     this.changeResultMode.next(this.resultMode);
     this.setTableHeight();
@@ -1180,14 +1176,14 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     if (!!tableElement && tableElement.getBoundingClientRect().height !== 0) {
       this.theadHeight = this.COLUMN_ACTIONS_HEIGHT +
         // Only in list mode
-        this.COLUMN_NAME_HEIGHT * (this.resultMode === ModeEnum.list ? 1 : 0) +
+        this.COLUMN_NAME_HEIGHT * (this.resultMode === ResultlistModeEnum.list ? 1 : 0) +
         // Only if filters are present
         this.FILTERS_HEIGHT * (this.displayFilters ? 1 : 0);
       this.tbodyHeight = tableElement.getBoundingClientRect().height - this.theadHeight -
         // Only if the list is in grid mode
-        this.TAIL_HEIGHT * (this.resultMode === ModeEnum.grid ? 1 : 0) -
+        this.TAIL_HEIGHT * (this.resultMode === ResultlistModeEnum.grid ? 1 : 0) -
         // Only if the list is in grid mode and has an element selected
-        this.detailedGridHeight * (this.resultMode === ModeEnum.grid ? 1 : 0) * (this.isDetailledGridOpen ? 1 : 0);
+        this.detailedGridHeight * (this.resultMode === ResultlistModeEnum.grid ? 1 : 0) * (this.isDetailledGridOpen ? 1 : 0);
       this.cdr.detectChanges();
     } else {
       // If the container has no height then try again for up to 10 times
