@@ -16,34 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+@forward './tokens';
+@forward './dark-theme-colors';
 
-:host {
-  --mat-form-field-container-vertical-padding: 0;
-  --mat-form-field-container-height: 34px;
-
-  ::ng-deep {
-    .mdc-text-field {
-      padding: 0 8px;
-    }
-
-    .mat-mdc-form-field-infix {
-      display: flex;
-      align-items: center;
-    }
-  }
-
-  mat-select {
-    ::ng-deep .cdk-overlay-pane {
-      width: unset !important;
-    }
-  }
-}
-
-.resultlist__header--filters /* @doc Sets filters container style.*/
-{
-  margin: 0;
-  background: var(--arlas-result-filter-background, var(--mat-sys-surface-container));
-  border: var(--arlas-result-filter-border, 1px solid lightgrey);
-  color:var(--arlas-result-filter-text-color, var(--mat-sys-on-background));
-  border-radius: 3px;
-}

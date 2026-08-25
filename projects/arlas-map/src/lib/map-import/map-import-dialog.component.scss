@@ -48,7 +48,7 @@
 }
 
 .mapgl-import-error {
-  color: var(--arlas-map-import-dialog-error-color);
+  color: var(--arlas-map-import-dialog-error-color, var(--mat-sys-error));
   font-size: 75%;
 }
 

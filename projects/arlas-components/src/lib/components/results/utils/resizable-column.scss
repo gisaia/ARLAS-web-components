@@ -62,7 +62,7 @@
   }
 
   &-cursor {
-    background: var(--arlas-resizable-cursor-color);
+    background: var(--arlas-resizable-cursor-color, var(--arlas-resultlist-border-color));
     position: absolute;
     top: 0;
     height: 100%;
@@ -84,11 +84,11 @@
   border-left-style:  solid;
   border-left-width: 1px;
   border-right-width: 1px;
-  border-left-color: var(--arlas-sys-resizable-column-background, white);
-  border-right-color: var(--arlas-sys-resizable-column-background, white);
+  border-left-color: var(--arlas-resizable-column-background, var(--mat-sys-surface-variant));
+  border-right-color: var(--arlas-resizable-column-background, var(--mat-sys-surface-variant));
 }
 
 .arlas-resizable-table:not(.cdk-drop-list-dragging) thead:hover th {
-  border-left-color: var(--arlas-resizable-th-border-color);
-  border-right-color: var(--arlas-resizable-th-border-color);
+  border-left-color: var(--arlas-resizable-th-border-color, lightgrey);
+  border-right-color: var(--arlas-resizable-th-border-color, lightgrey);
 }

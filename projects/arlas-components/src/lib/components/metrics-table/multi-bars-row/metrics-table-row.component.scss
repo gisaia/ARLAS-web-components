@@ -19,7 +19,6 @@
 
 :host {
   display: table-row-group;
-  --arlas-metrics-table-row-empty-border-color: var(--mat-sys-on-surface);
   ::ng-deep {
     arlas-powerbar {
       .powerbars__powerbar--count {
@@ -68,7 +67,7 @@
     }
 
     .checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
-      border-color: var(--arlas-metrics-table-row-checkbox-border-color, rgba(0, 0, 0, .04)) !important;
+      border-color: var(--arlas-metrics-table-row-checkbox-border-color, color-mix(in srgb, var(--mat-sys-on-surface) 40%, transparent)) !important;
     }
 
   }

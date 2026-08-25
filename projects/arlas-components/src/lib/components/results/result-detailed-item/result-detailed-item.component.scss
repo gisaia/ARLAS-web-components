@@ -19,25 +19,13 @@
 
 @use "./detail.scss" as detail;
 
-:host {
-  --arlas-result-detailed-item-title-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-detailed-item-actions-bg: var(--mat-sys-background); /* was white */
-  --arlas-result-detailed-item-attachments-title-color: #322d90; /* was #322d90 - kept as-is */
-}
-
-.dark-theme {
-  :host {
-    --arlas-result-detailed-item-key-color: #b7b7b7;
-  }
-}
-
 .grid-container {
   overflow-y: auto;
   display: block;
   height: 100%;
   padding: 0;
   .details-title {
-    background-color: var(--arlas-result-detailed-item-title-bg, white);
+    background-color: var(--arlas-result-detailed-item-title-background, var(--mat-sys-background));
     position: sticky;
     top: 0px;
   }
@@ -79,7 +67,7 @@
     &--sticky {
       position: sticky;
       bottom: 0;
-      background-color: var(--arlas-result-detailed-item-actions-bg, white);
+      background-color: var(--arlas-result-detailed-item-actions-background, var(--mat-sys-background));
     }
   }
 }

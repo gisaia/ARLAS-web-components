@@ -17,12 +17,9 @@
  * under the License.
  */
 :host{
-  --arlas-result-card-item-bg: var(--mat-sys-surface); /* was white */
-  --arlas-result-card-item-line-bg: blue; /* was blue - kept as-is */
-
   display: block;
   height: 116px; // item height
-  background: var(--arlas-result-card-item-bg, white);
+  background: var(--arlas-result-card-item-background,  var(--mat-sys-surface));
   --image-dimension: 100px;
 
   ::ng-deep  .card__image {
@@ -34,7 +31,7 @@
       width: 17px;
       height: 17px;
       display: none;
-      background: var(--arlas-result-card-item-image-bg, rgba(255,255,255,0.8));
+      background: var(--arlas-result-card-item-image-background, var(--mat-sys-background));
       border-radius: 5px;
       margin-left: 0;
     }
@@ -46,9 +43,9 @@
  */
 .dark-theme{
   :host {
-    --arlas-result-card-item-image-bg: var(--mat-sys-background);
-    --arlas-result-thumbnail-list-icon-bg: var(--mat-sys-background);
-    --arlas-result-thumbnail-action-btn-bg:  var(--mat-sys-background);
+    --arlas-result-card-item-image-background: var(--mat-sys-background);
+    --arlas-result-thumbnail-list-icon-background: var(--mat-sys-background);
+    --arlas-result-thumbnail-action-btn-background:  var(--mat-sys-background);
   }
 }
 
@@ -88,7 +85,7 @@
 
     &-item-line{
       height: 20px;
-      background: var(--arlas-result-card-item-line-bg, blue);
+      background: var(--arlas-result-card-item-line-background, blue);
       display: flex;
     }
 

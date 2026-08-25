@@ -3,10 +3,11 @@
 <div id="{{id}}" class="map__container">
   @if (visualisationSetsConfig.length > 0) {
     <div class="map__visu-list">
-      <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
-        <mat-icon (click)="legendOpen=!legendOpen" (keyDown)="legendOpen=!legendOpen">layers</mat-icon>
+      <div class="map__legend-wrapper">
+        <div class="map__legend-button" [matTooltipPosition]="'left'" matTooltip="{{'Manage layers' | translate}}">
+          <mat-icon (click)="legendOpen=!legendOpen" (keyDown)="legendOpen=!legendOpen">layers</mat-icon>
+        </div>
       </div>
-
       @if (mapInstance) {
       <div [hidden]="!legendOpen" class="map__visu-list--container" cdkDropList
         (cdkDropListDropped)="drop($event)">
