@@ -166,7 +166,7 @@ $tertiary-palette: mat.m2-define-palette(map.get($m2-dark-palette, tertiary), 50
 $secondary-palette: mat.m2-define-palette(map.get($m2-dark-palette, accent), 500);
 
 /**
- Dark theme overrid. Cause for m2 theme variables are hardcoded in theme mixin
+ Dark theme override. Cause for m2 theme variables are hardcoded in theme mixin
  */
 $dark-theme-color-override-map: (
   background: #0B0F19,
