@@ -62,7 +62,7 @@
   }
 
   &-cursor {
-    background: var(--arlas-resizable-cursor-color, var(--mat-sys-surface-variant));
+    background: var(--arlas-resizable-cursor-color, var(--arlas-resultlist-border-color));
     position: absolute;
     top: 0;
     height: 100%;
