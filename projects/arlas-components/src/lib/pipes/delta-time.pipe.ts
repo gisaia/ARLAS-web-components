@@ -17,19 +17,22 @@
  * under the License.
  */
 
-import { of } from 'rxjs';
-import { vi } from 'vitest';
-import { Item } from '../components/results/model/item';
-import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
+import { Pipe, PipeTransform } from '@angular/core';
+import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
 
-export const mockRowItem = new Item([], [], new Map(), '', 0);
+@Pipe({
+  name: 'deltaTime'
+})
+export class DeltaTimePipe implements PipeTransform {
 
-export const mockDetailedDataRetriever = {
-    detailsConfig: [],
-    getActions: vi.fn(() => of([])),
-    getData: vi.fn(),
-    getMatch: vi.fn(),
-    getValues: vi.fn(),
-    getAllTasks: vi.fn(),
-    getServiceTasks: vi.fn()
-} as DetailedDataRetriever;
+  public transform(deltaTime: number | undefined): string {
+    momentDurationFormatSetup(moment);
+    if (deltaTime === undefined) {
+      return '';
+    }
+
+    return moment.duration(deltaTime, 'milliseconds').format();
+  }
+
+}

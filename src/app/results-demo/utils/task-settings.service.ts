@@ -17,19 +17,23 @@
  * under the License.
  */
 
-import { of } from 'rxjs';
-import { vi } from 'vitest';
-import { Item } from '../components/results/model/item';
-import { DetailedDataRetriever } from '../components/results/utils/detailed-data-retriever';
+import { Injectable } from '@angular/core';
+import { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettings, TaskSettingsService } from 'arlas-web-components';
 
-export const mockRowItem = new Item([], [], new Map(), '', 0);
-
-export const mockDetailedDataRetriever = {
-    detailsConfig: [],
-    getActions: vi.fn(() => of([])),
-    getData: vi.fn(),
-    getMatch: vi.fn(),
-    getValues: vi.fn(),
-    getAllTasks: vi.fn(),
-    getServiceTasks: vi.fn()
-} as DetailedDataRetriever;
+@Injectable({
+  providedIn: 'root'
+})
+export class AwcTaskSettingsService implements TaskSettingsService {
+  public getServiceTaskSettings(service: string): TaskSettings | undefined {
+    return {
+        service,
+        enabled: true,
+        url: '',
+        collections: [],
+        taskRetrievalTimer: service === 'AIAS APROC Service' ? DEFAULT_TASK_RETRIEVAL_INTERVAL : 7000,
+        processIcons: {
+            'order': 'satellite_alt'
+        }
+    };
+  }
+}

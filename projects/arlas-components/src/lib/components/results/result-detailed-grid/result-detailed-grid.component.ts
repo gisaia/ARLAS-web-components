@@ -33,7 +33,6 @@ import { Subject, tap } from 'rxjs';
 import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
 import { Item } from '../model/item';
 import { ItemDetailToggleEvent, ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
-import { AvailableProcess } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
 
@@ -116,9 +115,6 @@ s   * @constant
    * @description Default img
    */
   public noViewImg = input<string>('assets/no-view.png');
-
-  /** List of processes to not display in the Task summary */
-  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
 
   /**
    * @Output

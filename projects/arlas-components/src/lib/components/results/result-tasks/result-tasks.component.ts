@@ -18,15 +18,17 @@
  */
 
 import { DatePipe } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipListbox, MatChipOption } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AvailableProcess, Task } from '../utils/aias-process';
+import { DeltaTimePipe } from '../../../pipes/delta-time.pipe';
+import { Task, TaskSettingsService } from '../utils/aias-process';
 import { ProcessIconPipe } from './icons/process-icon-pipe';
+import { TaskStatusComponent } from './task-status/task-status.component';
 
 @Component({
   selector: 'arlas-result-tasks',
@@ -36,10 +38,11 @@ import { ProcessIconPipe } from './icons/process-icon-pipe';
     TranslatePipe,
     MatButtonModule,
     MatTooltip,
-    MatChipListbox,
-    MatChipOption,
     MatTableModule,
-    DatePipe
+    DatePipe,
+    DeltaTimePipe,
+    TaskStatusComponent,
+    MatButtonToggleModule
 ],
   templateUrl: './result-tasks.component.html',
   styleUrl: './result-tasks.component.scss',
@@ -47,8 +50,13 @@ import { ProcessIconPipe } from './icons/process-icon-pipe';
 export class ResultTasksComponent {
   public tasks = input.required<Task[]>();
 
+  public service = input.required<string>();
+
   /** List of processes to not display in the Task summary */
-  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
+  public ignoredProcesses = computed(() => {
+    const settings = this.taskService.getServiceTaskSettings(this.service());
+    return new Set(settings?.ignoredProcess ?? []);
+  });
 
   public visibleTasks = computed(() => this.tasks()
     .filter(t => !this.ignoredProcesses().has(t.processID))
@@ -56,13 +64,16 @@ export class ResultTasksComponent {
     .sort((a, b) => b.created - a.created)
   );
 
-  public latestTask = computed(() => this.visibleTasks().at(0));
+  public tableTasks = computed(() => this.visibleTasks()
+    .filter((_, idx) => this.displayAllTasks() ? true : idx === 0));
 
-  public showTaskTable = signal(false);
+  public displayAllTasks = signal(false);
 
-  public columnsToDisplay = ['type', 'status', 'created', 'finished'];
+  public columnsToDisplay = ['process', 'status', 'created', 'duration'];
 
-  public toggleTaskTable() {
-    this.showTaskTable.set(!this.showTaskTable());
+  private readonly taskService = inject(TaskSettingsService);
+
+  public toggleTaskDisplay(displayAll: boolean) {
+    this.displayAllTasks.set(displayAll);
   }
 }

@@ -19,7 +19,7 @@
 
 import { AsyncPipe } from '@angular/common';
 import {
-  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, input, Input,
+  AfterViewInit, ChangeDetectorRef, Component, DoCheck, ElementRef, EventEmitter, HostListener, inject, input, Input,
   IterableDiffer, IterableDiffers, OnChanges, OnInit, Output, SimpleChanges, ViewEncapsulation
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -51,7 +51,7 @@ import { ResultScrollDirective } from '../result-directive/result-scroll.directi
 import { ResultFilterComponent } from '../result-filter/result-filter.component';
 import { ResultGridTileComponent } from '../result-grid-tile/result-grid-tile.component';
 import { ResultItemComponent } from '../result-item/result-item.component';
-import { AvailableProcess, TaskStatus } from '../utils/aias-process';
+import { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettingsService, TaskStatus } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
@@ -376,16 +376,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   public isListResizable = input(true);
 
   /**
-   * List of processes to not display in the Task summary
-   */
-  public ignoredProcesses = input<Set<AvailableProcess>>(new Set());
-
-  /**
-   * Timer between each refresh of items tasks when its detail is displayed
-   */
-  public taskRetrievalTimer = input<number>(5000);
-
-  /**
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
@@ -529,8 +519,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly emitVisibleItemsDebouncer = new Subject<any>();
   protected sortableFields: Array<SortableField> = [];
 
-  private itemTasksSubscriptions = new Map<string, Subscription>();
+  private itemTasksSubscriptions = new Map<string, Map<string, Subscription>>();
 
+  private readonly taskSettingsService = inject(TaskSettingsService);
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
                      iterableCardsDiffer: IterableDiffers,
     private readonly el: ElementRef,
@@ -1001,20 +992,31 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       this.stopTaskRetrieval(event.item.identifier);
 
       // Every set interval of time, updates the status of item's tasks
-      const obs$ = interval(this.taskRetrievalTimer())
-        .subscribe(_ => {
-          this.detailedDataRetriever().getTasks(event.item.identifier)
-            .pipe(first())
-            .subscribe(tasks => {
-              event.item.tasks = tasks;
-              // If all tasks are in a final state, then stop retrieving updated state
-              if (tasks.filter(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running).length === 0) {
-                this.stopTaskRetrieval(event.item.identifier);
-              }
+      event.item.tasks.keys().forEach(service => {
+        const obs$ = interval(this.taskSettingsService.getServiceTaskSettings(service)?.taskRetrievalTimer ?? DEFAULT_TASK_RETRIEVAL_INTERVAL)
+          .subscribe(_ => {
+            this.detailedDataRetriever().getServiceTasks(event.item.identifier, service)
+              .pipe(first())
+              .subscribe(tasks => {
+                event.item.tasks.set(service, tasks);
+                // If all tasks are in a final state, then stop retrieving updated state
+                if (tasks.filter(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running).length === 0) {
+                  obs$.unsubscribe();
+                  this.itemTasksSubscriptions.get(event.item.identifier)?.delete(service);
+                }
+              });
             });
-        });
 
-      this.itemTasksSubscriptions.set(event.item.identifier, obs$);
+        let itemSubs = this.itemTasksSubscriptions.get(event.item.identifier);
+        if (!itemSubs) {
+          itemSubs = new Map();
+          this.itemTasksSubscriptions.set(event.item.identifier, itemSubs);
+        }
+
+        itemSubs.set(service, obs$);
+        this.itemTasksSubscriptions.set(event.item.identifier, itemSubs);
+      });
+
       return;
     }
 
@@ -1022,9 +1024,9 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   private stopTaskRetrieval(itemId: string) {
-    const previousSubscription = this.itemTasksSubscriptions.get(itemId);
-    if (previousSubscription) {
-      previousSubscription.unsubscribe();
+    const itemSubs = this.itemTasksSubscriptions.get(itemId);
+    if (itemSubs) {
+      itemSubs.values().forEach(s => s.unsubscribe());
       this.itemTasksSubscriptions.delete(itemId);
     }
   }

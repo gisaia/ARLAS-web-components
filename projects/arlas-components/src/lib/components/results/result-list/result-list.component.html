@@ -133,7 +133,7 @@
               [idFieldName]="fieldsConfiguration().idFieldName" [isDetailShowed]="isDetailledGridOpen"
               (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
               [useHttp]="!!fieldsConfiguration().useHttpQuicklooks" (closeDetail)="closeDetail($event)"
-              [detailedDataRetriever]="detailedDataRetriever()" [ignoredProcesses]="ignoredProcesses()"
+              [detailedDataRetriever]="detailedDataRetriever()"
               (itemDetailToggleEvent)="onItemDetailToggle($event)">
             </arlas-result-detailed-grid>
           </td>
@@ -175,7 +175,6 @@
                 [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                 [idFieldName]="fieldsConfiguration().idFieldName" [containerType]="'list'"
                 (actionOnItemEvent)="triggerActionOnItem($event)"
-                [ignoredProcesses]="ignoredProcesses()"
                 (itemDetailToggleEvent)="onItemDetailToggle($event)">
               </tr>
             }
@@ -199,7 +198,7 @@
                   [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
                   [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                   [idFieldName]="fieldsConfiguration().idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
-                  [containerType]="'list'" [ignoredProcesses]="ignoredProcesses()"
+                  [containerType]="'list'"
                   (itemDetailToggleEvent)="onItemDetailToggle($event)">
               </tr>
             }

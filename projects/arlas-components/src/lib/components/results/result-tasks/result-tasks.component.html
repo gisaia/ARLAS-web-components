@@ -1,70 +1,55 @@
-@let mostRecentTask = latestTask();
-@if (mostRecentTask) {
+@if (visibleTasks().length > 0) {
 <div class="tasks">
-    <div class="tasks__title">{{ 'Status of tasks' | translate }}</div>
+    <div class="tasks__title">
+        {{ service() | translate }}
 
-    <div class="tasks__latest">
-        <div class="tasks__process">
-            <mat-icon>{{ mostRecentTask.processID | processIcon }}</mat-icon>
-            <span>{{ mostRecentTask.processID | translate }}</span>
-        </div>
-
-        <mat-chip-listbox [selectable]="false" class="tasks__status">
-            <mat-chip-option class="tasks__status--{{mostRecentTask.status}}">
-                {{ mostRecentTask.status | translate }}
-            </mat-chip-option>
-        </mat-chip-listbox>
-
-
-        <button mat-icon-button class="tasks__latest__toggle" (click)="toggleTaskTable()">
-            <mat-icon>{{ showTaskTable() ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</mat-icon>
-        </button>
+        @if (visibleTasks().length > 1) {
+        <mat-button-toggle-group class="tasks__title__toggle" (valueChange)="toggleTaskDisplay($event)" [hideSingleSelectionIndicator]="true">
+            <mat-button-toggle [checked]="displayAllTasks()" [value]="true" [matTooltip]="'Show all tasks' | translate">
+                {{ 'All' | translate }}</mat-button-toggle>
+            <mat-button-toggle [checked]="!displayAllTasks()" [value]="false" [matTooltip]="'Show only latest tasks' | translate">
+                {{ 'Latest' | translate }}</mat-button-toggle>
+        </mat-button-toggle-group>
+        }
     </div>
 
-    @if (showTaskTable()) {
-        <table mat-table [dataSource]="visibleTasks()" class="tasks__table">
-            <!-- Type Column -->
-            <ng-container matColumnDef="type">
-                <th mat-header-cell *matHeaderCellDef>{{ 'Type' | translate }}</th>
-                <td mat-cell *matCellDef="let task">
-                    <mat-icon [matTooltip]="task.processID | translate" [matTooltipPosition]="'before'">
-                        {{ task.processID | processIcon }}
-                    </mat-icon>
-                </td>
-            </ng-container>
+    <table mat-table [dataSource]="tableTasks()" class="tasks__table">
+        <!-- Process Column -->
+        <ng-container matColumnDef="process">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Process' | translate }}</th>
+            <td mat-cell *matCellDef="let task">
+                <mat-icon [matTooltip]="task.processID | translate" [matTooltipPosition]="'before'">
+                    {{ task.processID | processIcon:service() }}
+                </mat-icon>
+            </td>
+        </ng-container>
 
-            <!-- Status Column -->
-            <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef>{{ 'Status' | translate }}</th>
-                <td mat-cell *matCellDef="let task">
-                    <mat-chip-listbox [selectable]="false" class="tasks__status">
-                        <mat-chip-option class="tasks__status--{{task.status}}">
-                            {{ task.status | translate }}
-                        </mat-chip-option>
-                    </mat-chip-listbox>
-                </td>
-            </ng-container>
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Status' | translate }}</th>
+            <td mat-cell *matCellDef="let task">
+                <arlas-task-status [task]="task"></arlas-task-status>
+            </td>
+        </ng-container>
 
-            <!-- Created Column -->
-            <ng-container matColumnDef="created">
-                <th mat-header-cell *matHeaderCellDef>{{ 'Created' | translate }}</th>
-                <td mat-cell *matCellDef="let task">
-                    {{ task.created ? (task.created * 1000 | date:'short') : '--' }}
-                </td>
-            </ng-container>
+        <!-- Created Column -->
+        <ng-container matColumnDef="created">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Created' | translate }}</th>
+            <td mat-cell *matCellDef="let task">
+                {{ task.created ? (task.created * 1000 | date:'short') : '--' }}
+            </td>
+        </ng-container>
 
-            <!-- Finished Column -->
-            <ng-container matColumnDef="finished">
-                <th mat-header-cell *matHeaderCellDef>{{ 'Finished' | translate }}</th>
-                <td mat-cell *matCellDef="let task">
-                    {{ task.finished ? (task.finished * 1000 | date:'short') : '--' }}
-                </td>
-            </ng-container>
+        <!-- Duration Column -->
+        <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Duration' | translate }}</th>
+            <td mat-cell *matCellDef="let task">
+                {{ task.finished ? ((task.finished - task.started) * 1000 | deltaTime) : '--' }}
+            </td>
+        </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-            <tr mat-row *matRowDef="let element; columns: columnsToDisplay;">
-            </tr>
-        </table>
-    }
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"></tr>
+    </table>
 </div>
 }

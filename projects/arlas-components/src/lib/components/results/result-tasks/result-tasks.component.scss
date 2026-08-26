@@ -17,38 +17,45 @@
  * under the License.
  */
 
+@use '@angular/material' as mat;
 @use "../result-detailed-item/detail.scss" as detail;
 
-$infoColor: #0c5460;
-$errorColor: #d43f3a;
-$successColor: #5cb85c;
-$progressColor: #337ab7;
-$dismissedColor: #5f5f5f;
+:host {
+    --arlas-resizable-th-border-color: white;
+}
+
+.dark-theme {
+    :host {
+        --arlas-resizable-th-border-color: var(--mat-sys-surface);
+    }
+}
 
 .tasks {
+    --mat-table-header-container-height: 32px;
+    --mat-table-row-item-container-height: 32px;
+
+    --mat-table-header-headline-size: 12px;
+    --mat-table-row-item-label-text-size: 12px;
+
     &__title {
         @include detail.title();
-    }
-
-    &__latest {
-        @include detail.entry();
-        align-items: center;
+        display: flex;
+        justify-content: space-between;
 
         &__toggle {
-            --mat-icon-button-touch-target-size: 18px;
-            --mat-icon-button-state-layer-size: 18px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            @include mat.button-toggle-overrides((
+                height: 24px,
+                label-text-size: 12px
+            ));
 
-            position: absolute;
-            right: 12px;
-
-            mat-icon {
-                font-size: 18px;
-                height: 18px;
-                width: 18px;
+            ::ng-deep .mat-button-toggle-label-content {
+                padding: 0 6px;
+            }
+            ::ng-deep .mat-button-toggle-checkbox-wrapper {
+                left: 6px;
+            }
+            ::ng-deep .mat-button-toggle-checked .mat-button-toggle-button:has(.mat-button-toggle-checkbox-wrapper) {
+                padding-left: 24px;
             }
         }
     }
@@ -67,51 +74,8 @@ $dismissedColor: #5f5f5f;
         }
     }
 
-    &__status {
-        @include detail.value();
-
-        mat-chip-option {
-            --mat-chip-elevated-container-color: transparent;
-            --mat-chip-container-height: 24px;
-            margin: 4px 0;
-
-            ::ng-deep button {
-                cursor: unset;
-                overflow: clip;
-            }
-        }
-
-        &--successful {
-            color: $successColor;
-            border: 1px solid $successColor;
-        }
-
-        &--accepted {
-            color: $infoColor;
-            border: 1px solid $infoColor;
-        }
-
-        &--running {
-            color: $progressColor;
-            border: 1px solid $progressColor;
-        }
-
-        &--failed {
-            color: $errorColor;
-            border: 1px solid $errorColor;
-        }
-
-        &--dismissed {
-            color: $dismissedColor;
-            border: 1px solid $dismissedColor;
-        }
-    }
-
     &__table {
-        --mat-table-header-container-height: 20px;
-        --mat-table-row-item-container-height: 36px;
-
-        .mat-column-type {
+        .mat-column-process {
             mat-icon {
                 // Center the icon in the row
                 height: var(--mat-table-row-item-container-height);
@@ -120,6 +84,11 @@ $dismissedColor: #5f5f5f;
 
                 font-size: 20px;
             }
+        }
+
+        // Avoid resizing when latest task has a short status
+        .mat-column-status {
+            min-width: 130px;
         }
     }
 }

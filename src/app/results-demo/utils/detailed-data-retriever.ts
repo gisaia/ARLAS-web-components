@@ -1,4 +1,3 @@
-
 /*
  * Licensed to Gisaïa under one or more contributor
  * license agreements. See the NOTICE.txt file distributed with
@@ -88,7 +87,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
     return of({ matched: filters.map((v, idx) => idx < filters.length / 2), data: {} });
   }
 
-  public getTasks(identifier: string): Observable<Task[]> {
+  public getServiceTasks(identifier: string, service: string): Observable<Task[]> {
     const tasks: Task[] = [
       {
         processID: 'enrich',
@@ -102,7 +101,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         resourceID: identifier
       },
       {
-        processID: 'ingest',
+        processID: 'order',
         type: 'process',
         jobID: '',
         status: TaskStatus.accepted,
@@ -116,7 +115,7 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         processID: 'dc3build',
         type: 'process',
         jobID: '',
-        status: TaskStatus.accepted,
+        status: TaskStatus.failed,
         message: '',
         created: 1751551200,
         started: 1751551200,
@@ -125,6 +124,17 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
       }
     ];
 
-    return of(tasks);
+    if (service === 'AIAS APROC Service') {
+      return of(tasks);
+    }
+    return of(tasks.slice(0, 1));
+  }
+
+  public getAllTasks(identifier: string): Map<string, Observable<Task[]>> {
+    const taskMap = new Map();
+    taskMap.set('AIAS APROC Service', this.getServiceTasks(identifier, 'AIAS APROC Service'));
+    taskMap.set('Other service', this.getServiceTasks(identifier, 'Other service'));
+
+    return taskMap;
   }
 }

@@ -21,6 +21,7 @@
     "@ngx-translate/http-loader": "^17.0.0",
     "core-js": "~3.26.1",
     "moment": "^2.24.0",
+    "moment-duration-format": "^2.3.2",
     "rxjs": "^7.4.0",
     "stream": "0.0.2",
     "zone.js": "^0.15.0"

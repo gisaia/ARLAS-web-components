@@ -42,14 +42,6 @@ export const NUMBER_FORMAT_CHAR = 'NUMBER_FORMAT_CHAR';
 
 export const DEFAULT_SHORTENING_PRECISION = 2;
 
-export function getKeys(map: Map<string, unknown>): Array<string> {
-  return Array.from(map.keys());
-}
-
-export function getValues<T>(map: Map<unknown, T>): Array<T> {
-  return Array.from(map.values());
-}
-
 export abstract class ColorGeneratorLoader {
   public abstract keysToColors: Array<[string, string]>;
   public abstract colorsSaturationWeight: number;
