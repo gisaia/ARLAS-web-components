@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { first } from 'rxjs';
 import { Item } from '../model/item';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, Attachment } from '../utils/results.utils';
@@ -87,7 +88,7 @@ export class ItemComponent {
       item.tasks = new Map();
       const taskMap$ = detailedDataRetriever.getAllTasks(item.identifier);
       taskMap$.forEach((t$, service) => {
-        t$.subscribe(tasks => {
+        t$.pipe(first()).subscribe(tasks => {
           item.tasks.set(service, tasks);
         });
       });
