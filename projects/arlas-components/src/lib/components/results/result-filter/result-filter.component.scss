@@ -43,7 +43,7 @@
 {
   margin: 0;
   background: var(--arlas-result-filter-background, var(--mat-sys-surface-container));
-  border: var(--arlas-result-filter-border, 1px solid lightgrey);
+  border: var(--arlas-result-filter-border);
   color:var(--arlas-result-filter-text-color, var(--mat-sys-on-background));
   border-radius: 3px;
 }
