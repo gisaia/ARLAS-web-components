@@ -17,9 +17,13 @@
  * under the License.
  */
 
-.dark-theme{
+.dark-theme {
   :host{
     --arlas-donut-export-color: var(--mat-sys-on-background);
+
+    ::ng-deep.donut__arc--no-value {
+      stroke: white !important;
+    }
   }
 }
 
