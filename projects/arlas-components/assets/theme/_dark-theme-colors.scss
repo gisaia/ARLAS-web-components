@@ -184,7 +184,7 @@ $dark-theme-color-override-map: (
 /**
  Global mixin that defines dark theme
  */
-@mixin m2-dark-theme-custom-override(){
+@mixin m2-dark-theme-custom-override() {
   // Create dark theme
   $dark-theme: mat.m2-define-dark-theme((
     color: (

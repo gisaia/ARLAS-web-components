@@ -17,7 +17,7 @@
  * under the License.
  */
 @use '@angular/material' as mat;
-@use "arlas-web-components/assets/theme" as darkTheme;
+@use "../projects/arlas-components/assets/theme" as darkTheme;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -25,8 +25,6 @@
 // Be sure that you only ever include this mixin once!
 @include mat.elevation-classes();
 @include mat.app-background();
-
-
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker

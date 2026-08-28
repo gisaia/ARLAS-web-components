@@ -18,9 +18,7 @@
  */
 
 .dark-theme {
-  :host{
-    --arlas-donut-export-color: var(--mat-sys-on-background);
-
+  :host {
     ::ng-deep.donut__arc--no-value {
       stroke: white !important;
     }
@@ -34,14 +32,10 @@
     right: 5px;
     z-index: 1;
 
-    --mat-icon-button-state-layer-size: 24px;
     padding: 0;
-    color: var(--arlas-donut-export-color, var(--mat-sys-on-background));
-
-    ::ng-deep .mat-mdc-button-touch-target {
-      height: 24px;
-      width: 24px;
-    }
+    --mat-icon-button-state-layer-size: 24px;
+    --mat-icon-button-icon-color: var(--arlas-donut-export-color, var(--mat-sys-on-background));
+    --mat-icon-button-touch-target-size: 24px;
   }
 
   .donut__container {
