@@ -7,33 +7,25 @@
 
   <div class="visualisation__title">{{ 'Choose a visualisation' | translate }}</div>
 
-  @for (v of data.visualisations; track v;) {
-    @if (v.match === 'none') {
-      <div class="visualisation__item visualisation__item--unmatched" [class.visualisation__item--selected]="v.selected">
-        <arlas-cog-preview [title]="v.visualisation.name"
-          [description]="v.visualisation.description"
-          [preview]="v.preview ?? DEFAULT_IMAGE"></arlas-cog-preview>
+  @for (v of visualisations(); track v.visualisation.name) {
+    <div [mat-dialog-close]="v.visualisation" class="visualisation__item visualisation__item--matched"
+        [class.visualisation__item--selected]="v.selected">
+      <arlas-cog-preview [title]="v.visualisation.name"
+        [description]="v.visualisation.description"
+        [preview]="v.preview ?? DEFAULT_IMAGE"></arlas-cog-preview>
 
-        @if (!data.loading) {
-          <div class="visualisation__item__error">
-            {{ 'Cannot be applied to the currently visualised elements' | translate }}
-          </div>
-        }
-      </div>
-    } @else {
-      <div [mat-dialog-close]="v.visualisation" class="visualisation__item visualisation__item--matched"
-          [class.visualisation__item--selected]="v.selected">
-        <arlas-cog-preview [title]="v.visualisation.name"
-          [description]="v.visualisation.description"
-          [preview]="v.preview ?? DEFAULT_IMAGE"></arlas-cog-preview>
+      @if (v.match === 'partial' && !data.loading) {
+        <div class="visualisation__item__warning">
+          {{ 'Cannot be applied to all of the currently visualised elements' | translate }}
+        </div>
+      }
+    </div>
+  }
 
-        @if (v.match === 'partial' && !data.loading) {
-          <div class="visualisation__item__warning">
-            {{ 'Cannot be applied to all of the currently visualised elements' | translate }}
-          </div>
-        }
-      </div>
-    }
+  @for (v of unmatchedVisualisations(); track v.visualisation.name) {
+    <div class="visualisation__item visualisation__item--unmatched" [class.visualisation__item--selected]="v.selected">
+      <div class="visualisation__item--unmatched__title">{{ v.visualisation.name | translate }}</div>
+    </div>
   }
 
   <button matButton="outlined" mat-dialog-close="" class="visualisation__exit">{{ 'Cancel' | translate }}</button>

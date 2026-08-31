@@ -50,14 +50,15 @@
     border: 2px solid var(--arlas-cog-modal-item-border-color, var(--mat-sys-background));
     border-radius: 6px;
     position: relative;
-    background-color: var(--arlas-cog-modal-item-background, var(--mat-sys-background));
+    background-color: var(--arlas-cog-modal-item-background, var(--mat-sys-surface));
 
     &--unmatched {
       cursor: not-allowed;
-    }
+      color: var(--arlas-cog-modal-item-unmatched-color, #9f9f9f);
 
-    &--matched {
-      color: var(--arlas-cog-modal-item-matched-color, var(--mat-sys-on-background));
+      &__title {
+        padding: 10px;
+      }
     }
 
     &--selected {
@@ -89,7 +90,7 @@
     align-self: end;
     font-size: 14px;
     margin-bottom: 6px;
-    --mat-outlined-button-label-text-tracking: 0;
+    --mat-button-outlined-label-text-tracking: 0;
     background-color: var(--arlas-cog-modal-exit-background, var(--mat-sys-background));
   }
 }
