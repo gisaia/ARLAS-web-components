@@ -514,9 +514,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
   public isShiftDown = false;
 
-  private readonly debouncer = new Subject<ElementIdentifier>();
-  private readonly scrollDebouncer = new Subject<any>();
-  private readonly emitVisibleItemsDebouncer = new Subject<any>();
+  private readonly scrollDebouncer = new Subject<PageQuery>();
+  private readonly emitVisibleItemsDebouncer = new Subject<Item[]>();
   protected sortableFields: Array<SortableField> = [];
 
   private itemTasksSubscriptions = new Map<string, Map<string, Subscription>>();
@@ -538,8 +537,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       .subscribe((event: Event) => {
         this.setTableHeight();
       });
-    // Add debounce on hover item list
-    this.debouncer.pipe(debounceTime(200)).subscribe(elementidentifier => this.consultedItemEvent.next(elementidentifier));
+
     this.scrollDebouncer.pipe(debounceTime(1000)).subscribe(page => this.paginationEvent.next(page));
     this.emitVisibleItemsDebouncer.pipe(debounceTime(1000)).subscribe(event => this.visibleItems.next(event));
   }
@@ -834,7 +832,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
       idFieldName: this.fieldsConfiguration().idFieldName,
       idValue: identifier
     };
-    this.debouncer.next(elementidentifier);
+    this.consultedItemEvent.next(elementidentifier);
   }
 
   /**
