@@ -13,7 +13,15 @@ describe('CogModalComponent', () => {
       imports: [CogModalComponent,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ],
-      providers: [ {provide: MAT_DIALOG_DATA, useValue: {}}]
+      providers: [
+        {
+          provide: MAT_DIALOG_DATA,
+          useValue: {
+            visualisations: [],
+            laoding: true
+          }
+        }
+      ]
     })
     .compileComponents();
 
