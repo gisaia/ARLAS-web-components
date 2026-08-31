@@ -64,7 +64,7 @@ export class CogVisualisationComponent {
     const dialogRef = this.dialog.open(CogModalComponent, {
       data : data,
       width: '600px',
-      maxHeight:'50vh',
+      maxHeight:'80vh',
       autoFocus: false
     });
 
