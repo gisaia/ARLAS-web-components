@@ -52,11 +52,8 @@ import {
 export class MapglDemoComponent<L, S, M> {
   private readonly mapFramework = inject(ArlasMapFrameworkService<L, S, M>);
 
-  // eslint-disable-next-line max-len
-  @ViewChild('demoMap', { static: true }) public mapComponent: ArlasMapComponent<L, S, M>;
-  // eslint-disable-next-line max-len
-  @ViewChild('demoImportMap', { static: true }) public mapImportComponent: MapImportComponent<L, S, M>;;
-  @ViewChild('mapSettings', { static: true }) public mapSettings: MapSettingsComponent;
+  @ViewChild('demoMap', { static: true }) public mapComponent?: ArlasMapComponent<L, S, M>;
+  @ViewChild('mapSettings', { static: true }) public mapSettings?: MapSettingsComponent;
 
   public modeChoice = 'all';
   public idToSelect: number;

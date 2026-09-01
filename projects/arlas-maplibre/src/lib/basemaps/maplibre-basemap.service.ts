@@ -18,9 +18,9 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { BackgroundLayerSpecification } from '@maplibre/maplibre-gl-style-spec';
+import { BackgroundLayerSpecification, StyleSpecification, VectorSourceSpecification } from '@maplibre/maplibre-gl-style-spec';
 import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
-import maplibre, { AddLayerObject, GeoJSONSource, MapOptions, RequestParameters } from 'maplibre-gl';
+import { AddLayerObject, addProtocol, GeoJSONSource, MapOptions, RequestParameters } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
@@ -49,9 +49,9 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
   }
 
   public removeProtomapBasemap(map: ArlasMaplibreGL) {
-    const selectedBasemap = this.basemaps.getSelected();
-    if (selectedBasemap.type === 'protomap') {
-      (selectedBasemap.styleFile as maplibre.StyleSpecification).layers.forEach(l => {
+    const selectedBasemap = this.basemaps?.getSelected();
+    if (selectedBasemap && selectedBasemap.type === 'protomap') {
+      (selectedBasemap.styleFile as StyleSpecification).layers.forEach(l => {
         this.mapFrameworkService.removeLayer(map, l.id, false);
       });
       this.mapFrameworkService.removeSource(map, 'arlas_protomaps_source');
@@ -60,7 +60,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
 
   public declareProtomapProtocol(map: ArlasMaplibreGL) {
     const protocol = new Protocol();
-    maplibre.addProtocol('pmtiles', (requestParameters: RequestParameters, abortController: AbortController) =>
+    addProtocol('pmtiles', (requestParameters: RequestParameters, abortController: AbortController) =>
       new Promise((res, rej) => {
         protocol.tile(requestParameters, (error?: Error | null, data?: any | null, cacheControl?: string | null, expires?: string | null) => {
           if (error) {
@@ -78,16 +78,16 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
 
   public getInitStyle(selected: MapLibreBasemapStyle) {
     if (selected.type === 'protomap') {
-      const clonedStyleFile = this.cloneStyleFile<maplibre.StyleSpecification>(selected);
-      return this.buildInitStyle<maplibre.StyleSpecification, BackgroundLayerSpecification>(clonedStyleFile);
+      const clonedStyleFile = this.cloneStyleFile<StyleSpecification>(selected);
+      return this.buildInitStyle<StyleSpecification, BackgroundLayerSpecification>(clonedStyleFile);
     }
     return selected.styleFile;
   }
 
 
-  public fetchSources$(): Observable<readonly maplibre.StyleSpecification[]> {
-    const sources$: Observable<maplibre.StyleSpecification>[] = [];
-    this.basemaps.styles().forEach(s => {
+  public fetchSources$(): Observable<readonly StyleSpecification[]> {
+    const sources$: Observable<StyleSpecification>[] = [];
+    this.basemaps?.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
         tap(sf => {
           Object.keys(sf.sources).forEach(k => {
@@ -97,8 +97,8 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
             } else {
               sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
             }
-          });
-          s.styleFile = sf as maplibre.StyleSpecification;
+          }
+          s.styleFile = sf as StyleSpecification;
         }),
         catchError(() => {
           s.errored = true;
@@ -109,9 +109,9 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
     return forkJoin(sources$);
   }
 
-  protected getStyleFile(b: MapLibreBasemapStyle): Observable<maplibre.StyleSpecification> {
+  protected getStyleFile(b: MapLibreBasemapStyle): Observable<StyleSpecification> {
     if (typeof b.styleFile === 'string') {
-      return this.http.get(b.styleFile) as Observable<maplibre.StyleSpecification>;
+      return this.http.get(b.styleFile) as Observable<StyleSpecification>;
     } else {
       return of(b.styleFile);
     }
