@@ -52,9 +52,7 @@ import {
 export class MapglDemoComponent<L, S, M> {
   private readonly mapFramework = inject(ArlasMapFrameworkService<L, S, M>);
 
-  // eslint-disable-next-line max-len
   @ViewChild('demoMap', { static: true }) public mapComponent?: ArlasMapComponent<L, S, M>;
-  // eslint-disable-next-line max-len
   @ViewChild('mapSettings', { static: true }) public mapSettings?: MapSettingsComponent;
 
   public modeChoice = 'all';
