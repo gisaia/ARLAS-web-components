@@ -107,6 +107,8 @@
   align-items: center;
   justify-content: center;
   padding: 0;
+
+  background-color: var(--arlas-result-actions-icon-background, var(--mat-sys-background));
 }
 
 .resultitem__cell__toggle--icon /* @doc Sets the toggle icon style.*/
