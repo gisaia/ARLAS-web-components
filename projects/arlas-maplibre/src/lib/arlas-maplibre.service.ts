@@ -382,8 +382,6 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     }
   };
 
-
-
   /**
    * @overload
    * Returns the layer object of the given layer id.
@@ -633,6 +631,9 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     bounds: [[number, number], [number, number], [number, number], [number, number]], beforeId?: string
   ): void {
     const maplibreMap = map.getMapProvider();
+
+    // Remove source and layer if already exists
+    this.removeLayer(map, layerId, true);
 
     maplibreMap.addSource(layerId, {
       type: 'image',
