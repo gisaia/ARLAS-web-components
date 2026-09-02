@@ -21,9 +21,10 @@ import {
   AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds, ControlButton,
   DrawControlsOption, MapConfig, MapExtent, OnMoveResult, OPACITY_SUFFIX
 } from 'arlas-map';
-import maplibregl, {
-  ControlPosition, Expression, FitBoundsOptions, IControl, LngLat, LngLatBounds, MapGeoJSONFeature,
-  Map as MaplibreMap, MapOptions, Point, PointLike, QueryRenderedFeaturesOptions, StyleSetterOptions,
+import {
+  AllPaintProperties, AttributionControl, ControlPosition, Expression, FitBoundsOptions, GlobeControl, IControl,
+  LngLat, LngLatBounds, LngLatBoundsLike, MapEventType, MapGeoJSONFeature, Map as MaplibreMap, MapOptions,
+  NavigationControl, Point, PointLike, QueryRenderedFeaturesOptions, ScaleControl, setWorkerUrl, StyleSetterOptions
 } from 'maplibre-gl';
 import { MaplibreControlButton } from './model/controls';
 
@@ -46,17 +47,18 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this;
   }
 
-  protected _mapProvider!: maplibregl.Map;
-  public endLngLat?: maplibregl.LngLat;
-  public moveLngLat?: maplibregl.LngLat;
-  public startLngLat?: maplibregl.LngLat;
+  protected _mapProvider!: MaplibreMap;
+  public endLngLat?: LngLat;
+  public moveLngLat?: LngLat;
+  public startLngLat?: LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);
+    setWorkerUrl(new URL('maplibre-gl-worker.mjs', document.baseURI).href);
   }
 
   protected _initMapProvider(config: ArlasMaplibreConfig) {
-    this._mapProvider = new maplibregl.Map(
+    this._mapProvider = new MaplibreMap(
       config.mapProviderOptions
     );
     // Disable map pitch and rotation with keyboard
@@ -67,10 +69,10 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   public calcOffsetPoint() {
-    return new maplibregl.Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
+    return new Point((this._offset.east + this._offset.west) / 2, (this._offset.north + this._offset.south) / 2);
   }
 
-  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: maplibregl.Map, SW: ArlasLngLat, NE: ArlasLngLat): LngLat[] {
+  public paddedBounds(npad: number, spad: number, epad: number, wpad: number, map: MaplibreMap, SW: ArlasLngLat, NE: ArlasLngLat): LngLat[] {
     const topRight = map.project(NE);
     const bottomLeft = map.project(SW);
     const scale = 1;
@@ -85,8 +87,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return [swWorld, neWorld];
   }
 
-
-  public on(type: string, listener: (ev: any) => void): this {
+  public on(type: keyof MapEventType, listener: (ev: any) => void): this {
     this.getMapProvider().on(type, listener);
     return this;
   }
@@ -113,8 +114,8 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
       bottomLeftCorner = southWest;
       topRightCorner = northEast;
     } else {
-      const bottomLeftOffset = bottomLeft.add(new maplibregl.Point(this._offset.west, this._offset.south));
-      const topRghtOffset = topRght.add(new maplibregl.Point(this._offset.east, this._offset.north));
+      const bottomLeftOffset = bottomLeft.add(new Point(this._offset.west, this._offset.south));
+      const topRghtOffset = topRght.add(new Point(this._offset.east, this._offset.north));
 
       bottomLeftCorner = this.getMapProvider().unproject(bottomLeftOffset);
       topRightCorner = this.getMapProvider().unproject(topRghtOffset);
@@ -195,7 +196,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   protected _initControls(): void {
     if (this._controls) {
       if (this._controls.mapAttribution) {
-        this.addControl(new maplibregl.AttributionControl(this._controls.mapAttribution.config), this._controls.mapAttribution.position);
+        this.addControl(new AttributionControl(this._controls.mapAttribution.config), this._controls.mapAttribution.position);
       }
 
       /** Whether to display scale */
@@ -205,18 +206,18 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
           unit: this._unitScale,
         };
         const opt = this._controls?.scale?.config ?? defaultOpt;
-        const scale = new maplibregl.ScaleControl(opt);
+        const scale = new ScaleControl(opt);
         this.addControl(scale, this._controls.scale?.position ?? 'bottom-right');
       }
 
       if (this._controls?.navigationControl?.enable) {
         this.addControl(
-          new maplibregl.NavigationControl(this._controls.navigationControl.config),
+          new NavigationControl(this._controls.navigationControl.config),
           this._controls.navigationControl?.position ?? 'top-right');
       }
 
       if (this._controls?.globe?.enable) {
-        const globeControl = new maplibregl.GlobeControl();
+        const globeControl = new GlobeControl();
         this.addControl(
           globeControl,
           this._controls.globe?.position ?? 'top-right'
@@ -259,7 +260,8 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
-    this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX, opacityValue);
+    this._mapProvider.setPaintProperty(layerId,
+      this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX as keyof AllPaintProperties, opacityValue as any);
     return this;
   }
 
@@ -353,7 +355,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
    * @param bounds Bounds defined by sw and ne coordinates Or a [west, south, east, north] array.
    */
   public fitToPaddedBounds(bounds: ArlasLngLatBounds | [number, number, number, number]) {
-    const boundsOptions: maplibregl.FitBoundsOptions = {};
+    const boundsOptions: FitBoundsOptions = {};
     boundsOptions.padding = {
       top: this._offset.north + this._fitBoundsPadding,
       bottom: this._offset.south + this._fitBoundsPadding,
@@ -364,7 +366,7 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
 
-  public setMaxBounds(lnglatbounds?: maplibregl.LngLatBoundsLike): this {
+  public setMaxBounds(lnglatbounds?: LngLatBoundsLike): this {
     this.getMapProvider().setMaxBounds(lnglatbounds);
     return this;
   }

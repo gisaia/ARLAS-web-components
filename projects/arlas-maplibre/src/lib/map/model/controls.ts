@@ -18,8 +18,9 @@
  */
 
 import { ControlButton } from 'arlas-map';
+import { Map } from 'maplibre-gl';
 
-export class MaplibreControlButton extends ControlButton<maplibregl.Map> {
+export class MaplibreControlButton extends ControlButton<Map> {
 
   protected  _buildClasses(){
     this.btnClasses = ['maplibregl-ctrl-icon', 'map__controls__icons', 'map__controls__icons--' + this.name];
