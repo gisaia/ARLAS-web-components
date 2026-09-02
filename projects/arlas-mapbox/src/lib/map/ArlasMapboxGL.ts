@@ -388,4 +388,8 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   public layerTypeToPaintKeyword(layerType: string): string {
     return layerType === 'symbol' ? 'text' : layerType;
   }
+
+  public getLayersOrder() {
+    return (this.getMapProvider().getStyle() as any)._order;
+  }
 }

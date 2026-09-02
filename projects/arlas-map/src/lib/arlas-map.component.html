@@ -46,7 +46,7 @@
 
 @if (mapInstance) {
   @if (displayCurrentCoordinates()) {
-    <arlas-coordinates [currentLat]="mapInstance.currentLat" [currentLng]="mapInstance.currentLng"
+    <arlas-coordinates [currentLat]="mapInstance.currentLat()" [currentLng]="mapInstance.currentLng()"
       (moveToCoordinates$)="moveToCoordinates($event)"></arlas-coordinates>
   }
 

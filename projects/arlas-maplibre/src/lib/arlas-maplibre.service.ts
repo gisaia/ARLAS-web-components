@@ -25,9 +25,9 @@ import {
 } from 'arlas-map';
 import { FeatureCollection } from 'geojson';
 import {
-  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification,
-  MapOptions, Point, Popup, RasterDEMSourceSpecification,
-  RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions,
+  Point, Popup, RasterDEMSourceSpecification, RasterLayerSpecification, RasterSourceSpecification,
+  RequestTransformFunction, ResourceType, SourceSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 import { from } from 'rxjs';
 import { ArlasDraw } from './draw/ArlasDraw';
@@ -56,8 +56,8 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     });
   }
 
-  public setTransformRequest(map: ArlasMaplibreGL, transformRequest: Function): void {
-    map.getMapProvider().setTransformRequest(transformRequest as any);
+  public setTransformRequest(map: ArlasMaplibreGL, transformRequest: RequestTransformFunction): void {
+    map.getMapProvider().setTransformRequest(transformRequest);
   }
 
   /**
@@ -628,6 +628,24 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     };
     this.addLayer(map, iconLayer, beforeId);
   };
+
+  public addImageLayer(map: ArlasMaplibreGL, layerId: string, imageURL: string,
+    bounds: [[number, number], [number, number], [number, number], [number, number]], beforeId?: string
+  ): void {
+    const maplibreMap = map.getMapProvider();
+
+    maplibreMap.addSource(layerId, {
+      type: 'image',
+      url: imageURL,
+      coordinates: bounds
+    });
+
+    maplibreMap.addLayer({
+      id: layerId,
+      type: 'raster',
+      source: layerId
+    }, beforeId);
+  }
 
   public flyTo(lat: number, lng: number, zoom: number, map: ArlasMaplibreGL) {
     map.getMapProvider().flyTo({ center: [lng, lat], zoom });

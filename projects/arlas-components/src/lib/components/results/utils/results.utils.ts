@@ -119,6 +119,12 @@ export interface FieldsConfiguration {
   iconCssClass?: string;
   iconColorFieldName?: string;
   detailsTitleTemplate?: string;
+  /** Configuration for the display of quicklooks on the map */
+  displayQuicklookOnMap?: {
+    enabled: boolean;
+    /** Field containing the bounds of the item */
+    boundsFieldName?: string;
+  };
 }
 
 export interface DescribedUrl {

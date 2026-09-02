@@ -558,7 +558,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   }
 
   public ngAfterViewInit(): void {
-    this.onListLoaded.next(true);
+    this.onListLoaded.emit(true);
     this.setTableWidth();
     this.setTableHeight();
   }
