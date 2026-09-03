@@ -18,6 +18,7 @@
           [defautMode]="modeEnum.card"
           [dropDownMapValues]="dropDownMapValues"
           [currentSortedColumn]="activeSort"
+          [useColorService]="true"
           (paginationEvent)="addMoreData()"
           (setFiltersEvent)="setFilters($event)"></arlas-result-list>
       }

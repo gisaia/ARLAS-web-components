@@ -96,7 +96,8 @@ export class ResultsDemoComponent {
         ],
         urlThumbnailTemplate: '{urlImage}',
         titleFieldNames: [{ fieldPath: 'source', process: '' }],
-        useHttpQuicklooks: false
+        useHttpQuicklooks: false,
+        iconColorFieldName: 'source'
       };
 
       this.fieldsList = [];
