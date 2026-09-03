@@ -187,6 +187,7 @@
                                       [detailedDataRetriever]="detailedDataRetriever()"
                                       [options]="options"
                                       [selectedItems]="selectedItems"
+                                      [useHttp]="!!fieldsConfiguration().useHttpQuicklooks"
                                       (selectedItemsEvent)="setSelectedItems($event)"
                                       (actionOnItemEvent)="triggerActionOnItem($event)"
                                       (mouseenter)="onEnterItem(rowItem)"

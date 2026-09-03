@@ -242,6 +242,7 @@ export class ResultsDemoComponent {
     }
 
     private setValue(map: Map<string, ItemDataType>, field: any, value: ItemDataType) {
+      map.set(field.fieldName, value);
       map.set(buildCardItemField(field), value);
       map.set(buildTableItemField(field), value);
     }

@@ -29,7 +29,6 @@ $img-proportion: 100%;
       height: 18px;
       font-size: 16px !important;
       border-radius: 5px !important;
-      background: var(--arlas-result-thumbnail-list-icon-background, var(--mat-sys-background))!important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -126,6 +125,10 @@ $img-proportion: 100%;
     position: relative;
     align-items: center;
     justify-content: center;
+
+    img {
+      cursor: pointer;
+    }
   }
 }
 
