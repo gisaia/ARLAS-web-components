@@ -134,15 +134,6 @@ export class ResultCardItemComponent extends ItemComponent {
     this.selectedItemsEvent.emit(this.selectedItems());
   }
 
-
-  public determinateItem() {
-    this.rowItem().isChecked = true;
-    this.selectedItems().add(this.rowItem().identifier);
-    // Emit to the result list the fact that this checkbox has changed in order to notify the correspondant one in grid mode
-    this.selectedItemsEvent.emit(this.selectedItems());
-  }
-
-
   /**
    * Retrieves additional item details and emits item click event
    */
