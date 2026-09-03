@@ -20,10 +20,8 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption,
-  getAdditionalFillLayers, HILLSHADE_SOURCE,
-  MapLayerMouseEvent,
-  SCROLLABLE_ARLAS_ID, VectorStyle
+  ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, getAdditionalFillLayers,
+  HILLSHADE_SOURCE, MapLayerMouseEvent, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
 import { FeatureCollection } from 'geojson';
 import mapboxgl, {
@@ -497,6 +495,26 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     this.addLayer(map, geojsonLayer, beforeId);
   }
 
+  public addImageLayer(map: ArlasMapboxGL, layerId: string, imageURL: string,
+    bounds: [[number, number], [number, number], [number, number], [number, number]], beforeId?: string
+  ): void {
+    const mapboxMap = map.getMapProvider();
+
+    // Remove source and layer if already exists
+    this.removeLayer(map, layerId, true);
+
+    mapboxMap.addSource(layerId, {
+      type: 'image',
+      url: imageURL,
+      coordinates: bounds
+    });
+
+    mapboxMap.addLayer({
+      id: layerId,
+      type: 'raster',
+      source: layerId
+    }, beforeId);
+  }
 
   public flyTo(lat: number, lng: number, zoom: number, map: ArlasMapboxGL) {
     map.getMapProvider().flyTo({ center: [lng, lat], zoom });

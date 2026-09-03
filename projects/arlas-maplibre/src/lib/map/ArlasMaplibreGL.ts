@@ -403,4 +403,8 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   public layerTypeToPaintKeyword(layerType: string): string {
     return layerType === 'symbol' ? 'text' : layerType;
   }
+
+  public getLayersOrder() {
+    return this.getMapProvider().getLayersOrder();
+  }
 }

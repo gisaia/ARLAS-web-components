@@ -152,6 +152,14 @@ export class MapglDemoComponent<L, S, M> {
     this.addLayer('bounds', '#ff61ec');
     this.addLayer('pwithin', '#3a3cc7');
     this.addLayer('pwithinraw', '#adc73a', true);
+
+    const map = this.mapComponent?.map();
+    if (map) {
+      // const image = 'assets/logo-gisaia.png';
+      const image = 'https://s1.qwant.com/thumbr/474x316/8/2/e7978fce087c960fa36c2e84ad892257efe05b192a40c61cfd7139bcd5b62e/OIP.LkJWfXO9LJUMl55H-SYk8wHaE8.jpg?u=https%3A%2F%2Ftse.mm.bing.net%2Fth%2Fid%2FOIP.LkJWfXO9LJUMl55H-SYk8wHaE8%3Fr%3D0%26pid%3DApi&q=0&b=1&p=0&a=0'
+      this.mapFrameworkService.addImageLayer(map, 'logo-icon', image,
+        [[0, 10], [10, 10], [10, 0], [0, 0]]);
+    }
   }
 
   public stopUpdate() {

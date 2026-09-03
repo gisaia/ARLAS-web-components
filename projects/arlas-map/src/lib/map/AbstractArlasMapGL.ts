@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { signal } from '@angular/core';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import bbox from '@turf/bbox';
 import { fromEvent, map, Observable, Subscription } from 'rxjs';
@@ -108,8 +109,8 @@ export abstract class AbstractArlasMapGL {
   protected _controls: ControlsOption;
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
-  public currentLat = '0';
-  public currentLng = '0';
+  public currentLat = signal('0');
+  public currentLng = signal('0');
   public readonly POLYGON_LABEL_SOURCE = 'polygon_label';
 
   protected _north = 0;
@@ -210,8 +211,8 @@ export abstract class AbstractArlasMapGL {
     const lngLat = e.lngLat;
     if (this._displayCurrentCoordinates) {
       const displayedLngLat = this._wrapLatLng ? lngLat.wrap() : lngLat;
-      this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
-      this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
+      this.currentLng.set(String(Math.round(displayedLngLat.lng * 100000) / 100000));
+      this.currentLat.set(String(Math.round(displayedLngLat.lat * 100000) / 100000));
     }
   }
 
@@ -354,6 +355,10 @@ export abstract class AbstractArlasMapGL {
    * @param layerType Type of the layer
    */
   public abstract layerTypeToPaintKeyword(layerType: string): string;
+  /**
+   * Gets all the layers on the map ordered from the one the more in the background to the top-most
+   */
+  public abstract getLayersOrder(): string[];
 
   /** Gets bounds of the given geometry */
   public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {

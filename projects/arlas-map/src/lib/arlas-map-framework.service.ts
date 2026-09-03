@@ -140,6 +140,11 @@ export abstract class ArlasMapFrameworkService<L, S, M> {
   public abstract addGeojsonLayer(map: AbstractArlasMapGL, layerId: string, style: VectorStyle,
     data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string): void;
 
+  /**
+   * Adds a layer displaying the given image on the totality of the given bounds
+   */
+  public abstract addImageLayer(map: AbstractArlasMapGL, layerId: string, imageURL: string,
+    bounds: [[number, number], [number, number], [number, number], [number, number]], beforeId?: string): void;
 
   public abstract filterGeojsonData(map: AbstractArlasMapGL, layer: L | string, filter: any): void;
 
