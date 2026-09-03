@@ -57,6 +57,8 @@ export class ResultCardItemComponent extends ItemComponent {
   protected activatedActionsPerItem = input<Map<string, Set<string>>>(new Map());
   /** Input property: retriever for fetching additional item details */
   protected detailedDataRetriever = input.required<DetailedDataRetriever>();
+  /** Input property: Whether to use http protocol to fecth image */
+  protected useHttp = input(false);
   /** Output event: emitted when selected items change */
   public selectedItemsEvent = output<Set<string>>();
   /** Output event: emitted when an item is clicked */
@@ -154,28 +156,13 @@ export class ResultCardItemComponent extends ItemComponent {
 
   /**
    * Creates and shows an overlay for full screen image viewer
-   * @param image the image URL or ArrayBuffer to display
+   * @param image the URL of the image to display
    */
-  public createOverlay(image: string | ArrayBuffer) {
+  public createOverlay(image: string) {
     this.fullScreenService
-      .initOverlay()
+      .initOverlay(this.rowItem(), image, this.useHttp(), this.options().defautlImgUrl)
       ?.destroyElementOnClose()
       .subscribe();
-    this.showOverlay(image);
-  }
-
-  /**
-   * Displays the image in full screen mode with a slight delay to ensure DOM is ready
-   * @param image the image URL or ArrayBuffer to display in full screen
-   */
-  public showOverlay(image: string | ArrayBuffer) {
-    setTimeout(() => {
-      try {
-        this.fullScreenService.showFullScreen(image);
-      } catch {
-        console.warn('Failed to open full screen');
-      }
-    }, 0);
   }
 
   protected toggleDetail() {

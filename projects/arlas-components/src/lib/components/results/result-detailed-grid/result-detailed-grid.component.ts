@@ -17,30 +17,31 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
 import {
   ChangeDetectorRef, Component, ElementRef, inject, input,
-  Input, OnChanges, OnDestroy, output, Output, SimpleChanges, ViewChild
+  Input, linkedSignal, OnChanges, OnDestroy, output, Output, signal, SimpleChanges, viewChild, ViewChild
 } from '@angular/core';
-import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
+import { MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ImageViewer } from 'iv-viewer';
-import { Subject, tap } from 'rxjs';
+import { Subject } from 'rxjs';
 import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
 import { Item } from '../model/item';
 import { ItemDetailToggleEvent, ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ResultQuicklookActionsComponent } from '../result-quicklook-actions/result-quicklook-actions.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
+import { Action, ElementIdentifier } from '../utils/results.utils';
 
 @Component({
-    selector: 'arlas-result-detailed-grid',
-    templateUrl: './result-detailed-grid.component.html',
-    styleUrls: ['./result-detailed-grid.component.scss'],
-    imports: [MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatMiniFabButton, ResultDetailedItemComponent, TranslatePipe]
+  selector: 'arlas-result-detailed-grid',
+  templateUrl: './result-detailed-grid.component.html',
+  styleUrls: ['./result-detailed-grid.component.scss'],
+  imports: [
+    MatProgressSpinner, MatTooltip, MatIcon, MatMiniFabButton, ResultDetailedItemComponent, TranslatePipe, ResultQuicklookActionsComponent
+  ]
 })
 export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   /**
@@ -136,6 +137,7 @@ s   * @constant
 
   @ViewChild('image_detail', { static: false }) public imageViewer?: ElementRef;
 
+  public quicklookActions = viewChild<ResultQuicklookActionsComponent>('quicklookActions');
 
   public isDetailedDataShowed = false;
 
@@ -147,29 +149,16 @@ s   * @constant
   /**
    * @description Whether the request for the image is being processed
    */
-  public isLoading = false;
+  public isLoading = signal(false);
 
   /**
-   * @description In the case of multiple images, indicates which one is selected
+   * @description In the case of multiple images, indicates which one is selected.
+   * Since the logic is handled by the ResultQuicklookActionsComponent, default value is the component's value
    */
-  public currentImageIndex = 0;
+  public currentImageIndex = linkedSignal(() => this.quicklookActions()?.currentImageIndex() ?? 0);
 
-  /**
-   * @description Whether the viewer is in full screen mode
-   */
-  public isFullScreen = false;
-
-  private viewer?: ImageViewer;
-
-  /**
-   * Full screen
-   */
   private readonly fullScreenService = inject(FullScreenViewerService);
-
-  public constructor(
-    private readonly changeDetectorRef: ChangeDetectorRef,
-    private readonly http: HttpClient
-  ) { }
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public ngOnDestroy(): void {
     this.destroyViewer(true);
@@ -177,65 +166,37 @@ s   * @constant
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      this.resetViewer();
-      this.isFullScreen = false;
-      this.currentImageIndex = 0;
+      this.fullScreenService.destroy();
+      this.currentImageIndex.set(0);
       this.getImage();
     }
   }
 
-  private getImage() {
+  /**
+   * Gets the content of the image to render in the html
+   * @param imgURL URL of the image to visualize
+   */
+  protected getImage(imgURL?: string) {
     this.imgSrc = undefined;
     if (!this.gridTile().urlImages || this.gridTile().urlImages.length === 0) {
       return;
     }
+    imgURL ??= this.gridTile().urlImages[0];
 
-    if (this.useHttp) {
-      this.isLoading = true;
-      this.http.get(this.gridTile().urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
-        .subscribe({
-          next: (image: Blob) => {
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-              this.imgSrc = reader.result?.toString();
-              this.gridTile().imageEnabled = true;
-              this.isLoading = false;
-              this.updateViewer();
-            }, false);
-            if (image) {
-              reader.readAsDataURL(image);
-            }
-          }, error: (err) => {
-            console.error(err);
-            this.isLoading = false;
-          }
-        });
-    } else {
-      this.imgSrc = this.gridTile().urlImages[this.currentImageIndex];
-      this.gridTile().imageEnabled = true;
-      this.updateViewer();
-    }
-  }
+    this.isLoading.set(true);
+    this.fullScreenService.getImageSrc(imgURL, this.useHttp)
+      .subscribe(imgSrc => {
+        this.isLoading.set(false);
 
-  private updateViewer() {
-    this.resetViewer();
-    setTimeout(() => {
-      if (this.isFullScreen) {
-        try {
-          this.fullScreenService.showFullScreen(this.imgSrc as string);
-        } catch {
-          console.warn('Failed to open full screen');
+        if (imgSrc) {
+          this.imgSrc = imgSrc;
+          this.gridTile().imageEnabled = true;
+          this.fullScreenService.updateViewer(this.imgSrc);
         }
-      } else {
-        if (!!this.imageViewer && !this.viewer) {
-          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
-        }
-      }
-    }, 0);
+      });
   }
 
   public destroyViewer(isComponentDestroy?: boolean): void {
-    this.resetViewer();
     if (isComponentDestroy && this.fullScreenService.hasViewer()) {
       this.fullScreenService.destroy();
     }
@@ -249,7 +210,7 @@ s   * @constant
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
-    this.updateViewer();
+    this.fullScreenService.updateViewer(this.imgSrc as string);
   }
 
   public closeDetailedData() {
@@ -257,44 +218,17 @@ s   * @constant
     this.closeDetail.next(true);
   }
 
-  // Emits the action on this ResultDetailedItem to the parent (ResultList)
+  /**
+   * Emits the action on this ResultDetailedItem to the parent (ResultList)
+   */
   public triggerActionOnItem(actionOnItem: { action: Action; elementidentifier: ElementIdentifier; }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
   public showOverlay() {
-    this.isFullScreen = true;
-    this.resetViewer();
     this.fullScreenService
-      .initOverlay()
+      .initOverlay(this.gridTile(), this.imgSrc as string, this.useHttp, this.noViewImg(), this.currentImageIndex())
       ?.destroyElementOnClose()
-      .pipe(tap(() =>  {
-        this.isFullScreen = false;
-        this.resetViewer();
-      }))
       .subscribe();
-  }
-
-  public onPrevious() {
-    this.currentImageIndex -= 1;
-    if (this.currentImageIndex < 0) {
-      this.currentImageIndex = this.gridTile().urlImages.length - 1;
-    }
-    this.getImage();
-  }
-
-  public onNext() {
-    this.currentImageIndex += 1;
-    if (this.currentImageIndex >= this.gridTile().urlImages.length) {
-      this.currentImageIndex = 0;
-    }
-    this.getImage();
-  }
-
-  private resetViewer() {
-    if (this.viewer) {
-      this.viewer.destroy();
-      this.viewer = undefined;
-    }
   }
 }

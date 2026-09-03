@@ -8,28 +8,21 @@
           @if (gridTile().imageEnabled) {
             <img class="image_view" #image_detail src="{{imgSrc}}" (error)="destroyViewer()" alt="">
           }
-          @if ((!gridTile().imageEnabled || !imgSrc) && !isLoading) {
+          @if ((!gridTile().imageEnabled || !imgSrc) && !isLoading()) {
             <img src="{{noViewImg()}}" alt="No image available">
           }
-          @if (isLoading) {
+          @if (isLoading()) {
             <mat-progress-spinner [color]="'accent'" [diameter]="detailHeight < detailWidth ? detailHeight() / 2 : detailWidth() / 2" [mode]="'indeterminate'"></mat-progress-spinner>
           }
         </div>
-        @if (gridTile().urlImages && gridTile().urlImages.length > 1) {
-          <button mat-icon-button class="viewer_actions-infos navigate-button previous" matTooltip="{{'Previous image' | translate}}" (click)="onPrevious()">
-            <mat-icon>keyboard_arrow_left</mat-icon>
-          </button>
-        }
-        @if (gridTile().descriptions) {
-          <div class="viewer_actions-infos description">{{ gridTile().descriptions[currentImageIndex] }}</div>
-        }
-        @if (gridTile().urlImages && gridTile().urlImages.length > 1) {
-          <button mat-icon-button class="viewer_actions-infos navigate-button next" matTooltip="{{'Next image' | translate}}" (click)="onNext()">
-            <mat-icon>keyboard_arrow_right</mat-icon>
-          </button>
-        }
+
+        <arlas-result-quicklook-actions #quicklookActions [gridTile]="gridTile()"
+                                        [initialImageIndex]="currentImageIndex()"
+                                        (urlToVisualize)="getImage($event)">
+        </arlas-result-quicklook-actions>
+
         <div class="resultgrid__info-button">
-          <button [disabled]="!gridTile().imageEnabled || isLoading" id="view_image_gridmode_btn" [matTooltip]="VIEW_IMAGE | translate"
+          <button [disabled]="!gridTile().imageEnabled || isLoading()" id="view_image_gridmode_btn" [matTooltip]="VIEW_IMAGE | translate"
             class="resultgrid__info-view-button" mat-mini-fab (click)="showOverlay()">
             <mat-icon class="resultgrid__info_outline">fit_screen</mat-icon>
           </button>

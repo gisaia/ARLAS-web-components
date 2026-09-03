@@ -17,9 +17,6 @@
  * under the License.
  */
 
-$default-icon-size: 24px;
-$sm-spacing: 5px;
-
 .resultgrid__img {
   overflow-y: hidden;
   overflow-x: hidden;
@@ -29,45 +26,6 @@ $sm-spacing: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.viewer_actions-infos {
-  position: absolute;
-  bottom: $sm-spacing;
-  z-index: 999;
-
-  &.description {
-    color: var(--arlas-result-detailed-grid-viewer-desc-color, var(--mat-sys-on-background));
-    background-color: var(--arlas-result-detailed-grid-viewer-desc-background, var(--mat-sys-on-background));
-    padding: 0 $sm-spacing;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  &.navigate-button {
-    height: $default-icon-size;
-    width: $default-icon-size;
-    background-color: var(--arlas-result-detailed-grid-nav-button-background, var(--mat-sys-background));
-    border: 1px solid #a1a1a1;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-
-    &.previous {
-      left: $sm-spacing;
-    }
-
-    &.next {
-      right: $sm-spacing;
-    }
-
-    ::ng-deep.mat-icon {
-      overflow: unset;
-    }
-  }
 }
 
 .resultgrid {
@@ -88,23 +46,19 @@ $sm-spacing: 5px;
 {
   position: absolute;
   top: 5px;
-  right: 0px;
+  right: 5px;
   background-color: transparent;
   z-index: 1;
-
-  ::ng-deep.mat-mdc-mini-fab[disabled] {
-    color: var(--arlas-result-detailed-grid-disabled-color, var(--mat-sys-on-background));
-  }
+  display: flex;
+  gap: 5px;
 }
 
-.resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button{
-  top: 5px;
-  right: 15px;
-  background-color: var(--arlas-result-detailed-grid-view-button-background, var(--mat-sys-background));
+.resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button {
+  background-color: var(--arlas-result-detailed-grid-view-button-background, var(--mat-sys-background)) !important;
   color: var(--arlas-result-detailed-grid-view-button-color, var(--mat-sys-on-background));
+  --mat-fab-small-touch-target-size: 24px;
   width: 24px;
   height: 24px;
-  margin-right: 5px;
 }
 
 .image_view {
