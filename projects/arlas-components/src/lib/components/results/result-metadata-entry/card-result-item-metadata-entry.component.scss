@@ -22,7 +22,7 @@
 }
 
 .meta-data-entry {
-  font-size: 14px;
+  font-size: var(--arlas-entry-font-size, 14px);
   &__container {
     display: flex;
     flex: 1 1 fit-content;

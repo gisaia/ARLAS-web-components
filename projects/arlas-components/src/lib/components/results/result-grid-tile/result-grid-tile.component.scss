@@ -148,7 +148,7 @@ $img-proportion: 85%;
   height: calc(100% - $img-proportion);
   color: var(--arlas-result-grid-tile-title-color, var(--mat-sys-on-background));
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 14px;
+  font-size: var(--arlas-entry-font-size, 14px);
   display: flex;
   justify-content: space-between;
   align-items: center;
