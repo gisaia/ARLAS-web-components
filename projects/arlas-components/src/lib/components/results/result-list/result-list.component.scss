@@ -26,7 +26,7 @@
 .resultlist__header--columns /* @doc Sets columns names style.*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.9em;
+  font-size: var(--arlas-entry-font-size, 14px);
   text-align: left;
   vertical-align: middle;
   overflow: hidden;
