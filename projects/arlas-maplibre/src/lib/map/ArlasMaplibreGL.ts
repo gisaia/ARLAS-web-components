@@ -23,6 +23,7 @@ import {
 } from 'arlas-map';
 import {
   AllPaintProperties, AttributionControl, ControlPosition, Expression, FitBoundsOptions, GlobeControl, IControl,
+  LayerSpecification,
   LngLat, LngLatBounds, LngLatBoundsLike, MapEventType, MapGeoJSONFeature, Map as MaplibreMap, MapOptions,
   NavigationControl, Point, PointLike, QueryRenderedFeaturesOptions, ScaleControl, setWorkerUrl, StyleSetterOptions
 } from 'maplibre-gl';
@@ -277,11 +278,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this.getMapProvider().getBounds();
   }
 
-  public getEastBounds(): any {
+  public getEastBounds(): number {
     return this.getBounds().getEast();
   }
 
-  public getLayers(): any {
+  public getLayers(): LayerSpecification[] {
     return this.getMapProvider().getStyle().layers;
   }
 
