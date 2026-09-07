@@ -155,7 +155,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
       .pipe(takeUntil(this._onDestroy$))
       .subscribe(visibilityUpdater => {
         /** check legend visibility according to Data source status (mapcontirbutor) */
-        if (this.layer) {
+        if (this.layer()) {
           /** if the visibility updater contains the layer we pick the visibility status otherwise we keep it unchaged */
           this.visibleMode = visibilityUpdater.get(this.layer().id) !== undefined ? !!visibilityUpdater.get(this.layer().id) : this.visibleMode;
         } else {
@@ -168,7 +168,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
           this.visibleMode = (this.zoom() <= maxzoom && this.zoom() >= minzoom);
         }
         /** check legend visibility according to legend enabled or not */
-        if (!this.enabled) {
+        if (!this.enabled()) {
           this.visibleMode = false;
         }
         if (!this.visibleMode) {
