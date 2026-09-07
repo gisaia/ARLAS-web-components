@@ -46,10 +46,8 @@
         position: absolute;
         width: 100%;
         bottom: 0;
-        background-color: var(--arlas-basemaps-background-title-color, color-mix(in srgb, var(--mat-sys-surface) 50%, transparent));
+        background-color: var(--arlas-basemaps-background-title-color, color-mix(in srgb, var(--mat-sys-surface) 40%, transparent));
         border-radius: 0 0 6px 6px;
-        text-shadow: 1px 1px 2px white;
-
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
