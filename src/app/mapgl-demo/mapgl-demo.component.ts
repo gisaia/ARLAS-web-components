@@ -381,7 +381,8 @@ export class MapSettings implements MapSettingsService {
 
   public getGeoQueries(): Map<string, [GeometrySelectModel[], OperationSelectModel[], string]> {
     const geoQueriesMap = new Map<string, [GeometrySelectModel[], OperationSelectModel[], string]>();
-    geoQueriesMap.set('Test', [[{ path: '_centroid' }], this.getOperations(), 'Display name Test']);
+    geoQueriesMap.set('Collection', [[{ path: '_centroid' }], this.getOperations(), 'Display name collection']);
+    geoQueriesMap.set('Other collection', [[{ path: 'centroid' }], this.getOperations(), 'Display name other']);
     return geoQueriesMap;
   }
 
