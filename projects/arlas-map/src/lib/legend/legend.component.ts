@@ -26,9 +26,9 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MarkerModule } from '@colsen1991/ngx-translate-extract-marker/extras';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { HistogramData } from 'arlas-d3';
-import { ArlasColorService, GetCollectionDisplayNamePipe, GetColorPipe } from 'arlas-web-components';
+import { GetCollectionDisplayNamePipe, GetColorPipe } from 'arlas-web-components';
 import { scaleLinear, ScaleLinear } from 'd3-scale';
 import { select } from 'd3-selection';
 import { area, curveLinear, line } from 'd3-shape';
@@ -101,43 +101,44 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
    * @Output : Angular
    * @description Notifies the parent component that the user wants to download the layer
    */
-  @Output() public downloadSourceEmitter: Subject<{ layer: any; downloadType: string; }> = new Subject();
+  @Output() public downloadSourceEmitter: Subject<{ layer: ArlasDataLayer; downloadType: string; }> = new Subject();
 
-  @ViewChild('width_legend', { static: false }) public lineWidthLegend: any;
-  @ViewChild('radius_legend', { static: false }) public circleRadiusLegend: any;
+  @ViewChild('width_legend', { static: false }) public lineWidthLegend?: LegendItemComponent;
+  @ViewChild('radius_legend', { static: false }) public circleRadiusLegend?: LegendItemComponent;
 
   public lineDasharray = new Array<number>();
 
   public colorLegend: WritableSignal<Legend> = signal({});
-  public hasColorLegend = computed(() => this.colorLegend().type !== undefined && this.colorLegend().type !== 'Fix');
+  public hasColorLegend = computed(() =>
+    this.colorLegend().type !== undefined && this.colorLegend().type !== PROPERTY_SELECTOR_SOURCE.fix);
 
   public strokeColorLegend: WritableSignal<Legend> = signal({});
-  public hasStrokeLegend = computed(() => this.strokeColorLegend().type !== undefined && this.strokeColorLegend().type !== 'Fix');
+  public hasStrokeLegend = computed(() =>
+    this.strokeColorLegend().type !== undefined && this.strokeColorLegend().type !== PROPERTY_SELECTOR_SOURCE.fix);
 
   public widthLegend: WritableSignal<Legend> = signal({});
-  public hasWidthLegend = computed(() => this.widthLegend().type !== undefined && this.widthLegend().type !== 'Fix');
+  public hasWidthLegend = computed(() =>
+    this.widthLegend().type !== undefined && this.widthLegend().type !== PROPERTY_SELECTOR_SOURCE.fix);
 
   public radiusLegend: WritableSignal<Legend> = signal({});
-  public hasRadiusLegend = computed(() => this.radiusLegend().type !== undefined && this.radiusLegend().type !== 'Fix');
+  public hasRadiusLegend = computed(() =>
+    this.radiusLegend().type !== undefined && this.radiusLegend().type !== PROPERTY_SELECTOR_SOURCE.fix);
 
   public displayLegendDetailToggle = computed(() =>
     this.hasColorLegend() || this.hasStrokeLegend() || this.hasWidthLegend() || this.hasRadiusLegend());
 
   public detail = false;
   public visibleMode = false;
-  public PROPERTY_SELECTOR_SOURCE = PROPERTY_SELECTOR_SOURCE;
 
   private legendData: Map<string, LegendData> = new Map();
   public colorPalette = '';
   public strokeColorPalette = '';
 
   private readonly MAX_CIRLE_RADIUS = 7;
-  private readonly LEGEND_WIDTH = 210;
+  private readonly LEGEND_WIDTH = 185;
   private readonly _onDestroy$ = new Subject<boolean>();
 
   public constructor(
-    public translate: TranslateService,
-    public colorService: ArlasColorService,
     private readonly legendService: LegendService
   ) { }
 
@@ -202,7 +203,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
     this._onDestroy$.complete();
   }
 
-  public downloadLayerSource(layer: any, downloadType: string): void {
+  public downloadLayerSource(layer: ArlasDataLayer, downloadType: string): void {
     const download = {
       layer,
       downloadType
@@ -307,7 +308,7 @@ export class LegendComponent implements OnInit, AfterViewInit, OnChanges, OnDest
 export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramData>,
   cLegend: Legend, legendWidth: number, legendHeight: number) {
   const maxHeight = getMax(lineWidths);
-  const xDomain: any = (scaleLinear()).range([0, legendWidth]);
+  const xDomain = scaleLinear().range([0, legendWidth]);
   const xDomainExtent = [lineWidths[0].key, lineWidths[lineWidths.length - 1].key];
   xDomain.domain(xDomainExtent);
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);
@@ -315,11 +316,11 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
   const svg = select(svgNode).attr('width', legendWidth).attr('height', legendHeight);
   svg.selectAll('g').remove();
   const context = svg.append('g').attr('class', 'context');
-  const ar = area()
+  const ar = area<HistogramData>()
     .curve(curveLinear)
-    .x((d: any) => xDomain(d.key))
+    .x(d => xDomain(d.key))
     .y0(maxHeight)
-    .y1((d: any) => yDomain(d.value));
+    .y1(d => yDomain(d.value));
 
   const widthLineColor = getMiddleColor(cLegend);
   context.append('path')
@@ -329,7 +330,7 @@ export function drawLineWidth(svgNode: SVGElement, lineWidths: Array<HistogramDa
     .style('stroke', widthLineColor)
     .style('stroke-opacity', 0.6)
     .style('stroke-width', 0.5)
-    .attr('d', <any>ar);
+    .attr('d', ar);
 }
 
 export function getMiddleColor(colorLegend: Legend): string {
@@ -357,6 +358,12 @@ export function getMiddleColor(colorLegend: Legend): string {
   }
   return color;
 }
+
+interface CircleDiameter {
+  key: number | Date;
+  value: number;
+}
+
 /**
  * draws the circle radius legend
  * @param svgNode SVG element on which we append the circles using d3.
@@ -365,31 +372,35 @@ export function getMiddleColor(colorLegend: Legend): string {
  * @param legendWidth The width that the svg will take to draw the legend
  * @param legendHeight The height that the svg will take to draw the legend
  */
-export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Array<HistogramData>,
-  cLegend: Legend, legendWidth: number, legendHeight: number) {
-  const circleDiameters = new Array<{ key: number | Date; value: number; }>();
+export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: HistogramData[],
+  cLegend: Legend, legendWidth: number, legendHeight: number
+) {
+  const circleDiameters = new Array<CircleDiameter>();
   circlesRadiuses.forEach(cr => circleDiameters.push({ key: cr.key, value: cr.value * 2 }));
   const maxHeight = getMax(circleDiameters);
   const firstRadius = circlesRadiuses[0].value;
   const lastRadius = circlesRadiuses[circlesRadiuses.length - 1].value;
-  const xDomain: any = (scaleLinear()).range([0, legendWidth - firstRadius - lastRadius]);
+  const xDomain = scaleLinear().range([0, legendWidth - firstRadius - lastRadius]);
   const xDomainExtent = [circleDiameters[0].key, circleDiameters[circleDiameters.length - 1].key];
   xDomain.domain(xDomainExtent);
   const yDomain: ScaleLinear<number, number> = scaleLinear().range([maxHeight, 0]);
   yDomain.domain([0, maxHeight]);
+
   const svg = select(svgNode).attr('width', legendWidth).attr('height', legendHeight);
   svg.selectAll('g').remove();
   const context = svg.append('g').attr('class', 'context');
-  const l = line()
-    .x((d: any) => xDomain(d.key))
-    .y((d: any) => yDomain(d.value));
+  const l = line<CircleDiameter>()
+    .x(d => xDomain(d.key))
+    .y(d => yDomain(d.value));
+
   context.append('path')
     .datum(circleDiameters)
     .attr('fill', 'none')
     .attr('stroke', '#eaeaea')
     .attr('stroke-width', 0.8)
     .attr('transform', 'translate(' + firstRadius + ', 0)')
-    .attr('d', <any>l);
+    .attr('d', l);
+
   context.append('g').append('line')
     .attr('x1', 0).attr('y1', maxHeight)
     .attr('x2', legendWidth - firstRadius - lastRadius).attr('y2', maxHeight)
@@ -397,6 +408,7 @@ export function drawCircleSupportLine(svgNode: SVGElement, circlesRadiuses: Arra
     .attr('stroke', '#eaeaea')
     .attr('stroke-width', 0.8)
     .attr('transform', 'translate(' + firstRadius + ', 0)');
+
   const circles = [circlesRadiuses[0], circlesRadiuses[circlesRadiuses.length - 1]];
   const circleColor = getMiddleColor(cLegend);
   context.append('g')

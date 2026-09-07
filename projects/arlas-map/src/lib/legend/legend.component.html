@@ -19,10 +19,10 @@
         <div class="download_button">
           <mat-icon class="download_icon" [matMenuTriggerFor]="menu" [matTooltip]="'Download the layer\'s data' | translate">file_download</mat-icon>
           <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="downloadLayerSource(layer, 'csv')">
+            <button mat-menu-item (click)="downloadLayerSource(layer(), 'csv')">
               {{'CSV' | translate}}
             </button>
-            <button mat-menu-item (click)="downloadLayerSource(layer, 'geojson')">
+            <button mat-menu-item (click)="downloadLayerSource(layer(), 'geojson')">
               {{'GeoJson' | translate}}
             </button>
           </mat-menu>
@@ -41,7 +41,7 @@
         [title]="'Fill:' | marker" [colorPalette]="colorPalette" [highlightLegend]="highlightLegend"></arlas-legend-item>
 
       <arlas-legend-item [hidden]="!hasStrokeLegend()" [legend]="strokeColorLegend()" [layer]="layer()"
-        [title]="'Stroke:' | marker" [colorPalette]="colorPalette" [highlightLegend]="highlightLegend"></arlas-legend-item>
+        [title]="'Stroke:' | marker" [colorPalette]="strokeColorPalette" [highlightLegend]="highlightLegend"></arlas-legend-item>
 
       <arlas-legend-item [hidden]="!hasWidthLegend()" #width_legend [legend]="widthLegend()" [layer]="layer()"
         [title]="'Width:' | marker" [highlightLegend]="highlightLegend"></arlas-legend-item>
