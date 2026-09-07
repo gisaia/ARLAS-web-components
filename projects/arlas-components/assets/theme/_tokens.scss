@@ -45,6 +45,7 @@
   --arlas-sys-histogram-bar-stroke: #a5a5a5;
   --arlas-sys-light-surface: color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent);
   --arlas-sys-on-light-surface: color-mix(in srgb, var(--mat-sys-on-surface) 40%, transparent);
+  --arlas-sys-on-hover: rgba(208, 217, 226, 0.548);
   --arlas-sys-outline: rgba(0, 0, 0, .12)
 }
 
@@ -56,5 +57,6 @@
     @if($is-dark){
       --arlas-sys-histogram-bar-fill: #616b79;
       --arlas-sys-outline: rgba(255, 255, 255, .12);
+      --arlas-sys-on-hover: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent)
     }
 }
