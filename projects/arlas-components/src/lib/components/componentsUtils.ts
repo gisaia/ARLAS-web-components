@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { UntypedFormControl, Validators } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
 import tinycolor from 'tinycolor2';
 
@@ -119,28 +118,6 @@ export class AwcColorGeneratorLoader extends ColorGeneratorLoader {
   }
 }
 
-export class SelectFormControl extends UntypedFormControl {
-
-  // used only for autocomplete: list of filtered options
-  public filteredOptions: Array<string> = [];
-  public syncOptions: Array<string> = [];
-
-  public constructor(
-    formState: any,
-    label: string,
-    options: Array<string>) {
-
-    super(formState, Validators.required);
-    this.setValue(formState);
-    this.setSyncOptions(options);
-
-  }
-
-  public setSyncOptions(newOptions: Array<string>) {
-    this.syncOptions = newOptions;
-    this.filteredOptions = newOptions;
-  }
-}
 const ARLAS_ID = 'arlas_id:';
 
 /** FROM V15.0.0 layer ids look like 'arlas_id:NAME:timestamp

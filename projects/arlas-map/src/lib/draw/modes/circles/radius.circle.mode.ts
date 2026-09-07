@@ -26,7 +26,7 @@ import { displayFeatures, updateCoordinates } from '../utils';
 export const radiusCircleMode = { ...MapboxDraw.modes.draw_line_string };
 
 radiusCircleMode.fireOnStop = function () {
-    (this.map as any).fire('draw.onStop', 'draw end');
+    this.map.fire('draw.onStop', 'draw end');
 };
 
 function getDisplayMeasurements(feature: GeoJSON.Feature) {

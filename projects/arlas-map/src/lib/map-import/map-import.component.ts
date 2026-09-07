@@ -169,8 +169,8 @@ export class MapImportComponent<L, S, M> {
   @Input() public maxLoadingTime = 20000;
   @Input() public allowedImportType = [this.SHP, this.KML, this.WKT, this.GEOJSON];
   @Input() public allowedGeometryObjectType: Array<AllowedImportGeometry> = ['Polygon'];
-  @Output() public imported = new Subject<any>();
-  @Output() public error = new Subject<any>();
+  @Output() public imported = new Subject<Feature[]>();
+  @Output() public error = new Subject<string>();
 
   private _currentAllowedGeom = new Set<string>();
 

@@ -46,7 +46,7 @@ circleMode.onSetup = function (opts) {
     this.activateUIButton(MapboxDraw.constants.types.POLYGON);
     this.setActionableState({
         trash: true
-    } as any);
+    });
 
     return {
         initialRadiusInKm: opts.initialRadiusInKm || DEFAULT_RADIUS_IN_KM,

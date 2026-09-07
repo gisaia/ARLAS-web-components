@@ -88,7 +88,7 @@ export class LayerIconComponent implements OnChanges, AfterViewInit {
         break;
       }
       case 'symbol': {
-        const l: any = (this.layer().layout);
+        const l = this.layer().layout;
         if (l['text-field']) {
           drawTextIcon(this.layerIconElement.nativeElement, this.colorLegend);
         }
