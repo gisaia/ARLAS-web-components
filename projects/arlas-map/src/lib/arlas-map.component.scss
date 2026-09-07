@@ -61,7 +61,7 @@
 }
 
 .map__visu-list--container /* @doc Sets the style of layers switcher container*/ {
-  padding: 1px 1px 3px 1px;
+  padding: 1px 1px 0 1px;
   border-radius: 2px;
   max-height: calc(100vh - 415px);
   overflow-y: auto;
@@ -69,7 +69,7 @@
 }
 
 .map__visu-item {
-  margin: 1px;
+  margin: 1px 1px 0;
   padding: unset;
   padding-right: 3px;
   width: 225px;
@@ -120,7 +120,6 @@
 }
 
 .map__visu-content {
-  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 
