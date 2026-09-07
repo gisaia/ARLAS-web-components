@@ -124,7 +124,8 @@ declare module MapboxDraw {
         // Utils
         newFeature?(this: DrawCustomModeThis, feature: { type: string; properties: Record<string, any>; geometry: GeoJSON.Geometry; });
         pathsToCoordinates?(this: DrawCustomModeThis, featureId: string, paths: string[]);
-        createActionPointHelper?(this: DrawCustomModeThis, actionWidgets: GeoJSON.Feature[], featureId: string, v1: Coord, v2: Coord,
+        createActionPointHelper?(this: DrawCustomModeThis, actionWidgets: GeoJSON.Feature[], featureId: string,
+            v1: GeoJSON.Feature<GeoJSON.Point>, v2: GeoJSON.Feature<GeoJSON.Point>,
             rotCenter: Coord, radiusScale: number, type: string): void;
         createActionPoints?(this: DrawCustomModeThis, state: CustomModeState,
             geojson: GeoJSON.Feature<GeoJSON.Polygon>, suppPoints: GeoJSON.Feature<GeoJSON.Point>[]);

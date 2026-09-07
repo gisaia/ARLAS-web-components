@@ -82,7 +82,7 @@ stripDirectSelectMode.onSetup = function (opts) {
 };
 
 stripDirectSelectMode.fireOnStop = function () {
-    (this.map as any).fire('draw.onStop', 'draw end');
+    this.map.fire('draw.onStop', 'draw end');
 };
 
 stripDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
@@ -119,8 +119,6 @@ stripDirectSelectMode.onStop = function () {
 stripDirectSelectMode.pathsToCoordinates = MapboxDraw.modes.direct_select.pathsToCoordinates;
 
 stripDirectSelectMode.createActionPointHelper = function (actionWidgets, featureId, v1, v2, rotCenter, radiusScale, type) {
-    // TODO: check typing here
-    console.log(v1);
     const cR0 = midpoint(v1, v2).geometry.coordinates;
     const heading = rhumbBearing(rotCenter, cR0);
     const distance0 = distance(rotCenter, cR0);
@@ -135,8 +133,7 @@ stripDirectSelectMode.createActionPointHelper = function (actionWidgets, feature
             parent: featureId,
             lng: cR1[0],
             lat: cR1[1],
-            // TODO: check typing here
-            coord_path: (v1 as any).properties.coord_path,
+            coord_path: v1.properties?.coord_path,
             coord_path_coords: cR0,
             heading: heading,
         },
@@ -158,7 +155,7 @@ stripDirectSelectMode.createActionPoints = function (state, geojson, suppPoints)
     const corners = suppPoints.slice(0);
     corners[corners.length] = corners[0];
     let v1: GeoJSON.Feature<GeoJSON.Point> | null = null;
-    const rotCenter = this.computeCenter(state, geojson);
+    const rotCenter = center(geojson);
     corners.forEach((v2) => {
         if (v1?.properties?.coord_path === '0.2') {
             this.createActionPointHelper(actionWidgets, featureId, v1, v2, rotCenter, state.rotationPointRadius, 'resize');
@@ -234,7 +231,6 @@ stripDirectSelectMode.computeAxes = function (state, polygon) {
     const centroid = center(polygon);
     const corners = polygon.geometry.coordinates[0].slice(0);
     const n = corners.length - 1;
-    const iHalf = Math.floor(n / 2);
     const rotateCenters = [];
     const headings = [];
     for (let i1 = 0; i1 < n; i1++) {

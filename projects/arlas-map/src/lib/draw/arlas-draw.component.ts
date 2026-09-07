@@ -99,7 +99,6 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** List of drawn polygons centroid */
   public polygonlabeldata: FeatureCollection<GeoJSON.Geometry> = ({ ...this.emptyData });
 
-  // TODO: typing
   /** Drawn geometry's state when editing/updating. */
   protected savedEditFeature?: any;
   /** Html element that holds the drawing message. */
@@ -184,7 +183,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
           featureCoords[0][1] !== featureCoords.at(-1)[1]) {
           featureCoords.push(featureCoords[0]);
         }
-        const currentFeature = {
+        const currentFeature: Feature<Polygon> = {
           id: '',
           type: 'Feature',
           geometry: {
@@ -195,7 +194,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
         };
         currentFeature.id = this.savedEditFeature.id;
         currentFeature.properties = this.savedEditFeature.properties;
-        this.draw.add(currentFeature as Feature<Polygon>);
+        this.draw.add(currentFeature);
       }
       this.openInvalidGeometrySnackBar();
       this.mapFrameworkService.setMapCursor(this.map(), '');
@@ -207,7 +206,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
       if (e.features.length > 0) {
         this.drawService.isDrawSelected = true;
       } else {
-        this.savedEditFeature = null;
+        this.savedEditFeature = undefined;
         this.drawService.isDrawSelected = false;
         this.onAoiChanged.next(
           {

@@ -379,8 +379,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the event of sorting data on the specified column.
    */
-  @Output() public sortColumnEvent: Subject<{ fieldName: string; sortDirection: SortEnum; }> =
-    new Subject<{ fieldName: string; sortDirection: SortEnum; }>();
+  @Output() public sortColumnEvent = new Subject<{ fieldName: string; sortDirection: SortEnum; }>();
 
   /**
    * @Output : Angular
@@ -462,13 +461,13 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits the current visible items in the viewport.
    */
-  @Output() public visibleItems: Subject<Array<Item>> = new Subject<Array<Item>>();
+  @Output() public visibleItems = new Subject<Array<Item>>();
 
   /**
   * @Output : Angular
   * @description Emits on changes rowItemList current value.
   */
-  @Output() public onChangeItems: Subject<Array<any>> = new Subject<Array<any>>();
+  @Output() public onChangeItems = new Subject<Array<Map<string, ItemDataType>>>();
 
   /**
    * @Output : Angular
@@ -766,7 +765,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @description Emits the column to sort on and the sort direction
    */
-  public sort(paramSortedColumn: Column): void {
+  public sort(paramSortedColumn: { fieldName: string; sortDirection: SortEnum; }): void {
     this.isGeoSortActivated = false;
     paramSortedColumn.sortDirection = this.sortedColumn.sortDirection;
     this.columns.forEach(column => {
@@ -788,7 +787,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     } else {
       this.sortedColumn.sortDirection = SortEnum.asc;
     }
-    this.sort(this.sortedColumn as any);
+    this.sort(this.sortedColumn);
   }
 
   public setSortedColumn(event: MatSelectChange) {
@@ -805,7 +804,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         sortDirection: SortEnum.none
       };
     }
-    this.sort(this.sortedColumn as any);
+    this.sort(this.sortedColumn);
   }
 
   /**

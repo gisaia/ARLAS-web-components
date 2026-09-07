@@ -645,15 +645,15 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
     this.reorderLayers();
   }
 
-  public downloadLayerSource(downaload: { layer: any; downloadType: string; }): void {
-    const downlodedSource = {
+  public downloadLayerSource(downaload: { layer: ArlasDataLayer; downloadType: string; }): void {
+    const downloadedSource = {
       layerId: downaload.layer.id,
       layerName: getLayerName(downaload.layer.id),
-      collection: downaload.layer.metadata.collection,
-      sourceName: downaload.layer.source as string,
+      collection: downaload.layer.metadata?.collection as string,
+      sourceName: downaload.layer.source,
       downloadType: downaload.downloadType
     };
-    this.downloadSourceEmitter.next(downlodedSource);
+    this.downloadSourceEmitter.next(downloadedSource);
   }
 
   /** puts the visualisation set list in the new order after dropping */

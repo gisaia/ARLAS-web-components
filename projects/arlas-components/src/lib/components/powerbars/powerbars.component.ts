@@ -358,7 +358,7 @@ export class PowerbarsComponent implements OnInit, OnChanges, AfterViewInit {
     this.unselectAllButNotSelectedBars();
   }
 
-  public onKeyUp(searchText: any) {
+  public onKeyUp(searchText: string) {
     this.searchedTerm.next(searchText);
   }
 

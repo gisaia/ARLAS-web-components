@@ -92,7 +92,7 @@ export class BasemapComponent<L, S, M>implements OnInit, OnDestroy {
 
   public setBaseMapStyle(newBasemap: BasemapStyle) {
     if (this.map) {
-      this.basemapService.setBasemap(this.basemaps?.getSelected().styleFile as any, newBasemap, this.map, this.mapSources);
+      this.basemapService.setBasemap(this.basemaps?.getSelected().styleFile, newBasemap, this.map, this.mapSources);
     }
   }
 

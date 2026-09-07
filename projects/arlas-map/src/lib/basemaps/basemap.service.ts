@@ -75,7 +75,8 @@ export abstract class BasemapService<L, S, M> {
   public abstract removeProtomapBasemap(map: AbstractArlasMapGL): void;
 
   public abstract declareProtomapProtocol(map: AbstractArlasMapGL): void;
-  public cloneStyleFile<T>(selected: any) {
+
+  public cloneStyleFile<T>(selected: BasemapStyle) {
     return { ...selected.styleFile as T};
   }
 

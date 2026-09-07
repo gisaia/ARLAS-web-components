@@ -317,7 +317,6 @@ export abstract class AbstractArlasMapGL {
     status: Map<string, boolean>;
   }): OnMoveResult;
 
-  // TODO: not sure here
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
     event: string; fn: (e?: Event) => void;
   }): void;
@@ -362,7 +361,7 @@ export abstract class AbstractArlasMapGL {
 
   /** Gets bounds of the given geometry */
   public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
-    const boundingBox: any = bbox(geometry);
+    const boundingBox = bbox(geometry);
     let west = boundingBox[0];
     let south = boundingBox[1];
     let east = boundingBox[2];
