@@ -56,6 +56,8 @@ export class ResultThumbnailComponent {
   protected detailedDataRetriever = input.required<DetailedDataRetriever>();
   /** Input property: specifies how the thumbnail image should fit (default: contain) */
   protected thumbnailFit = input<ThumbnailFitEnum>(ThumbnailFitEnum.contain);
+  /** Input property: whether to display the view full screen button */
+  protected displayFullScreenAction = input<boolean>(true);
 
   public cellTooltip = viewChild<MatTooltip>('cellTooltip');
   /** Input property: tooltip text for the picture/thumbnail */
@@ -74,11 +76,9 @@ export class ResultThumbnailComponent {
   /** Output event: emitted when the image is hovered */
   public imageHovered = output<void>();
 
-  public selectDeterminateItem = output<void>();
-
   public setSelectedItemEvent = output<void>();
   /** Output event: emitted when full screen view is requested, contains image data */
-  public openFullScreen = output<string | ArrayBuffer>();
+  public openFullScreen = output<string>();
 
   /**
    * Emits the image click event when the thumbnail is clicked
@@ -108,10 +108,6 @@ export class ResultThumbnailComponent {
    */
   protected hideCellTooltip($event: FocusEvent) {
     this.focusActionEvent.emit($event);
-  }
-
-  protected determinateItem() {
-    this.selectDeterminateItem.emit();
   }
 
   protected setSelectedItem() {

@@ -160,7 +160,7 @@ export abstract class AbstractArlasMapGL {
       this._initOnLoad();
       this._initMapMoveEvents();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 

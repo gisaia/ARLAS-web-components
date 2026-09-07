@@ -18,16 +18,13 @@
  */
 
 import { Component, input, Input, Output, ViewChild } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslatePipe } from '@ngx-translate/core';
 import { LazyLoadImageModule } from 'ng-lazyload-image';
 import { Subject } from 'rxjs';
 import { Item } from '../model/item';
 import { ItemComponent } from '../model/itemComponent';
-import { ResultActionsComponent } from '../result-actions/result-actions.component';
+import { ResultThumbnailComponent } from '../result-thumbnail/result-thumbnail.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { ThumbnailFitEnum } from '../utils/enumerations/thumbnailFitEnum';
 import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.utils';
@@ -36,7 +33,7 @@ import { Action, ElementIdentifier, ResultListOptions } from '../utils/results.u
   selector: 'arlas-result-grid-tile',
   templateUrl: './result-grid-tile.component.html',
   styleUrls: ['./result-grid-tile.component.scss'],
-  imports: [MatIcon, MatIconButton, MatTooltip, LazyLoadImageModule, ResultActionsComponent, TranslatePipe]
+  imports: [MatTooltip, LazyLoadImageModule, ResultThumbnailComponent]
 })
 export class ResultGridTileComponent extends ItemComponent {
   /**

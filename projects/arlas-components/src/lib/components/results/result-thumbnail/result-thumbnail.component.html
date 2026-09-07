@@ -1,5 +1,4 @@
 <div #cellTooltip="matTooltip"
-     (click)="setClickedOnItem()"
      (mouseover)="hoverImage()"
      class="thumbnail__image {{gridTile().iconCssClass}}"
      id="{{'grid-tile-' + gridTile().identifier}}"
@@ -12,20 +11,25 @@
         </mat-icon>
       </button>
     </div>
+    @if (displayFullScreenAction()) {
     <div class="image__header--right">
       <button (click)="fullScreen($event, gridTile().urlImages)"
-              class="action__btn" mat-icon-button matTooltip="{{'View in full screen' | translate}}"
+              class="action__btn" mat-icon-button [matTooltip]="'View in full screen' | translate"
               matTooltipPosition="below">
         <mat-icon>fit_screen</mat-icon>
       </button>
     </div>
+    }
   </div>
 
   <img
+    (click)="setClickedOnItem()"
     (keydown)="fullScreen($event, gridTile().urlImages)"
-    [defaultImage]="defaultImgUrl()" [lazyLoad]="gridTile().urlThumbnail ?? defaultImgUrl()"
+    [defaultImage]="defaultImgUrl()"
+    [lazyLoad]="gridTile().urlThumbnail ?? defaultImgUrl()"
     (click)="fullScreen($event, gridTile().urlImages)"
-    [class.contain_thumbnail]="thumbnailFit() === ThumbnailFitEnum.contain" [class.height_thumbnail]="thumbnailFit() === ThumbnailFitEnum.height"
+    [class.contain_thumbnail]="thumbnailFit() === ThumbnailFitEnum.contain"
+    [class.height_thumbnail]="thumbnailFit() === ThumbnailFitEnum.height"
     [class.round_thumbnail]="thumbnailFit() === ThumbnailFitEnum.round"
     [class.width_thumbnail]="thumbnailFit() === ThumbnailFitEnum.width"
     alt=''/>
@@ -34,7 +38,8 @@
       <arlas-result-actions
         (actionOnItemEvent)="triggerActionOnItem($event)"
         [activatedActionsPerItem]="activatedActionsPerItem()"
-        [detailedDataRetriever]="detailedDataRetriever()" [item]="gridTile()"
+        [detailedDataRetriever]="detailedDataRetriever()"
+        [item]="gridTile()"
         [stopPropagation]="true"></arlas-result-actions>
     </div>
   }
