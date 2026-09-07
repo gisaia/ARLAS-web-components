@@ -19,6 +19,8 @@
 
 import { HttpClient } from '@angular/common/http';
 import { ApplicationRef, createComponent, EnvironmentInjector, inject, Injectable, inputBinding, outputBinding } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { TranslateService } from '@ngx-translate/core';
 import { FullScreenViewer } from 'iv-viewer';
 import { EMPTY, fromEvent, of, Subject } from 'rxjs';
 import { Item } from '../components/results/model/item';
@@ -41,6 +43,8 @@ export class FullScreenViewerService {
   private readonly injector = inject(EnvironmentInjector);
   private readonly appRef = inject(ApplicationRef);
   private readonly http = inject(HttpClient);
+  private readonly snackbar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
 
   /**
    * Initializes the full screen overlay by querying and moving viewer action elements
@@ -60,7 +64,7 @@ export class FullScreenViewerService {
       return;
     }
 
-    this.getImageSrc(imgURL, useHttp)
+    this.getImageSrc$(imgURL, useHttp)
       .subscribe(imgSrc => {
         this.showFullScreen(imgSrc ?? noViewImg);
       });
@@ -75,7 +79,7 @@ export class FullScreenViewerService {
         inputBinding('gridTile', () => item),
         inputBinding('initialImageIndex', () => initialImageIndex),
         outputBinding('urlToVisualize', (imgURL) => {
-          this.getImageSrc(imgURL as string, useHttp)
+          this.getImageSrc$(imgURL as string, useHttp)
             .subscribe(imgSrc => {
               this.showFullScreen(imgSrc ?? noViewImg);
             });
@@ -91,15 +95,17 @@ export class FullScreenViewerService {
     return this;
   }
 
+  /**
+   * Updates the image displayed in the full screen viewer
+   * @param imgSrc Source to display
+   */
   public updateViewer(imgSrc: string | ArrayBuffer) {
     this.destroy();
-    setTimeout(() => {
-      if (this.fullScreenViewer) {
-        this.showFullScreen(imgSrc);
-      } else if (this.fullScreenContainer) {
-        this.fullScreenViewer = new FullScreenViewer();
-      }
-    }, 0);
+    if (this.fullScreenViewer) {
+      this.showFullScreen(imgSrc);
+    } else if (this.fullScreenContainer) {
+      this.fullScreenViewer = new FullScreenViewer();
+    }
   }
 
   /**
@@ -130,7 +136,7 @@ export class FullScreenViewerService {
       this.fullScreenViewer?.show(imgSrc as string);
     } catch (e) {
       console.warn(e);
-      console.warn('Failed to open full screen');
+      this.snackbar.open(this.translate.instant('Failed to open the full screen image'));
     }
   }
 
@@ -164,8 +170,9 @@ export class FullScreenViewerService {
    * Fetches the image given with the necessary headers if configured to do so
    * @param imgURL
    * @param useHttp
+   * @throws If an error occurs when fetching the image source, then of(undefined) is returned
    */
-  public getImageSrc(imgURL: string, useHttp: boolean) {
+  public getImageSrc$(imgURL: string, useHttp: boolean) {
     if (useHttp) {
       const imgSrc$ = new Subject<string | undefined>();
 

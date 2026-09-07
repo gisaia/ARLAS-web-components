@@ -19,6 +19,7 @@
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ResultDetailedGridComponent } from './result-detailed-grid.component';
 
@@ -28,7 +29,12 @@ describe('ResultDetailedGridComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResultDetailedGridComponent],
+      imports: [
+        ResultDetailedGridComponent,
+        TranslateModule.forRoot({
+          loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader },
+        })
+      ],
       providers: [provideHttpClient(withInterceptorsFromDi())]
     }).compileComponents();
   });

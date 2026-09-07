@@ -18,10 +18,9 @@
  */
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { CardResultItemMetadataEntryComponent } from './card-result-item-metadata-entry.component';
+import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {TranslateLoader, TranslateModule, TranslateNoOpLoader} from '@ngx-translate/core';
+import { CardResultItemMetadataEntryComponent } from './card-result-item-metadata-entry.component';
 describe('CardResultItemMetadataEntryComponent', () => {
   let component: CardResultItemMetadataEntryComponent;
   let fixture: ComponentFixture<CardResultItemMetadataEntryComponent>;

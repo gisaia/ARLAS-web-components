@@ -184,7 +184,9 @@ s   * @constant
     imgURL ??= this.gridTile().urlImages[0];
 
     this.isLoading.set(true);
-    this.fullScreenService.getImageSrc(imgURL, this.useHttp)
+
+    // getImageSrc$ catches any observable error by returning of(undefined)
+    this.fullScreenService.getImageSrc$(imgURL, this.useHttp)
       .subscribe(imgSrc => {
         this.isLoading.set(false);
 

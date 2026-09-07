@@ -49,6 +49,10 @@ export class ResultQuicklookActionsComponent {
    * Emits the URL of the next image to visualize
    */
   public onNext() {
+    if (this.gridTile().urlImages.length === 0) {
+      return;
+    }
+
     this.currentImageIndex.update(v => {
       v += 1;
       if (v >= this.gridTile().urlImages.length) {
@@ -64,6 +68,10 @@ export class ResultQuicklookActionsComponent {
    * Emits the URL of the previous image to visualize
    */
   public onPrevious() {
+    if (this.gridTile().urlImages.length === 0) {
+      return;
+    }
+
     this.currentImageIndex.update(v => {
       v -= 1;
       if (v < 0) {
