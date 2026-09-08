@@ -45,6 +45,11 @@
 
 .map__legend-wrapper {
   background-color: var(--arlas-map-legend-button-background, var(--mat-sys-surface));
+  width: var(--arlas-map-legend-actions-width, 29px);
+  height: var(--arlas-map-legend-actions-width, 29px);
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 0;
 }
 
 .map__legend-button {
