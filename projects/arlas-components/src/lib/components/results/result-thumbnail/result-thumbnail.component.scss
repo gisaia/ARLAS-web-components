@@ -36,7 +36,7 @@ $img-proportion: 100%;
 
     & .list_actions--icon {
       padding-right: 6px;
-      max-width: 100px;
+      max-width: var(--arlas-result-thumbnail-actions-width, 115px);
       top: 8px !important;
     }
   }

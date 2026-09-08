@@ -20,12 +20,6 @@
 
 $img-proportion: 85%;
 
-:host {
-  ::ng-deep .list_actions--icon {
-    max-width: 115px;
-  }
-}
-
 .resultgrid {
   width: 100%;
   height: 100%;

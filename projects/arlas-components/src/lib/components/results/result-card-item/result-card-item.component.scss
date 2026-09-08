@@ -21,6 +21,7 @@
   height: 116px; // item height
   background: var(--arlas-result-card-item-background,  var(--mat-sys-surface));
   --image-dimension: 100px;
+  --arlas-result-thumbnail-actions-width: 100px;
 
   ::ng-deep  .card__image {
     .resultitem-list__actions {
