@@ -153,6 +153,20 @@ $img-proportion: 100%;
     bottom: 15%;
     right: 2px;
   }
+
+  &--selected {
+    position: absolute;
+    z-index: 1;
+    top: 15px;
+    color: var(--arlas-result-grid-tile-selected-icon-color, var(--mat-sys-on-background));
+    background-color: transparent;
+    opacity: 50%;
+    font-size: 72px;
+    height: 72px !important;
+    width: 72px !important;
+    pointer-events: auto;
+    cursor: default;
+  }
 }
 
 
