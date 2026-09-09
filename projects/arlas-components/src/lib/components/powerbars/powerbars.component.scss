@@ -108,13 +108,12 @@
 
   .powerbar-selected-scrollable {
     // One powerbar is 26px, and we want to have 5 at maximum
-    max-height: 131px;
+    max-height: 150px;
     border-bottom: 1px solid var(--arlas-powerbars-scrollbar-separator-color, var(--mat-sys-on-background));
     overflow-y: auto;
     overflow-x: clip;
     padding-bottom: 2px;
     padding-right: 5px;
-    flex: 1 1 131px;
   }
 
   .powerbar-list-scrollable {
