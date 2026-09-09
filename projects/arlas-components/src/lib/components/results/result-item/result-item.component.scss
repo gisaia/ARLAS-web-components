@@ -86,6 +86,7 @@
 .resultitem__cell__toggle__button {
   --mat-icon-button-touch-target-size: 18px;
   --mat-icon-button-state-layer-size: 18px;
+  background: var(--mat-sys-surface);
   display: flex;
   align-items: center;
   justify-content: center;
