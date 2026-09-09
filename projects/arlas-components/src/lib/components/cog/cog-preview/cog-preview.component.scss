@@ -42,7 +42,7 @@
     }
 
     &__description {
-      font-size: 14px;
+      font-size: var(--arlas-sys-content-font-size);
       color: var(--mat-sys-on-background)
     }
   }

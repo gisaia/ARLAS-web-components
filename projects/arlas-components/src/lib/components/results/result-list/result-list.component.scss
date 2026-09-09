@@ -26,7 +26,7 @@
 .resultlist__header--columns /* @doc Sets columns names style.*/
 {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: var(--arlas-entry-font-size, 14px);
+  font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
   text-align: left;
   vertical-align: middle;
   overflow: hidden;
@@ -35,15 +35,6 @@
   box-sizing: border-box;
   // Space for the anchor
   padding-left: 5px;
-}
-
-.resultlist__header--columns__sort {
-  float: right;
-}
-
-.resultlist__header--columns__sort--icon/* @doc Sets the sort column icon style.*/
-{
-  font-size: 18px;
 }
 
 .dark-theme {
@@ -190,7 +181,7 @@ tr {
   overflow: hidden;
 
   .resultlist__tools--geosort /* @doc Geo-sort toggle in the list header */ {
-    font-size: 14px;
+    font-size: var(--arlas-sys-content-font-size);
     padding-right: 10px;
     // Correct label wrapping
     white-space: nowrap;
@@ -239,7 +230,7 @@ tr {
 
   &__count /* @doc Sets the number of selected items style*/ {
     font-family: "Roboto", "Helvetica Neue", sans-serif;
-    font-size: 0.7em;
+    font-size: var(--arlas-sys-minor-font-size);
     font-weight: bold;
     padding: 2px 0px 0 8px;
     min-width: 21px;
@@ -313,7 +304,7 @@ tr {
 }
 
 .resultgrid__clear {
-  font-size: 14px;
+  font-size: var(--arlas-sys-content-font-size);
   width: 14px;
   height: 14px;
   cursor: pointer;
@@ -321,7 +312,7 @@ tr {
 
 .resultlist__tools--sort-container /* @doc Sort section in the list header */ {
   flex: 1;
-  font-size: 14px;
+  font-size: var(--arlas-sys-content-font-size);
   display: flex;
   align-items: center;
 
@@ -329,7 +320,8 @@ tr {
     flex: 1;
     padding-right: 5px;
 
-    --mat-typography-body1-font-size: 14px;
+    --mat-typography-body1-font-size: var(--arlas-sys-content-font-size);
+    --mat-select-trigger-text-size: var(--arlas-sys-content-font-size);
 
     .mat-mdc-select-trigger {
       gap: 5px;
@@ -343,9 +335,9 @@ tr {
 
     mat-icon {
       transform: rotate(90deg);
-      font-size: 18px;
-      height: 18px;
-      width: 18px;
+      font-size: var(--arlas-sys-content-icon-size);
+      height: var(--arlas-sys-content-icon-size);
+      width: var(--arlas-sys-content-icon-size);
     }
 
     .reversed {
@@ -354,7 +346,7 @@ tr {
   }
 }
 
-.resultlist__tools--separator{
+.resultlist__tools--separator {
   padding: 0 5px;
   color: lightgray;
   font-size: 24px;
@@ -403,9 +395,9 @@ tr {
 }
 
 .fit-icon {
-  height: 18px !important;
-  width: 18px !important;
-  font-size: 18px;
+  height: var(--arlas-sys-content-icon-size) !important;
+  width: var(--arlas-sys-content-icon-size) !important;
+  font-size: var(--arlas-sys-content-icon-size);
   box-sizing: content-box;
   border-left: 1px solid #000000DE;
   border-right: 1px solid #000000DE;
@@ -423,7 +415,7 @@ tr {
 
   --mat-select-trigger-text-tracking: 0;
   --mat-option-label-text-tracking: 0;
-  --mat-option-label-text-size: 14px;
+  --mat-option-label-text-size: var(--arlas-sys-content-font-size);
 
   .mat-mdc-option {
     min-height: 30px;

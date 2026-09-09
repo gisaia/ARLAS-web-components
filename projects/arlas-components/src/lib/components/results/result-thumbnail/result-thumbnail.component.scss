@@ -25,9 +25,9 @@ $img-proportion: 100%;
 
   ::ng-deep {
     & .list_actions .icon {
-      width: 18px;
-      height: 18px;
-      font-size: 16px !important;
+      width: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+      height: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+      font-size: var(--arlas-sys-minor-icon-size) !important;
       border-radius: 5px !important;
       display: flex;
       align-items: center;
@@ -35,7 +35,7 @@ $img-proportion: 100%;
     }
 
     & .list_actions--icon {
-      padding-right: 6px;
+      padding-right: 4px;
       max-width: var(--arlas-result-thumbnail-actions-width, 115px);
       top: 8px !important;
     }
@@ -49,9 +49,9 @@ $img-proportion: 100%;
 }
 
 .image__icon-check {
-  font-size: 15px;
-  width: 15px;
-  height: 15px;
+  font-size: var(--arlas-sys-minor-icon-size);
+  width: var(--arlas-sys-minor-icon-size);
+  height: var(--arlas-sys-minor-icon-size);
   color: var(--arlas-result-thumbnail-icon-check-color, #fff);
   z-index: 5;
   -webkit-user-select: none;
@@ -71,6 +71,8 @@ $img-proportion: 100%;
     &--right {
       margin-left: auto;
       margin-right: 6px;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -158,15 +160,20 @@ $img-proportion: 100%;
   min-width: 0;
   border: none;
   padding: 0;
-  cursor: pointer;
-  width: 17px;
-  height: 17px;
   display: none;
+
+  --mat-icon-button-state-layer-size: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+  --mat-icon-button-touch-target-size: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+
   mat-icon {
-    font-size: 17px;
-    width: 17px;
-    height: 17px;
+    font-size: var(--arlas-sys-minor-icon-size);
+    width: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+    height: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
     background: var(--arlas-result-thumbnail-action-btn-background, var(--mat-sys-background));
     border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

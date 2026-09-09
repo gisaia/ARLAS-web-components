@@ -78,7 +78,7 @@
       text-transform: uppercase;
       overflow: hidden;
       padding-top: 3px;
-      font-size: 14px;
+      font-size: var(--arlas-sys-subtitle-font-size);
       margin-bottom: 3px;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -102,8 +102,8 @@
 }
 
 .resultitem__cell__toggle__button {
-  --mat-icon-button-touch-target-size: 18px;
-  --mat-icon-button-state-layer-size: 18px;
+  --mat-icon-button-touch-target-size: var(--arlas-sys-content-icon-size);
+  --mat-icon-button-state-layer-size: var(--arlas-sys-content-icon-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -114,7 +114,7 @@
 
 .resultitem__cell__toggle--icon /* @doc Sets the toggle icon style.*/
 {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
+  font-size: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
+  height: var(--arlas-sys-content-icon-size);
 }

@@ -24,7 +24,7 @@
 
 body {
   font-family: Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  font-size: 1rem;
+  font-size: var(--arlas-sys-content-font-size);
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -58,7 +58,7 @@ body.dark-theme{
   font-family: 'Material Symbols Outlined', "Roboto", "Helvetica Neue", sans-serif;
   font-weight: normal;
   font-style: normal;
-  font-size: 24px;
+  font-size: var(--arlas-sys-title-icon-size);
   /* Preferred icon size */
   display: inline-block;
   line-height: 1;

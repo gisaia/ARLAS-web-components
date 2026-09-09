@@ -26,7 +26,7 @@
       elevated-container-color: $backgroundColor,
       container-shape-radius: 12px,
       label-text-weight: 600,
-      label-text-size: 12px,
+      label-text-size: var(--arlas-sys-content-font-size),
       container-height: 24px
     )
   );

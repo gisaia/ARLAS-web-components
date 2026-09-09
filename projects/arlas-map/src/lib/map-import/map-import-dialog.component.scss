@@ -49,7 +49,7 @@
 
 .mapgl-import-error {
   color: var(--arlas-map-import-dialog-error-color, var(--mat-sys-error));
-  font-size: 75%;
+  font-size: var(--arlas-sys-content-font-size);
 }
 
 .mapgl-import-upload {
@@ -65,7 +65,7 @@
   }
 
   &__file {
-    font-size: 14px;
+    font-size: var(--arlas-sys-content-font-size);
   }
 
   &__input {
