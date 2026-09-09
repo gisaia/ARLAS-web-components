@@ -18,18 +18,6 @@
  */
 @use "../../../assets/styles/sizes";
 
-.dark-theme {
-  .layer_name {
-    &--visible{
-      --arlas-legend-layer-name-text-visible-color: var(--mat-sys-on-background);
-    }
-
-    &--invisible{
-      --arlas-legend-layer-name-text-invisible-color: var(--mat-sys-background);
-    }
-  }
-}
-
 .layer_name {
   font-size: sizes.$default-font-size;
   &--visible{
