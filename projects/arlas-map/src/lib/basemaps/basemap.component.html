@@ -6,7 +6,7 @@
           (click)="onChangeBasemap(style)" (keyDown)="onChangeBasemap(style)">
           <div class="image">
             @if (style?.image && style?.image !== '') {
-              <img src="{{style?.image}}" (error)="style.image = null" alt=""/>
+              <img [lazyLoad]="style?.image" (error)="style.image = undefined" alt=""/>
             } @else {
               <div class="no-image">
                 <mat-icon>wallpaper</mat-icon>
