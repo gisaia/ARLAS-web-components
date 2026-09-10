@@ -22,7 +22,6 @@
     "rxjs": "^7.4.0"
   },
   "dependencies": {
-    "arlas-map": "28.2.0",
     "maplibre-gl": "6.6.0",
     "tslib": "^2.3.0"
   }
