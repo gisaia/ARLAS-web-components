@@ -48,9 +48,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   protected _mapProvider!: MaplibreMap;
-  public endLngLat?: LngLat;
-  public moveLngLat?: LngLat;
-  public startLngLat?: LngLat;
+  public endLngLat: LngLat;
+  public moveLngLat: LngLat;
+  public startLngLat: LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);

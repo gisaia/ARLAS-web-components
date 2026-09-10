@@ -97,7 +97,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
             } else {
               sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
             }
-          }
+          });
           s.styleFile = sf as StyleSpecification;
         }),
         catchError(() => {
