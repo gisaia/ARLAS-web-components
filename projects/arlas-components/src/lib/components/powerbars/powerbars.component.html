@@ -38,7 +38,7 @@
   <div class="powerbars--container" [class.powerbars--container__scrollable]="scrollable" [ngClass]="customizedCssClass">
     @if (groupSelections) {
       @if (selectedPowerbarsSet.size !== 0) {
-        <div [class.powerbar-selected-scrollable]="scrollable"
+        <div [class.powerbar-selected-scrollable]="scrollable" class="powerbars--container__group"
           [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
           @for (selectedPowerbar of selectedPowerbarsSet; track selectedPowerbar) {
             <div>
@@ -61,7 +61,7 @@
       }
     }
 
-    <div [class.powerbar-list-scrollable]="scrollable">
+    <div [class.powerbar-list-scrollable]="scrollable" class="powerbars--container__group">
       @for (powerbar of powerBarsList; track powerbar) {
         @if (powerbar.term !== '') {
           <arlas-powerbar

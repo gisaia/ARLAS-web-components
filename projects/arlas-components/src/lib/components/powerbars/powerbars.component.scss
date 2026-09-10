@@ -100,6 +100,12 @@
   overflow-x: hidden;
   padding-bottom: 8px;
 
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
   &__scrollable {
     display: flex;
     flex-direction: column;

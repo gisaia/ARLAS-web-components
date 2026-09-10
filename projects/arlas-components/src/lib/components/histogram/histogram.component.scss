@@ -36,10 +36,6 @@
 }
 
 .histogram {
-  --arlas-histogram-tooltip-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-  --arlas-histogram-plot-background: rgba(0,0,255,0);
-
-  background: var(--arlas-histogram-plot-background);
   width: 100%;
   height: 100%;
   position: relative;
@@ -115,11 +111,19 @@
   font-size: var(--arlas-sys-minor-font-size);
 }
 
+.histogram__no-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
-.histogram__no-chart__key, .histogram__no-chart__value {
-  display: block;
-  text-align: center;
-  padding: 1px;
+  &__key,
+  &__value {
+    display: block;
+    text-align: center;
+    padding: 1px;
+    font-size: var(--arlas-sys-content-font-size);
+  }
 }
 
 .selected_bars_zone {
