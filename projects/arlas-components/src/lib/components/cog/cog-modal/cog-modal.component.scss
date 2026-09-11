@@ -39,7 +39,7 @@
   }
 
   &__title {
-    font-size: 20px;
+    font-size: var(--arlas-sys-dialog-title-font-size);
     color: var(--arlas-cog-modal-title-color, var(--mat-sys-on-background));
     padding: 10px 0;
   }
@@ -71,7 +71,7 @@
 
     &__warning,
     &__error {
-      font-size: 14px;
+      font-size: var(--arlas-sys-content-font-size);
       padding-left: 10px;
       position: relative;
       bottom: 5px;
@@ -88,7 +88,7 @@
 
   &__exit {
     align-self: end;
-    font-size: 14px;
+    font-size: var(--arlas-sys-content-font-size);
     margin-bottom: 6px;
     --mat-button-outlined-label-text-tracking: 0;
     background-color: var(--arlas-cog-modal-exit-background, var(--mat-sys-background));

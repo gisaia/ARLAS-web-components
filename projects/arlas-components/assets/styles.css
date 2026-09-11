@@ -17,21 +17,32 @@
  * under the License.
  */
 
-/* You can add global styles to this file, and also import other style files */
-
-
 body {
-  --mat-dialog-with-actions-content-padding: 0;
-  --mat-dialog-actions-alignment: end;
-  --mat-dialog-headline-padding: 10px 0;
-  --mat-dialog-supporting-text-tracking: 0;
+  /** Font sizes */
+  --arlas-sys-minor-font-size: 12px;
+  --arlas-sys-content-font-size: 14px;
+  --arlas-sys-subtitle-font-size: 16px;
+  --arlas-sys-title-font-size: 18px;
+  --arlas-sys-dialog-title-font-size: 20px;
 
+  /** Icon sizes */
+  --arlas-sys-minor-icon-size: 16px;
+  --arlas-sys-content-icon-size: 20px;
+  --arlas-sys-title-icon-size: 24px;
+
+  /** Resultlist */
   --arlas-resultlist-border-color: #e9ecef;
 
   --arlas-result-detailed-item-key-color: grey;
   .dark-theme {
     --arlas-result-detailed-item-key-color: #b7b7b7;
   }
+
+  /** Dialog overrides */
+  --mat-dialog-with-actions-content-padding: 0;
+  --mat-dialog-actions-alignment: end;
+  --mat-dialog-headline-padding: 10px 0;
+  --mat-dialog-supporting-text-tracking: 0;
 
   .mdc-dialog__surface {
     padding: 12px 24px;

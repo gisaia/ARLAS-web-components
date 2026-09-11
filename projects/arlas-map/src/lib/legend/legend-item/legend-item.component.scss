@@ -17,8 +17,6 @@
  * under the License.
  */
 
-@use "../../../../assets/styles/sizes";
-
 .dark-theme {
   :host{
     --arlas-legend-item-lessened-text: var(--mat-sys-on-background);
@@ -35,7 +33,7 @@
 
     &__title {
         text-align: center;
-        font-size: sizes.$sm-font-size;
+        font-size: var(--arlas-sys-subtitle-font-size);
         color: var(--arlas-legend-item-title-text, #666);
 
         text-overflow: ellipsis;
@@ -100,7 +98,7 @@
             }
 
             &__key {
-                font-size: sizes.$sm-font-size;
+                font-size: var(--arlas-sys-content-font-size);
                 margin-left: 5px;
                 flex: 1;
                 white-space: nowrap;
@@ -163,7 +161,7 @@
             padding-top: 2.5px;
 
             &__value {
-                font-size: sizes.$sm-font-size;
+                font-size: var(--arlas-sys-content-font-size);
                 color: var(--arlas-legend-item-range-text, #666);
             }
         }

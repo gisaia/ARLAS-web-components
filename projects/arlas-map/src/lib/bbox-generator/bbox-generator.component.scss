@@ -37,12 +37,13 @@
             margin: 5px 0;
             display: flex;
             align-items: center;
-            font-size: 14px;
+            font-size: var(--arlas-sys-content-font-size);
             color: var(--arlas-bbox-generator-text, var(--mat-sys-on-background));
+
             mat-icon {
-                font-size: 18px;
-                height: 18px;
-                width: 18px;
+                font-size: var(--arlas-sys-content-icon-size);
+                height: var(--arlas-sys-content-icon-size);
+                width: var(--arlas-sys-content-icon-size);
                 margin-right: 5px;
             }
         }
@@ -59,13 +60,13 @@
                     width: 100%;
                 }
                 .input {
-                    font-size: 14px;
+                    font-size: var(--arlas-sys-content-font-size);
                 }
                 ::ng-deep.mat-mdc-form-field-infix {
                     padding-left: 10px;
                     padding-bottom: 10px;
                     padding-top: 10px;
-                    font-size: 14px;
+                    font-size: var(--arlas-sys-content-font-size);
                     display: flex;
                 }
                 ::ng-deep.mat-mdc-form-field {
@@ -80,16 +81,16 @@
 
         .errors {
             mat-icon {
-                font-size: 16px;
-                height: 16px;
-                width: 16px;
+                font-size: var(--arlas-sys-minor-icon-size);
+                height: var(--arlas-sys-minor-icon-size);
+                width: var(--arlas-sys-minor-icon-size);
                 margin-right: 5px;
                 color: var(--arlas-bbox-generator-error-color, var(--mat-sys-error));
             }
             margin-bottom: 10px;
             display: flex;
             align-items: center;
-            font-size: 12px;
+            font-size: var(--arlas-sys-content-font-size);
         }
     }
 

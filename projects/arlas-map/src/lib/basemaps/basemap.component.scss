@@ -40,8 +40,8 @@
       position: relative;
 
       .name {
-        font-size: 10px;
-        line-height: 15px;
+        font-size: var(--arlas-sys-content-font-size);
+        line-height: calc(2 * 2px + var(--arlas-sys-content-font-size));
         text-align: center;
         position: absolute;
         width: 100%;

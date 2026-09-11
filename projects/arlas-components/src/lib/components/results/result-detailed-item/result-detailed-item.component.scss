@@ -33,7 +33,7 @@
 
 .details-title {
   font-weight: 500;
-  font-size: 1.1em;
+  font-size: var(--arlas-sys-title-font-size);
   padding: 5px;
 }
 
@@ -80,7 +80,7 @@
   &--title /* @doc Sets the style of attachments section's title*/ {
     font-weight: bold;
     color: var(--arlas-result-detailed-item-attachments-title-color, #322d90);
-    font-size: 1.1em;
+    font-size: var(--arlas-sys-subtitle-font-size);
   }
 
   &--item /* @doc Sets the style of the attachment in `li` tag */ {

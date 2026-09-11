@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, input, output, signal, viewChild } from '@angular/core';
+import { Component, input, output, viewChild } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -64,7 +64,7 @@ export class ResultThumbnailComponent {
   protected readonly pictureTooltip = input<string>('');
 
   /** Signal: tracks whether to display the info icon */
-  protected readonly displayInfoIcon = signal<boolean>(false);
+  protected readonly displayInfoIcon = input<boolean>(false);
   /** Reference to the ThumbnailFitEnum for use in template */
   protected readonly ThumbnailFitEnum = ThumbnailFitEnum;
   /** Output event: emitted when an action is clicked */

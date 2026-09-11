@@ -19,7 +19,7 @@
 
 .resultitem__cell{
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: var(--arlas-entry-font-size, 14px);
+  font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
   text-align: left;
   vertical-align: middle;
   box-sizing: border-box;
@@ -29,9 +29,9 @@
 
 .resultitem__cell__toggle--icon /* @doc Sets the toggle icon style.*/
 {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
+  font-size: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
+  height: var(--arlas-sys-content-icon-size);
 }
 
 .resultitem__cell--label /* @doc Sets labels style.*/
@@ -42,9 +42,9 @@
 
 .resultitem__icon_check /* @doc Sets the checkbox icon style.*/
 {
-  font-size: 15px;
-  width: 15px;
-  height: 15px;
+  font-size: var(--arlas-sys-minor-icon-size);
+  width: var(--arlas-sys-minor-icon-size);
+  height: var(--arlas-sys-minor-icon-size);
 }
 
 .resultitem__cell--label__filled {

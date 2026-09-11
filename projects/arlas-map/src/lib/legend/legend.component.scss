@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@use "../../../assets/styles/sizes";
 
 .dark-theme {
   .layer_name {
@@ -31,7 +30,7 @@
 }
 
 .layer_name {
-  font-size: sizes.$default-font-size;
+  font-size: var(--arlas-sys-content-font-size);
   &--visible{
     color: var(--arlas-legend-layer-name-text-visible-color, var(--mat-sys-on-background));
   }
@@ -70,15 +69,15 @@
 }
 .detail_button, .download_button {
   background-color: var(--arlas-legend-detail-button-background, var(--mat-sys-background));
-  height: 20px;
-  width: 20px;
+  height: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
   cursor: pointer;
 }
 .detail_icon, .download_icon {
   color: var(--arlas-legend-icon-color, var(--mat-sys-on-background));
-  font-size: 16px;
-  width: 20px;
-  height: 20px;
+  font-size: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
+  height: var(--arlas-sys-content-icon-size);
 
   display: flex;
   align-items: center;
