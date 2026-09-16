@@ -39,10 +39,11 @@
     @if (groupSelections) {
       @if (selectedPowerbarsSet.size !== 0) {
         <div [class.powerbar-selected-scrollable]="scrollable" class="powerbars--container__group"
-          [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
+          [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 150 : selectedPowerbarsSet.size * 35">
           @for (selectedPowerbar of selectedPowerbarsSet; track selectedPowerbar) {
             <div>
               <arlas-powerbar
+                #powerbarComponent
                 [unit]="unit"
                 [powerbar]="selectedPowerbar"
                 [useColorFromData]="useColorFromData"

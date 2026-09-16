@@ -17,18 +17,6 @@
  * under the License.
  */
 
-.dark-theme {
-  .layer_name {
-    &--visible{
-      --arlas-legend-layer-name-text-visible-color: var(--mat-sys-on-background);
-    }
-
-    &--invisible{
-      --arlas-legend-layer-name-text-invisible-color: var(--mat-sys-background);
-    }
-  }
-}
-
 .layer_name {
   font-size: var(--arlas-sys-content-font-size);
   &--visible{
