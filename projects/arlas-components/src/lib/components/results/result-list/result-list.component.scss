@@ -40,10 +40,10 @@
 .dark-theme {
   .resultlist {
     --arlas-resultlist-border-color: var(--mat-sys-background);
-    --arlas-result-list-hover-false-background: rgba(255, 255, 255, 0.5);
-    --arlas-result-list-hover-false-text-color: lightgrey;
-    --arlas-result-list-tbody-background: var(--mat-sys-background);
-    --arlas-result-list-hover-background-color: var(--mat-sys-surface-container);
+    --arlas-result-list-hover-false-background:  var(--mat-sys-surface);
+    --arlas-result-list-hover-false-text-color:  var(--mat-sys-on-surface);
+    --arlas-result-list-hover-true-background: var(--arlas-sys-on-hover);
+    --arlas-result-list-hover-background-color: var(--mat-sys-surface);
     --arlas-result-list-detail-background-color: var(--mat-sys-surface);
     --arlas-entry-border-top: 1px solid rgba(170, 169, 169, 0.20);
     --arlas-entry-title-border-botom: 1px solid rgb(116 117 118 / 81%);
@@ -60,6 +60,10 @@
   --arlas-result-grid-tile-selected-icon-color: var(--mat-sys-on-background); /* was white */
   --arlas-result-list-detail-background-color: white;
 
+  -webkit-user-select: text !important; /* Safari et Chrome */
+  -moz-user-select: text !important;    /* Firefox */
+  -ms-user-select: text !important;     /* IE / Edge */
+  user-select: text !important;
   width: 100%;
   overflow: hidden;
   display: table;
@@ -104,10 +108,16 @@
   border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
 }
 
-.resultlist__body--item-hover-true, .resultlist__body--item-hover-true.resultlist__card-tile {
-  border-top: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
-  border-bottom: 1px solid var(--arlas-resultlist-border-color, #e9ecef);
+.resultlist__body--item-card /* @doc Sets a row border style. (list mode)*/
+{
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
 
+.resultlist__body--item-hover-true, .resultlist__body--item-hover-true.resultlist__card-tile {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  background: var(--arlas-result-list-hover-true-background, var(--mat-sys-surface));
   position: relative;
   font-weight: 500;
 }
