@@ -18,11 +18,11 @@
  */
 
 :host {
-  --arlas-entry-icon-width: var(--arlas-entry-font-size, 14px);
+  --arlas-entry-icon-width: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
 }
 
 .meta-data-entry {
-  font-size: var(--arlas-entry-font-size, 14px);
+  font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
   &__container {
     display: flex;
     flex: 1 1 fit-content;
@@ -33,13 +33,13 @@
 
   &__icon {
     width: 18px;
-    font-size: var(--arlas-entry-font-size, 14px);
+    font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
     display: flex;
     align-items: center;
     & mat-icon {
-      font-size: var(--arlas-entry-font-size, 14px);
-      height: var(--arlas-entry-font-size, 14px);
-      width: var(--arlas-entry-font-size, 14px);
+      font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+      height: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+      width: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
       display: flex;
       align-items: center;
       color: var(--arlas-entry-color, var(--arlas-card-result-item-metadata-entry-color));
@@ -50,14 +50,14 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: var(--arlas-entry-font-size, 14px);
+    font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
     min-width: 0;
     flex:1 1 auto;
     color: var(--arlas-entry-value-color, var(--arlas-card-result-item-metadata-entry-value-color));
   }
 
   &__unit {
-    font-size: var(--arlas-entry-font-size, 14px);
+    font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
     display: inline-block;
     flex-shrink: 0;
     max-width: 20px;

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@use "../../assets/styles/sizes";
 
 .dark-theme {
   .map__legend-button:hover {
@@ -88,7 +87,7 @@
   justify-content: space-between;
   padding: 1px 5px 1px 0px;
   font-weight: 550;
-  font-size: sizes.$default-font-size;
+  font-size: var(--arlas-sys-content-font-size);
   cursor: grab;
 
   &:hover .map__visu-toggle .map__visu-drag {
@@ -146,9 +145,9 @@
     padding-left: 3px;
 
     mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
+      font-size: var(--arlas-sys-content-icon-size);
+      width: var(--arlas-sys-content-icon-size);
+      height: var(--arlas-sys-content-icon-size);
       color: var(--arlas-map-drag-icon-color, #999);
     }
   }
@@ -173,7 +172,7 @@
   display: block;
   position: fixed;
   overflow: hidden;
-  font-size: 0.8em;
+  font-size: var(--arlas-sys-content-font-size);
   background-color: var(--arlas-map-tooltip-background, var(--mat-sys-background));
   border-radius: 2px;
   padding: 2px;
@@ -199,7 +198,6 @@
 
 .cdk-drag-preview {
   box-sizing: border-box;
-  font-size: 0.75em;
   border-radius: 3px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);

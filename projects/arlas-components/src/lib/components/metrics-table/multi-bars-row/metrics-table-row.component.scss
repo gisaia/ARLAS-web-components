@@ -98,7 +98,7 @@
 
   &__header {
     padding: 0 6px;
-    font-size: 12px;
+    font-size: var(--arlas-sys-content-font-size);
     vertical-align: middle;
 
     .header {

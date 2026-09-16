@@ -96,7 +96,7 @@
 
 .powerbars__powerbar--term /* @doc Style of terms.*/
 {
-    font-size: 10px;
+    font-size: var(--arlas-sys-content-font-size);
     width: 70%;
     cursor: pointer;
     position: absolute;
@@ -109,7 +109,7 @@
 
 .powerbars__powerbar--count /* @doc Style of counts.*/
 {
-    font-size: 12px;
+    font-size: var(--arlas-sys-content-font-size);
     width: 100%;
     cursor: pointer;
     position:relative;

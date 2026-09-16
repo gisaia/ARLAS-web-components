@@ -23,14 +23,12 @@
   height: 100%;
 }
 
-
-
 .tools {
   .include_exclude {
     display: flex;
     align-items: baseline;
     .operation {
-      font-size: 12px;
+      font-size: var(--arlas-sys-minor-font-size);
       color: var(--arlas-metrics-table-operation-color, var(--mat-sys-on-surface));
       border-radius: 3px;
       margin-right: 5px;
@@ -77,7 +75,7 @@
 }
 
 .multi-bar {
-  font-size: 12px;
+  font-size: var(--arlas-sys-content-font-size);
   border-spacing: 0;
   width: 100%;
   table-layout: fixed;
@@ -108,7 +106,7 @@
   }
 
   &__header {
-    font-size: 12px;
+    font-size: var(--arlas-sys-content-font-size);
     padding: 0 6px 6px;
     text-align: center;
     vertical-align: bottom;
@@ -117,7 +115,7 @@
     &-indicator {
       padding: 6px 0;
       text-align: center;
-      line-height: 12px;
+      line-height: var(--arlas-sys-content-font-size);
       border-right: 2px solid var(--arlas-metrics-table-indicator-border-color, var(--mat-sys-surface));
       background: var(--arlas-metrics-table-indicator-background, #e5e5e554);
       box-sizing: border-box;
@@ -125,13 +123,13 @@
     }
 
     &-title {
-      font-size: 12px;
+      font-size: var(--arlas-sys-content-font-size);
       overflow: hidden;
       text-overflow: ellipsis;
 
     }
     &-title-with-indicator {
-      font-size: 12px;
+      font-size: var(--arlas-sys-content-font-size);
       overflow: hidden;
       text-overflow: ellipsis;
       width: calc(100% - 20px);

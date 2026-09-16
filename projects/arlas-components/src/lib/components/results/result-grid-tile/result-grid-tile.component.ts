@@ -91,7 +91,7 @@ export class ResultGridTileComponent extends ItemComponent {
   * @Input
   * @description Display or not big full info icon on the grid.
   */
-  @Input() public  displayInfoIcon = false;
+  @Input() public displayInfoIcon = false;
 
   /**
    * @Output

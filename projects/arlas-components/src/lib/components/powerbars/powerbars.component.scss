@@ -43,7 +43,7 @@
         padding: unset;
       }
       ::ng-deep.mat-mdc-form-field-infix {
-        font-size: 14px;
+        font-size: var(--arlas-sys-content-font-size);
         min-height: unset;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
@@ -59,7 +59,7 @@
     align-items: baseline;
 
     .operation {
-      font-size: 12px;
+      font-size: var(--arlas-sys-minor-font-size);
       color: var(--arlas-powerbars-operation-color, var(--mat-sys-on-background));
       border-radius: 3px;
       margin-right: 5px;
@@ -99,6 +99,12 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-bottom: 8px;
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
 
   &__scrollable {
     display: flex;

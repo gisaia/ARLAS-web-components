@@ -32,7 +32,6 @@
     background-position: center;
     float: right;
     cursor: pointer;
-
 }
 
 .resultitem-list__actions:active {
@@ -66,7 +65,7 @@
 
     .icon {
         float: right;
-        font-size: 20px;
+        font-size: var(--arlas-sys-content-icon-size);
         background-color: var(--arlas-result-actions-icon-background, var(--mat-sys-background));
         border-radius: 50%;
         cursor: pointer;
@@ -88,7 +87,7 @@
 }
 
 .text-action {
-    font-size: 12px;
+    font-size: var(--arlas-sys-content-font-size);
     padding: 5px 10px;
     background-color: var(--arlas-result-actions-text-action-background, var(--mat-sys-background));
 

@@ -98,9 +98,9 @@
 }
 
 .resultgrid__info_outline, .resultgrid__close, .resultgrid__image {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  font-size: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
+  height: var(--arlas-sys-content-icon-size);
 }
 
 .resultgrid-overlay{

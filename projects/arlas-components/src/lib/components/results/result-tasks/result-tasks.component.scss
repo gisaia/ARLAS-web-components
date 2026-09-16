@@ -34,8 +34,8 @@
     --mat-table-header-container-height: 32px;
     --mat-table-row-item-container-height: 32px;
 
-    --mat-table-header-headline-size: 12px;
-    --mat-table-row-item-label-text-size: 12px;
+    --mat-table-header-headline-size: var(--arlas-sys-content-font-size);
+    --mat-table-row-item-label-text-size: var(--arlas-sys-content-font-size);
 
     &__title {
         @include detail.title();
@@ -45,7 +45,7 @@
         &__toggle {
             @include mat.button-toggle-overrides((
                 height: 24px,
-                label-text-size: 12px
+                label-text-size: var(--arlas-sys-minor-font-size)
             ));
 
             ::ng-deep .mat-button-toggle-label-content {
@@ -68,9 +68,9 @@
         gap: 5px;
 
         mat-icon {
-            font-size: 20px;
-            height: 20px;
-            width: 20px;
+            font-size: var(--arlas-sys-content-icon-size);
+            height: var(--arlas-sys-content-icon-size);
+            width: var(--arlas-sys-content-icon-size);
         }
     }
 
@@ -82,7 +82,7 @@
                 display: flex;
                 align-items: center;
 
-                font-size: 20px;
+                font-size: var(--arlas-sys-content-icon-size);
             }
         }
 
