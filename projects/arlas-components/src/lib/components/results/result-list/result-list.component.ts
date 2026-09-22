@@ -32,9 +32,10 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatOption, MatSelect, MatSelectChange, MatSelectTrigger } from '@angular/material/select';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { debounceTime, first, fromEvent, interval, Observable, Subject, Subscription } from 'rxjs';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
@@ -520,6 +521,8 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private itemTasksSubscriptions = new Map<string, Map<string, Subscription>>();
 
   private readonly taskSettingsService = inject(TaskSettingsService);
+  private readonly snackbar = inject(MatSnackBar);
+  private readonly translate = inject(TranslateService);
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
                      iterableCardsDiffer: IterableDiffers,
     private readonly el: ElementRef,
@@ -575,8 +578,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
     if (changes['rowItemList'] !== undefined) {
       this.items = [];
-      // Reset selected items when data change (ie a filter is applied/removed or pagination occur)
-      this.selectedItems = new Set<string>();
       this.isPreviousPageRequested = false;
 
       // If the selected item is not in the current list of items, close the detail
@@ -684,7 +685,18 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
          */
         this.scrollOptions = { maintainScrollUpPosition: false, maintainScrollDownPosition: true, nbLines: itemIndex };
       }
-      this.setSelectedItems(this.selectedItems);
+
+      // If the selected items are still in the list, then keep the selection
+      const ids = new Set(this.items.map(item => item.identifier));
+      const stillSelectedItems = Array.from(this.selectedItems).filter(selected => ids.has(selected));
+      // If some items have been deselected, inform the user
+      if (stillSelectedItems.length !== this.selectedItems.size) {
+        this.snackbar.open(this.translate.instant('Some items have been unselected as they are not in the resultlist anymore'),
+          this.translate.instant('Ok'), { duration: 5000 });
+      }
+      // Update the selection
+      this.setSelectedItems(new Set(stillSelectedItems));
+
       this.isNextPageRequested = false;
       this.isPreviousPageRequested = false;
       this.onResultListUpdate.emit(true);

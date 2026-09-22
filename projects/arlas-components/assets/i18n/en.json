@@ -33,6 +33,8 @@
 	"Cannot be applied to all of the currently visualised elements": "Cannot be applied to all of the currently visualised elements",
 	"Cancel": "Cancel",
 	"Failed to open the full screen image": "Failed to open the full screen image",
+	"Some items have been unselected as they are not in the resultlist anymore": "Some items have been unselected as they are not in the resultlist anymore",
+	"Ok": "Ok",
 	"Filter on": "Filter on {{column}}",
 	"Global actions": "Global actions",
 	"Geo sort action": "Sort according to the distance to the map center",
