@@ -33,7 +33,7 @@
 	"Cannot be applied to all of the currently visualised elements": "No puede aplicarse a todos los elementos actualmente visualizados",
 	"Cancel": "Anular",
 	"Failed to open the full screen image": "No se ha podido abrir la imagen a pantalla completa",
-	"Some items have been unselected as they are not in the resultlist anymore": "Se han deseleccionado algunos elementos, ya que ya no aparecen en la lista de resultados.",
+	"Some items have been unselected as they are not in the resultlist anymore": "Se han deseleccionado algunos elementos que ya no figuran en la lista de resultados.",
 	"Ok": "Ok",
 	"Filter on": "Filtrar por {{column}}",
 	"Global actions": "Acciones",
