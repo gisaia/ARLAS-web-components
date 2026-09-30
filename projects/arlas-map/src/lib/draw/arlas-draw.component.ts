@@ -18,7 +18,7 @@
  */
 
 import {
-  Component, EventEmitter, HostListener, inject, input, Input, OnInit, Output, signal, SimpleChanges, viewChild, ViewEncapsulation
+  Component, ElementRef, EventEmitter, HostListener, inject, input, Input, OnInit, Output, signal, SimpleChanges, viewChild, ViewEncapsulation
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -102,7 +102,7 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
   /** Drawn geometry's state when editing/updating. */
   protected savedEditFeature?: any;
   /** Html element that holds the drawing message. */
-  protected drawTooltipElement = viewChild<HTMLElement>('arlas-draw-tooltip');
+  protected drawTooltipElement = viewChild<ElementRef<HTMLDivElement>>('arlas_draw_tooltip');
   /** Message shown to explain how to draw. */
   public drawTooltipMessage = signal<string>('');
 
@@ -467,8 +467,8 @@ export class ArlasDrawComponent<L, S, M> implements OnInit {
 
     const drawTooltip = this.drawTooltipElement();
     if (drawTooltip) {
-      drawTooltip.style.top = (y + 20) + 'px';
-      drawTooltip.style.left = (x + 20) + 'px';
+      drawTooltip.nativeElement.style.top = (y + 20) + 'px';
+      drawTooltip.nativeElement.style.left = (x + 20) + 'px';
     }
   };
 
