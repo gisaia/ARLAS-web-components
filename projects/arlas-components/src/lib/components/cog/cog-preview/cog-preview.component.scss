@@ -26,6 +26,13 @@
     height: 80px;
     width: 80px;
     max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__spinner {
+      position: absolute;
+    }
   }
 
   &__info {

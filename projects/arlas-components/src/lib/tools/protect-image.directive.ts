@@ -18,7 +18,7 @@
  */
 
 import { HttpClient } from '@angular/common/http';
-import { Directive, effect, ElementRef, inject, input, Renderer2 } from '@angular/core';
+import { Directive, effect, ElementRef, inject, input, output, Renderer2 } from '@angular/core';
 import { catchError, map, of } from 'rxjs';
 import { PROTECTED_REQUEST_HEADER } from '../components/results/utils/results.utils';
 
@@ -38,8 +38,14 @@ export class ProtectImageDirective {
    */
   public arlasProtectImage = input.required<string>();
 
+  /**
+   * Whether the image is currently loading
+   */
+  public isLoading = output<boolean>();
+
   public constructor() {
     effect(() => {
+      this.isLoading.emit(true);
       this.http.get(this.arlasProtectImage(), { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
         .pipe(
           map(blob => URL.createObjectURL(blob)),
@@ -47,6 +53,7 @@ export class ProtectImageDirective {
         )
         .subscribe(r => {
           this.renderer.setAttribute(this.imgElement, 'src', r);
+          this.isLoading.emit(false);
         });
     });
   }
