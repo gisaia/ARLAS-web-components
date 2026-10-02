@@ -21,13 +21,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 
+momentDurationFormatSetup(moment);
+
 @Pipe({
   name: 'deltaTime'
 })
 export class DeltaTimePipe implements PipeTransform {
 
   public transform(deltaTime: number | undefined): string {
-    momentDurationFormatSetup(moment);
     if (deltaTime === undefined) {
       return '';
     }

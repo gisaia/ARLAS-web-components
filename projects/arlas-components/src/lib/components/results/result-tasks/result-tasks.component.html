@@ -44,7 +44,7 @@
         <ng-container matColumnDef="duration">
             <th mat-header-cell *matHeaderCellDef>{{ 'Duration' | translate }}</th>
             <td mat-cell *matCellDef="let task">
-                {{ task.finished ? ((task.finished - task.started) * 1000 | deltaTime) : '--' }}
+                {{ task.finished ? ((task.finished - task.created) * 1000 | deltaTime) : '--' }}
             </td>
         </ng-container>
 
