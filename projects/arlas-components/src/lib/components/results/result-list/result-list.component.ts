@@ -160,7 +160,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   /**
    * @constant
    */
-  public TAIL_HEIGHT = 35;
+  public TAIL_HEIGHT = 36;
 
   public scrollOptions = { maintainScrollUpPosition: true, maintainScrollDownPosition: true, nbLines: 0 };
 
@@ -1142,7 +1142,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
         // Only if the list is in grid mode
         this.TAIL_HEIGHT * (this.resultMode === ResultlistModeEnum.grid ? 1 : 0) -
         // Only if the list is in grid mode and has an element selected
-        this.detailedGridHeight * (this.resultMode === ResultlistModeEnum.grid ? 1 : 0) * (this.isDetailledGridOpen ? 1 : 0);
+        (this.detailedGridHeight + /** border */ 2) * (this.resultMode === ResultlistModeEnum.grid ? 1 : 0) * (this.isDetailledGridOpen ? 1 : 0);
       this.cdr.detectChanges();
     } else {
       // If the container has no height then try again for up to 10 times
