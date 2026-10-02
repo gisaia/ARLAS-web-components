@@ -133,8 +133,7 @@
               [idFieldName]="fieldsConfiguration().idFieldName" [isDetailShowed]="isDetailledGridOpen"
               (actionOnItemEvent)="triggerActionOnItem($event)" [showEmptyGroup]="showEmptyGroup"
               [useHttp]="!!fieldsConfiguration().useHttpQuicklooks" (closeDetail)="closeDetail($event)"
-              [detailedDataRetriever]="detailedDataRetriever()"
-              (itemDetailToggleEvent)="onItemDetailToggle($event)">
+              [detailedDataRetriever]="detailedDataRetriever()">
             </arlas-result-detailed-grid>
           </td>
         </tr>
@@ -174,8 +173,7 @@
                 [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
                 [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                 [idFieldName]="fieldsConfiguration().idFieldName" [containerType]="'list'"
-                (actionOnItemEvent)="triggerActionOnItem($event)"
-                (itemDetailToggleEvent)="onItemDetailToggle($event)">
+                (actionOnItemEvent)="triggerActionOnItem($event)">
               </tr>
             }
           } @else if (resultMode === ModeEnum.card) {
@@ -199,8 +197,7 @@
                   [detailedDataRetriever]="detailedDataRetriever()" [activatedActionsPerItem]="activatedActionsPerItem"
                   [detailColspan]="rowItem.columns.length" [rowItem]="rowItem" [showEmptyGroup]="showEmptyGroup"
                   [idFieldName]="fieldsConfiguration().idFieldName" (actionOnItemEvent)="triggerActionOnItem($event)"
-                  [containerType]="'list'"
-                  (itemDetailToggleEvent)="onItemDetailToggle($event)">
+                  [containerType]="'list'">
               </tr>
             }
           } @else {

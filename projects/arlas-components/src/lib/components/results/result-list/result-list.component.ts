@@ -36,7 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { debounceTime, first, fromEvent, interval, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, fromEvent, Observable, Subject } from 'rxjs';
 import { ArlasColorService } from '../../../services/color.generator.service';
 import { ResultlistNotifierService } from '../../../services/resultlist.notifier.service';
 import { CardFieldConfig } from '../config/cardFieldConfig';
@@ -47,12 +47,11 @@ import { Item } from '../model/item';
 import { SortableField } from '../model/sortableField';
 import { ResultCardItemComponent } from '../result-card-item/result-card-item.component';
 import { ResultDetailedGridComponent } from '../result-detailed-grid/result-detailed-grid.component';
-import { ItemDetailToggleEvent, ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
 import { ResultScrollDirective } from '../result-directive/result-scroll.directive';
 import { ResultFilterComponent } from '../result-filter/result-filter.component';
 import { ResultGridTileComponent } from '../result-grid-tile/result-grid-tile.component';
 import { ResultItemComponent } from '../result-item/result-item.component';
-import { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettingsService, TaskStatus } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { CellBackgroundStyleEnum } from '../utils/enumerations/cellBackgroundStyleEnum';
 import { PageEnum } from '../utils/enumerations/pageEnum';
@@ -518,9 +517,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
   private readonly emitVisibleItemsDebouncer = new Subject<Item[]>();
   protected sortableFields: Array<SortableField> = [];
 
-  private itemTasksSubscriptions = new Map<string, Map<string, Subscription>>();
-
-  private readonly taskSettingsService = inject(TaskSettingsService);
   private readonly snackbar = inject(MatSnackBar);
   private readonly translate = inject(TranslateService);
   public constructor(iterableRowsDiffer: IterableDiffers, iterableColumnsDiffer: IterableDiffers,
@@ -972,7 +968,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     return item1 && item2 ? item1.fieldName === item2.fieldName : item1 === item2;
   }
 
-  public setCardFields(){
+  public setCardFields() {
     this.cardFieldsRows = [];
     let cardsViewProperties: CardField[] = [];
     const sortedCards =  [...(this.cardFields || [])]
@@ -990,54 +986,6 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     });
     // push the final group once we've processed the last item
     this.cardFieldsRows.push(cardsViewProperties);
-  }
-
-  /**
-   * Updates the subscription to retrieve action status.
-   * @param event
-   */
-  public onItemDetailToggle(event: ItemDetailToggleEvent) {
-    if (event.open) {
-      this.stopTaskRetrieval(event.item.identifier);
-
-      // Every set interval of time, updates the status of item's tasks
-      event.item.tasks.keys().forEach(service => {
-        const obs$ = interval(this.taskSettingsService.getServiceTaskSettings(service)?.taskRetrievalTimer ?? DEFAULT_TASK_RETRIEVAL_INTERVAL)
-          .subscribe(_ => {
-            this.detailedDataRetriever().getServiceTasks(event.item.identifier, service)
-              .pipe(first())
-              .subscribe(tasks => {
-                event.item.tasks.set(service, tasks);
-                // If all tasks are in a final state, then stop retrieving updated state
-                if (tasks.filter(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running).length === 0) {
-                  obs$.unsubscribe();
-                  this.itemTasksSubscriptions.get(event.item.identifier)?.delete(service);
-                }
-              });
-            });
-
-        let itemSubs = this.itemTasksSubscriptions.get(event.item.identifier);
-        if (!itemSubs) {
-          itemSubs = new Map();
-          this.itemTasksSubscriptions.set(event.item.identifier, itemSubs);
-        }
-
-        itemSubs.set(service, obs$);
-        this.itemTasksSubscriptions.set(event.item.identifier, itemSubs);
-      });
-
-      return;
-    }
-
-    this.stopTaskRetrieval(event.item.identifier);
-  }
-
-  private stopTaskRetrieval(itemId: string) {
-    const itemSubs = this.itemTasksSubscriptions.get(itemId);
-    if (itemSubs) {
-      itemSubs.values().forEach(s => s.unsubscribe());
-      this.itemTasksSubscriptions.delete(itemId);
-    }
   }
 
   // Build the table's columns
