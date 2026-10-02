@@ -28,7 +28,6 @@ describe('TaskStatusComponent', () => {
       status: TaskStatus.accepted,
       message: '',
       created: 10,
-      started: 10,
       resourceID: ''
     });
     await fixture.whenStable();

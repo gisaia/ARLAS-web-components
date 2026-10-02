@@ -96,7 +96,6 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         status: TaskStatus.successful,
         message: '',
         created: 1751551011,
-        started: 1751551011,
         finished: 1751551021,
         resourceID: identifier
       },
@@ -107,7 +106,6 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         status: TaskStatus.accepted,
         message: '',
         created: 1751551011,
-        started: 1751551011,
         finished: 1751551021,
         resourceID: identifier
       },
@@ -118,7 +116,6 @@ export class DetailedDataRetrieverImp implements DetailedDataRetriever {
         status: TaskStatus.failed,
         message: '',
         created: 1751551200,
-        started: 1751551200,
         finished: 1751551221,
         resourceID: identifier
       }
