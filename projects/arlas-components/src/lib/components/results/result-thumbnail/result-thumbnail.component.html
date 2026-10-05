@@ -1,7 +1,6 @@
 <div #cellTooltip="matTooltip"
      (mouseover)="hoverImage()"
      class="thumbnail__image {{gridTile().iconCssClass}}"
-     id="{{'grid-tile-' + gridTile().identifier}}"
      matTooltip="{{pictureTooltip() | translate}}">
 
   <div class="image__header">
@@ -23,6 +22,7 @@
   </div>
 
   <img
+    [id]="'grid-tile-' + gridTile().identifier"
     (click)="setClickedOnItem()"
     (keydown)="fullScreen($event, gridTile().urlImages)"
     [defaultImage]="defaultImgUrl()"
