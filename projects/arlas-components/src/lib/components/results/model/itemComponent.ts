@@ -17,12 +17,20 @@
  * under the License.
  */
 
-import { first } from 'rxjs';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { first, interval } from 'rxjs';
 import { Item } from '../model/item';
+import { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettingsService, TaskStatus } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, Attachment } from '../utils/results.utils';
 
+@Component({
+  template: ''
+})
 export class ItemComponent {
+  private readonly taskSettingsService = inject(TaskSettingsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public setSelectedItem(isChecked: boolean, identifier: string, selectedItems: Set<string>) {
     isChecked = !isChecked;
@@ -90,8 +98,35 @@ export class ItemComponent {
       taskMap$.forEach((t$, service) => {
         t$.pipe(first()).subscribe(tasks => {
           item.tasks.set(service, tasks);
+          this.checkTaskCompletion(detailedDataRetriever, item, service);
         });
       });
+    }
+  }
+
+  /**
+   * If one of the tasks of the service is not complete, then periodically checks until all of them are complete
+   * @param detailedDataRetriever
+   * @param item
+   * @param service
+   */
+  private checkTaskCompletion(detailedDataRetriever: DetailedDataRetriever, item: Item, service: string) {
+    const serviceTasks = item.tasks.get(service) ?? [];
+    if (serviceTasks.some(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running)) {
+      const obs$ = interval(this.taskSettingsService.getServiceTaskSettings(service)?.taskRetrievalTimer ?? DEFAULT_TASK_RETRIEVAL_INTERVAL)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(_ => {
+          detailedDataRetriever.getServiceTasks(item.identifier, service)
+            .pipe(first())
+            .subscribe(tasks => {
+              item.tasks.set(service, tasks);
+
+              // If all tasks are in a final state, then stop retrieving updated state
+              if (tasks.filter(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running).length === 0) {
+                obs$.unsubscribe();
+              }
+            });
+          });
     }
   }
 }

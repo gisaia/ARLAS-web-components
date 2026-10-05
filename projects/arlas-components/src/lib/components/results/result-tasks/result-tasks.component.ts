@@ -73,7 +73,7 @@ export class ResultTasksComponent {
 
   private readonly taskService = inject(TaskSettingsService);
 
-  public toggleTaskDisplay(displayAll: boolean) {
-    this.displayAllTasks.set(displayAll);
+  public toggleTaskDisplay() {
+    this.displayAllTasks.set(!this.displayAllTasks());
   }
 }

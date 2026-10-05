@@ -34,7 +34,6 @@ export interface Task {
   status: TaskStatus;
   message: string;
   created: number;
-  started: number;
   finished?: number;
   updated?: number;
   progress?: number;

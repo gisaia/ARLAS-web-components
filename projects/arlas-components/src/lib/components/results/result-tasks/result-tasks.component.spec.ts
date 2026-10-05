@@ -38,7 +38,6 @@ describe('ResultTasksComponent', () => {
         status: TaskStatus.accepted,
         message: '',
         created: 10,
-        started: 10,
         resourceID: ''
       }
     ];
