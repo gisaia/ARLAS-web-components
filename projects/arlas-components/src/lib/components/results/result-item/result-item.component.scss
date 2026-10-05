@@ -17,7 +17,7 @@
  * under the License.
  */
 
-.resultitem__cell{
+.resultitem__cell {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
   text-align: left;
@@ -27,17 +27,11 @@
   padding-left: 5px;
 }
 
-.resultitem__cell__toggle--icon /* @doc Sets the toggle icon style.*/
-{
-  font-size: var(--arlas-sys-content-icon-size);
-  width: var(--arlas-sys-content-icon-size);
-  height: var(--arlas-sys-content-icon-size);
-}
-
 .resultitem__cell--label /* @doc Sets labels style.*/
 {
   margin: 0;
   width: fit-content;
+  word-wrap: anywhere;
 }
 
 .resultitem__icon_check /* @doc Sets the checkbox icon style.*/
@@ -84,11 +78,17 @@
 }
 
 .resultitem__cell__toggle__button {
-  --mat-icon-button-touch-target-size: 18px;
-  --mat-icon-button-state-layer-size: 18px;
-  background: var(--mat-sys-surface);
+  --mat-icon-button-touch-target-size: var(--arlas-sys-content-icon-size);
+  --mat-icon-button-state-layer-size: var(--arlas-sys-content-icon-size);
+  background: var(--mat-sys-surface-variant);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+
+  &--icon {
+    font-size: var(--arlas-sys-content-icon-size);
+    width: var(--arlas-sys-content-icon-size);
+    height: var(--arlas-sys-content-icon-size);
+  }
 }

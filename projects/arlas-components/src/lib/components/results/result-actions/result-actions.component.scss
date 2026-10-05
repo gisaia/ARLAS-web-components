@@ -25,8 +25,8 @@
     width: 24px;
     height: 24px;
     font-size: 0;
-    color: var(--arlas-result-actions-color, var(--mat-sys-on-background));
-    background-color: var(--arlas-result-actions-background, var(--mat-sys-background));
+    color: var(--arlas-result-actions-color, var(--mat-sys-on-surface-variant));
+    background-color: var(--arlas-result-actions-background, var(--mat-sys-surface-variant));
     background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2720%27%20height%3D%2720%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%20%3Cg%3E%20%20%3Ctitle%3Ebackground%3C%2Ftitle%3E%20%20%3Crect%20fill%3D%27%23fff%27%20id%3D%27canvas_background%27%20height%3D%2722%27%20width%3D%2722%27%20y%3D%27-1%27%20x%3D%27-1%27%2F%3E%20%20%3Cg%20display%3D%27none%27%20overflow%3D%27visible%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%20id%3D%27canvasGrid%27%3E%20%20%20%3Crect%20fill%3D%27url(%23gridpattern)%27%20stroke-width%3D%270%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%2F%3E%20%20%3C%2Fg%3E%20%3C%2Fg%3E%20%3Cg%3E%20%20%3Ctitle%3ELayer%201%3C%2Ftitle%3E%20%20%3Cellipse%20stroke%3D%27%23000000%27%20ry%3D%275.779194%27%20rx%3D%275.5%27%20id%3D%27svg_1%27%20cy%3D%2710.000004%27%20cx%3D%2710%27%20stroke-width%3D%272.5%27%20fill%3D%27%23ffffff%27%2F%3E%20%3C%2Fg%3E%3C%2Fsvg%3E");
     background-repeat: no-repeat;
     background-position: center;
@@ -65,14 +65,16 @@
     }
 
     .icon {
-        float: right;
-        font-size: var(--arlas-sys-content-icon-size);
-        background-color: var(--arlas-result-actions-icon-background, var(--mat-sys-background));
-        border-radius: 50%;
-        cursor: pointer;
-        // Add a padding to center the icon in the middle of the circle
-        padding: calc((/** container size */ 24px - /** font size */ 20px) / 2);
-        box-sizing: border-box;
+        --mat-icon-button-touch-target-size: var(--arlas-sys-content-icon-size);
+        --mat-icon-button-state-layer-size: var(--arlas-sys-content-icon-size);
+        background: var(--mat-sys-surface-variant);
+        padding: 0;
+
+        mat-icon {
+            font-size: var(--arlas-sys-content-icon-size);
+            width: var(--arlas-sys-content-icon-size);
+            height: var(--arlas-sys-content-icon-size);
+        }
     }
 }
 
