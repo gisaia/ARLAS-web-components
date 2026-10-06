@@ -398,7 +398,7 @@ export class ArlasMapComponent<L, S, M> implements AfterViewInit, OnChanges, OnD
   protected queryRender(mapLayerMouseEvent: MapLayerMouseEvent) {
     const hasCrossOrDrawLayer = this.mapFrameworkService.queryFeatures(mapLayerMouseEvent, this.getMap(), CROSS_LAYER_PREFIX);
     if (!this.drawService.isDrawingBbox && !this.drawService.isDrawingPolygon
-      && !this.drawService.isDrawingCircle && !this.drawService.isInSimpleDrawMode && !hasCrossOrDrawLayer) {
+      && !this.drawService.isDrawingCircle && !this.drawService.isInSimpleDrawMode && hasCrossOrDrawLayer.length === 0) {
       this.onFeatureClick.next({ features: mapLayerMouseEvent.features, point: [mapLayerMouseEvent.lngLat.lng, mapLayerMouseEvent.lngLat.lat] });
     }
   }
