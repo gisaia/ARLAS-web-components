@@ -39,18 +39,6 @@
   }
 }
 
-/**
-* Override inner token to update style when in card mode.
- */
-.dark-theme{
-  :host {
-    --arlas-result-card-item-image-background: var(--mat-sys-background);
-    --arlas-result-thumbnail-list-icon-background: var(--mat-sys-background);
-    --arlas-result-thumbnail-action-btn-background:  var(--mat-sys-background);
-  }
-}
-
-
 .card {
   &__container {
     display: flex;

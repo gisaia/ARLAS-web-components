@@ -145,7 +145,9 @@ $img-proportion: 100%;
       }
     }
     .action__btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
   .actions {
@@ -175,19 +177,15 @@ $img-proportion: 100%;
   border: none;
   padding: 0;
   display: none;
+  background: var(--arlas-result-thumbnail-action-btn-background, var(--mat-sys-surface-variant));
+  border-radius: 5px;
 
-  --mat-icon-button-state-layer-size: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
-  --mat-icon-button-touch-target-size: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+  --mat-icon-button-touch-target-size: var(--arlas-sys-content-icon-size);
+  --mat-icon-button-state-layer-size: var(--arlas-sys-content-icon-size);
 
   mat-icon {
-    font-size: var(--arlas-sys-minor-icon-size);
-    width: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
-    height: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
-    background: var(--arlas-result-thumbnail-action-btn-background, var(--mat-sys-background));
-    border-radius: 5px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: var(--arlas-sys-content-icon-size);
+    width: var(--arlas-sys-content-icon-size);
+    height: var(--arlas-sys-content-icon-size);
   }
 }

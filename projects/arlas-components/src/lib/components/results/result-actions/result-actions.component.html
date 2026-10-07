@@ -14,10 +14,12 @@
             </button>
           } @else {
             <!-- The icon is provided by the action itself.-->
-            <mat-icon (click)="triggerAction($event, action)" class="icon"
-              [matTooltip]="action | actionDisplayer:'tooltip' | translate">
-              {{ action | actionDisplayer:'icon' }}
-            </mat-icon>
+            <button mat-icon-button class="icon" (click)="triggerAction($event, action)"
+                [matTooltip]="action | actionDisplayer:'tooltip' | translate">
+              <mat-icon>
+                {{ action | actionDisplayer:'icon' }}
+              </mat-icon>
+            </button>
           }
         } @else {
           <!-- The action is not activated, which means it will appear only when an item is hovered.-->
@@ -28,10 +30,12 @@
               {{action | actionDisplayer:'label' | translate}}
             </button>
           } @else {
-            <mat-icon (click)="triggerAction($event, action)" class="icon not_activated"
-              [matTooltip]="action | actionDisplayer:'tooltip' |translate">
-              {{action | actionDisplayer:'icon'}}
-            </mat-icon>
+            <button mat-icon-button class="icon not_activated" (click)="triggerAction($event, action)"
+                [matTooltip]="action | actionDisplayer:'tooltip' | translate">
+              <mat-icon>
+                {{ action | actionDisplayer:'icon' }}
+              </mat-icon>
+            </button>
           }
         }
       }
