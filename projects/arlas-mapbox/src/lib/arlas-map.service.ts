@@ -131,12 +131,13 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
   }
 
   public adjustOpacityByValue(map: ArlasMapboxGL, sourceIdPrefix: string, field: string,
-    values: string[], insideOpacity: number, outsideOpacity: number
+    values: string[], insideOpacity: number, outsideOpacity: number, ignoreLayer: string[] = []
   ): void {
     const layers = this.mapFrameworkService.getLayersStartingWithSource(map, sourceIdPrefix);
     const style = this.getValueStyle(field, values, insideOpacity, outsideOpacity);
     layers
       .filter(l => this.mapService.isLayerVisible(l))
+      .filter(l => !ignoreLayer.includes(l.id))
       .forEach(layer => {
         map.setLayerOpacity(layer.id, layer.type, style);
         if (layer.type === 'circle') {
