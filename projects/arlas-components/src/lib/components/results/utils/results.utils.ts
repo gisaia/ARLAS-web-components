@@ -116,13 +116,15 @@ export interface FieldsConfiguration {
   tooltipFieldNames?: Array<Field>;
   useHttpQuicklooks?: boolean;
   useHttpThumbnails?: boolean;
-  /**
-   * @deprecated
-   */
-  icon?: string;
   iconCssClass?: string;
   iconColorFieldName?: string;
   detailsTitleTemplate?: string;
+  /** Configuration for the display of quicklooks on the map */
+  displayQuicklookOnMap?: {
+    enabled: boolean;
+    /** Field containing the bounds of the item */
+    boundsFieldName?: string;
+  };
 }
 
 export interface DescribedUrl {
@@ -173,8 +175,10 @@ export function matchAndReplace(data: Map<string, ItemDataType>, template: strin
   let replaced = template;
   template.match(/{(.+?)}/g)?.forEach(t => {
     const key: string = t.replace('{', '').replace('}', '');
-    if (data.get(key)) {
-      replaced = replaced.replace(t, data.get(key).toString());
+
+    const value = data.get(key);
+    if (value) {
+      replaced = replaced.replace(t, value.toString());
     }
   });
   return replaced;

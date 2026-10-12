@@ -30,10 +30,10 @@ export class MetricsTableDemoComponent {
   public multiBarTableSameTitle: MetricsTable = {
     header: [
       // eslint-disable-next-line max-len
-      { title: 'produit de la casa par tu', subTitle: ' couverture nuageuse', metric: 'avg', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
+      { title: 'produit de la casa par tu', subTitle: ' couverture nuageuse', metric: 'avg', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'produit de la casa par tu', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
     ],
     data: [
       {
@@ -422,21 +422,24 @@ export class MetricsTableDemoComponent {
         'subTitle': 'course.distance.gps.travelled_m',
         'metric': 'sum',
         rowfield: 'item.properties.cloudCover',
-        color: '#bbb'
+        color: '#bbb',
+        span: 1
       },
       {
         'title': 'demo_ais_flow_demo_ais_flow',
         'subTitle': 'course.distance.gps.travelled_m',
         'metric': 'count',
         rowfield: 'item.properties.cloudCover',
-        color: '#bbb'
+        color: '#bbb',
+        span: 1
       },
       {
         'title': 'demo_ais_course',
         'subTitle': 'course.distance.gps.travelled_m',
         'metric': 'count',
         rowfield: 'item.properties.cloudCover',
-        color: '#bbb'
+        color: '#bbb',
+        span: 1
       }
     ]
   };
@@ -444,10 +447,10 @@ export class MetricsTableDemoComponent {
   public multiBarTDiffTittle: MetricsTable = {
     header: [
       // eslint-disable-next-line max-len
-      { title: 'produit produit produit produit produit produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'satellite', subTitle: ' couverture nuageuse', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'produit', subTitle: ' couverture not min', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'cost', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
+      { title: 'produit produit produit produit produit produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'satellite', subTitle: ' couverture nuageuse', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'produit', subTitle: ' couverture not min', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'cost', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
     ],
     data: [
       {
@@ -496,10 +499,10 @@ export class MetricsTableDemoComponent {
   public multiBarTAllDiffTittle: MetricsTable = {
     header: [
       // eslint-disable-next-line max-len
-      { title: 'produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'satellite', subTitle: ' couverture nuageuse', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'course', subTitle: ' couverture not min', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
-      { title: 'cost', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb' },
+      { title: 'produit', subTitle: 'couverture nuageuse sssssssssssssssssssssssssssssssssssssssssssssssssssssssss ', metric: 'avg', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'satellite', subTitle: ' couverture nuageuse', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'course', subTitle: ' couverture not min', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
+      { title: 'cost', subTitle: ' couverture', metric: 'min', rowfield: 'item.properties.cloudCover', color: '#bbb', span: 1 },
     ],
     data: [
       {
@@ -544,6 +547,4 @@ export class MetricsTableDemoComponent {
       },
     ]
   };
-  public constructor() { }
-
 }

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Dimensions, Granularity, Margins, Timeline, TimelineData, TimelineTooltip } from 'arlas-d3';
@@ -39,40 +39,41 @@ export enum TranslationDirection {
  */
 export class CalendarTimelineComponent implements AfterViewInit, OnChanges, OnDestroy {
 
-  @Input() public id: string;
-  @Input() public granularity: Granularity;
-  @Input() public climatological: boolean;
+  public id = input.required<string>();
+  @Input() public granularity?: Granularity;
+  @Input() public climatological = false;
   @Input() public boundDates: Date[] = [];
   @Input() public data: TimelineData[] = [];
-  @Input() public cursorPosition: Date;
-  @Input() public hideLeftButton: boolean;
-  @Input() public hideRightButton: boolean;
+  @Input() public cursorPosition?: Date;
+  @Input() public hideLeftButton = false;
+  @Input() public hideRightButton = false;
 
   @Output() public selectedData: Subject<TimelineData> = new Subject();
   @Output() public hoveredData: Subject<TimelineTooltip> = new Subject();
   @Output() public translate: Subject<TranslationDirection> = new Subject();
 
-  public width: number;
-  public height: number;
+  public width?: number;
+  public height = 90;
 
-  private timeline: Timeline;
+  private timeline?: Timeline;
 
   private _onDestroy$ = new Subject<boolean>();
 
-  @ViewChild('timeline_container', { static: false }) private timelineContainer: ElementRef;
+  @ViewChild('timeline_container', { static: false }) private readonly timelineContainer?: ElementRef;
 
   public constructor() {
     fromEvent(window, 'resize')
       .pipe(debounceTime(500), takeUntil(this._onDestroy$))
       .subscribe((event: Event) => {
-        const element: HTMLElement = this.timelineContainer.nativeElement;
-        const margins = (new Margins()).setBottom(5).setTop(5).setRight(5).setLeft(5);
-        this.width = element.offsetWidth;
-        this.height = 90;
-        const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
-        if (this.timeline) {
-          this.timeline.setDimensions(dimensions);
-          this.timeline.plot();
+        if (this.timelineContainer) {
+          const element: HTMLElement = this.timelineContainer.nativeElement;
+          const margins = (new Margins()).setBottom(5).setTop(5).setRight(5).setLeft(5);
+          this.width = element.offsetWidth;
+          const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
+          if (this.timeline) {
+            this.timeline.setDimensions(dimensions);
+            this.timeline.plot();
+          }
         }
       });
   }
@@ -89,37 +90,44 @@ export class CalendarTimelineComponent implements AfterViewInit, OnChanges, OnDe
       this.timeline.plot();
     }
     if (changes.granularity && this.timeline) {
-      this.timeline.setGranularity(this.granularity);
+      this.timeline.setGranularity(changes.granularity.currentValue);
     }
     if (changes.climatological && this.timeline) {
       this.timeline.setClimatological(this.climatological);
     }
     if (changes.cursorPosition && this.timeline) {
-      this.timeline.moveCursor(this.cursorPosition);
+      this.timeline.moveCursor(changes.cursorPosition.currentValue);
     }
   }
 
   public ngAfterViewInit(): void {
+    if (!this.timelineContainer) {
+      throw new Error('Failed to initialise CalendarTimelineComponent');
+    }
+
     const element: HTMLElement = this.timelineContainer.nativeElement;
     const svg = element.querySelector('svg');
     const margins = (new Margins()).setBottom(5).setTop(5).setRight(5).setLeft(5);
     this.width = element.offsetWidth;
     this.height = 90;
     const dimensions = (new Dimensions(this.width, this.height)).setMargins(margins);
-    this.timeline = (new Timeline(svg));
-    this.timeline.setDimensions(dimensions);
-    this.timeline.setBoundDates(this.boundDates);
 
-    this.timeline.hoveredData
-      .pipe(takeUntil(this._onDestroy$))
-      .subscribe(r => {
-        this.hoveredData.next(r);
-      });
-    this.timeline.selectedData
-      .pipe(takeUntil(this._onDestroy$))
-      .subscribe(r => {
-        this.selectedData.next(r);
-      });
+    if (svg) {
+      this.timeline = (new Timeline(svg));
+      this.timeline.setDimensions(dimensions);
+      this.timeline.setBoundDates(this.boundDates);
+
+      this.timeline.hoveredData
+        .pipe(takeUntil(this._onDestroy$))
+        .subscribe(r => {
+          this.hoveredData.next(r);
+        });
+      this.timeline.selectedData
+        .pipe(takeUntil(this._onDestroy$))
+        .subscribe(r => {
+          this.selectedData.next(r);
+        });
+    }
   }
 
   public ngOnDestroy() {

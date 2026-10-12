@@ -1,18 +1,18 @@
-@if (!metricsTableRow?.selected || !hideSelection) {
+@if (!metricsTableRow().selected || !hideSelection) {
   <tr [ngClass]="{
-  'multi-bar-row--unselected': !metricsTableRow?.selected,
-  'multi-bar-row--selected': metricsTableRow?.selected,
-  'multi-bar-row--pending': !metricsTableRow?.selected && pendingMode
+  'multi-bar-row--unselected': !metricsTableRow().selected,
+  'multi-bar-row--selected': metricsTableRow().selected,
+  'multi-bar-row--pending': !metricsTableRow().selected && pendingMode
   }" (click)="selectRow()" (keydown)="selectRow()" class="multi-bar-row">
     <th class="terms-head" scope="row" class="multi-bar-row__header">
       <div class="header">
         @if (displayCheckBox) {
           <section (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()">
-            <mat-checkbox [checked]="metricsTableRow?.selected" (change)="onCheck()"></mat-checkbox>
+            <mat-checkbox [checked]="metricsTableRow().selected" (change)="onCheck()"></mat-checkbox>
           </section>
         }
-        <span class="header-title" [matTooltip]="metricsTableRow?.term">
-          {{metricsTableRow?.term | uppercase}}
+        <span class="header-title" [matTooltip]="metricsTableRow().term">
+          {{metricsTableRow().term | uppercase}}
         </span>
       </div>
     </th>

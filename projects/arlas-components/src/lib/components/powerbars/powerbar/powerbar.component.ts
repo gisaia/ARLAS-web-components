@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
@@ -32,7 +32,7 @@ import { PowerBar } from '../model/powerbar';
 })
 export class PowerbarComponent {
 
-    @Input() public powerbar: PowerBar;
+    public powerbar = input.required<PowerBar>();
     /**
      * @Input : Angular
      * @description Precision when rounding numbers (ie the count next to the progress bar).

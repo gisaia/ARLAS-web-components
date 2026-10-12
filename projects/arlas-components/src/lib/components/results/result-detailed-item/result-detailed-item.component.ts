@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { LowerCasePipe } from '@angular/common';
-import { Component, input, Input, Output } from '@angular/core';
+import { KeyValuePipe, LowerCasePipe } from '@angular/common';
+import { AfterViewInit, Component, input, Input, OnDestroy, output, Output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -29,35 +29,46 @@ import { ReplacePipe } from '../../../pipes/replace/replace.pipe';
 import { NUMBER_FORMAT_CHAR } from '../../componentsUtils';
 import { Item } from '../model/item';
 import { ResultActionsComponent } from '../result-actions/result-actions.component';
+import { ResultTasksComponent } from '../result-tasks/result-tasks.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
 import { Action, Attachment, ElementIdentifier } from '../utils/results.utils';
+
+/**
+ * Event emitted when an Item's detail is being opened/closed
+ */
+export interface ItemDetailToggleEvent {
+  item: Item;
+  open: boolean;
+}
 
 @Component({
   selector: '[arlas-result-detailed-item]',
   templateUrl: './result-detailed-item.component.html',
   styleUrls: ['./result-detailed-item.component.scss'],
-  imports: [ResultActionsComponent, MatTooltip, MatIcon, LowerCasePipe, TranslatePipe, FormatNumberPipe, ReplacePipe, GetAttachmentUrlPipe]
+  imports: [
+    ResultActionsComponent, MatTooltip, MatIcon, LowerCasePipe, TranslatePipe,
+    FormatNumberPipe, ReplacePipe, GetAttachmentUrlPipe, ResultTasksComponent, KeyValuePipe
+  ]
 })
-export class ResultDetailedItemComponent {
+export class ResultDetailedItemComponent implements OnDestroy, AfterViewInit {
   /**
    * @Input
    * @description Number of columns in the parent table so that this component occupies the entire line.
    */
-  @Input() public detailColspan: number;
+  public detailColspan = input.required<number>();
   /**
    * @Input
    * @description Name of the id field.
    */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
 
-
-  @Input() public containerType: string;
+  public containerType = input.required<'list' | 'grid'>();
 
   /**
    * @Input
    * @description An object representing an Item and that contains the detailed data.
    */
-  @Input({ required: true }) public rowItem: Item;
+  public rowItem = input.required<Item>();
 
   /**
    * @Input
@@ -77,12 +88,18 @@ export class ResultDetailedItemComponent {
    * @description A detailed-data-retriever object that implements
    * DetailedDataRetriever interface.
    */
-  @Input({ required: true }) public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
   /**
    * @Input : Angular
    * @description List of active actions per item.
   */
   @Input() public activatedActionsPerItem: Map<string, Set<string>> = new Map<string, Set<string>>();
+
+  /**
+   * Emits an event every time the detail of an item is displayed/hidden.
+   * Emits at component creation and destruction.
+   */
+  public itemDetailToggleEvent = output<ItemDetailToggleEvent>();
 
   /**
    * Whether to make the actions 'sticky' and to always show them in the details
@@ -93,13 +110,21 @@ export class ResultDetailedItemComponent {
 
   public constructor(private readonly translate: TranslateService) { }
 
+  public ngAfterViewInit() {
+    this.itemDetailToggleEvent.emit({ item: this.rowItem(), open: true });
+  }
+
+  public ngOnDestroy() {
+    this.itemDetailToggleEvent.emit({ item: this.rowItem(), open: false });
+  }
+
   // Emits the action on this ResultDetailedItem to the parent (ResultList)
   public triggerActionOnItem(action: Action) {
-    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName, idValue: this.rowItem.identifier } });
+    this.actionOnItemEvent.next({ action: action, elementidentifier: { idFieldName: this.idFieldName(), idValue: this.rowItem().identifier } });
   }
 
   public getGroups() {
-    return (this.showEmptyGroup) ? (this.rowItem?.itemDetailedData) : (this.rowItem?.itemDetailedData.filter(d => d.details.length > 0));
+    return (this.showEmptyGroup) ? (this.rowItem().itemDetailedData) : (this.rowItem().itemDetailedData.filter(d => d.details.length > 0));
   }
 
   public getAttachmentLabel(attachment: Attachment, index: number): string {

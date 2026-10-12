@@ -22,7 +22,7 @@ export interface ArlasDataLayer {
   type: string;
   minzoom?: number;
   maxzoom?: number;
-  source?: string;
+  source: string;
   metadata?: LayerMetadata;
   paint: ArlasPaint;
   layout?: any;

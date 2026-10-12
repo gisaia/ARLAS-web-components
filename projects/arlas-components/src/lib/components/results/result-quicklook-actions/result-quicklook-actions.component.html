@@ -1,0 +1,13 @@
+@if (gridTile().urlImages && gridTile().urlImages.length > 1) {
+  <button mat-icon-button class="viewer_actions-infos navigate-button previous" [matTooltip]="'Previous image' | translate" (click)="onPrevious()">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+}
+@if (gridTile().descriptions) {
+  <div class="viewer_actions-infos description">{{ gridTile().descriptions[currentImageIndex()] }}</div>
+}
+@if (gridTile().urlImages && gridTile().urlImages.length > 1) {
+  <button mat-icon-button class="viewer_actions-infos navigate-button next" [matTooltip]="'Next image' | translate" (click)="onNext()">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+}

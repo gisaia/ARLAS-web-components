@@ -1,7 +1,14 @@
 <div class="visualisation">
-  <img class="visualisation__preview"
-      [arlasProtectImage]="preview()" width="80" height="80" priority
-      [alt]="'Visualisation preview' | translate">
+  <div class="visualisation__preview">
+    <img [arlasProtectImage]="preview()" width="80" height="80" priority
+      (isLoading)="isLoading.set($event)" [alt]="'Visualisation preview' | translate">
+
+    @if (isLoading()) {
+    <mat-progress-spinner class="visualisation__preview__spinner" [diameter]="40"
+      [strokeWidth]="2" mode="indeterminate"></mat-progress-spinner>
+    }
+  </div>
+
   <div class="visualisation__info">
     <span class="visualisation__info__title">{{title() | translate}}</span>
     <span class="visualisation__info__description">{{description() | translate}}</span>

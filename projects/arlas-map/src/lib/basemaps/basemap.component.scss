@@ -29,8 +29,8 @@
   overflow: hidden;
 
   .basemap {
-    border: 2px solid white;
-    background-color: white;
+    border: 2px solid var(--arlas-basemaps-background, var(--mat-sys-background));
+    background-color: var(--arlas-basemaps-background, var(--mat-sys-background));
     border-radius: 6px;
     cursor: pointer;
 
@@ -40,16 +40,14 @@
       position: relative;
 
       .name {
-        font-size: 10px;
-        line-height: 15px;
+        font-size: var(--arlas-sys-content-font-size);
+        line-height: calc(2 * 2px + var(--arlas-sys-content-font-size));
         text-align: center;
         position: absolute;
         width: 100%;
         bottom: 0;
-        background-color: rgb(245 245 245 / 50%);
+        background-color: var(--arlas-basemaps-background-title-color, color-mix(in srgb, var(--mat-sys-surface) 45%, transparent));
         border-radius: 0 0 6px 6px;
-        text-shadow: 1px 1px 2px white;
-
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
@@ -64,7 +62,7 @@
       .no-image{
         width: 75px;
         height: 75px;
-        background-color: white;
+        background-color: var(--arlas-basemaps-background, var(--mat-sys-background));
         text-align: center;
         padding-top: 20px;
       }
@@ -72,9 +70,9 @@
   }
 
   .selected {
-    border: 2px solid #337ab7;
-    background-color: #337ab7;
-    color: #337ab7;
+    border: 2px solid var(--arlas-basemaps-selected-color, var(--mat-sys-primary));
+    background-color: var(--arlas-basemaps-selected-color, var(--mat-sys-primary));
+    color: var(--arlas-basemaps-selected-color, var(--mat-sys-primary));
     font-weight: 600;
   }
 }

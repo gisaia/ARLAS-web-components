@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { signal } from '@angular/core';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import bbox from '@turf/bbox';
 import { fromEvent, map, Observable, Subscription } from 'rxjs';
@@ -34,7 +35,7 @@ export interface MapConfig<T> {
   margePanForTest: number;
   wrapLatLng: boolean;
   offset: ArlasMapOffset;
-  mapProviderOptions?: T;
+  mapProviderOptions: T;
   maxWidthScale?: number;
   unitScale?: string;
   controls?: ControlsOption;
@@ -96,9 +97,9 @@ export abstract class AbstractArlasMapGL {
    *  ex: endLngLat will have a type Maplibre.Pointlike/ Mapbox.Point
    */
 
-  public abstract startLngLat: ArlasLngLat;
-  public abstract endLngLat: ArlasLngLat;
-  public abstract moveLngLat: ArlasLngLat;
+  public abstract startLngLat?: ArlasLngLat;
+  public abstract endLngLat?: ArlasLngLat;
+  public abstract moveLngLat?: ArlasLngLat;
   protected _offset: ArlasMapOffset;
   protected _margePanForLoad: number;
   protected _margePanForTest: number;
@@ -108,30 +109,31 @@ export abstract class AbstractArlasMapGL {
   protected _controls: ControlsOption;
   protected _maxWidthScale?: number;
   protected _unitScale?: string;
-  public currentLat: string;
-  public currentLng: string;
+  public currentLat = signal('0');
+  public currentLng = signal('0');
   public readonly POLYGON_LABEL_SOURCE = 'polygon_label';
 
-  protected _north: number;
-  protected _east: number;
-  protected _west: number;
-  protected _south: number;
-  public zoom: number;
-  protected _zoomStart: number;
+  protected _north = 0;
+  protected _east = 0;
+  protected _west = 0;
+  protected _south = 0;
 
-  protected _dragStartX: number;
-  protected _dragStartY: number;
+  public zoom = 0;
+  protected _zoomStart = 0;
 
-  protected _dragEndX: number;
-  protected _dragEndY: number;
+  protected _dragStartX = 0;
+  protected _dragStartY = 0;
 
-  protected _xMoveRatio: number;
-  protected _yMoveRatio: number;
+  protected _dragEndX = 0;
+  protected _dragEndY = 0;
 
-  protected _moveEnd$: Observable<any>;
-  protected _zoomStart$: Observable<any>;
-  protected _dragStart$: Observable<any>;
-  protected _dragEnd$: Observable<any>;
+  protected _xMoveRatio = 0;
+  protected _yMoveRatio = 0;
+
+  protected _moveEnd$ = new Observable<any>();
+  protected _zoomStart$ = new Observable<any>();
+  protected _dragStart$ = new Observable<any>();
+  protected _dragEnd$ = new Observable<any>();
 
   protected _eventSubscription: Subscription[] = [];
 
@@ -144,7 +146,7 @@ export abstract class AbstractArlasMapGL {
     this._margePanForTest = config.margePanForTest;
     this._displayCurrentCoordinates = config.displayCurrentCoordinates ?? false;
     this._wrapLatLng = config.wrapLatLng ?? true;
-    this._controls = config.controls;
+    this._controls = config.controls ?? {};
     this._fitBoundsPadding = config.fitBoundsPadding ?? 10;
     this._maxWidthScale = config.maxWidthScale;
     this._unitScale = config.unitScale;
@@ -158,7 +160,7 @@ export abstract class AbstractArlasMapGL {
       this._initOnLoad();
       this._initMapMoveEvents();
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   }
 
@@ -209,8 +211,8 @@ export abstract class AbstractArlasMapGL {
     const lngLat = e.lngLat;
     if (this._displayCurrentCoordinates) {
       const displayedLngLat = this._wrapLatLng ? lngLat.wrap() : lngLat;
-      this.currentLng = String(Math.round(displayedLngLat.lng * 100000) / 100000);
-      this.currentLat = String(Math.round(displayedLngLat.lat * 100000) / 100000);
+      this.currentLng.set(String(Math.round(displayedLngLat.lng * 100000) / 100000));
+      this.currentLat.set(String(Math.round(displayedLngLat.lat * 100000) / 100000));
     }
   }
 
@@ -308,7 +310,7 @@ export abstract class AbstractArlasMapGL {
     return this.getMapProvider().getPitch();
   }
 
-  protected abstract _initMapProvider(BaseMapGlConfig): void;
+  protected abstract _initMapProvider(mapGLConfig: MapConfig<any>): void;
   protected abstract _initControls(): void;
   protected abstract _getMoveEnd(visualisationsSets: {
     visualisations: Map<string, Set<string>>;
@@ -316,13 +318,13 @@ export abstract class AbstractArlasMapGL {
   }): OnMoveResult;
 
   public abstract addControl(control: any, position?: ControlPosition, eventOverride?: {
-    event: string; fn: (e?) => void;
-  });
+    event: string; fn: (e?: Event) => void;
+  }): void;
   public abstract calcOffsetPoint(): any;
   public abstract disableDragPan(): void;
   public abstract enableDragPan(): void;
   public abstract fitBounds(bounds: ArlasLngLatBounds | number[], options?: unknown, unknown?: unknown): this;
-  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]);
+  public abstract fitToPaddedBounds(bounds: ArlasLngLatBounds | number[]): void;
   public abstract getBounds(): unknown;
   public abstract getCanvasContainer(): HTMLElement;
   public abstract getEastBounds(): number;
@@ -352,10 +354,14 @@ export abstract class AbstractArlasMapGL {
    * @param layerType Type of the layer
    */
   public abstract layerTypeToPaintKeyword(layerType: string): string;
+  /**
+   * Gets all the layers on the map ordered from the one the more in the background to the top-most
+   */
+  public abstract getLayersOrder(): string[];
 
   /** Gets bounds of the given geometry */
   public geometryToBounds(geometry: any, paddingPercentage?: number): ArlasLngLatBounds {
-    const boundingBox: any = bbox(geometry);
+    const boundingBox = bbox(geometry);
     let west = boundingBox[0];
     let south = boundingBox[1];
     let east = boundingBox[2];

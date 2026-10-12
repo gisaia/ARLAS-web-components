@@ -19,7 +19,7 @@
 
 
 /** Data source of a layer */
-export class ArlasMapSource<SourceType> {
-  public id: string;
-  public source: string | SourceType;
+export interface ArlasMapSource<SourceType> {
+  id: string;
+  source: string | SourceType;
 }

@@ -19,11 +19,11 @@
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
-export function createSupplementaryPointsForCircle(geojson) {
+export function createSupplementaryPointsForCircle(geojson: GeoJSON.Feature<GeoJSON.Polygon>) {
     const { properties, geometry } = geojson;
 
-    if (!properties.user_isCircle) {
-        return null;
+    if (!properties?.user_isCircle) {
+        return [];
     }
 
     const supplementaryPoints = [];
@@ -35,7 +35,7 @@ export function createSupplementaryPointsForCircle(geojson) {
 }
 
 export const dragPan = {
-    enable(ctx) {
+    enable(ctx: any) {
         setTimeout(() => {
             // First check we've got a map and some context.
             if (!ctx.map || !ctx.map.dragPan || !ctx._ctx || !ctx._ctx.store || !ctx._ctx.store.getInitialConfigValue) {
@@ -49,7 +49,7 @@ export const dragPan = {
         }, 0);
     },
 
-    disable(ctx) {
+    disable(ctx: any) {
         setTimeout(() => {
             if (!ctx.map || !ctx.map.doubleClickZoom) {
                 return;
@@ -59,3 +59,13 @@ export const dragPan = {
         }, 0);
     }
 };
+
+export function moveCircleFeatureCenter(features: GeoJSON.Feature[], delta: MapboxDraw.LngLat) {
+  features
+    .filter(feature => feature.properties?.isCircle)
+    .map(circle => circle.properties?.center)
+    .forEach((center: [number, number]) => {
+        center[0] += delta.lng;
+        center[1] += delta.lat;
+    });
+}

@@ -30,7 +30,9 @@ import { displayFeatures, updateCoordinates } from '../utils';
 
 export const stripMode = { ...MapboxDraw.modes.draw_line_string };
 
-export function rotateStrip(start, end, state, currentMaxBearing = 0, options: any = {}) {
+export function rotateStrip(start: GeoJSON.Position, end: GeoJSON.Position,
+    state: Record<string, any>, currentMaxBearing = 0, options: any = {}
+) {
     const properties = options.properties ? options.properties : {};
     const startPoint = point(start);
     const endPoint = point(end);
@@ -40,7 +42,7 @@ export function rotateStrip(start, end, state, currentMaxBearing = 0, options: a
     return polygon(rotatedPoly.coordinates, properties);
 }
 
-export function buildStrip(start, end, halfSwath, options: any = {}) {
+export function buildStrip(start: GeoJSON.Position, end: GeoJSON.Position, halfSwath: number, options: any = {}) {
     const properties = options.properties ? options.properties : {};
     // main
     const coordinates = [];
@@ -62,24 +64,24 @@ export function buildStrip(start, end, halfSwath, options: any = {}) {
     return polygon([coordinates], properties);
 }
 
-export function computeStripProperties(coordinates) {
+export function computeStripProperties(coordinates: number[][]) {
     const properties = new Map();
 
     // Compute bearing
     const bearingAngle = rhumbBearing(point(coordinates[0]), point(coordinates[3]));
-    properties['bearingAngle'] = bearingToAzimuth(bearingAngle);
+    properties.set('bearingAngle', bearingToAzimuth(bearingAngle));
 
     // Compute origin
-    properties['origin'] = midpoint(point(coordinates[0]), point(coordinates[1])).geometry.coordinates;
+    properties.set('origin', midpoint(point(coordinates[0]), point(coordinates[1])).geometry.coordinates);
 
     // Compute length
-    properties['length'] = distance(point(coordinates[1]), point(coordinates[2]), { units: 'kilometers' });
+    properties.set('length', distance(point(coordinates[1]), point(coordinates[2]), { units: 'kilometers' }));
 
     return properties;
 }
 
 const doubleClickZoom = {
-    enable: (ctx) => {
+    enable: (ctx: any) => {
         setTimeout(() => {
             // First check we've got a map and some context.
             if (
@@ -225,12 +227,12 @@ stripMode.onStop = function (state) {
     this.fireOnStop();
 };
 
-stripMode.toDisplayFeatures = function (state, geojson, display) {
+stripMode.toDisplayFeatures = function (state, geojson: GeoJSON.Feature<GeoJSON.LineString>, display) {
     displayFeatures(state, geojson, display);
 
     if (geojson.geometry.coordinates.length >= 2 && geojson.geometry.coordinates[1]) {
         // create custom feature for the current pointer position
-        const currentVertex = {
+        const currentVertex: GeoJSON.Feature<GeoJSON.Point> = {
             type: 'Feature',
             properties: {
                 meta: 'currentPosition',

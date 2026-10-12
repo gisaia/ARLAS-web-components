@@ -53,7 +53,7 @@ export enum GeoQueryOperator {
 export class SelectFormControl extends UntypedFormControl {
 
   // used only for autocomplete: list of filtered options
-  public filteredOptions: Array<string>;
+  public filteredOptions: Array<string> = [];
   public syncOptions: Array<string> = [];
 
   public constructor(
@@ -184,7 +184,7 @@ export class MapSettingsComponent {
    */
   @Output() public geoQueryEmitter = new Subject<Map<string, GeoQuery>>();
 
-  public dialogRef: MatDialogRef<MapSettingsDialogComponent>;
+  public dialogRef?: MatDialogRef<MapSettingsDialogComponent>;
 
   public constructor(private readonly dialog: MatDialog) { }
 
@@ -192,9 +192,9 @@ export class MapSettingsComponent {
     this.dialogRef = this.dialog.open(MapSettingsDialogComponent, { data: null, panelClass: 'map-settings-dialog' });
     const mapGeoQueries = mapSettingsService.getGeoQueries();
     if (!!mapGeoQueries) {
-      mapGeoQueries.forEach((geoQueries, collection) => {
+      for (const [collection, geoQueries] of mapGeoQueries.entries()) {
         this.dialogRef.componentInstance.createGeoQueryForm(collection, geoQueries[2], geoQueries[0], geoQueries[1]);
-      });
+      }
     }
     this.dialogRef.componentInstance.geoQueryEmitter = this.geoQueryEmitter;
   }

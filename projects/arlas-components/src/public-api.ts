@@ -20,13 +20,12 @@
 /*
  * Public API Surface of arlas-web-components
  */
-export { ChartType, DataType, HistogramTooltip, Position, SimpleNode, SwimlaneMode, TimelineData, TreeNode } from 'arlas-d3';
 export { CalendarTimelineComponent, TranslationDirection } from './lib/components/calendar-timeline/calendar-timeline.component';
 export { CogLegendComponent } from './lib/components/cog/cog-legend/cog-legend.component';
 export { CogModalComponent, CogVisualisationData } from './lib/components/cog/cog-modal/cog-modal.component';
 export { CogPreviewComponent } from './lib/components/cog/cog-preview/cog-preview.component';
 export { CogVisualisationConfig, DataGroup, VisualisationInterface } from './lib/components/cog/model';
-export { AwcColorGeneratorLoader, ColorGeneratorLoader } from './lib/components/componentsUtils';
+export { AwcColorGeneratorLoader, ColorGeneratorLoader, NUMBER_FORMAT_CHAR } from './lib/components/componentsUtils';
 export { DonutComponent } from './lib/components/donut/donut.component';
 export { HistogramComponent } from './lib/components/histogram/histogram.component';
 export { MetricComponent } from './lib/components/metric/metric.component';
@@ -34,30 +33,37 @@ export { MetricsTableComponent } from './lib/components/metrics-table/metrics-ta
 export { PowerBar } from './lib/components/powerbars/model/powerbar';
 export { PowerbarComponent } from './lib/components/powerbars/powerbar/powerbar.component';
 export { PowerbarsComponent } from './lib/components/powerbars/powerbars.component';
+export { CardFieldConfig } from './lib/components/results/config/cardFieldConfig';
+export { TableFieldConfig } from './lib/components/results/config/tableFieldConfig';
+export { CardField } from './lib/components/results/model/cardField';
 export { Column } from './lib/components/results/model/column';
 export { Item, ItemDetailGroup } from './lib/components/results/model/item';
 export { ResultActionsComponent } from './lib/components/results/result-actions/result-actions.component';
 export { ActionDisplayerPipe } from './lib/components/results/result-actions/result-actions.pipe';
 export { ResultDetailedGridComponent } from './lib/components/results/result-detailed-grid/result-detailed-grid.component';
-export { ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
+export { ItemDetailToggleEvent, ResultDetailedItemComponent } from './lib/components/results/result-detailed-item/result-detailed-item.component';
 export { ResultScrollDirective } from './lib/components/results/result-directive/result-scroll.directive';
 export { ResultFilterComponent } from './lib/components/results/result-filter/result-filter.component';
 export { ResultGridTileComponent } from './lib/components/results/result-grid-tile/result-grid-tile.component';
 export { ResultItemComponent } from './lib/components/results/result-item/result-item.component';
 export { ResultListComponent, SortedColumn } from './lib/components/results/result-list/result-list.component';
+export { TaskStatusComponent } from './lib/components/results/result-tasks/task-status/task-status.component';
+export { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettings, TaskSettingsService } from './lib/components/results/utils/aias-process';
 export { DetailedDataRetriever, MatchInfo } from './lib/components/results/utils/detailed-data-retriever';
 export { CellBackgroundStyleEnum } from './lib/components/results/utils/enumerations/cellBackgroundStyleEnum';
-export { ModeEnum } from './lib/components/results/utils/enumerations/modeEnum';
 export { PageEnum } from './lib/components/results/utils/enumerations/pageEnum';
+export { ResultlistModeEnum } from './lib/components/results/utils/enumerations/resultlistModeEnum';
 export { SortEnum } from './lib/components/results/utils/enumerations/sortEnum';
 export { ThumbnailFitEnum } from './lib/components/results/utils/enumerations/thumbnailFitEnum';
 export {
     Action, ActionHandler, AdditionalInfo, Attachment, DescribedUrl, ElementIdentifier, Field,
-    FieldsConfiguration, ItemDataType, PROTECTED_REQUEST_HEADER, PageQuery, ResultListOptions, matchAndReplace
+    FieldsConfiguration, ItemDataType, matchAndReplace, PageQuery, PROTECTED_REQUEST_HEADER, ResultListOptions
 } from './lib/components/results/utils/results.utils';
+export { stringToResultlistModeEnum } from './lib/components/results/utils/stringToResultlistModeEnum';
 export {
     Dimension, GetTilesInfo, LayerParam, WmtsLayerManagerComponent, WmtsLayerManagertDialogComponent
 } from './lib/components/wmts-layer-manager/wmts-layer-manager.component';
+export { DeltaTimePipe } from './lib/pipes/delta-time.pipe';
 export { FormatNumberPipe } from './lib/pipes/format-number/format-number.pipe';
 export { GetCollectionDisplayNamePipe } from './lib/pipes/get-collection-display-name/get-collection-display-name.pipe';
 export { GetCollectionUnitPipe } from './lib/pipes/get-collection-unit/get-collection-unit.pipe';

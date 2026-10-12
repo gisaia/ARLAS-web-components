@@ -17,9 +17,9 @@
  * under the License.
  */
 
-.resultitem__cell{
+.resultitem__cell {
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 0.7em;
+  font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
   text-align: left;
   vertical-align: middle;
   box-sizing: border-box;
@@ -27,28 +27,23 @@
   padding-left: 5px;
 }
 
-.resultitem__cell__toggle--icon /* @doc Sets the toggle icon style.*/
-{
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-}
-
 .resultitem__cell--label /* @doc Sets labels style.*/
 {
-  margin:0;
+  margin: 0;
+  width: fit-content;
+  word-wrap: anywhere;
 }
 
 .resultitem__icon_check /* @doc Sets the checkbox icon style.*/
 {
-  font-size: 15px;
-  width: 15px;
-  height: 15px;
+  font-size: var(--arlas-sys-minor-icon-size);
+  width: var(--arlas-sys-minor-icon-size);
+  height: var(--arlas-sys-minor-icon-size);
 }
 
 .resultitem__cell--label__filled {
   padding: 2px;
-  border-radius:2px;
+  border-radius: 2px;
 }
 
 .resultitem__cell--label__outlined {
@@ -83,10 +78,17 @@
 }
 
 .resultitem__cell__toggle__button {
-  --mat-icon-button-touch-target-size: 18px;
-  --mat-icon-button-state-layer-size: 18px;
+  --mat-icon-button-touch-target-size: var(--arlas-sys-content-icon-size);
+  --mat-icon-button-state-layer-size: var(--arlas-sys-content-icon-size);
+  background: var(--mat-sys-surface-variant);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0;
+
+  &--icon {
+    font-size: var(--arlas-sys-content-icon-size);
+    width: var(--arlas-sys-content-icon-size);
+    height: var(--arlas-sys-content-icon-size);
+  }
 }

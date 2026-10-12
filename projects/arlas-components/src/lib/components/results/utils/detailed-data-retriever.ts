@@ -20,6 +20,7 @@
 import { Observable } from 'rxjs';
 import { Item } from '../model/item';
 import { Action, ActionFilter, AdditionalInfo, ItemDataType } from '../utils/results.utils';
+import { Task } from './aias-process';
 
 export interface FieldDetail {
   path: string;
@@ -34,7 +35,7 @@ export interface Detail {
 }
 export interface MatchInfo {
   matched: Array<boolean>;
-  data: Map<string, ItemDataType>;
+  data: Record<string, ItemDataType>;
 }
 
 
@@ -50,4 +51,9 @@ export interface DetailedDataRetriever {
 
   getMatch(identifier: string, filters: ActionFilter[][]): Observable<MatchInfo>;
 
+  /** Retrieves the tasks associated to an item for all services */
+  getAllTasks(identifier: string): Map<string, Observable<Task[]>>;
+
+  /** Retrieves the tasks associated to an item for one service */
+  getServiceTasks(identifier: string, service: string): Observable<Task[]>;
 }

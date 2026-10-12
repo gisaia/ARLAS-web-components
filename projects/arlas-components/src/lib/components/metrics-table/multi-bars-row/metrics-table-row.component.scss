@@ -19,7 +19,6 @@
 
 :host {
   display: table-row-group;
-
   ::ng-deep {
     arlas-powerbar {
       .powerbars__powerbar--count {
@@ -68,7 +67,7 @@
     }
 
     .checkbox-unselected-bar ::ng-deep .mat-checkbox-frame {
-      border-color: rgba(0, 0, 0, .04) !important;
+      border-color: var(--arlas-metrics-table-row-checkbox-border-color, color-mix(in srgb, var(--mat-sys-on-surface) 40%, transparent)) !important;
     }
 
   }
@@ -99,7 +98,7 @@
 
   &__header {
     padding: 0 6px;
-    font-size: 12px;
+    font-size: var(--arlas-sys-content-font-size);
     vertical-align: middle;
 
     .header {
@@ -113,12 +112,14 @@
       text-overflow: ellipsis;
       overflow: hidden;
       padding: 0 3px;
+      color: var(--mat-sys-on-surface)
     }
   }
 
   &__data {
     padding: 0 6px;
     vertical-align: middle;
+    color: var(--mat-sys-on-surface)
   }
 
   td,
@@ -134,12 +135,13 @@
   display: flex;
   gap: 4px;
   align-items: center;
+
 }
 
 .empty {
   display: inline-block;
   width: 5px;
-  border: solid 1px rgba(0, 0, 0, 0.2);
+  border: solid 1px var(--arlas-metrics-table-row-empty-border-color, rgba(0, 0, 0, 0.2));
 }
 
 .terms-head {

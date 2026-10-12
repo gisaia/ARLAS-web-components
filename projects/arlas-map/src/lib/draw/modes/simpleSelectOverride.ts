@@ -18,8 +18,7 @@
  */
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { createSupplementaryPointsForCircle } from './circles/utils';
-
+import { createSupplementaryPointsForCircle, moveCircleFeatureCenter } from './circles/utils';
 
 export const simpleSelectModeOverride = MapboxDraw.modes.simple_select;
 
@@ -35,18 +34,13 @@ simpleSelectModeOverride.dragMove = function (state, e) {
 
     MapboxDraw.lib.moveFeatures(this.getSelected(), delta);
 
-    this.getSelected()
-        .filter(feature => feature.properties.isCircle)
-        .map(circle => circle.properties.center)
-        .forEach(center => {
-            center[0] += delta.lng;
-            center[1] += delta.lat;
-        });
+    moveCircleFeatureCenter(this.getSelected(), delta);
 
     state.dragMoveLocation = e.lngLat;
 };
 
 simpleSelectModeOverride.toDisplayFeatures = function (state, geojson, display) {
+    geojson.properties ??= {};
     geojson.properties.active = (this.isSelected(geojson.properties.id)) ?
         MapboxDraw.constants.activeStates.ACTIVE : MapboxDraw.constants.activeStates.INACTIVE;
     display(geojson);
@@ -56,7 +50,7 @@ simpleSelectModeOverride.toDisplayFeatures = function (state, geojson, display) 
         return;
     }
     const supplementaryPoints = geojson.properties.user_isCircle ?
-        createSupplementaryPointsForCircle(geojson) : MapboxDraw.lib.createSupplementaryPoints(geojson);
+        createSupplementaryPointsForCircle(geojson as GeoJSON.Feature<GeoJSON.Polygon>) : MapboxDraw.lib.createSupplementaryPoints(geojson);
     supplementaryPoints.forEach(display);
 };
 

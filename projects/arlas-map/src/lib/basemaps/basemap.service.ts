@@ -40,7 +40,7 @@ export abstract class BasemapService<L, S, M> {
 
   protected basemapChangedSource = new Subject<BasemapStyle>();
   public basemapChanged$ = this.basemapChangedSource.asObservable();
-  public basemaps: ArlasBasemaps;
+  public basemaps?: ArlasBasemaps;
 
   protected protomapBasemapAddedSource = new Subject<boolean>();
   public protomapBasemapAdded$ = this.protomapBasemapAddedSource.asObservable();
@@ -52,7 +52,7 @@ export abstract class BasemapService<L, S, M> {
     this.basemaps = basemaps;
   }
 
-  public abstract addProtomapBasemap(map: AbstractArlasMapGL);
+  public abstract addProtomapBasemap(map: AbstractArlasMapGL): void;
 
   protected addPMtilesToSource(map: AbstractArlasMapGL, pmtilesSource: any) {
     /* eslint-disable max-len */
@@ -62,7 +62,7 @@ export abstract class BasemapService<L, S, M> {
   }
 
   protected addProtomapLayerToMap(map: AbstractArlasMapGL, styleFile: any) {
-    styleFile.layers.forEach(l => {
+    styleFile.layers.forEach((l: any) => {
       this.mapFrameworkService.removeLayer(map, l.id);
       this.mapFrameworkService.addLayer(map, l);
     });
@@ -72,10 +72,11 @@ export abstract class BasemapService<L, S, M> {
     this.protomapBasemapAddedSource.next(true);
   }
 
-  public abstract removeProtomapBasemap(map: AbstractArlasMapGL);
+  public abstract removeProtomapBasemap(map: AbstractArlasMapGL): void;
 
   public abstract declareProtomapProtocol(map: AbstractArlasMapGL): void;
-  public cloneStyleFile<T>(selected: any) {
+
+  public cloneStyleFile<T>(selected: BasemapStyle) {
     return { ...selected.styleFile as T};
   }
 
@@ -99,5 +100,5 @@ export abstract class BasemapService<L, S, M> {
   public abstract getInitStyle(selected: BasemapStyle): any;
   public abstract fetchSources$(): Observable<readonly any[]>;
   protected abstract getStyleFile(b: BasemapStyle): Observable<any>;
-  public abstract setBasemap(s: any, newBasemap: BasemapStyle, map: AbstractArlasMapGL, options?: any);
+  public abstract setBasemap(s: any, newBasemap: BasemapStyle, map: AbstractArlasMapGL, options?: any): void;
 }

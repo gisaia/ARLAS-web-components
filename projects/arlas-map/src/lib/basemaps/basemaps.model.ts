@@ -20,11 +20,11 @@
 import { BasemapStyle } from './basemap.config';
 
 export class ArlasBasemaps {
-  private LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
-  public _selectedStyle: BasemapStyle;
-  public _styles: BasemapStyle[];
-  private defaultBasemapStyle: BasemapStyle;
-  private basemapStyles?: BasemapStyle[];
+  private readonly LOCAL_STORAGE_BASEMAPS = 'arlas_last_base_map';
+  public _selectedStyle?: BasemapStyle;
+  public _styles: BasemapStyle[] = [];
+  private readonly defaultBasemapStyle?: BasemapStyle;
+  private readonly basemapStyles?: BasemapStyle[];
 
   public constructor(defaultBasemapStyle?: BasemapStyle, basemapStyles?: BasemapStyle[]) {
     if (defaultBasemapStyle && basemapStyles) {
@@ -36,7 +36,7 @@ export class ArlasBasemaps {
   }
 
   public styles(): BasemapStyle[] {
-    if (!this._styles) {
+    if (this._styles.length === 0 && this.defaultBasemapStyle && this.basemapStyles) {
       this._styles = this.getAllBasemapStyles(this.defaultBasemapStyle, this.basemapStyles);
     }
     return this._styles.filter(b => !b.errored);
@@ -47,19 +47,24 @@ export class ArlasBasemaps {
     return this;
   }
 
-  public getStyle(b: BasemapStyle) {
-    return this.styles().find(s => s.name === b?.name);
+  public getStyle(b?: BasemapStyle) {
+    if (!b) {
+      return undefined;
+    }
+    return this.styles().find(s => s.name === b.name);
   }
 
   public getSelected(): BasemapStyle {
     if (!this._selectedStyle) {
       const styles = this.styles();
-      const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS));
+      const localStorageBasemapStyle: BasemapStyle = JSON.parse(localStorage.getItem(this.LOCAL_STORAGE_BASEMAPS) ?? '{}');
       const sameNameBasemaps = localStorageBasemapStyle ? styles.filter(b => b.name === localStorageBasemapStyle.name) : [];
+
+      const defaultStyle = this.getStyle(this.defaultBasemapStyle);
       if (sameNameBasemaps.length > 0) {
         this._selectedStyle = sameNameBasemaps[0];
-      } else if (!!this.getStyle(this.defaultBasemapStyle)) {
-        this._selectedStyle = this.getStyle(this.defaultBasemapStyle);
+      } else if (defaultStyle) {
+        this._selectedStyle = defaultStyle;
       } else if (styles && styles.length > 0) {
         this._selectedStyle = styles[0];
       } else {

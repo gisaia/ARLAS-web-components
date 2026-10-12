@@ -18,8 +18,8 @@
  */
 
 import { inject, Injectable } from '@angular/core';
-import { ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
-import mapboxgl, { GeoJSONSource, MapboxOptions } from 'mapbox-gl';
+import { AbstractArlasMapGL, ArlasMapSource, BasemapService, BasemapStyle } from 'arlas-map';
+import mapboxgl, { GeoJSONSource, MapboxOptions, VectorSource } from 'mapbox-gl';
 import { Protocol } from 'pmtiles';
 import { catchError, forkJoin, Observable, of, tap } from 'rxjs';
 import { ArlasMapService } from '../arlas-map.service';
@@ -34,13 +34,12 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
   private readonly mapService = inject(ArlasMapService);
 
   public addProtomapBasemap(map: ArlasMapboxGL) {
-    const selectedBasemap = this.basemaps.getSelected();
-    if (selectedBasemap.type === 'protomap') {
+    const selectedBasemap = this.basemaps?.getSelected();
+    if (selectedBasemap?.type === 'protomap') {
       const styleFile = selectedBasemap.styleFile as mapboxgl.Style;
-      const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
+      const pmtilesSource = styleFile.sources?.['arlas_protomaps_source'];
       if (pmtilesSource) {
-
-        this.addPMtilesToSource(map, pmtilesSource);
+        this.addPMtilesToSource(map as AbstractArlasMapGL, pmtilesSource);
         this.addProtomapLayerToMap(map, styleFile);
       }
     } else {
@@ -49,9 +48,9 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
   }
 
   public removeProtomapBasemap(map: ArlasMapboxGL) {
-    const selectedBasemap = this.basemaps.getSelected();
-    if (selectedBasemap.type === 'protomap') {
-      (selectedBasemap.styleFile as mapboxgl.Style).layers.forEach(l => {
+    const selectedBasemap = this.basemaps?.getSelected();
+    if (selectedBasemap?.type === 'protomap') {
+      (selectedBasemap.styleFile as mapboxgl.Style).layers?.forEach(l => {
         this.mapFrameworkService.removeLayer(map, l.id, false);
       });
       this.mapFrameworkService.removeSource(map, 'arlas_protomaps_source');
@@ -62,7 +61,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
     const protocol = new Protocol();
     if (!(mapboxgl as any).Style.getSourceType('pmtiles-type')) {
       /** addSourceType is private readonly */
-      (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e) => e && console.error('There was an error', e));
+      (map as any).addSourceType('pmtiles-type', CustomProtocol(mapboxgl).vector, (e: any) => e && console.error('There was an error', e));
       (mapboxgl as any).addProtocol('pmtiles', protocol.tile);
     }
   }
@@ -79,17 +78,19 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
 
   public fetchSources$(): Observable<readonly mapboxgl.Style[]> {
     const sources$: Observable<mapboxgl.Style>[] = [];
-    this.basemaps.styles().forEach(s => {
+    this.basemaps?.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
         tap(sf => {
-          Object.keys(sf.sources).forEach(k => {
-            const attribution = sf.sources[k]['attribution'];
-            if (attribution) {
-              sf.sources[k]['attribution'] = attribution + this.POWERED_BY_ARLAS;
-            } else {
-              sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
+          if (sf.sources) {
+            for (const k of Object.keys(sf.sources)) {
+              const attribution = (sf.sources[k] as VectorSource)['attribution'];
+              if (attribution) {
+                (sf.sources[k] as VectorSource)['attribution'] = attribution + this.POWERED_BY_ARLAS;
+              } else {
+                (sf.sources[k] as VectorSource)['attribution'] = this.POWERED_BY_ARLAS;
+              }
             }
-          });
+          }
           s.styleFile = sf;
         }),
         catchError(() => {
@@ -114,14 +115,17 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
     const layers: Array<ArlasAnyLayer> = this.mapFrameworkService.getAllLayers(map);
     const sources = this.mapFrameworkService.getAllSources(map);
     if (s.layers) {
-      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
+      s.layers.forEach((l: any) => selectedBasemapLayersSet.add(l.id));
     }
     const layersToSave = new Array<ArlasAnyLayer>();
     const sourcesToSave = new Array<ArlasMapSource<MapboxSourceType>>();
-    layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id) && !!l.source).forEach(l => {
-      layersToSave.push(l);
-      if (sourcesToSave.filter(ms => ms.id === l.source.toString()).length === 0) {
-        sourcesToSave.push({ id: l.source.toString(), source: sources[l.source.toString()] });
+    layers.filter((l: any) => !selectedBasemapLayersSet.has(l.id)).forEach(l => {
+      const layerSource = l.source;
+      if (layerSource) {
+        layersToSave.push(l);
+        if (sourcesToSave.filter(ms => ms.id === layerSource.toString()).length === 0) {
+          sourcesToSave.push({ id: layerSource.toString(), source: sources[layerSource.toString()] });
+        }
       }
     });
     const sourcesToSaveSet = new Set<string>();
@@ -142,7 +146,7 @@ export class MapboxBasemapService extends BasemapService<ArlasAnyLayer, MapboxSo
           this.mapFrameworkService.addLayer(map, l);
         });
         localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
-        this.basemaps.setSelected(newBasemap);
+        this.basemaps?.setSelected(newBasemap);
         if (newBasemap.type === 'protomap') {
           this.addProtomapBasemap(map);
           this.notifyProtomapAddition();

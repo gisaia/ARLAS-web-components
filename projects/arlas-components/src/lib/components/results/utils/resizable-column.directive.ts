@@ -156,7 +156,7 @@ export class ResizableTableDirective implements AfterViewInit, OnDestroy, OnInit
         // If the column after cannot be resized, then this one can only be resized using the handle before it
         if (!child.allowResize() && index > 0) {
           const previousColumn = this.childDirectiveRef()[index - 1] as ResizableColumnDirective;
-          if (previousColumn.allowResize()) {
+          if (previousColumn?.allowResize()) {
             previousColumn.removeAnchor();
           }
         }
@@ -298,7 +298,7 @@ export class ResizableTableDirective implements AfterViewInit, OnDestroy, OnInit
       const event = resizeEvent.event;
       const newWidth = this.getCurrentWidth(event, this.currentResizableDirective.getNativeEl());
 
-      const resizedColumnIdx = this.columns().findIndex(c => c.columnName === this.currentResizableDirective.arlasResizableColumn());
+      const resizedColumnIdx = this.columns().findIndex(c => c.columnName === this.currentResizableDirective?.arlasResizableColumn());
       // If the next column is resizeable
       const nextColumn = this.columns()[resizedColumnIdx + 1];
       if (resizedColumnIdx >= 0 && nextColumn.isResizable) {

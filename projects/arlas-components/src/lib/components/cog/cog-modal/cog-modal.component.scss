@@ -21,12 +21,12 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: whitesmoke;
+  background-color: var(--arlas-cog-modal-visualisation-background, var(--mat-sys-background));
 
   &__spinner {
     width: 100%;
     height: 100%;
-    background-color: rgba(211, 211, 211, 0.6);
+    background-color: var(--arlas-cog-modal-spinner-background, rgba(211, 211, 211, 0.6));
     z-index: 1;
 
     position: absolute;
@@ -39,57 +39,55 @@
   }
 
   &__title {
-    font-size: 20px;
-    color: black;
+    font-size: var(--arlas-sys-dialog-title-font-size);
+    color: var(--arlas-cog-modal-title-color, var(--mat-sys-on-background));
     padding: 10px 0;
   }
 
   &__item {
     cursor: pointer;
-    color: grey;
-    border: 2px solid white;
+    color: var(--arlas-cog-modal-item-color, var(--mat-sys-on-background));
+    border: 2px solid var(--arlas-cog-modal-item-border-color, var(--mat-sys-background));
     border-radius: 6px;
     position: relative;
-    background-color: white;
+    background-color: var(--arlas-cog-modal-item-background, var(--mat-sys-surface));
 
     &--unmatched {
       cursor: not-allowed;
-    }
+      color: var(--arlas-cog-modal-item-unmatched-color, #9f9f9f);
 
-    &--matched {
-      color: black;
+      &__title {
+        padding: 10px;
+      }
     }
 
     &--selected {
-      border-color: #1a73e8;
+      border-color: var(--arlas-cog-modal-item-selected-border-color, #1a73e8);
     }
 
     &:hover {
-      border-color: #bbbbbb;
+      border-color: var(--arlas-cog-modal-item-hover-border-color, var(--mat-sys-on-background));
     }
 
     &__warning,
     &__error {
-      font-size: 14px;
+      font-size: var(--arlas-sys-content-font-size);
       padding-left: 10px;
       position: relative;
       bottom: 5px;
     }
 
     &__warning {
-      color: #ff8f00;
+      color: var(--arlas-cog-modal-item-warning-color, #ff8f00);
     }
 
     &__error {
-      color: #ec0000;
+      color: var(--arlas-cog-modal-item-error-color, #ec0000);
     }
   }
 
   &__exit {
-    align-self: end;
-    font-size: 14px;
-    margin-bottom: 6px;
-    --mat-outlined-button-label-text-tracking: 0;
-    background-color: white;
+    font-size: var(--arlas-sys-content-font-size);
+    background-color: var(--arlas-cog-modal-exit-background, var(--mat-sys-background));
   }
 }

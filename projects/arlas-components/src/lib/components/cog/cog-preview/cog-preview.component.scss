@@ -26,6 +26,13 @@
     height: 80px;
     width: 80px;
     max-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &__spinner {
+      position: absolute;
+    }
   }
 
   &__info {
@@ -38,10 +45,12 @@
     &__title {
       width: 100%;
       padding-bottom: 5px;
+      color: var(--mat-sys-on-background)
     }
 
     &__description {
-      font-size: 14px;
+      font-size: var(--arlas-sys-content-font-size);
+      color: var(--mat-sys-on-background)
     }
   }
 }

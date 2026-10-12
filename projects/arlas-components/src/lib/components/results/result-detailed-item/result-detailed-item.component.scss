@@ -17,13 +17,15 @@
  * under the License.
  */
 
+@use "./detail.scss" as detail;
+
 .grid-container {
   overflow-y: auto;
   display: block;
   height: 100%;
   padding: 0;
   .details-title {
-    background-color: white;
+    background-color: var(--arlas-result-detailed-item-title-background, var(--mat-sys-background));
     position: sticky;
     top: 0px;
   }
@@ -31,7 +33,7 @@
 
 .details-title {
   font-weight: 500;
-  font-size: 1.1em;
+  font-size: var(--arlas-sys-title-font-size);
   padding: 5px;
 }
 
@@ -45,30 +47,19 @@
 
   &--group {
     &-title {
-      font-size: 16px;
-      border-bottom: 1px solid #f0eeeecf;
-      display: block;
+      @include detail.title();
     }
   }
 
   &--item {
-    color: black;
-    padding: 2px;
-    border-bottom: 1px solid #f0eeee7e;
-    display: flex;
-    gap: 10px;
+    @include detail.entry();
 
     &--key /* @doc Sets key style. (key: value part)*/ {
-      font-size: 12px;
-      text-align: end;
-      color: gray;
-      flex: 2;
+      @include detail.key();
     }
 
     &--value /* @doc Sets value style (key: value part)*/ {
-      font-size: 12px;
-      overflow-wrap: anywhere;
-      flex: 5;
+      @include detail.value();
     }
   }
 
@@ -76,7 +67,7 @@
     &--sticky {
       position: sticky;
       bottom: 0;
-      background-color: white;
+      background-color: var(--arlas-result-detailed-item-actions-background, var(--mat-sys-background));
     }
   }
 }
@@ -88,8 +79,8 @@
 
   &--title /* @doc Sets the style of attachments section's title*/ {
     font-weight: bold;
-    color: #322d90;
-    font-size: 1.1em;
+    color: var(--arlas-result-detailed-item-attachments-title-color, #322d90);
+    font-size: var(--arlas-sys-subtitle-font-size);
   }
 
   &--item /* @doc Sets the style of the attachment in `li` tag */ {

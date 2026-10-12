@@ -17,11 +17,30 @@
  * under the License.
  */
 
-@use 'sass:math';
+@mixin title() {
+    font-size: var(--arlas-sys-subtitle-font-size);
+    border-bottom: var(--arlas-entry-title-border-botom, 1px solid #f0eeeecf);
+    display: block;
+}
 
-/** Font sizes **/
-$xxs-font-size: 9px;
-$xs-font-size: 10px;
-$sm-font-size: 12px;
-$default-font-size: 14px;
-$title-font-size: 18px;
+@mixin entry() {
+    color: var(--mat-sys-on-background);
+    padding: 2px;
+    border-bottom: var(--arlas-entry-border-top, 1px solid #f0eeee7e);
+    display: flex;
+    gap: 10px;
+}
+
+@mixin key() {
+    font-size: var(--arlas-sys-content-font-size);
+    text-align: end;
+    color: var(--arlas-result-detailed-item-key-color, color-mix(in srgb, var(--mat-sys-on-surface) 38%, transparent));
+    flex: 2;
+}
+
+@mixin value() {
+    font-size: var(--arlas-sys-content-font-size);
+    overflow-wrap: anywhere;
+    flex: 5;
+}
+

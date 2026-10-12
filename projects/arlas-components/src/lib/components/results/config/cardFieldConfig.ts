@@ -17,17 +17,22 @@
  * under the License.
  */
 
-import { Pipe, PipeTransform } from '@angular/core';
+import { FieldConfig } from './fieldConfig';
 
-@Pipe({
-  name: 'getCollection'
-})
-export class GetCollectionPipe implements PipeTransform {
-  public transform(value: string, layersMap?: Map<string, any>): string {
-    let collection: string;
-    if (layersMap?.get(value)?.metadata?.collection) {
-      collection = layersMap.get(value).metadata.collection;
-    }
-    return collection;
-  }
+/**
+ * Configuration for a single field displayed in a card entry.
+ * Each instance describes one card property: how to look up the value, display it,
+ * and which row it belongs to.
+ */
+export interface CardFieldConfig extends FieldConfig {
+  /** Display label shown in the card tooltip */
+  prettyName: string;
+  /** Whether this field is the card title (displayed prominently) */
+  isTitle: boolean;
+  /** Row index for grouping field into lines (same value = same row) */
+  lineNumber: number;
+  /** Material icon name displayed alongside the value */
+  icon?: string;
+
 }
+

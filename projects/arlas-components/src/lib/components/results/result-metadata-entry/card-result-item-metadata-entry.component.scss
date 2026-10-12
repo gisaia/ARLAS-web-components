@@ -1,0 +1,67 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+:host {
+  --arlas-entry-icon-width: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+}
+
+.meta-data-entry {
+  font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+  &__container {
+    display: flex;
+    flex: 1 1 fit-content;
+    align-items: center;
+    gap:2px;
+    height: 20px;
+  }
+
+  &__icon {
+    width: 18px;
+    font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+    display: flex;
+    align-items: center;
+    & mat-icon {
+      font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+      height: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+      width: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+      display: flex;
+      align-items: center;
+      color: var(--arlas-entry-color, var(--arlas-card-result-item-metadata-entry-color));
+    }
+  }
+
+  &__value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+    min-width: 0;
+    flex:1 1 auto;
+    color: var(--arlas-entry-value-color, var(--arlas-card-result-item-metadata-entry-value-color));
+  }
+
+  &__unit {
+    font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
+    display: inline-block;
+    flex-shrink: 0;
+    max-width: 20px;
+    min-width: 0;
+    color: var(--arlas-entry-color, var(--arlas-card-result-item-metadata-entry-color));
+  }
+}

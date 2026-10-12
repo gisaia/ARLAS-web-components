@@ -20,7 +20,7 @@
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { KeyValuePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, input, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCard } from '@angular/material/card';
@@ -29,7 +29,7 @@ import { MatDialog, MatDialogActions, MatDialogClose, MatDialogContent, MatDialo
 import { MatInput } from '@angular/material/input';
 import { MatList, MatListItem, MatListSubheaderCssMatStyler } from '@angular/material/list';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatFormField, MatOption, MatSelect, MatSuffix } from '@angular/material/select';
+import { MatFormField, MatOption, MatSelect, MatSelectChange, MatSuffix } from '@angular/material/select';
 import { TranslatePipe } from '@ngx-translate/core';
 import moment from 'moment';
 import { Observable, retry, Subject, timeout } from 'rxjs';
@@ -66,23 +66,26 @@ export interface LayerParam {
     MatSuffix, MatDatepicker, MatProgressSpinner, MatDialogActions, MatDialogClose, KeyValuePipe, TranslatePipe, MatButtonModule]
 })
 export class WmtsLayerManagertDialogComponent implements OnInit {
-  public layer: string;
-  public style: string;
-  public formGroup: UntypedFormGroup;
+  public layer?: string;
+  public style?: string;
+  public formGroup = new UntypedFormGroup({
+    layer: new UntypedFormControl(),
+    style: new UntypedFormControl(),
+  });;
   public imageToShow: any;
   public isImageLoading = false;
   public showError = false;
   public previewLoading = false;
   public launchPreview = false;
-  @Input() public layers: Array<string>;
-  @Input() public styles: Array<string>;
-  @Input() public metadata: Map<string, string>;
-  @Input() public dimensions: Array<Dimension>;
-  @Input() public data: Map<string, LayerParam>;
-  @Input() public isDimension: boolean;
+  @Input() public layers: Array<string> = [];
+  @Input() public styles: Array<string> = [];
+  @Input() public metadata: Map<string, string> = new Map();
+  @Input() public dimensions: Array<Dimension> = [];
+  @Input() public data: Map<string, LayerParam> = new Map();
+  @Input() public isDimension = false;
   @Output() public clickTopreview = new Subject<any>();
 
-  public constructor(private dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>, private http: HttpClient) { }
+  public constructor(private readonly dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>, private readonly http: HttpClient) { }
 
   public ngOnInit() {
     const l = new Array();
@@ -90,17 +93,13 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
       l.push(key);
     });
     this.layers = l;
-    this.formGroup = new UntypedFormGroup({
-      layer: new UntypedFormControl(),
-      style: new UntypedFormControl(),
-    });
   }
 
-  public selectionChange(event) {
+  public selectionChange(event: MatSelectChange) {
     this.style = undefined;
     this.styles = new Array();
-    this.styles = this.data.get(event.value).styles;
-    this.dimensions = this.data.get(event.value).dimensions;
+    this.styles = this.data.get(event.value)?.styles ?? [];
+    this.dimensions = this.data.get(event.value)?.dimensions ?? [];
     this.dimensions.forEach(d => {
       this.formGroup.addControl(d.identifier, new UntypedFormControl);
     });
@@ -144,37 +143,36 @@ export class WmtsLayerManagertDialogComponent implements OnInit {
     styleUrls: ['./wmts-layer-manager.component.scss']
 })
 export class WmtsLayerManagerComponent implements OnInit, OnChanges {
-  public dialogRef: MatDialogRef<WmtsLayerManagertDialogComponent>;
   /**
    * @Input : Angular
-   * @description Url to access  getCapabilities endpoint of WMTS service
+   * @description Url to access getCapabilities endpoint of WMTS service
    */
-  @Input() public getCapaUrl: string;
+  public getCapaUrl = input.required<string>();
   /**
    * @Input : Angular
    * @description Metadata of product to display (optional)
    */
-  @Input() public metadata: Map<string, string>;
+  @Input() public metadata = new Map<string, string>();
   /**
    * @Input : Angular
    * @description Base url to access getTiles endpoint of WMTS service
    * If this input is  provided, we use it to build getTiles endpoint
    * If this input is not provided, we try to find it in getCapabilities response
    */
-  @Input() public getTilesBaseUrl: string;
+  @Input() public getTilesBaseUrl?: string;
   /**
   * @Input : Angular
   * @description Version of WMTS service
   * If this input is  provided, we use it to build getTiles endpoint
   * If this input is not provided, we try to find it in getCapabilities response
   */
-  @Input() public version: string;
+  @Input() public version?: string;
   /**
   * @Input : Angular
   * @description Format of getTile response
   * If getCapabilities does not contains this format, we send an error
    */
-  @Input() public format: string;
+  @Input() public format?: string;
   /**
   * @Input : Angular
   * @description Supported CRS code of WMTS service
@@ -190,7 +188,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   * @description Value to use in TileMatrixSet
   * If this input is  provided, we use it and we dont search TileMatrixSet in getCapabilities
   */
-  @Input() public tileMatrixSetIdenttifier: string;
+  @Input() public tileMatrixSetIdenttifier?: string;
   /**
    * @Output : Angular
    * @description Emit the information needed by a wmts client to view a product
@@ -223,7 +221,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
     // Call the gatCapabilities services
     this.errorInRun = false;
     this.isGetCapaLoading = true;
-    const httpCall: Observable<string> = this.http.get(this.getCapaUrl, { headers: header, responseType: 'text' });
+    const httpCall = this.http.get(this.getCapaUrl(), { headers: header, responseType: 'text' });
     httpCall
       .pipe(timeout(timeoutDuration),
         retry(numberOfRetry))
@@ -240,15 +238,18 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
               this.errorInRun = true;
               this.onError.next(nonDataError);
             }
-            if (mapSize === 1 && data.values().next().value.styles.length === 1) {
+
+            const dataKey = data.keys().next().value;
+            const dataValue = data.values().next().value;
+            if (mapSize === 1 && dataValue?.styles.length === 1 && dataKey) {
               // update layer and style
-              this.getTilesInfoBus.next(this.buildGetTileInfo(xmlDoc, data.keys().next().value, data.values().next().value.styles[0], md));
+              this.getTilesInfoBus.next(this.buildGetTileInfo(xmlDoc, dataKey, dataValue.styles[0], md));
             } else {
-              this.dialogRef = this.dialog.open(WmtsLayerManagertDialogComponent, { data: response });
+              const dialogRef = this.dialog.open(WmtsLayerManagertDialogComponent, { data: response });
               this.isGetCapaLoading = false;
-              this.dialogRef.componentInstance.data = data;
-              this.dialogRef.componentInstance.metadata = this.metadata;
-              this.dialogRef.afterClosed().subscribe(formGroupValue => {
+              dialogRef.componentInstance.data = data;
+              dialogRef.componentInstance.metadata = this.metadata;
+              dialogRef.afterClosed().subscribe(formGroupValue => {
                 if (formGroupValue) {
                   const getTileInfo = this.buildGetTileInfo(xmlDoc,
                     formGroupValue.layer,
@@ -259,7 +260,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
                   }
                 }
               });
-              this.dialogRef.componentInstance.clickTopreview.subscribe(formGroupValue => {
+              dialogRef.componentInstance.clickTopreview.subscribe(formGroupValue => {
                 const getTileInfo = this.buildGetTileInfo(xmlDoc,
                   formGroupValue.layer,
                   formGroupValue.style, md,
@@ -271,11 +272,11 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
                     .replace('{x}', '0')
                     .replace('{y}', '0')
                     .replace('{z}', '0');
-                  this.dialogRef.componentInstance.previewUrl(previewURL);
+                  dialogRef.componentInstance.previewUrl(previewURL);
                 }
               });
             }
-          } catch (e) {
+          } catch (e: any) {
             this.onError.next(e);
             this.isGetCapaLoading = false;
           }
@@ -304,7 +305,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
 
   public getDimension(layerElement: Element): Array<Dimension> {
     const dimensionElements = layerElement.getElementsByTagName('Dimension');
-    const allDimension: Array<Dimension> = Array.from(dimensionElements).map(e => {
+    const allDimension = Array.from(dimensionElements).map(e => {
       const abstracts = e.getElementsByTagName('ows:Abstract');
       let abstract;
       if (abstracts && abstracts.length > 0) {
@@ -314,7 +315,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
         identifier: e.getElementsByTagName('ows:Identifier')[0].textContent.replace(/\n/g, ''),
         abstract: abstract,
         values: Array.from(e.getElementsByTagName('Value')).map(el => el.textContent.replace(/\n/g, ''))
-      };
+      } as Dimension;
     });
     const timeDimension = allDimension.filter(r => r.identifier === 'time').map(r => {
       let startDate = null;
@@ -347,24 +348,26 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
         const formatError = new Error(this.format.concat(' does not exist for layer ').concat(layer));
         this.errorInRun = true;
         this.onError.next(formatError);
+        return '';
       }
     }
   }
 
-  public getVersion(xmlDoc): string {
+  public getVersion(xmlDoc: Document): string {
     if (this.version === undefined) {
       try {
         return xmlDoc.getElementsByTagName('ows:ServiceTypeVersion')[0].textContent;
-      } catch (e) {
+      } catch (e: any) {
         this.onError.next(new Error(e));
+        return '';
       }
     } else {
       return this.version;
     }
   }
 
-  public getKVPBaseUrl(xmlDoc: Document): string {
-    if (this.getTilesBaseUrl === undefined) {
+  public getKVPBaseUrl(xmlDoc: Document): string | null {
+    if (!this.getTilesBaseUrl) {
       try {
         const getCapaOperationNode = Array.from(xmlDoc
           .getElementsByTagName('ows:OperationsMetadata')[0]
@@ -376,8 +379,9 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
           .filter(element => Array.from(element.getElementsByTagName('ows:Value'))
             .filter(e => e.textContent === 'KVP').length > 0)[0];
         return getKvpNode.getAttribute('xlink:href');
-      } catch (e) {
+      } catch (e: any) {
         this.onError.next(e);
+        return null;
       }
     } else {
       return this.getTilesBaseUrl;
@@ -447,14 +451,14 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
 
   public buildGetTileUrl(xmlDoc: Document, layer: string, style: string, dimensions?: Object): string {
     let baseURL = this.getKVPBaseUrl(xmlDoc);
-    if (baseURL[baseURL.length - 1] === '?') {
+    if (baseURL && baseURL[baseURL.length - 1] === '?') {
       baseURL = baseURL.substring(0, baseURL.length - 1);
     }
     const version = this.getVersion(xmlDoc);
     const tileMatrixSet = this.getTileMatrixSet(xmlDoc, layer);
     const format = this.getFormat(xmlDoc, layer);
     let url = '';
-    url = url.concat(baseURL)
+    url = url.concat(baseURL ?? '')
       .concat('?')
       .concat('SERVICE=WMTS&')
       .concat('REQUEST=GetTile&')
@@ -470,7 +474,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
     if (dimensions) {
       Object
         .keys(dimensions)
-        .forEach(e => url = url.concat('&').concat(e).concat('=').concat(dimensions[e]));
+        .forEach(e => url = url.concat('&').concat(e).concat('=').concat((dimensions as any)[e]));
     }
     return url;
   }
@@ -487,7 +491,7 @@ export class WmtsLayerManagerComponent implements OnInit, OnChanges {
   }
 
   public getDimensionsFromGroupValues(formGroup: any): Object {
-    const dimensions = {};
+    const dimensions: Record<string, any> = {};
     Object.keys(formGroup).filter(e => e !== 'style').filter(e => e !== 'layer')
       .forEach(e => dimensions[e] = formGroup[e]);
     if (dimensions['time']) {

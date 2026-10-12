@@ -17,20 +17,27 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { MatTab, MatTabGroup } from '@angular/material/tabs';
+import { Component, computed, inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTab, MatTabChangeEvent, MatTabGroup } from '@angular/material/tabs';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../service/theme.service';
 
 @Component({
   selector: 'arlas-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
   imports: [
-    RouterOutlet, MatTab, MatTabGroup
+    RouterOutlet, MatTab, MatTabGroup, MatIcon, MatButtonModule
   ]
 })
 export class AppComponent implements OnInit {
+
+  private readonly themeService = inject(ThemeService);
+  public isDarkMode = computed(() => this.themeService.isDarkMode());
+
   public activeLinkIndex = 0;
   public navLinks = [
     '/',
@@ -49,14 +56,18 @@ export class AppComponent implements OnInit {
     this.translate.setFallbackLang('fr');
   }
 
-  public selectedTab(e) {
+  public selectedTab(e: MatTabChangeEvent) {
     this.router.navigateByUrl(this.navLinks[e.index]);
   }
 
   public ngOnInit(): void {
     this.router.events.subscribe(() => {
-      this.activeLinkIndex = this.navLinks.indexOf(this.navLinks.find(tab => tab === this.router.url));
+      this.activeLinkIndex = this.navLinks.indexOf(this.router.url);
     });
+  }
+
+  protected toggleDarkMode() {
+    this.themeService.toggleThemeMode();
   }
 }
 

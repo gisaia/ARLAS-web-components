@@ -1,0 +1,191 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+$img-proportion: 100%;
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  ::ng-deep {
+    & .list_actions .icon {
+      width: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+      height: calc(2 * 2px + var(--arlas-sys-minor-icon-size));
+      font-size: var(--arlas-sys-minor-icon-size) !important;
+      border-radius: 5px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    & .list_actions--icon {
+      padding-right: 4px;
+      max-width: var(--arlas-result-thumbnail-actions-width, 115px);
+      top: 8px !important;
+    }
+  }
+}
+
+.checkbox__button{
+  height: 0;
+  padding: 0;
+  width: fit-content;
+}
+
+.image__icon-check {
+  font-size: var(--arlas-sys-minor-icon-size);
+  width: var(--arlas-sys-minor-icon-size);
+  height: var(--arlas-sys-minor-icon-size);
+  color: var(--arlas-result-thumbnail-icon-check-color, #fff);
+  z-index: 5;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.image {
+  &__header{
+    position: absolute;
+    top: 0;
+    width: 100%;
+    display: flex;
+    z-index: 1;
+    &--left {
+      margin-left: 6px;
+    }
+    &--right {
+      margin-left: auto;
+      margin-right: 6px;
+      display: flex;
+      align-items: center;
+    }
+  }
+
+}
+
+.contain_thumbnail {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  background-color: var(--arlas-result-thumbnail-thumbnail-background, black);
+}
+
+.height_thumbnail {
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  height: 100%;
+  background-color: var(--arlas-result-thumbnail-thumbnail-background, black);
+}
+
+.width_thumbnail {
+  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  background-color: var(--arlas-result-thumbnail-thumbnail-background, black);
+}
+
+.round_thumbnail {
+  max-width: 100%;
+  max-height: 100%;
+  height: 100px;
+  width: 100px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+
+.thumbnail__image:hover .grid_actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.thumbnail {
+  &__image {
+    box-sizing: border-box;
+    display: flex;
+    height: $img-proportion;
+    width: 100%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: relative;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      cursor: pointer;
+    }
+  }
+}
+
+
+.thumbnail__image {
+  &:hover {
+    .actions {
+      ::ng-deep .list_actions {
+        .not_activated {
+          display: flex;
+        }
+      }
+    }
+    .action__btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .actions {
+    position: absolute;
+    bottom: 15%;
+    right: 2px;
+  }
+
+  &--selected {
+    position: absolute;
+    z-index: 1;
+    top: 15px;
+    color: var(--arlas-result-grid-tile-selected-icon-color, var(--mat-sys-on-background));
+    background-color: transparent;
+    opacity: 50%;
+    font-size: 72px;
+    height: 72px !important;
+    width: 72px !important;
+    pointer-events: auto;
+    cursor: default;
+  }
+}
+
+
+.action__btn {
+  min-width: 0;
+  border: none;
+  padding: 0;
+  display: none;
+  background: var(--arlas-result-thumbnail-action-btn-background, var(--mat-sys-surface-variant));
+  border-radius: 5px;
+
+  --mat-icon-button-touch-target-size: var(--arlas-sys-content-icon-size);
+  --mat-icon-button-state-layer-size: var(--arlas-sys-content-icon-size);
+
+  mat-icon {
+    font-size: var(--arlas-sys-content-icon-size);
+    width: var(--arlas-sys-content-icon-size);
+    height: var(--arlas-sys-content-icon-size);
+  }
+}

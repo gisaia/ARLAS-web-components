@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { Legend } from '../legend.config';
 import { LegendItemComponent } from './legend-item.component';
 
 describe('LegendItemComponent', () => {
@@ -19,6 +20,7 @@ describe('LegendItemComponent', () => {
 
     fixture = TestBed.createComponent(LegendItemComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('legend', {} as Legend);
     fixture.detectChanges();
   });
 

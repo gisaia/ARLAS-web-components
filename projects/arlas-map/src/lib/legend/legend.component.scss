@@ -16,10 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@use "../../../assets/styles/sizes";
 
 .layer_name {
-  font-size: sizes.$default-font-size;
+  font-size: var(--arlas-sys-content-font-size);
+  &--visible{
+    color: var(--arlas-legend-layer-name-text-visible-color, var(--mat-sys-on-background));
+  }
+
+  &--invisible{
+    color: var(--arlas-legend-layer-name-text-invisible-color, var(--mat-sys-background));
+  }
 }
 
 .layer_wrapper {
@@ -50,16 +56,16 @@
   display: flex;
 }
 .detail_button, .download_button {
-  background-color: #fff;
-  height: 20px;
-  width: 20px;
+  background-color: var(--arlas-legend-detail-button-background, var(--mat-sys-background));
+  height: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
   cursor: pointer;
 }
 .detail_icon, .download_icon {
-  color: #555;
-  font-size: 16px;
-  width: 20px;
-  height: 20px;
+  color: var(--arlas-legend-icon-color, var(--mat-sys-on-background));
+  font-size: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
+  height: var(--arlas-sys-content-icon-size);
 
   display: flex;
   align-items: center;

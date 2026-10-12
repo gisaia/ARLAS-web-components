@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -51,10 +51,28 @@ export class CogModalComponent {
 
   public data: { visualisations: CogVisualisationData[]; loading: boolean; } = inject(MAT_DIALOG_DATA);
 
+  /** List of visualisations that the user can select */
+  public visualisations = signal<CogVisualisationData[]>([]);
+  /** List of visualisations that are matched by none of the selected items */
+  public unmatchedVisualisations = signal<CogVisualisationData[]>([]);
+
   protected readonly DEFAULT_IMAGE = './assets/no-view.png';
+
+  public constructor() {
+    this.splitVisualisations();
+  }
 
   public update(visualisations: CogVisualisationData[], loading: boolean) {
     this.data = { visualisations, loading };
+    this.splitVisualisations();
     this.cdr.detectChanges();
+  }
+
+  /**
+   * Split input visualisations between the matched and unmatched ones
+   */
+  private splitVisualisations() {
+    this.visualisations.set(this.data.visualisations.filter(v => v.match !== 'none'));
+    this.unmatchedVisualisations.set(this.data.visualisations.filter(v => v.match === 'none'));
   }
 }

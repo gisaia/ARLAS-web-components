@@ -17,9 +17,20 @@
  * under the License.
  */
 
-/** Font sizes **/
-$xxs-font-size: 9px;
-$xs-font-size: 10px;
-$sm-font-size: 12px;
-$default-font-size: 14px;
-$title-font-size: 18px;
+import { Component, input } from '@angular/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { TranslatePipe } from '@ngx-translate/core';
+import { Task } from '../../utils/aias-process';
+
+@Component({
+  selector: 'arlas-task-status',
+  imports: [
+    MatChipsModule,
+    TranslatePipe
+  ],
+  templateUrl: './task-status.component.html',
+  styleUrl: './task-status.component.scss',
+})
+export class TaskStatusComponent {
+  public task = input.required<Task>();
+}

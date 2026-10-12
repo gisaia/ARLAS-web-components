@@ -1,0 +1,106 @@
+/*
+ * Licensed to Gisaïa under one or more contributor
+ * license agreements. See the NOTICE.txt file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Gisaïa licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+@use '@angular/material' as mat;
+@use "../result-detailed-item/detail.scss" as detail;
+
+:host {
+    --arlas-resizable-th-border-color: white;
+}
+
+.dark-theme {
+    :host {
+        --arlas-resizable-th-border-color: var(--mat-sys-surface);
+    }
+}
+
+.tasks {
+    --mat-table-header-container-height: 32px;
+    --mat-table-row-item-container-height: 32px;
+
+    --mat-table-header-headline-size: var(--arlas-sys-content-font-size);
+    --mat-table-row-item-label-text-size: var(--arlas-sys-content-font-size);
+
+    &__title {
+        @include detail.title();
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__process {
+        @include detail.key();
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 5px;
+
+        mat-icon {
+            font-size: var(--arlas-sys-content-icon-size);
+            height: var(--arlas-sys-content-icon-size);
+            width: var(--arlas-sys-content-icon-size);
+        }
+    }
+
+    &__table {
+        &__process-icon {
+            // Center the icon in the row
+            height: var(--mat-table-row-item-container-height);
+            display: flex;
+            align-items: center;
+
+            font-size: var(--arlas-sys-content-icon-size);
+        }
+
+        // Avoid resizing when latest task has a short status
+        .mat-column-status {
+            min-width: 130px;
+        }
+
+        &__process {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            &__toggle {
+                @include mat.button-toggle-overrides((
+                    height: 24px,
+                    label-text-size: var(--arlas-sys-minor-font-size)
+                ));
+
+                ::ng-deep .mat-button-toggle-label-content {
+                    padding: 0 2px;
+                }
+
+                mat-icon {
+                    height: 20px;
+                    width: 20px;
+                    font-size: 20px;
+
+                    &.flipped {
+                        transform: scale(1, -1);
+                    }
+                }
+            }
+        }
+
+        .mdc-data-table__cell, .mdc-data-table__header-cell {
+            padding: 0 8px;
+        }
+    }
+}

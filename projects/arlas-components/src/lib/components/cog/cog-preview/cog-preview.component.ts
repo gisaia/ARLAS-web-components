@@ -17,15 +17,17 @@
  * under the License.
  */
 
-import { Component, input } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
+import { Component, input, signal } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ProtectImageDirective } from '../../../tools/protect-image.directive';
 
 @Component({
   selector: 'arlas-cog-preview',
   imports: [
-    TranslateModule,
-    ProtectImageDirective
+    TranslatePipe,
+    ProtectImageDirective,
+    MatProgressSpinner
   ],
   templateUrl: './cog-preview.component.html',
   styleUrl: './cog-preview.component.scss'
@@ -34,4 +36,6 @@ export class CogPreviewComponent {
   public title = input<string>();
   public description = input<string>();
   public preview = input<string>('assets/no-view.png');
+
+  protected isLoading = signal(false);
 }

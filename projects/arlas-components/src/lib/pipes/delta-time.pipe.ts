@@ -17,7 +17,23 @@
  * under the License.
  */
 
-.resultlist__header--filters /* @doc Sets filters container style.*/
-{
-  margin: 0
+import { Pipe, PipeTransform } from '@angular/core';
+import moment from 'moment';
+import momentDurationFormatSetup from 'moment-duration-format';
+
+momentDurationFormatSetup(moment);
+
+@Pipe({
+  name: 'deltaTime'
+})
+export class DeltaTimePipe implements PipeTransform {
+
+  public transform(deltaTime: number | undefined): string {
+    if (deltaTime === undefined) {
+      return '';
+    }
+
+    return moment.duration(deltaTime, 'milliseconds').format();
+  }
+
 }

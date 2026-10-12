@@ -18,7 +18,6 @@
  */
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
 
 // eslint-disable-next-line max-len
 export const DECIMAL_SEXAGESIMAL_REGEX = '^(?<decimal>[+-]?([0-9]*[.])?[0-9]+)$|^(?<degrees>(-?)[0-9]+)°[ ]*((?<minutes>[0-9]+)\'[ ]*((?<seconds>[0-9]+)\")?)?$';
@@ -26,9 +25,6 @@ export class PointFormGroup extends FormGroup {
 
     public latitude: FormControl;
     public longitude: FormControl;
-
-    public latitudeChanges$: Observable<any>;
-    public longitudesChanges$: Observable<any>;
 
     public constructor(initLat: number | string, initLng: number | string) {
         const coordinatesRegex = DECIMAL_SEXAGESIMAL_REGEX;
@@ -53,7 +49,7 @@ export class Coordinate {
   /** Parses a coordinate in decimal or sexagesimal degrees and returns the decimal degrees */
   public static parse(value: string) {
     const coordinatesRegex = DECIMAL_SEXAGESIMAL_REGEX;
-    const parsedCoordinates = (String(value)).match(coordinatesRegex) as any;
+    const parsedCoordinates = value.match(coordinatesRegex);
     if (parsedCoordinates && parsedCoordinates.groups) {
       const groups = parsedCoordinates.groups;
       if (groups.decimal) {
@@ -65,6 +61,8 @@ export class Coordinate {
         return this.dmsToDd(degrees, minutes, seconds);
       }
     }
+
+    throw new Error('Given value is not a coordinate');
   }
 
   /** DegreeMinutesSeconds to Decimal degree */

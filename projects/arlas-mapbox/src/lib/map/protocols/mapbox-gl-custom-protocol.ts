@@ -17,7 +17,9 @@
  * under the License.
  */
 
-const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming, transformRequestFunction) => new Promise((res, rej) => {
+const getReqObjectUrl = (loadFn: Function, rawUrl: string,
+  type: string, collectResourceTiming: number, transformRequestFunction: Function
+) => new Promise((res, rej) => {
   const requestParameters: any = {
     url: rawUrl,
     type: (type ==='vector' || type === 'raster') ? 'arrayBuffer' : 'string',
@@ -40,7 +42,7 @@ const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming, transformR
       }
     }
   }
-  const urlCallback = (error, data, cacheControl, expires) => {
+  const urlCallback = (error: any, data: any, cacheControl: any, expires: number) => {
     if (error) {
       rej(error);
     } else {
@@ -58,18 +60,18 @@ const getReqObjectUrl = (loadFn, rawUrl, type, collectResourceTiming, transformR
   loadFn(requestParameters, urlCallback);
 });
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const CustomProtocol = (mapLibrary) => {
+export const CustomProtocol = (mapLibrary: any) => {
   // Adds the protocol tools to the mapLibrary, doesn't overwrite them if they already exist
   const alreadySupported = mapLibrary.addProtocol !== undefined && mapLibrary._protocols === undefined;
   if (!alreadySupported) {
     mapLibrary._protocols = mapLibrary._protocols || new Map();
-    mapLibrary.addProtocol = mapLibrary.addProtocol || ((customProtocol, loadFn) => {
+    mapLibrary.addProtocol = mapLibrary.addProtocol || ((customProtocol: string, loadFn: Function) => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       let _a;
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions, no-unused-expressions
       (_a = mapLibrary._protocols) === null || _a === void 0 ? void 0 : _a.set(customProtocol, loadFn);
     });
-    mapLibrary.removeProtocol = mapLibrary.removeProtocol || ((customProtocol) => {
+    mapLibrary.removeProtocol = mapLibrary.removeProtocol || ((customProtocol: string) => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       let _a;
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions, no-unused-expressions
@@ -78,12 +80,11 @@ export const CustomProtocol = (mapLibrary) => {
   }
   return {
     'vector': class VectorCustomProtocolSourceSpecification extends mapLibrary.Style.getSourceType('vector') {
-      // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-      constructor() {
+      public constructor() {
         super(...arguments);
       }
-      // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-      loadTile(tile, callback) {
+
+      public loadTile(tile: any, callback: Function) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         let _a, _b;
         const rawUrl = tile.tileID.canonical.url(this.tiles, this.scheme);
@@ -91,13 +92,13 @@ export const CustomProtocol = (mapLibrary) => {
         if (!alreadySupported && ((_a = mapLibrary._protocols) === null || _a === void 0 ? void 0 : _a.has(protocol))) {
           const loadFn = (_b = mapLibrary._protocols) === null || _b === void 0 ? void 0 : _b.get(protocol);
           getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming,
-            this.map._requestManager._transformRequestFn.bind(this)).then((url: string) => {
+            this.map._requestManager._transformRequestFn.bind(this)).then(url => {
               tile.tileID.canonical.url = function () {
                 delete tile.tileID.canonical.url;
                 return url;
               };
               super.loadTile(tile, function () {
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(url as string);
                 callback(...arguments);
               });
             }).catch((e) => {
@@ -110,12 +111,11 @@ export const CustomProtocol = (mapLibrary) => {
       }
     },
     'raster': class RasterCustomProtocolSourceSpecification extends mapLibrary.Style.getSourceType('raster') {
-      // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-      constructor() {
+      public constructor() {
         super(...arguments);
       }
-      // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-      loadTile(tile, callback) {
+
+      public loadTile(tile: any, callback: Function) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         let _c, _d;
         const rawUrl = tile.tileID.canonical.url(this.tiles, this.scheme);
@@ -123,13 +123,13 @@ export const CustomProtocol = (mapLibrary) => {
         if (!alreadySupported && ((_c = mapLibrary._protocols) === null || _c === void 0 ? void 0 : _c.has(protocol))) {
           const loadFn = (_d = mapLibrary._protocols) === null || _d === void 0 ? void 0 : _d.get(protocol);
           getReqObjectUrl(loadFn, rawUrl, this.type, this._collectResourceTiming,
-            this.map._requestManager._transformRequestFn.bind(this)).then((url: string) => {
+            this.map._requestManager._transformRequestFn.bind(this)).then(url => {
               tile.tileID.canonical.url = function () {
                 delete tile.tileID.canonical.url;
                 return url;
               };
               super.loadTile(tile, function () {
-                URL.revokeObjectURL(url);
+                URL.revokeObjectURL(url as string);
                 callback(...arguments);
               });
             }).catch((e) => {
@@ -142,18 +142,17 @@ export const CustomProtocol = (mapLibrary) => {
       }
     },
     'geojson': class GeoJSONCustomProtocolSourceSpecification extends mapLibrary.Style.getSourceType('geojson') {
-      // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-      constructor() {
+      public constructor() {
         super(...arguments);
         this.type = 'geojson';
       }
-      // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-      _updateWorkerData(callback) {
+
+      public _updateWorkerData(callback: Function) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         let _a, _b;
         const that = this;
         const data = that._data;
-        const done = (url) => {
+        const done = (url: string | undefined) => {
           super._updateWorkerData(function () {
             if (url !== undefined) {
               URL.revokeObjectURL(url);
@@ -168,7 +167,7 @@ export const CustomProtocol = (mapLibrary) => {
             getReqObjectUrl(loadFn, data, this.type, this._collectResourceTiming,
               this.map._requestManager._transformRequestFn.bind(this)).then((url) => {
                 that._data = url;
-                done(url);
+                done(url as string);
               });
           } else {
             // Use the build in code

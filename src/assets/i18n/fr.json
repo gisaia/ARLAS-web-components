@@ -34,7 +34,7 @@
 	"Invalid geometry": "Géométrie invalide",
 	"Ok": "Ok",
 	"Link": "Lien",
-	"Filter on": "Filtre sur",
+	"Filter on": "Filtre sur {{column}}",
 	"Global actions": "Actions",
 	"Grid mode": "Vue grille",
 	"List mode": "Vue liste",

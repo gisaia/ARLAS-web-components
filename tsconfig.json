@@ -18,6 +18,12 @@
       "arlas-maplibre": [
         "./projects/arlas-maplibre/src/public-api.ts",
         "./dist/arlas-maplibre"
+      ],
+      "arlas-d3": [
+        "./node_modules/arlas-d3"
+      ],
+      "*": [
+        "./projects/arlas-map/src/lib/types/*"
       ]
     },
     "outDir": "./dist/out-tsc",
@@ -27,21 +33,18 @@
     "moduleResolution": "bundler",
     "target": "esnext",
     "module": "esnext",
-    "types": [
-      "mapbox-gl",
-      "geojson"
-    ],
     "resolveJsonModule": true,
     "lib": [
       "ESNext",
       "DOM",
       "DOM.Iterable"
     ],
-    "useDefineForClassFields": false
+    "useDefineForClassFields": false,
+    "strict": true
   },
   "exclude": [
     "node_modules",
-    "app"
+    "dist"
   ],
   "angularCompilerOptions": {
     "strictTemplates": true

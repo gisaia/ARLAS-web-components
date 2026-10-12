@@ -26,7 +26,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AbstractArlasMapService, ArlasMapFrameworkService, BasemapService, LegendService } from 'arlas-map';
 import { ArlasMaplibreService, ArlasMapService, MaplibreBasemapService, MaplibreLegendService } from 'arlas-maplibre';
-import { AwcCollectionService, AwcColorGeneratorLoader, BaseCollectionService, CollectionModule, ColorGeneratorLoader, ColorGeneratorModule } from 'arlas-web-components';
+import { AwcCollectionService, AwcColorGeneratorLoader, BaseCollectionService, CollectionModule, ColorGeneratorLoader, ColorGeneratorModule, TaskSettingsService } from 'arlas-web-components';
 import { AppComponent } from './app/app.component';
 import { CalendarTimelineDemoComponent } from './app/calendar-timeline-demo/calendar-timeline-demo.component';
 import { CogVisualisationComponent } from './app/cog-visualisation/cog-visualisation.component';
@@ -37,6 +37,7 @@ import { MapglDemoComponent } from './app/mapgl-demo/mapgl-demo.component';
 import { MetricsTableDemoComponent } from './app/metrics-table-demo/metrics-table-demo.component';
 import { PowerbarsDemoComponent } from './app/powerbars-demo/powerbars-demo.component';
 import { ResultsDemoComponent } from './app/results-demo/results-demo.component';
+import { AwcTaskSettingsService } from './app/results-demo/utils/task-settings.service';
 import { WmtsLayerManagerDemoComponent } from './app/wmts-layer-manager-demo/wmts-layer-manager-demo.component';
 import { environment } from './environments/environment';
 
@@ -95,6 +96,10 @@ bootstrapApplication(AppComponent, {
         {
             provide: LegendService,
             useClass: MaplibreLegendService
+        },
+        {
+            provide: TaskSettingsService,
+            useClass: AwcTaskSettingsService
         }
     ]
 });

@@ -17,30 +17,12 @@
  * under the License.
  */
 
+
 $img-proportion: 85%;
 
 .resultgrid {
   width: 100%;
   height: 100%;
-}
-
-.resultitem-grid__actions {
-  min-width: 0;
-  border-radius: 50%;
-  border: none;
-  width: 24px;
-  height: 24px;
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
-  font-size: 0;
-  margin: 1px 5px;
-  background-color: white;
-  background-image: url("data:image/svg+xml,%3Csvg%20width%3D%2720%27%20height%3D%2720%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%20%3Cg%3E%20%20%3Ctitle%3Ebackground%3C%2Ftitle%3E%20%20%3Crect%20fill%3D%27%23fff%27%20id%3D%27canvas_background%27%20height%3D%2722%27%20width%3D%2722%27%20y%3D%27-1%27%20x%3D%27-1%27%2F%3E%20%20%3Cg%20display%3D%27none%27%20overflow%3D%27visible%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%20id%3D%27canvasGrid%27%3E%20%20%20%3Crect%20fill%3D%27url(%23gridpattern)%27%20stroke-width%3D%270%27%20y%3D%270%27%20x%3D%270%27%20height%3D%27100%25%27%20width%3D%27100%25%27%2F%3E%20%20%3C%2Fg%3E%20%3C%2Fg%3E%20%3Cg%3E%20%20%3Ctitle%3ELayer%201%3C%2Ftitle%3E%20%20%3Cellipse%20stroke%3D%27%23000000%27%20ry%3D%275.779194%27%20rx%3D%275.5%27%20id%3D%27svg_1%27%20cy%3D%2710.000004%27%20cx%3D%2710%27%20stroke-width%3D%272.5%27%20fill%3D%27%23ffffff%27%2F%3E%20%3C%2Fg%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: center;
-}
-
-.resultitem-grid__actions:active {
-  border: 1px solid white;
 }
 
 .grid_actions {
@@ -66,29 +48,30 @@ $img-proportion: 85%;
   width: 100%;
   height: 100%;
   margin: 1px;
-  background-color: #fff;
+  background-color: var(--arlas-result-grid-tile-container-background, var(--mat-sys-background));
   position: relative;
-  color: #000;
+  color: var(--arlas-result-grid-tile-container-color, var(--mat-sys-on-background));
 }
 
 .resultgrid {
   .resultgrid--container {
-    .resultgrid__img {
-      &:hover {
-        .actions {
-          ::ng-deep .list_actions {
-              .not_activated {
-                display: block;
-              }
-            }
-
-        }
-      }
-      .actions {
+    arlas-result-thumbnail {
+      ::ng-deep.actions {
         position: absolute;
-        bottom: 15%;
-        right: 2px;
+        bottom: 5px;
+        right: 5px;
 
+        .list_actions {
+          padding-right: 0;
+          top: 4px !important;
+          right: 0;
+
+          .icon {
+            font-size: var(--arlas-sys-content-icon-size) !important;
+            height: calc(2 * 2px + var(--arlas-sys-content-icon-size));
+            width: calc(2 * 2px + var(--arlas-sys-content-icon-size));
+          }
+        }
       }
     }
   }
@@ -105,21 +88,7 @@ $img-proportion: 85%;
   opacity: 1;
 }
 
-.resultgrid__icon_check
-/* @doc Sets the checkbox icon style.*/
-  {
-  font-size: 15px;
-  width: 15px;
-  height: 15px;
-  color: white;
-  z-index: 5;
-  user-select: none;
-}
-
-.resultgrid__img
-
-/* @doc Sets the image style.*/
-  {
+arlas-result-thumbnail {
   box-sizing: border-box;
   display: flex;
   height: $img-proportion;
@@ -140,9 +109,9 @@ $img-proportion: 85%;
 .resultgrid__title-highlight-false,
 .resultgrid__title-highlight-true {
   height: calc(100% - $img-proportion);
-  color: #000;
+  color: var(--arlas-result-grid-tile-title-color, var(--mat-sys-on-background));
   font-family: "Roboto", "Helvetica Neue", sans-serif;
-  font-size: 12px;
+  font-size: var(--arlas-entry-font-size, var(--arlas-sys-content-font-size));
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -204,20 +173,6 @@ $img-proportion: 85%;
 
 .resultlist__md-grid-tile {
   margin-top: 5px;
-
-  &__selected--icon {
-    position: absolute;
-    z-index: 1;
-    top: 15px;
-    color: white;
-    background-color: transparent;
-    opacity: 50%;
-    font-size: 72px;
-    height: 72px !important;
-    width: 72px !important;
-    pointer-events: auto;
-    cursor: default;
-  }
 }
 
 .checkbox {

@@ -19,7 +19,7 @@
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 
 // Inspired by https://github.com/thegisdev/mapbox-gl-draw-rectangle-mode/tree/master
-export const rectangleMode: any = { };
+export const rectangleMode = { } as MapboxDraw.DrawCustomMode;
 
 rectangleMode.onSetup = function() {
     const rectangle = this.newFeature({
@@ -79,6 +79,7 @@ rectangleMode.onMouseMove = function(state, e) {
 };
 
 rectangleMode.toDisplayFeatures = function(state, geojson, display) {
+    geojson.properties ??= {};
     const isActivePolygon = geojson.properties.id === state.rectangle.id;
     geojson.properties.active = isActivePolygon ? 'true' : 'false';
     if (!isActivePolygon) {

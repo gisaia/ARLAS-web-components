@@ -18,8 +18,8 @@
     @if (filterOperator) {
       @if (filterOperator.display) {
         <div class="include_exclude">
-          <div class="operation" [class.operation--selected]="filterOperator?.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div> <!-- //NOSONAR -->
-          <div class="operation" [class.operation--selected]="filterOperator?.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div> <!-- //NOSONAR -->
+          <div class="operation" [class.operation--selected]="filterOperator.value === 'Eq'" (click)="setOperator('Eq')">{{'include' | translate}}</div> <!-- //NOSONAR -->
+          <div class="operation" [class.operation--selected]="filterOperator.value === 'Neq'" (click)="setOperator('Neq')">{{'exclude' | translate}}</div> <!-- //NOSONAR -->
         </div>
       } @else if (filterOperator.value === 'Neq') {
         <div class="include_exclude">
@@ -38,11 +38,12 @@
   <div class="powerbars--container" [class.powerbars--container__scrollable]="scrollable" [ngClass]="customizedCssClass">
     @if (groupSelections) {
       @if (selectedPowerbarsSet.size !== 0) {
-        <div [class.powerbar-selected-scrollable]="scrollable"
-          [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 131 : selectedPowerbarsSet.size * 26">
+        <div [class.powerbar-selected-scrollable]="scrollable" class="powerbars--container__group"
+          [style.min-height.px]="selectedPowerbarsSet.size > 5 ? 150 : selectedPowerbarsSet.size * 35">
           @for (selectedPowerbar of selectedPowerbarsSet; track selectedPowerbar) {
             <div>
               <arlas-powerbar
+                #powerbarComponent
                 [unit]="unit"
                 [powerbar]="selectedPowerbar"
                 [useColorFromData]="useColorFromData"
@@ -61,7 +62,7 @@
       }
     }
 
-    <div [class.powerbar-list-scrollable]="scrollable">
+    <div [class.powerbar-list-scrollable]="scrollable" class="powerbars--container__group">
       @for (powerbar of powerBarsList; track powerbar) {
         @if (powerbar.term !== '') {
           <arlas-powerbar

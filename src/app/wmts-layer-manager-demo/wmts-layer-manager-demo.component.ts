@@ -18,7 +18,7 @@
  */
 
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
@@ -31,15 +31,10 @@ import { WmtsLayerManagerComponent } from '../../../projects/arlas-components/sr
     imports: [MatFormField, MatLabel, MatSelect, MatOption, MatIconButton, MatIcon, AsyncPipe, JsonPipe, WmtsLayerManagerComponent]
 })
 export class WmtsLayerManagerDemoComponent implements OnInit {
-    @ViewChild('wmtsLayerManager', { static: false }) public wmtsLayerMangerComponent: WmtsLayerManagerComponent;
-
     public getCapaUrl = '/assets/getCap_1.xml';
     public metadata = new Map<string, string>();
-    public constructor() { }
 
-    public ngOnInit(
-
-    ) {
+    public ngOnInit() {
       this.metadata.set('Id', '65b4c9b2-9acc-4cb0-998d-a375df0830d2');
       this.metadata.set('Collection', 'Sentinel S5P');
       this.metadata.set('Date', new Date().toISOString());

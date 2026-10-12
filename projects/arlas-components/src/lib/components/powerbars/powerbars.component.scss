@@ -19,7 +19,9 @@
 
 .tools {
   position: relative;
-
+  .powerbars__title {
+    color: var(--mat-sys-on-background);
+  }
   .powerbars__title, .powerbars__search {
     // If the download button is display, reduce the width to leave space for the download button
     &--short {
@@ -41,7 +43,7 @@
         padding: unset;
       }
       ::ng-deep.mat-mdc-form-field-infix {
-        font-size: 14px;
+        font-size: var(--arlas-sys-content-font-size);
         min-height: unset;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
@@ -57,20 +59,20 @@
     align-items: baseline;
 
     .operation {
-      font-size: 12px;
-      color: #aaa;
+      font-size: var(--arlas-sys-minor-font-size);
+      color: var(--arlas-powerbars-operation-color, var(--mat-sys-on-background));
       border-radius: 3px;
       margin-right: 5px;
       cursor: pointer;
       padding-bottom: 5px;
 
       &--selected {
-        color: #555;
+        color: var(--arlas-powerbars-operation-selected-color, var(--mat-sys-on-background));
         font-weight: bold;
       }
     }
     .exclude {
-      color: #555;
+      color: var(--arlas-powerbars-operation-selected-color, var(--mat-sys-on-background));
       cursor: unset ;
     }
   }
@@ -83,7 +85,7 @@
 
     --mat-icon-button-state-layer-size: 24px;
     padding: 0;
-    color: dimgrey;
+    color: var(--arlas-powerbars-export-color, var(--mat-sys-on-background));
 
     ::ng-deep .mat-mdc-button-touch-target {
       height: 24px;
@@ -98,6 +100,12 @@
   overflow-x: hidden;
   padding-bottom: 8px;
 
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
   &__scrollable {
     display: flex;
     flex-direction: column;
@@ -105,9 +113,9 @@
   }
 
   .powerbar-selected-scrollable {
-    // One powerbar is 26px, and we want to have 5 at maximum
-    max-height: 131px;
-    border-bottom: 1px solid rgb(209, 209, 209);
+    // One powerbar is 30px, and we want to have 5 at maximum
+    max-height: 150px;
+    border-bottom: 1px solid var(--arlas-powerbars-scrollbar-separator-color, var(--mat-sys-on-background));
     overflow-y: auto;
     overflow-x: clip;
     padding-bottom: 2px;
@@ -124,14 +132,14 @@
 
 ::-webkit-scrollbar {
   width: 6px;
-  background-color: #f5f5f5;
+  background-color: var(--arlas-powerbars-scrollbar-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: #f5f5f5;
+  background-color: var(--arlas-powerbars-scrollbar-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #555;
+  background-color: var(--arlas-powerbars-scrollbar-thumb-background, var(--mat-sys-on-background));
 }

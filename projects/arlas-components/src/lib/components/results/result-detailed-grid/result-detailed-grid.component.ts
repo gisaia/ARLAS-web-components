@@ -17,29 +17,31 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
 import {
-    ChangeDetectorRef, Component,
-    ElementRef, input, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild
+  ChangeDetectorRef, Component, ElementRef, inject, input,
+  Input, linkedSignal, OnChanges, OnDestroy, output, Output, signal, SimpleChanges, viewChild, ViewChild
 } from '@angular/core';
-import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
+import { MatMiniFabButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatTooltip } from '@angular/material/tooltip';
 import { marker } from '@colsen1991/ngx-translate-extract-marker';
 import { TranslatePipe } from '@ngx-translate/core';
-import { FullScreenViewer, ImageViewer } from 'iv-viewer';
 import { Subject } from 'rxjs';
+import { FullScreenViewerService } from '../../../services/full-screen-viewer-service';
 import { Item } from '../model/item';
-import { ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ItemDetailToggleEvent, ResultDetailedItemComponent } from '../result-detailed-item/result-detailed-item.component';
+import { ResultQuicklookActionsComponent } from '../result-quicklook-actions/result-quicklook-actions.component';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Action, ElementIdentifier, PROTECTED_REQUEST_HEADER } from '../utils/results.utils';
+import { Action, ElementIdentifier } from '../utils/results.utils';
 
 @Component({
-    selector: 'arlas-result-detailed-grid',
-    templateUrl: './result-detailed-grid.component.html',
-    styleUrls: ['./result-detailed-grid.component.scss'],
-    imports: [MatProgressSpinner, MatIconButton, MatTooltip, MatIcon, MatMiniFabButton, ResultDetailedItemComponent, TranslatePipe]
+  selector: 'arlas-result-detailed-grid',
+  templateUrl: './result-detailed-grid.component.html',
+  styleUrls: ['./result-detailed-grid.component.scss'],
+  imports: [
+    MatProgressSpinner, MatTooltip, MatIcon, MatMiniFabButton, ResultDetailedItemComponent, TranslatePipe, ResultQuicklookActionsComponent
+  ]
 })
 export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   /**
@@ -51,40 +53,39 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
    */
   public VIEW_IMAGE = marker('View in full screen');
   /**
-   * @constant
+s   * @constant
    */
   public SHOW_IMAGE = marker('Show image');
   /**
    * @constant
    */
   public CLOSE_DETAILS = marker('Close details');
-  private fullScreenViewer = new FullScreenViewer();
 
   /**
    * @Input
    * @description An object representing an Item and that contains the detailed data.
    */
-  @Input() public gridTile: Item;
+  public gridTile = input.required<Item>();
   /**
    * @Input
    * @description Width of the detailed grid.
    */
-  @Input() public detailWidth: number;
+  public detailWidth = input.required<number>();
   /**
    * @Input
    * @description Height of the detailed grid.
    */
-  @Input() public detailHeight: number;
+  public detailHeight = input.required<number>();
   /**
    * @Input
    * @description Name of the id field.
    */
-  @Input() public idFieldName: string;
+  public idFieldName = input.required<string>();
   /**
    * @Input
    * @description Whether the detail is visible.
    */
-  @Input() public isDetailShowed: boolean;
+  @Input() public isDetailShowed = false;
   /**
    * @Input
    * @description Whether display group with no detail.
@@ -108,57 +109,56 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   * @description A detailed-data-retriever object that implements
   * DetailedDataRetriever interface.
   */
-  @Input() public detailedDataRetriever: DetailedDataRetriever;
+  public detailedDataRetriever = input.required<DetailedDataRetriever>();
 
   /**
    * @Input
    * @description Default img
    */
   public noViewImg = input<string>('assets/no-view.png');
+
   /**
    * @Output
    * @description Emits the event of applying the specified action on the specified item.
    */
 
-  @Output() public actionOnItemEvent: Subject<{ action: Action; elementidentifier: ElementIdentifier; }> =
-    new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
+  @Output() public actionOnItemEvent = new Subject<{ action: Action; elementidentifier: ElementIdentifier; }>();
   /**
  * @Output
  * @description Emits the event of closing details.
  */
   @Output() public closeDetail: Subject<boolean> = new Subject();
 
-  @ViewChild('image_detail', { static: false }) public imageViewer: ElementRef;
+  /**
+   * Emits an event every time the detail of an item is displayed/hidden.
+   * Transmits the event from the arlas-result-detailed-item component
+   */
+  public itemDetailToggleEvent = output<ItemDetailToggleEvent>();
 
+  @ViewChild('image_detail', { static: false }) public imageViewer?: ElementRef;
+
+  public quicklookActions = viewChild<ResultQuicklookActionsComponent>('quicklookActions');
 
   public isDetailedDataShowed = false;
 
   /**
    * @description The image source to display. Either is an url or the content of the image.
    */
-  public imgSrc: string | ArrayBuffer;
+  public imgSrc: string | undefined;
 
   /**
    * @description Whether the request for the image is being processed
    */
-  public isLoading = false;
+  public isLoading = signal(false);
 
   /**
-   * @description In the case of multiple images, indicates which one is selected
+   * @description In the case of multiple images, indicates which one is selected.
+   * Since the logic is handled by the ResultQuicklookActionsComponent, default value is the component's value
    */
-  public currentImageIndex = 0;
+  public currentImageIndex = linkedSignal(() => this.quicklookActions()?.currentImageIndex() ?? 0);
 
-  /**
-   * @description Whether the viewer is in full screen mode
-   */
-  public isFullScreen = false;
-
-  private viewer;
-
-  public constructor(
-    private changeDetectorRef: ChangeDetectorRef,
-    private http: HttpClient
-  ) { }
+  private readonly fullScreenService = inject(FullScreenViewerService);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
 
   public ngOnDestroy(): void {
     this.destroyViewer(true);
@@ -166,69 +166,41 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
 
   public ngOnChanges(changes: SimpleChanges) {
     if (changes['gridTile']) {
-      if (this.viewer) {
-        this.viewer = this.viewer.destroy();
-      }
-      this.isFullScreen = false;
-      this.currentImageIndex = 0;
+      this.fullScreenService.destroy();
+      this.currentImageIndex.set(0);
       this.getImage();
     }
   }
 
-  private getImage() {
+  /**
+   * Gets the content of the image to render in the html
+   * @param imgURL URL of the image to visualize
+   */
+  protected getImage(imgURL?: string) {
     this.imgSrc = undefined;
-    if (!this.gridTile || (this.gridTile && (!this.gridTile.urlImages || this.gridTile.urlImages.length === 0))) {
+    if (!this.gridTile().urlImages || this.gridTile().urlImages.length === 0) {
       return;
     }
+    imgURL ??= this.gridTile().urlImages[0];
 
-    if (this.useHttp) {
-      this.isLoading = true;
-      this.http.get(this.gridTile.urlImages[this.currentImageIndex], { headers: { [PROTECTED_REQUEST_HEADER]: 'true' }, responseType: 'blob' })
-        .subscribe({
-          next: (image: Blob) => {
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-              this.imgSrc = reader.result;
-              this.gridTile.imageEnabled = true;
-              this.isLoading = false;
-              this.resetViewer();
-            }, false);
-            if (image) {
-              reader.readAsDataURL(image);
-            }
-          }, error: (err) => {
-            console.error(err);
-            this.isLoading = false;
-          }
-        });
-    } else {
-      this.imgSrc = this.gridTile.urlImages[this.currentImageIndex];
-      this.gridTile.imageEnabled = true;
-      this.resetViewer();
-    }
-  }
+    this.isLoading.set(true);
 
-  private resetViewer() {
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
-    setTimeout(() => {
-      if (this.isFullScreen) {
-        this.fullScreenViewer.show(this.imgSrc);
-      } else {
-        if (!!this.imageViewer && !this.viewer) {
-          this.viewer = new ImageViewer(this.imageViewer.nativeElement);
+    // getImageSrc$ catches any observable error by returning of(undefined)
+    this.fullScreenService.getImageSrc$(imgURL, this.useHttp)
+      .subscribe(imgSrc => {
+        this.isLoading.set(false);
+
+        if (imgSrc) {
+          this.imgSrc = imgSrc;
+          this.gridTile().imageEnabled = true;
+          this.fullScreenService.updateViewer(this.imgSrc);
         }
-      }
-    }, 0);
+      });
   }
 
   public destroyViewer(isComponentDestroy?: boolean): void {
-    if (this.viewer) {
-      this.viewer = this.viewer.destroy();
-    }
-    if (isComponentDestroy && this.fullScreenViewer) {
-      this.fullScreenViewer.destroy();
+    if (isComponentDestroy && this.fullScreenService.hasViewer()) {
+      this.fullScreenService.destroy();
     }
     // Add a delay to allow for the viewer to be destroyed properly
     // before removing it due to visibility rules in the template
@@ -240,7 +212,7 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
   public showHideDetailedData() {
     this.isDetailedDataShowed = !this.isDetailedDataShowed;
     this.changeDetectorRef.detectChanges();
-    this.resetViewer();
+    this.fullScreenService.updateViewer(this.imgSrc as string);
   }
 
   public closeDetailedData() {
@@ -248,55 +220,17 @@ export class ResultDetailedGridComponent implements OnChanges, OnDestroy {
     this.closeDetail.next(true);
   }
 
-  // Emits the action on this ResultDetailedItem to the parent (ResultList)
+  /**
+   * Emits the action on this ResultDetailedItem to the parent (ResultList)
+   */
   public triggerActionOnItem(actionOnItem: { action: Action; elementidentifier: ElementIdentifier; }): void {
     this.actionOnItemEvent.next(actionOnItem);
   }
 
   public showOverlay() {
-    this.isFullScreen = true;
-    this.resetViewer();
-
-    let viewerContainer: HTMLElement | undefined;
-    const fullScreenContainer = document.querySelector('.iv-fullscreen-container');
-
-    const actionsInfos = document.getElementsByClassName('viewer_actions-infos');
-    if (!!actionsInfos && !!actionsInfos[0]) {
-      viewerContainer = actionsInfos[0].parentElement;
-      const elements = actionsInfos.length;
-      for (let i = 0; i < elements; i++) {
-        // The element is removed from the list once retrieved
-        fullScreenContainer.appendChild(actionsInfos.item(0));
-      }
-    }
-
-    document.querySelector('.iv-fullscreen-close').addEventListener('click', () => {
-      this.isFullScreen = false;
-      if (viewerContainer) {
-        const actionsInfosFullScreen = fullScreenContainer.getElementsByClassName('viewer_actions-infos');
-        const elements = actionsInfosFullScreen.length;
-        for (let i = 0; i < elements; i++) {
-          // The element is removed from the list once retrieved
-          viewerContainer.appendChild(actionsInfosFullScreen.item(0));
-        }
-      }
-      this.resetViewer();
-    });
-  }
-
-  public onPrevious() {
-    this.currentImageIndex -= 1;
-    if (this.currentImageIndex < 0) {
-      this.currentImageIndex = this.gridTile.urlImages.length - 1;
-    }
-    this.getImage();
-  }
-
-  public onNext() {
-    this.currentImageIndex += 1;
-    if (this.currentImageIndex >= this.gridTile.urlImages.length) {
-      this.currentImageIndex = 0;
-    }
-    this.getImage();
+    this.fullScreenService
+      .initOverlay(this.gridTile(), this.imgSrc as string, this.useHttp, this.noViewImg(), this.currentImageIndex())
+      ?.destroyElementOnClose()
+      .subscribe();
   }
 }

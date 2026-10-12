@@ -18,20 +18,18 @@
  */
 
 .legend {
-    --arlas-cog-legend-border-radius: 4px;
-    --arlas-cog-legend-border-color: #a1a1a1;
-
     display: flex;
     height: fit-content;
     width: fit-content;
-    border-radius: var(--arlas-cog-legend-border-radius);
+    border-radius: var(--arlas-cog-legend-border-radius, 4px);
 
     &__name {
         display: flex;
         align-items: center;
-        border: 1px solid var(--arlas-cog-legend-border-color);
-        border-radius: var(--arlas-cog-legend-border-radius) 0 0 var(--arlas-cog-legend-border-radius);
+        border: 1px solid var(--arlas-cog-legend-border-color, var(--mat-sys-on-background));
+        border-radius: var(--arlas-cog-legend-border-radius, 4px) 0 0 var(--arlas-cog-legend-border-radius, 4px);
         padding: 0 5px;
+        color: var(--mat-sys-on-background);
     }
 
     &__detail {
@@ -42,18 +40,18 @@
         width: fit-content;
         white-space: nowrap;
 
-        border: 1px solid var(--arlas-cog-legend-border-color);
-        border-radius: 0 var(--arlas-cog-legend-border-radius) var(--arlas-cog-legend-border-radius) 0;
+        border: 1px solid var(--arlas-cog-legend-border-color, var(--mat-sys-on-background));
+        border-radius: 0 var(--arlas-cog-legend-border-radius, 4px) var(--arlas-cog-legend-border-radius, 4px) 0;
         border-left: 0;
         padding: 0 5px;
-
+        color: var(--mat-sys-on-background);
         &__min,
         &__max {
-            font-size: 14px;
+            font-size: var(--arlas-sys-content-font-size);
         }
         &__color-ramp {
             height: 15px;
-            border-radius: var(--arlas-cog-legend-border-radius);
+            border-radius: var(--arlas-cog-legend-border-radius, 4px);
         }
     }
 }

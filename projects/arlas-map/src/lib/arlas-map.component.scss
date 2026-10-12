@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-@use "../../assets/styles/sizes";
+
+.dark-theme {
+  .map__legend-button:hover {
+    background-color: rgba(255, 255, 255, 0.5) !important;
+  }
+  --arlas-map-drag-icon-color: var(--mat-sys-on-background); /* was #999 */
+  --arlas-map-drag-icon-hover-color: var(--mat-sys-on-background); /* was #444 */
+}
 
 .map__container {
   width: 100%;
@@ -35,11 +42,19 @@
   flex-wrap: wrap-reverse;
 }
 
+.map__legend-wrapper {
+  background-color: var(--arlas-map-legend-button-background, var(--mat-sys-surface));
+  width: var(--arlas-map-legend-actions-width, 29px);
+  height: var(--arlas-map-legend-actions-width, 29px);
+  border-radius: 4px;
+  box-shadow: none;
+  padding: 0;
+}
+
 .map__legend-button {
   cursor: pointer;
   margin-bottom: 4px;
   border-radius: 3px;
-  background-color: white;
   width: 30px;
   height: 30px;
   padding: 3px;
@@ -50,7 +65,7 @@
 }
 
 .map__visu-list--container /* @doc Sets the style of layers switcher container*/ {
-  padding: 1px 1px 3px 1px;
+  padding: 1px 1px 0 1px;
   border-radius: 2px;
   max-height: calc(100vh - 415px);
   overflow-y: auto;
@@ -58,12 +73,12 @@
 }
 
 .map__visu-item {
-  margin: 1px;
+  margin: 1px 1px 0;
   padding: unset;
   padding-right: 3px;
   width: 225px;
   border: 0.8px solid #ddd;
-  background: white;
+  background: var(--arlas-map-item-visualisation-background, var(--mat-sys-background));
   border-radius: 3px;
 }
 
@@ -72,7 +87,7 @@
   justify-content: space-between;
   padding: 1px 5px 1px 0px;
   font-weight: 550;
-  font-size: sizes.$default-font-size;
+  font-size: var(--arlas-sys-content-font-size);
   cursor: grab;
 
   &:hover .map__visu-toggle .map__visu-drag {
@@ -98,18 +113,17 @@
   }
 
   &-text {
-    color: #333;
+    color: var(--arlas-map-text, var(--mat-sys-on-background));
     padding: 3px;
     padding-left: 3px;
 
     &--disabled {
-      color: #bbb;
+      color: var(--arlas-map-disabled-text, var(--mat-sys-on-background));
     }
   }
 }
 
 .map__visu-content {
-  max-height: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 
@@ -119,7 +133,7 @@
 }
 
 .map__visu-layer {
-  background-color: #fff;
+  background-color: var(--arlas-map-layer-background, var(--mat-sys-background));
   position: relative;
   overflow: hidden;
 
@@ -128,13 +142,13 @@
     top: 5px;
     left: 0;
     display: flex;
-    padding-left: 3px;
+    margin-left: 3px;
 
     mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-      color: #999;
+      font-size: var(--arlas-sys-content-icon-size);
+      width: var(--arlas-sys-content-icon-size);
+      height: var(--arlas-sys-content-icon-size);
+      color: var(--arlas-map-drag-icon-color, #999);
     }
   }
 
@@ -144,7 +158,7 @@
       z-index: 2;
 
       mat-icon{
-        color: #444;
+        color: var(--arlas-map-drag-icon-hover-color, #444);
       }
     }
   }
@@ -158,8 +172,8 @@
   display: block;
   position: fixed;
   overflow: hidden;
-  font-size: 0.8em;
-  background-color: #fff;
+  font-size: var(--arlas-sys-content-font-size);
+  background-color: var(--arlas-map-tooltip-background, var(--mat-sys-background));
   border-radius: 2px;
   padding: 2px;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -184,13 +198,12 @@
 
 .cdk-drag-preview {
   box-sizing: border-box;
-  font-size: 0.75em;
   border-radius: 3px;
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
     0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 
   .map__visu-layer .map__visu-layer-drag  mat-icon{
-    color: #444;
+    color: var(--arlas-map-drag-icon-hover-color, #444);
   }
 }
 

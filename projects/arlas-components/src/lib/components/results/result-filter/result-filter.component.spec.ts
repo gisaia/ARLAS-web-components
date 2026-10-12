@@ -20,6 +20,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { Column } from '../model/column';
 import { ResultFilterComponent } from './result-filter.component';
 
 describe('ResultFilterComponent', () => {
@@ -35,6 +36,7 @@ describe('ResultFilterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultFilterComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('column', new Column('', '', ''));
     fixture.detectChanges();
   });
 

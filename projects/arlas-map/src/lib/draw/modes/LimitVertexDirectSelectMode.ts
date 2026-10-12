@@ -35,7 +35,8 @@ limitVertexDirectSelectMode.fireInitialFeature = function (feature) {
   });
 };
 
-limitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson, push) {
+limitVertexDirectSelectMode.toDisplayFeatures = function (state, geojson: GeoJSON.Feature<GeoJSON.Polygon>, push) {
+  geojson.properties ??= {};
   if (state.featureId === geojson.properties.id) {
     geojson.properties.active = MapboxDraw.constants.activeStates.ACTIVE;
     push(geojson);

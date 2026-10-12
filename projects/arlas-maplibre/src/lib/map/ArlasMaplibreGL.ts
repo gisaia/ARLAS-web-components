@@ -23,6 +23,7 @@ import {
 } from 'arlas-map';
 import {
   AllPaintProperties, AttributionControl, ControlPosition, Expression, FitBoundsOptions, GlobeControl, IControl,
+  LayerSpecification,
   LngLat, LngLatBounds, LngLatBoundsLike, MapEventType, MapGeoJSONFeature, Map as MaplibreMap, MapOptions,
   NavigationControl, Point, PointLike, QueryRenderedFeaturesOptions, ScaleControl, setWorkerUrl, StyleSetterOptions
 } from 'maplibre-gl';
@@ -48,9 +49,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   protected _mapProvider!: MaplibreMap;
-  public endLngLat: LngLat;
-  public moveLngLat: LngLat;
-  public startLngLat: LngLat;
+  public endLngLat?: LngLat;
+  public moveLngLat?: LngLat;
+  public startLngLat?: LngLat;
 
   public constructor(protected config: ArlasMaplibreConfig) {
     super(config);
@@ -136,9 +137,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     const visibleLayers = new Set<string>();
     visualisationsSets.status.forEach((b, vs) => {
       if (b) {
-        visualisationsSets.visualisations.get(vs).forEach(l => {
+        visualisationsSets.visualisations.get(vs)?.forEach(l => {
           const layer = this._mapProvider.getLayer(l);
-          if (layer.minzoom <= this.zoom && this.zoom <= layer.maxzoom) {
+          if (layer?.minzoom !== undefined && layer.minzoom <= this.zoom && layer.maxzoom !== undefined && this.zoom <= layer.maxzoom) {
             visibleLayers.add(l);
           }
         });
@@ -240,15 +241,15 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     );
   }
 
-  public addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?) => void; });
+  public addControl(control: IControl, position?: ControlPosition, eventOverride?: { event: string; fn: (e?: any) => void; }): this;
   public addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
   public addControl(control: IControl, position?: ControlPosition | 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left', eventOverride?: {
     event: string;
-    fn: (e?) => void;
+    fn: (e?: any) => void;
   }) {
     this.getMapProvider().addControl(control, position);
     if (control instanceof ControlButton && eventOverride) {
-      control.btn[eventOverride.event] = () => eventOverride.fn();
+      (control.btn as any)[eventOverride.event] = () => eventOverride.fn();
     }
     return this;
   }
@@ -277,11 +278,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
     return this.getMapProvider().getBounds();
   }
 
-  public getEastBounds(): any {
+  public getEastBounds(): number {
     return this.getBounds().getEast();
   }
 
-  public getLayers(): any {
+  public getLayers(): LayerSpecification[] {
     return this.getMapProvider().getStyle().layers;
   }
 
@@ -402,5 +403,9 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
 
   public layerTypeToPaintKeyword(layerType: string): string {
     return layerType === 'symbol' ? 'text' : layerType;
+  }
+
+  public getLayersOrder() {
+    return this.getMapProvider().getLayersOrder();
   }
 }

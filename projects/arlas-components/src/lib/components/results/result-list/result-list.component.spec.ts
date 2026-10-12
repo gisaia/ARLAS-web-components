@@ -33,10 +33,12 @@ import {
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ColorGeneratorModule } from '../../../services/color.generator.module';
 import { ArlasColorService } from '../../../services/color.generator.service';
+import { mockDetailedDataRetriever } from '../../../test/mock';
 import {
   AwcColorGeneratorLoader,
   ColorGeneratorLoader,
 } from '../../componentsUtils';
+import { FieldsConfiguration } from '../utils/results.utils';
 import { ResultListComponent } from './result-list.component';
 
 describe('ResultListComponent', () => {
@@ -71,6 +73,8 @@ describe('ResultListComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultListComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('fieldsConfiguration', { idFieldName: '' } as FieldsConfiguration);
+    fixture.componentRef.setInput('detailedDataRetriever', mockDetailedDataRetriever);
     fixture.detectChanges();
   });
 

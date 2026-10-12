@@ -19,10 +19,8 @@
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
-import { of } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Item } from '../model/item';
-import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
+import { mockDetailedDataRetriever, mockRowItem } from '../../../test/mock';
 import { ResultDetailedItemComponent } from './result-detailed-item.component';
 
 describe('ResultDetailedItemComponent', () => {
@@ -41,11 +39,10 @@ describe('ResultDetailedItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(ResultDetailedItemComponent);
     component = fixture.componentInstance;
-    fixture.componentRef.setInput('rowItem', new Item([], new Map()));
-    fixture.componentRef.setInput('detailedDataRetriever', {
-      detailsConfig: [],
-      getActions: (i: Item) => of([])
-    } as DetailedDataRetriever);
+    fixture.componentRef.setInput('rowItem', mockRowItem);
+    fixture.componentRef.setInput('detailedDataRetriever', mockDetailedDataRetriever);
+    fixture.componentRef.setInput('containerType', 'list');
+    fixture.componentRef.setInput('detailColspan', 0);
     fixture.detectChanges();
   });
 

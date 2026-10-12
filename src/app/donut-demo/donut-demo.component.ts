@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { TreeNode } from 'arlas-d3';
 import { DonutComponent } from 'arlas-web-components';
 
 @Component({
@@ -26,35 +27,40 @@ import { DonutComponent } from 'arlas-web-components';
     styleUrls: ['./donut-demo.component.css'],
     imports: [DonutComponent]
 })
-export class DonutDemoComponent implements OnInit {
+export class DonutDemoComponent {
 
-  public donutData = null;
-  public selectedNodes;
+  public donutData: TreeNode;
 
-  public constructor() { }
-
-  public ngOnInit() {
+  public constructor() {
     this.donutData = {
       fieldValue: 'root',
       fieldName: 'root',
       size: 400,
+      id: 'root',
+      isOther: false,
       children : [
         {
-          fieldValue: 'sentinelle',
+          fieldValue: 'sentinel',
           fieldName: 'satellites',
           size: 230,
           children : [
             {
-              fieldValue: 'sentinelle1',
+              fieldValue: 'sentinel1',
               fieldName: 'mission',
-              size: 100
+              size: 100,
+              id: 'sentinel1',
+              isOther: false
             },
             {
-              fieldValue: 'sentinelle2',
+              fieldValue: 'sentinel2',
               fieldName: 'mission',
-              size: 130
+              size: 130,
+              id: 'sentinel2',
+              isOther: false
             }
-          ]
+          ],
+          id: 'sentinel',
+          isOther: false
         },
         {
           fieldValue: 'SPOT',
@@ -64,7 +70,9 @@ export class DonutDemoComponent implements OnInit {
             {
               fieldValue: 'SPOT5',
               fieldName: 'mission',
-              size: 30
+              size: 30,
+              id: 'SPOT5',
+              isOther: false
             },
             {
               fieldValue: 'SPOT6',
@@ -74,14 +82,20 @@ export class DonutDemoComponent implements OnInit {
                 {
                   fieldValue: 'FR1',
                   fieldName: 'emetteur',
-                  size: 10
+                  size: 10,
+                  id: 'FR1',
+                  isOther: false
                 },
                 {
                   fieldValue: 'FR2',
                   fieldName: 'emetteur',
-                  size: 130
+                  size: 130,
+                  id: 'FR2',
+                  isOther: false
                 }
-              ]
+              ],
+              id: 'SPOT6',
+              isOther: false
             },
             {
               fieldValue: 'SPOT7',
@@ -91,107 +105,112 @@ export class DonutDemoComponent implements OnInit {
                 {
                   fieldValue: 'FR1',
                   fieldName: 'emetteur',
-                  size: 20
+                  size: 20,
+                  id: 'FR1',
+                  isOther: false
                 },
                 {
                   fieldValue: 'FR2',
                   fieldName: 'emetteur',
-                  size: 110
+                  size: 110,
+                  id: 'FR2',
+                  isOther: false
                 },
                 {
                   fieldValue: 'FR3',
                   fieldName: 'emetteur',
-                  size: 110
+                  size: 110,
+                  id: 'FR3',
+                  isOther: false
                 }
-              ]
+              ],
+              id: 'SPOT7',
+              isOther: false
             }
-          ]
+          ],
+          id: 'SPOT',
+          isOther: false
         }
-
       ]
     };
 
-    setTimeout(() => {
-      // this.selectedNodes = [[{fieldName: 'mission', fieldValue: 'SPOT5'}, {fieldName: 'satellites', fieldValue: 'SPOT'}]];
-      this.donutData = {
-        fieldName: 'root',
-        fieldValue: 'root',
-        size: 530,
-        children : [
-          {
-            fieldValue: 'sentinelle',
-            fieldName: 'satellites',
-            size: 230,
-            children : [
-              {
-                fieldValue: 'sentinelle1',
-                fieldName: 'mission',
-                size: 100
-              },
-              {
-                fieldValue: 'sentinelle2',
-                fieldName: 'mission',
-                size: 130
-              }
-            ]
-          },
-          {
-            fieldValue: 'SPOT',
-            size: 300,
-            fieldName: 'satellites',
-            children : [
-              {
-                fieldValue: 'SPOT5',
-                fieldName: 'mission',
-                size: 30
-              },
-              {
-                fieldValue: 'SPOT6',
-                size: 140,
-                fieldName: 'mission',
-                children : [
-                  {
-                    fieldValue: 'FR1',
-                    fieldName: 'emetteur',
-                    size: 10
-                  },
-                  {
-                    fieldValue: 'FR2',
-                    fieldName: 'emetteur',
-                    size: 130
-                  }
-                ]
-              },
-              {
-                fieldValue: 'SPOT7',
-                size: 130,
-                fieldName: 'mission',
-                children : [
-                  {
-                    fieldValue: 'FR1',
-                    fieldName: 'emetteur',
-                    size: 20
-                  },
-                  {
-                    fieldValue: 'FR2',
-                    fieldName: 'emetteur',
-                    size: 50
-                  },
-                  {
-                    fieldValue: 'FR3',
-                    fieldName: 'emetteur',
-                    size: 60
-                  }
-                ]
-              }
-            ]
-          }
+    // setTimeout(() => {
+    //   this.donutData = {
+    //     fieldName: 'root',
+    //     fieldValue: 'root',
+    //     size: 530,
+    //     children : [
+    //       {
+    //         fieldValue: 'sentinelle',
+    //         fieldName: 'satellites',
+    //         size: 230,
+    //         children : [
+    //           {
+    //             fieldValue: 'sentinelle1',
+    //             fieldName: 'mission',
+    //             size: 100
+    //           },
+    //           {
+    //             fieldValue: 'sentinelle2',
+    //             fieldName: 'mission',
+    //             size: 130
+    //           }
+    //         ]
+    //       },
+    //       {
+    //         fieldValue: 'SPOT',
+    //         size: 300,
+    //         fieldName: 'satellites',
+    //         children : [
+    //           {
+    //             fieldValue: 'SPOT5',
+    //             fieldName: 'mission',
+    //             size: 30
+    //           },
+    //           {
+    //             fieldValue: 'SPOT6',
+    //             size: 140,
+    //             fieldName: 'mission',
+    //             children : [
+    //               {
+    //                 fieldValue: 'FR1',
+    //                 fieldName: 'emetteur',
+    //                 size: 10
+    //               },
+    //               {
+    //                 fieldValue: 'FR2',
+    //                 fieldName: 'emetteur',
+    //                 size: 130
+    //               }
+    //             ]
+    //           },
+    //           {
+    //             fieldValue: 'SPOT7',
+    //             size: 130,
+    //             fieldName: 'mission',
+    //             children : [
+    //               {
+    //                 fieldValue: 'FR1',
+    //                 fieldName: 'emetteur',
+    //                 size: 20
+    //               },
+    //               {
+    //                 fieldValue: 'FR2',
+    //                 fieldName: 'emetteur',
+    //                 size: 50
+    //               },
+    //               {
+    //                 fieldValue: 'FR3',
+    //                 fieldName: 'emetteur',
+    //                 size: 60
+    //               }
+    //             ]
+    //           }
+    //         ]
+    //       }
 
-        ]
-      };
-    }, 3000);
-
-
+    //     ]
+    //   };
+    // }, 3000);
   }
-
 }

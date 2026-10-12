@@ -18,7 +18,7 @@
  */
 import { ARLAS_ID, EXTRUSION_LAYER_PREFIX, FILLSTROKE_LAYER_PREFIX } from './model/layers';
 
-export function latLngToWKT(features): string {
+export function latLngToWKT(features: GeoJSON.Feature<GeoJSON.Polygon>[]): string {
   let wktType = 'POLYGON[###]';
   if (features.length > 1) {
     wktType = 'MULTIPOLYGON([###])';
@@ -27,7 +27,7 @@ export function latLngToWKT(features): string {
   let polygons = '';
   features.forEach((feat, indexFeature) => {
     if (feat) {
-      const currentFeat: Array<any> = feat.geometry.coordinates;
+      const currentFeat = feat.geometry.coordinates;
       polygons += (indexFeature === 0 ? '' : ',') + '((';
       currentFeat[0].forEach((coord, index) => {
         polygons += (index === 0 ? '' : ',') + coord[0] + ' ' + coord[1];

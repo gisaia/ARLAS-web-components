@@ -35,7 +35,7 @@
 </div>
 
 <ng-template #select let-form="form" let-name="name">
-  <mat-form-field>
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
     <mat-label>{{ name | translate }}</mat-label>
     <mat-select [formControl]="form">
       @for (option of form.syncOptions; track option) {

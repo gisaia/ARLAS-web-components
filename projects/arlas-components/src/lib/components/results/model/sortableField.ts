@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-/** Font sizes **/
-$xxs-font-size: 9px;
-$xs-font-size: 10px;
-$sm-font-size: 12px;
-$default-font-size: 14px;
-$title-font-size: 18px;
+export interface SortableField {
+  fieldName: string;
+  columnName: string;
+  sort?: string;
+  isIdField: boolean;
+  isToggleField: boolean;
+}

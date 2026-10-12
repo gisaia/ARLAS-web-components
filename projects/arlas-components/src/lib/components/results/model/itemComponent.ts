@@ -17,19 +17,22 @@
  * under the License.
  */
 
-import { Observable } from 'rxjs';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { first, interval } from 'rxjs';
 import { Item } from '../model/item';
+import { DEFAULT_TASK_RETRIEVAL_INTERVAL, TaskSettingsService, TaskStatus } from '../utils/aias-process';
 import { DetailedDataRetriever } from '../utils/detailed-data-retriever';
-import { Action, AdditionalInfo, Attachment } from '../utils/results.utils';
+import { Action, Attachment } from '../utils/results.utils';
 
+@Component({
+  template: ''
+})
 export class ItemComponent {
+  private readonly taskSettingsService = inject(TaskSettingsService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  /**
-   * @description Emits the retrieved detailed data.
-   */
-  protected retrievedDataEvent: Observable<AdditionalInfo>;
-
-  public setSelectedItem(isChecked: Boolean, identifier: string, selectedItems: Set<string>) {
+  public setSelectedItem(isChecked: boolean, identifier: string, selectedItems: Set<string>) {
     isChecked = !isChecked;
     if (isChecked) {
       if (!selectedItems.has(identifier)) {
@@ -43,41 +46,87 @@ export class ItemComponent {
   }
 
   public retrieveAdditionalInfo(detailedDataRetriever: DetailedDataRetriever, item: Item) {
-    if (detailedDataRetriever !== null && item.itemDetailedData.length === 0) {
-      this.retrievedDataEvent = detailedDataRetriever.getData(((String)(item.identifier)));
-      this.retrievedDataEvent.subscribe(additionalInfo => {
-        item.actions = new Array<Action>();
-        additionalInfo.actions.forEach(action => {
-          item.actions.push({
-            id: action.id,
-            label: action.label,
-            actionBus: action.actionBus,
-            cssClass: action.cssClass,
-            tooltip: action.tooltip,
-            reverseAction: action.reverseAction,
-            icon: action.icon,
-            fields: action.fields,
-            show: action.show
-          });
-        });
-        additionalInfo.details.forEach((v, k) => {
-          const details: Array<{ key: string; value: string; }> = new Array<{ key: string; value: string; }>();
-          v.forEach((value, key) => details.push({ key: key, value: value }));
-          item.itemDetailedData.push({ group: k, details: details });
-        });
-        if (additionalInfo.attachments) {
-          item.attachments = new Array<Attachment>();
-          additionalInfo.attachments.forEach(attachment => {
-            item.attachments.push({
-              label: attachment.label,
-              url: attachment.url,
-              type: attachment.type,
-              description: attachment.description,
-              icon: attachment.icon
+    if (detailedDataRetriever && item.itemDetailedData.length === 0) {
+      detailedDataRetriever.getData(item.identifier)
+        .subscribe(additionalInfo => {
+          item.actions = new Array<Action>();
+          additionalInfo.actions?.forEach(action => {
+            item.actions.push({
+              id: action.id,
+              label: action.label,
+              actionBus: action.actionBus,
+              cssClass: action.cssClass,
+              tooltip: action.tooltip,
+              reverseAction: action.reverseAction,
+              icon: action.icon,
+              fields: action.fields,
+              show: action.show
             });
           });
-        }
+          additionalInfo.details?.forEach((v, k) => {
+            const details: Array<{ key: string; value: string; }> = new Array<{ key: string; value: string; }>();
+            v.forEach((value, key) => details.push({ key: key, value: value }));
+            item.itemDetailedData.push({ group: k, details: details });
+          });
+          if (additionalInfo.attachments) {
+            item.attachments = new Array<Attachment>();
+            additionalInfo.attachments.forEach(attachment => {
+              item.attachments.push({
+                label: attachment.label,
+                url: attachment.url,
+                type: attachment.type,
+                description: attachment.description,
+                icon: attachment.icon
+              });
+            });
+          }
+        });
+    }
+
+    this.retrieveTasks(detailedDataRetriever, item);
+  }
+
+  /**
+   * Retrieves the AIAS tasks linked to this item's id
+   * @param detailedDataRetriever
+   * @param item
+   */
+  public retrieveTasks(detailedDataRetriever: DetailedDataRetriever, item: Item) {
+    if (detailedDataRetriever) {
+      item.tasks = new Map();
+      const taskMap$ = detailedDataRetriever.getAllTasks(item.identifier);
+      taskMap$.forEach((t$, service) => {
+        t$.pipe(first()).subscribe(tasks => {
+          item.tasks.set(service, tasks);
+          this.checkTaskCompletion(detailedDataRetriever, item, service);
+        });
       });
+    }
+  }
+
+  /**
+   * If one of the tasks of the service is not complete, then periodically checks until all of them are complete
+   * @param detailedDataRetriever
+   * @param item
+   * @param service
+   */
+  private checkTaskCompletion(detailedDataRetriever: DetailedDataRetriever, item: Item, service: string) {
+    const serviceTasks = item.tasks.get(service) ?? [];
+    if (serviceTasks.some(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running)) {
+      const obs$ = interval(this.taskSettingsService.getServiceTaskSettings(service)?.taskRetrievalTimer ?? DEFAULT_TASK_RETRIEVAL_INTERVAL)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(_ => {
+          detailedDataRetriever.getServiceTasks(item.identifier, service)
+            .pipe(first())
+            .subscribe(tasks => {
+              item.tasks.set(service, tasks);
+
+              // If all tasks are in a final state, then stop retrieving updated state
+              if (tasks.filter(t => t.status === TaskStatus.accepted || t.status === TaskStatus.running).length === 0) {
+                obs$.unsubscribe();
+              }
+            });
+          });
     }
   }
 }

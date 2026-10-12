@@ -1,18 +1,12 @@
-@for (column of rowItem.columns; track $index) {
+@for (column of rowItem().columns; track $index) {
   <!-- If the column corresponds to an id field, then we put the checkbox that enables to check the item-->
   @if (column.isIdField) {
     <td class="resultitem__cell" [style.max-width.px]="column.width"
       [style.min-width.px]="column.width">
       <div class="checkbox">
-        @if (rowItem.isindeterminated) {
-          <button mat-icon-button (click)="determinateItem()" class="checkbox__button">
-            <mat-icon class="resultitem__icon_check">indeterminate_check_box</mat-icon>
-          </button>
-        } @else {
-          <button mat-icon-button (click)="setSelectedItem()" class="checkbox__button">
-            <mat-icon class="resultitem__icon_check">{{ rowItem.isChecked ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
-          </button>
-        }
+        <button mat-icon-button (click)="setSelectedItem()" class="checkbox__button">
+          <mat-icon class="resultitem__icon_check">{{ rowItem().isChecked ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+        </button>
       </div>
     </td>
   }
@@ -21,24 +15,26 @@
   @if (!column.isIdField && !column.isToggleField) {
     <td class="resultitem__cell resultitem__cell__{{column.fieldName}}"
         [style.max-width.px]="column.width" [style.min-width.px]="column.width">
-      @let itemFieldValue = rowItem?.itemData.get(column.fieldName) + '';
+      @let itemFieldValue = rowItem().itemData.get(column | buildItemField:'table');
+      @let itemFieldValueString = itemFieldValue + '';
 
       @if (column.useColorService && useColorService && cellBackgroundStyle) {
+        @let itemFieldValueColor = colors[itemFieldValueString];
         @if (cellBackgroundStyle === CellBackgroundStyleEnum.filled) {
           <div class="resultitem__cell--label resultitem__cell--label__filled"
-              [style.background-color]="!!colors[itemFieldValue] ? colors[itemFieldValue]['color'] : 'transparent'"
-              [style.color]="!!colors[itemFieldValue] ? colors[itemFieldValue]['textColor'] : 'black'">
-            {{ itemFieldValue | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
+              [style.background-color]="!!itemFieldValueColor ? itemFieldValueColor['color'] : 'transparent'"
+              [style.color]="!!itemFieldValueColor ? itemFieldValueColor['textColor'] : 'black'">
+            {{ $any(itemFieldValue) | formatNumber:NUMBER_FORMAT_CHAR }}{{column.dataType}}
           </div>
         } @else if (cellBackgroundStyle === CellBackgroundStyleEnum.outlined) {
           <div class="resultitem__cell--label resultitem__cell--label__outlined"
-              [style.border-color]="!!colors[itemFieldValue] ? colors[itemFieldValue]['color'] : 'black'">
-            {{itemFieldValue | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
+              [style.border-color]="!!itemFieldValueColor ? itemFieldValueColor['color'] : 'black'">
+            {{ $any(itemFieldValue) | formatNumber:NUMBER_FORMAT_CHAR }}{{column.dataType}}
           </div>
         }
       } @else {
-        <div class="resultitem__cell--label resultitem__cell--label__{{column.fieldName}}  resultitem__cell--label__{{itemFieldValue}}">
-          {{itemFieldValue | formatNumber:NUMBER_FORMAT_CHAR}}{{column.dataType}}
+        <div class="resultitem__cell--label resultitem__cell--label__{{column.fieldName}}  resultitem__cell--label__{{itemFieldValueString}}">
+          {{ $any(itemFieldValue) | formatNumber:NUMBER_FORMAT_CHAR }}{{column.dataType}}
         </div>
       }
     </td>
@@ -50,18 +46,19 @@
       [style.min-width.px]="column.width">
       @if (options.showActionsOnhover) {
         <div class="actions">
-          <arlas-result-actions [item]="rowItem" [activatedActionsPerItem]="activatedActionsPerItem"
-            [detailedDataRetriever]="detailedDataRetriever" [width]="tableWidth * 80 / 100"
-          (actionOnItemEvent)="triggerActionOnItem($event)"></arlas-result-actions>
+          <arlas-result-actions [item]="rowItem()" [activatedActionsPerItem]="activatedActionsPerItem"
+            [detailedDataRetriever]="detailedDataRetriever()" [width]="tableWidth() * 80 / 100"
+            (actionOnItemEvent)="triggerActionOnItem($event)"></arlas-result-actions>
         </div>
       }
-      @if (detailedDataRetriever.detailsConfig?.length > 0) {
-        @let toggleId = (rowItem.isDetailToggled ? 'close' : 'open') + '-detail-' + rowItem.identifier;
-        @let toggleTooltip = rowItem.isDetailToggled ? HIDE_DETAILS : SHOW_DETAILS;
+      @if (detailedDataRetriever().detailsConfig.length > 0) {
+        @let toggleId = (rowItem().isDetailToggled ? 'close' : 'open') + '-detail-' + rowItem().identifier;
+        @let toggleTooltip = rowItem().isDetailToggled ? HIDE_DETAILS : SHOW_DETAILS;
         <button mat-icon-button [id]="toggleId" [matTooltip]="toggleTooltip | translate"
-          class="resultitem__cell__toggle__button" (click)="toggle()">
-          <mat-icon class="resultitem__cell__toggle--icon">
-          {{ rowItem.isDetailToggled ? options.hideDetailIconName : options.showDetailIconName}}</mat-icon>
+            class="resultitem__cell__toggle__button" (click)="toggle()">
+          <mat-icon class="resultitem__cell__toggle__button--icon">
+            {{ rowItem().isDetailToggled ? options.hideDetailIconName : options.showDetailIconName}}
+          </mat-icon>
         </button>
       }
     </td>

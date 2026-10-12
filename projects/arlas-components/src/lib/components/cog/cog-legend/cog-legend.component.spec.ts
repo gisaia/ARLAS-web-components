@@ -22,7 +22,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateLoader, TranslateModule, TranslateNoOpLoader } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ShortenNumberPipe } from '../../../pipes/shorten-number/shorten-number.pipe';
 import { CogLegendComponent } from './cog-legend.component';
 
 
@@ -34,7 +33,6 @@ describe('CogLegendComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         CogLegendComponent,
-        ShortenNumberPipe,
         TranslateModule.forRoot({ loader: { provide: TranslateLoader, useClass: TranslateNoOpLoader } })
       ],
       providers: [

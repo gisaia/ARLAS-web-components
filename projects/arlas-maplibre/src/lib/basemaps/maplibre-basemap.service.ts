@@ -36,8 +36,8 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
   private readonly mapService = inject(ArlasMapService);
 
   public addProtomapBasemap(map: ArlasMaplibreGL) {
-    const selectedBasemap = this.basemaps.getSelected();
-    if (selectedBasemap.type === 'protomap') {
+    const selectedBasemap = this.basemaps?.getSelected();
+    if (selectedBasemap && selectedBasemap.type === 'protomap') {
       const styleFile = selectedBasemap.styleFile as any;
       const pmtilesSource = styleFile.sources['arlas_protomaps_source'];
       pmtilesSource['type'] = 'vector';
@@ -90,14 +90,16 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
     this.basemaps?.styles().forEach(s => {
       sources$.push(this.getStyleFile(s).pipe(
         tap(sf => {
-          Object.keys(sf.sources).forEach(k => {
-            const attribution = sf.sources[k]['attribution'];
-            if (attribution) {
-              sf.sources[k]['attribution'] = attribution + this.POWERED_BY_ARLAS;
-            } else {
-              sf.sources[k]['attribution'] = this.POWERED_BY_ARLAS;
+          if (sf.sources) {
+            for (const k of Object.keys(sf.sources)) {
+              const attribution = (sf.sources[k] as VectorSourceSpecification)['attribution'];
+              if (attribution) {
+                (sf.sources[k] as VectorSourceSpecification)['attribution'] = attribution + this.POWERED_BY_ARLAS;
+              } else {
+                (sf.sources[k] as VectorSourceSpecification)['attribution'] = this.POWERED_BY_ARLAS;
+              }
             }
-          });
+          }
           s.styleFile = sf as StyleSpecification;
         }),
         catchError(() => {
@@ -122,7 +124,7 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
     const layers = this.mapFrameworkService.getAllLayers(map);
     const sources = this.mapFrameworkService.getAllSources(map);
     if (s.layers) {
-      s.layers.forEach(l => selectedBasemapLayersSet.add(l.id));
+      s.layers.forEach((l: any) => selectedBasemapLayersSet.add(l.id));
     }
     const layersToSave = new Array<AddLayerObject>();
     const sourcesToSave = new Array<ArlasMapSource<MaplibreSourceType>>();
@@ -146,11 +148,11 @@ export class MaplibreBasemapService extends BasemapService<ArlasLayerSpecificati
       setTimeout(() => {
         /** the timeout fixes a mapboxgl bug related to layer placement*/
         this.mapService.declareBasemapSources(sourcesToSave, map);
-        layersToSave.forEach((l: ArlasLayerSpecification) => {
+        layersToSave.forEach(l => {
           this.mapFrameworkService.addLayer(map, l);
         });
         localStorage.setItem(this.LOCAL_STORAGE_BASEMAPS, JSON.stringify(newBasemap));
-        this.basemaps.setSelected(newBasemap);
+        this.basemaps?.setSelected(newBasemap);
         if (newBasemap.type === 'protomap') {
           this.addProtomapBasemap(map);
           this.notifyProtomapAddition();

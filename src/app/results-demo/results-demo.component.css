@@ -55,3 +55,7 @@
 .example-actions .mat-mdc-outlined-button{
   margin: 2px;
 }
+
+arlas-result-list {
+  height: 100%;
+}

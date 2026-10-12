@@ -20,13 +20,14 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  AbstractArlasMapGL, ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, ExternalEvent,
+  ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, ExternalEvent,
   getAdditionalFillLayers, HILLSHADE_SOURCE, SCROLLABLE_ARLAS_ID, TERRAIN_SOURCE, VectorStyle
 } from 'arlas-map';
 import { FeatureCollection } from 'geojson';
 import {
-  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions, Point, Popup, RasterDEMSourceSpecification,
-  RasterLayerSpecification, RasterSourceSpecification, ResourceType, SourceSpecification, SymbolLayerSpecification
+  AddLayerObject, CanvasSourceSpecification, GeoJSONSource, GeoJSONSourceSpecification, MapOptions,
+  Point, Popup, RasterDEMSourceSpecification, RasterLayerSpecification, RasterSourceSpecification,
+  RequestTransformFunction, ResourceType, SourceSpecification, SymbolLayerSpecification
 } from 'maplibre-gl';
 import { from } from 'rxjs';
 import { ArlasDraw } from './draw/ArlasDraw';
@@ -55,8 +56,8 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
     });
   }
 
-  public setTransformRequest(map: ArlasMaplibreGL, transformRequest: Function): void {
-    map.getMapProvider().setTransformRequest(transformRequest as any);
+  public setTransformRequest(map: ArlasMaplibreGL, transformRequest: RequestTransformFunction): void {
+    map.getMapProvider().setTransformRequest(transformRequest);
   }
 
   /**
@@ -149,7 +150,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @param layer layer identifier
    */
   public hasLayer(map: ArlasMaplibreGL, layer: string): boolean {
-    return layer && !!map.getMapProvider().getLayer(layer);
+    return !!layer && !!map.getMapProvider().getLayer(layer);
   };
 
   /**
@@ -219,7 +220,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   }
 
   public getAllSources(map: ArlasMaplibreGL) {
-    return (map as AbstractArlasMapGL).getMapProvider().getStyle().sources;
+    return map.getMapProvider().getStyle().sources;
   }
 
   /**
@@ -290,6 +291,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    */
   public moveArlasDataLayer(map: ArlasMaplibreGL, layerId: string, arlasDataLayers: Map<string, AddLayerObject>, before?: string) {
     const layer = arlasDataLayers.get(layerId);
+    if (!layer) {
+      return;
+    }
+
     const scrollableId = layer.id.replace(ARLAS_ID, SCROLLABLE_ARLAS_ID);
     const scrollableLayer = arlasDataLayers.get(scrollableId);
     if (!!scrollableLayer && this.hasLayer(map, scrollableId)) {
@@ -344,7 +349,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @param fn
    */
   public onLayerEvent(eventName: 'click' | 'mousemove' | 'mouseleave' | 'mouseenter',
-    map: ArlasMaplibreGL, layer: string, fn: (e) => void): void {
+    map: ArlasMaplibreGL, layer: string, fn: (e: any) => void): void {
     map.getMapProvider().on(eventName, layer, fn);
   }
 
@@ -355,7 +360,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   * @param map Map instance.
   * @param fn  Function to execute on map event.
   */
-  public onMapEvent(eventName: 'load' | 'moveend' | 'zoomend', map: ArlasMaplibreGL, fn: (e) => void) {
+  public onMapEvent(eventName: 'load' | 'moveend' | 'zoomend', map: ArlasMaplibreGL, fn: (e: any) => void) {
     map.getMapProvider().on(eventName, fn);
   }
 
@@ -376,8 +381,6 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
       }
     }
   };
-
-
 
   /**
    * @overload
@@ -509,8 +512,8 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   }
 
   public getLayersStartingWithSource(map: ArlasMaplibreGL, sourceIdPattern: string): ArlasLayerSpecification[] {
-    return map.getMapProvider().getStyle()
-      .layers.filter((l: ArlasLayerSpecification) => l.source?.startsWith(sourceIdPattern)) as ArlasLayerSpecification[];
+    return map.getMapProvider().getStyle().layers
+      .filter(l => (l as { source?: string; }).source?.startsWith(sourceIdPattern)) as ArlasLayerSpecification[];
 
   }
 
@@ -577,9 +580,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   * @param layerId The identifier of the new icon layer
   * @param style Vector style to apply to the geojson
   * @param data Geojson data which features will be styled with the given style.
+  * @param beforeId Id of the layer before which to add this layer
   */
   public addGeojsonLayer(map: ArlasMaplibreGL, layerId: string, style: VectorStyle,
-    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>): void {
+    data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string): void {
     const source: GeoJSONSourceSpecification = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, source, map);
@@ -592,7 +596,7 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
         'visibility': 'visible'
       },
     };
-    this.addLayer(map, geojsonLayer);
+    this.addLayer(map, geojsonLayer, beforeId);
   }
 
   /**
@@ -603,9 +607,10 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
    * @param iconName The icon name
    * @param iconSize The icon size
    * @param data Geojson data which features will be represented with the given icon.
+   * @param beforeId Id of the layer before which to add this layer
    */
   public addIconLayer(map: ArlasMaplibreGL, layerId: string, iconName: string,
-    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>) {
+    iconSize: number, data: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>, beforeId?: string) {
     const iconSource: GeoJSONSourceSpecification = this.createGeojsonSource(data);
     const sourceId = layerId;
     this.setSource(sourceId, iconSource, map);
@@ -619,8 +624,29 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
         'visibility': 'visible'
       }
     };
-    this.addLayer(map, iconLayer);
+    this.addLayer(map, iconLayer, beforeId);
   };
+
+  public addImageLayer(map: ArlasMaplibreGL, layerId: string, imageURL: string,
+    bounds: [[number, number], [number, number], [number, number], [number, number]], beforeId?: string
+  ): void {
+    const maplibreMap = map.getMapProvider();
+
+    // Remove source and layer if already exists
+    this.removeLayer(map, layerId, true);
+
+    maplibreMap.addSource(layerId, {
+      type: 'image',
+      url: imageURL,
+      coordinates: bounds
+    });
+
+    maplibreMap.addLayer({
+      id: layerId,
+      type: 'raster',
+      source: layerId
+    }, beforeId);
+  }
 
   public flyTo(lat: number, lng: number, zoom: number, map: ArlasMaplibreGL) {
     map.getMapProvider().flyTo({ center: [lng, lat], zoom });
@@ -631,13 +657,13 @@ export class ArlasMaplibreService extends ArlasMapFrameworkService<ArlasLayerSpe
   }
 
   public queryFeatures(e: any, map: ArlasMaplibreGL, layersIdPattern: string, options: any) {
-    map.getMapProvider().queryRenderedFeatures(e.point, options)
+    return map.getMapProvider().queryRenderedFeatures(e.point, options)
       .filter(f => !!f.layer && !!f.layer.id && f.layer.id.includes(layersIdPattern));
   };
 
 
   public isLayerVisible(layer: ArlasLayerSpecification): boolean {
-    return layer.layout.visibility === 'visible';
+    return layer.layout?.visibility === 'visible';
   }
 
   public getSource(sourceId: string, map: ArlasMaplibreGL) {

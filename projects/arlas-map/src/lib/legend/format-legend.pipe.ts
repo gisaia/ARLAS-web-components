@@ -64,15 +64,15 @@ export class FormatLegendPipe implements PipeTransform {
     'count'
   ];
 
-  public transform(field: string): LegendParamsResult | null {
+  public transform(field: string | undefined): LegendParamsResult | null {
+    if (!field) {
+      return null;
+    }
+
     let params: LegendParamsResult = {
       translateKey: this.collectionService.getDisplayFieldName(field),
       format: 'original'
     };
-
-    if (!field) {
-      return null;
-    }
 
     const parts = field.split(':');
     // Regular normalized
@@ -105,7 +105,7 @@ export class FormatLegendPipe implements PipeTransform {
     return params;
   }
 
-  public buildInterpolatedParams(params: LegendParamsResult, metric: string, field: string,
+  public buildInterpolatedParams(params: LegendParamsResult, metric: string | undefined, field: string,
       normalized: string, normalizedKey: string): LegendParamsResult {
     const legendParams: LegendParamsResult = {
       ...params,

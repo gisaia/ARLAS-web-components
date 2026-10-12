@@ -17,9 +17,6 @@
  * under the License.
  */
 
-$default-icon-size: 24px;
-$sm-spacing: 5px;
-
 .resultgrid__img {
   overflow-y: hidden;
   overflow-x: hidden;
@@ -29,45 +26,6 @@ $sm-spacing: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.viewer_actions-infos {
-  position: absolute;
-  bottom: $sm-spacing;
-  z-index: 999;
-
-  &.description {
-    color: white;
-    background-color: #6d6d6d99;
-    padding: 0 $sm-spacing;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  &.navigate-button {
-    height: $default-icon-size;
-    width: $default-icon-size;
-    background-color: white;
-    border: 1px solid #a1a1a1;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-
-    &.previous {
-      left: $sm-spacing;
-    }
-
-    &.next {
-      right: $sm-spacing;
-    }
-
-    ::ng-deep.mat-icon {
-      overflow: unset;
-    }
-  }
 }
 
 .resultgrid {
@@ -88,23 +46,19 @@ $sm-spacing: 5px;
 {
   position: absolute;
   top: 5px;
-  right: 0px;
+  right: 5px;
   background-color: transparent;
   z-index: 1;
-
-  ::ng-deep.mat-mdc-mini-fab[disabled] {
-    color: grey;
-  }
+  display: flex;
+  gap: 5px;
 }
 
-.resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button{
-  top: 5px;
-  right: 15px;
-  background-color: #fff;
-  color: #000;
+.resultgrid__info-view-button, .resultgrid__info-show-button, .resultgrid__info-close-button {
+  background-color: var(--arlas-result-detailed-grid-view-button-background, var(--mat-sys-background)) !important;
+  color: var(--arlas-result-detailed-grid-view-button-color, var(--mat-sys-on-background));
+  --mat-fab-small-touch-target-size: 24px;
   width: 24px;
   height: 24px;
-  margin-right: 5px;
 }
 
 .image_view {
@@ -129,24 +83,24 @@ $sm-spacing: 5px;
 {
 	width: 6px;
   height: 6px;
-	background-color: white;
+	background-color: var(--arlas-result-detailed-grid-scrollbar-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: white;
+	background-color: var(--arlas-result-detailed-grid-scrollbar-track-background, var(--mat-sys-background));
 }
 
 ::-webkit-scrollbar-thumb
 {
-	background-color: #555;
+	background-color: var(--arlas-result-detailed-grid-scrollbar-thumb-background, var(--mat-sys-on-background));
 }
 
 .resultgrid__info_outline, .resultgrid__close, .resultgrid__image {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  font-size: var(--arlas-sys-content-icon-size);
+  width: var(--arlas-sys-content-icon-size);
+  height: var(--arlas-sys-content-icon-size);
 }
 
 .resultgrid-overlay{
@@ -155,6 +109,6 @@ $sm-spacing: 5px;
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #555;
+  background-color: var(--arlas-result-detailed-grid-overlay-background, var(--mat-sys-on-background));
   opacity: 0.5;
 }

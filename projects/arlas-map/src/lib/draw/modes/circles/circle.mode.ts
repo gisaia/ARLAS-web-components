@@ -30,7 +30,7 @@ circleMode.onSetup = function (opts) {
         properties: {
             isFixedRadius: opts.isFixedRadius !== undefined ? opts.isFixedRadius : false,
             isCircle: true,
-            center: opts.center !== undefined ? opts.center : []
+            center: opts.center ?? []
         },
         geometry: {
             type: MapboxDraw.constants.geojsonTypes.POLYGON,
