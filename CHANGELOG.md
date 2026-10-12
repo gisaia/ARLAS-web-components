@@ -1,5 +1,11 @@
 # Change Log
 
+## [v29.0.0](https://github.com/gisaia/ARLAS-web-components/tree/v29.0.0) (2026-10-12)
+
+**New stuff:**
+
+- Add missing `before` argument to addLayer submethods [\#978](https://github.com/gisaia/ARLAS-web-components/issues/978) [[MAP](https://github.com/gisaia/ARLAS-web-components/labels/MAP)]
+
 ## [v28.2.0](https://github.com/gisaia/ARLAS-web-components/tree/v28.2.0) (2026-09-10)
 
 ## [v28.1.0](https://github.com/gisaia/ARLAS-web-components/tree/v28.1.0) (2026-07-03)
