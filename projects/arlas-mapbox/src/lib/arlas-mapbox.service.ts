@@ -20,6 +20,7 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  AbstractArlasMapGL,
   ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, getAdditionalFillLayers,
   HILLSHADE_SOURCE, MapLayerMouseEvent, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
@@ -547,6 +548,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
    */
   public getLayersFromPattern(map: ArlasMapboxGL, layersIdPattern: string): ArlasAnyLayer[] {
     return map.getMapProvider().getStyle().layers?.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
+  }
+
+  public getLayerIdsFromPattern(map: ArlasMapboxGL, layersIdPattern: string): string[] {
+    return this.getLayersFromPattern(map, layersIdPattern).map(l => l.id);
   }
 
   public getLayersStartingWithSource(map: ArlasMapboxGL, sourceId: string): ArlasAnyLayer[] {
