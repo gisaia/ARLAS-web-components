@@ -23,7 +23,7 @@
 
 export { ArlasMapFrameworkService } from './lib/arlas-map-framework.service';
 export { ArlasMapComponent, LayerDownloadEvent } from './lib/arlas-map.component';
-export { AbstractArlasMapService } from './lib/arlas-map.service';
+export { AbstractArlasMapService, ARLAS_RASTER_SOURCE_PREFIX, QUICKLOOK_ON_MAP_LAYER_PREFIX } from './lib/arlas-map.service';
 export { BasemapComponent } from './lib/basemaps/basemap.component';
 export { BasemapStyle } from './lib/basemaps/basemap.config';
 export { BasemapService } from './lib/basemaps/basemap.service';
