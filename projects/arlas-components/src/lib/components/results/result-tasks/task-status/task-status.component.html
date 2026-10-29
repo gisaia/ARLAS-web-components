@@ -1,5 +1,5 @@
-<mat-chip-listbox [selectable]="false" class="status-chip">
-    <mat-chip-option class="status-chip--{{task().status}}">
+<mat-chip-set class="status-chip">
+    <mat-chip class="status-chip--{{task().status}}">
         {{ task().status | translate }}
-    </mat-chip-option>
-</mat-chip-listbox>
+    </mat-chip>
+</mat-chip-set>
