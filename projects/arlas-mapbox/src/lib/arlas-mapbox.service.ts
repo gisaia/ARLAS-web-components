@@ -20,7 +20,6 @@
 import { inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
-  AbstractArlasMapGL,
   ARLAS_ID, ArlasMapFrameworkService, ArlasMapOption, getAdditionalFillLayers,
   HILLSHADE_SOURCE, MapLayerMouseEvent, SCROLLABLE_ARLAS_ID, VectorStyle
 } from 'arlas-map';
