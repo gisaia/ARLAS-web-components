@@ -307,9 +307,12 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     this.reorderLayers(visualisations, map);
   }
 
-  protected reorderDrawLayers(map: ArlasMaplibreGL) {
-    this.mapService.getLayersFromPattern(map, '.cold').forEach(l => this.mapService.moveLayer(map, l.id));
-    this.mapService.getLayersFromPattern(map, '.hot').forEach(l => this.mapService.moveLayer(map, l.id));
+  protected reorderActiveDrawLayers(map: ArlasMaplibreGL) {
+    this.mapService.getLayerIdsFromPattern(map, '.hot').forEach(l => this.mapService.moveLayer(map, l));
+  }
+
+  protected reorderInactiveDrawLayers(map: ArlasMaplibreGL) {
+    this.mapService.getLayerIdsFromPattern(map, '.cold').forEach(l => this.mapService.moveLayer(map, l));
   }
 
   /**

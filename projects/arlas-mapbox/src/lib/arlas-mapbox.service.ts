@@ -549,6 +549,10 @@ export class ArlasMapboxService extends ArlasMapFrameworkService<ArlasAnyLayer, 
     return map.getMapProvider().getStyle().layers?.filter(l => l.id.includes(layersIdPattern)) as ArlasAnyLayer[];
   }
 
+  public getLayerIdsFromPattern(map: ArlasMapboxGL, layersIdPattern: string): string[] {
+    return this.getLayersFromPattern(map, layersIdPattern).map(l => l.id);
+  }
+
   public getLayersStartingWithSource(map: ArlasMapboxGL, sourceId: string): ArlasAnyLayer[] {
     return map.getMapProvider().getStyle().layers?.filter(l => ((l as ArlasAnyLayer).source as string)?.startsWith(sourceId)) as ArlasAnyLayer[];
   }

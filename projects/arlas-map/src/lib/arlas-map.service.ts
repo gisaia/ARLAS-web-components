@@ -21,10 +21,14 @@ import { inject, Injectable } from '@angular/core';
 import { ElementIdentifier } from 'arlas-web-components';
 import { FeatureCollection } from 'geojson';
 import { ArlasMapFrameworkService } from './arlas-map-framework.service';
-import { AbstractArlasMapGL } from './map/AbstractArlasMapGL';
+import { AbstractArlasMapGL, CROSS_LAYER_PREFIX } from './map/AbstractArlasMapGL';
 import { ArlasDataLayer, ExternalEvent, MapLayers } from './map/model/layers';
 import { ArlasMapSource } from './map/model/sources';
 import { VisualisationSetConfig } from './map/model/visualisationsets';
+
+export const QUICKLOOK_ON_MAP_LAYER_PREFIX = 'arlas-quicklook-source';
+
+export const ARLAS_RASTER_SOURCE_PREFIX = 'arlas-raster-source-';
 
 /**
  * This service propose a set of method to execute the ArlasMapComponent logic.
@@ -156,11 +160,36 @@ export abstract class AbstractArlasMapService<L, S, M> {
         }
       }
     }
-    this.reorderDrawLayers(map);
+    this.reorderInactiveDrawLayers(map);
+    this.reorderImageLayers(map);
+    this.reorderActiveDrawLayers(map);
 
   }
 
-  protected abstract reorderDrawLayers(map: AbstractArlasMapGL): void;
+  /** Moves the active draw layers to the top of the map */
+  protected abstract reorderActiveDrawLayers(map: AbstractArlasMapGL): void;
+
+  /** Moves the inactive draw layers to the top of the map */
+  protected abstract reorderInactiveDrawLayers(map: AbstractArlasMapGL): void;
+
+  /**
+   * Reorders the image layers (COG, quicklook, cross) on the map to respect the following order (top to bottom):
+   * - Cross over COGs to close them
+   * - COGs
+   * - Quicklooks
+   * @param map Map instance
+   */
+  public reorderImageLayers(map: AbstractArlasMapGL): void {
+    // Layers are added from bottom to top
+    const quicklookLayers = this.mapFrameworkService.getLayerIdsFromPattern(map, QUICKLOOK_ON_MAP_LAYER_PREFIX);
+    quicklookLayers.forEach(l => this.mapFrameworkService.moveLayer(map, l));
+
+    const cogLayers = this.mapFrameworkService.getLayerIdsFromPattern(map, ARLAS_RASTER_SOURCE_PREFIX);
+    cogLayers.forEach(l => this.mapFrameworkService.moveLayer(map, l));
+
+    const crossLayers = this.mapFrameworkService.getLayerIdsFromPattern(map, CROSS_LAYER_PREFIX);
+    crossLayers.forEach(l => this.mapFrameworkService.moveLayer(map, l));
+  }
 
 
   public abstract filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: AbstractArlasMapGL,
