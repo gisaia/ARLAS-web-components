@@ -244,32 +244,34 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     });
   };
 
-  public updateMapStyle(map: ArlasMaplibreGL, l: any, ids: Array<string | number>, sourceName: string): void {
+  public updateMapStyle(map: ArlasMaplibreGL, l: string, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l);
-    if (layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
+    if (layer && typeof (layer.source) === 'string' && layer.source.includes(sourceName)) {
+      const layersIds = getAdditionalFillLayers(layer.id);
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
         if ((layer.metadata as LayerMetadata).isScrollableLayer || layer.metadata['is-scrollable-layer']) {
           map.setFilter(l, this.getVisibleIdsFilter(l, ids));
-          const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-          const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-          if (!!strokeLayer) {
-            map.setFilter(strokeLayerId, this.getVisibleIdsFilter(strokeLayerId, ids));
+          for (const id of layersIds) {
+            const additionalLayer = this.mapService.getLayer(map, id);
+            if (additionalLayer) {
+              map.setFilter(id, this.getVisibleIdsFilter(id, ids));
+            }
           }
         }
       } else {
         map.setFilter(l, this.layersMap.get(l)?.filter as ExpressionSpecification);
-        const strokeLayerId = l.replace('_id:', '-fill_stroke-');
-        const strokeLayer = this.mapService.getLayer(map, strokeLayerId);
-        if (!!strokeLayer) {
-          map.setFilter(strokeLayerId,
-            this.layersMap.get(strokeLayerId)?.filter as ExpressionSpecification);
+        for (const id of layersIds) {
+          const additionalLayer = this.mapService.getLayer(map, id);
+          if (additionalLayer) {
+            map.setFilter(id, this.layersMap.get(additionalLayer)?.filter);
+          }
         }
       }
     }
   }
 
-  public getVisibleIdsFilter(layer: any, ids: Array<string | number>): ExpressionSpecification[] {
+  public getVisibleIdsFilter(layer: string, ids: Array<string | number>): ExpressionSpecification[] {
     const lFilter = this.layersMap.get(layer)?.filter as ExpressionSpecification[];
     const filters = new Array<ExpressionSpecification>();
     if (lFilter) {
@@ -337,11 +339,11 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
     if (!!scrollableLayer && this.mapService.hasLayer(map, scrollableId)) {
       this.mapService.moveLayer(map, scrollableId);
     }
-    if (!!this.mapService.hasLayer(map, layerId)) {
+    if (this.mapService.hasLayer(map, layerId)) {
       this.mapService.moveLayer(map, layerId);
       if (layer.type === 'fill') {
         const layersIds = getAdditionalFillLayers(layer.id);
-        for ( const id of layersIds) {
+        for (const id of layersIds) {
           const arlasDataLayer = arlasDataLayers.get(id);
           if (!!arlasDataLayer && this.mapService.hasLayer(map, id)) {
             this.mapService.moveLayer(map, id);
@@ -386,7 +388,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasLayerSpecifica
   public filterLayers(mapLayers: MapLayers<ArlasDataLayer>, map: ArlasMaplibreGL,
     visibilityCondition: boolean, visibilityFilter: Array<any>, visibilityEvent: ExternalEvent,
     collection?: string): void {
-    if (mapLayers && mapLayers.externalEventLayers) {
+    if (mapLayers?.externalEventLayers) {
       mapLayers.externalEventLayers.filter(layer => layer.on === visibilityEvent).forEach(layer => {
         if (this.mapService.hasLayer(map, layer.id)) {
           let originalLayerIsVisible = false;

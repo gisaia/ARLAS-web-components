@@ -19,8 +19,8 @@
 
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import {
-  AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds, ControlButton, ControlPosition,
-  DrawControlsOption, MapConfig, MapExtent, MapLayers, OnMoveResult, OPACITY_SUFFIX
+  AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds, ControlButton, ControlPosition, DrawControlsOption,
+  EXTRUSION_LAYER_PREFIX, MapConfig, MapExtent, MapLayers, OnMoveResult, OPACITY_SUFFIX
 } from 'arlas-map';
 import mapboxgl, {
   AnyLayer, Control, Expression, IControl, LngLat, LngLatBounds, MapboxOptions, Point
@@ -353,6 +353,10 @@ export class ArlasMapboxGL extends AbstractArlasMapGL {
   }
 
   public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
+    // Reject expressions for fill-extrusion opacity
+    if (typeof opacityValue !== 'number' && (layerType === 'extrusion' || layerId.startsWith(EXTRUSION_LAYER_PREFIX))) {
+      return this;
+    }
     this._mapProvider.setPaintProperty(layerId, this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX, opacityValue);
     return this;
   }

@@ -227,9 +227,9 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     });
   };
 
-  public updateMapStyle(map: ArlasMapboxGL, l: any, ids: Array<string | number>, sourceName: string): void {
+  public updateMapStyle(map: ArlasMapboxGL, l: string, ids: Array<string | number>, sourceName: string): void {
     const layer = this.mapService.getLayer(map, l);
-    if (!!layer && typeof (layer.source) === 'string' && layer.source.indexOf(sourceName) >= 0) {
+    if (layer && typeof layer.source === 'string' && layer.source.includes(sourceName)) {
       const layersIds = getAdditionalFillLayers(layer.id);
       if (ids && ids.length > 0) {
         // Tests value in camel and kebab case due to an unknown issue on other projects
@@ -238,7 +238,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
           for (const id of layersIds) {
             const additionalLayer = this.mapService.getLayer(map, id);
             if (additionalLayer) {
-              map.setFilter(id, this.getVisibleIdsFilter(additionalLayer, ids));
+              map.setFilter(id, this.getVisibleIdsFilter(id, ids));
             }
           }
         }
@@ -254,8 +254,7 @@ export class ArlasMapService extends AbstractArlasMapService<ArlasAnyLayer, Mapb
     }
   }
 
-
-  public override getVisibleIdsFilter(layer: any, ids: Array<string | number>): Expression[] {
+  public override getVisibleIdsFilter(layer: string, ids: Array<string | number>): Expression[] {
     const lFilter = this.layersMap.get(layer)?.filter as Expression;
     const filters: Expression[] = [];
     if (lFilter) {

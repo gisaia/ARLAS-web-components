@@ -296,9 +296,9 @@ export abstract class AbstractArlasMapService<L, S, M> {
     }
   }
 
-  public abstract updateMapStyle(map: AbstractArlasMapGL, l: any, ids: Array<string | number>, sourceName: string): void;
+  public abstract updateMapStyle(map: AbstractArlasMapGL, layerId: string, ids: Array<string | number>, sourceName: string): void;
 
-  public abstract getVisibleIdsFilter(map: AbstractArlasMapGL, layer: any, ids: Array<string | number>): any[];
+  public abstract getVisibleIdsFilter(layerId: string, ids: Array<string | number>): any[];
 
   /**
    * Move an external layer

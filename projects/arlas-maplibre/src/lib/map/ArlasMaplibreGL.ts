@@ -19,7 +19,7 @@
 
 import {
   AbstractArlasMapGL, ArlasLngLat, ArlasLngLatBounds, ControlButton,
-  DrawControlsOption, MapConfig, MapExtent, OnMoveResult, OPACITY_SUFFIX
+  DrawControlsOption, EXTRUSION_LAYER_PREFIX, MapConfig, MapExtent, OnMoveResult, OPACITY_SUFFIX
 } from 'arlas-map';
 import {
   AllPaintProperties, AttributionControl, ControlPosition, Expression, FitBoundsOptions, GlobeControl, IControl,
@@ -261,6 +261,11 @@ export class ArlasMaplibreGL extends AbstractArlasMapGL {
   }
 
   public setLayerOpacity(layerId: string, layerType: string, opacityValue: Expression | number): this {
+    // Reject expressions for fill-extrusion opacity
+    if (typeof opacityValue !== 'number' && (layerType === 'extrusion' || layerId.startsWith(EXTRUSION_LAYER_PREFIX))) {
+      return this;
+    }
+
     this._mapProvider.setPaintProperty(layerId,
       this.layerTypeToPaintKeyword(layerType) + OPACITY_SUFFIX as keyof AllPaintProperties, opacityValue as any);
     return this;
