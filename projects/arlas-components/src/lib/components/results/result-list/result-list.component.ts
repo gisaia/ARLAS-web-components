@@ -479,7 +479,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
    * @Output : Angular
    * @description Emits when result list is updated.
    */
-  @Output() public onResultListUpdate: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() public onResultListUpdate = new EventEmitter<void>();
 
   /**
    * @Output : Angular
@@ -650,18 +650,21 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
     }
 
     if (itemChanges) {
+      itemChanges.forEachRemovedItem(i => {
+        const id = i.item.get(this.fieldsConfiguration().idFieldName);
+        const itemToRemoveIdx = this.items.findIndex(it => it.identifier === id);
+
+        if (itemToRemoveIdx >= 0) {
+          this.items.splice(itemToRemoveIdx, 1);
+        }
+      });
+
       let itemIndex = 0;
       itemChanges.forEachAddedItem(i => {
         this.onAddItems(i.item, this.isPreviousPageRequested, itemIndex);
         itemIndex++;
       });
-      itemChanges.forEachRemovedItem(i => {
-        if (this.isNextPageRequested) {
-          this.items.splice(0, 1);
-        } else if (this.isPreviousPageRequested) {
-          this.items.splice(- 1, 1);
-        }
-      });
+
       /**
        * This variable notifies the ResultScrollDirective whether the end of list is reached at top or bottom
        */
@@ -695,7 +698,7 @@ export class ResultListComponent implements OnInit, DoCheck, OnChanges, AfterVie
 
       this.isNextPageRequested = false;
       this.isPreviousPageRequested = false;
-      this.onResultListUpdate.emit(true);
+      this.onResultListUpdate.emit();
     }
   }
 
