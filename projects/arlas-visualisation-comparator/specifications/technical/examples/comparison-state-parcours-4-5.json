@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "layout": "grid-2x2",
+  "swipePosition": 50,
+  "globalOpacity": 70,
+  "sidebarOpen": false,
+  "itemIds": [
+    "L9_198030_20260818_L2SP",
+    "L9_198030_20260802_L2SP",
+    "S2A_31TCH_20260715_L2A",
+    "S2B_31TCH_20260715_L2A"
+  ],
+  "itemAssignments": {
+    "S2A_31TCH_20260715_L2A": {
+      "mode": "multi",
+      "panels": ["P1", "P2"]
+    },
+    "S2B_31TCH_20260715_L2A": {
+      "mode": "single",
+      "panels": ["P1"]
+    },
+    "L9_198030_20260802_L2SP": {
+      "mode": "single",
+      "panels": ["P3"]
+    }
+  },
+  "panelVisualizations": {
+    "P1": "s2-true-color",
+    "P2": "s2-false-color-ir",
+    "P3": "l9-surface-temp",
+    "P4": null
+  },
+  "view": {
+    "center": [0.1425, 42.8912],
+    "zoom": 13.8,
+    "bearing": -24.5,
+    "pitch": 55,
+    "terrain3d": true,
+    "basemapId": "satellite-streets"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "layout": "three-columns",
+  "swipePosition": 50,
+  "globalOpacity": 65,
+  "sidebarOpen": true,
+  "itemIds": [
+    "S2A_31TCJ_20260901_L2A",
+    "S2B_31TCJ_20260825_L2A",
+    "S2A_31TCJ_20260810_L2A"
+  ],
+  "itemAssignments": {
+    "S2A_31TCJ_20260810_L2A": {
+      "mode": "single",
+      "panels": ["P1"]
+    },
+    "S2B_31TCJ_20260825_L2A": {
+      "mode": "single",
+      "panels": ["P2"]
+    }
+  },
+  "panelVisualizations": {
+    "P1": "s2-true-color",
+    "P2": "s2-ndvi",
+    "P3": null
+  },
+  "view": {
+    "center": [1.4442, 43.6047],
+    "zoom": 12.4,
+    "bearing": 0,
+    "pitch": 0,
+    "terrain3d": false,
+    "basemapId": "positron"
+  }
+}

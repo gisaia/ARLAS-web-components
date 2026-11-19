@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arlas.io/web-components/comparison-state/v1.schema.json",
+  "title": "ComparisonState",
+  "description": "État sérialisable d'une session de comparaison de visualisations d'imagerie (V1).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1
+    },
+    "layout": {
+      "type": "string",
+      "enum": ["side-by-side", "swipe", "three-columns", "grid-2x2"],
+      "default": "side-by-side"
+    },
+    "swipePosition": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 50
+    },
+    "globalOpacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "default": 100
+    },
+    "sidebarOpen": {
+      "type": "boolean",
+      "default": true
+    },
+    "itemIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "Liste exhaustive des identifiants des items présents dans le volet latéral gauche lors de la session."
+    },
+    "itemAssignments": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/itemAssignment"
+      },
+      "default": {}
+    },
+    "panelVisualizations": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "P1": { "type": ["string", "null"] },
+        "P2": { "type": ["string", "null"] },
+        "P3": { "type": ["string", "null"] },
+        "P4": { "type": ["string", "null"] }
+      },
+      "default": {}
+    },
+    "view": {
+      "$ref": "#/$defs/viewState"
+    }
+  },
+  "$defs": {
+    "panelId": {
+      "type": "string",
+      "enum": ["P1", "P2", "P3", "P4"]
+    },
+    "itemAssignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["single", "multi"],
+          "default": "single"
+        },
+        "panels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/panelId" },
+          "uniqueItems": true,
+          "maxItems": 4,
+          "default": []
+        }
+      }
+    },
+    "viewState": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "center": {
+          "type": "array",
+          "prefixItems": [
+            { "type": "number", "minimum": -180, "maximum": 180 },
+            { "type": "number", "minimum": -90, "maximum": 90 }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "zoom": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 24
+        },
+        "bearing": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180,
+          "default": 0
+        },
+        "pitch": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 85,
+          "default": 0
+        },
+        "terrain3d": {
+          "type": "boolean",
+          "default": false
+        },
+        "basemapId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}
